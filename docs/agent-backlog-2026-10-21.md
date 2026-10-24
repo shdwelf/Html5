@@ -198,182 +198,126 @@ matches the round-18 Colorado empty screen. Salina is identity-safe but
 held to starter scope. Next in sequence: remaining plains/mountain states
 in dated per-row batches, then the country/planet thread.
 
-**Round 24 status (2026-10-23): partial.** Minnesota and Iowa shipped as
+**Round 24 status (2026-10-23): partial.** Oklahoma and Texas shipped as
 configurations 25–26, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
-register, labelled synthetic relief, generalized context corridors, and no
-DEM. Provenance and identity decisions are in
+register, labelled synthetic relief, generalized context corridors (Texas
+adds a labelled generalized Gulf coast line), and no DEM. Provenance and
+identity decisions are in
 [`../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
-Every row was screened against the USGS GNIS Geocoder and cross-checked
-on a second USGS surface — the staged-products DomesticNames state text
-files, extracted in a GitHub Actions runner by `tools/gnis_extract.py`
-(`.github/workflows/arena-gnis-fetch.yml`). Eagle Mountain (2,301 ft) and
-Hawkeye Point (1,670 ft) keep their High Point designations with
-per-ID class/county/point reproductions. Eagle Mountain rejects the
-second Cook County summit and the Todd County summit; Lake of the Woods
-keeps one of two duplicate same-name lake records (`1930543` unseeded);
-Lake Itasca rejects its Anoka County lake and Clearwater County populated
-place; Vermilion Lake is seeded under the official name order; Clear Lake
-and Spirit Lake seed as lakes distinct from their same-name cities.
-Mississippi River (MN and IA), Missouri River (IA), Red River of the
-North (primary point at the Lake Winnipeg mouth in Manitoba), and Lake
-Superior (MN) remain corridors after empty or out-of-frame screens.
-Bloomington, Lake Minnetonka, Waterloo, East Okoboji Lake, Lake Red
-Rock, and Saylorville Lake are identity-safe but held to starter scope.
-Next in sequence: the remaining states in dated per-row batches, then the
-country/planet thread.
+Guadalupe Peak additionally carries a GNIS Domestic Names per-ID check:
+Class=Summit, Culberson County, High Point, “Highest elevation in TX at
+8749 feet”, with the El Capitan/Signal variants of the same record.
+Oklahoma's Black Mesa high point stays unseeded after two empty `states=OK`
+screens (Mount Scott notes it is not the high point); the Texas Red River
+stream record `1344947` was reviewed per-ID and rejected because both
+sequences sit in Brown County, far from the intended border reach, so
+Red River stays corridor-only in both frames; Arkansas River is empty for
+a third consecutive state after Colorado and Kansas. The Division piles
+reject the Oklahoma City/Tulsa/Lawton/Norman/Stillwater/Enid same-name
+records, the Texas metros reject their county/division/colonia/branch
+piles, Galveston Bay stores the returned Bay class, Palo Duro Canyon
+stores the returned Valley class, and Rio Grande seeds at the Cameron
+County Gulf mouth where New Mexico left it unseeded in round 18. Next in
+sequence: the West North Central remainder (Iowa, Missouri, Minnesota) or
+the Gulf/South Atlantic states, then the country/planet thread.
 
-**Round 25 status (2026-10-23): partial.** Wisconsin and Michigan shipped
-as configurations 27–28, each with a 12/12 per-ID `VERIFIED=1` GNIS
-starter register, labelled synthetic relief, generalized context
-corridors, and no DEM. Provenance and identity decisions are in
+**Round 25 status (2026-10-23): partial.** Iowa and Missouri shipped as
+configurations 27–28, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and
+no DEM. Provenance and identity decisions are in
 [`../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
-Every row was screened against the USGS GNIS Geocoder and cross-checked
-on the runner-extracted DomesticNames text (the candidate extract is now
-cumulative across batches). Timms Hill (1,951 ft) and Mount Arvon
-(1,979 ft) keep their High Point designations. Devils Lake seeds as the
-Baraboo Range lake against eight same-name lakes; the Saint Croix River
-record returns only under `states=MN` and stays a corridor in the
-Wisconsin frame; Torch Lake, Houghton Lake, and Grand Rapids split from
-their same-name neighbours. Michigan seeds Lake Superior (`1618946`,
-whose GNIS primary point lies in Michigan waters in-frame) as its Great
-Lakes anchor; Lake Huron and Lake Michigan returned in-frame points but
-are held to starter scope, Lake Erie screens empty, and Higgins Lake is
-also starter-held. Mississippi River under `states=WI` stays a corridor
-after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
-remaining states in dated per-row batches, then the country/planet
+Hawkeye Point and Taum Sauk Mountain additionally carry GNIS Domestic
+Names per-ID checks: both state high points keep their High Point
+coordinate markers and “highest elevation” descriptions (IA 1670 ft, MO
+1772 ft), with the Taum Sauk record's “Tom Sauk Mountain” variant
+rejected as the same record and its 1e-7-degree coordinate print
+difference disclosed. The St./Saint spelling gates (St. Louis and St. Joseph
+screens empty, Saint spelling returns the places), the Missouri River's
+first statewide row after six empty upstream screens, the Mississippi
+River Hills name/type mismatch, the Kansas City two-series disclosure,
+and Waterloo's starter-scope hold are all recorded; Current River and the
+Iowa-side Mississippi/Missouri rivers stay corridor-only. Next in
+sequence: Minnesota closes the West North Central division, then the
+Gulf/South Atlantic states, then the country/planet thread.
+
+**Round 26 status (2026-10-23): partial.** Minnesota and Louisiana shipped
+as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM; Louisiana additionally carries a labelled generalized Gulf coast line.
+Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+Eagle Mountain and Driskill Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MN at 2301 feet” on FEATURE_ID 656081,
+disambiguated from two undesignated same-name summits the Geocoder listed
+first, and “Highest elevation in LA at 535 feet”); Lake of the Woods
+carries a Board-decision per-ID check (1911/1953, 18 sequences) rejecting
+the 2001 duplicate. The Mississippi River gets its first seeded statewide
+row in Louisiana (Plaquemines) after the Iowa empty screen, the Missouri
+name mismatch, and the Minnesota reservoir-only screen; the Red River
+chain closes at the West Feliciana record after ND/OK empties, the Texas
+Brown County rejection, and the Minnesota-registered Red River of the North
+whose returned primary sits in Canada (border corridor with disclosure).
+St. Paul and St. Cloud add the third and fourth St./Saint spelling gates;
+Monroe is held out as two indistinguishable populated places; Lake
+Superior, St. Croix River, and Toledo Bend Reservoir screened empty;
+Rainy Lake holds as a four-way ambiguity. Next in sequence: Gulf/South
+Atlantic states (Mississippi/Alabama/Georgia …), then the country/planet
 thread.
 
-**Round 32 status (2026-10-23): partial.** Georgia and Florida
-shipped as configurations 41–42, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
-decisions are in
-[`../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json).
-Brasstown Bald (`354839`, Towns County, 4,784 ft) and Britton Hill
-(`1851954`, Walton County, 345 ft — the lowest US state high point,
-its FEATURE_ID immediately preceding Hawkeye Point's and Hoosier
-Hill's) keep their per-ID checks. Georgia seeds the Chattahoochee and
-Flint at the identical GNIS confluence point both surfaces return
-(distinct FEATURE_IDs, unadjusted), and Hartwell Lake / Lake Sidney
-Lanier under their official GNIS name orders. Florida is the flattest
-frame in the atlas (metre-scale synthetic relief).
-
-**Round 31 status (2026-10-23): partial.** North Carolina and South
-Carolina shipped as configurations 39–40, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
-decisions are in
-[`../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json).
-North Carolina carries both Appalachian high points: Mount Mitchell
-(`1013745`, Yancey County, 6,684 ft) and Kuwohi (`1326387`, Swain
-County, 6,643 ft) — Tennessee's highest summit seeded on its NC
-record under the restored 2024 name, closing batch 12's context
-decision. Sassafras Mountain (`1015279`, Pickens County, 3,553 ft)
-keeps the South Carolina high point. The Savannah River is seeded on
-its SC-associated record; the Pee Dee keeps its returned Chesterfield
-keying; B. Everett Jordan Lake is seeded under its official name
-order after the plain-name screen came back empty.
-
-**Round 30 status (2026-10-23): partial.** Virginia and West Virginia
-shipped as configurations 37–38, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
-decisions are in
-[`../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json).
-Mount Rogers (`1485637`, Smyth County, 5,729 ft) and Spruce Knob
-(`1553014`, Pendleton County, 4,863 ft; Randolph namesake rejected)
-keep their High Point designations. Six Virginia rows are independent
-cities (Geocoder `City of …` vs extract `… (city)`, normalized in
-verification). The Shenandoah and New River records are West
-Virginia-associated and seeded in West Virginia; the Ohio,
-Monongahela, and Potomac main stems remain corridors here. The
-Kanawha River row preserves its returned primary county (Fayette)
-verbatim at the Point Pleasant mouth point.
-
-**Round 29 status (2026-10-23): partial.** Kentucky and Tennessee
-shipped as configurations 35–36, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
-decisions are in
-[`../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
-Black Mountain (`510753`, Harlan County, 4,145 ft, Kentucky high
-point) and Mount Le Conte (`1646824`, Sevier County, 6,593 ft) keep
-their per-ID checks. This batch resolves the Ohio River: after empty
-`states=OH/IN/IL/PA` screens its main-stem record proves
-Kentucky-associated (`425264`, Ballard County mouth) and is seeded
-once in Kentucky; the Tennessee (`517033`) and Cumberland (`517018`)
-mouth records are likewise Kentucky-associated and seeded here,
-remaining corridors in Tennessee. Kentucky Lake is seeded once on its
-Tennessee record. Kuwohi/Clingmans Dome (6,643 ft) has no Tennessee
-GNIS record on either surface and is a context marker only — Mount
-Le Conte is the seeded Tennessee summit.
-
-**Round 28 status (2026-10-23): partial.** Missouri and Arkansas
-shipped as configurations 33–34, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
-decisions are in
-[`../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
-Taum Sauk Mountain (`752501`, Iron County, 1,772 ft) keeps its High
-Point designation. Magazine Mountain (`67051`, Logan County, 2,753 ft)
-is the series' first Ridge-class row — GNIS classifies the mesa as a
-Ridge, so `js/city-gazetteer.js` gained a Ridge class (`phys.ridge`)
-instead of misnaming it a Summit. Saint Louis keeps its independent-city
-county identity ('City of Saint Louis' vs the extract's
-'St. Louis (city)'), normalized in verification. The Mississippi main
-stem screened empty under both states and the Current River under
-Missouri — the corridor rule now covers most of the atlas; Bull Shoals
-Lake is seeded once, on its Arkansas record.
-
-**Round 27 status (2026-10-23): partial.** Ohio and Pennsylvania
-shipped as configurations 31–32, each with a 12/12 per-ID
-`VERIFIED=1` GNIS starter register, labelled synthetic relief,
-generalized context corridors, and no DEM. Provenance and identity
+**Round 27 status (2026-10-23): partial.** Mississippi and Alabama shipped
+as configurations 31–32, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, no DEM,
+and a labelled generalized Gulf coast line. Provenance and identity
 decisions are in
 [`../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
-Every row was screened against the USGS GNIS Geocoder and cross-checked
-on the runner-extracted DomesticNames text (cumulative candidate
-extract). Campbell Hill (`1079572`, Logan County, 1,550 ft) was
-chosen among three same-name Ohio summits; Mount Davis (`1209050`,
-Wayne County, 3,213 ft) carries the Pennsylvania high point.
-Lake Erie is seeded once, in the Ohio frame, after empty Pennsylvania
-screens. The Ohio main stem screened empty under a fourth consecutive
-state (IL, IN, OH, PA) and remains a corridor, as do the Susquehanna
-and Delaware. The batch also records the series' first
-**source-corrupted GNIS coordinate**: Indian Lake (`1041943`) carries
-a western-Pennsylvania longitude on *both* USGS surfaces, so the
-feature is excluded and documented in the register rather than
-hand-corrected. Two maintenance fixes ride along: a duplicated
-`illinois`/`indiana` key pair (identical copies from a double builder
-run; JSON consumers used the last copy, so behavior was unchanged) is
-deduplicated, and the batch-9 Charles Mound note county is corrected
-to Wayne County; semantic county asserts now guard every batch
-test so hand-typed county slips fail loudly.
+Woodall Mountain and Cheaha Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MS at 806 feet” on FEATURE_ID 692362 with
+Bear/Woodalls Mountain variants, and “Highest elevation in AL at 2407 feet”
+on FEATURE_ID 159374 with the 1906 Board Decision and four historic
+variants) — both recalled elevations were wrong. Guntersville Lake selects
+FEATURE_ID 119508 over the suggestion-listed parallel Jackson County
+record 1286448 on decision-card evidence (a new register tie-break rule);
+Wheeler Lake separates its intended Limestone County reservoir 112837 from
+a same-name Chambers County lake 131097 entered on the Georgia border.
+The Mississippi main stem stays corridor-only in its own state after a
+**fifth empty/mismatched screen** (MS returned an empty array; Tombigbee
+is empty under MS but seeds in Alabama; the Alabama Tombigbee point sits
+~100 m from the Alabama River’s at their shared confluence, both as
+returned). Ross R Barnett Reservoir clears the round-24 punctuation gate
+(term carried periods, official name without); Lake Martin and Tennessee
+River screens returned empty; Pearl River returns only county/town/census
+records under states=MS. County/census-division-first suggestion traps
+pile across all six Alabama cities and Jackson MS — every rejected twin is
+named in the register. Final: cities 32 (17/17), Node 730, vitest 307,
+wiki 222, city XDCs 79 entries. Next in sequence: Georgia, then Florida,
+then the country/planet thread.
 
-**Round 26 status (2026-10-23): partial.** Illinois and Indiana shipped
-as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS
-starter register, labelled synthetic relief, generalized context
-corridors, and no DEM. Provenance and identity decisions are in
-[`../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
-Every row was screened against the USGS GNIS Geocoder and cross-checked
-on the runner-extracted DomesticNames text (cumulative candidate
-extract). Charles Mound (1,235 ft) and Hoosier Hill (1,257 ft) keep
-their High Point designations; Hoosier Hill (`1851956`) sits adjacent
-to round 24's Hawkeye Point (`1851955`) in the same high-point record
-series. Monroe Lake is seeded under the official name order (the
-`Lake Monroe` screen is empty, following the round-24 Vermilion Lake
-precedent); Chicago splits from its Heights/Ridge/Loop namesakes; the
-Rock River stream record splits from four same-name lake/flowage
-records; the White River stream record splits from the Gibson County
-populated place. The Mississippi River, Ohio River, and Lake Michigan
-records screen empty under both states and remain corridors. Joliet,
-Waukegan, and Gary are identity-safe but held to starter scope. One
-round-24 defect was repaired in passing: the batch-7 register's
-`geocoderCounty` fields had been truncated to single letters by a
-builder bug (the test asserted only presence); the values are restored
-and batches 7–9 tests now assert the full county strings semantically.
-Next in sequence: Ohio eastward and the remaining states in dated
-per-row batches, then the country/planet thread.
+**Round 28 status (2026-10-23): partial.** Georgia shipped as
+configuration 33 with a 12/12 per-ID `VERIFIED=1` GNIS starter register,
+labelled synthetic relief, five generalized context corridors, no DEM,
+and a labelled generalized Atlantic coast line. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
+Brasstown Bald carries the per-ID high-point check (“Highest elevation in
+GA at 4784 feet”, FEATURE_ID 354839, executed against the official
+gaznames_default REST layer because the SPA detail route renders
+client-side). Lake Oconee seeds FEATURE_ID 330982 over the parallel Oconee
+County same-name record 319902 via a new description-locator tie-break
+(“Located 6 km (3.7 mi) ENE of Rockville” on the seeded record; blank
+description and differing stored gaz_elevation on the twin). The Savannah
+River screen is empty under states=GA — the national screen returns only
+the South Carolina record 1253486 — and Lake Lanier screens as a
+populated place only (1688216; Buford Reservoir alternate empty); both
+stay corridor/unseeded with disclosure. Chattahoochee 354236 and
+Ogeechee 354254 are held to starter scope with their FEATURE_IDs kept in
+the corridor. All six city screens shed county/census-division piles.
+Ocmulgee + Oconee seed as a confluence pair (points ~60 m apart, both as
+returned). Round 28 also reconciled merge-delta content from PR #134
+(T3.1 Game Genie family): four stale CyberChef count guards 511 → 515,
+the cookbook card text, and the jsdom `bake()` teardown race stubbed in
+two tests. Final: cities 33 (18/18), Node 806 = 796/10/0, vitest 307,
+wiki 244, city XDCs 81 entries. Next in sequence: South Carolina, then
+the remaining seaboard states, Florida, then the country/planet thread.
 
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,

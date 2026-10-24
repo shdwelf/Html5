@@ -10,83 +10,92 @@
 export const CITY = {
   "id": "minnesota",
   "title": "MINNESOTA SUBSURFACE 4Dwm",
-  "subtitle": "Boundary Waters · North Shore · Twin Cities · Driftless — statewide frame, Minnesota",
+  "subtitle": "Arrowhead highlands · Red River valley · Minnesota and Mississippi headwaters — statewide frame, Minnesota",
   "state": "MN",
   "country": "United States",
   "county": "Statewide",
-  "baseElevationM": 360,
-  "roughnessM": 110,
+  "baseElevationM": 350,
+  "roughnessM": 70,
   "hasWater": false,
   "requiresDem": false
 };
 
-export const BBOX = {"lon0":-97.35,"lat0":43.45,"lon1":-89.45,"lat1":49.4};
-export const CENTER = {"lon":-94.3,"lat":46.4};
+export const BBOX = {"lon0":-97.3,"lat0":43.4,"lon1":-89.4,"lat1":49.4};
+export const CENTER = {"lon":-93.4,"lat":46.4};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 export const COAST = [];
 export const RELIEF = [
   {
-    "name": "North Shore highlands",
+    "name": "Arrowhead highlands",
     "lon": -91.6,
-    "lat": 47.3,
+    "lat": 47.6,
     "rx": 0.5,
     "ry": 0.8,
-    "amp": 300,
+    "amp": 420,
     "rot": 0
   },
   {
-    "name": "Misquah Hills",
-    "lon": -90.75,
-    "lat": 47.6,
-    "rx": 0.45,
-    "ry": 0.3,
-    "amp": 320,
-    "rot": 0
-  },
-  {
-    "name": "Laurentian divide",
-    "lon": -93.6,
-    "lat": 47.85,
-    "rx": 0.9,
-    "ry": 0.3,
-    "amp": 180,
-    "rot": 0
-  },
-  {
-    "name": "Mesabi Iron Range",
-    "lon": -93,
-    "lat": 47.5,
-    "rx": 0.8,
-    "ry": 0.25,
-    "amp": 170,
+    "name": "Mesabi Range",
+    "lon": -92.6,
+    "lat": 47.4,
+    "rx": 0.7,
+    "ry": 0.2,
+    "amp": 350,
     "rot": 0
   },
   {
     "name": "Coteau des Prairies",
-    "lon": -96.35,
-    "lat": 44.1,
+    "lon": -96.3,
+    "lat": 44.3,
     "rx": 0.4,
+    "ry": 0.9,
+    "amp": 180,
+    "rot": 0
+  },
+  {
+    "name": "Red River valley lowland",
+    "lon": -96.8,
+    "lat": 47.3,
+    "rx": 0.35,
+    "ry": 1.3,
+    "amp": -80,
+    "rot": 0
+  },
+  {
+    "name": "Central glacial till plain",
+    "lon": -94.3,
+    "lat": 45.5,
+    "rx": 0.9,
     "ry": 0.7,
+    "amp": 90,
+    "rot": 0
+  },
+  {
+    "name": "Minnesota River valley",
+    "lon": -94.1,
+    "lat": 44.6,
+    "rx": 0.6,
+    "ry": 0.15,
+    "amp": -60,
+    "rot": 0
+  },
+  {
+    "name": "Mississippi bluffs",
+    "lon": -92.5,
+    "lat": 44.6,
+    "rx": 0.2,
+    "ry": 0.6,
     "amp": 140,
     "rot": 0
   },
   {
-    "name": "Driftless bluffs",
-    "lon": -91.7,
-    "lat": 43.95,
-    "rx": 0.5,
-    "ry": 0.3,
-    "amp": 130,
-    "rot": 0
-  },
-  {
-    "name": "Red River valley",
-    "lon": -97,
-    "lat": 46.9,
-    "rx": 0.35,
-    "ry": 1.2,
-    "amp": -60,
+    "name": "Northwestern plains",
+    "lon": -96,
+    "lat": 48.6,
+    "rx": 0.7,
+    "ry": 0.5,
+    "amp": 60,
     "rot": 0
   }
 ];
@@ -222,80 +231,132 @@ export const CORRIDORS = [
     "id": "i35-minnesota",
     "layer": "roads",
     "tier": "context",
-    "name": "Interstate 35 / Minnesota corridor (generalized)",
+    "name": "Interstate 35 corridor (generalized)",
     "short": "I-35",
     "depthM": 0,
     "path": [
+      [
+        -93.5,
+        49.3
+      ],
       [
         -92.1065787,
         46.7832731
       ],
       [
-        -93,
-        45.9
-      ],
-      [
-        -93.2638361,
-        44.9799654
+        -93.3,
+        46.6
       ],
       [
         -93.0932742,
         44.9444101
       ],
       [
-        -93.2,
-        43.9
+        -93.4,
+        45.2
       ],
       [
-        -93.35,
+        -93.9993996,
+        44.1635775
+      ],
+      [
+        -94.05,
         43.55
       ]
     ],
     "facts": [
-      "Generalized Interstate 35 corridor from Duluth through the Minneapolis and Saint Paul anchors to the Iowa border; schematic polyline through named anchors and generalized points, not a highway alignment."
+      "Generalized Interstate 35 corridor from the Canadian border through Duluth, Saint Paul, and Mankato to the Iowa border; schematic polyline through named anchors and generalized points, not a highway alignment."
     ],
     "sources": [
       "Generalized from public highway references (Interstate 35 routing); GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "i94-minnesota",
+    "id": "i90-minnesota",
     "layer": "roads",
     "tier": "context",
-    "name": "Interstate 94 / Minnesota corridor (generalized)",
-    "short": "I-94",
+    "name": "Interstate 90 corridor (generalized)",
+    "short": "I-90",
     "depthM": 0,
     "path": [
       [
-        -96.8,
-        45.9
+        -97.15,
+        43.6
       ],
       [
-        -94.1624895,
-        45.5607986
+        -96,
+        43.6
       ],
       [
-        -93.2638361,
-        44.9799654
+        -94.9,
+        43.6
       ],
+      [
+        -94,
+        43.65
+      ],
+      [
+        -93.2,
+        43.75
+      ],
+      [
+        -92.8,
+        43.85
+      ],
+      [
+        -91.3,
+        43.85
+      ]
+    ],
+    "facts": [
+      "Generalized Interstate 90 corridor along the southern tier from the South Dakota border through Albert Lea and Austin to the Wisconsin border; schematic polyline of generalized points, not a highway alignment."
+    ],
+    "sources": [
+      "Generalized from public highway references (Interstate 90 routing)"
+    ]
+  },
+  {
+    "id": "i94-minnesota",
+    "layer": "roads",
+    "tier": "context",
+    "name": "Interstate 94 corridor (generalized)",
+    "short": "I-94",
+    "depthM": 0,
+    "path": [
       [
         -93.0932742,
         44.9444101
       ],
       [
-        -92.65,
-        44.95
+        -94,
+        45.6
+      ],
+      [
+        -94.7,
+        46
+      ],
+      [
+        -95.5,
+        46.3
+      ],
+      [
+        -96.5,
+        46.5
+      ],
+      [
+        -97.2,
+        46.6
       ]
     ],
     "facts": [
-      "Generalized Interstate 94 corridor from the North Dakota border through the Saint Cloud, Minneapolis, and Saint Paul anchors toward Wisconsin; schematic polyline, not a highway alignment."
+      "Generalized Interstate 94 corridor from Saint Paul through St. Cloud and Detroit Lakes to the North Dakota border; schematic polyline through a named anchor and generalized points, not a highway alignment."
     ],
     "sources": [
-      "Generalized from public highway references (Interstate 94 routing); GNIS rows supply the named anchors"
+      "Generalized from public highway references (Interstate 94 routing); GNIS rows supply the named anchor"
     ]
   },
   {
-    "id": "mississippi-minnesota",
+    "id": "mississippi-river-minnesota",
     "layer": "water",
     "tier": "context",
     "name": "Mississippi River Minnesota reach (generalized)",
@@ -303,107 +364,99 @@ export const CORRIDORS = [
     "depthM": 0,
     "path": [
       [
-        -95.2006509,
-        47.2156405
+        -95.9,
+        47.15
       ],
       [
-        -94.9,
-        46.6
+        -95.4,
+        46.7
       ],
       [
-        -94.1624895,
-        45.5607986
+        -94.7,
+        46.3
       ],
       [
-        -93.2638361,
-        44.9799654
+        -94.1,
+        45.7
+      ],
+      [
+        -93.6,
+        45.35
       ],
       [
         -93.0932742,
         44.9444101
       ],
       [
-        -91.9,
-        44.3
+        -93,
+        44.5
       ],
       [
-        -91.2,
+        -92.9,
+        44
+      ],
+      [
+        -93.6,
+        43.7
+      ],
+      [
+        -94.1,
         43.55
       ]
     ],
     "facts": [
-      "No Mississippi River stream gazetteer row is seeded in the Minnesota frame: the 2026-10-23 states=MN Geocoder screen returned no intended main-stem stream record (only the Mississippi River Reservoir record, FEATURE_ID 1776673), because the single GNIS stream record's primary point is the Gulf of Mexico mouth. Generalized context reach from the Lake Itasca headwater row through the Saint Cloud, Minneapolis, and Saint Paul anchors; schematic, not a channel centerline."
+      "No Mississippi River gazetteer row is seeded in the Minnesota frame: the 2026-10-23 states=MN Geocoder screen returned only a Mississippi River Reservoir lake record (FEATURE_ID 1776673, Stearns County), which does not match the intended stream name or type, after an empty Iowa screen and a Missouri name mismatch. Schematic context reach from the Itasca country headwaters through Saint Paul to the Iowa border, not a channel centerline or state boundary."
     ],
     "sources": [
-      "Generalized from public river references; Geocoder exclusion recorded in the round-24 source register"
+      "Generalized from public river references; Geocoder screening recorded in the round-26 source register"
     ]
   },
   {
-    "id": "minnesota-river",
+    "id": "red-river-of-the-north-minnesota",
     "layer": "water",
     "tier": "context",
-    "name": "Minnesota River valley reach (generalized)",
-    "short": "Minnesota River",
+    "name": "Red River of the North reach (generalized)",
+    "short": "Red River of the North",
     "depthM": 0,
     "path": [
       [
-        -96.45,
-        45.35
+        -96.4,
+        49
       ],
       [
-        -95.3,
-        44.9
-      ],
-      [
-        -93.9993996,
-        44.1635775
-      ],
-      [
-        -93.1491088,
-        44.89691
-      ]
-    ],
-    "facts": [
-      "Generalized Minnesota River reach from the western border through the Mankato anchor to the seeded mouth record south of Saint Paul; schematic polyline, not a channel centerline."
-    ],
-    "sources": [
-      "Generalized from public river references; GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "red-river-minnesota",
-    "layer": "water",
-    "tier": "context",
-    "name": "Red River of the North Minnesota reach (generalized)",
-    "short": "Red River",
-    "depthM": 0,
-    "path": [
-      [
-        -96.95,
-        43.6
-      ],
-      [
-        -97,
-        45.1
-      ],
-      [
-        -97.05,
-        46.8
-      ],
-      [
-        -97,
+        -96.6,
         48.6
       ],
       [
         -96.9,
-        49.3
+        48.3
+      ],
+      [
+        -97,
+        47.5
+      ],
+      [
+        -97.15,
+        46.9
+      ],
+      [
+        -97.05,
+        46.5
+      ],
+      [
+        -96.9,
+        46
+      ],
+      [
+        -96.75,
+        46.25
       ]
     ],
     "facts": [
-      "No Red River of the North gazetteer row is seeded in the Minnesota frame: the states=MN screen returned the exact stream record (FEATURE_ID 1035890) with its GNIS primary point at 50.4002778, -96.8 at the Lake Winnipeg mouth in Manitoba, outside this frame. Generalized context reach along the western border; schematic, not a channel centerline or state boundary."
+      "No Red River of the North gazetteer row is seeded in the Minnesota frame: the 2026-10-23 states=MN screen returned the exact stream record 1035890 but its returned primary point (50.4002778, -96.8000000) lies in Canada at the Lake Winnipeg terminus, which the per-ID check marks with no state. Generalized context reach along the western border, schematic, not a channel centerline or state boundary."
     ],
     "sources": [
-      "Generalized from public river references; out-of-frame primary point recorded in the round-24 source register"
+      "Generalized from public river references; Geocoder screening and per-ID check recorded in the round-26 source register"
     ]
   }
 ];
@@ -418,7 +471,7 @@ export const NODES = [
     "lat": 44.9444101,
     "depthM": 0,
     "facts": [
-      "Minnesota state capital and Mississippi River corridor anchor (Twin Cities east). node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 662851; coordinate per gazetteer row"
@@ -434,7 +487,7 @@ export const NODES = [
     "lat": 44.9799654,
     "depthM": 0,
     "facts": [
-      "Largest city in Minnesota and Twin Cities anchor (Mississippi River west bank). node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "Twin Cities anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 655030; coordinate per gazetteer row"
@@ -446,30 +499,30 @@ export const NODES = [
     "layer": "sites",
     "tier": "official",
     "kind": "summit",
-    "lon": -90.7071766,
-    "lat": 47.6641476,
+    "lon": -90.5606387,
+    "lat": 47.8973467,
     "depthM": 0,
     "facts": [
-      "Minnesota state high point in the Misquah Hills (Boundary Waters country). node coordinate is the GNIS summit primary point from the gazetteer row."
+      "Minnesota's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 656080; coordinate per gazetteer row"
+      "USGS GNIS FEATURE_ID 656081; coordinate per gazetteer row"
     ]
   },
   {
-    "id": "mille-lacs-lake",
-    "name": "Mille Lacs Lake",
+    "id": "duluth",
+    "name": "Duluth",
     "layer": "sites",
     "tier": "official",
-    "kind": "lake",
-    "lon": -93.6462512,
-    "lat": 46.2425615,
+    "kind": "building",
+    "lon": -92.1065787,
+    "lat": 46.7832731,
     "depthM": 0,
     "facts": [
-      "East-central lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+      "Lake Superior port anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 647859; coordinate per gazetteer row"
+      "USGS GNIS FEATURE_ID 661145; coordinate per gazetteer row"
     ]
   }
 ];
@@ -522,12 +575,12 @@ export const VIEWS = [
     "position": [
       13.342356194384184,
       10,
-      14.571787999999987
+      14.69424
     ],
     "target": [
       13.342356194384184,
       0,
-      14.571787999999987
+      14.69424
     ]
   }
 ];

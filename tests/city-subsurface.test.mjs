@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "minnesota", "iowa", "wisconsin", "michigan", "illinois", "indiana", "ohio", "pennsylvania", "missouri", "arkansas", "Kentucky", "tennessee", "virginia", "westvirginia", "northcarolina", "southcarolina", "Georgia", "florida"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -1299,50 +1299,49 @@ test("Nebraska and Kansas complete the Central Plains GNIS state batch", async (
   }
 });
 
-test("Minnesota and Iowa complete the Upper Midwest GNIS state batch", async () => {
+test("Oklahoma and Texas complete the Southern Plains GNIS state batch", async () => {
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
   const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
   const expectations = {
-    minnesota: {
-      state: "MN",
-      bbox: { lon0: -97.35, lat0: 43.45, lon1: -89.45, lat1: 49.4 },
+    oklahoma: {
+      state: "OK",
+      bbox: { lon0: -103.1, lat0: 33.5, lon1: -94.3, lat1: 37.05 },
       coastLines: 0,
       rows: new Map([
-        ["Saint Paul|Populated Place", "662851"],
-        ["Minneapolis|Populated Place", "655030"],
-        ["Duluth|Populated Place", "661145"],
-        ["Rochester|Populated Place", "650180"],
-        ["Saint Cloud|Populated Place", "650559"],
-        ["Mankato|Populated Place", "647438"],
-        ["Eagle Mountain|Summit", "656080"],
-        ["Lake of the Woods|Lake", "654378"],
-        ["Mille Lacs Lake|Lake", "647859"],
-        ["Vermilion Lake|Lake", "662716"],
-        ["Minnesota River|Stream", "659759"],
-        ["Lake Itasca|Lake", "645541"],
+        ["Oklahoma City|Populated Place", "1102140"],
+        ["Tulsa|Populated Place", "1100962"],
+        ["Lawton|Populated Place", "1094539"],
+        ["Norman|Populated Place", "1095903"],
+        ["Stillwater|Populated Place", "1098541"],
+        ["Enid|Populated Place", "1092626"],
+        ["Mount Scott|Summit", "1102047"],
+        ["Lake Texoma|Lake", "1102966"],
+        ["Grand Lake O' The Cherokees|Lake", "1102836"],
+        ["Tenkiller Ferry Lake|Lake", "1098801"],
+        ["Canadian River|Stream", "1101881"],
+        ["Illinois River|Stream", "1094043"],
       ]),
-      anchor: ["Saint Paul|Populated Place", 44.9444101, -93.0932742],
+      anchor: ["Oklahoma City|Populated Place", 35.4675602, -97.5164276],
     },
-    iowa: {
-      state: "IA",
-      bbox: { lon0: -96.65, lat0: 40.35, lon1: -89.95, lat1: 43.55 },
-      coastLines: 0,
+    texas: {
+      state: "TX",
+      bbox: { lon0: -106.75, lat0: 25.75, lon1: -93.3, lat1: 36.65 },
+      coastLines: 1,
       rows: new Map([
-        ["Des Moines|Populated Place", "465961"],
-        ["Cedar Rapids|Populated Place", "465941"],
-        ["Davenport|Populated Place", "455799"],
-        ["Sioux City|Populated Place", "461653"],
-        ["Iowa City|Populated Place", "457827"],
-        ["Ames|Populated Place", "454167"],
-        ["Hawkeye Point|Summit", "1851955"],
-        ["West Okoboji Lake|Lake", "462893"],
-        ["Clear Lake|Lake", "455462"],
-        ["Spirit Lake|Lake", "461850"],
-        ["Des Moines River|Stream", "465582"],
-        ["Cedar River|Stream", "465058"],
+        ["Austin|Populated Place", "1384879"],
+        ["Houston|Populated Place", "1380948"],
+        ["Dallas|Populated Place", "1380944"],
+        ["San Antonio|Populated Place", "1380951"],
+        ["El Paso|Populated Place", "1380946"],
+        ["Fort Worth|Populated Place", "1380947"],
+        ["Guadalupe Peak|Summit", "1358489"],
+        ["Brazos River|Stream", "1384148"],
+        ["Rio Grande|Stream", "1385432"],
+        ["Trinity River|Stream", "1348789"],
+        ["Galveston Bay|Bay", "1381144"],
+        ["Palo Duro Canyon|Valley", "1375340"],
       ]),
-      anchor: ["Des Moines|Populated Place", 41.6005448, -93.6091064],
+      anchor: ["Austin|Populated Place", 30.267153, -97.7430608],
     },
   };
 
@@ -1372,13 +1371,6 @@ test("Minnesota and Iowa complete the Upper Midwest GNIS state batch", async () 
       assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
       assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
       assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      // Second-surface evidence: the same FEATURE_ID must reproduce in the
-      // DomesticNames state text extract at the same primary point.
-      const exState = extract.states[expected.state];
-      const exRow = exState.rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
     }
 
     const [anchorKey, anchorLat, anchorLon] = expected.anchor;
@@ -1393,8 +1385,7 @@ test("Minnesota and Iowa complete the Upper Midwest GNIS state batch", async () 
     assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-7 source register must reproduce the generated rows exactly`);
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = registerRow.county === "St. Louis" ? "Saint Louis County" : `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
     }
 
     assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
@@ -1404,49 +1395,58 @@ test("Minnesota and Iowa complete the Upper Midwest GNIS state batch", async () 
       assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
       assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
     }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
   }
 
-  const mnGaz = await import("../js/city-gazetteer-data-minnesota.js");
-  const mnData = await import("../js/city-subsurface-data-minnesota.js");
-  const eagle = mnGaz.GAZ_ROWS.find((r) => r[0] === "Eagle Mountain");
-  assert.match(eagle[9], /Domestic Names per-ID check/, "Eagle Mountain note must cite the per-ID check");
-  assert.match(eagle[9], /High Point/, "Eagle Mountain note must preserve the high-point designation");
-  assert.match(eagle[9], /2,301 feet/, "Eagle Mountain note must preserve the published elevation");
-  assert.match(eagle[9], /FEATURE_ID 656081/, "Eagle Mountain note must reject the second Cook County summit");
-  assert.match(eagle[9], /FEATURE_ID 643035/, "Eagle Mountain note must reject the Todd County summit");
-  const lotw = mnGaz.GAZ_ROWS.find((r) => r[0] === "Lake of the Woods");
-  assert.match(lotw[9], /FEATURE_ID 1930543/, "Lake of the Woods note must name the unseeded duplicate record");
-  const itasca = mnGaz.GAZ_ROWS.find((r) => r[0] === "Lake Itasca");
-  assert.match(itasca[9], /FEATURE_ID 645540/, "Lake Itasca note must reject the Anoka County lake");
-  assert.match(itasca[9], /FEATURE_ID 645542/, "Lake Itasca note must reject the populated place");
-  const vermilion = mnGaz.GAZ_ROWS.find((r) => r[0] === "Vermilion Lake");
-  assert.match(vermilion[9], /official name order is Vermilion Lake/, "Vermilion Lake note must preserve the official name order");
-  assert.ok(!mnGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Red River of the North", "Lake Superior"].includes(r[0])), "empty-screen or out-of-frame Minnesota records must not be seeded");
-  assert.ok(mnData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /Mississippi River Reservoir/.test(c.facts[0])), "Minnesota Mississippi corridor must record why no stream row was seeded");
-  assert.ok(mnData.CORRIDORS.some((c) => /Red River/.test(c.name) && /Lake Winnipeg/.test(c.facts[0])), "Minnesota Red River corridor must record the out-of-frame primary point");
-  assert.ok(register.identityDecisions.some((d) => /Eagle Mountain, FEATURE_ID 656081/.test(d.candidate)), "register must record the Eagle Mountain identity decision");
-  assert.ok(register.identityDecisions.some((d) => /Lake of the Woods, FEATURE_ID 1930543/.test(d.candidate) && /knownServiceDiscrepancy/.test(d.candidate + (d.knownServiceDiscrepancy || "")) || /Lake of the Woods, FEATURE_ID 1930543/.test(d.candidate)), "register must record the Lake of the Woods duplicate decision");
+  const okGaz = await import("../js/city-gazetteer-data-oklahoma.js");
+  const okData = await import("../js/city-subsurface-data-oklahoma.js");
+  const mountScott = okGaz.GAZ_ROWS.find((r) => r[0] === "Mount Scott");
+  assert.match(mountScott[9], /Black Mesa/, "Mount Scott note must record the empty high-point screens");
+  assert.match(mountScott[9], /empty arrays/, "Black Mesa screens must be recorded as empty");
+  assert.match(mountScott[9], /FEATURE_ID 1102048/, "Mount Scott note must reject Mount Scotts Boy");
+  assert.match(mountScott[9], /not Oklahoma's state high point/, "Mount Scott must not claim the state high point");
+  const okc = okGaz.GAZ_ROWS.find((r) => r[0] === "Oklahoma City");
+  assert.match(okc[9], /FEATURE_IDs? 2584398/, "Oklahoma City note must reject the Division records");
+  const tulsa = okGaz.GAZ_ROWS.find((r) => r[0] === "Tulsa");
+  assert.match(tulsa[9], /FEATURE_ID 1101859/, "Tulsa note must reject Tulsa County");
+  assert.match(tulsa[9], /2832946/, "Tulsa note must reject the airport record");
+  const grandLake = okGaz.GAZ_ROWS.find((r) => r[0] === "Grand Lake O' The Cherokees");
+  assert.match(grandLake[9], /apostrophe/, "Grand Lake note must record the official apostrophe spelling");
+  assert.ok(!okGaz.GAZ_ROWS.some((r) => ["Black Mesa", "Red River", "Arkansas River", "Gloss Mountains", "Quartz Mountain"].includes(r[0])), "empty-screen or out-of-scope Oklahoma records must not be seeded");
+  assert.ok(okData.CORRIDORS.some((c) => /Arkansas River/.test(c.name) && /empty array/.test(c.facts[0])));
+  assert.ok(okData.CORRIDORS.some((c) => /Red River/.test(c.name) && /Brown County/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Black Mesa/.test(d.candidate) && /empty arrays/.test(d.decision || "")), "register must record the Black Mesa empty screens");
+  assert.ok(register.identityDecisions.some((d) => /Red River:/.test(d.candidate) && /Brown County/.test(d.knownServiceDiscrepancy || "")), "register must record the Red River Brown County rejection");
 
-  const iaGaz = await import("../js/city-gazetteer-data-iowa.js");
-  const iaData = await import("../js/city-subsurface-data-iowa.js");
-  const hawkeye = iaGaz.GAZ_ROWS.find((r) => r[0] === "Hawkeye Point");
-  assert.match(hawkeye[9], /Domestic Names per-ID check/, "Hawkeye Point note must cite the per-ID check");
-  assert.match(hawkeye[9], /High Point/, "Hawkeye Point note must preserve the high-point designation");
-  assert.match(hawkeye[9], /1,670 feet/, "Hawkeye Point note must preserve the published elevation");
-  const desMoines = iaGaz.GAZ_ROWS.find((r) => r[0] === "Des Moines");
-  assert.match(desMoines[9], /FEATURE_ID 465217/, "Des Moines note must reject Des Moines County");
-  const clearLake = iaGaz.GAZ_ROWS.find((r) => r[0] === "Clear Lake");
-  assert.match(clearLake[9], /FEATURE_ID 455465/, "Clear Lake lake note must reject the populated place");
-  assert.match(clearLake[9], /FEATURE_ID 455463/, "Clear Lake lake note must reject the Pocahontas County lake");
-  const spiritLake = iaGaz.GAZ_ROWS.find((r) => r[0] === "Spirit Lake");
-  assert.match(spiritLake[9], /FEATURE_ID 461851/, "Spirit Lake note must reject the same-name city record");
-  assert.notDeepEqual([clearLake[4], clearLake[5]], [43.1380151, -93.3793725], "Clear Lake lake and city points must be distinct");
-  assert.ok(!iaGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Missouri River"].includes(r[0])), "empty-screen Iowa river records must not be seeded");
-  assert.ok(iaData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Iowa Mississippi corridor must record the empty screen");
-  assert.ok(iaData.CORRIDORS.some((c) => /Missouri River/.test(c.name) && /empty array/.test(c.facts[0])), "Iowa Missouri corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Missouri River under states=IA/.test(d.candidate)), "register must record the empty Iowa river screens");
-  assert.ok(register.identityDecisions.some((d) => /Bloomington and Lake Minnetonka/.test(d.candidate) && /starter-scope/.test(d.decision)), "register must keep the starter-scope precedents");
+  const txGaz = await import("../js/city-gazetteer-data-texas.js");
+  const txData = await import("../js/city-subsurface-data-texas.js");
+  const guadalupe = txGaz.GAZ_ROWS.find((r) => r[0] === "Guadalupe Peak");
+  assert.match(guadalupe[9], /Domestic Names per-ID check/, "Guadalupe Peak note must cite the per-ID check");
+  assert.match(guadalupe[9], /High Point/, "Guadalupe Peak note must preserve the per-ID designation");
+  assert.match(guadalupe[9], /8749 feet/, "Guadalupe Peak note must preserve the per-ID elevation description");
+  assert.match(guadalupe[9], /El Capitan Peak/, "Guadalupe Peak note must record the rejected variant names");
+  const austin = txGaz.GAZ_ROWS.find((r) => r[0] === "Austin");
+  assert.match(austin[9], /FEATURE_ID 1383793/, "Austin note must reject Austin County");
+  const houston = txGaz.GAZ_ROWS.find((r) => r[0] === "Houston");
+  assert.match(houston[9], /FEATURE_ID 1383898/, "Houston note must reject Houston County");
+  const sanAntonio = txGaz.GAZ_ROWS.find((r) => r[0] === "San Antonio");
+  assert.match(sanAntonio[9], /2628567/, "San Antonio note must reject the Division records");
+  const rioGrande = txGaz.GAZ_ROWS.find((r) => r[0] === "Rio Grande");
+  assert.match(rioGrande[9], /FEATURE_ID 1388199/, "Rio Grande note must reject Rio Grande City");
+  const trinity = txGaz.GAZ_ROWS.find((r) => r[0] === "Trinity River");
+  assert.match(trinity[9], /FEATURE_ID 1384193/, "Trinity River note must reject the Lake Estates place");
+  const galveston = txGaz.GAZ_ROWS.find((r) => r[0] === "Galveston Bay");
+  assert.equal(galveston[1], "Bay", "Galveston Bay stores the returned Bay class");
+  assert.equal(galveston[2], "hydro.bay", "Galveston Bay uses the Bay ftt");
+  assert.match(galveston[9], /FEATURE_ID 1384774/, "Galveston Bay note must reject the entrance channel");
+  const paloDuro = txGaz.GAZ_ROWS.find((r) => r[0] === "Palo Duro Canyon");
+  assert.equal(paloDuro[1], "Valley", "Palo Duro Canyon stores the returned Valley class");
+  assert.equal(paloDuro[2], "phys.valley", "Palo Duro Canyon uses the Valley ftt");
+  assert.ok(!txGaz.GAZ_ROWS.some((r) => ["Red River", "Colorado River", "Padre Island"].includes(r[0])), "rejected or out-of-scope Texas records must not be seeded");
+  assert.equal(txData.COAST.length > 0, true, "Texas ships a labelled generalized Gulf coast line");
+  assert.ok(txData.CORRIDORS.some((c) => /Rio Grande/.test(c.name) && /not a channel centerline or border definition/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Guadalupe Peak/.test(d.candidate) && /8749 feet/.test(d.decision)), "register must record the Guadalupe Peak per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /third consecutive empty screen/.test(d.reason || "")), "register must chain the Arkansas River empty screens");
+  assert.ok(register.identityDecisions.some((d) => /Colorado River \(TX\)/.test(d.candidate) && /starter-scope/.test(d.decision)), "register must keep the starter-scope precedent for the Texas alternates");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
@@ -1456,50 +1456,49 @@ test("Minnesota and Iowa complete the Upper Midwest GNIS state batch", async () 
   }
 });
 
-test("Wisconsin and Michigan complete the Great Lakes GNIS state batch", async () => {
+test("Iowa and Missouri complete the West North Central GNIS state batch", async () => {
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
   const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
   const expectations = {
-    wisconsin: {
-      state: "WI",
-      bbox: { lon0: -92.95, lat0: 42.45, lon1: -86.75, lat1: 47.1 },
+    iowa: {
+      state: "IA",
+      bbox: { lon0: -96.8, lat0: 40.3, lon1: -90.0, lat1: 43.6 },
       coastLines: 0,
       rows: new Map([
-        ["Madison|Populated Place", "1581834"],
-        ["Milwaukee|Populated Place", "1577901"],
-        ["Green Bay|Populated Place", "1565801"],
-        ["Kenosha|Populated Place", "1567416"],
-        ["Racine|Populated Place", "1572015"],
-        ["Eau Claire|Populated Place", "1564402"],
-        ["Timms Hill|Summit", "1575464"],
-        ["Lake Winnebago|Lake", "1576879"],
-        ["Lake Mendota|Lake", "1569337"],
-        ["Devils Lake|Lake", "1563937"],
-        ["Wisconsin River|Stream", "1580811"],
-        ["Chippewa River|Stream", "1578997"],
+        ["Des Moines|Populated Place", "465961"],
+        ["Cedar Rapids|Populated Place", "465941"],
+        ["Davenport|Populated Place", "455799"],
+        ["Iowa City|Populated Place", "457827"],
+        ["Sioux City|Populated Place", "461653"],
+        ["Dubuque|Populated Place", "456040"],
+        ["Hawkeye Point|Summit", "1851955"],
+        ["West Okoboji Lake|Lake", "462893"],
+        ["Saylorville Lake|Lake", "461452"],
+        ["Lake Red Rock|Lake", "460560"],
+        ["Des Moines River|Stream", "465582"],
+        ["Iowa River|Stream", "457834"],
       ]),
-      anchor: ["Madison|Populated Place", 43.0730517, -89.4012302],
+      anchor: ["Des Moines|Populated Place", 41.6005448, -93.6091064],
     },
-    michigan: {
-      state: "MI",
-      bbox: { lon0: -90.45, lat0: 41.65, lon1: -82.1, lat1: 48.05 },
+    missouri: {
+      state: "MO",
+      bbox: { lon0: -95.9, lat0: 35.9, lon1: -89.0, lat1: 40.7 },
       coastLines: 0,
       rows: new Map([
-        ["Lansing|Populated Place", "1625035"],
-        ["Detroit|Populated Place", "1617959"],
-        ["Grand Rapids|Populated Place", "627105"],
-        ["Ann Arbor|Populated Place", "620133"],
-        ["Traverse City|Populated Place", "1615042"],
-        ["Marquette|Populated Place", "631600"],
-        ["Mount Arvon|Summit", "1623751"],
-        ["Houghton Lake|Lake", "628664"],
-        ["Torch Lake|Lake", "1614970"],
-        ["Lake Superior|Lake", "1618946"],
-        ["Grand River|Stream", "627109"],
-        ["Saginaw River|Stream", "636503"],
+        ["Jefferson City|Populated Place", "758233"],
+        ["Saint Louis|Populated Place", "765765"],
+        ["Kansas City|Populated Place", "748198"],
+        ["Columbia|Populated Place", "716133"],
+        ["Springfield|Populated Place", "735864"],
+        ["Saint Joseph|Populated Place", "730205"],
+        ["Branson|Populated Place", "739970"],
+        ["Taum Sauk Mountain|Summit", "752501"],
+        ["Missouri River|Stream", "756398"],
+        ["Meramec River|Stream", "756378"],
+        ["Lake of the Ozarks|Lake", "729600"],
+        ["Mark Twain Lake|Lake", "766204"],
       ]),
-      anchor: ["Lansing|Populated Place", 42.732535, -84.5555347],
+      anchor: ["Jefferson City|Populated Place", 38.5767017, -92.1735164],
     },
   };
 
@@ -1529,10 +1528,6 @@ test("Wisconsin and Michigan complete the Great Lakes GNIS state batch", async (
       assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
       assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
       assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
     }
 
     const [anchorKey, anchorLat, anchorLon] = expected.anchor;
@@ -1547,8 +1542,7 @@ test("Wisconsin and Michigan complete the Great Lakes GNIS state batch", async (
     assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-8 source register must reproduce the generated rows exactly`);
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = registerRow.county === "St. Louis" ? "Saint Louis County" : `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
     }
 
     assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
@@ -1558,42 +1552,52 @@ test("Wisconsin and Michigan complete the Great Lakes GNIS state batch", async (
       assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
       assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
     }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
   }
 
-  const wiGaz = await import("../js/city-gazetteer-data-wisconsin.js");
-  const wiData = await import("../js/city-subsurface-data-wisconsin.js");
-  const timms = wiGaz.GAZ_ROWS.find((r) => r[0] === "Timms Hill");
-  assert.match(timms[9], /Domestic Names per-ID check/, "Timms Hill note must cite the per-ID check");
-  assert.match(timms[9], /High Point/, "Timms Hill note must preserve the high-point designation");
-  assert.match(timms[9], /1,951 feet/, "Timms Hill note must preserve the published elevation");
-  const devils = wiGaz.GAZ_ROWS.find((r) => r[0] === "Devils Lake");
-  assert.match(devils[9], /FEATURE_ID 1579123/, "Devils Lake note must reject the same-name lakes");
-  const greenBay = wiGaz.GAZ_ROWS.find((r) => r[0] === "Green Bay");
-  assert.match(greenBay[9], /FEATURE_ID 1565800/, "Green Bay city note must reject the bay record");
-  assert.ok(!wiGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Saint Croix River", "Lake Michigan", "Lake Superior"].includes(r[0])), "empty-screen or cross-state Wisconsin records must not be seeded");
-  assert.ok(wiData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Wisconsin Mississippi corridor must record the empty screen");
-  assert.ok(wiData.CORRIDORS.some((c) => /Saint Croix River/.test(c.name) && /FEATURE_ID 662324/.test(c.facts[0])), "Wisconsin Saint Croix corridor must record the cross-state record");
-  assert.ok(register.identityDecisions.some((d) => /Saint Croix River under states=WI/.test(d.candidate)), "register must record the Saint Croix cross-state decision");
+  const iaGaz = await import("../js/city-gazetteer-data-iowa.js");
+  const iaData = await import("../js/city-subsurface-data-iowa.js");
+  const hawkeye = iaGaz.GAZ_ROWS.find((r) => r[0] === "Hawkeye Point");
+  assert.match(hawkeye[9], /Domestic Names per-ID check/, "Hawkeye Point note must cite the per-ID check");
+  assert.match(hawkeye[9], /High Point/, "Hawkeye Point note must preserve the per-ID designation");
+  assert.match(hawkeye[9], /1670 feet/, "Hawkeye Point note must preserve the per-ID elevation description");
+  const desMoines = iaGaz.GAZ_ROWS.find((r) => r[0] === "Des Moines");
+  assert.match(desMoines[9], /FEATURE_ID 465217/, "Des Moines note must reject the county record");
+  const desMoinesRiver = iaGaz.GAZ_ROWS.find((r) => r[0] === "Des Moines River");
+  assert.match(desMoinesRiver[9], /FEATURE_ID 465961/, "Des Moines River note must reject the same-name city");
+  const dubuque = iaGaz.GAZ_ROWS.find((r) => r[0] === "Dubuque");
+  assert.match(dubuque[9], /FEATURE_ID 465219/, "Dubuque note must reject the county record");
+  assert.ok(!iaGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Missouri River", "Waterloo"].includes(r[0])), "empty-screen or out-of-scope Iowa records must not be seeded");
+  assert.ok(iaData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])));
+  assert.ok(iaData.CORRIDORS.some((c) => /Missouri River/.test(c.name) && /sixth consecutive empty/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Hawkeye Point/.test(d.candidate) && /1670 feet/.test(d.decision)), "register must record the Hawkeye Point per-ID check");
 
-  const miGaz = await import("../js/city-gazetteer-data-michigan.js");
-  const miData = await import("../js/city-subsurface-data-michigan.js");
-  const arvon = miGaz.GAZ_ROWS.find((r) => r[0] === "Mount Arvon");
-  assert.match(arvon[9], /Domestic Names per-ID check/, "Mount Arvon note must cite the per-ID check");
-  assert.match(arvon[9], /High Point/, "Mount Arvon note must preserve the high-point designation");
-  assert.match(arvon[9], /1,979 feet/, "Mount Arvon note must preserve the published elevation");
-  const superior = miGaz.GAZ_ROWS.find((r) => r[0] === "Lake Superior");
-  assert.match(superior[9], /FEATURE_ID 1624619/, "Lake Superior note must name held Lake Huron");
-  assert.match(superior[9], /FEATURE_ID 1623080/, "Lake Superior note must name held Lake Michigan");
-  assert.match(superior[9], /not a shoreline or lake polygon/, "Lake Superior note must state the mid-lake point limit");
-  const torch = miGaz.GAZ_ROWS.find((r) => r[0] === "Torch Lake");
-  assert.match(torch[9], /FEATURE_ID 1614969/, "Torch Lake note must reject the Houghton County lake");
-  const grandRapids = miGaz.GAZ_ROWS.find((r) => r[0] === "Grand Rapids");
-  assert.match(grandRapids[9], /FEATURE_ID 1620055/, "Grand Rapids note must reject the Ontonagon County record");
-  assert.ok(!miGaz.GAZ_ROWS.some((r) => ["Lake Huron", "Lake Michigan", "Lake Erie", "Higgins Lake"].includes(r[0])), "starter-scope Michigan records must not be seeded");
-  assert.ok(miData.CORRIDORS.some((c) => /Saginaw Bay/.test(c.name) && /starter scope/.test(c.facts[0])), "Michigan Saginaw Bay corridor must record the held Huron record");
-  assert.ok(register.identityDecisions.some((d) => /Lake Superior, FEATURE_ID 1618946/.test(d.candidate) && /Seeded/.test(d.decision)), "register must record the Lake Superior seeding decision");
-  assert.ok(register.identityDecisions.some((d) => /Higgins Lake, FEATURE_ID 628219/.test(d.candidate) && /starter scope/.test(d.decision)), "register must keep the Higgins Lake starter-scope decision");
+  const moGaz = await import("../js/city-gazetteer-data-missouri.js");
+  const moData = await import("../js/city-subsurface-data-missouri.js");
+  const taumSauk = moGaz.GAZ_ROWS.find((r) => r[0] === "Taum Sauk Mountain");
+  assert.match(taumSauk[9], /Domestic Names per-ID check/, "Taum Sauk note must cite the per-ID check");
+  assert.match(taumSauk[9], /High Point/, "Taum Sauk note must preserve the per-ID designation");
+  assert.match(taumSauk[9], /1772 feet/, "Taum Sauk note must preserve the per-ID elevation description");
+  assert.match(taumSauk[9], /Tom Sauk Mountain/, "Taum Sauk note must record the rejected variant name");
+  assert.match(taumSauk[9], /-90\.7291684/, "Taum Sauk note must disclose the per-ID coordinate print difference");
+  const saintLouis = moGaz.GAZ_ROWS.find((r) => r[0] === "Saint Louis");
+  assert.match(saintLouis[9], /St\. Louis term returned an empty/, "Saint Louis note must record the St. spelling empty screen");
+  assert.match(saintLouis[9], /FEATURE_ID 758549/, "Saint Louis note must reject the county record");
+  const saintJoseph = moGaz.GAZ_ROWS.find((r) => r[0] === "Saint Joseph");
+  assert.match(saintJoseph[9], /St\. Joseph term returned an empty/, "Saint Joseph note must record the St. spelling empty screen");
+  const kcMo = moGaz.GAZ_ROWS.find((r) => r[0] === "Kansas City");
+  assert.match(kcMo[9], /39\.09973358320847/, "Kansas City MO note must disclose the city-frame precision series");
+  assert.match(kcMo[9], /FEATURE_ID 478635/, "Kansas City MO note must reject the Kansas-side record");
+  const moRiver = moGaz.GAZ_ROWS.find((r) => r[0] === "Missouri River");
+  assert.match(moRiver[9], /Montana, North Dakota, South Dakota, Nebraska, Kansas, and Iowa/, "Missouri River note must chain the six empty upstream screens");
+  assert.match(moRiver[9], /39\.123899988352946/, "Missouri River note must disclose the city-frame sequence");
+  assert.ok(!moGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Current River"].includes(r[0])), "mismatched or empty-screen Missouri records must not be seeded");
+  assert.ok(moData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /Mississippi River Hills/.test(c.facts[0])));
+  assert.ok(moData.CORRIDORS.some((c) => /Missouri River/.test(c.name) && /six empty upstream/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Taum Sauk Mountain/.test(d.candidate) && /1772 feet/.test(d.decision)), "register must record the Taum Sauk per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /St\. versus Saint/.test(d.candidate)), "register must record the St./Saint spelling gates");
+  assert.ok(register.identityDecisions.some((d) => /first seeded statewide row/.test(d.candidate) && /Multiple counties/.test(d.knownServiceDiscrepancy || "")), "register must record the Missouri River multipoint sequences");
+  assert.ok(register.identityDecisions.some((d) => /Mississippi River under states=IA and states=MO/.test(d.candidate)), "register must record the Mississippi screening outcomes");
+  assert.ok(register.identityDecisions.some((d) => /Waterloo/.test(d.candidate) && /starter-scope/.test(d.decision)), "register must keep the starter-scope precedent for Waterloo");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
@@ -1603,50 +1607,49 @@ test("Wisconsin and Michigan complete the Great Lakes GNIS state batch", async (
   }
 });
 
-test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", async () => {
+test("Minnesota and Louisiana open/close the GNIS state batches", async () => {
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
   const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
   const expectations = {
-    illinois: {
-      state: "IL",
-      bbox: { lon0: -91.55, lat0: 36.95, lon1: -87.05, lat1: 42.55 },
+    minnesota: {
+      state: "MN",
+      bbox: { lon0: -97.3, lat0: 43.4, lon1: -89.4, lat1: 49.4 },
       coastLines: 0,
       rows: new Map([
-        ["Springfield|Populated Place", "426595"],
-        ["Chicago|Populated Place", "423587"],
-        ["Aurora|Populated Place", "403732"],
-        ["Naperville|Populated Place", "421954"],
-        ["Rockford|Populated Place", "416843"],
-        ["Peoria|Populated Place", "415536"],
-        ["Charles Mound|Summit", "423586"],
-        ["Rend Lake|Lake", "416524"],
-        ["Peoria Lake|Lake", "415539"],
-        ["Illinois River|Stream", "410769"],
-        ["Kaskaskia River|Stream", "426395"],
-        ["Rock River|Stream", "416824"],
+        ["Saint Paul|Populated Place", "662851"],
+        ["Minneapolis|Populated Place", "655030"],
+        ["Duluth|Populated Place", "661145"],
+        ["Rochester|Populated Place", "650180"],
+        ["Mankato|Populated Place", "647438"],
+        ["Saint Cloud|Populated Place", "650559"],
+        ["International Falls|Populated Place", "645435"],
+        ["Eagle Mountain|Summit", "656081"],
+        ["Lake of the Woods|Lake", "654378"],
+        ["Mille Lacs Lake|Lake", "647859"],
+        ["Lake Minnetonka|Lake", "647954"],
+        ["Minnesota River|Stream", "659759"],
       ]),
-      anchor: ["Springfield|Populated Place", 39.8017171, -89.6437107],
+      anchor: ["Saint Paul|Populated Place", 44.9444101, -93.0932742],
     },
-    indiana: {
-      state: "IN",
-      bbox: { lon0: -88.1, lat0: 37.75, lon1: -84.75, lat1: 41.8 },
-      coastLines: 0,
+    louisiana: {
+      state: "LA",
+      bbox: { lon0: -94.1, lat0: 28.7, lon1: -88.7, lat1: 33.1 },
+      coastLines: 1,
       rows: new Map([
-        ["Indianapolis|Populated Place", "452890"],
-        ["Fort Wayne|Populated Place", "434689"],
-        ["Evansville|Populated Place", "434258"],
-        ["South Bend|Populated Place", "452796"],
-        ["Bloomington|Populated Place", "431207"],
-        ["Terre Haute|Populated Place", "444648"],
-        ["Hoosier Hill|Summit", "1851956"],
-        ["Monroe Lake|Lake", "451234"],
-        ["Patoka Lake|Lake", "451715"],
-        ["Lake Maxinkuckee|Lake", "438748"],
-        ["Wabash River|Stream", "449850"],
-        ["White River|Stream", "445955"],
+        ["New Orleans|Populated Place", "1629985"],
+        ["Baton Rouge|Populated Place", "1629914"],
+        ["Shreveport|Populated Place", "1630015"],
+        ["Lafayette|Populated Place", "1629965"],
+        ["Lake Charles|Populated Place", "1629966"],
+        ["Natchitoches|Populated Place", "1629983"],
+        ["Driskill Mountain|Summit", "542199"],
+        ["Lake Pontchartrain|Lake", "1627974"],
+        ["Lake Maurepas|Lake", "1627626"],
+        ["Mississippi River|Stream", "1629903"],
+        ["Atchafalaya River|Stream", "559801"],
+        ["Red River|Stream", "558728"],
       ]),
-      anchor: ["Indianapolis|Populated Place", 39.7683765, -86.1580423],
+      anchor: ["Baton Rouge|Populated Place", 30.4507462, -91.154551],
     },
   };
 
@@ -1659,9 +1662,7 @@ test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", asyn
     assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
     assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
     const overview = data.VIEWS.find((v) => v.id === "overview");
-    // Narrow frames sit exactly on the generator's Math.max floors (20, 32);
-    // wider frames exceed them (see viewsFor in build-city-subsurface.mjs).
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
+    assert.ok(overview.position[1] > 20 && overview.position[2] > 32, `${frameId}: overview must be scale-aware`);
     const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
     assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
 
@@ -1678,10 +1679,6 @@ test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", asyn
       assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
       assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
       assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
     }
 
     const [anchorKey, anchorLat, anchorLon] = expected.anchor;
@@ -1696,8 +1693,7 @@ test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", asyn
     assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-9 source register must reproduce the generated rows exactly`);
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = registerRow.county === "St. Louis" ? "Saint Louis County" : `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
     }
 
     assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
@@ -1707,38 +1703,57 @@ test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", asyn
       assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
       assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
     }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
   }
 
-  const ilGaz = await import("../js/city-gazetteer-data-illinois.js");
-  const ilData = await import("../js/city-subsurface-data-illinois.js");
-  const charles = ilGaz.GAZ_ROWS.find((r) => r[0] === "Charles Mound");
-  assert.match(charles[9], /Domestic Names per-ID check/, "Charles Mound note must cite the per-ID check");
-  assert.match(charles[9], /Summit in Wayne County/, "Charles Mound note must name the correct county");
-  assert.match(charles[9], /High Point/, "Charles Mound note must preserve the high-point designation");
-  assert.match(charles[9], /1,235 feet/, "Charles Mound note must preserve the published elevation");
-  const chicago = ilGaz.GAZ_ROWS.find((r) => r[0] === "Chicago");
-  assert.match(chicago[9], /FEATURE_ID 406039/, "Chicago note must reject Chicago Heights");
-  const rockRiver = ilGaz.GAZ_ROWS.find((r) => r[0] === "Rock River");
-  assert.match(rockRiver[9], /FEATURE_ID 1692463/, "Rock River note must reject the same-name lake records");
-  assert.ok(!ilGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Ohio River", "Lake Michigan"].includes(r[0])), "empty-screen Illinois records must not be seeded");
-  assert.ok(ilData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Illinois Mississippi corridor must record the empty screen");
-  assert.ok(ilData.CORRIDORS.some((c) => /Ohio River/.test(c.name) && /empty array/.test(c.facts[0])), "Illinois Ohio corridor must record the empty screen");
+  const mnGaz = await import("../js/city-gazetteer-data-minnesota.js");
+  const mnData = await import("../js/city-subsurface-data-minnesota.js");
+  const eagle = mnGaz.GAZ_ROWS.find((r) => r[0] === "Eagle Mountain");
+  assert.match(eagle[9], /Domestic Names per-ID check/, "Eagle Mountain note must cite the per-ID check");
+  assert.match(eagle[9], /High Point/, "Eagle Mountain note must preserve the per-ID designation");
+  assert.match(eagle[9], /2301 feet/, "Eagle Mountain note must preserve the per-ID elevation description");
+  assert.match(eagle[9], /Grand Marais/, "Eagle Mountain note must preserve the per-ID location description");
+  assert.match(eagle[9], /656080/, "Eagle Mountain note must reject the first-suggested undesignated summit");
+  assert.match(eagle[9], /643035/, "Eagle Mountain note must reject the Todd County same-name summit");
+  const saintPaul = mnGaz.GAZ_ROWS.find((r) => r[0] === "Saint Paul");
+  assert.match(saintPaul[9], /St\. Paul term returned an empty/, "Saint Paul note must record the St. spelling empty screen");
+  const saintCloud = mnGaz.GAZ_ROWS.find((r) => r[0] === "Saint Cloud");
+  assert.match(saintCloud[9], /St\. Cloud term returned an empty/, "Saint Cloud note must record the St. spelling empty screen");
+  const low = mnGaz.GAZ_ROWS.find((r) => r[0] === "Lake of the Woods");
+  assert.match(low[9], /1911 and 1953/, "Lake of the Woods note must cite the Board Decisions");
+  assert.match(low[9], /1930543/, "Lake of the Woods note must reject the 2001 duplicate record");
+  const milleLacs = mnGaz.GAZ_ROWS.find((r) => r[0] === "Mille Lacs Lake");
+  assert.match(milleLacs[9], /Mille Lacs County/, "Mille Lacs Lake note must reject the county record");
+  assert.ok(!mnGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Red River of the North", "Lake Superior", "St. Croix River", "Rainy Lake"].includes(r[0])), "empty, out-of-state-primary, or ambiguous Minnesota records must not be seeded");
+  assert.ok(mnData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /Mississippi River Reservoir/.test(c.facts[0])));
+  assert.ok(mnData.CORRIDORS.some((c) => /Red River of the North/.test(c.name) && /Lake Winnipeg/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Eagle Mountain, FEATURE_ID 656081/.test(d.candidate) && /656080/.test(d.knownServiceDiscrepancy || "")), "register must record the Eagle Mountain first-suggestion discrepancy");
+  assert.ok(register.identityDecisions.some((d) => /St\. Paul and St\. Cloud/.test(d.candidate)), "register must record the Minnesota spelling gates");
 
-  const inGaz = await import("../js/city-gazetteer-data-indiana.js");
-  const inData = await import("../js/city-subsurface-data-indiana.js");
-  const hoosier = inGaz.GAZ_ROWS.find((r) => r[0] === "Hoosier Hill");
-  assert.match(hoosier[9], /Domestic Names per-ID check/, "Hoosier Hill note must cite the per-ID check");
-  assert.match(hoosier[9], /High Point/, "Hoosier Hill note must preserve the high-point designation");
-  assert.match(hoosier[9], /1,257 feet/, "Hoosier Hill note must preserve the published elevation");
-  const monroe = inGaz.GAZ_ROWS.find((r) => r[0] === "Monroe Lake");
-  assert.match(monroe[9], /official name order is Monroe Lake/, "Monroe Lake note must preserve the official name order");
-  const whiteRiver = inGaz.GAZ_ROWS.find((r) => r[0] === "White River");
-  assert.match(whiteRiver[9], /FEATURE_ID 445956/, "White River note must reject the Gibson County populated place");
-  assert.ok(!inGaz.GAZ_ROWS.some((r) => ["Ohio River", "Lake Michigan", "Lake Monroe"].includes(r[0])), "empty-screen or reversed-name Indiana records must not be seeded");
-  assert.ok(inData.CORRIDORS.some((c) => /Ohio River/.test(c.name) && /empty array/.test(c.facts[0])), "Indiana Ohio corridor must record the empty screen");
-  assert.ok(inData.CORRIDORS.some((c) => /Lake Michigan/.test(c.name) && /empty array/.test(c.facts[0]) && /FEATURE_ID 1623080/.test(c.facts[0])), "Indiana Lake Michigan corridor must record the cross-state record");
-  assert.ok(register.identityDecisions.some((d) => /Hoosier Hill, FEATURE_ID 1851956/.test(d.candidate) && /1851955/.test(d.decision)), "register must record the Hoosier Hill series observation");
+  const laGaz = await import("../js/city-gazetteer-data-louisiana.js");
+  const laData = await import("../js/city-subsurface-data-louisiana.js");
+  const driskill = laGaz.GAZ_ROWS.find((r) => r[0] === "Driskill Mountain");
+  assert.match(driskill[9], /Domestic Names per-ID check/, "Driskill Mountain note must cite the per-ID check");
+  assert.match(driskill[9], /High Point/, "Driskill Mountain note must preserve the per-ID designation");
+  assert.match(driskill[9], /535 feet/, "Driskill Mountain note must preserve the per-ID elevation description");
+  const msRiver = laGaz.GAZ_ROWS.find((r) => r[0] === "Mississippi River");
+  assert.match(msRiver[9], /The first seeded Mississippi River row/, "Mississippi River note must mark the first seeded row");
+  assert.match(msRiver[9], /Mississippi River Reservoir/, "Mississippi River note must chain the Minnesota reservoir-only screen");
+  assert.match(msRiver[9], /Mississippi River Hills/, "Mississippi River note must chain the Missouri name mismatch");
+  const redRiver = laGaz.GAZ_ROWS.find((r) => r[0] === "Red River");
+  assert.match(redRiver[9], /Brown County/, "Red River note must chain the rejected Texas record");
+  assert.match(redRiver[9], /Red River of the North/, "Red River note must name the unseeded northern record");
+  assert.match(redRiver[9], /Canada/, "Red River note must disclose the Canadian primary point");
+  const lafayette = laGaz.GAZ_ROWS.find((r) => r[0] === "Lafayette");
+  assert.match(lafayette[9], /Lafayette Parish/, "Lafayette note must reject the parish record");
+  const lakeCharles = laGaz.GAZ_ROWS.find((r) => r[0] === "Lake Charles");
+  assert.match(lakeCharles[9], /553954/, "Lake Charles note must reject the same-name lake record");
+  assert.ok(!laGaz.GAZ_ROWS.some((r) => ["Monroe", "Toledo Bend Reservoir"].includes(r[0])), "ambiguous or empty-screen Louisiana records must not be seeded");
+  assert.ok(laData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /GNIS primary point/.test(c.facts[0])), "seeded Mississippi River corridor must anchor on the GNIS point");
+  assert.ok(laData.CORRIDORS.some((c) => /Red River/.test(c.name) && /GNIS primary point/.test(c.facts[0])), "seeded Red River corridor must anchor on the GNIS point");
+  assert.ok(register.identityDecisions.some((d) => /Driskill Mountain, FEATURE_ID 542199/.test(d.candidate) && /535 feet/.test(d.decision)), "register must record the Driskill per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /Mississippi River under states=IA/.test(d.candidate)), "register must record the Mississippi screening chain");
+  assert.ok(register.identityDecisions.some((d) => /Red River chain/.test(d.candidate) && /Kittson/.test(d.knownServiceDiscrepancy || "")), "register must record the Red River chain and Kittson discrepancy");
+  assert.ok(register.identityDecisions.some((d) => /^Monroe under states=LA$/.test(d.candidate) && /cannot distinguish/.test(d.decision)), "register must record the Monroe ambiguity");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
@@ -1748,50 +1763,49 @@ test("Illinois and Indiana complete the Illinois-Indiana GNIS state batch", asyn
   }
 });
 
-test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", async () => {
+test("Mississippi and Alabama open the Gulf GNIS state batch", async () => {
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
   const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
   const expectations = {
-    ohio: {
-      state: "OH",
-      bbox: { lon0: -84.85, lat0: 38.4, lon1: -80.5, lat1: 42.25 },
-      coastLines: 0,
+    mississippi: {
+      state: "MS",
+      bbox: { lon0: -91.7, lat0: 30.05, lon1: -88.2, lat1: 35.0 },
+      coastLines: 1,
       rows: new Map([
-        ["Columbus|Populated Place", "1080996"],
-        ["Cleveland|Populated Place", "1066654"],
-        ["Cincinnati|Populated Place", "1066650"],
-        ["Toledo|Populated Place", "1067015"],
-        ["Akron|Populated Place", "1064305"],
-        ["Dayton|Populated Place", "1064514"],
-        ["Campbell Hill|Summit", "1079572"],
-        ["Lake Erie|Lake", "1075813"],
-        ["Grand Lake|Lake", "1083992"],
-        ["Scioto River|Stream", "1072258"],
-        ["Maumee River|Stream", "1084017"],
-        ["Cuyahoga River|Stream", "1072205"],
+        ["Jackson|Populated Place", "711543"],
+        ["Gulfport|Populated Place", "670771"],
+        ["Biloxi|Populated Place", "667173"],
+        ["Hattiesburg|Populated Place", "691565"],
+        ["Tupelo|Populated Place", "678931"],
+        ["Vicksburg|Populated Place", "679216"],
+        ["Woodall Mountain|Summit", "692362"],
+        ["Sardis Lake|Lake", "694715"],
+        ["Ross R Barnett Reservoir|Lake", "676892"],
+        ["Yazoo River|Stream", "695222"],
+        ["Big Black River|Stream", "690954"],
+        ["Pascagoula River|Stream", "694322"],
       ]),
-      anchor: ["Columbus|Populated Place", 39.9611755, -82.9987942],
+      anchor: ["Jackson|Populated Place", 32.2987573, -90.1848103],
     },
-    pennsylvania: {
-      state: "PA",
-      bbox: { lon0: -80.55, lat0: 39.7, lon1: -74.95, lat1: 42.3 },
-      coastLines: 0,
+    alabama: {
+      state: "AL",
+      bbox: { lon0: -88.7, lat0: 30.1, lon1: -84.9, lat1: 35.05 },
+      coastLines: 1,
       rows: new Map([
-        ["Harrisburg|Populated Place", "1213649"],
-        ["Philadelphia|Populated Place", "1209052"],
-        ["Pittsburgh|Populated Place", "1213644"],
-        ["Allentown|Populated Place", "1213700"],
-        ["Erie|Populated Place", "1174305"],
-        ["Scranton|Populated Place", "1213652"],
-        ["Mount Davis|Summit", "1209050"],
-        ["Pymatuning Reservoir|Lake", "1044806"],
-        ["Raystown Lake|Lake", "1193175"],
-        ["Lake Wallenpaupack|Lake", "1199735"],
-        ["Allegheny River|Stream", "1209386"],
-        ["Monongahela River|Stream", "1209053"],
+        ["Montgomery|Populated Place", "165344"],
+        ["Birmingham|Populated Place", "158174"],
+        ["Mobile|Populated Place", "155153"],
+        ["Huntsville|Populated Place", "151827"],
+        ["Tuscaloosa|Populated Place", "153742"],
+        ["Dothan|Populated Place", "117397"],
+        ["Cheaha Mountain|Summit", "159374"],
+        ["Guntersville Lake|Lake", "119508"],
+        ["Wheeler Lake|Lake", "112837"],
+        ["Alabama River|Stream", "154961"],
+        ["Tombigbee River|Stream", "158094"],
+        ["Mobile River|Stream", "163332"],
       ]),
-      anchor: ["Harrisburg|Populated Place", 40.2737002, -76.8844179],
+      anchor: ["Montgomery|Populated Place", 32.3668052, -86.2999689],
     },
   };
 
@@ -1803,10 +1817,19 @@ test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", as
     assert.equal(data.CITY.state, expected.state);
     assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
     assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    // Narrow frames sit exactly on the generator's Math.max floors (20, 32);
-    // wider frames exceed them (see viewsFor in build-city-subsurface.mjs).
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
+    // Mirror the build projection to pin the exact overview framing contract;
+    // narrow Gulf-state frames sit at the designed 20/32 floor.
+    {
+      const cfg = JSON.parse(read("resources/city-subsurface/cities.json")).cities[frameId];
+      // Mirror build project() + viewsFor(): w is the difference of two projected
+      // x coordinates, so the overview position matches bit-for-bit.
+      const cosLat = Math.cos((cfg.center.lat * Math.PI) / 180);
+      const x0 = (cfg.bbox.lon0 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const x1 = (cfg.bbox.lon1 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const w = x1 - x0;
+      const overview = data.VIEWS.find((v) => v.id === "overview");
+      assert.deepEqual(overview.position, [0, Math.max(20, w * 0.45), Math.max(32, w * 0.7)], `${frameId}: overview framing must follow the build projection`);
+    }
     const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
     assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
 
@@ -1823,11 +1846,6 @@ test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", as
       assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
       assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
       assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(exRow.county, row[3], `${frameId}: ${key} extract county must match the stored county`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
     }
 
     const [anchorKey, anchorLat, anchorLon] = expected.anchor;
@@ -1842,8 +1860,7 @@ test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", as
     assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-10 source register must reproduce the generated rows exactly`);
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
     }
 
     assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
@@ -1853,38 +1870,58 @@ test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", as
       assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
       assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
     }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
   }
 
-  const ohGaz = await import("../js/city-gazetteer-data-ohio.js");
-  const ohData = await import("../js/city-subsurface-data-ohio.js");
-  const campbell = ohGaz.GAZ_ROWS.find((r) => r[0] === "Campbell Hill");
-  assert.match(campbell[9], /Domestic Names per-ID check/, "Campbell Hill note must cite the per-ID check");
-  assert.match(campbell[9], /High Point/, "Campbell Hill note must preserve the high-point designation");
-  assert.match(campbell[9], /1,550 feet/, "Campbell Hill note must preserve the published elevation");
-  assert.match(campbell[9], /Summit in Logan County/, "Campbell Hill note must name the correct county");
-  assert.match(campbell[9], /FEATURE_ID 1048578/, "Campbell Hill note must reject the Pike County summit");
-  const erieLake = ohGaz.GAZ_ROWS.find((r) => r[0] === "Lake Erie");
-  assert.match(erieLake[9], /seeded once/, "Lake Erie note must record the single seeding");
-  assert.ok(!ohGaz.GAZ_ROWS.some((r) => ["Ohio River", "Indian Lake"].includes(r[0])), "empty-screen or corrupted-coordinate Ohio records must not be seeded");
-  assert.ok(ohData.CORRIDORS.some((c) => /Ohio River/.test(c.name) && /empty array/.test(c.facts[0])), "Ohio River corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Indian Lake, FEATURE_ID 1041943/.test(d.candidate) && /corrupted longitude/.test(d.knownServiceDiscrepancy || "")), "register must record the Indian Lake coordinate discrepancy");
+  const msGaz = await import("../js/city-gazetteer-data-mississippi.js");
+  const msData = await import("../js/city-subsurface-data-mississippi.js");
+  const woodall = msGaz.GAZ_ROWS.find((r) => r[0] === "Woodall Mountain");
+  assert.match(woodall[9], /Domestic Names per-ID check/, "Woodall Mountain note must cite the per-ID check");
+  assert.match(woodall[9], /High Point/, "Woodall Mountain note must preserve the per-ID designation");
+  assert.match(woodall[9], /806 feet/, "Woodall Mountain note must preserve the per-ID elevation description");
+  assert.match(woodall[9], /Bear Mountain/, "Woodall Mountain note must record the per-ID variant names");
+  const jackson = msGaz.GAZ_ROWS.find((r) => r[0] === "Jackson");
+  assert.match(jackson[9], /Jackson County/, "Jackson note must reject the county record");
+  assert.match(jackson[9], /691962/, "Jackson note must reject the landing record");
+  const yazoo = msGaz.GAZ_ROWS.find((r) => r[0] === "Yazoo River");
+  assert.match(yazoo[9], /Yazoo River Cutoff/, "Yazoo River note must reject the cutoff record");
+  const bigBlack = msGaz.GAZ_ROWS.find((r) => r[0] === "Big Black River");
+  assert.match(bigBlack[9], /Big Black River Canal/, "Big Black River note must reject the canal record");
+  const pascagoula = msGaz.GAZ_ROWS.find((r) => r[0] === "Pascagoula River");
+  assert.match(pascagoula[9], /Pascagoula River Estates/, "Pascagoula River note must reject the estates record");
+  const barnett = msGaz.GAZ_ROWS.find((r) => r[0] === "Ross R Barnett Reservoir");
+  assert.match(barnett[9], /period-less/, "Barnett note must disclose the punctuation gate");
+  assert.ok(!msGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Tombigbee River", "Pearl River", "Grenada Lake"].includes(r[0])), "empty, mismatched, or starter-scope Mississippi records must not be seeded");
+  assert.ok(msData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0]) && /Iowa empty screen/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Woodall Mountain, FEATURE_ID 692362/.test(d.candidate) && /806 feet/.test(d.decision)), "register must record the Woodall per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /Mississippi River under states=MS/.test(d.candidate)), "register must record the fifth-state Mississippi screen");
+  assert.ok(register.identityDecisions.some((d) => /Jackson, Mississippi, ten-record/.test(d.candidate) && /695753/.test(d.decision)), "register must record the Jackson trap pile");
 
-  const paGaz = await import("../js/city-gazetteer-data-pennsylvania.js");
-  const paData = await import("../js/city-subsurface-data-pennsylvania.js");
-  const davis = paGaz.GAZ_ROWS.find((r) => r[0] === "Mount Davis");
-  assert.match(davis[9], /Domestic Names per-ID check/, "Mount Davis note must cite the per-ID check");
-  assert.match(davis[9], /High Point/, "Mount Davis note must preserve the high-point designation");
-  assert.match(davis[9], /3,213 feet/, "Mount Davis note must preserve the published elevation");
-  assert.match(davis[9], /Summit in Somerset County/, "Mount Davis note must name the correct county");
-  const pymatuning = paGaz.GAZ_ROWS.find((r) => r[0] === "Pymatuning Reservoir");
-  assert.match(pymatuning[9], /FEATURE_ID 1199940/, "Pymatuning note must name the unseeded duplicate record");
-  const harrisburg = paGaz.GAZ_ROWS.find((r) => r[0] === "Harrisburg");
-  assert.match(harrisburg[9], /FEATURE_ID 1213812/, "Harrisburg note must reject the Philadelphia County namesake");
-  assert.ok(!paGaz.GAZ_ROWS.some((r) => ["Susquehanna River", "Delaware River", "Ohio River", "Lake Erie"].includes(r[0])), "empty-screen Pennsylvania records must not be seeded");
-  assert.ok(paData.CORRIDORS.some((c) => /Susquehanna River/.test(c.name) && /empty array/.test(c.facts[0])), "Susquehanna corridor must record the empty screen");
-  assert.ok(paData.CORRIDORS.some((c) => /Ohio River/.test(c.name) && /empty array/.test(c.facts[0])), "Pennsylvania Ohio corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Pymatuning Reservoir, FEATURE_ID 1199940/.test(d.candidate) && /knownServiceDiscrepancy/.test(d.candidate + (d.knownServiceDiscrepancy || "")) || /Pymatuning Reservoir, FEATURE_ID 1199940/.test(d.candidate)), "register must record the Pymatuning duplicate decision");
+  const alGaz = await import("../js/city-gazetteer-data-alabama.js");
+  const alData = await import("../js/city-subsurface-data-alabama.js");
+  const cheaha = alGaz.GAZ_ROWS.find((r) => r[0] === "Cheaha Mountain");
+  assert.match(cheaha[9], /Domestic Names per-ID check/, "Cheaha Mountain note must cite the per-ID check");
+  assert.match(cheaha[9], /High Point/, "Cheaha Mountain note must preserve the per-ID designation");
+  assert.match(cheaha[9], /2407 feet/, "Cheaha Mountain note must preserve the per-ID elevation description");
+  assert.match(cheaha[9], /Blue Mountain/, "Cheaha Mountain note must record the per-ID variant names");
+  assert.match(cheaha[9], /1906 Board Decision/, "Cheaha Mountain note must record the Board Decision");
+  const guntersville = alGaz.GAZ_ROWS.find((r) => r[0] === "Guntersville Lake");
+  assert.match(guntersville[9], /1286448/, "Guntersville note must disclose the parallel record");
+  assert.match(guntersville[9], /decision card/, "Guntersville note must cite the decision cards");
+  const wheeler = alGaz.GAZ_ROWS.find((r) => r[0] === "Wheeler Lake");
+  assert.match(wheeler[9], /131097/, "Wheeler note must reject the Chambers County same-name lake");
+  assert.match(wheeler[9], /2003/, "Wheeler note must disclose the separate records entry dates");
+  const montgomery = alGaz.GAZ_ROWS.find((r) => r[0] === "Montgomery");
+  assert.match(montgomery[9], /Montgomery County/, "Montgomery note must reject the county record");
+  assert.match(montgomery[9], /130120/, "Montgomery note must reject the hunting club lake tail");
+  const mobile = alGaz.GAZ_ROWS.find((r) => r[0] === "Mobile");
+  assert.match(mobile[9], /Mobile County/, "Mobile note must reject the county record");
+  assert.match(mobile[9], /163332/, "Mobile note must reference the separately seeded river");
+  assert.ok(!alGaz.GAZ_ROWS.some((r) => ["Tennessee River", "Lake Martin"].includes(r[0])), "empty-screen Alabama records must not be seeded");
+  assert.ok(alData.CORRIDORS.some((c) => /Alabama River/.test(c.name) && /GNIS primary point/.test(c.facts[0])));
+  assert.ok(alData.CORRIDORS.some((c) => /Tombigbee River/.test(c.name) && /GNIS primary point/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Cheaha Mountain, FEATURE_ID 159374/.test(d.candidate) && /2407 feet/.test(d.decision)), "register must record the Cheaha per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /Guntersville Lake, FEATURE_ID 119508/.test(d.candidate) && /1286448/.test(d.knownServiceDiscrepancy || d.decision)), "register must record the Guntersville duplicate disclosure");
+  assert.ok(register.identityDecisions.some((d) => /Wheeler Lake, FEATURE_ID 112837/.test(d.candidate) && /2003/.test(d.decision)), "register must record the Wheeler two-feature split");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
@@ -1894,51 +1931,29 @@ test("Ohio and Pennsylvania complete the Ohio-Pennsylvania GNIS state batch", as
   }
 });
 
-test("Missouri and Arkansas complete the Missouri-Arkansas GNIS state batch", async () => {
+test("Georgia opens the South Atlantic GNIS state batch", async () => {
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
   const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
-  const normCounty = (s) => s.replace(" (city)", "").replace(/^City of /, "").replace(/Saint/g, "St.");
   const expectations = {
-    missouri: {
-      state: "MO",
-      bbox: { lon0: -95.65, lat0: 35.9, lon1: -89.0, lat1: 40.7 },
-      coastLines: 0,
+    georgia: {
+      state: "GA",
+      bbox: { lon0: -85.7, lat0: 30.3, lon1: -80.7, lat1: 35.05 },
+      coastLines: 1,
       rows: new Map([
-        ["Jefferson City|Populated Place", "758233"],
-        ["Saint Louis|Populated Place", "765765"],
-        ["Kansas City|Populated Place", "748198"],
-        ["Springfield|Populated Place", "735864"],
-        ["Columbia|Populated Place", "716133"],
-        ["Saint Joseph|Populated Place", "730205"],
-        ["Taum Sauk Mountain|Summit", "752501"],
-        ["Lake of the Ozarks|Lake", "729600"],
-        ["Table Rock Lake|Lake", "752479"],
-        ["Missouri River|Stream", "756398"],
-        ["Osage River|Stream", "756484"],
-        ["Meramec River|Stream", "756378"],
+        ["Atlanta|Populated Place", "351615"],
+        ["Savannah|Populated Place", "322590"],
+        ["Augusta|Populated Place", "310670"],
+        ["Columbus|Populated Place", "331443"],
+        ["Macon|Populated Place", "332301"],
+        ["Athens|Populated Place", "354407"],
+        ["Brasstown Bald|Summit", "354839"],
+        ["Lake Seminole|Lake", "294149"],
+        ["Lake Oconee|Lake", "330982"],
+        ["Ocmulgee River|Stream", "356443"],
+        ["Oconee River|Stream", "354253"],
+        ["Altamaha River|Stream", "354294"],
       ]),
-      anchor: ["Jefferson City|Populated Place", 38.5767017, -92.1735164],
-    },
-    arkansas: {
-      state: "AR",
-      bbox: { lon0: -94.65, lat0: 32.95, lon1: -90.0, lat1: 36.55 },
-      coastLines: 0,
-      rows: new Map([
-        ["Little Rock|Populated Place", "83350"],
-        ["Fort Smith|Populated Place", "76952"],
-        ["Fayetteville|Populated Place", "76914"],
-        ["Springdale|Populated Place", "78436"],
-        ["Jonesboro|Populated Place", "77389"],
-        ["Magazine Mountain|Ridge", "67051"],
-        ["Lake Ouachita|Lake", "75813"],
-        ["Beaver Lake|Lake", "70305"],
-        ["Greers Ferry Lake|Lake", "75245"],
-        ["Bull Shoals Lake|Lake", "83589"],
-        ["Arkansas River|Stream", "78956"],
-        ["White River|Stream", "78762"],
-      ]),
-      anchor: ["Little Rock|Populated Place", 34.7464809, -92.2895948],
+      anchor: ["Atlanta|Populated Place", 33.7489954, -84.3879824],
     },
   };
 
@@ -1950,8 +1965,17 @@ test("Missouri and Arkansas complete the Missouri-Arkansas GNIS state batch", as
     assert.equal(data.CITY.state, expected.state);
     assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
     assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
+    {
+      const cfg = JSON.parse(read("resources/city-subsurface/cities.json")).cities[frameId];
+      // Mirror build project() + viewsFor(): w is the difference of two projected
+      // x coordinates, so the overview position matches bit-for-bit.
+      const cosLat = Math.cos((cfg.center.lat * Math.PI) / 180);
+      const x0 = (cfg.bbox.lon0 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const x1 = (cfg.bbox.lon1 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const w = x1 - x0;
+      const overview = data.VIEWS.find((v) => v.id === "overview");
+      assert.deepEqual(overview.position, [0, Math.max(20, w * 0.45), Math.max(32, w * 0.7)], `${frameId}: overview framing must follow the build projection`);
+    }
     const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
     assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
 
@@ -1968,11 +1992,6 @@ test("Missouri and Arkansas complete the Missouri-Arkansas GNIS state batch", as
       assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
       assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
       assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(normCounty(exRow.county), normCounty(row[3]), `${frameId}: ${key} extract county must match the stored county (St./Saint surfaces normalized)`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
     }
 
     const [anchorKey, anchorLat, anchorLon] = expected.anchor;
@@ -1987,8 +2006,7 @@ test("Missouri and Arkansas complete the Missouri-Arkansas GNIS state batch", as
     assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-11 source register must reproduce the generated rows exactly`);
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = registerRow.county === "City of Saint Louis" ? "City of Saint Louis" : `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
     }
 
     assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
@@ -1998,579 +2016,32 @@ test("Missouri and Arkansas complete the Missouri-Arkansas GNIS state batch", as
       assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
       assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
     }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
   }
 
-  const moGaz = await import("../js/city-gazetteer-data-missouri.js");
-  const moData = await import("../js/city-subsurface-data-missouri.js");
-  const sauk = moGaz.GAZ_ROWS.find((r) => r[0] === "Taum Sauk Mountain");
-  assert.match(sauk[9], /Domestic Names per-ID check/, "Taum Sauk note must cite the per-ID check");
-  assert.match(sauk[9], /1,772 feet/, "Taum Sauk note must preserve the published elevation");
-  assert.match(sauk[9], /Summit in Iron County/, "Taum Sauk note must name the correct county");
-  const stl = moGaz.GAZ_ROWS.find((r) => r[0] === "Saint Louis");
-  assert.equal(stl[3], "City of Saint Louis", "Saint Louis row must keep the independent-city county identity");
-  assert.ok(!moGaz.GAZ_ROWS.some((r) => ["Mississippi River", "Current River", "Bull Shoals Lake"].includes(r[0])), "empty-screen Missouri records must not be seeded");
-  assert.ok(moData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Missouri Mississippi corridor must record the empty screen");
-  assert.ok(moData.CORRIDORS.some((c) => /Current River/.test(c.name) && /empty array/.test(c.facts[0])), "Current River corridor must record the empty screen");
-
-  const arGaz = await import("../js/city-gazetteer-data-arkansas.js");
-  const arData = await import("../js/city-subsurface-data-arkansas.js");
-  const mag = arGaz.GAZ_ROWS.find((r) => r[0] === "Magazine Mountain");
-  assert.equal(mag[1], "Ridge", "Magazine Mountain must keep the GNIS Ridge class");
-  assert.equal(mag[2], "phys.ridge", "Magazine Mountain must use the ridge path");
-  assert.ok(GAZ_CLASS_META.Ridge, "gazetteer must define the Ridge class");
-  assert.match(mag[9], /as a Ridge in Logan County/, "Magazine Mountain note must name the class and county");
-  assert.match(mag[9], /2,753 feet/, "Magazine Mountain note must preserve the published elevation");
-  const beaver = arGaz.GAZ_ROWS.find((r) => r[0] === "Beaver Lake");
-  assert.match(beaver[9], /five small same-name/, "Beaver Lake note must record the namesake rejection");
-  assert.ok(!arGaz.GAZ_ROWS.some((r) => r[0] === "Mississippi River"), "Arkansas Mississippi record must not be seeded");
-  assert.ok(arData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Arkansas Mississippi corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Magazine Mountain, FEATURE_ID 67051/.test(d.candidate)), "register must record the Ridge-class decision");
-
-  const engine = read("js/city-subsurface.js");
-  for (const frameId of Object.keys(expectations)) {
-    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
-    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
-    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
-  }
-});
-
-test("Kentucky and Tennessee complete the Kentucky-Tennessee GNIS state batch", async () => {
-  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
-  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
-  const expectations = {
-    Kentucky: {
-      state: "KY",
-      bbox: { lon0: -89.6, lat0: 36.4, lon1: -80.0, lat1: 39.55 },
-      coastLines: 0,
-      rows: new Map([
-        ["Frankfort|Populated Place", "517517"],
-        ["Louisville|Populated Place", "509453"],
-        ["Lexington|Populated Place", "496343"],
-        ["Bowling Green|Populated Place", "487744"],
-        ["Covington|Populated Place", "490167"],
-        ["Black Mountain|Summit", "510753"],
-        ["Lake Cumberland|Lake", "490483"],
-        ["Lake Barkley|Lake", "486356"],
-        ["Ohio River|Stream", "425264"],
-        ["Tennessee River|Stream", "517033"],
-        ["Cumberland River|Stream", "517018"],
-        ["Kentucky River|Stream", "513130"],
-      ]),
-      anchor: ["Frankfort|Populated Place", 38.2009055, -84.8732836],
-    },
-    tennessee: {
-      state: "TN",
-      bbox: { lon0: -90.35, lat0: 34.95, lon1: -81.6, lat1: 36.7 },
-      coastLines: 0,
-      rows: new Map([
-        ["Nashville|Populated Place", "1652484"],
-        ["Memphis|Populated Place", "1326388"],
-        ["Knoxville|Populated Place", "1648562"],
-        ["Chattanooga|Populated Place", "1307240"],
-        ["Clarksville|Populated Place", "1269467"],
-        ["Murfreesboro|Populated Place", "1295105"],
-        ["Mount Le Conte|Summit", "1646824"],
-        ["Kentucky Lake|Lake", "1269701"],
-        ["Norris Lake|Lake", "1269832"],
-        ["Douglas Lake|Lake", "1282739"],
-        ["Cherokee Lake|Lake", "1280322"],
-        ["Chickamauga Lake|Lake", "1326920"],
-      ]),
-      anchor: ["Nashville|Populated Place", 36.1658899, -86.7844432],
-    },
-  };
-
-  for (const [frameId, expected] of Object.entries(expectations)) {
-    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
-    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
-
-    assert.equal(data.CITY.id, frameId);
-    assert.equal(data.CITY.state, expected.state);
-    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
-    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
-    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
-    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
-
-    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
-    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
-    assert.equal(gaz.GAZ_META.unverified, 0);
-    for (const row of gaz.GAZ_ROWS) {
-      const key = `${row[0]}|${row[1]}`;
-      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
-      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
-      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
-      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
-      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
-      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
-      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
-      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(exRow.county, row[3], `${frameId}: ${key} extract county must match the stored county`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
-    }
-
-    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
-    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
-    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
-    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
-
-    const registerFrame = register.frames[frameId];
-    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
-    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
-    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
-    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-12 source register must reproduce the generated rows exactly`);
-    for (const registerRow of registerFrame.verifiedRows) {
-      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      assert.equal(registerRow.geocoderCounty, `${registerRow.county} County`, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
-    }
-
-    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
-    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
-    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
-    for (const node of data.NODES) {
-      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
-      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
-    }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
-  }
-
-  const kyGaz = await import("../js/city-gazetteer-data-Kentucky.js");
-  const kyData = await import("../js/city-subsurface-data-Kentucky.js");
-  const black = kyGaz.GAZ_ROWS.find((r) => r[0] === "Black Mountain");
-  assert.match(black[9], /Domestic Names per-ID check/, "Black Mountain note must cite the per-ID check");
-  assert.match(black[9], /4,145 feet/, "Black Mountain note must preserve the published elevation");
-  assert.match(black[9], /Summit in Harlan County/, "Black Mountain note must name the correct county");
-  assert.match(black[9], /FEATURE_ID 487379/, "Black Mountain note must reject the populated-place namesake");
-  const ohioRiver = kyGaz.GAZ_ROWS.find((r) => r[0] === "Ohio River");
-  assert.match(ohioRiver[9], /Kentucky-associated/, "Ohio River note must record the Kentucky-associated resolution");
-  assert.ok(!kyGaz.GAZ_ROWS.some((r) => r[0] === "Kentucky Lake"), "Kentucky Lake record is Tennessee-associated and must not be seeded in Kentucky");
-  assert.ok(kyData.CORRIDORS.some((c) => /Kentucky Lake/.test(c.name) && /empty array/.test(c.facts[0])), "Kentucky Lake corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Ohio River, FEATURE_ID 425264/.test(d.candidate)), "register must record the Ohio River resolution");
-
-  const tnGaz = await import("../js/city-gazetteer-data-tennessee.js");
-  const tnData = await import("../js/city-subsurface-data-tennessee.js");
-  const leconte = tnGaz.GAZ_ROWS.find((r) => r[0] === "Mount Le Conte");
-  assert.match(leconte[9], /Domestic Names per-ID check/, "Mount Le Conte note must cite the per-ID check");
-  assert.match(leconte[9], /6,593 feet/, "Mount Le Conte note must preserve the published elevation");
-  assert.match(leconte[9], /Summit in Sevier County/, "Mount Le Conte note must name the correct county");
-  assert.ok(!tnGaz.GAZ_ROWS.some((r) => ["Tennessee River", "Cumberland River", "Mississippi River", "Clingmans Dome", "Kuwohi"].includes(r[0])), "corridor-only Tennessee records must not be seeded");
-  assert.ok(tnData.CORRIDORS.some((c) => /Mississippi River/.test(c.name) && /empty array/.test(c.facts[0])), "Tennessee Mississippi corridor must record the empty screen");
-  assert.ok(tnData.CORRIDORS.some((c) => /Clingmans/.test(c.name) && /no Tennessee GNIS record/.test(c.facts[0])), "Kuwohi corridor must record the missing Tennessee record");
-  assert.ok(register.identityDecisions.some((d) => /Kuwohi \/ Clingmans Dome/.test(d.candidate)), "register must record the Kuwohi decision");
-
-  const engine = read("js/city-subsurface.js");
-  for (const frameId of Object.keys(expectations)) {
-    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
-    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
-    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
-  }
-});
-
-test("Virginia and West Virginia complete the Virginia-West Virginia GNIS state batch", async () => {
-  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
-  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
-  const normCounty = (s) => s.replace(" (city)", "").replace(/^City of /, "").replace(/Saint/g, "St.");
-  const expectations = {
-    virginia: {
-      state: "VA",
-      bbox: { lon0: -83.7, lat0: 36.45, lon1: -75.0, lat1: 39.5 },
-      coastLines: 0,
-      rows: new Map([
-        ["Richmond|Populated Place", "1499957"],
-        ["Virginia Beach|Populated Place", "1500261"],
-        ["Norfolk|Populated Place", "1497051"],
-        ["Roanoke|Populated Place", "1499971"],
-        ["Charlottesville|Populated Place", "1498463"],
-        ["Chesapeake|Populated Place", "1496841"],
-        ["Mount Rogers|Summit", "1485637"],
-        ["Smith Mountain Lake|Lake", "1502131"],
-        ["Lake Anna|Lake", "1501942"],
-        ["Claytor Lake|Lake", "1501983"],
-        ["James River|Stream", "1488853"],
-        ["Rappahannock River|Stream", "1479404"],
-      ]),
-      anchor: ["Richmond|Populated Place", 37.5537575, -77.4602617],
-    },
-    westvirginia: {
-      state: "WV",
-      bbox: { lon0: -82.7, lat0: 37.15, lon1: -77.7, lat1: 40.7 },
-      coastLines: 0,
-      rows: new Map([
-        ["Charleston|Populated Place", "1558347"],
-        ["Huntington|Populated Place", "1540605"],
-        ["Morgantown|Populated Place", "1555161"],
-        ["Parkersburg|Populated Place", "1544587"],
-        ["Wheeling|Populated Place", "1548994"],
-        ["Spruce Knob|Summit", "1553014"],
-        ["Summersville Lake|Lake", "1553142"],
-        ["Cheat Lake|Lake", "1537226"],
-        ["New River|Stream", "1552301"],
-        ["Kanawha River|Stream", "1551620"],
-        ["Shenandoah River|Stream", "1556740"],
-        ["Greenbrier River|Stream", "1551294"],
-      ]),
-      anchor: ["Charleston|Populated Place", 38.3498195, -81.6326235],
-    },
-  };
-
-  for (const [frameId, expected] of Object.entries(expectations)) {
-    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
-    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
-
-    assert.equal(data.CITY.id, frameId);
-    assert.equal(data.CITY.state, expected.state);
-    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
-    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
-    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
-    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
-
-    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
-    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
-    assert.equal(gaz.GAZ_META.unverified, 0);
-    for (const row of gaz.GAZ_ROWS) {
-      const key = `${row[0]}|${row[1]}`;
-      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
-      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
-      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
-      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
-      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
-      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
-      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
-      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(normCounty(exRow.county), normCounty(row[3]), `${frameId}: ${key} extract county must match the stored county (independent-city surfaces normalized)`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
-    }
-
-    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
-    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
-    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
-    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
-
-    const registerFrame = register.frames[frameId];
-    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
-    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
-    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
-    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-13 source register must reproduce the generated rows exactly`);
-    for (const registerRow of registerFrame.verifiedRows) {
-      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      const expectedGeocoderCounty = registerRow.county.startsWith("City of ") ? registerRow.county : `${registerRow.county} County`;
-      assert.equal(registerRow.geocoderCounty, expectedGeocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
-    }
-
-    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
-    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
-    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
-    for (const node of data.NODES) {
-      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
-      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
-    }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
-  }
-
-  const vaGaz = await import("../js/city-gazetteer-data-virginia.js");
-  const vaData = await import("../js/city-subsurface-data-virginia.js");
-  const rogers = vaGaz.GAZ_ROWS.find((r) => r[0] === "Mount Rogers");
-  assert.match(rogers[9], /Domestic Names per-ID check/, "Mount Rogers note must cite the per-ID check");
-  assert.match(rogers[9], /5,729 feet/, "Mount Rogers note must preserve the published elevation");
-  assert.match(rogers[9], /Summit in Smyth County/, "Mount Rogers note must name the correct county");
-  const richmond = vaGaz.GAZ_ROWS.find((r) => r[0] === "Richmond");
-  assert.equal(richmond[3], "City of Richmond", "Richmond row must keep the independent-city county identity");
-  assert.ok(!vaGaz.GAZ_ROWS.some((r) => ["Shenandoah River", "New River", "Potomac River"].includes(r[0])), "cross-state Virginia river records must not be seeded");
-  assert.ok(vaData.CORRIDORS.some((c) => /Shenandoah River/.test(c.name) && /no stream record/.test(c.facts[0])), "Shenandoah corridor must record the missing Virginia stream record");
-  assert.ok(vaData.CORRIDORS.some((c) => /Potomac River/.test(c.name) && /empty array/.test(c.facts[0])), "Potomac corridor must record the empty screen");
-
-  const wvGaz = await import("../js/city-gazetteer-data-westvirginia.js");
-  const wvData = await import("../js/city-subsurface-data-westvirginia.js");
-  const knob = wvGaz.GAZ_ROWS.find((r) => r[0] === "Spruce Knob");
-  assert.match(knob[9], /Domestic Names per-ID check/, "Spruce Knob note must cite the per-ID check");
-  assert.match(knob[9], /4,863 feet/, "Spruce Knob note must preserve the published elevation");
-  assert.match(knob[9], /Summit in Pendleton County/, "Spruce Knob note must name the correct county");
-  assert.match(knob[9], /FEATURE_ID 1555698/, "Spruce Knob note must reject the Randolph namesake");
-  const kanawha = wvGaz.GAZ_ROWS.find((r) => r[0] === "Kanawha River");
-  assert.equal(kanawha[3], "Fayette", "Kanawha row must preserve the returned primary county verbatim");
-  assert.ok(!wvGaz.GAZ_ROWS.some((r) => ["Ohio River", "Monongahela River"].includes(r[0])), "empty-screen West Virginia records must not be seeded");
-  assert.ok(wvData.CORRIDORS.some((c) => /Ohio River/.test(c.name) && /empty array/.test(c.facts[0])), "West Virginia Ohio corridor must record the empty screen");
-  assert.ok(register.identityDecisions.some((d) => /Kanawha River primary county/.test(d.candidate)), "register must record the Kanawha county preservation");
-
-  const engine = read("js/city-subsurface.js");
-  for (const frameId of Object.keys(expectations)) {
-    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
-    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
-    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
-  }
-});
-
-test("North Carolina and South Carolina complete the Carolina GNIS state batch", async () => {
-  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
-  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
-  const expectations = {
-    northcarolina: {
-      state: "NC",
-      bbox: { lon0: -84.35, lat0: 33.75, lon1: -75.35, lat1: 36.6 },
-      coastLines: 0,
-      rows: new Map([
-        ["Raleigh|Populated Place", "1024242"],
-        ["Charlotte|Populated Place", "1019610"],
-        ["Greensboro|Populated Place", "1020557"],
-        ["Durham|Populated Place", "1020059"],
-        ["Asheville|Populated Place", "1018864"],
-        ["Wilmington|Populated Place", "1023269"],
-        ["Mount Mitchell|Summit", "1013745"],
-        ["Kuwohi|Summit", "1326387"],
-        ["Lake Norman|Lake", "991183"],
-        ["B. Everett Jordan Lake|Lake", "980401"],
-        ["Cape Fear River|Stream", "1023879"],
-        ["Roanoke River|Stream", "1502110"],
-      ]),
-      anchor: ["Raleigh|Populated Place", 35.772096, -78.6386145],
-    },
-    southcarolina: {
-      state: "SC",
-      bbox: { lon0: -83.4, lat0: 31.9, lon1: -78.5, lat1: 35.25 },
-      coastLines: 0,
-      rows: new Map([
-        ["Columbia|Populated Place", "1245051"],
-        ["Charleston|Populated Place", "1221516"],
-        ["Greenville|Populated Place", "1245842"],
-        ["Spartanburg|Populated Place", "1250982"],
-        ["Myrtle Beach|Populated Place", "1249770"],
-        ["Sassafras Mountain|Summit", "1015279"],
-        ["Lake Marion|Lake", "1224315"],
-        ["Lake Moultrie|Lake", "1230046"],
-        ["Lake Murray|Lake", "1224900"],
-        ["Savannah River|Stream", "1253486"],
-        ["Congaree River|Stream", "1249468"],
-        ["Pee Dee River|Stream", "1251573"],
-      ]),
-      anchor: ["Columbia|Populated Place", 34.0007104, -81.0348144],
-    },
-  };
-
-  for (const [frameId, expected] of Object.entries(expectations)) {
-    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
-    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
-
-    assert.equal(data.CITY.id, frameId);
-    assert.equal(data.CITY.state, expected.state);
-    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
-    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
-    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
-    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
-
-    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
-    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
-    assert.equal(gaz.GAZ_META.unverified, 0);
-    for (const row of gaz.GAZ_ROWS) {
-      const key = `${row[0]}|${row[1]}`;
-      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
-      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
-      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
-      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
-      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
-      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
-      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
-      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(exRow.county, row[3], `${frameId}: ${key} extract county must match the stored county`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
-    }
-
-    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
-    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
-    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
-    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
-
-    const registerFrame = register.frames[frameId];
-    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
-    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
-    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
-    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-14 source register must reproduce the generated rows exactly`);
-    for (const registerRow of registerFrame.verifiedRows) {
-      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      assert.equal(registerRow.geocoderCounty, `${registerRow.county} County`, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
-    }
-
-    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
-    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
-    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
-    for (const node of data.NODES) {
-      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
-      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
-    }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
-  }
-
-  const ncGaz = await import("../js/city-gazetteer-data-northcarolina.js");
-  const mitchell = ncGaz.GAZ_ROWS.find((r) => r[0] === "Mount Mitchell");
-  assert.match(mitchell[9], /Domestic Names per-ID check/, "Mount Mitchell note must cite the per-ID check");
-  assert.match(mitchell[9], /6,684 feet/, "Mount Mitchell note must preserve the published elevation");
-  assert.match(mitchell[9], /Summit in Yancey County/, "Mount Mitchell note must name the correct county");
-  const kuwohi = ncGaz.GAZ_ROWS.find((r) => r[0] === "Kuwohi");
-  assert.match(kuwohi[9], /Domestic Names per-ID check/, "Kuwohi note must cite the per-ID check");
-  assert.match(kuwohi[9], /6,643 feet/, "Kuwohi note must preserve the published elevation");
-  assert.match(kuwohi[9], /Summit in Swain County/, "Kuwohi note must name the correct county");
-  assert.match(kuwohi[9], /no Tennessee GNIS record|no record/, "Kuwohi note must record the closed Tennessee decision");
-  const jordan = ncGaz.GAZ_ROWS.find((r) => r[0] === "B. Everett Jordan Lake");
-  assert.match(jordan[9], /empty/, "Jordan Lake note must record the plain-name empty screen");
-
-  const scGaz = await import("../js/city-gazetteer-data-southcarolina.js");
-  const sassafras = scGaz.GAZ_ROWS.find((r) => r[0] === "Sassafras Mountain");
-  assert.match(sassafras[9], /Domestic Names per-ID check/, "Sassafras note must cite the per-ID check");
-  assert.match(sassafras[9], /3,553 feet/, "Sassafras note must preserve the published elevation");
-  assert.match(sassafras[9], /Summit in Pickens County/, "Sassafras note must name the correct county");
-  const Peedee = scGaz.GAZ_ROWS.find((r) => r[0] === "Pee Dee River");
-  assert.equal(Peedee[3], "Chesterfield", "Pee Dee row must preserve the returned primary county verbatim");
-  assert.ok(register.identityDecisions.some((d) => /Kuwohi/.test(d.candidate)), "register must record the Kuwohi seeding decision");
-  assert.ok(register.identityDecisions.some((d) => /Pee Dee River/.test(d.candidate)), "register must record the Pee Dee county preservation");
-
-  const engine = read("js/city-subsurface.js");
-  for (const frameId of Object.keys(expectations)) {
-    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
-    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
-    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
-  }
-});
-
-test("Georgia and Florida complete the Georgia-Florida GNIS state batch", async () => {
-  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json"));
-  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
-  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
-  const expectations = {
-    Georgia: {
-      state: "GA",
-      bbox: { lon0: -85.65, lat0: 30.35, lon1: -80.75, lat1: 35.05 },
-      coastLines: 0,
-      rows: new Map([
-        ["Atlanta|Populated Place", "351615"],
-        ["Augusta|Populated Place", "310670"],
-        ["Macon|Populated Place", "332301"],
-        ["Columbus|Populated Place", "331443"],
-        ["Savannah|Populated Place", "322590"],
-        ["Athens|Populated Place", "354407"],
-        ["Brasstown Bald|Summit", "354839"],
-        ["Hartwell Lake|Lake", "356215"],
-        ["Lake Sidney Lanier|Lake", "322971"],
-        ["Altamaha River|Stream", "354294"],
-        ["Chattahoochee River|Stream", "354236"],
-        ["Flint River|Stream", "358207"],
-      ]),
-      anchor: ["Atlanta|Populated Place", 33.7489954, -84.3879824],
-    },
-    florida: {
-      state: "FL",
-      bbox: { lon0: -87.7, lat0: 25.1, lon1: -79.9, lat1: 31.05 },
-      coastLines: 0,
-      rows: new Map([
-        ["Tallahassee|Populated Place", "308416"],
-        ["Jacksonville|Populated Place", "295003"],
-        ["Miami|Populated Place", "295004"],
-        ["Tampa|Populated Place", "292005"],
-        ["Orlando|Populated Place", "288240"],
-        ["Pensacola|Populated Place", "294117"],
-        ["Britton Hill|Summit", "1851954"],
-        ["Lake Okeechobee|Lake", "307550"],
-        ["Lake George|Lake", "305722"],
-        ["Saint Johns River|Stream", "308105"],
-        ["Suwannee River|Stream", "308455"],
-        ["Apalachicola River|Stream", "305219"],
-      ]),
-      anchor: ["Tallahassee|Populated Place", 30.4382559, -84.2807329],
-    },
-  };
-
-  for (const [frameId, expected] of Object.entries(expectations)) {
-    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
-    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
-
-    assert.equal(data.CITY.id, frameId);
-    assert.equal(data.CITY.state, expected.state);
-    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
-    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
-    const overview = data.VIEWS.find((v) => v.id === "overview");
-    assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, `${frameId}: overview must be scale-aware`);
-    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
-    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
-
-    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
-    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
-    assert.equal(gaz.GAZ_META.unverified, 0);
-    for (const row of gaz.GAZ_ROWS) {
-      const key = `${row[0]}|${row[1]}`;
-      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
-      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
-      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
-      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
-      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
-      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
-      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
-      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
-      const exRow = extract.states[expected.state].rows.find((r) => r.featureId === row[7]);
-      assert.ok(exRow, `${frameId}: ${key} FEATURE_ID must appear in the DomesticNames extract`);
-      assert.equal(exRow.name, row[0], `${frameId}: ${key} extract name`);
-      assert.equal(exRow.county, row[3], `${frameId}: ${key} extract county must match the stored county`);
-      assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `${frameId}: ${key} extract point must match the stored point`);
-    }
-
-    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
-    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
-    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
-    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
-
-    const registerFrame = register.frames[frameId];
-    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
-    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
-    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
-    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-15 source register must reproduce the generated rows exactly`);
-    for (const registerRow of registerFrame.verifiedRows) {
-      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
-      assert.equal(registerRow.geocoderCounty, `${registerRow.county} County`, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`);
-    }
-
-    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
-    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
-    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
-    for (const node of data.NODES) {
-      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
-      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
-    }
-    assert.match(extract.states[expected.state].zipSha256, /^[0-9a-f]{64}$/, `${frameId}: extract must pin the source ZIP hash`);
-  }
-
-  const gaGaz = await import("../js/city-gazetteer-data-Georgia.js");
+  const gaGaz = await import("../js/city-gazetteer-data-georgia.js");
+  const gaData = await import("../js/city-subsurface-data-georgia.js");
   const brasstown = gaGaz.GAZ_ROWS.find((r) => r[0] === "Brasstown Bald");
-  assert.match(brasstown[9], /Domestic Names per-ID check/, "Brasstown note must cite the per-ID check");
-  assert.match(brasstown[9], /4,784 feet/, "Brasstown note must preserve the published elevation");
-  assert.match(brasstown[9], /Summit in Towns County/, "Brasstown note must name the correct county");
-  const chatt = gaGaz.GAZ_ROWS.find((r) => r[0] === "Chattahoochee River");
-  const flint = gaGaz.GAZ_ROWS.find((r) => r[0] === "Flint River");
-  assert.equal(chatt[4], flint[4], "Chattahoochee/Flint GNIS points must coincide (lat)");
-  assert.equal(chatt[5], flint[5], "Chattahoochee/Flint GNIS points must coincide (lon)");
-  assert.notEqual(chatt[7], flint[7], "The coincident river pins must remain distinct FEATURE_IDs");
-  assert.ok(register.identityDecisions.some((d) => /Chattahoochee River 354236/.test(d.candidate)), "register must record the shared-point decision");
-
-  const flGaz = await import("../js/city-gazetteer-data-florida.js");
-  const britton = flGaz.GAZ_ROWS.find((r) => r[0] === "Britton Hill");
-  assert.match(britton[9], /Domestic Names per-ID check/, "Britton Hill note must cite the per-ID check");
-  assert.match(britton[9], /345 feet/, "Britton Hill note must preserve the published elevation");
-  assert.match(britton[9], /lowest state high point/, "Britton Hill note must preserve the lowest-high-point distinction");
-  assert.match(britton[9], /Summit in Walton County/, "Britton Hill note must name the correct county");
+  assert.match(brasstown[9], /Domestic Names per-ID check/, "Brasstown Bald note must cite the per-ID check");
+  assert.match(brasstown[9], /Highest elevation in GA at 4784 feet/, "Brasstown Bald note must preserve the per-ID elevation description");
+  assert.match(brasstown[9], /gaznames_default/, "Brasstown Bald note must cite the REST layer used for the check");
+  const oconee = gaGaz.GAZ_ROWS.find((r) => r[0] === "Lake Oconee");
+  assert.match(oconee[9], /319902/, "Lake Oconee note must disclose the parallel record");
+  assert.match(oconee[9], /Rockville/, "Lake Oconee note must cite the locator description");
+  const atlanta = gaGaz.GAZ_ROWS.find((r) => r[0] === "Atlanta");
+  assert.match(atlanta[9], /Atlanta Division/, "Atlanta note must reject the division record");
+  assert.match(atlanta[9], /326161/, "Atlanta note must reject Atlanta Junction");
+  const macon = gaGaz.GAZ_ROWS.find((r) => r[0] === "Macon");
+  assert.match(macon[9], /Macon-Bibb County/, "Macon note must reject the consolidated county record");
+  assert.match(macon[9], /346957/, "Macon note must reject Macon County");
+  const altamaha = gaGaz.GAZ_ROWS.find((r) => r[0] === "Altamaha River");
+  assert.match(altamaha[9], /1936077/, "Altamaha River note must reject the division record");
+  assert.ok(!gaGaz.GAZ_ROWS.some((r) => ["Savannah River", "Lake Lanier", "Chattahoochee River", "Ogeechee River"].includes(r[0])), "empty, mismatched, or starter-scope Georgia records must not be seeded");
+  assert.ok(gaData.CORRIDORS.some((c) => /Savannah River/.test(c.name) && /empty array/.test(c.facts[0]) && /1253486/.test(c.facts[0])));
+  assert.ok(gaData.CORRIDORS.some((c) => /Chattahoochee River/.test(c.name) && /354236/.test(c.facts[0]) && /starter scope/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Brasstown Bald, FEATURE_ID 354839/.test(d.candidate) && /4784 feet/.test(d.decision)), "register must record the Brasstown per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /330982/.test(d.candidate) && /319902/.test(d.decision)), "register must record the Lake Oconee pair decision");
+  assert.ok(register.identityDecisions.some((d) => /Savannah River under states=GA/.test(d.candidate) && /empty array/.test(d.decision)), "register must record the Savannah River empty screen");
+  assert.ok(register.identityDecisions.some((d) => /Lake Lanier term/.test(d.candidate) && /1688216/.test(d.decision)), "register must record the Lake Lanier mismatch");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {

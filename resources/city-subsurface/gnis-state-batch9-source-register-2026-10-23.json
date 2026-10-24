@@ -1,443 +1,467 @@
 {
   "generated": "2026-10-23",
-  "title": "Round 26 Illinois-Indiana state-frame USGS GNIS source register",
-  "scope": "All-GNIS starter registers for Illinois and Indiana. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Charles Mound and Hoosier Hill additionally carry Domestic Names per-ID identity checks.",
+  "title": "Round 26 West North Central closing and Gulf opening state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Minnesota and Louisiana. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Eagle Mountain, Lake of the Woods, and Driskill Mountain additionally carry GNIS Domestic Names per-ID checks.",
   "services": {
     "usgsGeocoder": {
       "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
-      "parameters": "term=<official name>&states=<IL|IN>&include=gnis&maxSuggestions=<10>",
-      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, canals, pools, flowages, navigation pools, old channels, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+      "parameters": "term=<official name>&states=<MN|LA>&include=gnis&maxSuggestions=10",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Parishes, counties, reservations, divisions, census areas, islands, springs, bays, harbors, canals, deltas, air stations, air bases, historical places, and same-name records of another class or county were rejected explicitly where relevant. Punctuation variants (St. versus Saint) were screened both ways and recorded."
     },
     "gnisDomesticNames": {
-      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_<IL|IN>_Text.zip",
-      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Charles Mound (423586) and Hoosier Hill (1851956), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-9; this register is the frozen batch-9 evidence."
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Eagle Mountain (656081 plus rejected 656080 and 643035), confirming the Minnesota High Point description; Lake of the Woods (654378 plus rejected 1930543), confirming the Board decisions and multi-sequence record; Red River of the North (1035890), confirming the river description while the returned primary point sits in Canada; and Driskill Mountain (542199), confirming the Louisiana High Point description."
     }
   },
   "selectionRules": [
-    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
     "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
     "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
-    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
-    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. Louisiana ships a labelled generalized Gulf coast line that is not a shoreline survey."
   ],
   "frames": {
-    "illinois": {
-      "title": "Illinois statewide frame (Illinois-Indiana batch)",
-      "state": "IL",
+    "minnesota": {
+      "title": "Minnesota statewide frame",
+      "state": "MN",
       "bbox": {
-        "lon0": -91.55,
-        "lat0": 36.95,
-        "lon1": -87.05,
-        "lat1": 42.55
+        "lon0": -97.3,
+        "lat0": 43.4,
+        "lon1": -89.4,
+        "lat1": 49.4
       },
-      "frameNote": "Illinois-Indiana batch: the Springfield capital anchor and the Chicago lake-plain anchor are balanced with the per-ID Charles Mound high point, the Rend/Peoria lake pair, and three in-state river-mouth records (Illinois, Kaskaskia, Rock). The Mississippi and Ohio main stems and Lake Michigan remain corridors after empty states=IL screens.",
+      "frameNote": "West North Central closing batch: the Saint Paul, Minneapolis, Duluth, Rochester, Mankato, Saint Cloud, and International Falls anchors are balanced with per-ID Eagle Mountain (disambiguated from two undesignated same-name summits), the Board-decision Lake of the Woods record, Mille Lacs Lake, Lake Minnetonka, and the Minnesota River. St./Saint spelling gates, the Mississippi reservoir-only screen, the Red River of the North Canada-primary point, and the Lake Superior/St. Croix empty screens are recorded.",
       "totalRows": 12,
       "verifiedRows": [
         {
-          "name": "Springfield",
+          "name": "Saint Paul",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Sangamon",
-          "latitude": 39.8017171,
-          "longitude": -89.6437107,
-          "featureId": "426595",
+          "county": "Ramsey",
+          "latitude": 44.9444101,
+          "longitude": -93.0932742,
+          "featureId": "662851",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Sangamon County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=426595; exact official name and Cities & Populated Places type in Sangamon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Ramsey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The official name uses the Saint spelling: the St. Paul term returned an empty states=MN screen on 2026-10-23 while Saint Paul returned this populated place. Rejected: Saint Paul Church (FEATURE_ID 662341), Saint Paul Park (FEATURE_ID 650970), and Saint Paul Island (FEATURE_ID 662342). USGS GNIS Geocoder (GNIS), FEATURE_ID=662851; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Chicago",
+          "name": "Minneapolis",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Cook",
-          "latitude": 41.850033,
-          "longitude": -87.6500523,
-          "featureId": "423587",
+          "county": "Hennepin",
+          "latitude": 44.9799654,
+          "longitude": -93.2638361,
+          "featureId": "655030",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Cook County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Largest city in the state and Lake Michigan port; Chicago Heights (FEATURE_ID 406039), Chicago Ridge (FEATURE_ID 406048), and Chicago Loop (FEATURE_ID 406045) are separate populated places, and the Chicago River record (FEATURE_ID 406050) is not seeded here. USGS GNIS Geocoder (GNIS), FEATURE_ID=423587; exact official name and Cities & Populated Places type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Hennepin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Minneapolis-Saint Paul International Airport Air Reserve Station record (FEATURE_ID 2512487). USGS GNIS Geocoder (GNIS), FEATURE_ID=655030; exact official name and Cities & Populated Places type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Aurora",
+          "name": "Duluth",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Kane",
-          "latitude": 41.7605849,
-          "longitude": -88.3200715,
-          "featureId": "403732",
+          "county": "Saint Louis",
+          "latitude": 46.7832731,
+          "longitude": -92.1065787,
+          "featureId": "661145",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Kane County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Kane County city on the Fox River. USGS GNIS Geocoder (GNIS), FEATURE_ID=403732; exact official name and Cities & Populated Places type in Kane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Saint Louis County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Duluth Heights (FEATURE_ID 661147), Duluth Junction (FEATURE_ID 654681), the Duluth Entry stream record (FEATURE_ID 660579), and Duluth International Airport (FEATURE_ID 2832676). USGS GNIS Geocoder (GNIS), FEATURE_ID=661145; exact official name and Cities & Populated Places type in Saint Louis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Naperville",
+          "name": "Rochester",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "DuPage",
-          "latitude": 41.7858629,
-          "longitude": -88.1472893,
-          "featureId": "421954",
+          "county": "Olmsted",
+          "latitude": 44.0216306,
+          "longitude": -92.4698992,
+          "featureId": "650180",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "DuPage County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "DuPage County city on the DuPage River. USGS GNIS Geocoder (GNIS), FEATURE_ID=421954; exact official name and Cities & Populated Places type in DuPage County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Olmsted County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the historical Rochester Air Force Station record (FEATURE_ID 2090202). USGS GNIS Geocoder (GNIS), FEATURE_ID=650180; exact official name and Cities & Populated Places type in Olmsted County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Rockford",
+          "name": "Mankato",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Winnebago",
-          "latitude": 42.2711311,
-          "longitude": -89.0939952,
-          "featureId": "416843",
+          "county": "Blue Earth",
+          "latitude": 44.1635775,
+          "longitude": -93.9993996,
+          "featureId": "647438",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Winnebago County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Largest northern-Illinois city, on the Rock River. USGS GNIS Geocoder (GNIS), FEATURE_ID=416843; exact official name and Cities & Populated Places type in Winnebago County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Blue Earth County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Mankato Spring (FEATURE_ID 647440). USGS GNIS Geocoder (GNIS), FEATURE_ID=647438; exact official name and Cities & Populated Places type in Blue Earth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Peoria",
+          "name": "Saint Cloud",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Peoria",
-          "latitude": 40.6936488,
-          "longitude": -89.5889864,
-          "featureId": "415536",
+          "county": "Stearns",
+          "latitude": 45.5607986,
+          "longitude": -94.1624895,
+          "featureId": "650559",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Peoria County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Illinois River city; the Peoria County record (FEATURE_ID 1784920) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=415536; exact official name and Cities & Populated Places type in Peoria County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Stearns County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official name uses the Saint spelling: the St. Cloud term returned an empty states=MN screen on 2026-10-23 while Saint Cloud returned this populated place. USGS GNIS Geocoder (GNIS), FEATURE_ID=650559; exact official name and Cities & Populated Places type in Stearns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Charles Mound",
+          "name": "International Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Koochiching",
+          "latitude": 48.6010491,
+          "longitude": -93.4109824,
+          "featureId": "645435",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Koochiching County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=645435; exact official name and Cities & Populated Places type in Koochiching County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Eagle Mountain",
           "featureClass": "Summit",
           "ftt": "phys.summit",
-          "county": "Jo Daviess",
-          "latitude": 42.5041312,
-          "longitude": -90.2396757,
-          "featureId": "423586",
+          "county": "Cook",
+          "latitude": 47.8973467,
+          "longitude": -90.5606387,
+          "featureId": "656081",
           "verified": 1,
           "geocoderType": "Summit",
-          "geocoderCounty": "Jo Daviess County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Illinois High Point and state high point at 1,235 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_IL_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 423586 as a Summit in Wayne County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=423586; exact official name and Summit type in Jo Daviess County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+          "geocoderCounty": "Cook County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Minnesota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in MN at 2301 feet, Located 20 mi NW of Grand Marais, Primary County Cook County, Primary Map Eagle Mountain, and coordinate sequence 1 marked High Point at the stored point. The 2026-10-23 Geocoder screen returned three exact-name Summit records and listed the undesignated Lutsen-quad summit (FEATURE_ID 656080) first; that record and the Todd County Eagle Mountain (FEATURE_ID 643035) are rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=656081; exact official name and Summit type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
         },
         {
-          "name": "Rend Lake",
+          "name": "Lake of the Woods",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Franklin",
-          "latitude": 38.1096376,
-          "longitude": -88.9626068,
-          "featureId": "416524",
+          "county": "Lake of the Woods",
+          "latitude": 49.0519679,
+          "longitude": -94.9545392,
+          "featureId": "654378",
           "verified": 1,
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Franklin County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Franklin County reservoir on the Big Muddy River, among the largest lakes in the state. USGS GNIS Geocoder (GNIS), FEATURE_ID=416524; exact official name and Lakes & Reservoirs type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+          "geocoderCounty": "Lake of the Woods County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 654378: the per-ID check shows Board Decisions making the name official in 1911 and 1953 with 18 coordinate sequences around the lake, and sequence 1 matches this screen. Rejected: Lake of the Woods County (FEATURE_ID 659483), the single-point 2001 text record of the same name (FEATURE_ID 1930543), and the Sherburne County swamp of the same name (FEATURE_ID 654379). USGS GNIS Geocoder (GNIS), FEATURE_ID=654378; exact official name and Lakes & Reservoirs type in Lake of the Woods County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
         },
         {
-          "name": "Peoria Lake",
+          "name": "Mille Lacs Lake",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Tazewell",
-          "latitude": 40.7022598,
-          "longitude": -89.5545403,
-          "featureId": "415539",
+          "county": "Mille Lacs",
+          "latitude": 46.2425615,
+          "longitude": -93.6462512,
+          "featureId": "647859",
           "verified": 1,
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Tazewell County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Tazewell County widening of the Illinois River opposite the seeded Peoria city record; the river's natural lake reach. USGS GNIS Geocoder (GNIS), FEATURE_ID=415539; exact official name and Lakes & Reservoirs type in Tazewell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+          "geocoderCounty": "Mille Lacs County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official GNIS name is Mille Lacs Lake: the screen term Mille Lacs returned this record exactly. Rejected: Mille Lacs County (FEATURE_ID 659493), Mille Lacs Reservation (FEATURE_ID 2419017), and Mille Lacs Meadows (FEATURE_ID 647860). USGS GNIS Geocoder (GNIS), FEATURE_ID=647859; exact official name and Lakes & Reservoirs type in Mille Lacs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
         },
         {
-          "name": "Illinois River",
-          "featureClass": "Stream",
-          "ftt": "hydro.stream",
-          "county": "Calhoun",
-          "latitude": 38.9703262,
-          "longitude": -90.4542829,
-          "featureId": "410769",
+          "name": "Lake Minnetonka",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hennepin",
+          "latitude": 44.9416763,
+          "longitude": -93.5502789,
+          "featureId": "647954",
           "verified": 1,
-          "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Calhoun County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "GNIS primary point at the Mississippi confluence in Calhoun County near Grafton. USGS GNIS Geocoder (GNIS), FEATURE_ID=410769; exact official name and Streams & Canals type in Calhoun County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hennepin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=647954; exact official name and Lakes & Reservoirs type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
         },
         {
-          "name": "Kaskaskia River",
+          "name": "Minnesota River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Randolph",
-          "latitude": 37.974942,
-          "longitude": -89.937372,
-          "featureId": "426395",
+          "county": "Dakota",
+          "latitude": 44.89691,
+          "longitude": -93.1491088,
+          "featureId": "659759",
           "verified": 1,
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Randolph County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Longest river lying wholly in the state; GNIS primary point at the Mississippi confluence in Randolph County. The adjacent navigation-pool record (FEATURE_ID 1691040) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=426395; exact official name and Streams & Canals type in Randolph County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
-        },
-        {
-          "name": "Rock River",
-          "featureClass": "Stream",
-          "ftt": "hydro.stream",
-          "county": "Rock Island",
-          "latitude": 41.4825326,
-          "longitude": -90.6162489,
-          "featureId": "416824",
-          "verified": 1,
-          "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Rock Island County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "GNIS primary point at the Mississippi confluence in Rock Island County; four same-name lake/flowage records (FEATURE_ID 1692463, 1692265, 1691026, 1691024) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=416824; exact official name and Streams & Canals type in Rock Island County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Dakota County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Minnesota River Reservoir record (FEATURE_ID 1776150). The point is the Dakota County mouth sequence near the Mississippi confluence, not the channel through the Twin Cities. USGS GNIS Geocoder (GNIS), FEATURE_ID=659759; exact official name and Streams & Canals type in Dakota County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
         }
       ]
     },
-    "indiana": {
-      "title": "Indiana statewide frame (Illinois-Indiana batch)",
-      "state": "IN",
+    "louisiana": {
+      "title": "Louisiana statewide frame",
+      "state": "LA",
       "bbox": {
-        "lon0": -88.1,
-        "lat0": 37.75,
-        "lon1": -84.75,
-        "lat1": 41.8
+        "lon0": -94.1,
+        "lat0": 28.7,
+        "lon1": -88.7,
+        "lat1": 33.1
       },
-      "frameNote": "Illinois-Indiana batch: the Indianapolis capital anchor is balanced with the per-ID Hoosier Hill high point, the Monroe/Patoka/Maxinkuckee lake set, and two in-state river-mouth records (Wabash, White). The Ohio main stem and Lake Michigan remain corridors after empty states=IN screens.",
+      "frameNote": "Gulf opening batch: New Orleans, Baton Rouge, Shreveport, Lafayette, Lake Charles, and Natchitoches are balanced with per-ID Driskill Mountain (535 feet), Lake Pontchartrain, Lake Maurepas, and the first seeded Mississippi River row (Plaquemines) plus the Red River West Feliciana record closing the four-state chain. The Lafayette parish trap, Lake Charles city/lake split, Monroe two-parish ambiguity, and Toledo Bend empty screens are recorded.",
       "totalRows": 12,
       "verifiedRows": [
         {
-          "name": "Indianapolis",
+          "name": "New Orleans",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Marion",
-          "latitude": 39.7683765,
-          "longitude": -86.1580423,
-          "featureId": "452890",
+          "county": "Orleans",
+          "latitude": 29.9546482,
+          "longitude": -90.075072,
+          "featureId": "1629985",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Marion County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=452890; exact official name and Cities & Populated Places type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Orleans Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the historical New Orleans Navigation Canal (FEATURE_ID 549902), the New Orleans Station Census Designated Place in Plaquemines Parish (FEATURE_ID 2804360), and the historical New Orleans Army Air Base (FEATURE_ID 2085459). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629985; exact official name and Cities & Populated Places type in Orleans Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Fort Wayne",
+          "name": "Baton Rouge",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Allen",
-          "latitude": 41.1306041,
-          "longitude": -85.1288597,
-          "featureId": "434689",
+          "county": "East Baton Rouge",
+          "latitude": 30.4507462,
+          "longitude": -91.154551,
+          "featureId": "1629914",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Allen County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Allen County city at the Maumee River headwaters. USGS GNIS Geocoder (GNIS), FEATURE_ID=434689; exact official name and Cities & Populated Places type in Allen County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "East Baton Rouge Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. Rejected: Baton Rouge Terrace (FEATURE_ID 559362). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629914; exact official name and Cities & Populated Places type in East Baton Rouge Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Evansville",
+          "name": "Shreveport",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Vanderburgh",
-          "latitude": 37.9747644,
-          "longitude": -87.5558482,
-          "featureId": "434258",
+          "county": "Caddo",
+          "latitude": 32.5251516,
+          "longitude": -93.7501789,
+          "featureId": "1630015",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Vanderburgh County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Vanderburgh County Ohio River port. USGS GNIS Geocoder (GNIS), FEATURE_ID=434258; exact official name and Cities & Populated Places type in Vanderburgh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Caddo Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1630015; exact official name and Cities & Populated Places type in Caddo Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "South Bend",
+          "name": "Lafayette",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Saint Joseph",
-          "latitude": 41.6833813,
-          "longitude": -86.2500066,
-          "featureId": "452796",
+          "county": "Lafayette",
+          "latitude": 30.2240897,
+          "longitude": -92.0198427,
+          "featureId": "1629965",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Saint Joseph County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Saint Joseph County city on the St. Joseph River. USGS GNIS Geocoder (GNIS), FEATURE_ID=452796; exact official name and Cities & Populated Places type in Saint Joseph County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Lafayette Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Lafayette Parish (FEATURE_ID 558059) and the historical Orleans Parish Lafayette record (FEATURE_ID 559614). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629965; exact official name and Cities & Populated Places type in Lafayette Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Bloomington",
+          "name": "Lake Charles",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Monroe",
-          "latitude": 39.165325,
-          "longitude": -86.5263857,
-          "featureId": "431207",
+          "county": "Calcasieu",
+          "latitude": 30.2265949,
+          "longitude": -93.2173759,
+          "featureId": "1629966",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Monroe County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Monroe County city; seat of Indiana University. USGS GNIS Geocoder (GNIS), FEATURE_ID=431207; exact official name and Cities & Populated Places type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Calcasieu Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the same-name Lake Charles lake record (FEATURE_ID 553954, identity-safe but held to starter scope), the historical Lake Charles Air Force Station (FEATURE_ID 2087773), and the historical Lake Charles Army Air Field (FEATURE_ID 2085457). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629966; exact official name and Cities & Populated Places type in Calcasieu Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Terre Haute",
+          "name": "Natchitoches",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Vigo",
-          "latitude": 39.4667034,
-          "longitude": -87.4139092,
-          "featureId": "444648",
+          "county": "Natchitoches",
+          "latitude": 31.7607195,
+          "longitude": -93.0862749,
+          "featureId": "1629983",
           "verified": 1,
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Vigo County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Vigo County city on the Wabash River. USGS GNIS Geocoder (GNIS), FEATURE_ID=444648; exact official name and Cities & Populated Places type in Vigo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Natchitoches Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Natchitoches Parish (FEATURE_ID 558108), the Natchitoches State Designated Tribal Statistical Area (FEATURE_ID 2813264), and Natchitoches Island (FEATURE_ID 549598). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629983; exact official name and Cities & Populated Places type in Natchitoches Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
         },
         {
-          "name": "Hoosier Hill",
+          "name": "Driskill Mountain",
           "featureClass": "Summit",
           "ftt": "phys.summit",
-          "county": "Wayne",
-          "latitude": 40.0002603,
-          "longitude": -84.8509693,
-          "featureId": "1851956",
+          "county": "Bienville",
+          "latitude": 32.4250483,
+          "longitude": -92.8969723,
+          "featureId": "542199",
           "verified": 1,
           "geocoderType": "Summit",
-          "geocoderCounty": "Wayne County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Indiana High Point and state high point at 1,257 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_IN_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1851956 as a Summit in Wayne County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851956; exact official name and Summit type in Wayne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+          "geocoderCounty": "Bienville Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Louisiana's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in LA at 535 feet, Primary County Bienville Parish, Primary Map Bryceland, and coordinate sequence 1 marked High Point at the stored point; the coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=542199; exact official name and Summit type in Bienville Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
         },
         {
-          "name": "Monroe Lake",
+          "name": "Lake Pontchartrain",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Monroe",
-          "latitude": 39.055508,
-          "longitude": -86.4333117,
-          "featureId": "451234",
+          "county": "Saint Tammany",
+          "latitude": 30.184045,
+          "longitude": -90.125542,
+          "featureId": "1627974",
           "verified": 1,
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Monroe County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Largest lake lying wholly within the state (Monroe County reservoir on Salt Creek); the reversed-name screen ('Lake Monroe') returned an empty array, and the official name order is Monroe Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=451234; exact official name and Lakes & Reservoirs type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+          "geocoderCounty": "Saint Tammany Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627974; exact official name and Lakes & Reservoirs type in Saint Tammany Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
         },
         {
-          "name": "Patoka Lake",
+          "name": "Lake Maurepas",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Orange",
-          "latitude": 38.4108996,
-          "longitude": -86.6373488,
-          "featureId": "451715",
+          "county": "Livingston",
+          "latitude": 30.2522478,
+          "longitude": -90.5015554,
+          "featureId": "1627626",
           "verified": 1,
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Orange County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Orange County reservoir on the Patoka River. USGS GNIS Geocoder (GNIS), FEATURE_ID=451715; exact official name and Lakes & Reservoirs type in Orange County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+          "geocoderCounty": "Livingston Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627626; exact official name and Lakes & Reservoirs type in Livingston Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
         },
         {
-          "name": "Lake Maxinkuckee",
-          "featureClass": "Lake",
-          "ftt": "hydro.lake",
-          "county": "Marshall",
-          "latitude": 41.2041957,
-          "longitude": -86.4044435,
-          "featureId": "438748",
-          "verified": 1,
-          "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Marshall County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "Second-largest natural lake in the state (Marshall County). USGS GNIS Geocoder (GNIS), FEATURE_ID=438748; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
-        },
-        {
-          "name": "Wabash River",
+          "name": "Mississippi River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Posey",
-          "latitude": 37.7981003,
-          "longitude": -88.0272534,
-          "featureId": "449850",
+          "county": "Plaquemines",
+          "latitude": 29.1510582,
+          "longitude": -89.2533842,
+          "featureId": "1629903",
           "verified": 1,
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Posey County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "GNIS primary point at the Ohio River confluence in Posey County; the Wabash River Old Channel record (FEATURE_ID 445332) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=449850; exact official name and Streams & Canals type in Posey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Plaquemines Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The first seeded Mississippi River row: the 2026-10-23 Iowa screen returned an empty array, the Missouri screen returned only the Mississippi River Hills Area record (FEATURE_ID 758109), and the Minnesota screen returned only the Mississippi River Reservoir lake (FEATURE_ID 1776673). This Plaquemines Parish sequence identifies the lower river. Rejected: the Mississippi River-Gulf Outlet Canal (FEATURE_ID 1627674) and the Mississippi River Delta Area record (FEATURE_ID 557096). The point is not a channel centerline and does not verify the upstream reaches. USGS GNIS Geocoder (GNIS), FEATURE_ID=1629903; exact official name and Streams & Canals type in Plaquemines Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
         },
         {
-          "name": "White River",
+          "name": "Atchafalaya River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Knox",
-          "latitude": 38.4142134,
-          "longitude": -87.742528,
-          "featureId": "445955",
+          "county": "Saint Martin",
+          "latitude": 30.2846418,
+          "longitude": -91.6720574,
+          "featureId": "559801",
           "verified": 1,
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Knox County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
-          "sourceNote": "GNIS primary point at the Wabash confluence in Knox County; the Gibson County populated place of the same name (FEATURE_ID 445956) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=445955; exact official name and Streams & Canals type in Knox County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Saint Martin Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=559801; exact official name and Streams & Canals type in Saint Martin Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Red River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "West Feliciana",
+          "latitude": 31.0193471,
+          "longitude": -91.7478975,
+          "featureId": "558728",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "West Feliciana Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded the West Feliciana Parish stream record, closing the Red River chain: empty states=ND and states=OK screens, a Brown County Texas record rejected in round 24, and the Minnesota-registered Red River of the North whose returned primary point sits in Canada. Rejected: Red River Parish (FEATURE_ID 559472), Red River Landing (FEATURE_ID 543612), and the Red River Bay records (FEATURE_ID 538527, 555770). This is the southern Red River, distinct from FEATURE_ID 1035890 (Red River of the North). USGS GNIS Geocoder (GNIS), FEATURE_ID=558728; exact official name and Streams & Canals type in West Feliciana Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
         }
       ]
     }
   },
   "identityDecisions": [
     {
-      "candidate": "Chicago Heights 406039, Chicago Ridge 406048, Chicago Loop 406045, Chicago River 406050",
-      "decision": "Rejected as distinct records. The seeded FEATURE_ID 423587 is the City of Chicago populated-place record; three suburban/neighborhood populated places and the river record name other features.",
-      "notClaimed": "The city point is not a municipal boundary or ward centroid."
+      "candidate": "Eagle Mountain, FEATURE_ID 656081 versus two undesignated same-name summits",
+      "decision": "Seeded the Cook County record 656081 after a GNIS Domestic Names per-ID check showed the description Highest elevation in MN at 2301 feet, Located 20 mi NW of Grand Marais, Primary Map Eagle Mountain, and coordinate sequence 1 marked High Point at the stored point. Rejected the undesignated Lutsen-quad summit 656080 and the Todd County Eagle Mountain 643035.",
+      "knownServiceDiscrepancy": "The 2026-10-23 Geocoder screen returned all three exact-name Summit records and listed 656080 first; suggestion order is not identity evidence, and only the per-ID description identifies the state high point."
     },
     {
-      "candidate": "Peoria County, FEATURE_ID 1784920",
-      "decision": "Rejected as a county record, following the county-record precedent; the Peoria city record 415536 and Peoria Lake record 415539 are seeded as separate classes with distinct points.",
-      "notClaimed": "Neither the city point nor the lake point is a boundary or shoreline."
+      "candidate": "Lake of the Woods, FEATURE_ID 654378 versus 1930543",
+      "decision": "Seeded 654378: the per-ID check shows Board Decisions making the name official in 1911 and 1953, 18 coordinate sequences around the lake, and sequence 1 matching this screen. Rejected the same-name county record 659483, the single-point 2001 text record 1930543, and the Sherburne County swamp 654379.",
+      "notClaimed": "The primary point is not the shoreline of the lake, and the rejected 2001 record is not verified as a separate feature."
     },
     {
-      "candidate": "Rock River lake/flowage records 1692463, 1692265, 1691026, 1691024",
-      "decision": "Rejected. The seeded 416824 is the Rock Island County stream record at the Mississippi confluence; four same-name lake/flowage records upstream are distinct features.",
-      "notClaimed": "The stream point is not a channel centerline."
+      "candidate": "Driskill Mountain, FEATURE_ID 542199",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Louisiana, Primary County=Bienville Parish, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in LA at 535 feet; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground."
     },
     {
-      "candidate": "Mississippi River under states=IL and Ohio River under states=IL and states=IN; Lake Michigan under states=IL and states=IN",
-      "decision": "Empty screens (each queried 2026-10-23; the Ohio River returns under another state's association, the Michigan record under states=MI Mason County, held to starter scope in the round-25 Michigan frame). No rows seeded; all remain generalized context corridors in both frames.",
-      "notClaimed": "The corridors are not channel centerlines, shorelines, or state boundaries."
+      "candidate": "St. versus Saint spelling gates in Minnesota: St. Paul and St. Cloud under states=MN",
+      "decision": "Both St.-spelled screens returned empty arrays on 2026-10-23; the Saint-spelled screens returned Saint Paul 662851 (Ramsey) and Saint Cloud 650559 (Stearns). Both Saint records are seeded; the Saint Paul Church/Park/Island pile is rejected in the row note.",
+      "reason": "Fourth spelling gate after St. Louis and St. Joseph (round 25): the official GNIS name field uses the Saint spelling, so the punctuation screen is an identity gate rather than a second feature."
     },
     {
-      "candidate": "Lake Monroe (reversed name order)",
-      "decision": "The states=IN screen for the reversed name returned an empty array; the official GNIS name is Monroe Lake (FEATURE_ID 451234, Monroe County), seeded under the official order with the variant rejected explicitly, following the Vermilion Lake precedent (round 24).",
-      "notClaimed": "No name normalization is claimed for other GNIS orders."
+      "candidate": "Mississippi River under states=IA, states=MO, states=MN, and states=LA",
+      "decision": "Seeded only in Louisiana at the returned Plaquemines Parish sequence (29.1510582, -89.2533842), FEATURE_ID 1629903, the first seeded Mississippi River row. Iowa returned an empty array, Missouri returned only the Mississippi River Hills Area record 758109, and Minnesota returned only the Mississippi River Reservoir lake 1776673; those frames keep border corridors only.",
+      "knownServiceDiscrepancy": "Three distinct failure modes precede the Louisiana success: empty screen, name mismatch, and type mismatch. The Louisiana point identifies the lower river only and does not verify the upstream reaches."
     },
     {
-      "candidate": "White River, FEATURE_ID 445956 (Gibson County populated place)",
-      "decision": "Rejected. The seeded 445955 is the Knox County stream record at the Wabash confluence; the Gibson County record is a small community of the same name.",
-      "notClaimed": "The stream point is not a channel centerline and does not locate the community."
+      "candidate": "Red River chain: ND/OK empty, TX Brown County, MN Red River of the North, LA West Feliciana",
+      "decision": "Seeded the Louisiana stream 558728 at the returned West Feliciana Parish sequence (31.0193471, -91.7478975). Not seeded: North Dakota and Oklahoma screens returned empty (round 22), the Texas screen returned a Brown County record rejected in round 24, and the Minnesota screen returned exact Red River of the North 1035890 but without an in-frame primary point.",
+      "knownServiceDiscrepancy": "For 1035890 the Geocoder reported the returned primary point (50.4002778, -96.8000000) with County=Kittson County, while the per-ID check marks sequence 1 with no state or map unit because the point sits in Canada at the Lake Winnipeg terminus. Minnesota sequences exist on the record but were not the returned primary, so the Minnesota frame keeps a generalized border corridor only."
     },
     {
-      "candidate": "Wabash River Old Channel, FEATURE_ID 445332",
-      "decision": "Rejected. A former-channel record in Posey County; the seeded 449850 is the main-stem river record at the Ohio confluence.",
-      "notClaimed": "The seeded point does not trace the old channel."
+      "candidate": "Monroe under states=LA",
+      "decision": "No row seeded: the screen returned two exact-name populated places, Monroe in Ouachita Parish 1629977 and Monroe in Union Parish 544877, which the returned fields alone cannot distinguish for the intended city.",
+      "reason": "Indistinguishable exact-name candidates stay unseeded under the selection rules; the frame keeps six other populated places."
     },
     {
-      "candidate": "Hoosier Hill, FEATURE_ID 1851956",
-      "decision": "Seeded after a Domestic Names per-ID check reproduced Class=Summit, Primary County=Wayne County, and the Geocoder point exactly; the Geocoder returned a single exact Summit record. Its FEATURE_ID sits adjacent to the round-24 Hawkeye Point high-point record (1851955) in the same high-point record series.",
-      "notClaimed": "The primary point is not a surveyed boundary of the hill or county corner."
+      "candidate": "Lafayette and Natchitoches parish-name traps",
+      "decision": "Lafayette seeds the populated place 1629965 and rejects Lafayette Parish 558059 plus the historical Orleans Parish Lafayette 559614; Natchitoches seeds the populated place 1629983 and rejects Natchitoches Parish 558108, the State Designated Tribal Statistical Area 2813264, and Natchitoches Island 549598.",
+      "notClaimed": "No parish, statistical area, island, or historical record point verifies its namesake city."
     },
     {
-      "candidate": "Joliet and Waukegan (Illinois); Gary (Indiana)",
-      "decision": "Identity-safe candidates in the batch-9 extract, omitted under the starter-scope treatment; the 12-row starters keep the capital anchors plus statewide coverage.",
-      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+      "candidate": "Lake Charles city and lake, FEATURE_ID 1629966 versus 553954",
+      "decision": "Seeded the Calcasieu Parish populated place; rejected the same-name lake record 553954 (identity-safe but held to starter scope), the historical Air Force Station 2087773, and the historical Army Air Field 2085457.",
+      "notClaimed": "The city point does not verify the lake, and the lake is not presented as a shoreline."
+    },
+    {
+      "candidate": "New Orleans same-name piles",
+      "decision": "Seeded Orleans Parish 1629985; rejected the historical Navigation Canal 549902, the Plaquemines Station census record 2804360, and the historical Army Air Base 2085459.",
+      "notClaimed": "No canal, census place, or air base point verifies the city."
+    },
+    {
+      "candidate": "Mille Lacs screen-term versus official name",
+      "decision": "The screen term Mille Lacs returned the exact official record Mille Lacs Lake 647859 in Mille Lacs County; the county 659493, reservation 2419017, and Mille Lacs Meadows swamp 647860 are rejected.",
+      "notClaimed": "No county, reservation, or meadows point verifies the lake, and the lake point is not a shoreline."
+    },
+    {
+      "candidate": "Minneapolis, Duluth, Rochester, Mankato, and Saint Paul same-name piles",
+      "decision": "Minneapolis rejects the airport Air Reserve Station 2512487; Duluth rejects Duluth Heights 661147, Duluth Junction 654681, the Duluth Entry stream 660579, and Duluth International Airport 2832676; Rochester rejects the historical Air Force Station 2090202; Mankato rejects Mankato Spring 647440; Saint Paul rejects Saint Paul Church 662341, Saint Paul Park 650970, and Saint Paul Island 662342.",
+      "notClaimed": "No height, junction, entry, airport, station, spring, church, park, or island point verifies its namesake city."
+    },
+    {
+      "candidate": "Lake Superior and St. Croix River under states=MN; Toledo Bend Reservoir under states=LA",
+      "decision": "No rows seeded: Lake Superior and St. Croix River screens returned empty arrays on 2026-10-23, and Toledo Bend Reservoir returned empty on both the full term and the Toledo Bend retry.",
+      "reason": "Empty screens stay unseeded; no corridor was drawn because the Minnesota frame already carries five context corridors and the Louisiana frame draws its water corridors around the seeded rivers."
+    },
+    {
+      "candidate": "Rainy Lake and Calcasieu Lake starter-scope holds",
+      "decision": "Rainy Lake returned four same-name lake records (Cass 657973, Koochiching 662245 and 1776935, Otter Tail 649799) that the screens do not disambiguate; Calcasieu Lake returned under the Bays & Harbors type 559665. Both hold to starter scope alongside Waterloo (round 25), Salina (round 23), and the Lake Charles lake.",
+      "notClaimed": "No exclusion on identity grounds for Calcasieu; Rainy Lake remains ambiguous and is not seeded on identity grounds."
     }
   ],
   "knownLimitations": [
-    "Illinois and Indiana are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
-    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
-    "The current DomesticNames text layout carries no elevation columns, so Charles Mound (1,235 feet) and Hoosier Hill (1,257 feet) elevations cite USGS-published state-highpoint values; GNIS identity for both rests on the per-ID class/county/point reproduction.",
-    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
-    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+    "Minnesota and Louisiana are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Eagle Mountain, Lake of the Woods, and Driskill Mountain additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Louisiana coast line is generalized, not a shoreline survey.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines (including Canadian waters north of Minnesota); no boundary geometry is claimed."
   ]
 }

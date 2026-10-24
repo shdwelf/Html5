@@ -1,87 +1,107 @@
-# Backlog execution — Round 24 (2026-10-23)
+# Backlog execution round 24 — 23 Oct 2026
 
-Continues the agent backlog on branch `arena/ed5d4b7c-html5` (PR #139).
-This round closes the T4.1 batch-7 GNIS pipeline: Minnesota and Iowa join
-the CITY SUBSURFACE atlas as configurations 25–26.
+*Twenty-fourth round: “Continue backlog.” This round continues the S4
+geographic queue immediately after the round-23 Central Plains batch.
+Index: [`agent-backlog-2026-10-21.md`](agent-backlog-2026-10-21.md).
+Previous rounds: [22](backlog-execution-round-22-2026-10-23.md) ·
+[23](backlog-execution-round-23-2026-10-23.md).*
 
-## Outcomes
+## Scoping decision
 
-- **T4.1 batch 7 — Minnesota + Iowa (partial; configurations 25–26).**
-  Each frame ships twelve all-GNIS `VERIFIED=1` starter rows (six
-  populated places, one state high point, four–five lakes/streams,
-  generalized context corridors, four official nodes, labelled synthetic
-  relief, no DEM), generated into `minnesota-subsurface.html` /
-  `iowa-subsurface.html`, `js/city-subsurface-data-*.js`,
-  `js/city-gazetteer-data-*.js`, `*.xdc`, and the `public/apps/` mirrors
-  by `npm run build:city-subsurface`.
+Rounds 20–23 all handed the queue the same instruction: remaining states
+in **dated, per-row GNIS source-register batches**. Round 24 takes the
+**Southern Plains batch — Oklahoma and Texas**, which the round-23 record
+named as the next step of the remaining plains/mountain states (all
+census-Mountain states are now shipped).
 
-## Two-surface verification method (new this round)
+The identity rule is unchanged: exact official name, compatible returned
+type, intended state, returned primary county, permanent FEATURE_ID, and
+returned primary point must all identify the feature before `VERIFIED=1`;
+points are never described as boundaries, shorelines, bay polygons,
+canyon rims, or river centerlines; ambiguous, mismatched, or
+state-screen-unreturned features stay unseeded or become generalized
+`context` corridors.
 
-Rounds 20–23 screened each row once against the USGS GNIS Geocoder. This
-round adds a second, independent USGS surface so every `VERIFIED=1`
-claim rests on two reproductions of the same record:
+## Delivered
 
-1. **USGS GNIS Geocoder** (`dashboard.waterdata.usgs.gov/service/geocoder`)
-   — exact official name, returned type, state, primary county, GnisId,
-   and primary-point coordinates (the same screening rule as round 23).
-2. **GNIS DomesticNames state text files** (staged-products S3:
-   `DomesticNames_<ST>_Text.zip`) — the sandbox cannot reach that host, so
-   `tools/gnis_extract.py` runs in a GitHub Actions runner
-   (`.github/workflows/arena-gnis-fetch.yml`, request in
-   `.arena-gnis/candidates.json`) and commits the small candidate extract
-   (`resources/city-subsurface/gnis-candidates-batch7.json`, per-state
-   ZIP SHA-256 pinned) plus a committed diagnostic log. The 2026 text
-   layout lowercases the header, prefixes a UTF-8 BOM, and drops the
-   elevation columns; the extractor normalizes accordingly, and the two
-   high-point elevations therefore cite USGS-published state-highpoint
-   values (Eagle Mountain 2,301 ft, Hawkeye Point 1,670 ft) instead of
-   the text file.
+| Frame | Result |
+| --- | --- |
+| **Oklahoma** (`oklahoma`) | Configuration 25. Twelve all-GNIS rows: Oklahoma City, Tulsa, Lawton, Norman, Stillwater, Enid, Mount Scott, Lake Texoma, Grand Lake O' The Cherokees, Tenkiller Ferry Lake, Canadian River, and Illinois River. Four context corridors (I-40, I-44, Red River border, Arkansas River) and four GNIS-backed nodes. |
+| **Texas** (`texas`) | Configuration 26. Twelve all-GNIS rows: Austin, Houston, Dallas, San Antonio, El Paso, Fort Worth, Guadalupe Peak, Brazos River, Rio Grande, Trinity River, Galveston Bay, and Palo Duro Canyon. Four context corridors (I-35, I-10, Rio Grande, Brazos), a labelled generalized Gulf coast line, and four GNIS-backed nodes. |
+| [`../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json) | Machine-readable batch-7 register: row-level FEATURE_IDs, returned Geocoder types/counties, stored points, source notes, selection rules, sixteen identity decisions (including the per-ID Red River rejection), and limitations. The city test reconstructs every generated row from it exactly. |
+| Generated apps | Root pages, data/gazetteer packs, public staged apps, and Webxdc bundles for both states. Every city XDC now contains 67 entries (26 data + 26 gazetteer packs plus the shared shell/vendor set). |
+| Docs/backlog | `city-subsurface.md`, root README, backlog MD/JSON, docs index, and the Wiki archive describe twenty-six configurations and the batch-7 evidence. |
 
-All 24 seeded rows reproduce identically on both surfaces (same
-FEATURE_ID, class, county, and primary point). The batch-7 register
-(`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`)
-preserves the returned Geocoder type/county strings and records every
-identity decision.
+## Identity findings
 
-## Identity decisions worth remembering
-
-- **Eagle Mountain** is two Cook County summits (`656080` seeded,
-  `656081` rejected, ~25 km apart) plus a Todd County namesake
-  (`643035`, rejected); the seeded record matches the published
-  Minnesota high-point location.
-- **Lake of the Woods** has two permanent FEATURE_IDs (`654378` seeded,
-  `1930543` unseeded) — multipoint duplication on one lake, preserved as
-  a known service discrepancy.
-- **Vermilion Lake** is the official name order; the reversed screen
-  returned no lake record.
-- **Clear Lake** (lake `455462` vs city `455465` vs Pocahontas County
-  lake `455463`) and **Spirit Lake** (lake `461850` vs city `461851`)
-  follow the established town-versus-lake split.
-- Main-stem screens stay unseeded: Mississippi River (empty under
-  MN+IA; only the Stearns County reservoir record surfaced),
-  Missouri River (empty under IA), Red River of the North (record found
-  but its primary point is the Lake Winnipeg mouth at 50.4002778, −96.8,
-  outside the frame), Lake Superior (empty under MN). All four remain
-  generalized context corridors whose facts say why.
-- Starter-scope holds (Salina precedent): Bloomington and
-  Lake Minnetonka (MN); Waterloo, East Okoboji Lake, Lake Red Rock,
-  and Saylorville Lake (IA) — all identity-safe in the extract.
+- **Guadalupe Peak needed the per-ID treatment.** GNIS Domestic Names
+  confirms `1358489` is Class=Summit, Primary County=Culberson County,
+  coordinate sequence 1 marked **High Point** at the stored point,
+  description “Highest elevation in TX at 8749 feet” in Guadalupe
+  Mountains National Park, with a 1936 Board decision — coordinate
+  matches the Geocoder exactly. Its variant names (El Capitan Peak,
+  Signal Peak, the Guadaloupe misspelling) are variants of the same
+  record, not extra rows.
+- **Oklahoma's high point has no row — on purpose.** The exact-name
+  Black Mesa `states=OK` screens returned empty arrays twice
+  (maxSuggestions 10 and 25), so nothing was forced; Mount Scott is
+  seeded as a Wichita Mountains summit and its note states it is **not**
+  the state high point. This is the first state where the high point
+  stays unseeded on an empty-screen record.
+- **Red River was rejected by per-ID review, not an empty screen.**
+  `states=OK` returned an empty array; `states=TX` returned an
+  exact-name Stream record — but the per-ID check shows Primary
+  County=Brown County with both coordinate sequences near 31.95 N, about
+  150 miles south of the intended Texas–Oklahoma border reach (~34.4 N).
+  The record does not identify the intended feature, so both frames keep
+  Red River corridor-only (consistent with the round-22 Red River of the
+  North empty screens). Red River County, Red River City, and Red River
+  Army Depot are further same-name rejections.
+- **Arkansas River empties for a third consecutive state.** After
+  round-18 Colorado and round-23 Kansas, the `states=OK` screen again
+  returned an empty array; the corridor chains all three. Gloss
+  Mountains also screened empty.
+- **The Division pile is Oklahoma's trap.** Oklahoma City rejects four
+  city Divisions plus the census Division and the historical Air Force
+  Station; Tulsa rejects county/Division/Non-Community/AAF/airport
+  records; Lawton, Norman, Stillwater, and Enid each reject their
+  Division (Stillwater also rejects Stillwater Creek and its reservoir
+  pile). Grand Lake seeds only under the official apostrophe spelling —
+  “Grand Lake of the Cherokees” screens empty.
+- **Texas metros carry the biggest same-name piles yet.** Austin rejects
+  its county, Division, colonia, two Branch streams, and a Bayou;
+  Houston rejects county/Division/Heights/Ship Channel/Colonia/Creek/
+  lakes; San Antonio rejects seven Divisions plus Prairie and Viejo; El
+  Paso rejects county, four Divisions, the Electric Company lake, and
+  the historical AAF; Dallas and Fort Worth likewise. The Rio Grande
+  seeds at the Cameron County Gulf mouth (City/Village/Division
+  rejected) — the reach that stayed unseeded in the New Mexico batch.
+- **Two classes get first exercises.** Galveston Bay stores the returned
+  **Bay** class (Bays & Harbors type; entrance channel stream rejected;
+  Chambers County primary point disclosed as a mapped point, not a
+  shoreline polygon), and Palo Duro Canyon stores the returned **Valley**
+  class rather than an invented Canyon class. Colorado River (TX),
+  Quartz Mountain, and Padre Island are identity-safe but held to
+  starter scope (Rogue River/Belle Fourche/Salina precedent).
 
 ## Test tally at round-24 close
 
 | Suite | Result |
 | --- | --- |
-| `npm run build:city-subsurface` | PASS — 26 frames built; Minnesota/Iowa each report 12 gazetteer rows (12 verified), 5 corridors, 4 nodes; every city XDC has 65 entries |
-| `node --test tests/city-subsurface.test.mjs` | 14/14 PASS (includes the new Upper Midwest batch test, which re-verifies every FEATURE_ID against the DomesticNames extract) |
-| `npm run build:wikiinajar` | PASS — 240 Markdown files converted to Wiki pages; `wikiinajar.xdc` rebuilt |
-| Full `node --test tests/*.test.mjs` | 802 tests: 787 pass, 12 skipped, 3 fail — the 3 failures are the CyberChef registry/SFX suites and fail identically on pristine `main` (`d66e052`) in this sandbox (they need the full npm tree); no city-suite regressions |
+| `npm run build:city-subsurface` | PASS — 26 frames built; Oklahoma/Texas each report 12 gazetteer rows (12 verified), 4 corridors, 4 nodes; every city XDC has 67 entries |
+| `node --test tests/city-subsurface.test.mjs` | 14/14 PASS |
+| `npm run build:wikiinajar` | PASS — 219 Markdown files converted to Wiki pages; `wikiinajar.xdc` rebuilt |
+| Full `vitest run` | 35 files, 307/307 PASS |
+| Full `node --test tests/*.test.mjs` | 727 tests: 717 pass, 10 skipped, 0 fail |
 
 ## Next
 
-- Remaining states next in dated per-row batches (Wisconsin/Michigan/
-  Illinois/Indiana/Ohio eastward, then the South), then the
-  country/PC Globe thread.
-- PR #138 (T1.3 + iParty Ghidra strand) still awaits the user's merge
-  decision on its own branch; nothing from it is duplicated here.
-- Keep bulk California themes and archived-class features behind their
-  own explicit source decisions.
+- The West North Central remainder (Iowa, Missouri, Minnesota) or the
+  Gulf/South Atlantic states next in dated per-row batches; after that
+  the country/PC Globe thread.
+- Keep bulk California themes and archived-class features behind their own
+  explicit source decisions.
+- Unchanged from round 19: relay official current Temurin 8/21, evaluate
+  OpenJVM-Wasm only in isolation, keep Ghidra distributions on CI/relay.
+- S6 still needs lawfully redistributable historical snapshots; S7 remains
+  blocked on its missing binary/teardown/driver artifacts.

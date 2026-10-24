@@ -54,144 +54,69 @@ with the per-ID “highest elevation” descriptions preserved in their
 notes). Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
 
-Round 24 update: **2026-10-23**. `minnesota` and `iowa` join as the
+Round 24 update: **2026-10-23**. `oklahoma` and `texas` join as the
 twenty-fifth and twenty-sixth configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on two independent USGS surfaces
-(the GNIS Geocoder service and the staged-products DomesticNames state
-text files, extracted per state by `tools/gnis_extract.py`; candidates in
-`resources/city-subsurface/gnis-candidates-batch7.json`). Eagle Mountain
-(2,301 feet) and Hawkeye Point (1,670 feet) carry Domestic Names per-ID
-identity checks; the current text layout has no elevation columns, so
-those two elevations cite USGS-published state-highpoint values. The
-machine-readable evidence is
+all-GNIS `VERIFIED=1` rows; Guadalupe Peak additionally carries a GNIS
+Domestic Names per-ID detail check (Texas high point, “8749 feet”), and
+the returned Red River record was reviewed per-ID and rejected because
+its Brown County sequences do not identify the intended border reach.
+Texas ships a labelled generalized Gulf coast line. Their machine-readable
+evidence is
 [`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
 
-Round 25 update: **2026-10-23**. `wisconsin` and `michigan` join as the
+Round 25 update: **2026-10-23**. `iowa` and `missouri` join as the
 twenty-seventh and twenty-eighth configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(Geocoder + runner-extracted DomesticNames text; the candidate extract
-file is cumulative across batches). Timms Hill (1,951 feet) and Mount
-Arvon (1,979 feet) carry Domestic Names per-ID identity checks. Michigan
-seeds one Great Lakes anchor — Lake Superior, whose single GNIS primary
-point lies in Michigan waters inside the frame — while Lake Huron and
-Lake Michigan are documented starter-scope holds and Lake Erie screens
-empty; Wisconsin's Great Lakes and main-stem screens are all empty. The
-machine-readable evidence is
+all-GNIS `VERIFIED=1` rows; Hawkeye Point and Taum Sauk Mountain
+additionally carry GNIS Domestic Names per-ID detail checks (both state
+high points, “1670 feet” and “1772 feet”). Missouri carries the first
+statewide Missouri River row after six empty upstream state screens, and
+the St./Saint spelling gates for Saint Louis and Saint Joseph are recorded.
+Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
 
-Round 26 update: **2026-10-23**. `illinois` and `indiana` join as the
-twenty-ninth and thirtieth configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(Geocoder + runner-extracted DomesticNames text; cumulative candidate
-extract). Charles Mound (1,235 feet) and Hoosier Hill (1,257 feet) carry
-Domestic Names per-ID identity checks; Hoosier Hill's FEATURE_ID sits
-adjacent to round 24's Hawkeye Point record in the same high-point
-series. Monroe Lake is seeded under the official name order (the
-reversed screen is empty). The Mississippi and Ohio main stems and Lake
-Michigan screen empty under both states and remain corridors. The
+Round 26 update: **2026-10-23**. `minnesota` and `louisiana` join as the
+twenty-ninth and thirtieth configurations, closing the West North Central
+division and opening the Gulf thread. Each starts with twelve all-GNIS
+`VERIFIED=1` rows; Eagle Mountain and Driskill Mountain additionally carry
+GNIS Domestic Names per-ID detail checks (“2301 feet” disambiguated from
+two undesignated same-name summits, and “535 feet”), Lake of the Woods
+carries a Board-decision per-ID check, Louisiana seeds the **first
+statewide Mississippi River row** (Plaquemines) after three distinct state
+screen failures, and the Red River chain closes at the West Feliciana
+record. Louisiana ships a labelled generalized Gulf coast line. Their
 machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
 
-Round 27 update: **2026-10-23**. `ohio` and `pennsylvania` join as the
-thirty-first and thirty-second configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(candidates in the cumulative extract). Campbell Hill (1,550 feet) and
-Mount Davis (3,213 feet) carry Domestic Names per-ID identity checks;
-Campbell Hill required choosing among three same-name Ohio summits.
-Lake Erie is seeded once, in the Ohio frame, after empty Pennsylvania
-screens. The Ohio main stem screens empty under a fourth consecutive
-state (IL, IN, OH, PA) and remains a corridor, as do the Susquehanna
-and Delaware. The batch also records the first **source-corrupted GNIS
-coordinate** in the series: Indian Lake (FEATURE_ID 1041943) carries a
-longitude in western Pennsylvania on *both* USGS surfaces, so the
-feature is excluded and documented in the register rather than
-hand-corrected — two-surface agreement is necessary, not sufficient.
-The machine-readable evidence is
+Round 27 update: **2026-10-23**. `mississippi` and `alabama` join as the
+thirty-first and thirty-second configurations, opening the Gulf state pair
+east of Texas. Each starts with twelve all-GNIS `VERIFIED=1` rows;
+Woodall Mountain and Cheaha Mountain additionally carry GNIS Domestic
+Names per-ID detail checks (“806 feet” and “2407 feet”), Guntersville Lake
+and Wheeler Lake carry decision-card per-ID checks that resolve a parallel
+duplicate and a separate same-name lake, and both frames ship labelled
+generalized Gulf coast lines. The Mississippi main stem stays corridor-only
+in its own state after a fifth empty/mismatched screen, and Tombigbee
+seeds only in Alabama. Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
-Two maintenance fixes ride along: a duplicated `illinois`/`indiana`
-key pair (identical copies from a double builder run; JSON consumers
-used the last copy, so behavior was unchanged) is deduplicated, and
-the Charles Mound note county is corrected to Wayne County, with
-semantic county asserts now guarding every batch test.
 
-Round 28 update: **2026-10-23**. `missouri` and `arkansas` join as the
-thirty-third and thirty-fourth configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(candidates in the cumulative extract). Taum Sauk Mountain (1,772 feet)
-carries a Domestic Names per-ID check; Magazine Mountain (2,753 feet)
-is the series' first **Ridge-class** row — GNIS classifies the Arkansas
-high-point mesa as a Ridge, so the gazetteer gained a `Ridge` class
-(`phys.ridge`) rather than misnaming it a Summit. The Mississippi
-main stem screens empty under both states and the Current River under
-Missouri; Bull Shoals Lake is seeded once, on its Arkansas record.
-The machine-readable evidence is
+Round 28 update: **2026-10-23**. `georgia` joins as the
+thirty-third configuration, opening the South Atlantic seaboard east of
+Alabama. It starts with twelve all-GNIS `VERIFIED=1` rows; Brasstown Bald
+additionally carries a GNIS Domestic Names per-ID detail check
+(“Highest elevation in GA at 4784 feet” via the official
+`gaznames_default` REST layer), Lake Oconee carries a two-record
+per-ID tie-break seeded on the Rockville locator description, and the
+frame ships a labelled generalized Atlantic coast line. The Savannah
+River screen returned an empty array (the national screen surfaces only
+the South Carolina record), Lake Lanier screened as a populated place
+only, and the Chattahoochee record is held to starter scope with its
+FEATURE_ID kept in the corridor. Its machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
-
-Round 29 update: **2026-10-23**. `Kentucky` and `tennessee` join as the
-thirty-fifth and thirty-sixth configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(candidates in the cumulative extract). Black Mountain (4,145 feet,
-Kentucky high point) and Mount Le Conte (6,593 feet) carry Domestic
-Names per-ID identity checks. This batch resolves the series' longest
-corridor question: after empty `states=OH/IN/IL/PA` screens, the Ohio
-River main stem's GNIS record proves **Kentucky-associated**
-(FEATURE_ID 425264, Ballard County mouth) and is seeded once in
-Kentucky; the Tennessee and Cumberland mouth records are likewise
-Kentucky-associated (both empty under TN) and seeded here, remaining
-corridors in Tennessee. Kentucky Lake is seeded once on its Tennessee
-record. Kuwohi/Clingmans Dome — Tennessee's highest summit — has no
-Tennessee GNIS record on either surface and appears only as a context
-marker. The machine-readable evidence is
-[`resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
-
-Round 30 update: **2026-10-23**. `virginia` and `westvirginia` join as
-the thirty-seventh and thirty-eighth configurations. Each starts with
-twelve all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
-surfaces (candidates in the cumulative extract). Mount Rogers (5,729
-feet, Virginia high point) and Spruce Knob (4,863 feet, West Virginia
-high point) carry Domestic Names per-ID identity checks. Six Virginia
-rows are independent cities whose county identities are spelled
-`City of …` by the Geocoder and `… (city)` by the text extract —
-normalized in verification, never edited. The Shenandoah and New
-River records are West Virginia-associated and seeded in West
-Virginia (Virginia screens return no stream records); the Potomac,
-Ohio, and Monongahela main stems remain corridors here. The
-machine-readable evidence is
-[`resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json).
-
-Round 31 update: **2026-10-23**. `northcarolina` and `southcarolina`
-join as the thirty-ninth and fortieth configurations. Each starts with
-twelve all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
-surfaces (candidates in the cumulative extract). North Carolina carries
-both Appalachian high points: Mount Mitchell (6,684 feet, highest east
-of the Mississippi) and **Kuwohi** (6,643 feet) — Tennessee's highest
-summit, seeded here on its North Carolina record under its restored
-2024 name, closing the batch-12 context decision (no Tennessee GNIS
-record exists for it on either surface). Sassafras Mountain (3,553
-feet, South Carolina high point) carries a per-ID check; the Savannah
-River is seeded on its SC-associated record and the Pee Dee keeps its
-returned Chesterfield County keying verbatim. The machine-readable
-evidence is
-[`resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json).
-
-Round 32 update: **2026-10-23**. `Georgia` and `florida` join as the
-forty-first and forty-second configurations. Each starts with twelve
-all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
-(candidates in the cumulative extract). Brasstown Bald (4,784 feet,
-Georgia high point) and Britton Hill (345 feet — the **lowest** US
-state high point; its FEATURE_ID 1851954 immediately precedes Hawkeye
-Point's and Hoosier Hill's in the GNIS high-point series) carry
-Domestic Names per-ID identity checks. Georgia seeds the Chattahoochee
-and Flint Rivers at the *identical* GNIS confluence point both
-surfaces return — two distinct FEATURE_IDs stored unadjusted — while
-Hartwell Lake and Lake Sidney Lanier are seeded under their official
-GNIS name orders. The machine-readable evidence is
-[`resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json).
 
 ## Shared app and build
 
-The SoCal Subsurface engine now has forty-two configurations — five cities,
-thirty-three statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-three configurations — five cities,
+twenty-four statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -220,24 +145,15 @@ its own offline Webxdc:
 | South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
 | Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
 | Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
-| Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
+| Oklahoma (statewide) | `oklahoma-subsurface.html` | `js/city-subsurface-data-oklahoma.js` | `js/city-gazetteer-data-oklahoma.js` | `oklahoma-subsurface.xdc` |
+| Texas (statewide) | `texas-subsurface.html` | `js/city-subsurface-data-texas.js` | `js/city-gazetteer-data-texas.js` | `texas-subsurface.xdc` |
 | Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
-| Wisconsin (statewide) | `wisconsin-subsurface.html` | `js/city-subsurface-data-wisconsin.js` | `js/city-gazetteer-data-wisconsin.js` | `wisconsin-subsurface.xdc` |
-| Michigan (statewide) | `michigan-subsurface.html` | `js/city-subsurface-data-michigan.js` | `js/city-gazetteer-data-michigan.js` | `michigan-subsurface.xdc` |
-| Illinois (statewide) | `illinois-subsurface.html` | `js/city-subsurface-data-illinois.js` | `js/city-gazetteer-data-illinois.js` | `illinois-subsurface.xdc` |
-| Indiana (statewide) | `indiana-subsurface.html` | `js/city-subsurface-data-indiana.js` | `js/city-gazetteer-data-indiana.js` | `indiana-subsurface.xdc` |
-| Ohio (statewide) | `ohio-subsurface.html` | `js/city-subsurface-data-ohio.js` | `js/city-gazetteer-data-ohio.js` | `ohio-subsurface.xdc` |
-| Pennsylvania (statewide) | `pennsylvania-subsurface.html` | `js/city-subsurface-data-pennsylvania.js` | `js/city-gazetteer-data-pennsylvania.js` | `pennsylvania-subsurface.xdc` |
 | Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
-| Arkansas (statewide) | `arkansas-subsurface.html` | `js/city-subsurface-data-arkansas.js` | `js/city-gazetteer-data-arkansas.js` | `arkansas-subsurface.xdc` |
-| Kentucky (statewide) | `Kentucky-subsurface.html` | `js/city-subsurface-data-Kentucky.js` | `js/city-gazetteer-data-Kentucky.js` | `Kentucky-subsurface.xdc` |
-| Tennessee (statewide) | `tennessee-subsurface.html` | `js/city-subsurface-data-tennessee.js` | `js/city-gazetteer-data-tennessee.js` | `tennessee-subsurface.xdc` |
-| Virginia (statewide) | `virginia-subsurface.html` | `js/city-subsurface-data-virginia.js` | `js/city-gazetteer-data-virginia.js` | `virginia-subsurface.xdc` |
-| West Virginia (statewide) | `westvirginia-subsurface.html` | `js/city-subsurface-data-westvirginia.js` | `js/city-gazetteer-data-westvirginia.js` | `westvirginia-subsurface.xdc` |
-| North Carolina (statewide) | `northcarolina-subsurface.html` | `js/city-subsurface-data-northcarolina.js` | `js/city-gazetteer-data-northcarolina.js` | `northcarolina-subsurface.xdc` |
-| South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
-| Georgia (statewide) | `Georgia-subsurface.html` | `js/city-subsurface-data-Georgia.js` | `js/city-gazetteer-data-Georgia.js` | `Georgia-subsurface.xdc` |
-| Florida (statewide) | `florida-subsurface.html` | `js/city-subsurface-data-florida.js` | `js/city-gazetteer-data-florida.js` | `florida-subsurface.xdc` |
+| Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
+| Louisiana (statewide) | `louisiana-subsurface.html` | `js/city-subsurface-data-louisiana.js` | `js/city-gazetteer-data-louisiana.js` | `louisiana-subsurface.xdc` |
+| Mississippi (statewide) | `mississippi-subsurface.html` | `js/city-subsurface-data-mississippi.js` | `js/city-gazetteer-data-mississippi.js` | `mississippi-subsurface.xdc` |
+| Alabama (statewide) | `alabama-subsurface.html` | `js/city-subsurface-data-alabama.js` | `js/city-gazetteer-data-alabama.js` | `alabama-subsurface.xdc` |
+| Georgia (statewide) | `georgia-subsurface.html` | `js/city-subsurface-data-georgia.js` | `js/city-gazetteer-data-georgia.js` | `georgia-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
