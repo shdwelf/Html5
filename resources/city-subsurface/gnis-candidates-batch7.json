@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T07:12:53Z",
+ "retrieved": "2026-10-24T07:41:20Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4633,6 +4633,156 @@
      "county": "Providence",
      "lat": 42.0028761,
      "lon": -71.5147839
+    }
+   ]
+  },
+  "AK": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_AK_Text.zip",
+   "zipSha256": "46c00418af3c5e57c2390ec33c7f96876a9cb90d26b945ca89280ae9250e54b5",
+   "candidatesRequested": [
+    "Juneau",
+    "Anchorage",
+    "Fairbanks",
+    "Utqiag\u0121vik",
+    "Utqiagvik",
+    "Nome",
+    "Ketchikan",
+    "Kodiak",
+    "Unalaska",
+    "Mount McKinley",
+    "Denali",
+    "Mount Foraker",
+    "Iliamna Lake",
+    "Yukon River",
+    "Kuskokwim River",
+    "Utqiag\u0307vik"
+   ],
+   "rows": [
+    {
+     "featureId": "1398242",
+     "name": "Anchorage",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Anchorage",
+     "lat": 61.2180556,
+     "lon": -149.9002778
+    },
+    {
+     "featureId": "1401116",
+     "name": "Denali",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Matanuska-Susitna",
+     "lat": 63.1786111,
+     "lon": -147.4661111
+    },
+    {
+     "featureId": "1401958",
+     "name": "Fairbanks",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Fairbanks North Star",
+     "lat": 64.8377778,
+     "lon": -147.7163889
+    },
+    {
+     "featureId": "1403764",
+     "name": "Iliamna Lake",
+     "featureClass": "Lake",
+     "state": "Alaska",
+     "county": "Lake and Peninsula",
+     "lat": 59.5528805,
+     "lon": -155.0881217
+    },
+    {
+     "featureId": "1404263",
+     "name": "Juneau",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Juneau",
+     "lat": 58.3019444,
+     "lon": -134.4197222
+    },
+    {
+     "featureId": "1423039",
+     "name": "Ketchikan",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Ketchikan Gateway",
+     "lat": 55.3422222,
+     "lon": -131.6461111
+    },
+    {
+     "featureId": "1404875",
+     "name": "Kodiak",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Kodiak Island",
+     "lat": 57.79,
+     "lon": -152.4072222
+    },
+    {
+     "featureId": "1416402",
+     "name": "Kuskokwim River",
+     "featureClass": "Stream",
+     "state": "Alaska",
+     "county": "Bethel (CA)",
+     "lat": 60.0830556,
+     "lon": -162.3338889
+    },
+    {
+     "featureId": "1402265",
+     "name": "Mount Foraker",
+     "featureClass": "Summit",
+     "state": "Alaska",
+     "county": "Denali",
+     "lat": 62.9605979,
+     "lon": -151.398675
+    },
+    {
+     "featureId": "1414314",
+     "name": "Mount McKinley",
+     "featureClass": "Summit",
+     "state": "Alaska",
+     "county": "Denali",
+     "lat": 63.0691018,
+     "lon": -151.0062617
+    },
+    {
+     "featureId": "1407125",
+     "name": "Nome",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Nome (CA)",
+     "lat": 64.5011111,
+     "lon": -165.4063889
+    },
+    {
+     "featureId": "1419424",
+     "name": "Unalaska",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "Aleutians West (CA)",
+     "lat": 53.8736111,
+     "lon": -166.5366667
+    },
+    {
+     "featureId": "1398635",
+     "name": "Utqiag\u0307vik",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "North Slope",
+     "lat": 71.2905556,
+     "lon": -156.7886111
+    },
+    {
+     "featureId": "1416412",
+     "name": "Yukon River",
+     "featureClass": "Stream",
+     "state": "Alaska",
+     "county": "Kusilvak (CA)",
+     "lat": 62.5986111,
+     "lon": -164.8
     }
    ]
   }

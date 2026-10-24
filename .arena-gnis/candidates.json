@@ -458,6 +458,24 @@
       "Sakonnet River",
       "Providence River",
       "Pawcatuck River"
+    ],
+    "AK": [
+      "Juneau",
+      "Anchorage",
+      "Fairbanks",
+      "Utqiagġvik",
+      "Utqiagvik",
+      "Nome",
+      "Ketchikan",
+      "Kodiak",
+      "Unalaska",
+      "Mount McKinley",
+      "Denali",
+      "Mount Foraker",
+      "Iliamna Lake",
+      "Yukon River",
+      "Kuskokwim River",
+      "Utqiaġvik"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",

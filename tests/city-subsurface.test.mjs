@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia", "wisconsin", "michigan", "illinois", "indiana", "ohio", "pennsylvania", "arkansas", "Kentucky", "tennessee", "virginia", "westvirginia", "northcarolina", "southcarolina", "florida", "Maryland", "delaware", "newhampshire", "vermont", "maine", "massachusetts", "connecticut", "rhodeisland"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia", "wisconsin", "michigan", "illinois", "indiana", "ohio", "pennsylvania", "arkansas", "Kentucky", "tennessee", "virginia", "westvirginia", "northcarolina", "southcarolina", "florida", "Maryland", "delaware", "newhampshire", "vermont", "maine", "massachusetts", "connecticut", "rhodeisland", "alaska"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -3635,6 +3635,113 @@ test("Connecticut and Rhode Island complete the Connecticut-Rhode Island GNIS st
     assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
     assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
   }
+});
+
+test("Alaska completes the state-frame GNIS coverage as a single-state batch", async () => {
+  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json"));
+  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-batch7.json"));
+  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
+  const expected = {
+    state: "AK",
+    bbox: { lon0: -171.0, lat0: 51.3, lon1: -129.85, lat1: 71.42 },
+    coastLines: 0,
+    rows: new Map([
+      ["Juneau|Populated Place", "1404263"],
+      ["Anchorage|Populated Place", "1398242"],
+      ["Fairbanks|Populated Place", "1401958"],
+      ["Utqiaġvik|Populated Place", "1398635"],
+      ["Nome|Populated Place", "1407125"],
+      ["Ketchikan|Populated Place", "1423039"],
+      ["Kodiak|Populated Place", "1404875"],
+      ["Unalaska|Populated Place", "1419424"],
+      ["Mount McKinley|Summit", "1414314"],
+      ["Iliamna Lake|Lake", "1403764"],
+      ["Yukon River|Stream", "1416412"],
+      ["Kuskokwim River|Stream", "1416402"],
+    ]),
+    geocoderCountyById: new Map([
+      ["1404263", "Juneau City and Borough"],
+      ["1398242", "Anchorage Municipality"],
+      ["1401958", "Fairbanks North Star Borough"],
+      ["1398635", "North Slope Borough"],
+      ["1407125", "Nome Census Area"],
+      ["1423039", "Ketchikan Gateway Borough"],
+      ["1404875", "Kodiak Island Borough"],
+      ["1419424", "Aleutians West Census Area"],
+      ["1414314", "Denali Borough"],
+      ["1403764", "Lake and Peninsula Borough"],
+      ["1416412", "Kusilvak Census Area"],
+      ["1416402", "Bethel Census Area"],
+    ]),
+    anchor: ["Juneau|Populated Place", 58.3019444, -134.4197222],
+  };
+
+  const data = await import("../js/city-subsurface-data-alaska.js");
+  const gaz = await import("../js/city-gazetteer-data-alaska.js");
+
+  assert.equal(data.CITY.id, "alaska");
+  assert.equal(data.CITY.state, expected.state);
+  assert.equal(data.CITY.requiresDem, false, "alaska: statewide frame uses labelled synthetic relief, not a DEM");
+  assert.deepEqual(data.BBOX, expected.bbox, "alaska: statewide frame bbox");
+  const overview = data.VIEWS.find((v) => v.id === "overview");
+  assert.ok(overview.position[1] >= 20 && overview.position[2] >= 32, "alaska: overview must be scale-aware");
+  const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
+  assert.equal(coastLines, expected.coastLines, "alaska: coast line count");
+
+  assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, "alaska: starter row count");
+  assert.equal(gaz.GAZ_META.verified, expected.rows.size, "alaska: starter register is all-GNIS");
+  assert.equal(gaz.GAZ_META.unverified, 0);
+  for (const row of gaz.GAZ_ROWS) {
+    const key = `${row[0]}|${row[1]}`;
+    assert.equal(row[8], 1, `alaska: ${key} must be VERIFIED=1`);
+    assert.equal(row[7], expected.rows.get(key), `alaska: ${key} FEATURE_ID`);
+    assert.ok(GAZ_CLASS_META[row[1]], `alaska: ${row[1]} needs gazetteer UI metadata`);
+    assert.match(row[9], /USGS GNIS Geocoder/, `alaska: ${key} must name the USGS service`);
+    assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `alaska: ${key} note must name its FEATURE_ID`);
+    assert.match(row[9], /cross-checked 2026-10-24/, `alaska: ${key} note must date the cross-check`);
+    assert.match(row[9], /GNIS primary point/, `alaska: ${key} note must identify the point basis`);
+    const exRow = extract.states.AK.rows.find((r) => r.featureId === row[7]);
+    assert.ok(exRow, `alaska: ${key} FEATURE_ID must appear in the DomesticNames extract`);
+    assert.equal(exRow.name, row[0], `alaska: ${key} extract name`);
+    assert.equal(exRow.county, row[3], `alaska: ${key} extract county must match the stored county`);
+    assert.ok(Math.abs(exRow.lat - row[4]) < 2e-4 && Math.abs(exRow.lon - row[5]) < 2e-4, `alaska: ${key} extract point must match the stored point`);
+  }
+
+  const [anchorKey, anchorLat, anchorLon] = expected.anchor;
+  const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
+  assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-9, "alaska: capital anchor latitude");
+  assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-9, "alaska: capital anchor longitude");
+
+  const registerFrame = register.frames.alaska;
+  assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, "alaska: register row count");
+  assert.deepEqual(registerFrame.bbox, data.BBOX, "alaska: register bbox");
+  const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
+  assert.deepEqual(registerRows, gaz.GAZ_ROWS, "alaska: batch-21 source register must reproduce the generated rows exactly");
+  for (const registerRow of registerFrame.verifiedRows) {
+    assert.ok(registerRow.geocoderType, `alaska: ${registerRow.name} register must preserve the returned Geocoder type`);
+    assert.equal(registerRow.geocoderCounty, expected.geocoderCountyById.get(registerRow.featureId), `alaska: ${registerRow.name} register must preserve the full returned Geocoder county string`);
+  }
+
+  assert.ok(data.CORRIDORS.length >= 4, "alaska: generalized context corridors are present");
+  assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), "alaska: corridors remain context tier");
+  const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
+  for (const node of data.NODES) {
+    assert.equal(node.tier, "official", `alaska: ${node.name} node tier`);
+    assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `alaska: ${node.name} node must reuse its gazetteer GNIS point`);
+  }
+  assert.match(extract.states.AK.zipSha256, /^[0-9a-f]{64}$/, "alaska: extract must pin the source ZIP hash");
+
+  const mckinley = gaz.GAZ_ROWS.find((r) => r[0] === "Mount McKinley");
+  assert.match(mckinley[9], /Domestic Names per-ID check/, "McKinley note must cite the per-ID check");
+  assert.match(mckinley[9], /20,310 feet/, "McKinley note must preserve the published elevation");
+  assert.match(mckinley[9], /Summit in Denali Borough/, "McKinley note must name the correct borough");
+  assert.match(mckinley[9], /renamed Denali in 2015/, "McKinley note must preserve the Denali name history");
+  assert.ok(register.identityDecisions.some((d) => /Denali \(screen returns no summit\)/.test(d.candidate)), "register must record the Denali naming decision");
+
+  const engine = read("js/city-subsurface.js");
+  assert.match(engine, /city-subsurface-data-alaska\.js/, "alaska: data loader");
+  assert.match(engine, /city-gazetteer-data-alaska\.js/, "alaska: gazetteer loader");
+  assert.match(engine, /city-dem-grid-alaska\.js/, "alaska: optional DEM loader");
 });
 
 test("shared city engine parses as an ES module", () => {

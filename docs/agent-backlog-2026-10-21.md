@@ -456,6 +456,25 @@ Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
+**Round 39 status (2026-10-24): partial.** Alaska shipped as
+configuration 56 in a single-state batch, with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json);
+the round record is filed as
+[`backlog-execution-round-39-2026-10-24.md`](backlog-execution-round-39-2026-10-24.md).
+Mount McKinley (`1414314`, Denali Borough, 20,310 ft) keeps its
+per-ID check under the current official GNIS name — renamed
+Denali in 2015, restored by federal action in 2025 — with both
+names preserved in the row note; a `Denali` screen returns no summit
+record. Utqiaġvik (`1398635`) stores its combining-dot
+diacritic exactly as the extract stores it, and the far-western
+Aleutians across the antimeridian are disclosed as outside the
+seeded frame rather than spanned. New Jersey and Hawaii remain
+carried by the open PR #145; when it merges, every US state has a
+statewide frame and the country/planet thread follows.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
