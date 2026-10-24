@@ -345,6 +345,32 @@ cumulative `gnis-candidates-batch7.json` extract were retained.
 Final: cities 47 (26/26), Node 814 = 802 pass/12 skipped/0 fail.
 Next in sequence: the country/planet thread.
 
+**Round 34 status (2026-10-23): partial.** PR #141 reconciled
+main-preferred after PR #139 landed: the branch had independently run
+“Continue backlog” as its own South Carolina (their batch-12, 12 rows:
+North Charleston, Rock Hill, Santee, …) while PR #139 shipped the
+canonical South Carolina as configuration 34 in batch 14 (Myrtle Beach,
+Lake Moultrie, Congaree, …). Main's frame, batch numbering
+(batch 12 = Kentucky–Tennessee), registers, tests, and docs are kept;
+the branch's duplicate generation is dropped, with its unique screening
+evidence transferred instead: the Sassafras Mountain row/node/frameNote/
+knownLimitations now carry **3,560 feet from the current USGS
+Elevations and Distances table** (fetched 2026-10-23 — the same table
+that supplies this batch's Mount Mitchell 6,684 and Kuwohi 6,643
+citations) beside the earlier USGS-published 3,553 feet, both figures
+disclosed and both pinned by test; the Savannah River row's stale
+“no Georgia frame exists yet” parenthetical is replaced by the live
+cross-reference (main's Georgia frame carries the batch-11
+`savannah-river` corridor on FEATURE_ID 1253486, whose states=GA screen
+returned an empty array — pinned by test); and a new known limitation
+preserves the parallel screen's Rock Hill census-class tie-break
+(York 1250417 P1+GSA/OPM versus Fairfield 1231736 U6, ~78 km apart,
+neither seeded) plus the North Charleston and Santee River verified
+alternates. Record: [`backlog-execution-round-34-2026-10-23.md`](backlog-execution-round-34-2026-10-23.md).
+Final: cities 47 (26/26), city XDCs 47 rebuilt (southcarolina 109
+entries), wiki 250. Next in sequence unchanged: the country/planet
+thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
