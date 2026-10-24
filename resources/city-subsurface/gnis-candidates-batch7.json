@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T00:32:04Z",
+ "retrieved": "2026-10-24T00:52:08Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -3745,6 +3745,323 @@
      "county": "New Castle",
      "lat": 39.7459467,
      "lon": -75.5465889
+    }
+   ]
+  },
+  "NH": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NH_Text.zip",
+   "zipSha256": "f2704f1ce2a064118eb175048f05666059b75e22ac2be15b91c79c52db1e5de9",
+   "candidatesRequested": [
+    "Concord",
+    "Manchester",
+    "Nashua",
+    "Portsmouth",
+    "Dover",
+    "Keene",
+    "Mount Washington",
+    "Monadnock Mountain",
+    "Mount Monadnock",
+    "Lake Winnipesaukee",
+    "Squam Lake",
+    "Umbagog Lake",
+    "Piscataqua River",
+    "Connecticut River",
+    "Merrimack River",
+    "Saco River",
+    "Androscoggin River"
+   ],
+   "rows": [
+    {
+     "featureId": "580918",
+     "name": "Androscoggin River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "Sagadahoc",
+     "lat": 43.9506344,
+     "lon": -69.8775485
+    },
+    {
+     "featureId": "873303",
+     "name": "Concord",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Merrimack",
+     "lat": 43.2081366,
+     "lon": -71.5375718
+    },
+    {
+     "featureId": "206425",
+     "name": "Connecticut River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Lower Connecticut River Valley",
+     "lat": 41.272313,
+     "lon": -72.332687
+    },
+    {
+     "featureId": "866618",
+     "name": "Dover",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Strafford",
+     "lat": 43.1978624,
+     "lon": -70.8736698
+    },
+    {
+     "featureId": "867823",
+     "name": "Keene",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Cheshire",
+     "lat": 42.933692,
+     "lon": -72.2781409
+    },
+    {
+     "featureId": "870958",
+     "name": "Lake Winnipesaukee",
+     "featureClass": "Lake",
+     "state": "New Hampshire",
+     "county": "Belknap",
+     "lat": 43.6144538,
+     "lon": -71.3439713
+    },
+    {
+     "featureId": "868243",
+     "name": "Manchester",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Hillsborough",
+     "lat": 42.9956397,
+     "lon": -71.4547891
+    },
+    {
+     "featureId": "619363",
+     "name": "Merrimack River",
+     "featureClass": "Stream",
+     "state": "Massachusetts",
+     "county": "Essex",
+     "lat": 42.8195362,
+     "lon": -70.8119957
+    },
+    {
+     "featureId": "868516",
+     "name": "Monadnock Mountain",
+     "featureClass": "Summit",
+     "state": "New Hampshire",
+     "county": "Cheshire",
+     "lat": 42.8613582,
+     "lon": -72.1079819
+    },
+    {
+     "featureId": "871352",
+     "name": "Mount Washington",
+     "featureClass": "Summit",
+     "state": "New Hampshire",
+     "county": "Coos",
+     "lat": 44.2705781,
+     "lon": -71.3033287
+    },
+    {
+     "featureId": "868677",
+     "name": "Nashua",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Hillsborough",
+     "lat": 42.7653662,
+     "lon": -71.467566
+    },
+    {
+     "featureId": "869224",
+     "name": "Piscataqua River",
+     "featureClass": "Stream",
+     "state": "New Hampshire",
+     "county": "Rockingham",
+     "lat": 43.0562005,
+     "lon": -70.7031074
+    },
+    {
+     "featureId": "869312",
+     "name": "Portsmouth",
+     "featureClass": "Populated Place",
+     "state": "New Hampshire",
+     "county": "Rockingham",
+     "lat": 43.0717552,
+     "lon": -70.7625532
+    },
+    {
+     "featureId": "574648",
+     "name": "Saco River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "York",
+     "lat": 43.461773,
+     "lon": -70.3782538
+    },
+    {
+     "featureId": "872720",
+     "name": "Squam Lake",
+     "featureClass": "Lake",
+     "state": "New Hampshire",
+     "county": "Belknap",
+     "lat": 43.7508929,
+     "lon": -71.5245888
+    },
+    {
+     "featureId": "870563",
+     "name": "Umbagog Lake",
+     "featureClass": "Lake",
+     "state": "New Hampshire",
+     "county": "Coos",
+     "lat": 44.7629514,
+     "lon": -71.0427229
+    }
+   ]
+  },
+  "VT": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_VT_Text.zip",
+   "zipSha256": "4643cd5105ebda002da1ecf81b48c7ba051c39f7861cd5ec4c307822c12f68e1",
+   "candidatesRequested": [
+    "Montpelier",
+    "Burlington",
+    "Rutland",
+    "Brattleboro",
+    "Saint Johnsbury",
+    "Bennington",
+    "Mount Mansfield",
+    "Camels Hump",
+    "Lake Champlain",
+    "Lake Memphremagog",
+    "Winooski River",
+    "Otter Creek",
+    "Connecticut River",
+    "Lamoille River"
+   ],
+   "rows": [
+    {
+     "featureId": "1460600",
+     "name": "Bennington",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Bennington",
+     "lat": 42.8781345,
+     "lon": -73.1967741
+    },
+    {
+     "featureId": "1456556",
+     "name": "Brattleboro",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Windham",
+     "lat": 42.8509152,
+     "lon": -72.5578678
+    },
+    {
+     "featureId": "1456663",
+     "name": "Burlington",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Chittenden",
+     "lat": 44.4758825,
+     "lon": -73.212072
+    },
+    {
+     "featureId": "1456724",
+     "name": "Camels Hump",
+     "featureClass": "Summit",
+     "state": "Vermont",
+     "county": "Chittenden",
+     "lat": 44.3194911,
+     "lon": -72.8863369
+    },
+    {
+     "featureId": "206425",
+     "name": "Connecticut River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Lower Connecticut River Valley",
+     "lat": 41.272313,
+     "lon": -72.332687
+    },
+    {
+     "featureId": "946367",
+     "name": "Lake Champlain",
+     "featureClass": "Lake",
+     "state": "Vermont",
+     "county": "Grand Isle",
+     "lat": 44.5911519,
+     "lon": -73.3063442
+    },
+    {
+     "featureId": "1458419",
+     "name": "Lake Memphremagog",
+     "featureClass": "Lake",
+     "state": "Vermont",
+     "county": "Orleans",
+     "lat": 45.0477225,
+     "lon": -72.2677668
+    },
+    {
+     "featureId": "1461856",
+     "name": "Lamoille River",
+     "featureClass": "Stream",
+     "state": "Vermont",
+     "county": "Chittenden",
+     "lat": 44.6156017,
+     "lon": -73.2479074
+    },
+    {
+     "featureId": "1461834",
+     "name": "Montpelier",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Washington",
+     "lat": 44.2600593,
+     "lon": -72.5753869
+    },
+    {
+     "featureId": "1461774",
+     "name": "Mount Mansfield",
+     "featureClass": "Summit",
+     "state": "Vermont",
+     "county": "Chittenden",
+     "lat": 44.5436537,
+     "lon": -72.814289
+    },
+    {
+     "featureId": "1460510",
+     "name": "Otter Creek",
+     "featureClass": "Stream",
+     "state": "Vermont",
+     "county": "Addison",
+     "lat": 44.2256084,
+     "lon": -73.3248477
+    },
+    {
+     "featureId": "1461361",
+     "name": "Rutland",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Rutland",
+     "lat": 43.6106237,
+     "lon": -72.9726065
+    },
+    {
+     "featureId": "1459328",
+     "name": "Saint Johnsbury",
+     "featureClass": "Populated Place",
+     "state": "Vermont",
+     "county": "Caledonia",
+     "lat": 44.4192248,
+     "lon": -72.0150949
+    },
+    {
+     "featureId": "1460304",
+     "name": "Winooski River",
+     "featureClass": "Stream",
+     "state": "Vermont",
+     "county": "Chittenden",
+     "lat": 44.5303255,
+     "lon": -73.2745738
     }
    ]
   }
