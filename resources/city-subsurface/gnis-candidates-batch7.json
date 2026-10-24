@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T07:00:42Z",
+ "retrieved": "2026-10-24T07:12:53Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4346,6 +4346,293 @@
      "county": "Worcester",
      "lat": 42.2625932,
      "lon": -71.8022934
+    }
+   ]
+  },
+  "CT": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_CT_Text.zip",
+   "zipSha256": "3c1a2f7593f8b6065c6a4c3bdd917d867a5f6e9f42a475fe7e9bf6c865169026",
+   "candidatesRequested": [
+    "Hartford",
+    "New Haven",
+    "Bridgeport",
+    "Stamford",
+    "Waterbury",
+    "New London",
+    "Bear Mountain",
+    "Bantam Lake",
+    "Lake Lillinonah",
+    "Connecticut River",
+    "Housatonic River",
+    "Thames River",
+    "Farmington River",
+    "Mount Frissell",
+    "Candlewood Lake"
+   ],
+   "rows": [
+    {
+     "featureId": "205246",
+     "name": "Bantam Lake",
+     "featureClass": "Lake",
+     "state": "Connecticut",
+     "county": "Northwest Hills",
+     "lat": 41.7045073,
+     "lon": -73.2215068
+    },
+    {
+     "featureId": "205348",
+     "name": "Bear Mountain",
+     "featureClass": "Summit",
+     "state": "Connecticut",
+     "county": "Northwest Hills",
+     "lat": 42.0448053,
+     "lon": -73.4548409
+    },
+    {
+     "featureId": "205347",
+     "name": "Bear Mountain",
+     "featureClass": "Summit",
+     "state": "Connecticut",
+     "county": "Western Connecticut",
+     "lat": 41.449108,
+     "lon": -73.4570666
+    },
+    {
+     "featureId": "205720",
+     "name": "Bridgeport",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "Greater Bridgeport",
+     "lat": 41.1670412,
+     "lon": -73.2048348
+    },
+    {
+     "featureId": "206425",
+     "name": "Connecticut River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Lower Connecticut River Valley",
+     "lat": 41.272313,
+     "lon": -72.332687
+    },
+    {
+     "featureId": "207042",
+     "name": "Farmington River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Capitol",
+     "lat": 41.832023,
+     "lon": -72.638855
+    },
+    {
+     "featureId": "213160",
+     "name": "Hartford",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "Capitol",
+     "lat": 41.7637111,
+     "lon": -72.6850932
+    },
+    {
+     "featureId": "212670",
+     "name": "Housatonic River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "South Central Connecticut",
+     "lat": 41.169264,
+     "lon": -73.108442
+    },
+    {
+     "featureId": "208464",
+     "name": "Lake Lillinonah",
+     "featureClass": "Reservoir",
+     "state": "Connecticut",
+     "county": "Western Connecticut",
+     "lat": 41.4688125,
+     "lon": -73.3222477
+    },
+    {
+     "featureId": "209231",
+     "name": "New Haven",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "South Central Connecticut",
+     "lat": 41.3081527,
+     "lon": -72.9281578
+    },
+    {
+     "featureId": "209237",
+     "name": "New London",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "Southeastern Connecticut",
+     "lat": 41.3556539,
+     "lon": -72.0995209
+    },
+    {
+     "featureId": "211129",
+     "name": "Stamford",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "Western Connecticut",
+     "lat": 41.0534302,
+     "lon": -73.5387341
+    },
+    {
+     "featureId": "211397",
+     "name": "Thames River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Southeastern Connecticut",
+     "lat": 41.3023207,
+     "lon": -72.0795199
+    },
+    {
+     "featureId": "211851",
+     "name": "Waterbury",
+     "featureClass": "Populated Place",
+     "state": "Connecticut",
+     "county": "Naugatuck Valley",
+     "lat": 41.5581525,
+     "lon": -73.0514966
+    }
+   ]
+  },
+  "RI": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_RI_Text.zip",
+   "zipSha256": "72ff852c6451202173dafabc35cef249c063920344b986e5b5f607fcbfbf88eb",
+   "candidatesRequested": [
+    "Providence",
+    "Newport",
+    "Warwick",
+    "Cranston",
+    "Pawtucket",
+    "Woonsocket",
+    "New Shoreham",
+    "Jerimoth Hill",
+    "Scituate Reservoir",
+    "Blackstone River",
+    "Sakonnet River",
+    "Providence River",
+    "Pawcatuck River"
+   ],
+   "rows": [
+    {
+     "featureId": "1218929",
+     "name": "Blackstone River",
+     "featureClass": "Stream",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.8764888,
+     "lon": -71.3833891
+    },
+    {
+     "featureId": "1218689",
+     "name": "Cranston",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.7798226,
+     "lon": -71.4372796
+    },
+    {
+     "featureId": "1219566",
+     "name": "Jerimoth Hill",
+     "featureClass": "Summit",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.8494158,
+     "lon": -71.7788736
+    },
+    {
+     "featureId": "1219853",
+     "name": "New Shoreham",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Washington",
+     "lat": 41.1723258,
+     "lon": -71.5578329
+    },
+    {
+     "featureId": "1217986",
+     "name": "Newport",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Newport",
+     "lat": 41.4901024,
+     "lon": -71.3128285
+    },
+    {
+     "featureId": "1217605",
+     "name": "Pawcatuck River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Southeastern Connecticut",
+     "lat": 41.320933,
+     "lon": -71.8578468
+    },
+    {
+     "featureId": "1218926",
+     "name": "Pawtucket",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.878711,
+     "lon": -71.3825558
+    },
+    {
+     "featureId": "1219851",
+     "name": "Providence",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.8239891,
+     "lon": -71.4128343
+    },
+    {
+     "featureId": "1219586",
+     "name": "Providence River",
+     "featureClass": "Stream",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.8139892,
+     "lon": -71.4003336
+    },
+    {
+     "featureId": "1218198",
+     "name": "Sakonnet River",
+     "featureClass": "Stream",
+     "state": "Rhode Island",
+     "county": "Newport",
+     "lat": 41.4639923,
+     "lon": -71.224491
+    },
+    {
+     "featureId": "1218622",
+     "name": "Scituate Reservoir",
+     "featureClass": "Reservoir",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 41.7724732,
+     "lon": -71.6108501
+    },
+    {
+     "featureId": "1220018",
+     "name": "Warwick",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Kent",
+     "lat": 41.700101,
+     "lon": -71.4161671
+    },
+    {
+     "featureId": "1219339",
+     "name": "Woonsocket",
+     "featureClass": "Populated Place",
+     "state": "Rhode Island",
+     "county": "Providence",
+     "lat": 42.0028761,
+     "lon": -71.5147839
     }
    ]
   }
