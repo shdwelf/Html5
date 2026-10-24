@@ -1,0 +1,1 @@
+analyze PCGLOBE.EXE + DAT string probes
