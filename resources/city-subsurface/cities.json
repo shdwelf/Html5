@@ -14065,7 +14065,7 @@
           "lat": 35.065108,
           "depthM": 0,
           "facts": [
-            "South Carolina state high point (3,553 ft) on the North Carolina line. node coordinate is the GNIS summit primary point from the gazetteer row."
+            "South Carolina state high point (3,560 ft per the current USGS Elevations and Distances table; earlier USGS-published material 3,553 ft) on the North Carolina line. node coordinate is the GNIS summit primary point from the gazetteer row."
           ],
           "sources": [
             "USGS GNIS FEATURE_ID 1015279; coordinate per gazetteer row"
@@ -14159,7 +14159,7 @@
           null,
           "1015279",
           1,
-          "South Carolina High Point and state high point at 3,553 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_SC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1015279 as a Summit in Pickens County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "South Carolina High Point and state high point at 3,560 feet per the current USGS Elevations and Distances online table (South Carolina | Sassafras Mountain | Pickens | 3,560; fetched 2026-10-23; earlier USGS-published material lists 3,553 feet, and that published figure is preserved here, not silently dropped); Domestic Names per-ID check (DomesticNames_SC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1015279 as a Summit in Pickens County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Lake Marion",
@@ -14207,7 +14207,7 @@
           null,
           "1253486",
           1,
-          "The Savannah's GNIS primary point is its Atlantic mouth; the record is South Carolina-associated, so the border river is seeded once here and remains a corridor in Georgia (no Georgia frame exists yet; the decision is revisited if one is built). USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Stream type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "The Savannah's GNIS primary point is its Atlantic mouth; the record is South Carolina-associated, so the border river is seeded once here and remains a corridor in Georgia (the Georgia frame on main now carries the batch-11 savannah-river context corridor on this same FEATURE_ID 1253486; that frame's states=GA Geocoder screen returned an empty array, so this SC-associated record is the only seeded instance). USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Stream type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Congaree River",

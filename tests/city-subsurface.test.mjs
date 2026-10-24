@@ -2990,8 +2990,11 @@ test("North Carolina and South Carolina complete the Carolina GNIS state batch",
   const scGaz = await import("../js/city-gazetteer-data-southcarolina.js");
   const sassafras = scGaz.GAZ_ROWS.find((r) => r[0] === "Sassafras Mountain");
   assert.match(sassafras[9], /Domestic Names per-ID check/, "Sassafras note must cite the per-ID check");
-  assert.match(sassafras[9], /3,553 feet/, "Sassafras note must preserve the published elevation");
+  assert.match(sassafras[9], /3,553 feet/, "Sassafras note must preserve the earlier published elevation");
+  assert.match(sassafras[9], /3,560 feet/, "Sassafras note must carry the current USGS Elevations and Distances table value");
   assert.match(sassafras[9], /Summit in Pickens County/, "Sassafras note must name the correct county");
+  const savannah = scGaz.GAZ_ROWS.find((r) => r[0] === "Savannah River");
+  assert.match(savannah[9], /states=GA/, "Savannah note must record the Georgia empty-screen cross-reference");
   const Peedee = scGaz.GAZ_ROWS.find((r) => r[0] === "Pee Dee River");
   assert.equal(Peedee[3], "Chesterfield", "Pee Dee row must preserve the returned primary county verbatim");
   assert.ok(register.identityDecisions.some((d) => /Kuwohi/.test(d.candidate)), "register must record the Kuwohi seeding decision");

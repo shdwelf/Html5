@@ -384,7 +384,7 @@ export const NODES = [
     "lat": 35.065108,
     "depthM": 0,
     "facts": [
-      "South Carolina state high point (3,553 ft) on the North Carolina line. node coordinate is the GNIS summit primary point from the gazetteer row."
+      "South Carolina state high point (3,560 ft per the current USGS Elevations and Distances table; earlier USGS-published material 3,553 ft) on the North Carolina line. node coordinate is the GNIS summit primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 1015279; coordinate per gazetteer row"
