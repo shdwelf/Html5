@@ -426,6 +426,38 @@
       "Merrimack River",
       "Charles River",
       "Connecticut River"
+    ],
+    "CT": [
+      "Hartford",
+      "New Haven",
+      "Bridgeport",
+      "Stamford",
+      "Waterbury",
+      "New London",
+      "Bear Mountain",
+      "Bantam Lake",
+      "Lake Lillinonah",
+      "Connecticut River",
+      "Housatonic River",
+      "Thames River",
+      "Farmington River",
+      "Mount Frissell",
+      "Candlewood Lake"
+    ],
+    "RI": [
+      "Providence",
+      "Newport",
+      "Warwick",
+      "Cranston",
+      "Pawtucket",
+      "Woonsocket",
+      "New Shoreham",
+      "Jerimoth Hill",
+      "Scituate Reservoir",
+      "Blackstone River",
+      "Sakonnet River",
+      "Providence River",
+      "Pawcatuck River"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
