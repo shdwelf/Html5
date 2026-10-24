@@ -292,6 +292,33 @@ named in the register. Final: cities 32 (17/17), Node 730, vitest 307,
 wiki 222, city XDCs 79 entries. Next in sequence: Georgia, then Florida,
 then the country/planet thread.
 
+**Round 28 status (2026-10-23): partial.** Georgia shipped as
+configuration 33 with a 12/12 per-ID `VERIFIED=1` GNIS starter register,
+labelled synthetic relief, five generalized context corridors, no DEM,
+and a labelled generalized Atlantic coast line. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
+Brasstown Bald carries the per-ID high-point check (“Highest elevation in
+GA at 4784 feet”, FEATURE_ID 354839, executed against the official
+gaznames_default REST layer because the SPA detail route renders
+client-side). Lake Oconee seeds FEATURE_ID 330982 over the parallel Oconee
+County same-name record 319902 via a new description-locator tie-break
+(“Located 6 km (3.7 mi) ENE of Rockville” on the seeded record; blank
+description and differing stored gaz_elevation on the twin). The Savannah
+River screen is empty under states=GA — the national screen returns only
+the South Carolina record 1253486 — and Lake Lanier screens as a
+populated place only (1688216; Buford Reservoir alternate empty); both
+stay corridor/unseeded with disclosure. Chattahoochee 354236 and
+Ogeechee 354254 are held to starter scope with their FEATURE_IDs kept in
+the corridor. All six city screens shed county/census-division piles.
+Ocmulgee + Oconee seed as a confluence pair (points ~60 m apart, both as
+returned). Round 28 also reconciled merge-delta content from PR #134
+(T3.1 Game Genie family): four stale CyberChef count guards 511 → 515,
+the cookbook card text, and the jsdom `bake()` teardown race stubbed in
+two tests. Final: cities 33 (18/18), Node 806 = 796/10/0, vitest 307,
+wiki 244, city XDCs 81 entries. Next in sequence: South Carolina, then
+the remaining seaboard states, Florida, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

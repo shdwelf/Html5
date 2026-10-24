@@ -326,6 +326,10 @@ test("CueCat scans decode the published vectors in the Barcode operation", async
 
 test("every operation belongs to a recipe pack so SFX can output them all", () => {
   const dom = boot();
+  // applyRecipePacks schedules the app's background bake(); with the full
+  // registry selected, that bake outlives this test's window.close() and
+  // rejects against a dead document. Stub it, the same way the SFX suite does.
+  dom.window.eval("window.bake = () => Promise.resolve()");
   try {
     const cov = dom.window.eval(`(function(){
       const inPack = new Set();

@@ -1,0 +1,282 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 28 Atlantic state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter register for Georgia. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Brasstown Bald and Lake Oconee additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=GA&include=gnis&maxSuggestions=8",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. County records, census divisions, consolidated-government records, canals, cuts, branches, bays, junctions, heights, parks, waterworks ponds, camp lakes, country-club lakes, historical arsenals, and same-name records of another county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "restQuery": "https://edits.nationalmap.gov/arcgis/rest/services/gaznames/gaznames_default/MapServer/0/query?where=gaz_id=<featureId>&outFields=*&returnGeometry=false&f=json",
+      "use": "Per-ID identity checks for Brasstown Bald (354839), confirming the Georgia high-point description; and Lake Oconee (330982 seeded, parallel Oconee County record 319902 rejected), confirming the Rockville locator description. The public search/names/{featureId} route renders client-side, so the checks were executed against the official gaznames_default ArcGIS REST layer exposing gaz_featureclass, gaz_featuredescription, and gaz_elevation."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that frame and the failure is disclosed; roster capacity holds are disclosed the same way.",
+    "Duplicate same-name reservoir records seed only the record whose official Domestic Names description independently locates the intended feature (Lake Oconee 330982 carries the Rockville locator; blank-description twin 319902 is disclosed, never merged).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. Georgia ships a labelled generalized Atlantic coast line that is not a shoreline survey."
+  ],
+  "frames": {
+    "georgia": {
+      "title": "Georgia statewide frame",
+      "state": "GA",
+      "bbox": {
+        "lon0": -85.7,
+        "lat0": 30.3,
+        "lon1": -80.7,
+        "lat1": 35.05
+      },
+      "frameNote": "Atlantic batch: the Atlanta, Savannah, Augusta, Columbus, Macon, and Athens anchors are balanced with per-ID Brasstown Bald (4784 feet), the Rockville-description Lake Oconee tie-break over the blank-description Oconee County twin, and the Ocmulgee, Oconee, and Altamaha river records. The county/census-division trap piles for all six cities, the Savannah River empty screen, the Lake Lanier populated-place-only mismatch, the Chattahoochee River starter-scope hold, and the Ocmulgee/Oconee confluence-point disclosure are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Atlanta",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Fulton",
+          "latitude": 33.7489954,
+          "longitude": -84.3879824,
+          "featureId": "351615",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Fulton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The screen led with Atlanta-Decatur Division (FEATURE_ID 1936090) and Atlanta Division (FEATURE_ID 1936089); rejected: Atlanta Junction (FEATURE_ID 326161), Atlanta Gas Light Lake (FEATURE_ID 335949), Atlanta City Water Works Reservoir Number One (FEATURE_ID 338186), and Atlanta City Water Works Reservoir Number Two (FEATURE_ID 338188). USGS GNIS Geocoder (GNIS), FEATURE_ID=351615; exact official name and Cities & Populated Places type in Fulton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Savannah",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Chatham",
+          "latitude": 32.0835407,
+          "longitude": -81.0998342,
+          "featureId": "322590",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Chatham County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Atlantic port anchor. The screen led with Savannah Division (FEATURE_ID 1936531); rejected: Savannah Division, Savannah Beach (FEATURE_ID 322593), Savannah Gardens (FEATURE_ID 1694655), Savannah and Ogeechee Canal (FEATURE_ID 322591), Savannah Branch (FEATURE_ID 322594), Savannah Cut (FEATURE_ID 322595), and Savannah Bay (FEATURE_ID 322592). USGS GNIS Geocoder (GNIS), FEATURE_ID=322590; exact official name and Cities & Populated Places type in Chatham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Augusta",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Richmond",
+          "latitude": 33.4709702,
+          "longitude": -81.9748379,
+          "featureId": "310670",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Richmond County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Fall line anchor. The screen led with Augusta Division (FEATURE_ID 1936093); rejected: Augusta Division, Augusta Canal (FEATURE_ID 310671), and the historical Augusta Arsenal (FEATURE_ID 2571449). USGS GNIS Geocoder (GNIS), FEATURE_ID=310670; exact official name and Cities & Populated Places type in Richmond County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Columbus",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Muscogee",
+          "latitude": 32.4609764,
+          "longitude": -84.9877094,
+          "featureId": "331443",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Muscogee County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "West Georgia anchor on the Chattahoochee reach. The screen led with Columbus East Division (FEATURE_ID 2583408); rejected: Columbus East Division, Columbus North Division (FEATURE_ID 2583409), Columbus West Division (FEATURE_ID 2583410), and the census Columbus Division (FEATURE_ID 1936194). USGS GNIS Geocoder (GNIS), FEATURE_ID=331443; exact official name and Cities & Populated Places type in Muscogee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Macon",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bibb",
+          "latitude": 32.8406946,
+          "longitude": -83.6324022,
+          "featureId": "332301",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bibb County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Fall line hub. The screen led with Macon East Division (FEATURE_ID 2583413); rejected: Macon East Division, Macon West Division (FEATURE_ID 2583414), the consolidated Macon-Bibb County record (FEATURE_ID 2761437), Macon County (FEATURE_ID 346957), and the census Macon Division (FEATURE_ID 1936386). USGS GNIS Geocoder (GNIS), FEATURE_ID=332301; exact official name and Cities & Populated Places type in Bibb County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Athens",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clarke",
+          "latitude": 33.960948,
+          "longitude": -83.3779358,
+          "featureId": "354407",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Clarke County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Piedmont anchor. The screen led with Athens Division (FEATURE_ID 1936088); rejected: Athens Division, Athens Country Club Lake (FEATURE_ID 338587), Athens Waterworks Pond (FEATURE_ID 336519), and Athens YMCA Camp Lake (FEATURE_ID 339229, returned for Rabun County). USGS GNIS Geocoder (GNIS), FEATURE_ID=354407; exact official name and Cities & Populated Places type in Clarke County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Brasstown Bald",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Towns",
+          "latitude": 34.8741923,
+          "longitude": -83.8106479,
+          "featureId": "354839",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Towns County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Georgia's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check against the official gaznames_default REST layer showed gaz_featureclass Summit and the description Highest elevation in GA at 4784 feet at the stored point, matching the Geocoder exactly; class Summit is stored as returned. USGS GNIS Geocoder (GNIS), FEATURE_ID=354839; exact official name and Summit type in Towns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Seminole",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Decatur",
+          "latitude": 30.7855871,
+          "longitude": -84.7924616,
+          "featureId": "294149",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Decatur County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result on the Florida border, returned first with no same-name twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=294149; exact official name and Lakes & Reservoirs type in Decatur County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Oconee",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Putnam",
+          "latitude": 33.4698046,
+          "longitude": -83.3033447,
+          "featureId": "330982",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Putnam County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 330982 over the parallel Oconee County same-name record (FEATURE_ID 319902): the GNIS Domestic Names per-ID check shows this record official description Located 6 km (3.7 mi) ENE of Rockville places it on the Putnam County shore of the intended Oconee River reservoir, while the Oconee County record carries a blank description and a stored gaz_elevation of 221 against this record 132; the Oconee County record is disclosed and not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=330982; exact official name and Lakes & Reservoirs type in Putnam County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Ocmulgee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Wheeler",
+          "latitude": 31.9590759,
+          "longitude": -82.5437442,
+          "featureId": "356443",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Wheeler County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the point is the Wheeler County sequence at the Oconee River confluence area, about sixty metres from the Oconee River primary point, both as returned; not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=356443; exact official name and Streams & Canals type in Wheeler County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Oconee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Wheeler",
+          "latitude": 31.9596314,
+          "longitude": -82.5437442,
+          "featureId": "354253",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Wheeler County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the point is the Wheeler County sequence at the Ocmulgee River confluence area, about sixty metres from the Ocmulgee River primary point, both as returned; not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=354253; exact official name and Streams & Canals type in Wheeler County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Altamaha River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "McIntosh",
+          "latitude": 31.3157843,
+          "longitude": -81.2848169,
+          "featureId": "354294",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "McIntosh County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Altamaha River Division (FEATURE_ID 1936077, Appling County); rejected: Altamaha River Division. The point is the McIntosh County sequence near the mouth, downstream of the seeded Ocmulgee and Oconee confluence sequences. USGS GNIS Geocoder (GNIS), FEATURE_ID=354294; exact official name and Streams & Canals type in McIntosh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Brasstown Bald, FEATURE_ID 354839",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check against the gaznames_default REST layer showed gaz_featureclass Summit and the description Highest elevation in GA at 4784 feet at the stored point; the Geocoder returned a single exact Summit record in Towns County and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground, and the quoted elevation is the record description, not a new survey."
+    },
+    {
+      "candidate": "Lake Oconee, FEATURE_ID 330982 (pair with 319902)",
+      "decision": "Seeded over the parallel Oconee County same-name record (FEATURE_ID 319902): the per-ID check shows this record official description Located 6 km (3.7 mi) ENE of Rockville places it on the Putnam County shore of the intended Oconee River reservoir; the Oconee County record carries a blank description and a stored gaz_elevation of 221 against this record 132, so only the Rockville-identified record seeds.",
+      "notClaimed": "The primary point is not a shoreline or lake polygon, and the two records are disclosed rather than merged into one."
+    },
+    {
+      "candidate": "Savannah River under states=GA",
+      "decision": "The Georgia screen returned an empty array; the no-state national screen returns only the South Carolina record (FEATURE_ID 1253486, Jasper County), which must not seed this Georgia frame; the river stays a generalized context corridor with the disclosure chain.",
+      "notClaimed": "No Georgia Savannah River point is claimed; the corridor line is not the channel or the legal boundary."
+    },
+    {
+      "candidate": "Lake Lanier term",
+      "decision": "The states=GA screen returned only the populated place Lake Lanier Vista (FEATURE_ID 1688216) and no Lakes & Reservoirs record; the alternate Buford Reservoir screen returned an empty array; the lake stays unseeded and the area is covered by the Atlanta anchor and I-75 corridor.",
+      "notClaimed": "No lake point, shoreline, or reservoir extent is claimed for Lake Lanier."
+    },
+    {
+      "candidate": "Chattahoochee River, FEATURE_ID 354236",
+      "decision": "Single exact Streams & Canals record in Decatur County at the Florida line, held to starter scope by the twelve-row cap; the river becomes a generalized west-border corridor with the FEATURE_ID recorded, not dropped.",
+      "notClaimed": "The corridor is not the channel or the legal state boundary."
+    },
+    {
+      "candidate": "Ogeechee River, FEATURE_ID 354254",
+      "decision": "Single exact Streams & Canals record in Chatham County; held to starter scope by the twelve-row cap after the Ocmulgee, Oconee, and Altamaha river roster filled.",
+      "notClaimed": "No Ogeechee point is seeded in this batch."
+    },
+    {
+      "candidate": "Atlanta, FEATURE_ID 351615",
+      "decision": "Two same-name county-division records led the screen; the Cities & Populated Places record in Fulton County is the capital and seeds; Atlanta Junction and the three Atlanta-named water records are rejected as another class or county.",
+      "notClaimed": "No division, junction, or reservoir record stands in for the capital."
+    },
+    {
+      "candidate": "Savannah, FEATURE_ID 322590",
+      "decision": "The Savannah Division led the screen; the Chatham County Cities & Populated Places record seeds and the division, beach, gardens, canal, branch, cut, and bay records are rejected by name.",
+      "notClaimed": "No division or hydrographic record stands in for the city."
+    },
+    {
+      "candidate": "Augusta, FEATURE_ID 310670",
+      "decision": "The Augusta Division led the screen; the Richmond County Cities & Populated Places record seeds and the division, canal, and historical arsenal records are rejected.",
+      "notClaimed": "No division, canal, or military record stands in for the city."
+    },
+    {
+      "candidate": "Columbus, FEATURE_ID 331443",
+      "decision": "Four division records led the screen (East, North, West, census Division); the Muscogee County Cities & Populated Places record seeds and every division is rejected by FEATURE_ID.",
+      "notClaimed": "No division record stands in for the city."
+    },
+    {
+      "candidate": "Macon, FEATURE_ID 332301",
+      "decision": "Division, consolidated Macon-Bibb County, and Macon County records led the screen; the Bibb County Cities & Populated Places record seeds and all five same-prefix records are rejected by FEATURE_ID.",
+      "notClaimed": "No county, consolidated-government, or division record stands in for the city."
+    },
+    {
+      "candidate": "Athens, FEATURE_ID 354407",
+      "decision": "The Athens Division led the screen; the Clarke County Cities & Populated Places record seeds and the division and three Athens-named water records (including the Rabun County camp lake) are rejected.",
+      "notClaimed": "No division or pond record stands in for the city."
+    },
+    {
+      "candidate": "Ocmulgee River and Oconee River confluence pair",
+      "decision": "Both exact Wheeler County records seed; their primary points sit about sixty metres apart at the shared confluence area, both as returned; neither record is treated as the other.",
+      "notClaimed": "Neither primary point is a channel centerline, confluence polygon, or watershed boundary."
+    }
+  ],
+  "knownLimitations": [
+    "Georgia is a starter register, not a statewide GNIS extract. It contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Brasstown Bald and Lake Oconee additionally carry per-ID Domestic Names detail checks executed against the official gaznames_default REST layer.",
+    "GNIS point data do not supply the displayed terrain or corridors. The frame uses explicitly synthetic relief gaussians and generalized context lines; the Atlantic coast line is generalized, not a shoreline survey.",
+    "State frames are rectangles, not state-boundary clipping masks. The Georgia rectangle includes small areas outside the state outline; no boundary geometry is claimed."
+  ]
+}

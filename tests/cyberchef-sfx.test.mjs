@@ -12,7 +12,9 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes), the
 // OpenPGP and Enigma recipes, and the two War Office manual recipes, the
 // round-12 polyglotScan op, and the four round-13 archive-header ops.
-const expectedCount = report.counts.mergedRuntime + 33;
+// T3.1 added the Game Genie family on top of the list above: gameGenieNes,
+// gameGenieSnes, gameGenieGb, and gameGenieGenesis (merged via PR #134).
+const expectedCount = report.counts.mergedRuntime + 37;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {
