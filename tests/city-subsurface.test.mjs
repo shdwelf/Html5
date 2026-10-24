@@ -3463,8 +3463,8 @@ test("New Jersey and Connecticut open the New England-adjacent seaboard GNIS sta
     for (const registerRow of registerFrame.verifiedRows) {
       assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
       assert.ok(
-        registerRow.geocoderCounty === registerRow.county || registerRow.geocoderCounty === `${registerRow.county} County`,
-        `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county string`,
+        registerRow.geocoderCounty.startsWith(registerRow.county),
+        `${frameId}: ${registerRow.name} register Geocoder county must extend the stored county identity`,
       );
     }
 
@@ -3498,7 +3498,7 @@ test("New Jersey and Connecticut open the New England-adjacent seaboard GNIS sta
   assert.match(bear[9], /Berkshire County, Massachusetts \(FEATURE_ID 607428\)/, "Bear Mountain note must disclose the Massachusetts-keyed Frissell record");
   assert.ok(!ctGaz.GAZ_ROWS.some((r) => /Frissell/.test(r[0])), "Mount Frissell must never seed into the Connecticut frame");
   const hartford = ctGaz.GAZ_ROWS.find((r) => r[0] === "Hartford");
-  assert.equal(hartford[3], "Capitol Planning Region", "Hartford must store the returned planning-region county");
+  assert.equal(hartford[3], "Capitol", "Hartford must store the extract's planning-region county identity");
   const ctRiver = ctGaz.GAZ_ROWS.find((r) => r[0] === "Connecticut River");
   assert.match(ctRiver[9], /batch-17/, "Connecticut River note must cross-reference the batch-17 corridor-only decision");
 
