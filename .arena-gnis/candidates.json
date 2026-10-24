@@ -397,6 +397,35 @@
       "Otter Creek",
       "Connecticut River",
       "Lamoille River"
+    ],
+    "ME": [
+      "Augusta",
+      "Portland",
+      "Bangor",
+      "Lewiston",
+      "Mount Katahdin",
+      "Cadillac Mountain",
+      "Moosehead Lake",
+      "Sebago Lake",
+      "Penobscot River",
+      "Kennebec River",
+      "Androscoggin River",
+      "Saco River"
+    ],
+    "MA": [
+      "Boston",
+      "Worcester",
+      "Springfield",
+      "Cambridge",
+      "Lowell",
+      "Provincetown",
+      "New Bedford",
+      "Mount Greylock",
+      "Quabbin Reservoir",
+      "Lake Chaubunagungamaug",
+      "Merrimack River",
+      "Charles River",
+      "Connecticut River"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
