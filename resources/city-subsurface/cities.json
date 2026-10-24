@@ -14658,6 +14658,865 @@
           "River record at its Gulf mouth below the Georgia-line confluence of the Chattahoochee and Flint (both seeded at that shared point in the Georgia frame). USGS GNIS Geocoder (GNIS), FEATURE_ID=305219; exact official name and Stream type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "Maryland": {
+      "title": "Maryland SUBSURFACE 4Dwm",
+      "subtitle": "Maryland STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Maryland USGS GNIS REGISTER",
+      "gazNote": "Round 34 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MD",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -79.55,
+        "lat0": 37.85,
+        "lon1": -74.95,
+        "lat1": 39.75
+      },
+      "center": {
+        "lon": -77.25,
+        "lat": 38.8
+      },
+      "baseElevationM": 105,
+      "roughnessM": 110,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Allegheny Front / Hoye-Crest",
+          "lon": -79.48,
+          "lat": 39.24,
+          "rx": 0.22,
+          "ry": 0.28,
+          "amp": 300,
+          "rot": 0
+        },
+        {
+          "name": "Appalachian Valley and Ridge",
+          "lon": -78.5,
+          "lat": 39.55,
+          "rx": 0.4,
+          "ry": 0.18,
+          "amp": 130,
+          "rot": 0
+        },
+        {
+          "name": "Piedmont plateau",
+          "lon": -77.3,
+          "lat": 39.35,
+          "rx": 0.55,
+          "ry": 0.22,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Fall zone hills",
+          "lon": -76.75,
+          "lat": 39.1,
+          "rx": 0.35,
+          "ry": 0.4,
+          "amp": 25,
+          "rot": 0
+        },
+        {
+          "name": "Chesapeake lowland / Delmarva",
+          "lon": -75.75,
+          "lat": 38.55,
+          "rx": 0.45,
+          "ry": 0.55,
+          "amp": -40,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i95-Maryland",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -76.0738386,
+              39.5403911
+            ],
+            [
+              -76.6121893,
+              39.2903848
+            ],
+            [
+              -76.9,
+              38.9
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor through the seeded Susquehanna mouth and Baltimore points; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i70-Maryland",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 70 corridor (generalized)",
+          "short": "I-70",
+          "depthM": 0,
+          "path": [
+            [
+              -76.6121893,
+              39.2903848
+            ],
+            [
+              -77.4105409,
+              39.4142688
+            ],
+            [
+              -77.7199932,
+              39.6417629
+            ],
+            [
+              -78.7625185,
+              39.6528654
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 70 corridor from Baltimore through the seeded Frederick, Hagerstown, and Cumberland points; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "potomac-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Potomac River corridor (generalized)",
+          "short": "Potomac River",
+          "depthM": 0,
+          "path": [
+            [
+              -78.7625185,
+              39.6528654
+            ],
+            [
+              -77.7199932,
+              39.6417629
+            ],
+            [
+              -77.05,
+              38.6
+            ],
+            [
+              -76.3338878,
+              37.9982645
+            ]
+          ],
+          "facts": [
+            "Generalized Potomac corridor joining the seeded Cumberland and Hagerstown points to the seeded mouth; not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "susquehanna-chesapeake-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Susquehanna-Chesapeake context (generalized)",
+          "short": "Susquehanna/Chesapeake",
+          "depthM": 0,
+          "path": [
+            [
+              -76.0738386,
+              39.5403911
+            ],
+            [
+              -76.2,
+              38.9
+            ],
+            [
+              -76.3266152,
+              38.6345644
+            ],
+            [
+              -76.3338878,
+              37.9982645
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Susquehanna mouth, Choptank mouth, and Potomac mouth — a Chesapeake-shore ordering of seeded points, not a channel, shoreline, or bay geometry."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "delmarva-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Delmarva peninsula context (generalized)",
+          "short": "Delmarva",
+          "depthM": 0,
+          "path": [
+            [
+              -76.4921829,
+              38.9784453
+            ],
+            [
+              -76.3266152,
+              38.6345644
+            ],
+            [
+              -75.5993692,
+              38.3606736
+            ],
+            [
+              -75.0849058,
+              38.3365033
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Annapolis, Choptank mouth, Salisbury, and Ocean City points down the Delmarva shore; the Pocomoke River (FEATURE_ID 586618, Somerset) reproduces on both surfaces but is held to corridor scope this batch. Not a shoreline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "annapolis",
+          "name": "Annapolis",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -76.4921829,
+          "lat": 38.9784453,
+          "depthM": 0,
+          "facts": [
+            "Maryland state capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 595031; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "baltimore",
+          "name": "Baltimore",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -76.6121893,
+          "lat": 39.2903848,
+          "depthM": 0,
+          "facts": [
+            "Independent-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 597040; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "hoye-crest",
+          "name": "Hoye-Crest",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -79.4854595,
+          "lat": 39.2373789,
+          "depthM": 0,
+          "facts": [
+            "Maryland high point (3,360 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1959484; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "deep-creek-lake",
+          "name": "Deep Creek Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -79.3212691,
+          "lat": 39.4845148,
+          "depthM": 0,
+          "facts": [
+            "Garrett County reservoir anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 584060; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Annapolis",
+          "Populated Place",
+          "pop.place",
+          "Anne Arundel",
+          38.9784453,
+          -76.4921829,
+          null,
+          "595031",
+          1,
+          "Maryland capital anchor; the Annapolis Cove/Landing/Overlook/Roads subdivision records, the Annapolis Roads bay, the Neck CDP, and the historical ferry crossing are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=595031; exact official name and Populated Place type in Anne Arundel County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Baltimore",
+          "Populated Place",
+          "pop.place",
+          "Baltimore (city)",
+          39.2903848,
+          -76.6121893,
+          null,
+          "597040",
+          1,
+          "Independent-city anchor on the Patapsco; the extract keys the county as Baltimore (city) while the Geocoder returns City of Baltimore. The county record, Baltimore Highlands/Corner, and housing records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=597040; exact official name and Populated Place type in City of Baltimore cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Frederick",
+          "Populated Place",
+          "pop.place",
+          "Frederick",
+          39.4142688,
+          -77.4105409,
+          null,
+          "584497",
+          1,
+          "Piedmont anchor; the county record, historical Frederick record, Frederick Village/Town/Heights/Junction/Villas/Towne records, and the Baltimore housing record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=584497; exact official name and Populated Place type in Frederick County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Cumberland",
+          "Populated Place",
+          "pop.place",
+          "Allegany",
+          39.6528654,
+          -78.7625185,
+          null,
+          "590057",
+          1,
+          "Allegheny front anchor on the Potomac headwaters; the Fair Grounds and Heights records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=590057; exact official name and Populated Place type in Allegany County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Hagerstown",
+          "Populated Place",
+          "pop.place",
+          "Washington",
+          39.6417629,
+          -77.7199932,
+          null,
+          "598385",
+          1,
+          "Hagerstown valley anchor; the reservoir and the mis-keyed Calvert County city-park lake record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=598385; exact official name and Populated Place type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Ocean City",
+          "Populated Place",
+          "pop.place",
+          "Worcester",
+          38.3365033,
+          -75.0849058,
+          null,
+          "586284",
+          1,
+          "Atlantic barrier-island anchor; Ocean City Harbor and the Ocean City Inlet bay record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=586284; exact official name and Populated Place type in Worcester County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Salisbury",
+          "Populated Place",
+          "pop.place",
+          "Wicomico",
+          38.3606736,
+          -75.5993692,
+          null,
+          "591221",
+          1,
+          "Eastern Shore anchor on the Wicomico; the historical naval landing-field record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=591221; exact official name and Populated Place type in Wicomico County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Hoye-Crest",
+          "Summit",
+          "phys.summit",
+          "Garrett",
+          39.2373789,
+          -79.4854595,
+          null,
+          "1959484",
+          1,
+          "Maryland High Point at 3,360 feet — Hoye-Crest on Backbone Mountain (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MD_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1959484 as a Summit in Garrett County at this point. Backbone Mountain itself screened empty under states=MD (its GNIS record keys to West Virginia), so the state high point is seeded under its GNIS name. USGS GNIS Geocoder (GNIS), FEATURE_ID=1959484; exact official name and Summit type in Garrett County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Deep Creek Lake",
+          "Lake",
+          "hydro.lake",
+          "Garrett",
+          39.4845148,
+          -79.3212691,
+          null,
+          "584060",
+          1,
+          "Garrett County reservoir anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=584060; exact official name and Reservoir type in Garrett County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Potomac River",
+          "Stream",
+          "hydro.stream",
+          "St. Mary's",
+          37.9982645,
+          -76.3338878,
+          null,
+          "597915",
+          1,
+          "River record at its Chesapeake mouth on the Saint Mary's shore; three Potomac River Reservoir utility records are not seeded. DomesticNames keys the county as St. Mary's; the Geocoder returns Saint Mary's County. USGS GNIS Geocoder (GNIS), FEATURE_ID=597915; exact official name and Stream type in Saint Mary's County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Susquehanna River",
+          "Stream",
+          "hydro.stream",
+          "Cecil",
+          39.5403911,
+          -76.0738386,
+          null,
+          "591690",
+          1,
+          "River record at its Chesapeake mouth below Conowingo; the Susquehanna River Hills community is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=591690; exact official name and Stream type in Cecil County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Choptank River",
+          "Stream",
+          "hydro.stream",
+          "Dorchester",
+          38.6345644,
+          -76.3266152,
+          null,
+          "583766",
+          1,
+          "River record at its Chesapeake mouth. GNIS carries a parallel duplicate record (FEATURE_ID 213797) with identical name, class, county, and point on both surfaces; the in-series Maryland record is seeded and the duplicate is not (see the batch register). USGS GNIS Geocoder (GNIS), FEATURE_ID=583766; exact official name and Stream type in Dorchester County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "delaware": {
+      "title": "Delaware SUBSURFACE 4Dwm",
+      "subtitle": "Delaware STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Delaware USGS GNIS REGISTER",
+      "gazNote": "Round 34 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "DE",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -76.05,
+        "lat0": 38.35,
+        "lon1": -74.95,
+        "lat1": 39.95
+      },
+      "center": {
+        "lon": -75.5,
+        "lat": 39.15
+      },
+      "baseElevationM": 14,
+      "roughnessM": 9,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Piedmont edge / Iron Hill",
+          "lon": -75.75,
+          "lat": 39.64,
+          "rx": 0.28,
+          "ry": 0.12,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Appoquinimink upland",
+          "lon": -75.7,
+          "lat": 39.45,
+          "rx": 0.3,
+          "ry": 0.15,
+          "amp": 22,
+          "rot": 0
+        },
+        {
+          "name": "Central Kent plain",
+          "lon": -75.5,
+          "lat": 39.1,
+          "rx": 0.3,
+          "ry": 0.25,
+          "amp": 8,
+          "rot": 0
+        },
+        {
+          "name": "Sussex lowland",
+          "lon": -75.35,
+          "lat": 38.7,
+          "rx": 0.3,
+          "ry": 0.25,
+          "amp": -2,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i95-delaware",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -75.5121427,
+              39.7159468
+            ],
+            [
+              -75.5465889,
+              39.7459467
+            ],
+            [
+              -75.7496572,
+              39.6837226
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor through the seeded Christina mouth, Wilmington, and Newark points; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "de1-corridor",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Delaware Route 1 corridor (generalized)",
+          "short": "DE-1",
+          "depthM": 0,
+          "path": [
+            [
+              -75.5243682,
+              39.158168
+            ],
+            [
+              -75.4279748,
+              38.9126129
+            ],
+            [
+              -75.0760137,
+              38.7209454
+            ]
+          ],
+          "facts": [
+            "Generalized Route 1 corridor from Dover through the seeded Milford and Rehoboth Beach points; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "delaware-river-bay-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Delaware River and Bay context (generalized)",
+          "short": "Delaware R/Bay",
+          "depthM": 0,
+          "path": [
+            [
+              -75.528813,
+              39.4326121
+            ],
+            [
+              -75.5121427,
+              39.7159468
+            ],
+            [
+              -75.4007515,
+              39.0659461
+            ],
+            [
+              -75.1,
+              38.75
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Delaware River, Christina mouth, and Saint Jones mouth points toward Delaware Bay; not a channel centerline, shoreline, or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "christina-headwaters-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Christina headwaters context (generalized)",
+          "short": "Christina headwaters",
+          "depthM": 0,
+          "path": [
+            [
+              -75.7523707,
+              39.6400861
+            ],
+            [
+              -75.7496572,
+              39.6837226
+            ],
+            [
+              -75.5121427,
+              39.7159468
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Iron Hill, Newark, and Christina mouth points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "nanticoke-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Nanticoke basin context (generalized)",
+          "short": "Nanticoke basin",
+          "depthM": 0,
+          "path": [
+            [
+              -75.4279748,
+              38.9126129
+            ],
+            [
+              -75.6,
+              38.65
+            ],
+            [
+              -75.9,
+              38.45
+            ]
+          ],
+          "facts": [
+            "Generalized context line for the Nanticoke basin: the river's GNIS record screened empty under states=DE (its mouth record keys to Maryland), so it remains unseeded in Delaware. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "dover",
+          "name": "Dover",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -75.5243682,
+          "lat": 39.158168,
+          "depthM": 0,
+          "facts": [
+            "Delaware state capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 217882; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "wilmington",
+          "name": "Wilmington",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -75.5465889,
+          "lat": 39.7459467,
+          "depthM": 0,
+          "facts": [
+            "Delaware's largest city. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 214862; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "iron-hill",
+          "name": "Iron Hill",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -75.7523707,
+          "lat": 39.6400861,
+          "depthM": 0,
+          "facts": [
+            "Seeded Delaware Summit (the surveyed high point, Ebright Azimuth, has no GNIS Summit record). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 214151; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lums-pond",
+          "name": "Lums Pond",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -75.714942,
+          "lat": 39.554287,
+          "depthM": 0,
+          "facts": [
+            "New Castle millpond anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 214259; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Dover",
+          "Populated Place",
+          "pop.place",
+          "Kent",
+          39.158168,
+          -75.5243682,
+          null,
+          "217882",
+          1,
+          "Delaware capital anchor; the Dover Division, Dover Heights/Brook Gardens records, the Base Housing CDP, and Dover Air Force Base are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=217882; exact official name and Populated Place type in Kent County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Wilmington",
+          "Populated Place",
+          "pop.place",
+          "New Castle",
+          39.7459467,
+          -75.5465889,
+          null,
+          "214862",
+          1,
+          "Delaware's largest city at the Christina mouth; the Wilmington Division and Hundred records, Wilmington Manor records, and the Manor CDP are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214862; exact official name and Populated Place type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Newark",
+          "Populated Place",
+          "pop.place",
+          "New Castle",
+          39.6837226,
+          -75.7496572,
+          null,
+          "214385",
+          1,
+          "Newark anchor on the Christina headwaters; the Newark Division and Newark Oaks records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214385; exact official name and Populated Place type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Middletown",
+          "Populated Place",
+          "pop.place",
+          "New Castle",
+          39.449556,
+          -75.7163207,
+          null,
+          "214304",
+          1,
+          "Central New Castle anchor; the Middletown-Odessa Division record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214304; exact official name and Populated Place type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Milford",
+          "Populated Place",
+          "pop.place",
+          "Sussex",
+          38.9126129,
+          -75.4279748,
+          null,
+          "214308",
+          1,
+          "Milford anchor (Sussex County primary point; the town straddles the Kent line); the Hundred and North/South Division records, Crossing/Meadows/Crossroads records, and Milford Neck are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214308; exact official name and Populated Place type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Rehoboth Beach",
+          "Populated Place",
+          "pop.place",
+          "Sussex",
+          38.7209454,
+          -75.0760137,
+          null,
+          "214535",
+          1,
+          "Atlantic resort anchor; the same-name Beaches & Capes record (FEATURE_ID 217011) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214535; exact official name and Populated Place type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Iron Hill",
+          "Summit",
+          "phys.summit",
+          "New Castle",
+          39.6400861,
+          -75.7523707,
+          null,
+          "214151",
+          1,
+          "A named Delaware Summit retained because the state's surveyed high point, Ebright Azimuth (447 feet, the second-lowest US state high point), is a triangulation station with no GNIS Summit record and screened empty under states=DE; Domestic Names per-ID check (DomesticNames_DE_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 214151 as a Summit in New Castle County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=214151; exact official name and Summit type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Lums Pond",
+          "Lake",
+          "hydro.lake",
+          "New Castle",
+          39.554287,
+          -75.714942,
+          null,
+          "214259",
+          1,
+          "New Castle millpond anchor on the Appoquinimink basin; the Lums Pond Estates II record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=214259; exact official name and Lake type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Silver Lake",
+          "Lake",
+          "hydro.lake",
+          "Kent",
+          39.1761491,
+          -75.5314299,
+          null,
+          "214647",
+          1,
+          "Dover's Silver Lake (Kent County) is seeded; the same-name New Castle County (214649) and Sussex County (214646, 214648) lakes and the Silver Lake Manor/Shores communities are not seeded. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=214647; exact official name and Reservoir type in Kent County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Delaware River",
+          "Stream",
+          "hydro.stream",
+          "New Castle",
+          39.4326121,
+          -75.528813,
+          null,
+          "217887",
+          1,
+          "Delaware-associated river record on the upper Delaware River shore; the Delaware's GNIS main-stem record for the shared estuary is reproduced here as the New Castle County point returned for states=DE. USGS GNIS Geocoder (GNIS), FEATURE_ID=217887; exact official name and Stream type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Christina River",
+          "Stream",
+          "hydro.stream",
+          "New Castle",
+          39.7159468,
+          -75.5121427,
+          null,
+          "213799",
+          1,
+          "River record at its Delaware River mouth at Wilmington. USGS GNIS Geocoder (GNIS), FEATURE_ID=213799; exact official name and Stream type in New Castle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Saint Jones River",
+          "Stream",
+          "hydro.stream",
+          "Kent",
+          39.0659461,
+          -75.4007515,
+          null,
+          "217883",
+          1,
+          "River record at its Delaware Bay mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=217883; exact official name and Stream type in Kent County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
     }
   }
 }

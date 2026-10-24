@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T23:39:29Z",
+ "retrieved": "2026-10-24T00:32:04Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -3394,6 +3394,357 @@
      "county": "Hillsborough",
      "lat": 27.9475216,
      "lon": -82.4584279
+    }
+   ]
+  },
+  "MD": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MD_Text.zip",
+   "zipSha256": "f5956c43395bbbb9f1a2b98ea7582325a6244daee2bff84255c3fc6204bc9c54",
+   "candidatesRequested": [
+    "Annapolis",
+    "Baltimore",
+    "Frederick",
+    "Cumberland",
+    "Hagerstown",
+    "Ocean City",
+    "Salisbury",
+    "Hoye-Crest",
+    "Backbone Mountain",
+    "Deep Creek Lake",
+    "Potomac River",
+    "Susquehanna River",
+    "Choptank River",
+    "Pocomoke River"
+   ],
+   "rows": [
+    {
+     "featureId": "595031",
+     "name": "Annapolis",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Anne Arundel",
+     "lat": 38.9784453,
+     "lon": -76.4921829
+    },
+    {
+     "featureId": "588826",
+     "name": "Backbone Mountain",
+     "featureClass": "Range",
+     "state": "West Virginia",
+     "county": "Tucker",
+     "lat": 39.1065072,
+     "lon": -79.602405
+    },
+    {
+     "featureId": "597040",
+     "name": "Baltimore",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Baltimore (city)",
+     "lat": 39.2903848,
+     "lon": -76.6121893
+    },
+    {
+     "featureId": "213797",
+     "name": "Choptank River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Dorchester",
+     "lat": 38.6345644,
+     "lon": -76.3266152
+    },
+    {
+     "featureId": "583766",
+     "name": "Choptank River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Dorchester",
+     "lat": 38.6345644,
+     "lon": -76.3266152
+    },
+    {
+     "featureId": "590057",
+     "name": "Cumberland",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Allegany",
+     "lat": 39.6528654,
+     "lon": -78.7625185
+    },
+    {
+     "featureId": "584060",
+     "name": "Deep Creek Lake",
+     "featureClass": "Reservoir",
+     "state": "Maryland",
+     "county": "Garrett",
+     "lat": 39.4845148,
+     "lon": -79.3212691
+    },
+    {
+     "featureId": "584497",
+     "name": "Frederick",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Frederick",
+     "lat": 39.4142688,
+     "lon": -77.4105409
+    },
+    {
+     "featureId": "598385",
+     "name": "Hagerstown",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Washington",
+     "lat": 39.6417629,
+     "lon": -77.7199932
+    },
+    {
+     "featureId": "1959484",
+     "name": "Hoye-Crest",
+     "featureClass": "Summit",
+     "state": "Maryland",
+     "county": "Garrett",
+     "lat": 39.2373789,
+     "lon": -79.4854595
+    },
+    {
+     "featureId": "586284",
+     "name": "Ocean City",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Worcester",
+     "lat": 38.3365033,
+     "lon": -75.0849058
+    },
+    {
+     "featureId": "586618",
+     "name": "Pocomoke River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Somerset",
+     "lat": 37.9654019,
+     "lon": -75.6496504
+    },
+    {
+     "featureId": "597915",
+     "name": "Potomac River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "St. Mary's",
+     "lat": 37.9982645,
+     "lon": -76.3338878
+    },
+    {
+     "featureId": "591221",
+     "name": "Salisbury",
+     "featureClass": "Populated Place",
+     "state": "Maryland",
+     "county": "Wicomico",
+     "lat": 38.3606736,
+     "lon": -75.5993692
+    },
+    {
+     "featureId": "591690",
+     "name": "Susquehanna River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Cecil",
+     "lat": 39.5403911,
+     "lon": -76.0738386
+    }
+   ]
+  },
+  "DE": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_DE_Text.zip",
+   "zipSha256": "dcbd346c4d0c38d00a8556deecde240ead1a1001eb1f11919f36e4865a4c63ee",
+   "candidatesRequested": [
+    "Dover",
+    "Wilmington",
+    "Newark",
+    "Middletown",
+    "Milford",
+    "Rehoboth Beach",
+    "Iron Hill",
+    "Ebright Azimuth",
+    "Ebright",
+    "Lums Pond",
+    "Silver Lake",
+    "Delaware River",
+    "Christina River",
+    "Saint Jones River",
+    "Nanticoke River"
+   ],
+   "rows": [
+    {
+     "featureId": "213799",
+     "name": "Christina River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.7159468,
+     "lon": -75.5121427
+    },
+    {
+     "featureId": "217887",
+     "name": "Delaware River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.4326121,
+     "lon": -75.528813
+    },
+    {
+     "featureId": "217882",
+     "name": "Dover",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "Kent",
+     "lat": 39.158168,
+     "lon": -75.5243682
+    },
+    {
+     "featureId": "215854",
+     "name": "Ebright",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.8367785,
+     "lon": -75.5282567
+    },
+    {
+     "featureId": "217001",
+     "name": "Iron Hill",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.6334449,
+     "lon": -75.7538236
+    },
+    {
+     "featureId": "214151",
+     "name": "Iron Hill",
+     "featureClass": "Summit",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.6400861,
+     "lon": -75.7523707
+    },
+    {
+     "featureId": "214259",
+     "name": "Lums Pond",
+     "featureClass": "Lake",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.554287,
+     "lon": -75.714942
+    },
+    {
+     "featureId": "214304",
+     "name": "Middletown",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.449556,
+     "lon": -75.7163207
+    },
+    {
+     "featureId": "214308",
+     "name": "Milford",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "Sussex",
+     "lat": 38.9126129,
+     "lon": -75.4279748
+    },
+    {
+     "featureId": "586142",
+     "name": "Nanticoke River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Wicomico",
+     "lat": 38.233456,
+     "lon": -75.9246552
+    },
+    {
+     "featureId": "214385",
+     "name": "Newark",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.6837226,
+     "lon": -75.7496572
+    },
+    {
+     "featureId": "217011",
+     "name": "Rehoboth Beach",
+     "featureClass": "Beach",
+     "state": "Delaware",
+     "county": "Sussex",
+     "lat": 38.7167788,
+     "lon": -75.0760137
+    },
+    {
+     "featureId": "214535",
+     "name": "Rehoboth Beach",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "Sussex",
+     "lat": 38.7209454,
+     "lon": -75.0760137
+    },
+    {
+     "featureId": "217883",
+     "name": "Saint Jones River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "Kent",
+     "lat": 39.0659461,
+     "lon": -75.4007515
+    },
+    {
+     "featureId": "214646",
+     "name": "Silver Lake",
+     "featureClass": "Lake",
+     "state": "Delaware",
+     "county": "Sussex",
+     "lat": 38.7067636,
+     "lon": -75.0792838
+    },
+    {
+     "featureId": "214647",
+     "name": "Silver Lake",
+     "featureClass": "Reservoir",
+     "state": "Delaware",
+     "county": "Kent",
+     "lat": 39.1761491,
+     "lon": -75.5314299
+    },
+    {
+     "featureId": "214649",
+     "name": "Silver Lake",
+     "featureClass": "Reservoir",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.4368511,
+     "lon": -75.7007929
+    },
+    {
+     "featureId": "214648",
+     "name": "Silver Lake",
+     "featureClass": "Reservoir",
+     "state": "Delaware",
+     "county": "Sussex",
+     "lat": 38.911441,
+     "lon": -75.4363391
+    },
+    {
+     "featureId": "214862",
+     "name": "Wilmington",
+     "featureClass": "Populated Place",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.7459467,
+     "lon": -75.5465889
     }
    ]
   }

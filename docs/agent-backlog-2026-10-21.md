@@ -345,7 +345,26 @@ cumulative `gnis-candidates-batch7.json` extract were retained.
 Final: cities 47 (26/26), Node 814 = 802 pass/12 skipped/0 fail.
 Next in sequence: the country/planet thread.
 
-**Round 34 status (2026-10-23): partial.** PR #141 reconciled
+**Round 34 status (2026-10-23): partial.** Maryland and Delaware
+shipped as configurations 48–49, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json).
+Hoye-Crest (`1959484`, Garrett County, 3,360 ft) keeps its per-ID
+check, seeded under its GNIS name because the Backbone Mountain record
+keys to West Virginia. The Choptank River's parallel duplicate
+(FEATURE_ID 213797, identical name/class/county/point) is rejected for
+the in-series `583766`; Baltimore keeps the extract's `Baltimore
+(city)` county identity (Geocoder: City of Baltimore), and the
+Potomac's `St. Mary's`/`Saint Mary's` normalization is preserved.
+Delaware seeds Iron Hill (`214151`) because its surveyed high point,
+Ebright Azimuth (447 ft), is a triangulation station with no GNIS
+Summit record; the Nanticoke River screens empty under DE and stays a
+corridor. Nine state frames remain (AK, CT, HI, ME, MA, NH, NJ, RI,
+VT), then the country/planet thread.
+
+**Round 35 status (2026-10-23): partial.** PR #141 reconciled
 main-preferred after PR #139 landed: the branch had independently run
 “Continue backlog” as its own South Carolina (their batch-12, 12 rows:
 North Charleston, Rock Hill, Santee, …) while PR #139 shipped the
@@ -366,10 +385,11 @@ returned an empty array — pinned by test); and a new known limitation
 preserves the parallel screen's Rock Hill census-class tie-break
 (York 1250417 P1+GSA/OPM versus Fairfield 1231736 U6, ~78 km apart,
 neither seeded) plus the North Charleston and Santee River verified
-alternates. Record: [`backlog-execution-round-34-2026-10-23.md`](backlog-execution-round-34-2026-10-23.md).
-Final: cities 47 (26/26), city XDCs 47 rebuilt (southcarolina 109
-entries), wiki 250. Next in sequence unchanged: the country/planet
-thread.
+alternates. Record: [`backlog-execution-round-35-2026-10-23.md`](backlog-execution-round-35-2026-10-23.md).
+Final (post-#142): cities 49 (27/27 city tests), city XDCs 49
+rebuilt, wiki 251; full suites in PR #141’s verification table.
+Next in sequence: nine state frames remain (AK, CT, HI, ME, MA, NH,
+NJ, RI, VT), then the country/planet thread.
 
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
