@@ -1,0 +1,414 @@
+{
+  "generated": "2026-10-24",
+  "title": "Round 38 New Jersey-Hawaii state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for New Jersey and Hawaii. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). High Point and Mauna Kea carry Domestic Names per-ID identity checks. The same-name disambiguations (Lake Hopatcong, Kailua, Wailuku River, Mauna Loa/Maunaloa), the Waiau name-order screen, the Delaware River's out-of-state keying, and the displaced Elizabeth/Kahului records are documented below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<NJ|HI>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. Same-name records of another county, class, or island, adjacent harbour/aqueduct records, historical records, and census-designated places were rejected explicitly where relevant. Hawaii names are stored verbatim, including macrons and ʻokina (Līhuʻe, Haleakalā); the extraction staging had to use those exact spellings because the DomesticNames matcher is literal."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<NJ|HI>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for High Point (877098) and Mauna Kea (366215), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the summit elevations cite USGS-published values. The candidate extract file is cumulative across batches 7-20; this register is the frozen batch-20 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (text class Reservoir for Lake Hopatcong, Round Valley Reservoir), Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor (the Delaware River under NJ; Candlewood Lake in batch 19).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "newjersey": {
+      "title": "New Jersey statewide frame (New Jersey-Hawaii batch)",
+      "state": "NJ",
+      "bbox": {
+        "lon0": -75.6,
+        "lat0": 38.9,
+        "lon1": -73.85,
+        "lat1": 41.36
+      },
+      "frameNote": "New Jersey-Hawaii batch: the Trenton capital anchor is balanced with the per-ID High Point check (1,803 ft), Lake Hopatcong and Round Valley Reservoir, and the Passaic, Raritan, and Mullica river mouth records. The Delaware River main stem screens empty under states=NJ and stays a corridor.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Trenton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mercer",
+          "latitude": 40.2170534,
+          "longitude": -74.7429385,
+          "featureId": "884540",
+          "verified": 1,
+          "sourceNote": "State capital anchor on the Delaware River; the Trenton Gardens community and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Mercer County"
+        },
+        {
+          "name": "Newark",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Essex",
+          "latitude": 40.735657,
+          "longitude": -74.1723667,
+          "featureId": "878762",
+          "verified": 1,
+          "sourceNote": "Largest-city anchor; Newark Heights, Newark Reach, Newark Bay, and the historical airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Jersey City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hudson",
+          "latitude": 40.7281575,
+          "longitude": -74.0776417,
+          "featureId": "877450",
+          "verified": 1,
+          "sourceNote": "Hudson waterfront anchor; the Jersey City Aqueduct record (adjacent FEATURE_ID 877451, keyed to Bergen County) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hudson County"
+        },
+        {
+          "name": "Paterson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Passaic",
+          "latitude": 40.9167654,
+          "longitude": -74.171811,
+          "featureId": "879164",
+          "verified": 1,
+          "sourceNote": "Passaic River falls-city anchor on the seeded river's own corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Passaic County"
+        },
+        {
+          "name": "Camden",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Camden",
+          "latitude": 39.9259463,
+          "longitude": -75.1196199,
+          "featureId": "875105",
+          "verified": 1,
+          "sourceNote": "Delaware River anchor opposite Philadelphia; the Camden County political record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Camden County"
+        },
+        {
+          "name": "Atlantic City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Atlantic",
+          "latitude": 39.3642834,
+          "longitude": -74.4229266,
+          "featureId": "874413",
+          "verified": 1,
+          "sourceNote": "Absecon Island shore anchor; the Atlantic City Reservoir and the international airport records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=874413; exact official name and Populated Place type in Atlantic County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Atlantic County"
+        },
+        {
+          "name": "High Point",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Sussex",
+          "latitude": 41.3208723,
+          "longitude": -74.6615393,
+          "featureId": "877098",
+          "verified": 1,
+          "sourceNote": "New Jersey High Point at 1,803 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_NJ_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 877098 as a Summit in Sussex County at this point. The Ocean County populated-place namesake carries the adjacent FEATURE_ID 877099 and is not seeded — adjacency is recorded, but identity rests on class, county, and point. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Lake Hopatcong",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Sussex",
+          "latitude": 40.9486634,
+          "longitude": -74.6372713,
+          "featureId": "877238",
+          "verified": 1,
+          "sourceNote": "Largest freshwater lake in the state. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs; the same-name Morris County populated-place record (FEATURE_ID 876215) and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Reservoir type in Sussex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Round Valley Reservoir",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hunterdon",
+          "latitude": 40.6158907,
+          "longitude": -74.8255854,
+          "featureId": "879839",
+          "verified": 1,
+          "sourceNote": "Hunterdon County water-supply anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=879839; exact official name and Reservoir type in Hunterdon County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hunterdon County"
+        },
+        {
+          "name": "Passaic River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Essex",
+          "latitude": 40.7123243,
+          "longitude": -74.1181983,
+          "featureId": "879159",
+          "verified": 1,
+          "sourceNote": "River record at its Newark Bay mouth reach. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Raritan River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Middlesex",
+          "latitude": 40.4947753,
+          "longitude": -74.2714405,
+          "featureId": "879618",
+          "verified": 1,
+          "sourceNote": "River record at its Raritan Bay mouth; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Middlesex County"
+        },
+        {
+          "name": "Mullica River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Ocean",
+          "latitude": 39.5479342,
+          "longitude": -74.4141769,
+          "featureId": "878659",
+          "verified": 1,
+          "sourceNote": "Pine Barrens river record at its Great Bay mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=878659; exact official name and Stream type in Ocean County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Ocean County"
+        }
+      ]
+    },
+    "hawaii": {
+      "title": "Hawaii statewide frame (New Jersey-Hawaii batch)",
+      "state": "HI",
+      "bbox": {
+        "lon0": -160.3,
+        "lat0": 18.9,
+        "lon1": -154.75,
+        "lat1": 22.3
+      },
+      "frameNote": "New Jersey-Hawaii batch: the Honolulu capital anchor is balanced across four islands — Hawaii (Hilo, Kailua, Mauna Kea, Mauna Loa, Waiau, Wailuku River), Maui (Wailuku, Haleakalā), Molokai (Kaunakakai), Oahu (Honolulu), and Kauai (Līhuʻe, Hanalei River). Mauna Kea (13,796 ft) carries the per-ID high-point check.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Honolulu",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Honolulu",
+          "latitude": 21.3069444,
+          "longitude": -157.8583333,
+          "featureId": "366212",
+          "verified": 1,
+          "sourceNote": "State capital anchor (the consolidated city-county of Honolulu). The Honolulu County, District, and Division records, Honolulu Landing (historical), and the same-name Hawaii County political record (FEATURE_ID 359331) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=366212; exact official name and Populated Place type in Honolulu County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Honolulu County"
+        },
+        {
+          "name": "Hilo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hawaii",
+          "latitude": 19.722474,
+          "longitude": -155.0868273,
+          "featureId": "359187",
+          "verified": 1,
+          "sourceNote": "Hawaii County seat anchor on Hilo Bay; the bay, Census Designated Place, and division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=359187; exact official name and Populated Place type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Kailua",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hawaii",
+          "latitude": 19.6392732,
+          "longitude": -155.9902382,
+          "featureId": "365355",
+          "verified": 1,
+          "sourceNote": "Kona coast anchor (the Kailua-Kona of common usage), seeded on the Hawaii County record; the same-name populated places in Honolulu County (FEATURE_ID 359894) and Maui County (FEATURE_ID 359893), and Kailua Bay, are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=365355; exact official name and Populated Place type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Wailuku",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Maui",
+          "latitude": 20.8896075,
+          "longitude": -156.5010595,
+          "featureId": "364757",
+          "verified": 1,
+          "sourceNote": "Maui County seat anchor; the Wailuku district, division, and Census Designated Place records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=364757; exact official name and Populated Place type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Maui County"
+        },
+        {
+          "name": "Līhuʻe",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kauai",
+          "latitude": 21.9740821,
+          "longitude": -159.3649025,
+          "featureId": "361837",
+          "verified": 1,
+          "sourceNote": "Kauai County seat anchor, stored verbatim under its official GNIS spelling with macron and ʻokina; the Līhuʻe District and Census Designated Place records and the Lihue Ditch record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=361837; exact official name and Populated Place type in Kauai County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kauai County"
+        },
+        {
+          "name": "Kaunakakai",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Maui",
+          "latitude": 21.0896357,
+          "longitude": -157.0173984,
+          "featureId": "360717",
+          "verified": 1,
+          "sourceNote": "Molokai anchor (Maui County), seeded on the populated-place record; the same-name political division record (FEATURE_ID 360716), harbor, gulch, and Census Designated Place records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=360717; exact official name and Populated Place type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Maui County"
+        },
+        {
+          "name": "Mauna Kea",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Hawaii",
+          "latitude": 19.8206065,
+          "longitude": -155.4681155,
+          "featureId": "366215",
+          "verified": 1,
+          "sourceNote": "Hawaii High Point at 13,796 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_HI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 366215 as a Summit in Hawaii County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=366215; exact official name and Summit type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Mauna Loa",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Hawaii",
+          "latitude": 19.4753891,
+          "longitude": -155.605788,
+          "featureId": "362275",
+          "verified": 1,
+          "sourceNote": "Active shield-volcano summit at 13,681 feet (USGS-published elevation); the one-word Maui County Maunaloa summit (FEATURE_ID 362273) and community (FEATURE_ID 362274) records, and Mauna Loa Estates, are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=362275; exact official name and Summit type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Haleakalā",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Maui",
+          "latitude": 20.7014034,
+          "longitude": -156.1733005,
+          "featureId": "358929",
+          "verified": 1,
+          "sourceNote": "Maui high point at 10,023 feet (USGS-published elevation), seeded on the Summit record; Haleakalā Crater (FEATURE_ID 358930) is a separate record of crater class and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=358929; exact official name and Summit type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Maui County"
+        },
+        {
+          "name": "Waiau",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hawaii",
+          "latitude": 19.8114053,
+          "longitude": -155.4775715,
+          "featureId": "364585",
+          "verified": 1,
+          "sourceNote": "High-elevation lake anchor just below the Mauna Kea summit, seeded under the official GNIS name Waiau (the Lake Waiau of common usage); the Lake Waiau phrasing screens empty. DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=364585; exact official name and Lake type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Wailuku River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Hawaii",
+          "latitude": 19.728148,
+          "longitude": -155.087644,
+          "featureId": "364759",
+          "verified": 1,
+          "sourceNote": "River record at Hilo Bay (the longest river in Hawaii), seeded on the Hawaii County record; the same-name Wailuku River record in Maui County (FEATURE_ID 2777688) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=364759; exact official name and Stream type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Hawaii County"
+        },
+        {
+          "name": "Hanalei River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Kauai",
+          "latitude": 22.2147219,
+          "longitude": -159.4977093,
+          "featureId": "359043",
+          "verified": 1,
+          "sourceNote": "Kauai north-shore river record at Hanalei Bay. USGS GNIS Geocoder (GNIS), FEATURE_ID=359043; exact official name and Stream type in Kauai County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Kauai County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "High Point FEATURE_ID 877098 (Summit, Sussex) vs 877099 (Populated Place, Ocean)",
+      "decision": "Seeded the Sussex summit record; the adjacent-ID Ocean County community is not seeded. Recorded so the identification rests on class, county, and point rather than the ID sequence.",
+      "notClaimed": "The seeded point is not a summit outline."
+    },
+    {
+      "candidate": "Lake Hopatcong FEATURE_ID 877238 (Reservoir, Sussex) vs 876215 (Populated Place, Morris)",
+      "decision": "Seeded the water record on the Sussex-keyed lakes record; the borough record and the CDP are not seeded.",
+      "notClaimed": "The seeded point is not a shoreline or centroid."
+    },
+    {
+      "candidate": "Kailua in three counties (Hawaii 365355; Honolulu 359894; Maui 359893)",
+      "decision": "Seeded the Hawaii County record (Kailua-Kona). The Oahu and Maui namesakes are real communities but are not the Kona anchor; county, point, and island decide.",
+      "notClaimed": "County disambiguation only; no boundary is implied."
+    },
+    {
+      "candidate": "Wailuku River FEATURE_ID 364759 (Hawaii) vs 2777688 (Maui)",
+      "decision": "Seeded the Hawaii County record at Hilo Bay — the state's longest river — over its same-name Maui stream.",
+      "notClaimed": "The stored point is a GNIS primary point, not a centerline."
+    },
+    {
+      "candidate": "Mauna Loa FEATURE_ID 362275 vs Maunaloa FEATURE_IDs 362273/362274 (Maui)",
+      "decision": "Seeded the spaced-name Big Island shield summit; the one-word Molokai-side (Maui County) summit and community records are different features and are not seeded.",
+      "notClaimed": "Spelling (one word vs two) is part of the official names and is preserved."
+    },
+    {
+      "candidate": "Waiau FEATURE_ID 364585 under the phrasing 'Lake Waiau' (empty screen)",
+      "decision": "Seeded under the official GNIS name Waiau (Lakes & Reservoirs, Hawaii County, near the Mauna Kea summit); 'Lake Waiau' is the common-usage form and returns nothing. The Monadnock Mountain name-order precedent applies.",
+      "notClaimed": "The stored name follows GNIS exactly; the common name is noted, not substituted."
+    },
+    {
+      "candidate": "Delaware River under states=NJ (empty screen)",
+      "decision": "Corridor-only in New Jersey. The main stem's Stream record keys outside the state; Camden and Trenton anchor the river as context, on the established main-stem pattern (Connecticut, Pawcatuck, Nanticoke before it).",
+      "notClaimed": "The corridor is not a channel centerline or state boundary."
+    },
+    {
+      "candidate": "Elizabeth FEATURE_ID 876147 (NJ) and Kahului FEATURE_ID 359843 (HI) — valid records displaced",
+      "decision": "Both returned valid, identity-safe records but are not seeded: Round Valley Reservoir and the Hanalei River were preferred for class and island coverage within the 12-row starter registers. Recorded so the omissions are selections, not screening failures (the Farmington River precedent).",
+      "notClaimed": "Absence from the gazetteer is not absence from GNIS."
+    }
+  ],
+  "knownLimitations": [
+    "New Jersey and Hawaii are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so High Point (1,803 feet), Mauna Kea (13,796 feet), Mauna Loa (13,681 feet), and Haleakalā (10,023 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Hawaii frame's ocean reaches are schematic.",
+    "State frames are rectangles, not state-boundary clipping masks. The Hawaii rectangle spans the main island chain from Hawaii to Kauai; Niʻihau and the Northwestern Hawaiian Islands carry no seeded rows. No boundary geometry is claimed."
+  ]
+}

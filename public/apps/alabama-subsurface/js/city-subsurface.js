@@ -89,6 +89,8 @@ const DATA_LOADERS = {
   connecticut: () => import("./city-subsurface-data-connecticut.js"),
   rhodeisland: () => import("./city-subsurface-data-rhodeisland.js"),
   alaska: () => import("./city-subsurface-data-alaska.js"),
+  newjersey: () => import("./city-subsurface-data-newjersey.js"),
+  hawaii: () => import("./city-subsurface-data-hawaii.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -147,6 +149,8 @@ const GAZ_LOADERS = {
   connecticut: () => import("./city-gazetteer-data-connecticut.js"),
   rhodeisland: () => import("./city-gazetteer-data-rhodeisland.js"),
   alaska: () => import("./city-gazetteer-data-alaska.js"),
+  newjersey: () => import("./city-gazetteer-data-newjersey.js"),
+  hawaii: () => import("./city-gazetteer-data-hawaii.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -217,6 +221,8 @@ const DEM_LOADERS = {
   connecticut: () => importDem("./city-dem-grid-connecticut.js"),
   rhodeisland: () => importDem("./city-dem-grid-rhodeisland.js"),
   alaska: () => importDem("./city-dem-grid-alaska.js"),
+  newjersey: () => importDem("./city-dem-grid-newjersey.js"),
+  hawaii: () => importDem("./city-dem-grid-hawaii.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {

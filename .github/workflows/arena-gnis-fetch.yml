@@ -10,7 +10,7 @@ name: arena-gnis-fetch
 
 on:
   push:
-    branches: ['arena/6885d4c7-html5']
+    branches: ['arena/8c721d44-html5']
     paths:
       - '.arena-gnis/candidates.json'
       - '.github/workflows/arena-gnis-fetch.yml'

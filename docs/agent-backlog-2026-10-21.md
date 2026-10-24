@@ -475,6 +475,22 @@ seeded frame rather than spanned. New Jersey and Hawaii remain
 carried by the open PR #145; when it merges, every US state has a
 statewide frame and the country/planet thread follows.
 
+**Round 40 status (2026-10-24): complete (atlas).** New Jersey and
+Hawaii joined as configurations 57–58, completing a statewide frame
+for every US state (58 frames with cities and territories). The
+batch-20 work was originally produced on PR #145's branch; after
+PR #146 (Alaska, round 39) merged first, PR #145 became conflicting
+and its unique work was re-integrated on this branch under the
+main-preferred rule (PR #141/#143 precedent): the frozen batch-20
+register
+[`../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json)
+is transferred verbatim, the NJ/HI extract states merged into this
+branch's cumulative extract (twenty-nine states), and the batch-20
+test runs beside Alaska's (city suite 32/32). The round record is
+[`backlog-execution-round-40-2026-10-24.md`](backlog-execution-round-40-2026-10-24.md);
+PR #145 is superseded and can be closed unmerged. Next: the
+country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

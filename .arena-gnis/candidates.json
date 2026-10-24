@@ -476,6 +476,37 @@
       "Yukon River",
       "Kuskokwim River",
       "Utqiaġvik"
+    ],
+    "NJ": [
+      "Trenton",
+      "Newark",
+      "Jersey City",
+      "Paterson",
+      "Camden",
+      "Atlantic City",
+      "High Point",
+      "Lake Hopatcong",
+      "Round Valley Reservoir",
+      "Passaic River",
+      "Raritan River",
+      "Mullica River",
+      "Delaware River",
+      "Elizabeth"
+    ],
+    "HI": [
+      "Honolulu",
+      "Hilo",
+      "Kailua",
+      "Wailuku",
+      "Līhuʻe",
+      "Kaunakakai",
+      "Mauna Kea",
+      "Mauna Loa",
+      "Haleakalā",
+      "Waiau",
+      "Lake Waiau",
+      "Wailuku River",
+      "Hanalei River"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
