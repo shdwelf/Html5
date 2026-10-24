@@ -139,10 +139,23 @@ register above). PR #139's GNIS extraction pipeline
 extract `gnis-candidates-batch7.json` are retained for provenance, and
 the gazetteer gains the `Ridge` class for Arkansas' Magazine Mountain.
 
+Round 34 update: **2026-10-23**. `Maryland` and `delaware` join as the
+forty-eighth and forty-ninth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract, now covering twenty states).
+Hoye-Crest (3,360 feet, Maryland high point) carries a Domestic Names
+per-ID identity check, seeded under its GNIS name because the Backbone
+Mountain record keys to West Virginia; the Choptank River's parallel
+duplicate record (FEATURE_ID 213797) is rejected for the in-series
+583766. Delaware seeds Iron Hill because its surveyed high point,
+Ebright Azimuth (447 feet), is a triangulation station with no GNIS
+Summit record. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has forty-seven configurations — five cities,
-thirty-eight statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has forty-nine configurations — five cities,
+forty statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -194,6 +207,8 @@ its own offline Webxdc:
 | North Carolina (statewide) | `northcarolina-subsurface.html` | `js/city-subsurface-data-northcarolina.js` | `js/city-gazetteer-data-northcarolina.js` | `northcarolina-subsurface.xdc` |
 | South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
 | Florida (statewide) | `florida-subsurface.html` | `js/city-subsurface-data-florida.js` | `js/city-gazetteer-data-florida.js` | `florida-subsurface.xdc` |
+| Maryland (statewide) | `Maryland-subsurface.html` | `js/city-subsurface-data-Maryland.js` | `js/city-gazetteer-data-Maryland.js` | `Maryland-subsurface.xdc` |
+| Delaware (statewide) | `delaware-subsurface.html` | `js/city-subsurface-data-delaware.js` | `js/city-gazetteer-data-delaware.js` | `delaware-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
