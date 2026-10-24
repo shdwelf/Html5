@@ -474,7 +474,8 @@
       "Mount Foraker",
       "Iliamna Lake",
       "Yukon River",
-      "Kuskokwim River"
+      "Kuskokwim River",
+      "Utqiaġvik"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
