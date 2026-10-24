@@ -1,8 +1,7 @@
 {
-  "batch": 18,
+  "batch": 20,
   "configurations": [
-    52,
-    53
+    56
   ],
   "states": {
     "MN": [
@@ -398,6 +397,67 @@
       "Connecticut River",
       "Lamoille River"
     ],
+    "ME": [
+      "Augusta",
+      "Portland",
+      "Bangor",
+      "Lewiston",
+      "Mount Katahdin",
+      "Cadillac Mountain",
+      "Moosehead Lake",
+      "Sebago Lake",
+      "Penobscot River",
+      "Kennebec River",
+      "Androscoggin River",
+      "Saco River"
+    ],
+    "MA": [
+      "Boston",
+      "Worcester",
+      "Springfield",
+      "Cambridge",
+      "Lowell",
+      "Provincetown",
+      "New Bedford",
+      "Mount Greylock",
+      "Quabbin Reservoir",
+      "Lake Chaubunagungamaug",
+      "Merrimack River",
+      "Charles River",
+      "Connecticut River"
+    ],
+    "CT": [
+      "Hartford",
+      "New Haven",
+      "Bridgeport",
+      "Stamford",
+      "Waterbury",
+      "New London",
+      "Bear Mountain",
+      "Bantam Lake",
+      "Lake Lillinonah",
+      "Connecticut River",
+      "Housatonic River",
+      "Thames River",
+      "Farmington River",
+      "Mount Frissell",
+      "Candlewood Lake"
+    ],
+    "RI": [
+      "Providence",
+      "Newport",
+      "Warwick",
+      "Cranston",
+      "Pawtucket",
+      "Woonsocket",
+      "New Shoreham",
+      "Jerimoth Hill",
+      "Scituate Reservoir",
+      "Blackstone River",
+      "Sakonnet River",
+      "Providence River",
+      "Pawcatuck River"
+    ],
     "NJ": [
       "Trenton",
       "Newark",
@@ -411,22 +471,8 @@
       "Passaic River",
       "Manasquan River",
       "Delaware and Raritan Canal"
-    ],
-    "CT": [
-      "Hartford",
-      "Bridgeport",
-      "New Haven",
-      "Waterbury",
-      "Stamford",
-      "New London",
-      "Norwich",
-      "Bear Mountain",
-      "Bantam Lake",
-      "Connecticut River",
-      "Housatonic River",
-      "Thames River"
     ]
   },
-  "note": "Batch 18 = configurations 52 (New Jersey) + 53 (Connecticut), round 36. CUMULATIVE request: every state ever screened (the tool rebuilds the extract from this list alone, so dropping older states would erase them); NJ/CT lists are the round-36 exact official names (both High Point and both Bear Mountain twins intentionally requested).",
-  "requestedBy": "arena/fb1c7be1-html5 round-36, 2026-10-23"
+  "note": "Batch 20 = configuration 56 (New Jersey), round 38. CUMULATIVE request: every state ever screened (the tool rebuilds the extract from this list alone); NJ list = the round-38 exact official names (the High Point twin intentionally requested).",
+  "requestedBy": "arena/fb1c7be1-html5 round-38, 2026-10-23"
 }

@@ -411,6 +411,80 @@ NH, and the Saco screens empty under NH — all four main stems stay
 corridors. Seven state frames remain (AK, CT, HI, ME, MA, NJ, RI),
 then the country/planet thread.
 
+**Round 36 status (2026-10-24): partial.** Maine and Massachusetts
+shipped as configurations 52–53, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch18-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch18-source-register-2026-10-23.json);
+the round record is filed as
+[`backlog-execution-round-36-2026-10-24.md`](backlog-execution-round-36-2026-10-24.md).
+Mount Katahdin (`579940`, Piscataquis County, 5,270 ft) and Mount
+Greylock (`607448`, Berkshire County, 3,491 ft) keep their per-ID
+checks; Cadillac Mountain (`563337`) anchors Acadia. Sebago Lake is
+seeded on its lakes record (`575155`) with the adjacent
+populated-place twin (`575156`) rejected by class. The Androscoggin
+(`580918`), Saco (`574648`), and Merrimack (`619363`) main stems seed
+on their ME/MA mouth records after corridor-only New Hampshire
+screens, while the Connecticut River returns only `Connecticut River
+Reservoir` impoundments under MA too — its fourth consecutive
+corridor-only frame — pending its Connecticut record, which the CT+RI
+pairing in the next batch can test. Five state frames remain (AK, CT,
+HI, NJ, RI), then the country/planet thread.
+
+**Round 37 status (2026-10-24): partial.** Connecticut and Rhode
+Island shipped as configurations 54–55, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json);
+the round record is filed as
+[`backlog-execution-round-37-2026-10-24.md`](backlog-execution-round-37-2026-10-24.md).
+The Connecticut River seeds on its Connecticut mouth record
+(`206425`), closing the four-frame corridor chain (NH, VT, MA before
+it); the Pawcatuck River screens empty under RI and stays a corridor.
+Bear Mountain (`205348`, 2,323 ft) is seeded as Connecticut's highest
+summit with a per-ID check, while the state's highest ground — the
+Mount Frissell south slope (2,379 ft) — has no Connecticut GNIS
+record (empty `states=CT` screen; the summit keys to Massachusetts).
+Connecticut rows store GNIS planning-region county equivalents
+(county governments abolished 1960), with the Geocoder's full
+`Planning Region` strings preserved per row; Candlewood Lake's screen
+returns only shoreline communities, so Bantam Lake (`205246`) and
+Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
+(`1219566`, 812 ft) keeps Rhode Island's per-ID high-point check.
+Three state frames remain (AK, HI, NJ), then the country/planet
+thread.
+
+**Round 38 status (2026-10-24): partial.** New Jersey shipped as
+configuration 56 (batch 20) from `arena/fb1c7be1-html5`, the final
+Atlantic seaboard state. This round was renumbered in flight: the
+branch staged New Jersey + Connecticut as round 36 / batch 18, and
+parallel-session PR #144 landed Maine, Massachusetts, Connecticut and
+Rhode Island first (rounds 36–37, batches 18–19, configurations
+52–55). Under the main-preferred rule the duplicate Connecticut
+generation was dropped wholesale after re-verifying main's batch-19
+coverage of every identity decision this branch had recorded (Bear
+Mountain description locator `205348`, Mount Frissell's missing
+Connecticut record, planning-region counties, Candlewood screen,
+main-stem mouth seeding) — the first S4 collision needing **no**
+evidence transfer — and this record takes the next free round.
+New Jersey's frame carries 12/12 per-ID `VERIFIED=1` rows (Trenton
+capital anchor; High Point Summit's "1803 feet" description over the
+Ocean County same-name place `877099`; Lake Hopatcong as the
+Sussex-keyed Reservoir `877238`; Delaware and Raritan Canal stored
+as the returned `Stream` grouping), a Delaware River context corridor
+citing the empty `states=NJ` screen plus main's Delaware row
+`217887`, labelled synthetic relief, and no DEM. Provenance is in
+[`../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json)
+(screens cross-checked 2026-10-23); the round record is
+[`backlog-execution-round-38-2026-10-24.md`](backlog-execution-round-38-2026-10-24.md).
+Runner note: the fetch tool rebuilds the extract solely from
+`.arena-gnis/candidates.json`, so the request list stays cumulative
+(the round-38 push restored the 27-state union after an NJ/CT-only
+request briefly wiped twenty-two earlier states). **Two state frames
+remain (AK, HI)**, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

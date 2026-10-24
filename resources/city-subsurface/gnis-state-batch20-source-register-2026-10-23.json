@@ -1,0 +1,212 @@
+{
+  "generated": "2026-10-23",
+  "services": {
+    "usgsGeocoder": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0 (term, states, include=gnis); accepted only on exact name/Type/state/county/FEATURE_ID/point agreement.",
+    "gnisDomesticNames": "per-state DomesticNames_Text zips staged by .github/workflows/arena-gnis-fetch.yml via tools/gnis_extract.py into resources/city-subsurface/gnis-candidates-batch7.json; the CI runner downloads because sandbox egress is allowlisted."
+  },
+  "title": "Round 38 New Jersey state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter register for New Jersey. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type, state, returned primary county, permanent FEATURE_ID, and returned primary point; points are disclosed as points, never as boundaries, shorelines, lake polygons, or river centerlines.",
+  "selectionRules": [
+    "Exact official name, compatible returned class/type, intended state, returned primary county, permanent FEATURE_ID, and returned primary point must all identify the intended feature before VERIFIED=1.",
+    "The seeded coordinate is the GNIS primary point; it is never described as a boundary, shoreline, lake polygon, or river centerline.",
+    "A state screen that returns an empty array leaves the feature unseeded in that frame; it becomes a generalized context corridor or stays undisclosed-until-screened, never forced into a row.",
+    "Duplicate same-name records are separated by the official description locator where present (Bear Mountain, batch-12/round-28 rule), else by returned class/type and county; the loser is disclosed, never merged.",
+    "Records keyed to another state (Mount Frissell -> Massachusetts; Delaware River -> Delaware) are never seeded into this state's rows; the bordering frame either seeds its own-keyed record (delaware frame) or carries context only."
+  ],
+  "frames": {
+    "newjersey": {
+      "title": "New Jersey starter register (round 36, batch 18)",
+      "state": "NJ",
+      "bbox": {
+        "lon0": -75.55,
+        "lat0": 38.93,
+        "lon1": -73.88,
+        "lat1": 41.36
+      },
+      "frameNote": "New Jersey batch-18 row: six populated-place anchors (Trenton capital, Newark, Jersey City, Elizabeth, Paterson, Camden) balanced with the Sussex High Point (per-id description \"Highest elevation in NJ at 1803 feet.\"), Lake Hopatcong (Sussex-keyed Reservoir), and four water rows (Raritan, Passaic, Manasquan, Delaware and Raritan Canal). The Delaware River states=NJ screen returns an empty array and stays a corridor citing the Delaware-frame row (FEATURE_ID 217887).",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Trenton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mercer",
+          "latitude": 40.2170534,
+          "longitude": -74.7429385,
+          "featureId": "884540",
+          "verified": 1,
+          "sourceNote": "State capital anchor at the Delaware fall line; the Trenton Gardens place and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Mercer County"
+        },
+        {
+          "name": "Newark",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Essex",
+          "latitude": 40.735657,
+          "longitude": -74.1723667,
+          "featureId": "878762",
+          "verified": 1,
+          "sourceNote": "Essex County urban anchor; the Newark Heights place, Newark Reach canal segment, Newark Bay, and historical Newark Army Air Field records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Jersey City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hudson",
+          "latitude": 40.7281575,
+          "longitude": -74.0776417,
+          "featureId": "877450",
+          "verified": 1,
+          "sourceNote": "Hudson County waterfront anchor on the Hudson; the Jersey City Aqueduct record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hudson County"
+        },
+        {
+          "name": "Elizabeth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Union",
+          "latitude": 40.6639916,
+          "longitude": -74.2107006,
+          "featureId": "876147",
+          "verified": 1,
+          "sourceNote": "Union County port city; the Elizabethport place, Elizabeth Channel, Elizabeth River, and Elizabethport Reach records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=876147; exact official name and Populated Place type in Union County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Union County"
+        },
+        {
+          "name": "Paterson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Passaic",
+          "latitude": 40.9167654,
+          "longitude": -74.171811,
+          "featureId": "879164",
+          "verified": 1,
+          "sourceNote": "Passaic County anchor at the Great Falls; the screen returned the city alone with no twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Passaic County"
+        },
+        {
+          "name": "Camden",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Camden",
+          "latitude": 39.9259463,
+          "longitude": -75.1196199,
+          "featureId": "875105",
+          "verified": 1,
+          "sourceNote": "Delaware River waterfront anchor opposite Philadelphia; the Camden County political-division record led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Camden County"
+        },
+        {
+          "name": "High Point",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Sussex",
+          "latitude": 41.3208723,
+          "longitude": -74.6615393,
+          "featureId": "877098",
+          "verified": 1,
+          "sourceNote": "New Jersey high point; the Domestic Names per-ID check (gaznames_default REST layer) reproduces Summit feature code 15048 at stored gaz_elevation 548 m with the official description \"Highest elevation in NJ at 1803 feet.\"; the same-name Ocean County populated place (FEATURE_ID 877099) led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Lake Hopatcong",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Sussex",
+          "latitude": 40.9486634,
+          "longitude": -74.6372713,
+          "featureId": "877238",
+          "verified": 1,
+          "sourceNote": "Largest New Jersey lake; the per-ID check returns gaz class Reservoir (feature code 39004, stored gaz_elevation 278 m, null description) keyed to Sussex County even though the shoreline spans Morris and Sussex; the same-name Morris County populated place (876215) and the census division (2806109) led the screen and are not seeded; the row is grouped under Lakes. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Lake type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Raritan River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Middlesex",
+          "latitude": 40.4947753,
+          "longitude": -74.2714405,
+          "featureId": "879618",
+          "verified": 1,
+          "sourceNote": "Central Jersey river to Raritan Bay; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Middlesex County"
+        },
+        {
+          "name": "Passaic River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Essex",
+          "latitude": 40.7123243,
+          "longitude": -74.1181983,
+          "featureId": "879159",
+          "verified": 1,
+          "sourceNote": "Single exact stream return in the Passaic valley, keyed to Essex County. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Manasquan River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Monmouth",
+          "latitude": 40.1024981,
+          "longitude": -74.0343332,
+          "featureId": "878067",
+          "verified": 1,
+          "sourceNote": "Monmouth County coastal river; single exact stream return. USGS GNIS Geocoder (GNIS), FEATURE_ID=878067; exact official name and Stream type in Monmouth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Monmouth County"
+        },
+        {
+          "name": "Delaware and Raritan Canal",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Mercer",
+          "latitude": 40.4153835,
+          "longitude": -74.6296021,
+          "featureId": "875875",
+          "verified": 1,
+          "sourceNote": "Historic Mercer County feeder canal; single exact Streams & Canals return grouped under Stream rows rather than split into a new class. USGS GNIS Geocoder (GNIS), FEATURE_ID=875875; exact official name and Stream type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Mercer County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "High Point name collision in New Jersey (Summit 877098 Sussex vs Populated Place 877099 Ocean)",
+      "decision": "Seed the Sussex County Summit; the Ocean County same-name populated place is not seeded.",
+      "notClaimed": "The populated place is not a high point; the Summit point is not the state boundary or a survey marker coordinate."
+    },
+    {
+      "candidate": "Lake Hopatcong records (Lake/Reservoir 877238 Sussex vs Populated Place 876215 Morris vs census division 2806109)",
+      "decision": "Seed the Sussex-keyed Reservoir record (per-ID: feature code 39004, 278 m, null description) under the Lake row class used by the UI; place and division records are not seeded.",
+      "notClaimed": "The primary point is not the shoreline; Sussex is the returned primary county although the lake spans Morris too."
+    },
+    {
+      "candidate": "Delaware River under states=NJ (empty array)",
+      "decision": "Corridor-only in the New Jersey frame; the national screen keys the Stream record to New Castle County, Delaware (217887), which main's delaware frame seeds as a row; same-name KS/NM rivers and the NY-keyed gorge record are not seeded here.",
+      "notClaimed": "The corridor is not a channel centerline or the Delaware state boundary."
+    }
+  ],
+  "knownLimitations": [
+    "Relief is labelled synthetic generalized morphology (no DEM claim); the labelled coast line is a synthetic context line, not a shoreline claim. GNIS points supply the rows, never the terrain, the corridors, or the frame rectangle.",
+    "The DomesticNames extract for NJ is produced by the arena-gnis-fetch CI workflow (sandbox egress cannot reach the S3 staging zips); this register's row assertions are enforced against the extract once CI lands it, and the gaznames_default REST per-ID checks plus Geocoder screens are the in-sandbox evidence of record.",
+    "New Jersey's High Point carries stored gaz_elevation 548 m against the official description's 1,803 feet (549.6 m rounding); both values are preserved as returned.",
+    "Delaware and Raritan Canal is stored as a Stream row (Geocoder type Streams & Canals) rather than introducing an untokenised Canal class row in the starter register.",
+    "Point coordinates are GNIS primary points: they are not boundaries, shorelines, lake polygons, river centerlines, municipal limits, or address geocodes."
+  ]
+}

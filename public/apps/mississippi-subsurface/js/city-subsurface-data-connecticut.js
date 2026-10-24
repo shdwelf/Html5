@@ -14,71 +14,62 @@ export const CITY = {
   "state": "CT",
   "country": "United States",
   "county": "Statewide",
-  "baseElevationM": 90,
-  "roughnessM": 70,
-  "hasWater": true,
+  "baseElevationM": 120,
+  "roughnessM": 100,
+  "hasWater": false,
   "requiresDem": false
 };
 
-export const BBOX = {"lon0":-73.7,"lat0":40.98,"lon1":-71.79,"lat1":42.05};
-export const CENTER = {"lon":-72.74,"lat":41.55};
+export const BBOX = {"lon0":-73.75,"lat0":40.95,"lon1":-71.75,"lat1":42.06};
+export const CENTER = {"lon":-72.75,"lat":41.5};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
-export const COAST = [[-73.66,41],[-73.44,41.03],[-73.25,41.05],[-73.04,41.1],[-72.85,41.13],[-72.65,41.2],[-72.45,41.25],[-72.35,41.31],[-72.15,41.33],[-71.99,41.32],[-71.9,41.36]];
+export const COAST = [];
 export const RELIEF = [
   {
-    "name": "Northwest Hills / Litchfield Highlands",
-    "lon": -73.42,
-    "lat": 41.95,
-    "rx": 0.35,
-    "ry": 0.28,
-    "amp": 320,
-    "rot": -20
-  },
-  {
-    "name": "Frissell slope / state-line high ground",
-    "lon": -73.48,
+    "name": "Taconic / Bear Mountain highlands",
+    "lon": -73.45,
     "lat": 42.04,
     "rx": 0.18,
-    "ry": 0.14,
-    "amp": 280,
+    "ry": 0.12,
+    "amp": 300,
     "rot": 0
   },
   {
-    "name": "Housatonic valley",
+    "name": "Litchfield hills",
     "lon": -73.25,
-    "lat": 41.72,
-    "rx": 0.28,
-    "ry": 0.4,
-    "amp": 140,
-    "rot": -15
-  },
-  {
-    "name": "Central Connecticut lowlands",
-    "lon": -72.75,
-    "lat": 41.65,
-    "rx": 0.5,
-    "ry": 0.3,
-    "amp": 70,
-    "rot": 0
-  },
-  {
-    "name": "Eastern Connecticut uplands",
-    "lon": -72.12,
     "lat": 41.75,
-    "rx": 0.4,
-    "ry": 0.35,
-    "amp": 130,
+    "rx": 0.3,
+    "ry": 0.25,
+    "amp": 190,
     "rot": 0
   },
   {
-    "name": "Coastal low strip",
-    "lon": -72.9,
-    "lat": 41.1,
-    "rx": 0.6,
+    "name": "Connecticut valley lowland",
+    "lon": -72.65,
+    "lat": 41.7,
+    "rx": 0.2,
+    "ry": 0.45,
+    "amp": -50,
+    "rot": 0
+  },
+  {
+    "name": "Eastern highlands",
+    "lon": -72,
+    "lat": 41.75,
+    "rx": 0.3,
+    "ry": 0.3,
+    "amp": 110,
+    "rot": 0
+  },
+  {
+    "name": "Long Island Sound shore plain",
+    "lon": -72.7,
+    "lat": 41.2,
+    "rx": 0.8,
     "ry": 0.15,
-    "amp": 40,
-    "rot": -5
+    "amp": -60,
+    "rot": 0
   }
 ];
 export const LAYERS = [
@@ -210,40 +201,88 @@ export const TIER_COLOR = {
 };
 export const CORRIDORS = [
   {
-    "id": "i91-connecticut",
-    "layer": "roads",
+    "id": "connecticut-river-ct",
+    "layer": "water",
     "tier": "context",
-    "name": "Interstate 91 corridor (generalized)",
-    "short": "I-91",
+    "name": "Connecticut River corridor (generalized)",
+    "short": "Connecticut River",
     "depthM": 0,
     "path": [
       [
-        -72.68,
-        41.76
+        -72.589811,
+        42.1014831
       ],
       [
-        -72.73,
-        41.65
+        -72.6850932,
+        41.7637111
       ],
       [
-        -72.8,
-        41.52
-      ],
-      [
-        -72.88,
-        41.4
-      ],
-      [
-        -72.93,
-        41.31
-      ],
-      [
-        -72.96,
-        41.2
+        -72.332687,
+        41.272313
       ]
     ],
     "facts": [
-      "Generalized Interstate 91 corridor through the seeded Hartford and New Haven anchors up the Connecticut River valley; schematic polyline, not a highway alignment."
+      "Generalized Connecticut corridor joining the seeded Springfield (Massachusetts frame) and Hartford points to the seeded mouth point: the main stem stayed corridor-only in the NH, VT, and MA frames and seeds here. Not a channel centerline or state boundary."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "i95-connecticut",
+    "layer": "roads",
+    "tier": "context",
+    "name": "Interstate 95 Long Island Sound corridor (generalized)",
+    "short": "I-95",
+    "depthM": 0,
+    "path": [
+      [
+        -73.5387341,
+        41.0534302
+      ],
+      [
+        -73.2048348,
+        41.1670412
+      ],
+      [
+        -72.9281578,
+        41.3081527
+      ],
+      [
+        -72.0995209,
+        41.3556539
+      ]
+    ],
+    "facts": [
+      "Generalized Interstate 95 corridor through the seeded Stamford, Bridgeport, New Haven, and New London points; schematic polyline, not a highway alignment or shoreline."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "housatonic-river",
+    "layer": "water",
+    "tier": "context",
+    "name": "Housatonic River corridor (generalized)",
+    "short": "Housatonic River",
+    "depthM": 0,
+    "path": [
+      [
+        -73.3222477,
+        41.4688125
+      ],
+      [
+        -73.108442,
+        41.169264
+      ],
+      [
+        -73.4095654,
+        41.5650947
+      ]
+    ],
+    "facts": [
+      "Generalized Housatonic corridor joining the seeded Lillinonah impoundment and mouth points; not a channel centerline."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
@@ -258,112 +297,48 @@ export const CORRIDORS = [
     "depthM": 0,
     "path": [
       [
-        -72.68,
-        41.76
+        -73.4403995,
+        41.4945388
       ],
       [
-        -72.85,
-        41.66
+        -73.0514966,
+        41.5581525
       ],
       [
-        -73.05,
-        41.56
-      ],
-      [
-        -73.28,
-        41.52
-      ],
-      [
-        -73.52,
-        41.5
+        -72.6850932,
+        41.7637111
       ]
     ],
     "facts": [
-      "Generalized Interstate 84 corridor linking the seeded Hartford and Waterbury anchors toward the New York line; schematic polyline, not a highway alignment."
+      "Generalized Interstate 84 corridor through the seeded Waterbury and Hartford points (the Candlewood shore point is context only); schematic polyline, not a highway alignment."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "i95-connecticut",
-    "layer": "roads",
+    "id": "northwest-highlands",
+    "layer": "water",
     "tier": "context",
-    "name": "Interstate 95 / coastal corridor (generalized)",
-    "short": "I-95",
+    "name": "Northwest highlands context (generalized)",
+    "short": "Northwest highlands",
     "depthM": 0,
     "path": [
       [
-        -73.66,
-        41.02
+        -73.2215068,
+        41.7045073
       ],
       [
-        -73.45,
-        41.06
+        -73.4548409,
+        42.0448053
       ],
       [
-        -73.2,
-        41.13
-      ],
-      [
-        -73.02,
-        41.18
-      ],
-      [
-        -72.91,
-        41.31
-      ],
-      [
-        -72.7,
-        41.36
-      ],
-      [
-        -72.45,
-        41.35
-      ],
-      [
-        -72.2,
-        41.36
-      ],
-      [
-        -71.95,
-        41.37
+        -73.1659399,
+        42.6371703
       ]
     ],
     "facts": [
-      "Generalized Interstate 95 coastal corridor linking the seeded Stamford, Bridgeport, New Haven, and New London anchors to the Rhode Island line; schematic polyline, not a highway alignment."
-    ],
-    "sources": [
-      "Generalized from public geography; GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "i395-connecticut",
-    "layer": "roads",
-    "tier": "context",
-    "name": "Interstate 395 / eastern corridor (generalized)",
-    "short": "I-395",
-    "depthM": 0,
-    "path": [
-      [
-        -72.09,
-        41.52
-      ],
-      [
-        -72.03,
-        41.65
-      ],
-      [
-        -71.98,
-        41.8
-      ],
-      [
-        -71.95,
-        41.95
-      ]
-    ],
-    "facts": [
-      "Generalized Interstate 395 corridor up the eastern uplands from the seeded Norwich anchor; schematic polyline, not a highway alignment."
+      "Generalized context line from Bantam Lake to the seeded Bear Mountain point and the Greylock point seeded in Massachusetts; not a boundary. Mount Frissell's Connecticut slope (the state high point) lies on this line's Massachusetts side and has no Connecticut GNIS record."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
@@ -381,10 +356,10 @@ export const NODES = [
     "lat": 41.7637111,
     "depthM": 0,
     "facts": [
-      "state capital anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 213160 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 213160; coordinate per gazetteer row"
     ]
   },
   {
@@ -397,26 +372,10 @@ export const NODES = [
     "lat": 41.3081527,
     "depthM": 0,
     "facts": [
-      "South Central coast anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "Harbor-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 209231 (GNIS primary point)"
-    ]
-  },
-  {
-    "id": "bridgeport",
-    "name": "Bridgeport",
-    "layer": "sites",
-    "tier": "official",
-    "kind": "building",
-    "lon": -73.2048348,
-    "lat": 41.1670412,
-    "depthM": 0,
-    "facts": [
-      "Fairfield County coast anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
-    ],
-    "sources": [
-      "USGS GNIS FEATURE_ID 205720 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 209231; coordinate per gazetteer row"
     ]
   },
   {
@@ -429,10 +388,26 @@ export const NODES = [
     "lat": 42.0448053,
     "depthM": 0,
     "facts": [
-      "Highest Connecticut-keyed GNIS summit (2,323 ft stored as 708 m); the official USGS table's Mount Frissell south slope high point has no Connecticut record. node coordinate is the GNIS summit primary point from the gazetteer row."
+      "Highest Connecticut summit (2,323 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 205348 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 205348; coordinate per gazetteer row"
+    ]
+  },
+  {
+    "id": "bantam-lake",
+    "name": "Bantam Lake",
+    "layer": "sites",
+    "tier": "official",
+    "kind": "lake",
+    "lon": -73.2215068,
+    "lat": 41.7045073,
+    "depthM": 0,
+    "facts": [
+      "Largest natural lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+    ],
+    "sources": [
+      "USGS GNIS FEATURE_ID 205246; coordinate per gazetteer row"
     ]
   }
 ];
@@ -483,14 +458,14 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      3.500658839017808,
+      3.668445036882195,
       10,
-      2.620472800000001
+      2.7184343999999983
     ],
     "target": [
-      3.500658839017808,
+      3.668445036882195,
       0,
-      2.620472800000001
+      2.7184343999999983
     ]
   }
 ];
