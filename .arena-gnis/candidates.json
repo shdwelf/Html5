@@ -1,8 +1,7 @@
 {
-  "batch": 7,
+  "batch": 20,
   "configurations": [
-    25,
-    26
+    56
   ],
   "states": {
     "MN": [
@@ -509,6 +508,6 @@
       "Hanalei River"
     ]
   },
-  "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
-  "requestedBy": "arena-gnis-fetch staging, 2026-10-23"
+  "note": "Batch 20 = configuration 56 (New Jersey), round 38. CUMULATIVE request: every state ever screened (the tool rebuilds the extract from this list alone); NJ list = the round-38 exact official names (the High Point twin intentionally requested).",
+  "requestedBy": "arena/fb1c7be1-html5 round-38, 2026-10-23"
 }
