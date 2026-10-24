@@ -345,6 +345,25 @@ cumulative `gnis-candidates-batch7.json` extract were retained.
 Final: cities 47 (26/26), Node 814 = 802 pass/12 skipped/0 fail.
 Next in sequence: the country/planet thread.
 
+**Round 34 status (2026-10-23): partial.** Maryland and Delaware
+shipped as configurations 48–49, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json).
+Hoye-Crest (`1959484`, Garrett County, 3,360 ft) keeps its per-ID
+check, seeded under its GNIS name because the Backbone Mountain record
+keys to West Virginia. The Choptank River's parallel duplicate
+(FEATURE_ID 213797, identical name/class/county/point) is rejected for
+the in-series `583766`; Baltimore keeps the extract's `Baltimore
+(city)` county identity (Geocoder: City of Baltimore), and the
+Potomac's `St. Mary's`/`Saint Mary's` normalization is preserved.
+Delaware seeds Iron Hill (`214151`) because its surveyed high point,
+Ebright Azimuth (447 ft), is a triangulation station with no GNIS
+Summit record; the Nanticoke River screens empty under DE and stays a
+corridor. Nine state frames remain (AK, CT, HI, ME, MA, NH, NJ, RI,
+VT), then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
