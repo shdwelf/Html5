@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T07:23:39Z",
+ "retrieved": "2026-10-24T07:27:52Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4810,17 +4810,26 @@
     "Hilo",
     "Kailua",
     "Wailuku",
-    "Lihue",
+    "L\u012bhu\u02bbe",
     "Kaunakakai",
     "Mauna Kea",
     "Mauna Loa",
-    "Haleakala",
+    "Haleakal\u0101",
     "Waiau",
     "Lake Waiau",
     "Wailuku River",
     "Hanalei River"
    ],
    "rows": [
+    {
+     "featureId": "358929",
+     "name": "Haleakal\u0101",
+     "featureClass": "Summit",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.7014034,
+     "lon": -156.1733005
+    },
     {
      "featureId": "359043",
      "name": "Hanalei River",
@@ -4937,6 +4946,15 @@
      "county": "Maui",
      "lat": 21.0896357,
      "lon": -157.0173984
+    },
+    {
+     "featureId": "361837",
+     "name": "L\u012bhu\u02bbe",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Kauai",
+     "lat": 21.9740821,
+     "lon": -159.3649025
     },
     {
      "featureId": "366215",
