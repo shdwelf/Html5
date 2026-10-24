@@ -432,6 +432,30 @@ corridor-only frame — pending its Connecticut record, which the CT+RI
 pairing in the next batch can test. Five state frames remain (AK, CT,
 HI, NJ, RI), then the country/planet thread.
 
+**Round 37 status (2026-10-24): partial.** Connecticut and Rhode
+Island shipped as configurations 54–55, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json);
+the round record is filed as
+[`backlog-execution-round-37-2026-10-24.md`](backlog-execution-round-37-2026-10-24.md).
+The Connecticut River seeds on its Connecticut mouth record
+(`206425`), closing the four-frame corridor chain (NH, VT, MA before
+it); the Pawcatuck River screens empty under RI and stays a corridor.
+Bear Mountain (`205348`, 2,323 ft) is seeded as Connecticut's highest
+summit with a per-ID check, while the state's highest ground — the
+Mount Frissell south slope (2,379 ft) — has no Connecticut GNIS
+record (empty `states=CT` screen; the summit keys to Massachusetts).
+Connecticut rows store GNIS planning-region county equivalents
+(county governments abolished 1960), with the Geocoder's full
+`Planning Region` strings preserved per row; Candlewood Lake's screen
+returns only shoreline communities, so Bantam Lake (`205246`) and
+Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
+(`1219566`, 812 ft) keeps Rhode Island's per-ID high-point check.
+Three state frames remain (AK, HI, NJ), then the country/planet
+thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

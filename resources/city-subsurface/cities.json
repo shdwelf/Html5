@@ -17249,6 +17249,862 @@
           "River record at its Boston Harbor mouth; the Charles River Basin, Reservoir, and Grove/Station/Village records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=619357; exact official name and Stream type in Suffolk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "connecticut": {
+      "title": "Connecticut SUBSURFACE 4Dwm",
+      "subtitle": "Connecticut STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Connecticut USGS GNIS REGISTER",
+      "gazNote": "Round 37 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county (or Connecticut planning region), FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "CT",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -73.75,
+        "lat0": 40.95,
+        "lon1": -71.75,
+        "lat1": 42.06
+      },
+      "center": {
+        "lon": -72.75,
+        "lat": 41.5
+      },
+      "baseElevationM": 120,
+      "roughnessM": 100,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Taconic / Bear Mountain highlands",
+          "lon": -73.45,
+          "lat": 42.04,
+          "rx": 0.18,
+          "ry": 0.12,
+          "amp": 300,
+          "rot": 0
+        },
+        {
+          "name": "Litchfield hills",
+          "lon": -73.25,
+          "lat": 41.75,
+          "rx": 0.3,
+          "ry": 0.25,
+          "amp": 190,
+          "rot": 0
+        },
+        {
+          "name": "Connecticut valley lowland",
+          "lon": -72.65,
+          "lat": 41.7,
+          "rx": 0.2,
+          "ry": 0.45,
+          "amp": -50,
+          "rot": 0
+        },
+        {
+          "name": "Eastern highlands",
+          "lon": -72.0,
+          "lat": 41.75,
+          "rx": 0.3,
+          "ry": 0.3,
+          "amp": 110,
+          "rot": 0
+        },
+        {
+          "name": "Long Island Sound shore plain",
+          "lon": -72.7,
+          "lat": 41.2,
+          "rx": 0.8,
+          "ry": 0.15,
+          "amp": -60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "connecticut-river-ct",
+          "layer": "water",
+          "tier": "context",
+          "name": "Connecticut River corridor (generalized)",
+          "short": "Connecticut River",
+          "depthM": 0,
+          "path": [
+            [
+              -72.589811,
+              42.1014831
+            ],
+            [
+              -72.6850932,
+              41.7637111
+            ],
+            [
+              -72.332687,
+              41.272313
+            ]
+          ],
+          "facts": [
+            "Generalized Connecticut corridor joining the seeded Springfield (Massachusetts frame) and Hartford points to the seeded mouth point: the main stem stayed corridor-only in the NH, VT, and MA frames and seeds here. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i95-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 Long Island Sound corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -73.5387341,
+              41.0534302
+            ],
+            [
+              -73.2048348,
+              41.1670412
+            ],
+            [
+              -72.9281578,
+              41.3081527
+            ],
+            [
+              -72.0995209,
+              41.3556539
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor through the seeded Stamford, Bridgeport, New Haven, and New London points; schematic polyline, not a highway alignment or shoreline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "housatonic-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Housatonic River corridor (generalized)",
+          "short": "Housatonic River",
+          "depthM": 0,
+          "path": [
+            [
+              -73.3222477,
+              41.4688125
+            ],
+            [
+              -73.108442,
+              41.169264
+            ],
+            [
+              -73.4095654,
+              41.5650947
+            ]
+          ],
+          "facts": [
+            "Generalized Housatonic corridor joining the seeded Lillinonah impoundment and mouth points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i84-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 84 corridor (generalized)",
+          "short": "I-84",
+          "depthM": 0,
+          "path": [
+            [
+              -73.4403995,
+              41.4945388
+            ],
+            [
+              -73.0514966,
+              41.5581525
+            ],
+            [
+              -72.6850932,
+              41.7637111
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 84 corridor through the seeded Waterbury and Hartford points (the Candlewood shore point is context only); schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "northwest-highlands",
+          "layer": "water",
+          "tier": "context",
+          "name": "Northwest highlands context (generalized)",
+          "short": "Northwest highlands",
+          "depthM": 0,
+          "path": [
+            [
+              -73.2215068,
+              41.7045073
+            ],
+            [
+              -73.4548409,
+              42.0448053
+            ],
+            [
+              -73.1659399,
+              42.6371703
+            ]
+          ],
+          "facts": [
+            "Generalized context line from Bantam Lake to the seeded Bear Mountain point and the Greylock point seeded in Massachusetts; not a boundary. Mount Frissell's Connecticut slope (the state high point) lies on this line's Massachusetts side and has no Connecticut GNIS record."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "hartford",
+          "name": "Hartford",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -72.6850932,
+          "lat": 41.7637111,
+          "depthM": 0,
+          "facts": [
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 213160; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "new-haven",
+          "name": "New Haven",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -72.9281578,
+          "lat": 41.3081527,
+          "depthM": 0,
+          "facts": [
+            "Harbor-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 209231; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "bear-mountain",
+          "name": "Bear Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -73.4548409,
+          "lat": 42.0448053,
+          "depthM": 0,
+          "facts": [
+            "Highest Connecticut summit (2,323 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 205348; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "bantam-lake",
+          "name": "Bantam Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -73.2215068,
+          "lat": 41.7045073,
+          "depthM": 0,
+          "facts": [
+            "Largest natural lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 205246; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Hartford",
+          "Populated Place",
+          "pop.place",
+          "Capitol",
+          41.7637111,
+          -72.6850932,
+          null,
+          "213160",
+          1,
+          "State capital anchor on the Connecticut River. Connecticut GNIS county equivalents are the councils-of-governments planning regions (county governments were abolished in 1960); the stored county reproduces the DomesticNames region value, while the Geocoder returns the same region with its Planning Region suffix. The historical Hartford County record and the numbered Hartford reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=213160; exact official name and Populated Place type in Capitol Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New Haven",
+          "Populated Place",
+          "pop.place",
+          "South Central Connecticut",
+          41.3081527,
+          -72.9281578,
+          null,
+          "209231",
+          1,
+          "Harbor-city anchor; the harbor, entrance channel, canal, and historical county and airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=209231; exact official name and Populated Place type in South Central Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bridgeport",
+          "Populated Place",
+          "pop.place",
+          "Greater Bridgeport",
+          41.1670412,
+          -73.2048348,
+          null,
+          "205720",
+          1,
+          "Largest-city anchor on Long Island Sound; the harbor, entrance channel, ferry crossing, and historical airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=205720; exact official name and Populated Place type in Greater Bridgeport Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Stamford",
+          "Populated Place",
+          "pop.place",
+          "Western Connecticut",
+          41.0534302,
+          -73.5387341,
+          null,
+          "211129",
+          1,
+          "Southwestern anchor; Stamford Harbor (adjacent FEATURE_ID 211130) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=211129; exact official name and Populated Place type in Western Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Waterbury",
+          "Populated Place",
+          "pop.place",
+          "Naugatuck Valley",
+          41.5581525,
+          -73.0514966,
+          null,
+          "211851",
+          1,
+          "Naugatuck Valley anchor; the numbered Waterbury reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=211851; exact official name and Populated Place type in Naugatuck Valley Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New London",
+          "Populated Place",
+          "pop.place",
+          "Southeastern Connecticut",
+          41.3556539,
+          -72.0995209,
+          null,
+          "209237",
+          1,
+          "Thames mouth anchor; New London Harbor (adjacent FEATURE_ID 209238) and the historical county record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=209237; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bear Mountain",
+          "Summit",
+          "phys.summit",
+          "Northwest Hills",
+          42.0448053,
+          -73.4548409,
+          null,
+          "205348",
+          1,
+          "Highest summit in Connecticut at 2,323 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_CT_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 205348 as a Summit in the Northwest Hills region at this point. Connecticut's highest ground, the Mount Frissell south slope (2,379 feet on the Massachusetts line), carries no Connecticut GNIS record — Mount Frissell screens empty under states=CT because its summit record keys to Massachusetts — so the slope itself is not seeded. The Danbury-area Bear Mountain namesake (FEATURE_ID 205347) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=205348; exact official name and Summit type in Northwest Hills Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bantam Lake",
+          "Lake",
+          "hydro.lake",
+          "Northwest Hills",
+          41.7045073,
+          -73.2215068,
+          null,
+          "205246",
+          1,
+          "Largest natural lake in the state; DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=205246; exact official name and Lake type in Northwest Hills Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Lake Lillinonah",
+          "Lake",
+          "hydro.lake",
+          "Western Connecticut",
+          41.4688125,
+          -73.3222477,
+          null,
+          "208464",
+          1,
+          "Housatonic impoundment anchor. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. Candlewood Lake, the state's largest lake by surface area, is not identity-seeded: its Geocoder screen returns only shoreline communities (Candlewood Isle, Knolls, Lake Club, Orchards, Pines, Shores, and Springs), so no lake record was taken. USGS GNIS Geocoder (GNIS), FEATURE_ID=208464; exact official name and Reservoir type in Western Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Connecticut River",
+          "Stream",
+          "hydro.stream",
+          "Lower Connecticut River Valley",
+          41.272313,
+          -72.332687,
+          null,
+          "206425",
+          1,
+          "River record at its Long Island Sound mouth — the closure of the four-frame corridor chain: the main stem stayed corridor-only in New Hampshire, Vermont, and Massachusetts (batches 17-18, reservoir-only screens) and seeds here on its Connecticut mouth record. The Capitol-region Connecticut River Reservoir impoundment is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=206425; exact official name and Stream type in Lower Connecticut River Valley Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Housatonic River",
+          "Stream",
+          "hydro.stream",
+          "South Central Connecticut",
+          41.169264,
+          -73.108442,
+          null,
+          "212670",
+          1,
+          "River record at its Long Island Sound mouth; the Housatonic River Reservoir record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=212670; exact official name and Stream type in South Central Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Thames River",
+          "Stream",
+          "hydro.stream",
+          "Southeastern Connecticut",
+          41.3023207,
+          -72.0795199,
+          null,
+          "211397",
+          1,
+          "River record at its New London mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=211397; exact official name and Stream type in Southeastern Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "rhodeisland": {
+      "title": "Rhode Island SUBSURFACE 4Dwm",
+      "subtitle": "Rhode Island STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Rhode Island USGS GNIS REGISTER",
+      "gazNote": "Round 37 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county (or Connecticut planning region), FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "RI",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -71.9,
+        "lat0": 41.1,
+        "lon1": -71.1,
+        "lat1": 42.05
+      },
+      "center": {
+        "lon": -71.5,
+        "lat": 41.6
+      },
+      "baseElevationM": 60,
+      "roughnessM": 55,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Jerimoth / western uplands",
+          "lon": -71.75,
+          "lat": 41.85,
+          "rx": 0.2,
+          "ry": 0.2,
+          "amp": 110,
+          "rot": 0
+        },
+        {
+          "name": "Scituate upland",
+          "lon": -71.61,
+          "lat": 41.77,
+          "rx": 0.2,
+          "ry": 0.18,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Narragansett Bay lowland",
+          "lon": -71.38,
+          "lat": 41.65,
+          "rx": 0.25,
+          "ry": 0.35,
+          "amp": -45,
+          "rot": 0
+        },
+        {
+          "name": "Aquidneck Island",
+          "lon": -71.3,
+          "lat": 41.5,
+          "rx": 0.08,
+          "ry": 0.15,
+          "amp": -10,
+          "rot": 0
+        },
+        {
+          "name": "Block Island",
+          "lon": -71.56,
+          "lat": 41.17,
+          "rx": 0.06,
+          "ry": 0.05,
+          "amp": 15,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i95-rhode-island",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -71.3825558,
+              41.878711
+            ],
+            [
+              -71.4128343,
+              41.8239891
+            ],
+            [
+              -71.4372796,
+              41.7798226
+            ],
+            [
+              -71.4161671,
+              41.700101
+            ],
+            [
+              -71.55,
+              41.65
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor through the seeded Pawtucket, Providence, Cranston, and Warwick points; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "narragansett-bay",
+          "layer": "water",
+          "tier": "context",
+          "name": "Narragansett Bay context (generalized)",
+          "short": "Narragansett Bay",
+          "depthM": 0,
+          "path": [
+            [
+              -71.4003336,
+              41.8139892
+            ],
+            [
+              -71.4161671,
+              41.700101
+            ],
+            [
+              -71.3128285,
+              41.4901024
+            ]
+          ],
+          "facts": [
+            "Generalized bay context joining the seeded Providence River, Warwick, and Newport points; not a shoreline. Narragansett Bay itself (bay class) is outside the seeded row classes."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "blackstone-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Blackstone River corridor (generalized)",
+          "short": "Blackstone River",
+          "depthM": 0,
+          "path": [
+            [
+              -71.5147839,
+              42.0028761
+            ],
+            [
+              -71.3833891,
+              41.8764888
+            ],
+            [
+              -71.4003336,
+              41.8139892
+            ]
+          ],
+          "facts": [
+            "Generalized Blackstone corridor joining the seeded Woonsocket, Blackstone mouth-reach, and Providence River points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "sakonnet-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Sakonnet / Aquidneck context (generalized)",
+          "short": "Sakonnet River",
+          "depthM": 0,
+          "path": [
+            [
+              -71.3128285,
+              41.4901024
+            ],
+            [
+              -71.224491,
+              41.4639923
+            ],
+            [
+              -71.15,
+              41.6
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Newport and Sakonnet River points; not a shoreline or boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "block-island-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Block Island context (generalized)",
+          "short": "Block Island Sound",
+          "depthM": 0,
+          "path": [
+            [
+              -71.48,
+              41.4
+            ],
+            [
+              -71.5578329,
+              41.1723258
+            ]
+          ],
+          "facts": [
+            "Generalized context line from the mainland shore to the seeded New Shoreham (Block Island) point; not a ferry route or shoreline. The Pawcatuck River, on the Connecticut border, screens empty under states=RI and stays corridor-only context for this frame."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "providence",
+          "name": "Providence",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -71.4128343,
+          "lat": 41.8239891,
+          "depthM": 0,
+          "facts": [
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1219851; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "newport",
+          "name": "Newport",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -71.3128285,
+          "lat": 41.4901024,
+          "depthM": 0,
+          "facts": [
+            "Aquidneck Island anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1217986; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "jerimoth-hill",
+          "name": "Jerimoth Hill",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -71.7788736,
+          "lat": 41.8494158,
+          "depthM": 0,
+          "facts": [
+            "State high point (812 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1219566; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "scituate-reservoir",
+          "name": "Scituate Reservoir",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -71.6108501,
+          "lat": 41.7724732,
+          "depthM": 0,
+          "facts": [
+            "Water-supply anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1218622; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Providence",
+          "Populated Place",
+          "pop.place",
+          "Providence",
+          41.8239891,
+          -71.4128343,
+          null,
+          "1219851",
+          1,
+          "State capital anchor at the head of Narragansett Bay; the harbor and Providence Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219851; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Newport",
+          "Populated Place",
+          "pop.place",
+          "Newport",
+          41.4901024,
+          -71.3128285,
+          null,
+          "1217986",
+          1,
+          "Aquidneck Island anchor on Narragansett Bay; Newport Harbor (FEATURE_ID 1217985), Newport Neck, the Census Designated Place, and the historical military records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1217986; exact official name and Populated Place type in Newport County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Warwick",
+          "Populated Place",
+          "pop.place",
+          "Kent",
+          41.700101,
+          -71.4161671,
+          null,
+          "1220018",
+          1,
+          "Greenwich Bay anchor; the Warwick Brook, Pond, Cove, Neck, and Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1220018; exact official name and Populated Place type in Kent County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Cranston",
+          "Populated Place",
+          "pop.place",
+          "Providence",
+          41.7798226,
+          -71.4372796,
+          null,
+          "1218689",
+          1,
+          "Providence-metro anchor; Cranstons Corner (historical), the print-works pond, and Cranston Cove records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218689; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Pawtucket",
+          "Populated Place",
+          "pop.place",
+          "Providence",
+          41.878711,
+          -71.3825558,
+          null,
+          "1218926",
+          1,
+          "Blackstone mouth anchor at Pawtucket Falls; the reservoir records, the falls record itself, and the historical armory are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218926; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Woonsocket",
+          "Populated Place",
+          "pop.place",
+          "Providence",
+          42.0028761,
+          -71.5147839,
+          null,
+          "1219339",
+          1,
+          "Blackstone Valley anchor at the Massachusetts line; the numbered reservoir records, Woonsocket Falls, and Woonsocket Hill records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219339; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New Shoreham",
+          "Populated Place",
+          "pop.place",
+          "Washington",
+          41.1723258,
+          -71.5578329,
+          null,
+          "1219853",
+          1,
+          "Block Island anchor, seeded as the island community's populated-place record; New Shoreham Center and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219853; exact official name and Populated Place type in Washington County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Jerimoth Hill",
+          "Summit",
+          "phys.summit",
+          "Providence",
+          41.8494158,
+          -71.7788736,
+          null,
+          "1219566",
+          1,
+          "Rhode Island High Point at 812 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_RI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1219566 as a Summit in Providence County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219566; exact official name and Summit type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Scituate Reservoir",
+          "Lake",
+          "hydro.lake",
+          "Providence",
+          41.7724732,
+          -71.6108501,
+          null,
+          "1218622",
+          1,
+          "Providence water-supply anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218622; exact official name and Reservoir type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Blackstone River",
+          "Stream",
+          "hydro.stream",
+          "Providence",
+          41.8764888,
+          -71.3833891,
+          null,
+          "1218929",
+          1,
+          "River record at its Pawtucket Falls reach; five Blackstone River Reservoir impoundment records sharing the name stem are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218929; exact official name and Stream type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Sakonnet River",
+          "Stream",
+          "hydro.stream",
+          "Newport",
+          41.4639923,
+          -71.224491,
+          null,
+          "1218198",
+          1,
+          "Tidal river record between Aquidneck Island and the mainland shore. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218198; exact official name and Stream type in Newport County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Providence River",
+          "Stream",
+          "hydro.stream",
+          "Providence",
+          41.8139892,
+          -71.4003336,
+          null,
+          "1219586",
+          1,
+          "Tidal river record at the head of Narragansett Bay, below the seeded capital point; the harbor record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219586; exact official name and Stream type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
     }
   }
 }

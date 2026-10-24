@@ -185,10 +185,34 @@ record. The machine-readable evidence is
 Five state frames remain (AK, CT, HI, NJ, RI), then the country/planet
 thread.
 
+Round 37 update: **2026-10-24**. `connecticut` and `rhodeisland` join
+as the fifty-fourth and fifty-fifth configurations. Each starts with
+twelve all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
+surfaces (candidates in the cumulative extract, now covering
+twenty-six states). Bear Mountain (2,323 feet, Connecticut's highest
+summit) and Jerimoth Hill (812 feet, Rhode Island high point) carry
+Domestic Names per-ID identity checks. The Connecticut River seeds
+here on its mouth record (`206425`), closing the corridor chain that
+ran through New Hampshire, Vermont, and Massachusetts; conversely the
+Pawcatuck River screens empty under RI and stays a corridor.
+Connecticut's GNIS county equivalents are its nine planning regions
+(county governments were abolished in 1960) — stored counties
+reproduce the DomesticNames region strings while the Geocoder's full
+`Planning Region` forms are preserved per row — and Connecticut's
+highest ground, the Mount Frissell south slope (2,379 feet), has no
+Connecticut GNIS record at all (the summit keys to Massachusetts), so
+Bear Mountain is seeded as highest summit with the distinction
+recorded. Candlewood Lake could not be identity-seeded (its screen
+returns only shoreline communities), so Bantam Lake and Lake
+Lillinonah carry the lake rows. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch19-source-register-2026-10-24.json).
+Three state frames remain (AK, HI, NJ), then the country/planet
+thread.
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifty-three configurations — five cities,
-forty-four statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-five configurations — five cities,
+forty-six statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -246,6 +270,8 @@ its own offline Webxdc:
 | Vermont (statewide) | `vermont-subsurface.html` | `js/city-subsurface-data-vermont.js` | `js/city-gazetteer-data-vermont.js` | `vermont-subsurface.xdc` |
 | Maine (statewide) | `maine-subsurface.html` | `js/city-subsurface-data-maine.js` | `js/city-gazetteer-data-maine.js` | `maine-subsurface.xdc` |
 | Massachusetts (statewide) | `massachusetts-subsurface.html` | `js/city-subsurface-data-massachusetts.js` | `js/city-gazetteer-data-massachusetts.js` | `massachusetts-subsurface.xdc` |
+| Connecticut (statewide) | `connecticut-subsurface.html` | `js/city-subsurface-data-connecticut.js` | `js/city-gazetteer-data-connecticut.js` | `connecticut-subsurface.xdc` |
+| Rhode Island (statewide) | `rhodeisland-subsurface.html` | `js/city-subsurface-data-rhodeisland.js` | `js/city-gazetteer-data-rhodeisland.js` | `rhodeisland-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
