@@ -18105,6 +18105,438 @@
           "Tidal river record at the head of Narragansett Bay, below the seeded capital point; the harbor record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219586; exact official name and Stream type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "alaska": {
+      "title": "Alaska SUBSURFACE 4Dwm",
+      "subtitle": "Alaska STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Alaska USGS GNIS REGISTER",
+      "gazNote": "Round 39 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "AK",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -171.0,
+        "lat0": 51.3,
+        "lon1": -129.85,
+        "lat1": 71.42
+      },
+      "center": {
+        "lon": -150.4,
+        "lat": 61.4
+      },
+      "baseElevationM": 500,
+      "roughnessM": 450,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Alaska Range / Denali massif",
+          "lon": -151.0,
+          "lat": 63.07,
+          "rx": 0.6,
+          "ry": 0.35,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Brooks Range",
+          "lon": -152.0,
+          "lat": 68.2,
+          "rx": 2.2,
+          "ry": 0.5,
+          "amp": 420,
+          "rot": 0
+        },
+        {
+          "name": "Wrangell / Chugach ranges",
+          "lon": -143.5,
+          "lat": 61.3,
+          "rx": 1.2,
+          "ry": 0.5,
+          "amp": 520,
+          "rot": 0
+        },
+        {
+          "name": "Southeast panhandle ranges",
+          "lon": -134.0,
+          "lat": 57.5,
+          "rx": 0.7,
+          "ry": 0.9,
+          "amp": 380,
+          "rot": 0
+        },
+        {
+          "name": "Yukon-Kuskokwim lowland",
+          "lon": -161.0,
+          "lat": 62.0,
+          "rx": 1.8,
+          "ry": 1.2,
+          "amp": -120,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "alaska-railbelt",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Anchorage-Fairbanks railbelt corridor (generalized)",
+          "short": "Railbelt",
+          "depthM": 0,
+          "path": [
+            [
+              -149.9002778,
+              61.2180556
+            ],
+            [
+              -151.0062617,
+              63.0691018
+            ],
+            [
+              -147.7163889,
+              64.8377778
+            ]
+          ],
+          "facts": [
+            "Generalized railbelt corridor through the seeded Anchorage, Mount McKinley-side, and Fairbanks points; schematic polyline, not a rail or highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "inside-passage-ak",
+          "layer": "water",
+          "tier": "context",
+          "name": "Inside Passage context (generalized)",
+          "short": "Inside Passage",
+          "depthM": 0,
+          "path": [
+            [
+              -131.6461111,
+              55.3422222
+            ],
+            [
+              -134.4197222,
+              58.3019444
+            ],
+            [
+              -137.0,
+              58.6
+            ]
+          ],
+          "facts": [
+            "Generalized Inside Passage context joining the seeded Ketchikan and Juneau points; not a shoreline or ferry route."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "aleutian-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Aleutian island-chain context (generalized)",
+          "short": "Aleutian chain",
+          "depthM": 0,
+          "path": [
+            [
+              -149.9002778,
+              61.2180556
+            ],
+            [
+              -155.0881217,
+              59.5528805
+            ],
+            [
+              -152.4072222,
+              57.79
+            ],
+            [
+              -166.5366667,
+              53.8736111
+            ]
+          ],
+          "facts": [
+            "Generalized chain context joining the seeded Anchorage, Iliamna Lake, Kodiak, and Unalaska points; ocean reaches are schematic. The frame's western edge (-171) leaves the far-western Aleutians (Attu and the Near Islands, which GNIS keys at east longitudes) outside the seeded frame."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "yukon-kuskokwim-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Yukon-Kuskokwim context (generalized)",
+          "short": "Yukon-Kuskokwim",
+          "depthM": 0,
+          "path": [
+            [
+              -147.7163889,
+              64.8377778
+            ],
+            [
+              -164.8,
+              62.5986111
+            ],
+            [
+              -162.3338889,
+              60.0830556
+            ],
+            [
+              -165.4063889,
+              64.5011111
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Fairbanks, Yukon mouth, Kuskokwim mouth, and Nome points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "arctic-context",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interior-to-Arctic context (generalized)",
+          "short": "Arctic slope",
+          "depthM": 0,
+          "path": [
+            [
+              -147.7163889,
+              64.8377778
+            ],
+            [
+              -151.5,
+              68.0
+            ],
+            [
+              -156.7886111,
+              71.2905556
+            ]
+          ],
+          "facts": [
+            "Generalized context line from the seeded Fairbanks point to the seeded Utqiaġvik point across the Brooks Range; schematic, not a highway (Dalton) alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "juneau",
+          "name": "Juneau",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -134.4197222,
+          "lat": 58.3019444,
+          "depthM": 0,
+          "facts": [
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1404263; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "anchorage",
+          "name": "Anchorage",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -149.9002778,
+          "lat": 61.2180556,
+          "depthM": 0,
+          "facts": [
+            "Largest-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1398242; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-mckinley",
+          "name": "Mount McKinley",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -151.0062617,
+          "lat": 63.0691018,
+          "depthM": 0,
+          "facts": [
+            "North American high point (20,310 ft; Denali). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1414314; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "iliamna-lake",
+          "name": "Iliamna Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -155.0881217,
+          "lat": 59.5528805,
+          "depthM": 0,
+          "facts": [
+            "Largest-lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1403764; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Juneau",
+          "Populated Place",
+          "pop.place",
+          "Juneau",
+          58.3019444,
+          -134.4197222,
+          null,
+          "1404263",
+          1,
+          "State capital anchor (the consolidated city and borough of Juneau); the borough and census-subarea political records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404263; exact official name and Populated Place type in Juneau City and Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Anchorage",
+          "Populated Place",
+          "pop.place",
+          "Anchorage",
+          61.2180556,
+          -149.9002778,
+          null,
+          "1398242",
+          1,
+          "Largest-city anchor (Municipality of Anchorage); the municipal and census records and the Anchorage Cove, Bay, and Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1398242; exact official name and Populated Place type in Anchorage Municipality cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Fairbanks",
+          "Populated Place",
+          "pop.place",
+          "Fairbanks North Star",
+          64.8377778,
+          -147.7163889,
+          null,
+          "1401958",
+          1,
+          "Interior anchor at the Tanana valley; the two Fairbanks Creek records and the permafrost test station record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1401958; exact official name and Populated Place type in Fairbanks North Star Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Utqiaġvik",
+          "Populated Place",
+          "pop.place",
+          "North Slope",
+          71.2905556,
+          -156.7886111,
+          null,
+          "1398635",
+          1,
+          "Northernmost community in the United States, seeded under its official GNIS spelling (the g carries a combining dot above, U+0307, in the DomesticNames text; the community was renamed from Barrow in 2016). USGS GNIS Geocoder (GNIS), FEATURE_ID=1398635; exact official name and Populated Place type in North Slope Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Nome",
+          "Populated Place",
+          "pop.place",
+          "Nome (CA)",
+          64.5011111,
+          -165.4063889,
+          null,
+          "1407125",
+          1,
+          "Seward Peninsula anchor; the Nome River and Nome Mountains records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1407125; exact official name and Populated Place type in Nome Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Ketchikan",
+          "Populated Place",
+          "pop.place",
+          "Ketchikan Gateway",
+          55.3422222,
+          -131.6461111,
+          null,
+          "1423039",
+          1,
+          "Inside Passage anchor; Ketchikan Creek (adjacent FEATURE_ID 1423040) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1423039; exact official name and Populated Place type in Ketchikan Gateway Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kodiak",
+          "Populated Place",
+          "pop.place",
+          "Kodiak Island",
+          57.79,
+          -152.4072222,
+          null,
+          "1404875",
+          1,
+          "Kodiak Island anchor; the island record (FEATURE_ID 1404877) and Kodiak Harbor record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404875; exact official name and Populated Place type in Kodiak Island Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Unalaska",
+          "Populated Place",
+          "pop.place",
+          "Aleutians West (CA)",
+          53.8736111,
+          -166.5366667,
+          null,
+          "1419424",
+          1,
+          "Aleutian anchor (the Dutch Harbor port community); the bay, island, and Unalaska Lake records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1419424; exact official name and Populated Place type in Aleutians West Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Mount McKinley",
+          "Summit",
+          "phys.summit",
+          "Denali",
+          63.0691018,
+          -151.0062617,
+          null,
+          "1414314",
+          1,
+          "North American High Point at 20,310 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_AK_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1414314 as a Summit in Denali Borough at this point. Seeded under the current official GNIS name: the summit was renamed Denali in 2015 and the name Mount McKinley was restored by federal action in 2025, which the GNIS record reflects — a states=AK screen for Denali returns the borough, Denali Park, and Denali Pass records but no summit record. Both names are preserved here so the row is findable under either. USGS GNIS Geocoder (GNIS), FEATURE_ID=1414314; exact official name and Summit type in Denali Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Iliamna Lake",
+          "Lake",
+          "hydro.lake",
+          "Lake and Peninsula",
+          59.5528805,
+          -155.0881217,
+          null,
+          "1403764",
+          1,
+          "Largest lake entirely within Alaska; DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=1403764; exact official name and Lake type in Lake and Peninsula Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Yukon River",
+          "Stream",
+          "hydro.stream",
+          "Kusilvak (CA)",
+          62.5986111,
+          -164.8,
+          null,
+          "1416412",
+          1,
+          "River record at its Bering Sea delta mouth — among the longest free-flowing rivers in North America. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416412; exact official name and Stream type in Kusilvak Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kuskokwim River",
+          "Stream",
+          "hydro.stream",
+          "Bethel (CA)",
+          60.0830556,
+          -162.3338889,
+          null,
+          "1416402",
+          1,
+          "River record at its Kuskokwim Bay mouth on the Bering Sea. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416402; exact official name and Stream type in Bethel Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
     }
   }
 }
