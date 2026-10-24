@@ -209,10 +209,32 @@ Lillinonah carry the lake rows. The machine-readable evidence is
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
+Round 38 update: **2026-10-24**. `newjersey` and `hawaii` join as the
+fifty-sixth and fifty-seventh configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract, now covering twenty-eight
+states). High Point (1,803 feet, New Jersey high point) and Mauna Kea
+(13,796 feet, Hawaii high point) carry Domestic Names per-ID identity
+checks. The Delaware River screens empty under NJ and stays a
+corridor; High Point's seeded summit record carries an adjacent-ID
+populated-place twin (`877099`, Ocean County) that is rejected by
+class, and Lake Hopatcong is seeded on its reservoir record over the
+same-name borough. Hawaii stores its official diacritic spellings
+verbatim (Līhuʻe, Haleakalā — the extraction staging
+had to match them literally before the rows would reproduce), seeds
+Kailua on the Hawaii County record over Honolulu and Maui County
+namesakes, seeds the Wailuku River on its Hawaii County record over
+the Maui same-name stream, distinguishes Mauna Loa from Maui's
+one-word Maunaloa records, and seeds the Mauna Kea summit lake under
+its official name Waiau after `Lake Waiau` screened empty. The
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json).
+One state frame remains (AK), then the country/planet thread.
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifty-five configurations — five cities,
-forty-six statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-seven configurations — five cities,
+forty-eight statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -272,6 +294,8 @@ its own offline Webxdc:
 | Massachusetts (statewide) | `massachusetts-subsurface.html` | `js/city-subsurface-data-massachusetts.js` | `js/city-gazetteer-data-massachusetts.js` | `massachusetts-subsurface.xdc` |
 | Connecticut (statewide) | `connecticut-subsurface.html` | `js/city-subsurface-data-connecticut.js` | `js/city-gazetteer-data-connecticut.js` | `connecticut-subsurface.xdc` |
 | Rhode Island (statewide) | `rhodeisland-subsurface.html` | `js/city-subsurface-data-rhodeisland.js` | `js/city-gazetteer-data-rhodeisland.js` | `rhodeisland-subsurface.xdc` |
+| New Jersey (statewide) | `newjersey-subsurface.html` | `js/city-subsurface-data-newjersey.js` | `js/city-gazetteer-data-newjersey.js` | `newjersey-subsurface.xdc` |
+| Hawaii (statewide) | `hawaii-subsurface.html` | `js/city-subsurface-data-hawaii.js` | `js/city-gazetteer-data-hawaii.js` | `hawaii-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

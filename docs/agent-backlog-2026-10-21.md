@@ -456,6 +456,28 @@ Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
+**Round 38 status (2026-10-24): partial.** New Jersey and Hawaii
+shipped as configurations 56–57, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json);
+the round record is filed as
+[`backlog-execution-round-38-2026-10-24.md`](backlog-execution-round-38-2026-10-24.md).
+High Point (`877098`, Sussex County, 1,803 ft) and Mauna Kea
+(`366215`, Hawaii County, 13,796 ft) keep their per-ID checks. The
+Delaware River screens empty under NJ and stays a corridor; High
+Point's adjacent-ID community twin (`877099`, Ocean County) is
+rejected by class, and Lake Hopatcong seeds on its reservoir record
+(`877238`) over the same-name borough. Hawaii stores official
+diacritic spellings verbatim (Līhuʻe, Haleakalā; the
+DomesticNames staging needed the exact spellings to reproduce them),
+seeds Kailua on the Hawaii County record (`365355`) over two
+namesakes, the Wailuku River on its Hawaii County record (`364759`)
+over the Maui stream, and the Mauna Kea summit lake as Waiau
+(`364585`) after `Lake Waiau` screened empty. One state frame remains
+(AK), then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
