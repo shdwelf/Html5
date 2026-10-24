@@ -1,98 +1,50 @@
-# Backlog execution round 29 — 23 Oct 2026
+# Backlog execution — round 29 (2026-10-23)
 
-*Twenty-ninth round: “Continue backlog.” This round follows the
-round-28 queue entry: the South Atlantic seaboard continues with
-**South Carolina**, the state immediately north of Georgia on the
-Atlantic coast. Index:
-[`agent-backlog-2026-10-21.md`](agent-backlog-2026-10-21.md).
-Previous rounds: [27](backlog-execution-round-27-2026-10-23.md) ·
-[28](backlog-execution-round-28-2026-10-23.md).*
+Branch: `arena/ed5d4b7c-html5` (PR #139). PR #138 remains open on its
+own branch awaiting the user's merge decision.
 
-## Scoping decision
+## T4.1 batch 12 — Kentucky & Tennessee statewide frames (configurations 35–36)
 
-Rounds 20–28 handed the queue the same instruction: remaining states in
-**dated, per-row GNIS source-register batches**. Round 29 continues the
-South Atlantic thread with **South Carolina**, immediately north of the
-round-28 Georgia frame. The identity rule is unchanged: exact official
-name, compatible returned type, intended state, returned primary county,
-permanent FEATURE_ID, and returned primary point must all identify the
-feature before `VERIFIED=1`; points are never described as boundaries,
-shorelines, lake polygons, or river centerlines; ambiguous, mismatched,
-duplicate, empty-screen, or out-of-reach features stay unseeded or
-become generalized `context` corridors.
+**Kentucky (`Kentucky`, KY, lon −89.6..−80.0, lat 36.4..39.55):**
+Frankfort `517517` (Franklin), Louisville `509453` (Jefferson; metro
+balance records rejected), Lexington `496343` (Fayette), Bowling Green
+`487744` (Warren), Covington `490167` (Kenton), Black Mountain
+`510753` (Harlan, 4,145 ft, per-ID check; community `487379` and gap
+rejected), Lake Cumberland `490483` (Pulaski), Lake Barkley `486356`
+(Trigg), Ohio River `425264` (Ballard), Tennessee River `517033` and
+Cumberland River `517018` (Livingston), Kentucky River `513130`
+(Carroll).
 
-## Delivered
+**Tennessee (`tennessee`, TN, lon −90.35..−81.6, lat 34.95..36.7):**
+Nashville `1652484` (Davidson), Memphis `1326388` (Shelby), Knoxville
+`1648562` (Knox), Chattanooga `1307240` (Hamilton), Clarksville
+`1269467` (Montgomery), Murfreesboro `1295105` (Rutherford), Mount
+Le Conte `1646824` (Sevier, 6,593 ft, per-ID check), Kentucky Lake
+`1269701` (Hardin), Norris Lake `1269832` (Union), Douglas Lake
+`1282739` (Jefferson), Cherokee Lake `1280322` (Hawkins), Chickamauga
+Lake `1326920` (Meigs).
 
-| Frame | Result |
-| --- | --- |
-| **South Carolina** (`southcarolina`) | Configuration 34. Twelve all-GNIS rows: Columbia, Charleston, North Charleston, Rock Hill, Greenville, Spartanburg, Sassafras Mountain, Lake Marion, Lake Murray, Savannah River, Santee River, Pee Dee River. Five context corridors (I-26, I-20, I-95, I-77, Savannah River reach) and four GNIS-backed nodes; labelled generalized Atlantic coast line (eight points, Grand Strand to the Georgia line). |
-| [`../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json) | Machine-readable batch-12 register: row-level FEATURE_IDs, returned Geocoder types/counties, stored points, source notes, selection rules (the duplicate rule now covers census-class splits as well as description locators), ten identity decisions, and limitations. The city test reconstructs every generated row from it exactly. |
-| Generated apps | Root page, data/gazetteer packs, public staged app, and Webxdc bundle for South Carolina. Every city XDC now contains **83 entries** (34 data + 34 gazetteer packs plus the shared shell/vendor set); southcarolina-subsurface.xdc is 544,246 bytes, sha256 `988ec75183f89aed…`. |
-| Docs/backlog | `city-subsurface.md`, root README, backlog MD/JSON, docs index, and the Wiki archive describe thirty-four configurations and the batch-12 evidence. |
+**The Ohio River resolution.** Rounds 25–27 left the Ohio main stem a
+corridor in four frames (OH, IN, IL, PA all screened empty). The
+`states=KY` screen returns the stream record at its Mississippi
+confluence (Ballard County): the record is Kentucky-associated. It is
+seeded once, at its mouth point in the Kentucky frame (the series
+convention: seed a cross-state feature once, in the frame that owns
+the record), and stays a corridor upstream. The Tennessee and
+Cumberland mouths resolve the same way (both empty under TN; seeded
+at their Kentucky Ohio-River mouths) — the Tennessee screen returns
+only pulp-mill ponds for the river's name, a good reminder that
+"no main-stem record" and "no records at all" are different screens.
 
-## Identity findings
+**Kuwohi.** Tennessee's highest summit (6,643 ft, renamed Kuwohi in
+2024) returns no Tennessee record on either surface (empty geocoder
+screen; absent from the TN text extract) — its GNIS record is
+NC-associated. It appears only as a context corridor whose note
+claims no GNIS point; Mount Le Conte (6,593 ft) is the seeded
+Tennessee summit.
 
-- **The high point has no GNIS description — and says so.** Sassafras
-  Mountain (`1015279`) returned a single exact Summit record in Pickens
-  County; the per-ID check against the official `gaznames_default` REST
-  layer confirmed `gaz_featureclass` Summit, feature code 15048, and
-  stored `gaz_elevation` 1078, but the **description field is empty** —
-  unlike Woodall, Cheaha, and Brasstown, this record carries no
-  “Highest elevation…” sentence and no High Point designation text in
-  that layer. The 3,560-foot figure is therefore sourced from the
-  official USGS *Elevations and Distances* table (Sassafras Mountain,
-  Pickens, 3,560 feet) — a separate USGS publication — and the row note
-  discloses the split provenance rather than inventing a GNIS quote.
-- **Rock Hill resolved by census class, not description.** The screen
-  returned two same-name populated places ~78 km apart: York County
-  `1250417` (census class **P1**, GSA/OPM codes 2200 — the incorporated
-  city) and Fairfield County `1231736` (census class **U6**,
-  unincorporated — returned *before* the York record, behind the
-  division). The register’s duplicate rule now covers both patterns:
-  description locators where they exist (Lake Oconee, round 28), census
-  class and government codes where descriptions are empty (this pair).
-- **Savannah River crosses state lines in the evidence.** The
-  `states=SC` screen returned the exact Jasper County record
-  `1253486` — the same FEATURE_ID whose `states=GA` screen in batch-11
-  returned an empty array and which surfaced only on Georgia’s no-state
-  national screen. South Carolina seeds the record in its home state,
-  and both the row note and the corridor carry the cross-reference.
-- **The Lake Murray trap.** The screen led with Lake Murray **Shores**
-  (a Saluda County populated place) and also returned the Lake Murray
-  of Richland census record; the Lexington County Lakes & Reservoirs
-  record `1224900` is the intended impoundment.
-- **County/census-division piles across all six cities.** Columbia
-  (division, canal, reservoir, historical air base), Charleston
-  (division, county, an Abbeville County same-name crossroads, farms,
-  heights, harbor, census division), North Charleston (division,
-  historical Air Force Station), Greenville, and Spartanburg (county +
-  division each) — every rejected FEATURE_ID named in the row notes.
-- **Santee and Pee Dee seeded as single exact streams** (Georgetown and
-  Chesterfield sequences); Lake Marion likewise returned first with no
-  twins.
-
-## Test tally at round-29 close
-
-| Suite | Result |
-| --- | --- |
-| `npm run build:city-subsurface` | PASS — 34 frames built; South Carolina reports 12 gazetteer rows (12 verified), 5 corridors, 4 nodes; every city XDC has 83 entries |
-| `node --test tests/city-subsurface.test.mjs` | 19/19 PASS (batch-12 plus the bit-exact overview mirrors) |
-| Full `node --test tests/*.test.mjs` | 807 tests: 795 pass, 12 skipped, 0 fail |
-| Full `vitest run` | 35 files, 307/307 PASS |
-| `npm run build:wikiinajar` | PASS — 245 Markdown files converted to Wiki pages; `wikiinajar.xdc` rebuilt |
-
-## Next
-
-- South Atlantic continues: **North Carolina** next (the state directly
-  north of this frame), then Virginia and the remaining seaboard states
-  northward, Florida's peninsula frames, then the country/PC Globe
-  thread.
-- Keep bulk California themes and archived-class features behind their
-  own explicit source decisions.
-- Unchanged from round 19: relay official current Temurin 8/21,
-  evaluate OpenJVM-Wasm only in isolation, keep Ghidra distributions
-  on CI/relay.
-- S6 still needs lawfully redistributable historical snapshots; S7
-  remains blocked on its missing binary/teardown/driver artifacts.
-- Carry the count-gate lesson (round 28) forward: any op-count change
-  updates all five CyberChef count sites or the suites go red.
+**Tests.** `tests/city-subsurface.test.mjs` 19/19 — 36-frame list,
+batch-12 register deep-equality, per-row FEATURE_ID/name/county/point
+equality vs the extract, semantic geocoderCounty asserts, Ohio River
+resolution + Kuwohi context asserts, empty-screen corridor asserts.
+`.xdc` packages: 87 entries each. Full suite tally and commit follow.

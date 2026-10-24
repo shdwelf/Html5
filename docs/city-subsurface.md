@@ -113,23 +113,36 @@ only, and the Chattahoochee record is held to starter scope with its
 FEATURE_ID kept in the corridor. Its machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
 
-Round 29 update: **2026-10-23**. `southcarolina` joins as the
-thirty-fourth configuration, continuing the seaboard immediately north of
-Georgia. It starts with twelve all-GNIS `VERIFIED=1` rows; Sassafras
-Mountain carries a per-ID check whose **empty GNIS description field is
-disclosed** (the 3,560-foot figure comes from the official USGS
-Elevations and Distances table instead), Rock Hill resolves a two-record
-same-name pair by census class (P1 + GSA/OPM codes over the U6
-unincorporated twin), and the Savannah River row is the same FEATURE_ID
-1253486 whose Georgia screen returned an empty array in batch-11. The
-frame ships a labelled generalized Atlantic coast line. Its
-machine-readable evidence is
-[`resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
+Round 33 update: **2026-10-23** (PR #139 merge reconciliation). Two
+sessions had extended this atlas in parallel from the same base. Per the
+user's decision, main (PR #137 + PR #140) stayed authoritative wherever
+both sides built the same thing — engine, `cities.json`, tests, docs,
+and the registers through batch 11, including main's `georgia` — and
+PR #139 contributed only its non-duplicated work. Fourteen statewide
+frames join as configurations 34–47: `wisconsin`, `michigan`,
+`illinois`, `indiana`, `ohio`, `pennsylvania`, `arkansas`, `Kentucky`,
+`tennessee`, `virginia`, `westvirginia`, `northcarolina`,
+`southcarolina`, and `florida`, each with twelve all-GNIS `VERIFIED=1`
+rows cross-checked on the USGS Geocoder and the staged-products
+DomesticNames text. Their evidence registers are
+`gnis-state-batch8/9/10/11-source-register-2026-10-23-pr139.json` (the
+`-pr139` suffix avoids colliding with main's same-numbered batches),
+[`gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json),
+[`gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json),
+[`gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json),
+and the Florida half of
+[`gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json)
+(the batch-15 Georgia half is superseded by main's batch-11 Georgia
+register above). PR #139's GNIS extraction pipeline
+(`tools/gnis_extract.py`, `.arena-gnis/candidates.json`,
+`.github/workflows/arena-gnis-fetch.yml`) and its cumulative candidate
+extract `gnis-candidates-batch7.json` are retained for provenance, and
+the gazetteer gains the `Ridge` class for Arkansas' Magazine Mountain.
 
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-four configurations — five cities,
-twenty-five statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has forty-seven configurations — five cities,
+thirty-eight statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -167,7 +180,20 @@ its own offline Webxdc:
 | Mississippi (statewide) | `mississippi-subsurface.html` | `js/city-subsurface-data-mississippi.js` | `js/city-gazetteer-data-mississippi.js` | `mississippi-subsurface.xdc` |
 | Alabama (statewide) | `alabama-subsurface.html` | `js/city-subsurface-data-alabama.js` | `js/city-gazetteer-data-alabama.js` | `alabama-subsurface.xdc` |
 | Georgia (statewide) | `georgia-subsurface.html` | `js/city-subsurface-data-georgia.js` | `js/city-gazetteer-data-georgia.js` | `georgia-subsurface.xdc` |
+| Wisconsin (statewide) | `wisconsin-subsurface.html` | `js/city-subsurface-data-wisconsin.js` | `js/city-gazetteer-data-wisconsin.js` | `wisconsin-subsurface.xdc` |
+| Michigan (statewide) | `michigan-subsurface.html` | `js/city-subsurface-data-michigan.js` | `js/city-gazetteer-data-michigan.js` | `michigan-subsurface.xdc` |
+| Illinois (statewide) | `illinois-subsurface.html` | `js/city-subsurface-data-illinois.js` | `js/city-gazetteer-data-illinois.js` | `illinois-subsurface.xdc` |
+| Indiana (statewide) | `indiana-subsurface.html` | `js/city-subsurface-data-indiana.js` | `js/city-gazetteer-data-indiana.js` | `indiana-subsurface.xdc` |
+| Ohio (statewide) | `ohio-subsurface.html` | `js/city-subsurface-data-ohio.js` | `js/city-gazetteer-data-ohio.js` | `ohio-subsurface.xdc` |
+| Pennsylvania (statewide) | `pennsylvania-subsurface.html` | `js/city-subsurface-data-pennsylvania.js` | `js/city-gazetteer-data-pennsylvania.js` | `pennsylvania-subsurface.xdc` |
+| Arkansas (statewide) | `arkansas-subsurface.html` | `js/city-subsurface-data-arkansas.js` | `js/city-gazetteer-data-arkansas.js` | `arkansas-subsurface.xdc` |
+| Kentucky (statewide) | `Kentucky-subsurface.html` | `js/city-subsurface-data-Kentucky.js` | `js/city-gazetteer-data-Kentucky.js` | `Kentucky-subsurface.xdc` |
+| Tennessee (statewide) | `tennessee-subsurface.html` | `js/city-subsurface-data-tennessee.js` | `js/city-gazetteer-data-tennessee.js` | `tennessee-subsurface.xdc` |
+| Virginia (statewide) | `virginia-subsurface.html` | `js/city-subsurface-data-virginia.js` | `js/city-gazetteer-data-virginia.js` | `virginia-subsurface.xdc` |
+| West Virginia (statewide) | `westvirginia-subsurface.html` | `js/city-subsurface-data-westvirginia.js` | `js/city-gazetteer-data-westvirginia.js` | `westvirginia-subsurface.xdc` |
+| North Carolina (statewide) | `northcarolina-subsurface.html` | `js/city-subsurface-data-northcarolina.js` | `js/city-gazetteer-data-northcarolina.js` | `northcarolina-subsurface.xdc` |
 | South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
+| Florida (statewide) | `florida-subsurface.html` | `js/city-subsurface-data-florida.js` | `js/city-gazetteer-data-florida.js` | `florida-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

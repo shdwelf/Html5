@@ -10,92 +10,65 @@
 export const CITY = {
   "id": "southcarolina",
   "title": "SOUTH CAROLINA SUBSURFACE 4Dwm",
-  "subtitle": "Blue Ridge escarpment · Sandhills fall line · Grand Strand — statewide frame, South Carolina",
+  "subtitle": "SOUTH CAROLINA STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL",
   "state": "SC",
   "country": "United States",
   "county": "Statewide",
-  "baseElevationM": 130,
-  "roughnessM": 60,
-  "hasWater": true,
+  "baseElevationM": 170,
+  "roughnessM": 130,
+  "hasWater": false,
   "requiresDem": false
 };
 
-export const BBOX = {"lon0":-83.5,"lat0":31.95,"lon1":-78.4,"lat1":35.3};
-export const CENTER = {"lon":-80.9,"lat":33.7};
+export const BBOX = {"lon0":-83.4,"lat0":31.9,"lon1":-78.5,"lat1":35.25};
+export const CENTER = {"lon":-80.9,"lat":33.9};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
-export const COAST = [[-78.56,33.86],[-78.88,33.69],[-79.28,33.23],[-79.5,33],[-79.93,32.75],[-80.3,32.48],[-80.62,32.35],[-80.85,32.03]];
+export const COAST = [];
 export const RELIEF = [
   {
-    "name": "Blue Ridge escarpment",
-    "lon": -82.7,
-    "lat": 35,
-    "rx": 0.5,
-    "ry": 0.4,
-    "amp": 380,
-    "rot": 0
-  },
-  {
-    "name": "Piedmont rolling hills",
-    "lon": -81,
-    "lat": 34.5,
-    "rx": 0.7,
-    "ry": 0.55,
-    "amp": 130,
-    "rot": 0
-  },
-  {
-    "name": "Sandhills fall line",
-    "lon": -80.4,
-    "lat": 33.7,
-    "rx": 0.6,
-    "ry": 0.35,
-    "amp": 60,
-    "rot": 0
-  },
-  {
-    "name": "Upper coastal plain",
-    "lon": -80.7,
-    "lat": 32.9,
-    "rx": 0.6,
-    "ry": 0.5,
-    "amp": 50,
-    "rot": 0
-  },
-  {
-    "name": "Grand Strand terraces",
-    "lon": -78.95,
-    "lat": 33.5,
-    "rx": 0.4,
-    "ry": 0.4,
-    "amp": 35,
-    "rot": 0
-  },
-  {
-    "name": "ACE Basin flats",
-    "lon": -80.45,
-    "lat": 32.6,
+    "name": "Blue Ridge / Sassafras Mountain",
+    "lon": -82.78,
+    "lat": 35.07,
     "rx": 0.45,
     "ry": 0.3,
+    "amp": 280,
+    "rot": 0
+  },
+  {
+    "name": "Piedmont",
+    "lon": -81.9,
+    "lat": 34.7,
+    "rx": 1,
+    "ry": 0.55,
+    "amp": 80,
+    "rot": 0
+  },
+  {
+    "name": "Sandhills",
+    "lon": -80.9,
+    "lat": 34.2,
+    "rx": 0.9,
+    "ry": 0.4,
     "amp": 30,
     "rot": 0
   },
   {
-    "name": "Savannah river red hills",
-    "lon": -81.6,
+    "name": "Santee / coastal lowland",
+    "lon": -80.2,
     "lat": 33.3,
-    "rx": 0.5,
-    "ry": 0.5,
-    "amp": 75,
+    "rx": 0.9,
+    "ry": 0.7,
+    "amp": -50,
     "rot": 0
   },
   {
-    "name": "Santee delta flat",
-    "lon": -79.4,
-    "lat": 33.1,
-    "rx": 0.4,
-    "ry": 0.3,
-    "amp": -25,
+    "name": "Sea Islands reach",
+    "lon": -80.6,
+    "lat": 32.3,
+    "rx": 0.7,
+    "ry": 0.35,
+    "amp": -30,
     "rot": 0
   }
 ];
@@ -236,79 +209,23 @@ export const CORRIDORS = [
     "depthM": 0,
     "path": [
       [
-        -79.9309216,
-        32.7765656
-      ],
-      [
-        -80.4,
-        33.2
-      ],
-      [
-        -81.0348144,
-        34.0007104
-      ],
-      [
-        -81.4,
-        34.4
-      ],
-      [
         -81.9320482,
         34.9495672
       ],
       [
-        -82.2,
-        35.15
-      ]
-    ],
-    "facts": [
-      "Generalized Interstate 26 corridor from Charleston through Columbia and Spartanburg to the North Carolina line; schematic polyline through named anchors and generalized points, not a highway alignment."
-    ],
-    "sources": [
-      "Generalized from public highway references (Interstate 26 routing); GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "i20-southcarolina",
-    "layer": "roads",
-    "tier": "context",
-    "name": "Interstate 20 corridor (generalized)",
-    "short": "I-20",
-    "depthM": 0,
-    "path": [
-      [
-        -79.55,
-        34.45
-      ],
-      [
-        -80.1,
-        34.25
-      ],
-      [
-        -80.6,
-        34.12
-      ],
-      [
         -81.0348144,
         34.0007104
       ],
       [
-        -81.5,
-        33.87
-      ],
-      [
-        -81.95,
-        33.68
-      ],
-      [
-        -82.3,
-        33.5
+        -79.9309216,
+        32.7765656
       ]
     ],
     "facts": [
-      "Generalized Interstate 20 corridor from the North Carolina line through Columbia and Aiken to the Georgia line; schematic polyline through named anchors and generalized points, not a highway alignment."
+      "Generalized Interstate 26 corridor from Spartanburg through Columbia to Charleston; schematic polyline through named anchors and generalized points, not a highway alignment."
     ],
     "sources": [
-      "Generalized from public highway references (Interstate 20 routing); GNIS rows supply the named anchors"
+      "Generalized from public highway references; GNIS rows supply the named anchors"
     ]
   },
   {
@@ -320,112 +237,12 @@ export const CORRIDORS = [
     "depthM": 0,
     "path": [
       [
-        -79.4,
-        34.45
+        -79.2,
+        34.7
       ],
       [
-        -79.7,
-        34.3
-      ],
-      [
-        -79.8,
-        34.1
-      ],
-      [
-        -79.9,
-        33.7
-      ],
-      [
-        -80.4,
-        33.4
-      ],
-      [
-        -80.9,
-        33.15
-      ],
-      [
-        -81.3,
-        32.7
-      ],
-      [
-        -81.45,
-        32.5
-      ]
-    ],
-    "facts": [
-      "Generalized Interstate 95 corridor from the North Carolina line past Florence and the Lowcountry to the Georgia line; schematic polyline through named anchors and generalized points, not a highway alignment."
-    ],
-    "sources": [
-      "Generalized from public highway references (Interstate 95 routing); GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "i77-southcarolina",
-    "layer": "roads",
-    "tier": "context",
-    "name": "Interstate 77 corridor (generalized)",
-    "short": "I-77",
-    "depthM": 0,
-    "path": [
-      [
-        -80.93,
-        35.2
-      ],
-      [
-        -81.0250784,
-        34.9248667
-      ],
-      [
-        -80.98,
-        34.5
-      ],
-      [
-        -81.0348144,
-        34.0007104
-      ]
-    ],
-    "facts": [
-      "Generalized Interstate 77 corridor from the North Carolina line through Rock Hill to its Columbia terminus; schematic polyline through named anchors and generalized points, not a highway alignment."
-    ],
-    "sources": [
-      "Generalized from public highway references (Interstate 77 routing); GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "savannah-river-southcarolina",
-    "layer": "water",
-    "tier": "context",
-    "name": "Savannah River reach (generalized)",
-    "short": "Savannah R",
-    "depthM": 0,
-    "path": [
-      [
-        -83.3,
-        35.05
-      ],
-      [
-        -83.2,
-        34.6
-      ],
-      [
-        -82.7,
-        34.1
-      ],
-      [
-        -82.2,
-        33.55
-      ],
-      [
-        -81.7,
-        33.2
-      ],
-      [
-        -81.3,
-        32.7
-      ],
-      [
-        -81,
-        32.3
+        -80.3848589,
+        33.4611873
       ],
       [
         -80.8501103,
@@ -433,16 +250,100 @@ export const CORRIDORS = [
       ]
     ],
     "facts": [
-      "Generalized Savannah River reach from the Blue Ridge headwaters past Augusta to the Atlantic. The SC frame seeds GNIS record FEATURE_ID 1253486 — the same record whose states=GA screen in the batch-11 register returned an empty array, surfacing only on the no-state national screen; schematic reference, not the channel or the legal boundary."
+      "Generalized Interstate 95 corridor from the Pee Dee country through Lake Marion to the Savannah mouth reach; schematic polyline through named anchors and generalized points, not a highway alignment."
     ],
     "sources": [
-      "Generalized from public river references; GNIS FEATURE_ID 1253486 (Jasper County) per the batch-12 register, cross-referencing the batch-11 Georgia empty-screen disclosure"
+      "Generalized from public highway references; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "Santee-system",
+    "layer": "water",
+    "tier": "context",
+    "name": "Santee system corridor (generalized)",
+    "short": "Santee system",
+    "depthM": 0,
+    "path": [
+      [
+        -81.0348144,
+        34.0007104
+      ],
+      [
+        -80.6192539,
+        33.7440461
+      ],
+      [
+        -80.3848589,
+        33.4611873
+      ],
+      [
+        -80.0535619,
+        33.3105044
+      ]
+    ],
+    "facts": [
+      "Generalized corridor joining the seeded Columbia, Congaree, Lake Marion, and Lake Moultrie GNIS points; not a channel centerline or shoreline."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "savannah-river-southcarolina",
+    "layer": "water",
+    "tier": "context",
+    "name": "Savannah River corridor (generalized)",
+    "short": "Savannah River",
+    "depthM": 0,
+    "path": [
+      [
+        -82.9,
+        34.3
+      ],
+      [
+        -81.9,
+        33.6
+      ],
+      [
+        -80.8501103,
+        32.0377132
+      ]
+    ],
+    "facts": [
+      "Generalized Savannah River corridor to the seeded Jasper County mouth point; the seeded row lives in this frame and the river remains context along the border. Not a channel centerline or state boundary."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "grand-strand-context",
+    "layer": "water",
+    "tier": "context",
+    "name": "Grand Strand context (generalized)",
+    "short": "Grand Strand",
+    "depthM": 0,
+    "path": [
+      [
+        -78.8866943,
+        33.6890603
+      ],
+      [
+        -79.15,
+        33.35
+      ]
+    ],
+    "facts": [
+      "Generalized coastal context line off Myrtle Beach; no GNIS row is claimed and no shoreline geometry is implied."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   }
 ];
 export const NODES = [
   {
-    "id": "columbia",
+    "id": "Columbia",
     "name": "Columbia",
     "layer": "sites",
     "tier": "official",
@@ -451,14 +352,14 @@ export const NODES = [
     "lat": 34.0007104,
     "depthM": 0,
     "facts": [
-      "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+      "South Carolina state capital at the Congaree head. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 1245051; coordinate per gazetteer row"
     ]
   },
   {
-    "id": "charleston",
+    "id": "Charleston",
     "name": "Charleston",
     "layer": "sites",
     "tier": "official",
@@ -467,7 +368,7 @@ export const NODES = [
     "lat": 32.7765656,
     "depthM": 0,
     "facts": [
-      "Coastal port anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline or harbor boundary."
+      "Coastal anchor and harbor city. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 1221516; coordinate per gazetteer row"
@@ -483,26 +384,26 @@ export const NODES = [
     "lat": 35.065108,
     "depthM": 0,
     "facts": [
-      "South Carolina's highest summit; node coordinate is the GNIS Summit primary point confirmed by the per-ID class check from the gazetteer row; the 3,560-foot figure comes from the USGS Elevations and Distances table, not a GNIS description."
+      "South Carolina state high point (3,553 ft) on the North Carolina line. node coordinate is the GNIS summit primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 1015279; coordinate per gazetteer row"
     ]
   },
   {
-    "id": "greenville",
-    "name": "Greenville",
+    "id": "lake-marion",
+    "name": "Lake Marion",
     "layer": "sites",
     "tier": "official",
-    "kind": "building",
-    "lon": -82.3940105,
-    "lat": 34.8526176,
+    "kind": "lake",
+    "lon": -80.3848589,
+    "lat": 33.4611873,
     "depthM": 0,
     "facts": [
-      "Upstate anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a municipal boundary."
+      "Largest lake in South Carolina. node coordinate is the GNIS lake primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 1245842; coordinate per gazetteer row"
+      "USGS GNIS FEATURE_ID 1224315; coordinate per gazetteer row"
     ]
   }
 ];
@@ -512,8 +413,8 @@ export const VIEWS = [
     "label": "VIEW · OVERVIEW",
     "position": [
       0,
-      21.254713994942218,
-      33.06288843657678
+      20.37353135068802,
+      32
     ],
     "target": [
       0,
@@ -541,7 +442,7 @@ export const VIEWS = [
     "position": [
       0,
       4,
-      21.254713994942218
+      20.37353135068802
     ],
     "target": [
       0,
@@ -553,14 +454,14 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      10.391193508638416,
+      9.96039310478081,
       10,
-      8.204283999999996
+      8.204284000000003
     ],
     "target": [
-      10.391193508638416,
+      9.96039310478081,
       0,
-      8.204283999999996
+      8.204284000000003
     ]
   }
 ];

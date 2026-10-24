@@ -1,267 +1,411 @@
 {
   "generated": "2026-10-23",
-  "title": "Round 29 Atlantic state-frame USGS GNIS source register",
-  "scope": "All-GNIS starter register for South Carolina. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Sassafras Mountain and Rock Hill additionally carry GNIS Domestic Names per-ID checks.",
+  "title": "Round 29 Kentucky-Tennessee state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Kentucky and Tennessee. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Black Mountain and Mount Le Conte additionally carry Domestic Names per-ID identity checks. The Ohio River is seeded for the first time in this batch: its main-stem record is Kentucky-associated. Kuwohi/Clingmans Dome is recorded as a cross-state context decision.",
   "services": {
     "usgsGeocoder": {
       "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
-      "parameters": "term=<official name>&states=SC&include=gnis&maxSuggestions=8",
-      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. County records, divisions, canals, reservoirs, air bases, harbors, farms, heights, crossroads, census records, and same-name records of another county were rejected explicitly where relevant."
+      "parameters": "term=<official name>&states=<KY|TN>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County/census divisions, merged metro-government records, historical places, and same-name records of another class or county were rejected explicitly where relevant."
     },
     "gnisDomesticNames": {
-      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
-      "restQuery": "https://edits.nationalmap.gov/arcgis/rest/services/gaznames/gaznames_default/MapServer/0/query?where=gaz_id=<featureId>&outFields=*&returnGeometry=false&f=json",
-      "use": "Per-ID identity checks for Sassafras Mountain (1015279: gaz_featureclass Summit, feature code 15048, gaz_elevation 1078, EMPTY description field — the 3,560-foot figure is corroborated by the official USGS Elevations and Distances table instead) and Rock Hill (1250417 seeded with census class P1 plus GSA/OPM 2200; parallel Fairfield County record 1231736 disclosed with census class U6)."
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<KY|TN>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Black Mountain (510753) and Mount Le Conte (1646824), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two summit elevations cite USGS-published values. The candidate extract file is cumulative across batches 7-12; this register is the frozen batch-12 evidence."
     }
   },
   "selectionRules": [
-    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
-    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (the extract's text class for the batch-12 lake rows is Reservoir), Streams & Canals to Stream, and Summit to Summit.",
     "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
-    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that frame and the failure is disclosed; roster capacity holds are disclosed the same way.",
-    "Duplicate same-name records seed only the record identified as the intended feature — by an official Domestic Names description locator where one exists, or by census class and government codes where descriptions are empty (Rock Hill P1 with GSA/OPM 2200 seeds; the U6 unincorporated twin is disclosed, never merged).",
-    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. South Carolina ships a labelled generalized Atlantic coast line that is not a shoreline survey."
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
   ],
   "frames": {
-    "southcarolina": {
-      "title": "South Carolina statewide frame",
-      "state": "SC",
+    "Kentucky": {
+      "title": "Kentucky statewide frame (Kentucky-Tennessee batch)",
+      "state": "KY",
       "bbox": {
-        "lon0": -83.5,
-        "lat0": 31.95,
-        "lon1": -78.4,
-        "lat1": 35.3
+        "lon0": -89.6,
+        "lat0": 36.4,
+        "lon1": -80.0,
+        "lat1": 39.55
       },
-      "frameNote": "Atlantic batch: the Columbia, Charleston, North Charleston, Rock Hill, Greenville, and Spartanburg anchors are balanced with the per-ID Sassafras Mountain record (empty GNIS description disclosed; USGS Elevations and Distances table gives 3,560 feet), the Rock Hill P1-versus-U6 census-class split over the Fairfield County twin, Lake Marion and Lake Murray, and the Savannah, Santee, and Pee Dee river records. The Savannah row is the same FEATURE_ID 1253486 that Georgia's empty states=GA screen could only surface nationally. County/census-division trap piles for all six cities and the Lake Murray population-record trap are recorded.",
+      "frameNote": "Kentucky-Tennessee batch: the Frankfort capital anchor is balanced with the per-ID Black Mountain high point, the Cumberland/Barkley reservoirs, and four river mouth records (Ohio, Tennessee, Cumberland, Kentucky). This batch resolves the Ohio River: after empty states=OH/IN/IL/PA screens, its main-stem record proves Kentucky-associated and is seeded once here at its Mississippi-confluence mouth. The Tennessee and Cumberland mouth records are likewise Kentucky-associated (both empty under TN) and seeded here. Kentucky Lake's record is Tennessee-associated (seeded in Tennessee).",
       "totalRows": 12,
       "verifiedRows": [
         {
-          "name": "Columbia",
+          "name": "Frankfort",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Richland",
-          "latitude": 34.0007104,
-          "longitude": -81.0348144,
-          "featureId": "1245051",
+          "county": "Franklin",
+          "latitude": 38.2009055,
+          "longitude": -84.8732836,
+          "featureId": "517517",
           "verified": 1,
+          "sourceNote": "Kentucky capital anchor on the Kentucky River; the Frankfort Division political-division record (1937010) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=517517; exact official name and Populated Place type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Richland County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "State capital. The screen led with Columbia Division (FEATURE_ID 1938234); rejected: Columbia Division, Columbia Canal (FEATURE_ID 1221698), Columbia Reservoir (FEATURE_ID 1238834), and the historical Columbia Air Base (FEATURE_ID 1244137). USGS GNIS Geocoder (GNIS), FEATURE_ID=1245051; exact official name and Cities & Populated Places type in Richland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Franklin County"
         },
         {
-          "name": "Charleston",
+          "name": "Louisville",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Charleston",
-          "latitude": 32.7765656,
-          "longitude": -79.9309216,
-          "featureId": "1221516",
+          "county": "Jefferson",
+          "latitude": 38.2542376,
+          "longitude": -85.759407,
+          "featureId": "509453",
           "verified": 1,
+          "sourceNote": "Largest Kentucky city at the Falls of the Ohio; the Louisville/Jefferson County metro government records (1967435/1967434) and division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=509453; exact official name and Populated Place type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Charleston County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Coastal port anchor. The screen led with Charleston Central Division (FEATURE_ID 2584536) and Charleston County (FEATURE_ID 1252740); rejected: Charleston Central Division, Charleston County, Charleston Crossroads in Abbeville County (FEATURE_ID 1231157), Charleston Farms (FEATURE_ID 1252745), Charleston Heights (FEATURE_ID 1221518), Charleston Harbor (FEATURE_ID 1221517), and the census Charleston-North Charleston Division (FEATURE_ID 1938224). USGS GNIS Geocoder (GNIS), FEATURE_ID=1221516; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Jefferson County"
         },
         {
-          "name": "North Charleston",
+          "name": "Lexington",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Charleston",
-          "latitude": 32.8546197,
-          "longitude": -79.9748103,
-          "featureId": "1225072",
+          "county": "Fayette",
+          "latitude": 37.9886892,
+          "longitude": -84.4777153,
+          "featureId": "496343",
           "verified": 1,
+          "sourceNote": "Bluegrass anchor city; the Lexington-Fayette merged-government (1681812) and division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=496343; exact official name and Populated Place type in Fayette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Charleston County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "The screen led with North Charleston Division (FEATURE_ID 2584539); rejected: North Charleston Division and the historical North Charleston Air Force Station (FEATURE_ID 2089735). USGS GNIS Geocoder (GNIS), FEATURE_ID=1225072; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Fayette County"
         },
         {
-          "name": "Rock Hill",
+          "name": "Bowling Green",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "York",
-          "latitude": 34.9248667,
-          "longitude": -81.0250784,
-          "featureId": "1250417",
+          "county": "Warren",
+          "latitude": 36.9903199,
+          "longitude": -86.4436018,
+          "featureId": "487744",
           "verified": 1,
+          "sourceNote": "South-central anchor; the Bowling Green Division record (1936884) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=487744; exact official name and Populated Place type in Warren County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "York County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Seeded FEATURE_ID 1250417 (York County): the GNIS Domestic Names per-ID check shows census class P1 (populated place) with GSA and OPM codes 2200, identifying the incorporated city. The parallel Fairfield County same-name record (FEATURE_ID 1231736) carries census class U6 (unincorporated) about 78 kilometres to the southwest and is a separate feature, not this city; it is disclosed and not seeded. The screen led with Rock Hill Division (FEATURE_ID 1938403) and returned the Fairfield record before the York record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250417; exact official name and Cities & Populated Places type in York County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Warren County"
         },
         {
-          "name": "Greenville",
+          "name": "Covington",
           "featureClass": "Populated Place",
           "ftt": "pop.place",
-          "county": "Greenville",
-          "latitude": 34.8526176,
-          "longitude": -82.3940105,
-          "featureId": "1245842",
+          "county": "Kenton",
+          "latitude": 39.0836712,
+          "longitude": -84.5085537,
+          "featureId": "490167",
           "verified": 1,
+          "sourceNote": "Northern Kentucky anchor opposite Cincinnati at the Licking-Ohio confluence; the Covington Division (1936953) and Covington Ridge (490169) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=490167; exact official name and Populated Place type in Kenton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Greenville County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Upstate anchor. The screen led with Greenville County (FEATURE_ID 1245489) and Greenville Division (FEATURE_ID 1938285); rejected: Greenville County and Greenville Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1245842; exact official name and Cities & Populated Places type in Greenville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+          "geocoderCounty": "Kenton County"
         },
         {
-          "name": "Spartanburg",
-          "featureClass": "Populated Place",
-          "ftt": "pop.place",
-          "county": "Spartanburg",
-          "latitude": 34.9495672,
-          "longitude": -81.9320482,
-          "featureId": "1250982",
-          "verified": 1,
-          "geocoderType": "Cities & Populated Places",
-          "geocoderCounty": "Spartanburg County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Upstate anchor. The screen led with Spartanburg County (FEATURE_ID 1248592) and Spartanburg Division (FEATURE_ID 1938427); rejected: Spartanburg County and Spartanburg Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250982; exact official name and Cities & Populated Places type in Spartanburg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
-        },
-        {
-          "name": "Sassafras Mountain",
+          "name": "Black Mountain",
           "featureClass": "Summit",
           "ftt": "phys.summit",
-          "county": "Pickens",
-          "latitude": 35.065108,
-          "longitude": -82.7776292,
-          "featureId": "1015279",
+          "county": "Harlan",
+          "latitude": 36.914253,
+          "longitude": -82.8937692,
+          "featureId": "510753",
           "verified": 1,
+          "sourceNote": "Kentucky High Point and state high point at 4,145 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_KY_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 510753 as a Summit in Harlan County at this point; the same-name Harlan County populated place (FEATURE_ID 487379) and Black Mountain Gap (FEATURE_ID 487380) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=510753; exact official name and Summit type in Harlan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Summit",
-          "geocoderCounty": "Pickens County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "South Carolina's highest summit. The Summit record passed a GNIS Domestic Names per-ID check against the official gaznames_default REST layer: gaz_featureclass Summit, feature code 15048, stored gaz_elevation 1078, and an EMPTY description field — no elevation sentence or High Point designation text exists on this record there. The 3,560-foot figure is corroborated by the official USGS Elevations and Distances table (Sassafras Mountain, Pickens, 3,560 feet), not by this record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+          "geocoderCounty": "Harlan County"
         },
         {
-          "name": "Lake Marion",
+          "name": "Lake Cumberland",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Clarendon",
-          "latitude": 33.4611873,
-          "longitude": -80.3848589,
-          "featureId": "1224315",
+          "county": "Pulaski",
+          "latitude": 36.9664603,
+          "longitude": -84.7330674,
+          "featureId": "490483",
           "verified": 1,
+          "sourceNote": "Cumberland River reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=490483; exact official name and Lake type in Pulaski County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Clarendon County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Single exact screen result, returned first with no same-name twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224315; exact official name and Lakes & Reservoirs type in Clarendon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+          "geocoderCounty": "Pulaski County"
         },
         {
-          "name": "Lake Murray",
+          "name": "Lake Barkley",
           "featureClass": "Lake",
           "ftt": "hydro.lake",
-          "county": "Lexington",
-          "latitude": 34.0736677,
-          "longitude": -81.3790225,
-          "featureId": "1224900",
+          "county": "Trigg",
+          "latitude": 36.8286815,
+          "longitude": -87.9834689,
+          "featureId": "486356",
           "verified": 1,
+          "sourceNote": "Lower Cumberland reservoir paired with Kentucky Lake across the Land Between the Lakes; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=486356; exact official name and Lake type in Trigg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Lakes & Reservoirs",
-          "geocoderCounty": "Lexington County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "The screen led with Lake Murray Shores (FEATURE_ID 1231458, Cities & Populated Places, Saluda County); rejected: Lake Murray Shores and the Lake Murray of Richland census record (FEATURE_ID 2403200). The Lexington County Lakes & Reservoirs record is the intended impoundment. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224900; exact official name and Lakes & Reservoirs type in Lexington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+          "geocoderCounty": "Trigg County"
         },
         {
-          "name": "Savannah River",
+          "name": "Ohio River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Jasper",
-          "latitude": 32.0377132,
-          "longitude": -80.8501103,
-          "featureId": "1253486",
+          "county": "Ballard",
+          "latitude": 36.986719,
+          "longitude": -89.1306255,
+          "featureId": "425264",
           "verified": 1,
+          "sourceNote": "The Ohio main stem's GNIS primary point is its Mississippi confluence mouth, and the record is Kentucky-associated: after empty states=OH/IN/IL/PA screens, the river is seeded once here at its mouth point; it remains a corridor in the four upstream frames. USGS GNIS Geocoder (GNIS), FEATURE_ID=425264; exact official name and Stream type in Ballard County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Jasper County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Single exact screen result — and the same record Georgia could not surface: the states=GA screen in the batch-11 register returned an empty array, and only the no-state national screen returned this South Carolina record. This SC frame seeds it in its home state. The point is the Jasper County sequence at the Atlantic end of the boundary reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Streams & Canals type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Ballard County"
         },
         {
-          "name": "Santee River",
+          "name": "Tennessee River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Georgetown",
-          "latitude": 33.2351673,
-          "longitude": -79.4595064,
-          "featureId": "1250783",
+          "county": "Livingston",
+          "latitude": 37.0672787,
+          "longitude": -88.5647687,
+          "featureId": "517033",
           "verified": 1,
+          "sourceNote": "The Tennessee main stem's GNIS primary point is its Ohio River mouth above Paducah, and the record is Kentucky-associated; under states=TN the name returns only pulp-mill pond records, so the river is seeded once here and remains a corridor in Tennessee. USGS GNIS Geocoder (GNIS), FEATURE_ID=517033; exact official name and Stream type in Livingston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Georgetown County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Single exact screen result; the point is the Georgetown County sequence near the coastal reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250783; exact official name and Streams & Canals type in Georgetown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Livingston County"
         },
         {
-          "name": "Pee Dee River",
+          "name": "Cumberland River",
           "featureClass": "Stream",
           "ftt": "hydro.stream",
-          "county": "Chesterfield",
-          "latitude": 34.7209897,
-          "longitude": -79.8817302,
-          "featureId": "1251573",
+          "county": "Livingston",
+          "latitude": 37.1433889,
+          "longitude": -88.4075385,
+          "featureId": "517018",
           "verified": 1,
+          "sourceNote": "The Cumberland's GNIS primary point is its Ohio River mouth; the states=TN screen returned an empty array, so the river is seeded once here and remains a corridor in Tennessee. USGS GNIS Geocoder (GNIS), FEATURE_ID=517018; exact official name and Stream type in Livingston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Streams & Canals",
-          "geocoderCounty": "Chesterfield County",
-          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
-          "sourceNote": "Single exact screen result; the point is the Chesterfield County mid-reach sequence, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1251573; exact official name and Streams & Canals type in Chesterfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+          "geocoderCounty": "Livingston County"
+        },
+        {
+          "name": "Kentucky River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Carroll",
+          "latitude": 38.6833957,
+          "longitude": -85.188287,
+          "featureId": "513130",
+          "verified": 1,
+          "sourceNote": "River record at its Ohio River mouth at Carrollton. USGS GNIS Geocoder (GNIS), FEATURE_ID=513130; exact official name and Stream type in Carroll County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Carroll County"
+        }
+      ]
+    },
+    "tennessee": {
+      "title": "Tennessee statewide frame (Kentucky-Tennessee batch)",
+      "state": "TN",
+      "bbox": {
+        "lon0": -90.35,
+        "lat0": 34.95,
+        "lon1": -81.6,
+        "lat1": 36.7
+      },
+      "frameNote": "Kentucky-Tennessee batch: the Nashville capital anchor is balanced with the per-ID Mount Le Conte summit (the highest Tennessee-associated GNIS summit), the Kentucky/Norris/Douglas/Cherokee/Chickamauga TVA reservoir set, and six populated places. The Tennessee, Cumberland, and Mississippi main stems all return no Tennessee stream records and remain corridors (the first two are seeded at their Kentucky mouths). Kuwohi/Clingmans Dome, the state's highest summit, has no Tennessee GNIS record on either surface and is a context marker only.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Nashville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Davidson",
+          "latitude": 36.1658899,
+          "longitude": -86.7844432,
+          "featureId": "1652484",
+          "verified": 1,
+          "sourceNote": "Tennessee capital anchor on the Cumberland River; Nashville International Airport (2832748) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1652484; exact official name and Populated Place type in Davidson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Davidson County"
+        },
+        {
+          "name": "Memphis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Shelby",
+          "latitude": 35.1495343,
+          "longitude": -90.0489801,
+          "featureId": "1326388",
+          "verified": 1,
+          "sourceNote": "Western anchor on the Mississippi bluffs; Memphis Lake, the harbor revetment, and the historical military/division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1326388; exact official name and Populated Place type in Shelby County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Shelby County"
+        },
+        {
+          "name": "Knoxville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Knox",
+          "latitude": 35.9606384,
+          "longitude": -83.9207392,
+          "featureId": "1648562",
+          "verified": 1,
+          "sourceNote": "Eastern anchor at the head of the Tennessee River navigation reach; the historical Knoxville Division (1269258) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1648562; exact official name and Populated Place type in Knox County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Knox County"
+        },
+        {
+          "name": "Chattanooga",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hamilton",
+          "latitude": 35.0456297,
+          "longitude": -85.3096801,
+          "featureId": "1307240",
+          "verified": 1,
+          "sourceNote": "Southern anchor in the Tennessee River bend; Chattanooga Creek, the shoals, valley, and historical division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1307240; exact official name and Populated Place type in Hamilton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hamilton County"
+        },
+        {
+          "name": "Clarksville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Montgomery",
+          "latitude": 36.5297706,
+          "longitude": -87.3594529,
+          "featureId": "1269467",
+          "verified": 1,
+          "sourceNote": "North-central anchor on the Cumberland River; the historical Clarksville Division (1269261) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1269467; exact official name and Populated Place type in Montgomery County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Montgomery County"
+        },
+        {
+          "name": "Murfreesboro",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Rutherford",
+          "latitude": 35.8456213,
+          "longitude": -86.39027,
+          "featureId": "1295105",
+          "verified": 1,
+          "sourceNote": "Middle Tennessee anchor, geographic center of the state; the historical Murfreesboro Division (1648937) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1295105; exact official name and Populated Place type in Rutherford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Rutherford County"
+        },
+        {
+          "name": "Mount Le Conte",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Sevier",
+          "latitude": 35.6543501,
+          "longitude": -83.4367154,
+          "featureId": "1646824",
+          "verified": 1,
+          "sourceNote": "Highest summit whose GNIS record is Tennessee-associated, at 6,593 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_TN_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1646824 as a Summit in Sevier County at this point. The state's highest summit, Kuwohi/Clingmans Dome, returns no Tennessee GNIS record on either surface and remains context. USGS GNIS Geocoder (GNIS), FEATURE_ID=1646824; exact official name and Summit type in Sevier County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Sevier County"
+        },
+        {
+          "name": "Kentucky Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hardin",
+          "latitude": 35.4160445,
+          "longitude": -88.0685807,
+          "featureId": "1269701",
+          "verified": 1,
+          "sourceNote": "Tennessee River impoundment and the largest artificial lake in the eastern US by surface; the states=KY screen returned an empty array, so the border reservoir is seeded once here on the Tennessee record; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=1269701; exact official name and Lake type in Hardin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hardin County"
+        },
+        {
+          "name": "Norris Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Union",
+          "latitude": 36.303527,
+          "longitude": -83.8825297,
+          "featureId": "1269832",
+          "verified": 1,
+          "sourceNote": "Clinch River reservoir, TVA's first; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1269832; exact official name and Lake type in Union County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Union County"
+        },
+        {
+          "name": "Douglas Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Jefferson",
+          "latitude": 35.9925809,
+          "longitude": -83.3754275,
+          "featureId": "1282739",
+          "verified": 1,
+          "sourceNote": "French Broad River reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1282739; exact official name and Lake type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Jefferson County"
+        },
+        {
+          "name": "Cherokee Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hawkins",
+          "latitude": 36.3734257,
+          "longitude": -83.0620424,
+          "featureId": "1280322",
+          "verified": 1,
+          "sourceNote": "Holston River reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1280322; exact official name and Lake type in Hawkins County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hawkins County"
+        },
+        {
+          "name": "Chickamauga Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Meigs",
+          "latitude": 35.4031487,
+          "longitude": -84.9888498,
+          "featureId": "1326920",
+          "verified": 1,
+          "sourceNote": "Tennessee River reservoir above Chattanooga; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1326920; exact official name and Lake type in Meigs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Meigs County"
         }
       ]
     }
   },
   "identityDecisions": [
     {
-      "candidate": "Sassafras Mountain, FEATURE_ID 1015279",
-      "decision": "Seeded after a GNIS Domestic Names per-ID check against the gaznames_default REST layer confirmed gaz_featureclass Summit and feature code 15048 at the stored Pickens County point; the description field is EMPTY, so no GNIS elevation sentence exists for this record. The 3,560-foot highest-point figure is corroborated by the official USGS Elevations and Distances table (Sassafras Mountain, Pickens, 3,560 feet), a separate USGS publication.",
-      "notClaimed": "The primary point is not a surveyed boundary of the high ground; the record is not claimed to carry a High Point designation or any description text, and gaz_elevation 1078 is stored as returned without a unit claim."
+      "candidate": "Ohio River, FEATURE_ID 425264 (Ballard County mouth record)",
+      "decision": "Seeded in Kentucky. After four consecutive empty state screens (OH, IN, IL, PA in rounds 25-27), the states=KY screen returns the main-stem stream record at its Mississippi confluence; the seeded point follows the series convention of seeding the cross-state feature once, in the frame whose surface owns the record. It remains a corridor in the four upstream frames (their registers already record the empty screens).",
+      "notClaimed": "The mouth point is not a channel centerline, thalweg survey, or state boundary."
     },
     {
-      "candidate": "Rock Hill, FEATURE_ID 1250417 (pair with 1231736)",
-      "decision": "Seeded the York County record: the per-ID check shows census class P1 (populated place) with GSA and OPM codes 2200, identifying the incorporated city. The parallel Fairfield County same-name record (FEATURE_ID 1231736) carries census class U6 (unincorporated) about 78 kilometres to the southwest and is a separate feature; it is disclosed and not seeded. The suggestion order returned the division first and the Fairfield record before the York record.",
-      "notClaimed": "The primary point is not a municipal boundary, and the two same-name places are not treated as one feature."
+      "candidate": "Tennessee River (517033) and Cumberland River (517018) mouth records",
+      "decision": "Seeded in Kentucky. Both mouths are in Kentucky (Ohio River confluences above Paducah and at Smithland); under states=TN the Tennessee name returns only pulp-mill pond records and the Cumberland returns an empty array, so both rivers remain corridors in the Tennessee frame.",
+      "notClaimed": "The mouth points are not channel centerlines."
     },
     {
-      "candidate": "Savannah River under states=SC",
-      "decision": "Single exact Streams & Canals record in Jasper County — the same FEATURE_ID 1253486 that the states=GA screen in the batch-11 register returned as an empty array and the no-state national screen surfaced for South Carolina only. This frame seeds the record in its home state.",
-      "notClaimed": "The point is not a channel centerline or a boundary monument; Georgia's failed screen is not retroactively claimed."
+      "candidate": "Kuwohi / Clingmans Dome (6,643 ft) under states=TN",
+      "decision": "Not seeded. The Geocoder states=TN screen returned an empty array and the DomesticNames_TN_Text extract contains no Clingmans/Kuwohi record: the summit's GNIS record is North Carolina-associated. Tennessee's seeded summit is Mount Le Conte (1646824, Sevier County, 6,593 ft), the highest Tennessee-associated GNIS summit; the dome appears only as a context corridor marker whose note claims no GNIS point.",
+      "knownServiceDiscrepancy": "A state-line summit's single GNIS record is owned by the neighbouring state's extract; the 2024 Kuwohi renaming is noted but the record itself is not reproduced in Tennessee surfaces.",
+      "notClaimed": "No coordinate is stored for Kuwohi in the Tennessee frame."
     },
     {
-      "candidate": "Columbia, FEATURE_ID 1245051",
-      "decision": "The Columbia Division led the screen; the Richland County Cities & Populated Places record is the capital and seeds; the division, canal, reservoir, and historical air base records are rejected by FEATURE_ID.",
-      "notClaimed": "No division, canal, reservoir, or military record stands in for the capital."
+      "candidate": "Kentucky Lake, FEATURE_ID 1269701 (Hardin County, TN)",
+      "decision": "Seeded in Tennessee. The states=KY exact-name screen returned an empty array for the same impoundment; the TVA reservoir's GNIS record is Tennessee-associated. It remains a context corridor in the Kentucky frame (partnered there with the seeded Lake Barkley).",
+      "knownServiceDiscrepancy": "A border reservoir returns under only one of its two states at the primary-point level; seeded once, in Tennessee (as with Lake Erie in Ohio and Bull Shoals in Arkansas).",
+      "notClaimed": "The seeded point is not a shoreline or the state-line segment of the reservoir."
     },
     {
-      "candidate": "Charleston, FEATURE_ID 1221516",
-      "decision": "Charleston Central Division and Charleston County led the screen; the Charleston County Cities & Populated Places record seeds and the division, county, Abbeville County crossroads, farms, heights, harbor, and census division records are rejected by FEATURE_ID.",
-      "notClaimed": "No division, county, harbor, or out-of-county record stands in for the city."
+      "candidate": "Black Mountain populated place 487379 and Black Mountain Gap 487380 (Harlan County)",
+      "decision": "Rejected. The seeded record is the Summit (510753) on the Virginia line crest; the same-name community and gap records are not seeded.",
+      "notClaimed": "The seeded point is not a surveyed summit outline."
     },
     {
-      "candidate": "North Charleston, FEATURE_ID 1225072",
-      "decision": "The North Charleston Division led the screen; the Charleston County Cities & Populated Place record seeds and the division and historical Air Force Station records are rejected.",
-      "notClaimed": "No division or military record stands in for the city."
+      "candidate": "Louisville/Jefferson County metro government records (1967434/1967435) and Lexington-Fayette (1681812)",
+      "decision": "Rejected in favour of the cities' own Populated Place records (509453, 496343); merged-government balance records and census/county division records are never seeded as city rows.",
+      "notClaimed": "Neither seeded point is a municipal boundary."
     },
     {
-      "candidate": "Greenville, FEATURE_ID 1245842",
-      "decision": "Greenville County and Greenville Division led the screen; the Cities & Populated Places record in Greenville County seeds and both same-name political records are rejected.",
-      "notClaimed": "No county or division record stands in for the city."
-    },
-    {
-      "candidate": "Spartanburg, FEATURE_ID 1250982",
-      "decision": "Spartanburg County and Spartanburg Division led the screen; the Cities & Populated Places record in Spartanburg County seeds and both same-name political records are rejected.",
-      "notClaimed": "No county or division record stands in for the city."
-    },
-    {
-      "candidate": "Lake Murray, FEATURE_ID 1224900",
-      "decision": "The screen led with Lake Murray Shores (population record, Saluda County); the Lexington County Lakes & Reservoirs record is the intended impoundment and seeds; the Shores record and the Lake Murray of Richland census record are rejected by class.",
-      "notClaimed": "No population or census record stands in for the reservoir; the point is not a shoreline."
-    },
-    {
-      "candidate": "Santee River and Pee Dee River singles",
-      "decision": "Both screens returned single exact Streams & Canals records (Georgetown and Chesterfield counties respectively) with no same-name twins; both seed as returned.",
-      "notClaimed": "Neither primary point is a channel centerline, confluence polygon, or watershed boundary."
+      "candidate": "Mississippi River under states=TN; Green River (493284) and Owensboro/Paducah",
+      "decision": "The Mississippi returned an empty array under TN and remains a corridor. Identity-safe Kentucky candidates omitted under the starter-scope treatment.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
     }
   ],
   "knownLimitations": [
-    "South Carolina is a starter register, not a statewide GNIS extract. It contains 12 deliberately selected identity-safe rows.",
-    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Sassafras Mountain and Rock Hill additionally carry per-ID Domestic Names detail checks; the Sassafras description field is empty and its elevation figure relies on a separate official USGS publication.",
-    "GNIS point data do not supply the displayed terrain or corridors. The frame uses explicitly synthetic relief gaussians and generalized context lines; the Atlantic coast line is generalized, not a shoreline survey.",
-    "State frames are rectangles, not state-boundary clipping masks. The South Carolina rectangle includes small areas outside the state outline; no boundary geometry is claimed."
+    "Kentucky and Tennessee are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Black Mountain (4,145 feet) and Mount Le Conte (6,593 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction. Kuwohi's 6,643 feet is general-knowledge context only and carries no stored coordinate.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines; no boundary geometry is claimed."
   ]
 }
