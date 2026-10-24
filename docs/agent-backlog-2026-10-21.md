@@ -456,34 +456,69 @@ Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
-**Round 38 status (2026-10-24): partial.** New Jersey shipped as
-configuration 56 (batch 20) from `arena/fb1c7be1-html5`, the final
-Atlantic seaboard state. This round was renumbered in flight: the
-branch staged New Jersey + Connecticut as round 36 / batch 18, and
-parallel-session PR #144 landed Maine, Massachusetts, Connecticut and
-Rhode Island first (rounds 36–37, batches 18–19, configurations
-52–55). Under the main-preferred rule the duplicate Connecticut
-generation was dropped wholesale after re-verifying main's batch-19
-coverage of every identity decision this branch had recorded (Bear
-Mountain description locator `205348`, Mount Frissell's missing
-Connecticut record, planning-region counties, Candlewood screen,
-main-stem mouth seeding) — the first S4 collision needing **no**
-evidence transfer — and this record takes the next free round.
-New Jersey's frame carries 12/12 per-ID `VERIFIED=1` rows (Trenton
-capital anchor; High Point Summit's "1803 feet" description over the
-Ocean County same-name place `877099`; Lake Hopatcong as the
-Sussex-keyed Reservoir `877238`; Delaware and Raritan Canal stored
-as the returned `Stream` grouping), a Delaware River context corridor
-citing the empty `states=NJ` screen plus main's Delaware row
-`217887`, labelled synthetic relief, and no DEM. Provenance is in
-[`../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json)
-(screens cross-checked 2026-10-23); the round record is
+**Round 38 status (2026-10-24): partial — reconciled, staging
+dropped).** This branch staged New Jersey + Connecticut as round 36 /
+batch 18 while parallel sessions landed PR #144 (Maine, Massachusetts,
+Connecticut, Rhode Island — rounds 36–37, batches 18–19, configs
+52–55), PR #146 (Alaska — round 39, config 56) and PR #147 (New Jersey
++ Hawaii — round 40, configurations 57–58, completing the 50-state
+atlas). Under the standing main-preferred rule this record keeps the
+free round-38 slot as the **reconciliation entry**: main's New Jersey
+frame wins outright (roster kept verbatim — its Atlantic City,
+Mullica River and Round Valley Reservoir selections replace this
+branch's Elizabeth, Manasquan River and Delaware and Raritan Canal
+rows; the duplicate Connecticut generation had already been dropped
+against PR #144 with zero evidence transfer after re-verifying
+batch-19 coverage). Unique material retained here:
+(1) the fetch-tool runner lesson — `tools/gnis_extract.py` rebuilds
+`gnis-candidates-batch7.json` solely from `.arena-gnis/candidates.json`,
+so the request list must stay cumulative (an NJ/CT-only request briefly
+wiped twenty-two earlier states before the 27-state union was
+restored); (2) the workflow branch list gains this branch;
+(3) evidence transferred into main's batch-20 register/notes: the
+three independently verified rows this branch did not get to seed
+(Elizabeth `876147`, Manasquan River `878067`, Delaware and Raritan
+Canal `875875` stored as the returned `Stream` grouping) plus the
+High Point per-ID "1803 feet" description quote and Lake Hopatcong's
+returned Reservoir type `39004`. Round record:
 [`backlog-execution-round-38-2026-10-24.md`](backlog-execution-round-38-2026-10-24.md).
-Runner note: the fetch tool rebuilds the extract solely from
-`.arena-gnis/candidates.json`, so the request list stays cumulative
-(the round-38 push restored the 27-state union after an NJ/CT-only
-request briefly wiped twenty-two earlier states). **Two state frames
-remain (AK, HI)**, then the country/planet thread.
+**State frames complete (50 + atlas); next: the country/planet
+thread.**
+
+**Round 39 status (2026-10-24): partial.** Alaska shipped as
+configuration 56 in a single-state batch, with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json);
+the round record is filed as
+[`backlog-execution-round-39-2026-10-24.md`](backlog-execution-round-39-2026-10-24.md).
+Mount McKinley (`1414314`, Denali Borough, 20,310 ft) keeps its
+per-ID check under the current official GNIS name — renamed
+Denali in 2015, restored by federal action in 2025 — with both
+names preserved in the row note; a `Denali` screen returns no summit
+record. Utqiaġvik (`1398635`) stores its combining-dot
+diacritic exactly as the extract stores it, and the far-western
+Aleutians across the antimeridian are disclosed as outside the
+seeded frame rather than spanned. New Jersey and Hawaii remain
+carried by the open PR #145; when it merges, every US state has a
+statewide frame and the country/planet thread follows.
+
+**Round 40 status (2026-10-24): complete (atlas).** New Jersey and
+Hawaii joined as configurations 57–58, completing a statewide frame
+for every US state (58 frames with cities and territories). The
+batch-20 work was originally produced on PR #145's branch; after
+PR #146 (Alaska, round 39) merged first, PR #145 became conflicting
+and its unique work was re-integrated on this branch under the
+main-preferred rule (PR #141/#143 precedent): the frozen batch-20
+register
+[`../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json)
+is transferred verbatim, the NJ/HI extract states merged into this
+branch's cumulative extract (twenty-nine states), and the batch-20
+test runs beside Alaska's (city suite 32/32). The round record is
+[`backlog-execution-round-40-2026-10-24.md`](backlog-execution-round-40-2026-10-24.md);
+PR #145 is superseded and can be closed unmerged. Next: the
+country/planet thread.
 
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,

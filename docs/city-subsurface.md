@@ -209,25 +209,47 @@ Lillinonah carry the lake rows. The machine-readable evidence is
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
-Round 38 update: **2026-10-24**. `newjersey` joins as the
-fifty-sixth configuration — renumbered from this branch's originally
-staged batch 18 after PR #144 landed rounds 36–37 (Maine,
-Massachusetts, Connecticut, Rhode Island) first; the duplicate
-Connecticut staging was dropped for main's batch-19 frame after
-re-verifying its identity decisions. Each starts with twelve
-all-GNIS `VERIFIED=1` rows; High Point additionally carries a GNIS
-Domestic Names per-ID detail check (New Jersey high point, "1803
-feet", over the Ocean County same-name place), and the Delaware and
-Raritan Canal stores the returned `Stream` grouping. Delaware River
-screens empty under `states=NJ` and stays a generalized corridor
-cross-referencing Delaware's seeded row (`217887`). Its
-machine-readable evidence is
-[`resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json).
+Round 39 update: **2026-10-24**. `alaska` joins as the fifty-sixth
+configuration in a single-state batch. It starts with twelve all-GNIS
+`VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract). Mount McKinley (20,310 feet,
+the North American high point) carries a Domestic Names per-ID
+identity check; the row is seeded under the current official GNIS
+name — renamed Denali in 2015, with Mount McKinley restored by
+federal action in 2025, a history the row's note preserves verbatim,
+and a `Denali` screen returns no summit record. Utqiaġvik is
+stored with its combining-dot diacritic exactly as the DomesticNames
+text stores it; the extract's shortened borough and `(CA)`
+census-area county strings are stored verbatim with the Geocoder's
+full forms preserved per row. The frame's -171..-129.85 longitude
+convention leaves the far-western Aleutians (keyed at east longitudes
+across the antimeridian) outside the seeded frame, disclosed rather
+than spanned. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json).
+New Jersey and Hawaii are carried by the open PR #145 on the batch-20
+branch; when it merges, every US state has a statewide frame and the
+country/planet thread follows.
+
+Round 40 update: **2026-10-24**. `newjersey` and `hawaii` join as the
+fifty-seventh and fifty-eighth configurations, completing the
+50-state atlas. Their batch-20 evidence was produced on PR #145's
+branch (round 38 there); after PR #146 (Alaska) merged first, that PR
+became conflicting, so its unique work was re-integrated here under
+the main-preferred rule from PRs #141/#143: the frozen register
+[`resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json)
+is transferred verbatim, the NJ/HI extract states were merged into
+this branch's cumulative extract (now covering twenty-nine states,
+Alaska included), and the batch-20 test runs beside Alaska's. High
+Point (1,803 feet) and Mauna Kea (13,796 feet) keep their per-ID
+checks; the Delaware River stays a corridor in New Jersey, and Hawaii
+keeps its verbatim diacritic spellings. PR #145 is superseded by this
+round's pull request and can be closed unmerged. Next: the
+country/planet thread.
 
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifty-six configurations — five cities,
-forty-seven statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-eight configurations — five cities,
+forty-nine statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -287,7 +309,9 @@ its own offline Webxdc:
 | Massachusetts (statewide) | `massachusetts-subsurface.html` | `js/city-subsurface-data-massachusetts.js` | `js/city-gazetteer-data-massachusetts.js` | `massachusetts-subsurface.xdc` |
 | Connecticut (statewide) | `connecticut-subsurface.html` | `js/city-subsurface-data-connecticut.js` | `js/city-gazetteer-data-connecticut.js` | `connecticut-subsurface.xdc` |
 | Rhode Island (statewide) | `rhodeisland-subsurface.html` | `js/city-subsurface-data-rhodeisland.js` | `js/city-gazetteer-data-rhodeisland.js` | `rhodeisland-subsurface.xdc` |
+| Alaska (statewide) | `alaska-subsurface.html` | `js/city-subsurface-data-alaska.js` | `js/city-gazetteer-data-alaska.js` | `alaska-subsurface.xdc` |
 | New Jersey (statewide) | `newjersey-subsurface.html` | `js/city-subsurface-data-newjersey.js` | `js/city-gazetteer-data-newjersey.js` | `newjersey-subsurface.xdc` |
+| Hawaii (statewide) | `hawaii-subsurface.html` | `js/city-subsurface-data-hawaii.js` | `js/city-gazetteer-data-hawaii.js` | `hawaii-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

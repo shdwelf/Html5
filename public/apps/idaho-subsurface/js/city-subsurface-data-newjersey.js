@@ -14,80 +14,62 @@ export const CITY = {
   "state": "NJ",
   "country": "United States",
   "county": "Statewide",
-  "baseElevationM": 35,
-  "roughnessM": 55,
-  "hasWater": true,
+  "baseElevationM": 90,
+  "roughnessM": 80,
+  "hasWater": false,
   "requiresDem": false
 };
 
-export const BBOX = {"lon0":-75.55,"lat0":38.93,"lon1":-73.88,"lat1":41.36};
-export const CENTER = {"lon":-74.69,"lat":40.14};
+export const BBOX = {"lon0":-75.6,"lat0":38.9,"lon1":-73.85,"lat1":41.36};
+export const CENTER = {"lon":-74.7,"lat":40.15};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
-export const COAST = [[-74,40.47],[-74.03,40.35],[-74.06,40.18],[-74.13,40.05],[-74.05,39.93],[-74.09,39.75],[-74.16,39.6],[-74.24,39.45],[-74.33,39.36],[-74.45,39.3],[-74.55,39.22],[-74.65,39.12],[-74.74,39.02],[-74.85,38.96],[-74.96,38.93]];
+export const COAST = [];
 export const RELIEF = [
   {
-    "name": "Kittatinny Ridge / High Point province",
-    "lon": -74.66,
-    "lat": 41.3,
-    "rx": 0.35,
-    "ry": 0.28,
-    "amp": 260,
-    "rot": -18
+    "name": "Kittatinny / High Point highlands",
+    "lon": -74.8,
+    "lat": 41.25,
+    "rx": 0.3,
+    "ry": 0.15,
+    "amp": 240,
+    "rot": 0
   },
   {
     "name": "New Jersey Highlands",
-    "lon": -74.5,
-    "lat": 40.92,
-    "rx": 0.4,
-    "ry": 0.3,
-    "amp": 170,
-    "rot": -15
+    "lon": -74.7,
+    "lat": 40.9,
+    "rx": 0.35,
+    "ry": 0.2,
+    "amp": 150,
+    "rot": 0
   },
   {
-    "name": "Ridge-and-valley belt",
-    "lon": -74.95,
-    "lat": 40.75,
+    "name": "Piedmont / Watchungs",
+    "lon": -74.3,
+    "lat": 40.7,
+    "rx": 0.3,
+    "ry": 0.2,
+    "amp": 80,
+    "rot": 0
+  },
+  {
+    "name": "Inner coastal plain",
+    "lon": -74.6,
+    "lat": 39.9,
     "rx": 0.5,
-    "ry": 0.3,
-    "amp": 220,
-    "rot": -30
-  },
-  {
-    "name": "Piedmont low hills",
-    "lon": -74.45,
-    "lat": 40.45,
-    "rx": 0.45,
-    "ry": 0.3,
-    "amp": 90,
-    "rot": 0
-  },
-  {
-    "name": "Inner Coastal Plain",
-    "lon": -74.5,
-    "lat": 39.85,
-    "rx": 0.55,
     "ry": 0.4,
-    "amp": 60,
+    "amp": -10,
     "rot": 0
   },
   {
-    "name": "Pine Barrens rise",
-    "lon": -74.42,
-    "lat": 39.52,
-    "rx": 0.45,
+    "name": "Pine Barrens / shore plain",
+    "lon": -74.5,
+    "lat": 39.4,
+    "rx": 0.5,
     "ry": 0.35,
-    "amp": 75,
+    "amp": -40,
     "rot": 0
-  },
-  {
-    "name": "Delaware Bay shore flats",
-    "lon": -74.92,
-    "lat": 39.2,
-    "rx": 0.4,
-    "ry": 0.3,
-    "amp": 30,
-    "rot": -25
   }
 ];
 export const LAYERS = [
@@ -219,239 +201,163 @@ export const TIER_COLOR = {
 };
 export const CORRIDORS = [
   {
-    "id": "i95-newjersey",
-    "layer": "roads",
+    "id": "delaware-river-nj",
+    "layer": "water",
     "tier": "context",
-    "name": "Interstate 95 / Northeast Corridor (generalized)",
-    "short": "I-95",
+    "name": "Delaware River corridor (generalized)",
+    "short": "Delaware River",
     "depthM": 0,
     "path": [
       [
-        -74.17,
-        40.73
+        -75.1196199,
+        39.9259463
       ],
       [
-        -74.3,
-        40.58
+        -74.7429385,
+        40.2170534
       ],
       [
-        -74.42,
-        40.49
-      ],
-      [
-        -74.62,
-        40.32
-      ],
-      [
-        -74.66,
-        40.22
-      ],
-      [
-        -74.76,
-        40.2
-      ],
-      [
-        -74.94,
-        39.94
-      ],
-      [
-        -75.1,
-        39.72
-      ],
-      [
-        -75.23,
-        39.66
-      ]
-    ],
-    "facts": [
-      "Generalized Interstate 95 / Northeast Corridor line linking the seeded Newark, Elizabeth, and Trenton anchors toward the Delaware Memorial Bridge; schematic polyline, not a highway alignment or survey centerline."
-    ],
-    "sources": [
-      "Generalized from public geography; GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "i78-newjersey",
-    "layer": "roads",
-    "tier": "context",
-    "name": "Interstate 78 corridor (generalized)",
-    "short": "I-78",
-    "depthM": 0,
-    "path": [
-      [
-        -74.14,
-        40.73
-      ],
-      [
-        -74.36,
-        40.67
-      ],
-      [
-        -74.62,
-        40.63
-      ],
-      [
-        -74.88,
+        -74.9,
         40.7
       ],
       [
-        -75.13,
-        40.7
+        -75.05,
+        41.1
       ]
     ],
     "facts": [
-      "Generalized Interstate 78 corridor from the Newark-area anchors to the Pennsylvania line; schematic polyline, not a highway alignment."
+      "Generalized Delaware corridor through the seeded Camden and Trenton points: the river screens empty under states=NJ (its Stream record keys outside New Jersey) and stays corridor-only in this frame. Not a channel centerline or state boundary."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "i80-newjersey",
+    "id": "nj-corridor",
     "layer": "roads",
     "tier": "context",
-    "name": "Interstate 80 corridor (generalized)",
-    "short": "I-80",
+    "name": "Northeast corridor (generalized)",
+    "short": "NE corridor",
     "depthM": 0,
     "path": [
       [
-        -74.03,
-        40.85
+        -75.1196199,
+        39.9259463
       ],
       [
-        -74.33,
-        40.89
+        -74.7429385,
+        40.2170534
       ],
       [
-        -74.68,
-        40.96
+        -74.2107006,
+        40.6639916
       ],
       [
-        -74.98,
-        40.94
+        -74.1723667,
+        40.735657
       ],
       [
-        -75.18,
-        40.9
+        -74.0776417,
+        40.7281575
       ]
     ],
     "facts": [
-      "Generalized Interstate 80 corridor across northern New Jersey to the Pennsylvania line; schematic polyline, not a highway alignment."
+      "Generalized Northeast Corridor through the seeded Camden, Trenton, Newark, and Jersey City points (the Elizabeth point screened but not seeded is context only); schematic polyline, not a rail or highway alignment."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "garden-state-parkway",
-    "layer": "roads",
+    "id": "passaic-raritan-context",
+    "layer": "water",
     "tier": "context",
-    "name": "Garden State Parkway corridor (generalized)",
-    "short": "GSP",
+    "name": "Passaic / Raritan context (generalized)",
+    "short": "Passaic-Raritan",
     "depthM": 0,
     "path": [
       [
-        -74.04,
-        40.67
+        -74.171811,
+        40.9167654
       ],
       [
-        -74.07,
-        40.36
+        -74.1181983,
+        40.7123243
       ],
       [
-        -74.13,
-        40.15
+        -74.2714405,
+        40.4947753
+      ]
+    ],
+    "facts": [
+      "Generalized context line joining the seeded Paterson, Passaic mouth-reach, and Raritan mouth points; not a channel centerline."
+    ],
+    "sources": [
+      "Generalized from public geography; GNIS rows supply the named anchors"
+    ]
+  },
+  {
+    "id": "jersey-shore-context",
+    "layer": "water",
+    "tier": "context",
+    "name": "Jersey Shore context (generalized)",
+    "short": "Jersey Shore",
+    "depthM": 0,
+    "path": [
+      [
+        -74.1181983,
+        40.7123243
       ],
       [
-        -74.07,
-        39.93
+        -74,
+        40
       ],
       [
-        -74.15,
-        39.65
+        -74.4141769,
+        39.5479342
       ],
       [
-        -74.25,
-        39.45
+        -74.4229266,
+        39.3642834
       ],
       [
-        -74.45,
-        39.32
-      ],
-      [
-        -74.66,
-        39.17
-      ],
-      [
-        -74.87,
+        -74.8,
         39
       ]
     ],
     "facts": [
-      "Generalized Garden State Parkway corridor along the coastal plain; schematic polyline, not a highway alignment."
+      "Generalized shore context joining the seeded Newark Bay reach, Mullica mouth, and Atlantic City points; not a shoreline."
     ],
     "sources": [
       "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "delaware-river-newjersey",
-    "layer": "water",
+    "id": "northwest-new-jersey",
+    "layer": "roads",
     "tier": "context",
-    "name": "Delaware River estuary and border reach (generalized)",
-    "short": "Delaware R.",
+    "name": "Northwest highlands corridor (generalized)",
+    "short": "NW highlands",
     "depthM": 0,
     "path": [
       [
-        -75.23,
-        39.66
+        -74.8255854,
+        40.6158907
       ],
       [
-        -75.14,
-        39.72
+        -74.6372713,
+        40.9486634
       ],
       [
-        -75.07,
-        39.88
-      ],
-      [
-        -75.05,
-        40.05
-      ],
-      [
-        -74.99,
-        40.2
-      ],
-      [
-        -74.9,
-        40.35
-      ],
-      [
-        -74.8,
-        40.55
-      ],
-      [
-        -74.68,
-        40.75
-      ],
-      [
-        -74.55,
-        40.92
-      ],
-      [
-        -74.43,
-        41.08
-      ],
-      [
-        -74.3,
-        41.26
+        -74.6615393,
+        41.3208723
       ]
     ],
     "facts": [
-      "The Delaware River's states=NJ Geocoder screen returns an empty array; the national screen keys the river's Stream record to New Castle County, Delaware (FEATURE_ID 217887) — the same record seeded as a row in main's delaware frame — with same-name Kansas and New Mexico rivers also returned; the New Jersey reach stays a generalized context corridor (the New York-keyed Delaware River Gorge record is likewise not seeded here). Point line, not a channel centerline or state boundary."
+      "Generalized corridor through the seeded Round Valley, Lake Hopatcong, and High Point points; schematic polyline, not a highway alignment."
     ],
     "sources": [
-      "USGS GNIS Geocoder screens (states=NJ empty; national screen 2026-10-23); corridor generalized, not survey geometry"
+      "Generalized from public geography; GNIS rows supply the named anchors"
     ]
   }
 ];
@@ -466,10 +372,10 @@ export const NODES = [
     "lat": 40.2170534,
     "depthM": 0,
     "facts": [
-      "state capital anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 884540 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 884540; coordinate per gazetteer row"
     ]
   },
   {
@@ -482,26 +388,10 @@ export const NODES = [
     "lat": 40.735657,
     "depthM": 0,
     "facts": [
-      "Essex County urban anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "Largest-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 878762 (GNIS primary point)"
-    ]
-  },
-  {
-    "id": "jersey-city",
-    "name": "Jersey City",
-    "layer": "sites",
-    "tier": "official",
-    "kind": "building",
-    "lon": -74.0776417,
-    "lat": 40.7281575,
-    "depthM": 0,
-    "facts": [
-      "Hudson County waterfront anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
-    ],
-    "sources": [
-      "USGS GNIS FEATURE_ID 877450 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 878762; coordinate per gazetteer row"
     ]
   },
   {
@@ -514,10 +404,26 @@ export const NODES = [
     "lat": 41.3208723,
     "depthM": 0,
     "facts": [
-      "New Jersey state high point (1,803 feet per the GNIS official description). node coordinate is the GNIS summit primary point from the gazetteer row."
+      "State high point (1,803 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 877098 (GNIS primary point)"
+      "USGS GNIS FEATURE_ID 877098; coordinate per gazetteer row"
+    ]
+  },
+  {
+    "id": "lake-hopatcong",
+    "name": "Lake Hopatcong",
+    "layer": "sites",
+    "tier": "official",
+    "kind": "lake",
+    "lon": -74.6372713,
+    "lat": 40.9486634,
+    "depthM": 0,
+    "facts": [
+      "Largest freshwater lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+    ],
+    "sources": [
+      "USGS GNIS FEATURE_ID 877238; coordinate per gazetteer row"
     ]
   }
 ];
@@ -568,14 +474,14 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      3.126609670058405,
+      3.275905114335703,
       10,
-      5.9511671999999995
+      6.0246384000000015
     ],
     "target": [
-      3.126609670058405,
+      3.275905114335703,
       0,
-      5.9511671999999995
+      6.0246384000000015
     ]
   }
 ];

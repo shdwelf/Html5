@@ -18106,389 +18106,666 @@
         ]
       ]
     },
-    "newjersey": {
-      "title": "New Jersey SUBSURFACE 4Dwm",
-      "subtitle": "New Jersey STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
-      "gazTitle": "New Jersey USGS GNIS REGISTER",
-      "gazNote": "Round 38 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
-      "state": "NJ",
+    "alaska": {
+      "title": "Alaska SUBSURFACE 4Dwm",
+      "subtitle": "Alaska STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Alaska USGS GNIS REGISTER",
+      "gazNote": "Round 39 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "AK",
       "country": "United States",
       "county": "Statewide",
       "bbox": {
-        "lon0": -75.55,
-        "lat0": 38.93,
-        "lon1": -73.88,
-        "lat1": 41.36
+        "lon0": -171.0,
+        "lat0": 51.3,
+        "lon1": -129.85,
+        "lat1": 71.42
       },
       "center": {
-        "lon": -74.69,
-        "lat": 40.14
+        "lon": -150.4,
+        "lat": 61.4
       },
-      "baseElevationM": 35,
-      "roughnessM": 55,
-      "hasWater": true,
-      "coast": [
-        [
-          -74.0,
-          40.47
-        ],
-        [
-          -74.03,
-          40.35
-        ],
-        [
-          -74.06,
-          40.18
-        ],
-        [
-          -74.13,
-          40.05
-        ],
-        [
-          -74.05,
-          39.93
-        ],
-        [
-          -74.09,
-          39.75
-        ],
-        [
-          -74.16,
-          39.6
-        ],
-        [
-          -74.24,
-          39.45
-        ],
-        [
-          -74.33,
-          39.36
-        ],
-        [
-          -74.45,
-          39.3
-        ],
-        [
-          -74.55,
-          39.22
-        ],
-        [
-          -74.65,
-          39.12
-        ],
-        [
-          -74.74,
-          39.02
-        ],
-        [
-          -74.85,
-          38.96
-        ],
-        [
-          -74.96,
-          38.93
-        ]
-      ],
+      "baseElevationM": 500,
+      "roughnessM": 450,
+      "hasWater": false,
+      "coast": [],
       "relief": [
         {
-          "name": "Kittatinny Ridge / High Point province",
-          "lon": -74.66,
-          "lat": 41.3,
-          "rx": 0.35,
-          "ry": 0.28,
-          "amp": 260,
-          "rot": -18
-        },
-        {
-          "name": "New Jersey Highlands",
-          "lon": -74.5,
-          "lat": 40.92,
-          "rx": 0.4,
-          "ry": 0.3,
-          "amp": 170,
-          "rot": -15
-        },
-        {
-          "name": "Ridge-and-valley belt",
-          "lon": -74.95,
-          "lat": 40.75,
-          "rx": 0.5,
-          "ry": 0.3,
-          "amp": 220,
-          "rot": -30
-        },
-        {
-          "name": "Piedmont low hills",
-          "lon": -74.45,
-          "lat": 40.45,
-          "rx": 0.45,
-          "ry": 0.3,
-          "amp": 90,
-          "rot": 0
-        },
-        {
-          "name": "Inner Coastal Plain",
-          "lon": -74.5,
-          "lat": 39.85,
-          "rx": 0.55,
-          "ry": 0.4,
-          "amp": 60,
-          "rot": 0
-        },
-        {
-          "name": "Pine Barrens rise",
-          "lon": -74.42,
-          "lat": 39.52,
-          "rx": 0.45,
+          "name": "Alaska Range / Denali massif",
+          "lon": -151.0,
+          "lat": 63.07,
+          "rx": 0.6,
           "ry": 0.35,
-          "amp": 75,
+          "amp": 900,
           "rot": 0
         },
         {
-          "name": "Delaware Bay shore flats",
-          "lon": -74.92,
-          "lat": 39.2,
-          "rx": 0.4,
-          "ry": 0.3,
-          "amp": 30,
-          "rot": -25
+          "name": "Brooks Range",
+          "lon": -152.0,
+          "lat": 68.2,
+          "rx": 2.2,
+          "ry": 0.5,
+          "amp": 420,
+          "rot": 0
+        },
+        {
+          "name": "Wrangell / Chugach ranges",
+          "lon": -143.5,
+          "lat": 61.3,
+          "rx": 1.2,
+          "ry": 0.5,
+          "amp": 520,
+          "rot": 0
+        },
+        {
+          "name": "Southeast panhandle ranges",
+          "lon": -134.0,
+          "lat": 57.5,
+          "rx": 0.7,
+          "ry": 0.9,
+          "amp": 380,
+          "rot": 0
+        },
+        {
+          "name": "Yukon-Kuskokwim lowland",
+          "lon": -161.0,
+          "lat": 62.0,
+          "rx": 1.8,
+          "ry": 1.2,
+          "amp": -120,
+          "rot": 0
         }
       ],
       "corridors": [
         {
-          "id": "i95-newjersey",
+          "id": "alaska-railbelt",
           "layer": "roads",
           "tier": "context",
-          "name": "Interstate 95 / Northeast Corridor (generalized)",
-          "short": "I-95",
+          "name": "Anchorage-Fairbanks railbelt corridor (generalized)",
+          "short": "Railbelt",
           "depthM": 0,
           "path": [
             [
-              -74.17,
-              40.73
+              -149.9002778,
+              61.2180556
             ],
             [
-              -74.3,
-              40.58
+              -151.0062617,
+              63.0691018
             ],
             [
-              -74.42,
-              40.49
-            ],
-            [
-              -74.62,
-              40.32
-            ],
-            [
-              -74.66,
-              40.22
-            ],
-            [
-              -74.76,
-              40.2
-            ],
-            [
-              -74.94,
-              39.94
-            ],
-            [
-              -75.1,
-              39.72
-            ],
-            [
-              -75.23,
-              39.66
+              -147.7163889,
+              64.8377778
             ]
           ],
           "facts": [
-            "Generalized Interstate 95 / Northeast Corridor line linking the seeded Newark, Elizabeth, and Trenton anchors toward the Delaware Memorial Bridge; schematic polyline, not a highway alignment or survey centerline."
+            "Generalized railbelt corridor through the seeded Anchorage, Mount McKinley-side, and Fairbanks points; schematic polyline, not a rail or highway alignment."
           ],
           "sources": [
             "Generalized from public geography; GNIS rows supply the named anchors"
           ]
         },
         {
-          "id": "i78-newjersey",
-          "layer": "roads",
+          "id": "inside-passage-ak",
+          "layer": "water",
           "tier": "context",
-          "name": "Interstate 78 corridor (generalized)",
-          "short": "I-78",
+          "name": "Inside Passage context (generalized)",
+          "short": "Inside Passage",
           "depthM": 0,
           "path": [
             [
-              -74.14,
-              40.73
+              -131.6461111,
+              55.3422222
             ],
             [
-              -74.36,
-              40.67
+              -134.4197222,
+              58.3019444
             ],
             [
-              -74.62,
-              40.63
+              -137.0,
+              58.6
+            ]
+          ],
+          "facts": [
+            "Generalized Inside Passage context joining the seeded Ketchikan and Juneau points; not a shoreline or ferry route."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "aleutian-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Aleutian island-chain context (generalized)",
+          "short": "Aleutian chain",
+          "depthM": 0,
+          "path": [
+            [
+              -149.9002778,
+              61.2180556
             ],
             [
-              -74.88,
+              -155.0881217,
+              59.5528805
+            ],
+            [
+              -152.4072222,
+              57.79
+            ],
+            [
+              -166.5366667,
+              53.8736111
+            ]
+          ],
+          "facts": [
+            "Generalized chain context joining the seeded Anchorage, Iliamna Lake, Kodiak, and Unalaska points; ocean reaches are schematic. The frame's western edge (-171) leaves the far-western Aleutians (Attu and the Near Islands, which GNIS keys at east longitudes) outside the seeded frame."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "yukon-kuskokwim-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Yukon-Kuskokwim context (generalized)",
+          "short": "Yukon-Kuskokwim",
+          "depthM": 0,
+          "path": [
+            [
+              -147.7163889,
+              64.8377778
+            ],
+            [
+              -164.8,
+              62.5986111
+            ],
+            [
+              -162.3338889,
+              60.0830556
+            ],
+            [
+              -165.4063889,
+              64.5011111
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Fairbanks, Yukon mouth, Kuskokwim mouth, and Nome points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "arctic-context",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interior-to-Arctic context (generalized)",
+          "short": "Arctic slope",
+          "depthM": 0,
+          "path": [
+            [
+              -147.7163889,
+              64.8377778
+            ],
+            [
+              -151.5,
+              68.0
+            ],
+            [
+              -156.7886111,
+              71.2905556
+            ]
+          ],
+          "facts": [
+            "Generalized context line from the seeded Fairbanks point to the seeded Utqiaġvik point across the Brooks Range; schematic, not a highway (Dalton) alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "juneau",
+          "name": "Juneau",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -134.4197222,
+          "lat": 58.3019444,
+          "depthM": 0,
+          "facts": [
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1404263; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "anchorage",
+          "name": "Anchorage",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -149.9002778,
+          "lat": 61.2180556,
+          "depthM": 0,
+          "facts": [
+            "Largest-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1398242; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-mckinley",
+          "name": "Mount McKinley",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -151.0062617,
+          "lat": 63.0691018,
+          "depthM": 0,
+          "facts": [
+            "North American high point (20,310 ft; Denali). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1414314; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "iliamna-lake",
+          "name": "Iliamna Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -155.0881217,
+          "lat": 59.5528805,
+          "depthM": 0,
+          "facts": [
+            "Largest-lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1403764; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Juneau",
+          "Populated Place",
+          "pop.place",
+          "Juneau",
+          58.3019444,
+          -134.4197222,
+          null,
+          "1404263",
+          1,
+          "State capital anchor (the consolidated city and borough of Juneau); the borough and census-subarea political records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404263; exact official name and Populated Place type in Juneau City and Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Anchorage",
+          "Populated Place",
+          "pop.place",
+          "Anchorage",
+          61.2180556,
+          -149.9002778,
+          null,
+          "1398242",
+          1,
+          "Largest-city anchor (Municipality of Anchorage); the municipal and census records and the Anchorage Cove, Bay, and Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1398242; exact official name and Populated Place type in Anchorage Municipality cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Fairbanks",
+          "Populated Place",
+          "pop.place",
+          "Fairbanks North Star",
+          64.8377778,
+          -147.7163889,
+          null,
+          "1401958",
+          1,
+          "Interior anchor at the Tanana valley; the two Fairbanks Creek records and the permafrost test station record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1401958; exact official name and Populated Place type in Fairbanks North Star Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Utqiaġvik",
+          "Populated Place",
+          "pop.place",
+          "North Slope",
+          71.2905556,
+          -156.7886111,
+          null,
+          "1398635",
+          1,
+          "Northernmost community in the United States, seeded under its official GNIS spelling (the g carries a combining dot above, U+0307, in the DomesticNames text; the community was renamed from Barrow in 2016). USGS GNIS Geocoder (GNIS), FEATURE_ID=1398635; exact official name and Populated Place type in North Slope Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Nome",
+          "Populated Place",
+          "pop.place",
+          "Nome (CA)",
+          64.5011111,
+          -165.4063889,
+          null,
+          "1407125",
+          1,
+          "Seward Peninsula anchor; the Nome River and Nome Mountains records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1407125; exact official name and Populated Place type in Nome Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Ketchikan",
+          "Populated Place",
+          "pop.place",
+          "Ketchikan Gateway",
+          55.3422222,
+          -131.6461111,
+          null,
+          "1423039",
+          1,
+          "Inside Passage anchor; Ketchikan Creek (adjacent FEATURE_ID 1423040) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1423039; exact official name and Populated Place type in Ketchikan Gateway Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kodiak",
+          "Populated Place",
+          "pop.place",
+          "Kodiak Island",
+          57.79,
+          -152.4072222,
+          null,
+          "1404875",
+          1,
+          "Kodiak Island anchor; the island record (FEATURE_ID 1404877) and Kodiak Harbor record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404875; exact official name and Populated Place type in Kodiak Island Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Unalaska",
+          "Populated Place",
+          "pop.place",
+          "Aleutians West (CA)",
+          53.8736111,
+          -166.5366667,
+          null,
+          "1419424",
+          1,
+          "Aleutian anchor (the Dutch Harbor port community); the bay, island, and Unalaska Lake records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1419424; exact official name and Populated Place type in Aleutians West Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Mount McKinley",
+          "Summit",
+          "phys.summit",
+          "Denali",
+          63.0691018,
+          -151.0062617,
+          null,
+          "1414314",
+          1,
+          "North American High Point at 20,310 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_AK_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1414314 as a Summit in Denali Borough at this point. Seeded under the current official GNIS name: the summit was renamed Denali in 2015 and the name Mount McKinley was restored by federal action in 2025, which the GNIS record reflects — a states=AK screen for Denali returns the borough, Denali Park, and Denali Pass records but no summit record. Both names are preserved here so the row is findable under either. USGS GNIS Geocoder (GNIS), FEATURE_ID=1414314; exact official name and Summit type in Denali Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Iliamna Lake",
+          "Lake",
+          "hydro.lake",
+          "Lake and Peninsula",
+          59.5528805,
+          -155.0881217,
+          null,
+          "1403764",
+          1,
+          "Largest lake entirely within Alaska; DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=1403764; exact official name and Lake type in Lake and Peninsula Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Yukon River",
+          "Stream",
+          "hydro.stream",
+          "Kusilvak (CA)",
+          62.5986111,
+          -164.8,
+          null,
+          "1416412",
+          1,
+          "River record at its Bering Sea delta mouth — among the longest free-flowing rivers in North America. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416412; exact official name and Stream type in Kusilvak Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kuskokwim River",
+          "Stream",
+          "hydro.stream",
+          "Bethel (CA)",
+          60.0830556,
+          -162.3338889,
+          null,
+          "1416402",
+          1,
+          "River record at its Kuskokwim Bay mouth on the Bering Sea. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416402; exact official name and Stream type in Bethel Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "newjersey": {
+      "title": "New Jersey SUBSURFACE 4Dwm",
+      "subtitle": "New Jersey STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "New Jersey USGS GNIS REGISTER",
+      "gazNote": "Round 38 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "NJ",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -75.6,
+        "lat0": 38.9,
+        "lon1": -73.85,
+        "lat1": 41.36
+      },
+      "center": {
+        "lon": -74.7,
+        "lat": 40.15
+      },
+      "baseElevationM": 90,
+      "roughnessM": 80,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Kittatinny / High Point highlands",
+          "lon": -74.8,
+          "lat": 41.25,
+          "rx": 0.3,
+          "ry": 0.15,
+          "amp": 240,
+          "rot": 0
+        },
+        {
+          "name": "New Jersey Highlands",
+          "lon": -74.7,
+          "lat": 40.9,
+          "rx": 0.35,
+          "ry": 0.2,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Piedmont / Watchungs",
+          "lon": -74.3,
+          "lat": 40.7,
+          "rx": 0.3,
+          "ry": 0.2,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Inner coastal plain",
+          "lon": -74.6,
+          "lat": 39.9,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": -10,
+          "rot": 0
+        },
+        {
+          "name": "Pine Barrens / shore plain",
+          "lon": -74.5,
+          "lat": 39.4,
+          "rx": 0.5,
+          "ry": 0.35,
+          "amp": -40,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "delaware-river-nj",
+          "layer": "water",
+          "tier": "context",
+          "name": "Delaware River corridor (generalized)",
+          "short": "Delaware River",
+          "depthM": 0,
+          "path": [
+            [
+              -75.1196199,
+              39.9259463
+            ],
+            [
+              -74.7429385,
+              40.2170534
+            ],
+            [
+              -74.9,
               40.7
             ],
             [
-              -75.13,
-              40.7
+              -75.05,
+              41.1
             ]
           ],
           "facts": [
-            "Generalized Interstate 78 corridor from the Newark-area anchors to the Pennsylvania line; schematic polyline, not a highway alignment."
+            "Generalized Delaware corridor through the seeded Camden and Trenton points: the river screens empty under states=NJ (its Stream record keys outside New Jersey) and stays corridor-only in this frame. Not a channel centerline or state boundary."
           ],
           "sources": [
             "Generalized from public geography; GNIS rows supply the named anchors"
           ]
         },
         {
-          "id": "i80-newjersey",
+          "id": "nj-corridor",
           "layer": "roads",
           "tier": "context",
-          "name": "Interstate 80 corridor (generalized)",
-          "short": "I-80",
+          "name": "Northeast corridor (generalized)",
+          "short": "NE corridor",
           "depthM": 0,
           "path": [
             [
-              -74.03,
-              40.85
+              -75.1196199,
+              39.9259463
             ],
             [
-              -74.33,
-              40.89
+              -74.7429385,
+              40.2170534
             ],
             [
-              -74.68,
-              40.96
+              -74.2107006,
+              40.6639916
             ],
             [
-              -74.98,
-              40.94
+              -74.1723667,
+              40.735657
             ],
             [
-              -75.18,
-              40.9
+              -74.0776417,
+              40.7281575
             ]
           ],
           "facts": [
-            "Generalized Interstate 80 corridor across northern New Jersey to the Pennsylvania line; schematic polyline, not a highway alignment."
+            "Generalized Northeast Corridor through the seeded Camden, Trenton, Newark, and Jersey City points (the Elizabeth point screened but not seeded is context only); schematic polyline, not a rail or highway alignment."
           ],
           "sources": [
             "Generalized from public geography; GNIS rows supply the named anchors"
           ]
         },
         {
-          "id": "garden-state-parkway",
-          "layer": "roads",
+          "id": "passaic-raritan-context",
+          "layer": "water",
           "tier": "context",
-          "name": "Garden State Parkway corridor (generalized)",
-          "short": "GSP",
+          "name": "Passaic / Raritan context (generalized)",
+          "short": "Passaic-Raritan",
           "depthM": 0,
           "path": [
             [
-              -74.04,
-              40.67
+              -74.171811,
+              40.9167654
             ],
             [
-              -74.07,
-              40.36
+              -74.1181983,
+              40.7123243
             ],
             [
-              -74.13,
-              40.15
+              -74.2714405,
+              40.4947753
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Paterson, Passaic mouth-reach, and Raritan mouth points; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "jersey-shore-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Jersey Shore context (generalized)",
+          "short": "Jersey Shore",
+          "depthM": 0,
+          "path": [
+            [
+              -74.1181983,
+              40.7123243
             ],
             [
-              -74.07,
-              39.93
+              -74.0,
+              40.0
             ],
             [
-              -74.15,
-              39.65
+              -74.4141769,
+              39.5479342
             ],
             [
-              -74.25,
-              39.45
+              -74.4229266,
+              39.3642834
             ],
             [
-              -74.45,
-              39.32
-            ],
-            [
-              -74.66,
-              39.17
-            ],
-            [
-              -74.87,
+              -74.8,
               39.0
             ]
           ],
           "facts": [
-            "Generalized Garden State Parkway corridor along the coastal plain; schematic polyline, not a highway alignment."
+            "Generalized shore context joining the seeded Newark Bay reach, Mullica mouth, and Atlantic City points; not a shoreline."
           ],
           "sources": [
             "Generalized from public geography; GNIS rows supply the named anchors"
           ]
         },
         {
-          "id": "delaware-river-newjersey",
-          "layer": "water",
+          "id": "northwest-new-jersey",
+          "layer": "roads",
           "tier": "context",
-          "name": "Delaware River estuary and border reach (generalized)",
-          "short": "Delaware R.",
+          "name": "Northwest highlands corridor (generalized)",
+          "short": "NW highlands",
           "depthM": 0,
           "path": [
             [
-              -75.23,
-              39.66
+              -74.8255854,
+              40.6158907
             ],
             [
-              -75.14,
-              39.72
+              -74.6372713,
+              40.9486634
             ],
             [
-              -75.07,
-              39.88
-            ],
-            [
-              -75.05,
-              40.05
-            ],
-            [
-              -74.99,
-              40.2
-            ],
-            [
-              -74.9,
-              40.35
-            ],
-            [
-              -74.8,
-              40.55
-            ],
-            [
-              -74.68,
-              40.75
-            ],
-            [
-              -74.55,
-              40.92
-            ],
-            [
-              -74.43,
-              41.08
-            ],
-            [
-              -74.3,
-              41.26
+              -74.6615393,
+              41.3208723
             ]
           ],
           "facts": [
-            "The Delaware River's states=NJ Geocoder screen returns an empty array; the national screen keys the river's Stream record to New Castle County, Delaware (FEATURE_ID 217887) — the same record seeded as a row in main's delaware frame — with same-name Kansas and New Mexico rivers also returned; the New Jersey reach stays a generalized context corridor (the New York-keyed Delaware River Gorge record is likewise not seeded here). Point line, not a channel centerline or state boundary."
+            "Generalized corridor through the seeded Round Valley, Lake Hopatcong, and High Point points; schematic polyline, not a highway alignment."
           ],
           "sources": [
-            "USGS GNIS Geocoder screens (states=NJ empty; national screen 2026-10-23); corridor generalized, not survey geometry"
+            "Generalized from public geography; GNIS rows supply the named anchors"
           ]
         }
       ],
@@ -18503,10 +18780,10 @@
           "lat": 40.2170534,
           "depthM": 0,
           "facts": [
-            "state capital anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
           ],
           "sources": [
-            "USGS GNIS FEATURE_ID 884540 (GNIS primary point)"
+            "USGS GNIS FEATURE_ID 884540; coordinate per gazetteer row"
           ]
         },
         {
@@ -18519,26 +18796,10 @@
           "lat": 40.735657,
           "depthM": 0,
           "facts": [
-            "Essex County urban anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+            "Largest-city anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
           ],
           "sources": [
-            "USGS GNIS FEATURE_ID 878762 (GNIS primary point)"
-          ]
-        },
-        {
-          "id": "jersey-city",
-          "name": "Jersey City",
-          "layer": "sites",
-          "tier": "official",
-          "kind": "building",
-          "lon": -74.0776417,
-          "lat": 40.7281575,
-          "depthM": 0,
-          "facts": [
-            "Hudson County waterfront anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
-          ],
-          "sources": [
-            "USGS GNIS FEATURE_ID 877450 (GNIS primary point)"
+            "USGS GNIS FEATURE_ID 878762; coordinate per gazetteer row"
           ]
         },
         {
@@ -18551,10 +18812,26 @@
           "lat": 41.3208723,
           "depthM": 0,
           "facts": [
-            "New Jersey state high point (1,803 feet per the GNIS official description). node coordinate is the GNIS summit primary point from the gazetteer row."
+            "State high point (1,803 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
           ],
           "sources": [
-            "USGS GNIS FEATURE_ID 877098 (GNIS primary point)"
+            "USGS GNIS FEATURE_ID 877098; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-hopatcong",
+          "name": "Lake Hopatcong",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -74.6372713,
+          "lat": 40.9486634,
+          "depthM": 0,
+          "facts": [
+            "Largest freshwater lake anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 877238; coordinate per gazetteer row"
           ]
         }
       ],
@@ -18569,7 +18846,7 @@
           null,
           "884540",
           1,
-          "State capital anchor at the Delaware fall line; the Trenton Gardens place and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "State capital anchor on the Delaware River; the Trenton Gardens community and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Newark",
@@ -18581,7 +18858,7 @@
           null,
           "878762",
           1,
-          "Essex County urban anchor; the Newark Heights place, Newark Reach canal segment, Newark Bay, and historical Newark Army Air Field records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Largest-city anchor; Newark Heights, Newark Reach, Newark Bay, and the historical airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Jersey City",
@@ -18593,19 +18870,7 @@
           null,
           "877450",
           1,
-          "Hudson County waterfront anchor on the Hudson; the Jersey City Aqueduct record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
-        ],
-        [
-          "Elizabeth",
-          "Populated Place",
-          "pop.place",
-          "Union",
-          40.6639916,
-          -74.2107006,
-          null,
-          "876147",
-          1,
-          "Union County port city; the Elizabethport place, Elizabeth Channel, Elizabeth River, and Elizabethport Reach records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=876147; exact official name and Populated Place type in Union County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Hudson waterfront anchor; the Jersey City Aqueduct record (adjacent FEATURE_ID 877451, keyed to Bergen County) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Paterson",
@@ -18617,7 +18882,7 @@
           null,
           "879164",
           1,
-          "Passaic County anchor at the Great Falls; the screen returned the city alone with no twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Passaic River falls-city anchor on the seeded river's own corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Camden",
@@ -18629,7 +18894,19 @@
           null,
           "875105",
           1,
-          "Delaware River waterfront anchor opposite Philadelphia; the Camden County political-division record led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Delaware River anchor opposite Philadelphia; the Camden County political record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Atlantic City",
+          "Populated Place",
+          "pop.place",
+          "Atlantic",
+          39.3642834,
+          -74.4229266,
+          null,
+          "874413",
+          1,
+          "Absecon Island shore anchor; the Atlantic City Reservoir and the international airport records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=874413; exact official name and Populated Place type in Atlantic County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "High Point",
@@ -18641,7 +18918,7 @@
           null,
           "877098",
           1,
-          "New Jersey high point; the Domestic Names per-ID check (gaznames_default REST layer) reproduces Summit feature code 15048 at stored gaz_elevation 548 m with the official description \"Highest elevation in NJ at 1803 feet.\"; the same-name Ocean County populated place (FEATURE_ID 877099) led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "New Jersey High Point at 1,803 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_NJ_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 877098 as a Summit in Sussex County at this point. The Ocean County populated-place namesake carries the adjacent FEATURE_ID 877099 and is not seeded — adjacency is recorded, but identity rests on class, county, and point. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Lake Hopatcong",
@@ -18653,19 +18930,19 @@
           null,
           "877238",
           1,
-          "Largest New Jersey lake; the per-ID check returns gaz class Reservoir (feature code 39004, stored gaz_elevation 278 m, null description) keyed to Sussex County even though the shoreline spans Morris and Sussex; the same-name Morris County populated place (876215) and the census division (2806109) led the screen and are not seeded; the row is grouped under Lakes. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Lake type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Largest freshwater lake in the state. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs; the same-name Morris County populated-place record (FEATURE_ID 876215) and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Reservoir type in Sussex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
-          "Raritan River",
-          "Stream",
-          "hydro.stream",
-          "Middlesex",
-          40.4947753,
-          -74.2714405,
+          "Round Valley Reservoir",
+          "Lake",
+          "hydro.lake",
+          "Hunterdon",
+          40.6158907,
+          -74.8255854,
           null,
-          "879618",
+          "879839",
           1,
-          "Central Jersey river to Raritan Bay; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Hunterdon County water-supply anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=879839; exact official name and Reservoir type in Hunterdon County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
           "Passaic River",
@@ -18677,31 +18954,467 @@
           null,
           "879159",
           1,
-          "Single exact stream return in the Passaic valley, keyed to Essex County. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "River record at its Newark Bay mouth reach. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
-          "Manasquan River",
+          "Raritan River",
           "Stream",
           "hydro.stream",
-          "Monmouth",
-          40.1024981,
-          -74.0343332,
+          "Middlesex",
+          40.4947753,
+          -74.2714405,
           null,
-          "878067",
+          "879618",
           1,
-          "Monmouth County coastal river; single exact stream return. USGS GNIS Geocoder (GNIS), FEATURE_ID=878067; exact official name and Stream type in Monmouth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "River record at its Raritan Bay mouth; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ],
         [
-          "Delaware and Raritan Canal",
+          "Mullica River",
           "Stream",
           "hydro.stream",
-          "Mercer",
-          40.4153835,
-          -74.6296021,
+          "Ocean",
+          39.5479342,
+          -74.4141769,
           null,
-          "875875",
+          "878659",
           1,
-          "Historic Mercer County feeder canal; single exact Streams & Canals return grouped under Stream rows rather than split into a new class. USGS GNIS Geocoder (GNIS), FEATURE_ID=875875; exact official name and Stream type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+          "Pine Barrens river record at its Great Bay mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=878659; exact official name and Stream type in Ocean County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "hawaii": {
+      "title": "Hawaii SUBSURFACE 4Dwm",
+      "subtitle": "Hawaii STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Hawaii USGS GNIS REGISTER",
+      "gazNote": "Round 38 starter register (2026-10-24): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "HI",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -160.3,
+        "lat0": 18.9,
+        "lon1": -154.75,
+        "lat1": 22.3
+      },
+      "center": {
+        "lon": -157.5,
+        "lat": 20.6
+      },
+      "baseElevationM": 500,
+      "roughnessM": 420,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Mauna Kea shield",
+          "lon": -155.47,
+          "lat": 19.82,
+          "rx": 0.35,
+          "ry": 0.3,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Mauna Loa shield",
+          "lon": -155.61,
+          "lat": 19.48,
+          "rx": 0.45,
+          "ry": 0.35,
+          "amp": 850,
+          "rot": 0
+        },
+        {
+          "name": "Haleakalā shield",
+          "lon": -156.17,
+          "lat": 20.7,
+          "rx": 0.3,
+          "ry": 0.25,
+          "amp": 620,
+          "rot": 0
+        },
+        {
+          "name": "Oahu ranges",
+          "lon": -157.85,
+          "lat": 21.45,
+          "rx": 0.3,
+          "ry": 0.15,
+          "amp": 200,
+          "rot": 0
+        },
+        {
+          "name": "Kauai highlands",
+          "lon": -159.5,
+          "lat": 22.05,
+          "rx": 0.25,
+          "ry": 0.2,
+          "amp": 260,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "hawaii-island-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Hawaii island context (generalized)",
+          "short": "Hawaii island",
+          "depthM": 0,
+          "path": [
+            [
+              -155.0868273,
+              19.722474
+            ],
+            [
+              -155.4775715,
+              19.8114053
+            ],
+            [
+              -155.4681155,
+              19.8206065
+            ],
+            [
+              -155.605788,
+              19.4753891
+            ],
+            [
+              -155.9902382,
+              19.6392732
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Hilo, Waiau, Mauna Kea, Mauna Loa, and Kailua points across the island of Hawaii; not a road alignment or shoreline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "maui-nui-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Maui Nui island-chain context (generalized)",
+          "short": "Maui Nui",
+          "depthM": 0,
+          "path": [
+            [
+              -157.8583333,
+              21.3069444
+            ],
+            [
+              -157.0173984,
+              21.0896357
+            ],
+            [
+              -156.5010595,
+              20.8896075
+            ],
+            [
+              -156.1733005,
+              20.7014034
+            ]
+          ],
+          "facts": [
+            "Generalized island-chain context joining the seeded Honolulu, Kaunakakai (Molokai), Wailuku, and Haleakalā points; open-ocean reaches are schematic, not ferry routes or shorelines."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "kauai-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Kauai context (generalized)",
+          "short": "Kauai",
+          "depthM": 0,
+          "path": [
+            [
+              -157.8583333,
+              21.3069444
+            ],
+            [
+              -159.3649025,
+              21.9740821
+            ],
+            [
+              -159.4977093,
+              22.2147219
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Honolulu, Līhuʻe, and Hanalei River points; the ocean reach is schematic, not a route or shoreline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "hawaii-rivers-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Island river context (generalized)",
+          "short": "Island rivers",
+          "depthM": 0,
+          "path": [
+            [
+              -155.605788,
+              19.4753891
+            ],
+            [
+              -155.087644,
+              19.728148
+            ],
+            [
+              -155.0868273,
+              19.722474
+            ]
+          ],
+          "facts": [
+            "Generalized context line from the Mauna Loa point to the seeded Wailuku River mouth reach at Hilo; not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "oahu-context",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Oahu context (generalized)",
+          "short": "Oahu",
+          "depthM": 0,
+          "path": [
+            [
+              -157.8583333,
+              21.3069444
+            ],
+            [
+              -157.98,
+              21.47
+            ],
+            [
+              -158.05,
+              21.55
+            ]
+          ],
+          "facts": [
+            "Generalized context line inland from the seeded Honolulu point; not a road alignment. The Northwestern Hawaiian Islands are outside this frame."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "honolulu",
+          "name": "Honolulu",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -157.8583333,
+          "lat": 21.3069444,
+          "depthM": 0,
+          "facts": [
+            "State capital. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 366212; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "hilo",
+          "name": "Hilo",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -155.0868273,
+          "lat": 19.722474,
+          "depthM": 0,
+          "facts": [
+            "Hawaii County seat anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 359187; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mauna-kea",
+          "name": "Mauna Kea",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -155.4681155,
+          "lat": 19.8206065,
+          "depthM": 0,
+          "facts": [
+            "State high point (13,796 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 366215; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "waiau",
+          "name": "Waiau",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -155.4775715,
+          "lat": 19.8114053,
+          "depthM": 0,
+          "facts": [
+            "Summit-lake anchor (Lake Waiau). node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 364585; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Honolulu",
+          "Populated Place",
+          "pop.place",
+          "Honolulu",
+          21.3069444,
+          -157.8583333,
+          null,
+          "366212",
+          1,
+          "State capital anchor (the consolidated city-county of Honolulu). The Honolulu County, District, and Division records, Honolulu Landing (historical), and the same-name Hawaii County political record (FEATURE_ID 359331) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=366212; exact official name and Populated Place type in Honolulu County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Hilo",
+          "Populated Place",
+          "pop.place",
+          "Hawaii",
+          19.722474,
+          -155.0868273,
+          null,
+          "359187",
+          1,
+          "Hawaii County seat anchor on Hilo Bay; the bay, Census Designated Place, and division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=359187; exact official name and Populated Place type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kailua",
+          "Populated Place",
+          "pop.place",
+          "Hawaii",
+          19.6392732,
+          -155.9902382,
+          null,
+          "365355",
+          1,
+          "Kona coast anchor (the Kailua-Kona of common usage), seeded on the Hawaii County record; the same-name populated places in Honolulu County (FEATURE_ID 359894) and Maui County (FEATURE_ID 359893), and Kailua Bay, are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=365355; exact official name and Populated Place type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Wailuku",
+          "Populated Place",
+          "pop.place",
+          "Maui",
+          20.8896075,
+          -156.5010595,
+          null,
+          "364757",
+          1,
+          "Maui County seat anchor; the Wailuku district, division, and Census Designated Place records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=364757; exact official name and Populated Place type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Līhuʻe",
+          "Populated Place",
+          "pop.place",
+          "Kauai",
+          21.9740821,
+          -159.3649025,
+          null,
+          "361837",
+          1,
+          "Kauai County seat anchor, stored verbatim under its official GNIS spelling with macron and ʻokina; the Līhuʻe District and Census Designated Place records and the Lihue Ditch record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=361837; exact official name and Populated Place type in Kauai County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kaunakakai",
+          "Populated Place",
+          "pop.place",
+          "Maui",
+          21.0896357,
+          -157.0173984,
+          null,
+          "360717",
+          1,
+          "Molokai anchor (Maui County), seeded on the populated-place record; the same-name political division record (FEATURE_ID 360716), harbor, gulch, and Census Designated Place records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=360717; exact official name and Populated Place type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Mauna Kea",
+          "Summit",
+          "phys.summit",
+          "Hawaii",
+          19.8206065,
+          -155.4681155,
+          null,
+          "366215",
+          1,
+          "Hawaii High Point at 13,796 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_HI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 366215 as a Summit in Hawaii County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=366215; exact official name and Summit type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Mauna Loa",
+          "Summit",
+          "phys.summit",
+          "Hawaii",
+          19.4753891,
+          -155.605788,
+          null,
+          "362275",
+          1,
+          "Active shield-volcano summit at 13,681 feet (USGS-published elevation); the one-word Maui County Maunaloa summit (FEATURE_ID 362273) and community (FEATURE_ID 362274) records, and Mauna Loa Estates, are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=362275; exact official name and Summit type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Haleakalā",
+          "Summit",
+          "phys.summit",
+          "Maui",
+          20.7014034,
+          -156.1733005,
+          null,
+          "358929",
+          1,
+          "Maui high point at 10,023 feet (USGS-published elevation), seeded on the Summit record; Haleakalā Crater (FEATURE_ID 358930) is a separate record of crater class and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=358929; exact official name and Summit type in Maui County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Waiau",
+          "Lake",
+          "hydro.lake",
+          "Hawaii",
+          19.8114053,
+          -155.4775715,
+          null,
+          "364585",
+          1,
+          "High-elevation lake anchor just below the Mauna Kea summit, seeded under the official GNIS name Waiau (the Lake Waiau of common usage); the Lake Waiau phrasing screens empty. DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=364585; exact official name and Lake type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Wailuku River",
+          "Stream",
+          "hydro.stream",
+          "Hawaii",
+          19.728148,
+          -155.087644,
+          null,
+          "364759",
+          1,
+          "River record at Hilo Bay (the longest river in Hawaii), seeded on the Hawaii County record; the same-name Wailuku River record in Maui County (FEATURE_ID 2777688) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=364759; exact official name and Stream type in Hawaii County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Hanalei River",
+          "Stream",
+          "hydro.stream",
+          "Kauai",
+          22.2147219,
+          -159.4977093,
+          null,
+          "359043",
+          1,
+          "Kauai north-shore river record at Hanalei Bay. USGS GNIS Geocoder (GNIS), FEATURE_ID=359043; exact official name and Stream type in Kauai County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
     }

@@ -1,138 +1,91 @@
-# Backlog execution round 38 — 2026-10-24
+# Backlog execution round 38 — 2026-10-24 (reconciliation)
 
-**S4 · GNIS domestic-names state frames (T4.1).** New Jersey ships
-as **configuration 56** from `arena/fb1c7be1-html5` — the final
-Atlantic seaboard state. The round was renumbered in flight: this
-branch staged New Jersey + Connecticut as round 36 / batch 18, and a
-parallel session's PR #144 landed first (2026-10-24T07:22:13Z) with
-Maine, Massachusetts, Connecticut and Rhode Island as configurations
-52–55 / batches 18–19 / rounds 36–37. Under the standing
-main-preferred reconciliation rule the duplicate Connecticut
-generation was dropped wholesale, New Jersey's configuration number
-moved 52 → 56, the register became **batch 20**, and this record
-takes the next free round number (38).
+**S4 · GNIS domestic-names state frames (T4.1). Reconciliation-only
+round: the state atlas completed on main while this branch's staging
+was in flight.** Nothing new ships as a frame from
+`arena/fb1c7be1-html5`; this record keeps the free round-38 slot (the
+parallel sessions hold 36, 37, 39 and 40) and documents what was
+staged, what main won, and the evidence that crossed over.
 
-## Connecticut duplicate disposition (first collision with no transfer)
+## What landed without us
 
-Main's batch-19 Connecticut frame was re-verified against every
-identity decision this branch had independently recorded before
-dropping our generation:
+| PR | Contents | Rounds / batches | Configs |
+| --- | --- | --- | --- |
+| #144 | Maine, Massachusetts, Connecticut, Rhode Island | 36–37 / 18–19 | 52–55 |
+| #146 | Alaska | 39 / 21 | 56 |
+| #147 | New Jersey + Hawaii (**50-state atlas complete**) | 40 / 20 | 57–58 |
 
-* Bear Mountain `205348` seeded by its Domestic Names per-ID
-  description locator (Northwest Hills region, blank southern twin
-  `205347` rejected) — present on main;
-* Mount Frissell south slope (official CT high point, USGS
-  Elevations and Distances 2,380 ft) disclosed as having **no
-  Connecticut-keyed GNIS record** (empty `states=CT` screen; the
-  summit keys to Massachusetts `607428` and is never seeded) —
-  present on main (their record renders 2,379 ft from the state-line
-  description);
-* post-2022 planning-region counties stored as returned, with the
-  historical Hartford county divisions rejected — main stores the
-  same bare extract identities (`Capitol`, `Southeastern
-  Connecticut`, …) this branch's extract comparison produced;
-* Candlewood Lake screen (communities only), CT main-stem river
-  seeding at the mouth record, and the Bantam Lake lake-row
-  decision — all present on main's batch-19 register.
+This branch had staged **New Jersey + Connecticut** as round 36 /
+batch 18 (configurations claimed 52–53 at the time), with the
+register, 29-test suite additions, loader triplets and docs ready.
 
-Nothing needed to be transferred: main's generation was complete
-(and in places broader — Farmington River, Lake Lillinonah, Rhode
-Island's Jerimoth Hill). This is the first parallel-session
-collision of the S4 backlog where the loser's unique evidence set
-was empty.
+## Reconciliation decisions (main-preferred, fifth S4 collision)
 
-## New Jersey screens (cross-checked 2026-10-23 local)
+* **Connecticut dropped against PR #144 with zero evidence
+  transfer** — first such collision: main's batch-19 register was
+  re-verified to carry every identity decision this branch had
+  recorded independently (Bear Mountain `205348` per-ID locator over
+  the blank southern twin, Mount Frissell's missing Connecticut
+  record with the Massachusetts-keyed `607428` disclosure,
+  planning-region county handling, Candlewood screen, main-stem
+  mouth seeding — and broader: Farmington River, Lake Lillinonah,
+  Jerimoth Hill).
+* **New Jersey dropped against PR #147 after a roster diff** —
+  shared rows: Trenton `884540`, Newark `878762`, Jersey City
+  `877450`, Paterson `879164`, Camden `875105`, High Point
+  `877098`, Lake Hopatcong `877238`, Raritan River `879618`,
+  Passaic River `879159`. Main's roster keeps Atlantic City
+  `874413`, Mullica River `878659`, Round Valley Reservoir
+  `879839`; this branch's Elizabeth `876147`, Manasquan River
+  `878067` and Delaware and Raritan Canal `875875` were not seated.
+  Main's High Point note carries the same substance in its own form
+  ("1,803 feet" USGS-published, per-ID check, Ocean County twin
+  `877099` rejected), Lake Hopatcong records the Reservoir
+  classification, and the Delaware River empty `states=NJ` screen is
+  a register decision — so no row-note patches were needed either.
 
-All twelve rows are `VERIFIED=1` USGS GNIS records screened by exact
-official name, returned class/type, state, returned primary county,
-permanent FEATURE_ID, and returned primary point (USGS Geocoder +
-GNIS DomesticNames state text extract):
+## Unique material retained in this round
 
-| # | Feature | Class/type | County | FEATURE_ID |
-| --- | --- | --- | --- | --- |
-| 1 | Trenton (capital anchor) | Populated Place | Mercer | `884540` |
-| 2 | Newark | Populated Place | Essex | `878762` |
-| 3 | Jersey City | Populated Place | Hudson | `877450` |
-| 4 | Elizabeth | Populated Place | Union | `876147` |
-| 5 | Paterson | Populated Place | Passaic | `879164` |
-| 6 | Camden | Populated Place | Camden | `875105` |
-| 7 | High Point | Summit | Sussex | `877098` |
-| 8 | Lake Hopatcong | Lake | Sussex | `877238` |
-| 9 | Raritan River | Stream | Middlesex | `879618` |
-| 10 | Passaic River | Stream | Essex | `879159` |
-| 11 | Manasquan River | Stream | Monmouth | `878067` |
-| 12 | Delaware and Raritan Canal | Stream | Mercer | `875875` |
-
-Identity decisions (batch-20 register):
-
-* **High Point** — the Sussex summit `877098` (548 m) is seeded;
-  the same-name Ocean County populated place `877099` is rejected,
-  and the note quotes the per-ID description "Highest elevation in
-  NJ at 1803 feet." (the official figure comes from that GNIS
-  description; the USGS Elevations and Distances chunk renders its
-  NJ line oddly, so it is not cited).
-* **Lake Hopatcong** — the Sussex-keyed lake `877238` (returned
-  type Reservoir, `39004` recorded per-ID) is seeded; the Morris
-  populated place `876215` and census division `2806109` are
-  rejected.
-* **Delaware and Raritan Canal** — stored as class `Stream`/ftt
-  `hydro.stream`: the Geocoder groups Streams & Canals under the
-  Stream row type, and no untokenised `hydro.canal` token was
-  introduced.
-* **Delaware River** — `states=NJ` returns an empty array, so the
-  river stays a generalized context corridor citing the empty screen
-  and cross-referencing main's Delaware frame row `217887` (the
-  statewide frame already seeds it). No cross-state record is seeded
-  into New Jersey.
-
-The frame: bbox (−75.55, 38.93, −73.88, 41.36), one labelled
-synthetic Atlantic coast polyline (15 context points), five context
-corridors (I-95, I-78, I-80, Garden State Parkway, Delaware River),
-four node anchors (trenton, newark, jersey-city, high-point) reusing
-row coordinates exactly, labelled synthetic relief gaussians, and no
-DEM.
-
-## Runner/extract note
-
-`.arena-gnis/candidates.json` is rebuilt by `tools/gnis_extract.py`
-into `gnis-candidates-batch7.json` from the request list **alone** —
-the first batch-18 request (NJ+CT only) overwrote the cumulative
-extract and red-lit ten earlier batch tests. The request was made
-cumulative again and now carries all **27 states** ever screened
-(24 previous + NJ restored in the union with main's 26); the round-38
-CI runs (workflow branch list gained `arena/fb1c7be1-html5`) confirm
-the union holds.
+1. **Batch-20 register evidence transfer** — main's
+   `gnis-state-batch20-source-register-2026-10-24.json` gains a
+   known-limitation recording the three independently verified but
+   unseeded New Jersey records (Elizabeth `876147` — already one of
+   their decisions — Manasquan River `878067`, Delaware and Raritan
+   Canal `875875` with the Stream-grouping/hydro.stream storage rule
+   that avoids an untokenised canal class), available for future
+   register expansion without widening the 12-row starter scope.
+2. **Runner/extract lesson** — `tools/gnis_extract.py` rebuilds
+   `gnis-candidates-batch7.json` solely from
+   `.arena-gnis/candidates.json`; the first batch-18 request
+   (NJ+CT only) overwrote the cumulative extract and red-lit ten
+   earlier batch tests. The request was made cumulative again (27
+   states by this branch, now 29 on main covering AK/HI/NJ too).
+3. **Workflow branch list** — `.github/workflows/arena-gnis-fetch.yml`
+   keeps main's branch and gains `arena/fb1c7be1-html5` so this
+   branch's future GNIS requests trigger the runner extract.
+4. **README bundle count** — line 125's shared-bundle figure is
+   carried forward and corrected to **fifty-eight** (both prior PRs
+   updated the feature list but left this counter behind).
+5. **Backlog bookkeeping** — Round-38 status block, JSON
+   `next_actions` / T4.1 note, `docs/README.md` index line, and this
+   record.
 
 ## Verification
 
-* `node --test tests/city-subsurface.test.mjs` → **31/31 pass**
-  (main's 30 + the batch-20 New Jersey block).
-* `node --test tests/*.test.mjs` → **807 pass, 0 fail, 12 skipped**.
-* `npm run build:city-subsurface` → **56** pages + 56 Webxdc
-  packages (New Jersey: 12 gazetteer rows, 5 corridors, 4 nodes).
-* `npm run build:wikiinajar` → rebuilt after this record lands.
+* `node --test tests/city-subsurface.test.mjs` → green on main's
+  58-frame suite (state-batch tests through round 40).
+* `node --test tests/*.test.mjs` → full-suite green after the merge.
+* `npm run build:city-subsurface` consistency: main's generated
+  packs/pages taken verbatim (`--theirs`) for every built artifact;
+  loader deduplicated to single `newjersey`/`alaska`/`hawaii`
+  triplets.
+* `npm run build:wikiinajar` rebuilt after this record.
 * `git diff --check` clean before staging.
-
-## Files
-
-* `resources/city-subsurface/cities.json` — `newjersey` frame
-  appended (56 frames; main's 4 PR-#144 frames kept verbatim).
-* `resources/city-subsurface/gnis-state-batch20-source-register-2026-10-23.json`
-  — batch-20 register (12 verifiedRows, 3 identity decisions, 5
-  selection rules, 5 known limitations; screens dated 2026-10-23).
-* `tests/city-subsurface.test.mjs` — batch-20 block inserted before
-  the engine anchor (31 tests), array gains `newjersey`.
-* `js/city-subsurface.js` — three `newjersey` loader lines.
-* `.arena-gnis/candidates.json` — cumulative 27-state request,
-  batch 20 / configuration 56.
-* `.github/workflows/arena-gnis-fetch.yml` — branch list gains this
-  branch alongside main's.
-* Docs: this record, `docs/agent-backlog-2026-10-21.md` Round-38
-  status, backlog JSON `next_actions` + T4.1 note, `README.md`
-  counts/list, `docs/city-subsurface.md` round-38 paragraph + table
-  row + counts, `docs/README.md` index line.
 
 ## Queue
 
-**Two state frames remain — AK and HI** — then the country/planet
-thread (S4 hand-off to the country viewer / PC Globe work).
+**All fifty state frames are complete** (atlas closed by PR #147).
+The S4 backlog moves to its final thread: the country/planet viewer
+(country index a la PC Globe + CIA Factbook notes, PC Globe
+abandonware study, Red October globe reuse), per
+`docs/agent-backlog-2026-10-21.md`.
