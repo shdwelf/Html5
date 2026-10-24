@@ -456,6 +456,35 @@ Lake Lillinonah (`208464`) carry the lake rows. Jerimoth Hill
 Three state frames remain (AK, HI, NJ), then the country/planet
 thread.
 
+**Round 38 status (2026-10-24): partial — reconciled, staging
+dropped).** This branch staged New Jersey + Connecticut as round 36 /
+batch 18 while parallel sessions landed PR #144 (Maine, Massachusetts,
+Connecticut, Rhode Island — rounds 36–37, batches 18–19, configs
+52–55), PR #146 (Alaska — round 39, config 56) and PR #147 (New Jersey
++ Hawaii — round 40, configurations 57–58, completing the 50-state
+atlas). Under the standing main-preferred rule this record keeps the
+free round-38 slot as the **reconciliation entry**: main's New Jersey
+frame wins outright (roster kept verbatim — its Atlantic City,
+Mullica River and Round Valley Reservoir selections replace this
+branch's Elizabeth, Manasquan River and Delaware and Raritan Canal
+rows; the duplicate Connecticut generation had already been dropped
+against PR #144 with zero evidence transfer after re-verifying
+batch-19 coverage). Unique material retained here:
+(1) the fetch-tool runner lesson — `tools/gnis_extract.py` rebuilds
+`gnis-candidates-batch7.json` solely from `.arena-gnis/candidates.json`,
+so the request list must stay cumulative (an NJ/CT-only request briefly
+wiped twenty-two earlier states before the 27-state union was
+restored); (2) the workflow branch list gains this branch;
+(3) evidence transferred into main's batch-20 register/notes: the
+three independently verified rows this branch did not get to seed
+(Elizabeth `876147`, Manasquan River `878067`, Delaware and Raritan
+Canal `875875` stored as the returned `Stream` grouping) plus the
+High Point per-ID "1803 feet" description quote and Lake Hopatcong's
+returned Reservoir type `39004`. Round record:
+[`backlog-execution-round-38-2026-10-24.md`](backlog-execution-round-38-2026-10-24.md).
+**State frames complete (50 + atlas); next: the country/planet
+thread.**
+
 **Round 39 status (2026-10-24): partial.** Alaska shipped as
 configuration 56 in a single-state batch, with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,

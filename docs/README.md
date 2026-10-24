@@ -275,3 +275,4 @@ IANA media types (RFC 6838 / BCP 13).
 - [z3950-server-deep-dive-2026-09-28.md](z3950-server-deep-dive-2026-09-28.md) — z3950 server deep dive 2026 09 28
 - [zshaolin-javascript-port.md](zshaolin-javascript-port.md) — zshaolin javascript port
 
+- [backlog-execution-round-38-2026-10-24.md](backlog-execution-round-38-2026-10-24.md) — backlog execution round 38 2026 10 24

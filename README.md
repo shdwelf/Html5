@@ -123,7 +123,7 @@ dalton-race, esgvrop, four-corners, glendora-high, greeran-family,
 greeran-subsurface, ingress-intel, sanborn-restaurant, SoCal Subsurface (also
 mirrored to the legacy `planet-viewer-4dwm.xdc` filename) and its inlined
 edition, vincennes), then
-builds the thirty-three shared city/state/territory bundles; each app also has its own
+builds the fifty-eight shared city/state/territory bundles; each app also has its own
 `npm run build:<name>`, and `npm run check:casefiles` proves CASEFILES' two
 derived artifacts still match their sources byte for byte.
 
