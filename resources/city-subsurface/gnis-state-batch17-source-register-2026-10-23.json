@@ -1,0 +1,404 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 35 New Hampshire-Vermont state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for New Hampshire and Vermont. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Mount Washington and Mount Mansfield carry Domestic Names per-ID identity checks. The Monadnock name order, the Saint Johnsbury spelling, and the empty Connecticut/Merrimack/Saco main-stem screens are recorded below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<NH|VT>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County records, census-designated places, historical records, airport/bay/cape/valley records, and same-name records of another class or county were rejected explicitly where relevant. Screens use the official GNIS name (Monadnock Mountain; Saint Johnsbury; Camels Hump)."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<NH|VT>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Mount Washington (871352) and Mount Mansfield (1461774), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the summit elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-17; this register is the frozen batch-17 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake, Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor (Connecticut and Merrimack main stems in both frames this batch; Saco in New Hampshire).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "newhampshire": {
+      "title": "New Hampshire statewide frame (New Hampshire-Vermont batch)",
+      "state": "NH",
+      "bbox": {
+        "lon0": -72.6,
+        "lat0": 42.65,
+        "lon1": -70.65,
+        "lat1": 45.05
+      },
+      "frameNote": "New Hampshire-Vermont batch: the Concord capital anchor is balanced with the per-ID Mount Washington high point (6,288 ft), Monadnock Mountain under its GNIS name order, three lakes (Winnipesaukee, Squam, Umbagog), and the Piscataqua mouth record. The Connecticut, Merrimack, Saco, and Androscoggin main stems return no NH Stream record (reservoir impoundments or empty screens) and remain corridors.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Concord",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Merrimack",
+          "latitude": 43.2081366,
+          "longitude": -71.5375718,
+          "featureId": "873303",
+          "verified": 1,
+          "sourceNote": "place capital anchor; the Concord Heights and Manor records, Concord Point cape, and Concord Plains flat are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=873303; exact official name and Populated Place type in Merrimack County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Merrimack County"
+        },
+        {
+          "name": "Manchester",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hillsborough",
+          "latitude": 42.9956397,
+          "longitude": -71.4547891,
+          "featureId": "868243",
+          "verified": 1,
+          "sourceNote": "New Hampshire's largest city anchor on the Merrimack. USGS GNIS Geocoder (GNIS), FEATURE_ID=868243; exact official name and Populated Place type in Hillsborough County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hillsborough County"
+        },
+        {
+          "name": "Nashua",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hillsborough",
+          "latitude": 42.7653662,
+          "longitude": -71.467566,
+          "featureId": "868677",
+          "verified": 1,
+          "sourceNote": "Merrimack valley anchor; the Nashua River record (FEATURE_ID 617989) reproduces but is held to starter scope, and the Nashua Canal Reservoir is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=868677; exact official name and Populated Place type in Hillsborough County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hillsborough County"
+        },
+        {
+          "name": "Portsmouth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Rockingham",
+          "latitude": 43.0717552,
+          "longitude": -70.7625532,
+          "featureId": "869312",
+          "verified": 1,
+          "sourceNote": "Seacoast anchor at the Piscataqua mouth; the Portsmouth Plains record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=869312; exact official name and Populated Place type in Rockingham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Rockingham County"
+        },
+        {
+          "name": "Dover",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Strafford",
+          "latitude": 43.1978624,
+          "longitude": -70.8736698,
+          "featureId": "866618",
+          "verified": 1,
+          "sourceNote": "Great Bay anchor; the Dover Point cape is not seeded. (Dover, Delaware was seeded in batch 16 on its own Kent County record.) USGS GNIS Geocoder (GNIS), FEATURE_ID=866618; exact official name and Populated Place type in Strafford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Strafford County"
+        },
+        {
+          "name": "Keene",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cheshire",
+          "latitude": 42.933692,
+          "longitude": -72.2781409,
+          "featureId": "867823",
+          "verified": 1,
+          "sourceNote": "Southwest anchor in the Monadnock region; the mis-keyed Coos County Keene Reservoir and Rockingham County Keene Hill records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=867823; exact official name and Populated Place type in Cheshire County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cheshire County"
+        },
+        {
+          "name": "Mount Washington",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Coos",
+          "latitude": 44.2705781,
+          "longitude": -71.3033287,
+          "featureId": "871352",
+          "verified": 1,
+          "sourceNote": "New Hampshire High Point and the highest summit in the northeastern US at 6,288 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_NH_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 871352 as a Summit in Coos County at this point. The Mount Washington Valley record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=871352; exact official name and Summit type in Coos County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Coos County"
+        },
+        {
+          "name": "Monadnock Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Cheshire",
+          "latitude": 42.8613582,
+          "longitude": -72.1079819,
+          "featureId": "868516",
+          "verified": 1,
+          "sourceNote": "Seeded under the GNIS name order Monadnock Mountain: the familiar Mount Monadnock order screened empty under states=NH. The region's namesake summit (published 3,165 feet). USGS GNIS Geocoder (GNIS), FEATURE_ID=868516; exact official name and Summit type in Cheshire County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Cheshire County"
+        },
+        {
+          "name": "Lake Winnipesaukee",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Belknap",
+          "latitude": 43.6144538,
+          "longitude": -71.3439713,
+          "featureId": "870958",
+          "verified": 1,
+          "sourceNote": "Lakes Region anchor; the stored point is the GNIS primary point on the lake's western reach, not a shoreline or centroid. USGS GNIS Geocoder (GNIS), FEATURE_ID=870958; exact official name and Lake type in Belknap County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Belknap County"
+        },
+        {
+          "name": "Squam Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Belknap",
+          "latitude": 43.7508929,
+          "longitude": -71.5245888,
+          "featureId": "872720",
+          "verified": 1,
+          "sourceNote": "Second Lakes Region anchor west of Winnipesaukee. USGS GNIS Geocoder (GNIS), FEATURE_ID=872720; exact official name and Lake type in Belknap County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Belknap County"
+        },
+        {
+          "name": "Umbagog Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Coos",
+          "latitude": 44.7629514,
+          "longitude": -71.0427229,
+          "featureId": "870563",
+          "verified": 1,
+          "sourceNote": "North Country anchor on the Maine line; the Androscoggin River rises below this lake but its main-stem record screened as reservoirs only under states=NH. USGS GNIS Geocoder (GNIS), FEATURE_ID=870563; exact official name and Lake type in Coos County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Coos County"
+        },
+        {
+          "name": "Piscataqua River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Rockingham",
+          "latitude": 43.0562005,
+          "longitude": -70.7031074,
+          "featureId": "869224",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth; the short boundary-reach river is seeded at the returned Rockingham County point. USGS GNIS Geocoder (GNIS), FEATURE_ID=869224; exact official name and Stream type in Rockingham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Rockingham County"
+        }
+      ]
+    },
+    "vermont": {
+      "title": "Vermont statewide frame (New Hampshire-Vermont batch)",
+      "state": "VT",
+      "bbox": {
+        "lon0": -73.45,
+        "lat0": 42.65,
+        "lon1": -71.4,
+        "lat1": 45.1
+      },
+      "frameNote": "New Hampshire-Vermont batch: the Montpelier capital anchor is balanced with the per-ID Mount Mansfield high point (4,395 ft), Camels Hump, Lake Champlain and Lake Memphremagog, and the Winooski/Otter Creek mouth records. The Connecticut main stem returns no VT Stream record and remains a corridor. The frame's east edge follows the Connecticut valley only schematically.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Montpelier",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washington",
+          "latitude": 44.2600593,
+          "longitude": -72.5753869,
+          "featureId": "1461834",
+          "verified": 1,
+          "sourceNote": "place capital anchor (the smallest US state capital by population); the Montpelier Junction record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1461834; exact official name and Populated Place type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washington County"
+        },
+        {
+          "name": "Burlington",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Chittenden",
+          "latitude": 44.4758825,
+          "longitude": -73.212072,
+          "featureId": "1456663",
+          "verified": 1,
+          "sourceNote": "Vermont's largest city anchor on Lake Champlain; Burlington Bay, the Orleans County Burlington Point cape, and the airport record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1456663; exact official name and Populated Place type in Chittenden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Chittenden County"
+        },
+        {
+          "name": "Rutland",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Rutland",
+          "latitude": 43.6106237,
+          "longitude": -72.9726065,
+          "featureId": "1461361",
+          "verified": 1,
+          "sourceNote": "Rutland anchor; the Rutland County record and the City Reservoir are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1461361; exact official name and Populated Place type in Rutland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Rutland County"
+        },
+        {
+          "name": "Brattleboro",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Windham",
+          "latitude": 42.8509152,
+          "longitude": -72.5578678,
+          "featureId": "1456556",
+          "verified": 1,
+          "sourceNote": "Connecticut valley anchor; the Brattleboro Census Designated Place record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1456556; exact official name and Populated Place type in Windham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Windham County"
+        },
+        {
+          "name": "Saint Johnsbury",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Caledonia",
+          "latitude": 44.4192248,
+          "longitude": -72.0150949,
+          "featureId": "1459328",
+          "verified": 1,
+          "sourceNote": "Seeded under the official GNIS spelling Saint Johnsbury; the Saint Johnsbury Center record and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1459328; exact official name and Populated Place type in Caledonia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Caledonia County"
+        },
+        {
+          "name": "Bennington",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bennington",
+          "latitude": 42.8781345,
+          "longitude": -73.1967741,
+          "featureId": "1460600",
+          "verified": 1,
+          "sourceNote": "Southwest anchor; the Bennington County record and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1460600; exact official name and Populated Place type in Bennington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bennington County"
+        },
+        {
+          "name": "Mount Mansfield",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Chittenden",
+          "latitude": 44.5436537,
+          "longitude": -72.814289,
+          "featureId": "1461774",
+          "verified": 1,
+          "sourceNote": "place High Point at 4,395 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_VT_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1461774 as a Summit in Chittenden County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1461774; exact official name and Summit type in Chittenden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Chittenden County"
+        },
+        {
+          "name": "Camels Hump",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Chittenden",
+          "latitude": 44.3194911,
+          "longitude": -72.8863369,
+          "featureId": "1456724",
+          "verified": 1,
+          "sourceNote": "Second Green Mountain anchor; GNIS spells the name Camels Hump without an apostrophe (published 4,083 feet). USGS GNIS Geocoder (GNIS), FEATURE_ID=1456724; exact official name and Summit type in Chittenden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Chittenden County"
+        },
+        {
+          "name": "Lake Champlain",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Grand Isle",
+          "latitude": 44.5911519,
+          "longitude": -73.3063442,
+          "featureId": "946367",
+          "verified": 1,
+          "sourceNote": "Champlain anchor; the stored point is the GNIS primary point in the Grand Isle reach, not a shoreline or centroid. The lake's main body extends beyond the frame's west edge into New York. USGS GNIS Geocoder (GNIS), FEATURE_ID=946367; exact official name and Lake type in Grand Isle County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Grand Isle County"
+        },
+        {
+          "name": "Lake Memphremagog",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Orleans",
+          "latitude": 45.0477225,
+          "longitude": -72.2677668,
+          "featureId": "1458419",
+          "verified": 1,
+          "sourceNote": "Northeast Kingdom anchor on the Quebec line; roughly half the lake lies in Canada, outside this frame. USGS GNIS Geocoder (GNIS), FEATURE_ID=1458419; exact official name and Lake type in Orleans County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Orleans County"
+        },
+        {
+          "name": "Winooski River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Chittenden",
+          "latitude": 44.5303255,
+          "longitude": -73.2745738,
+          "featureId": "1460304",
+          "verified": 1,
+          "sourceNote": "River record at its Champlain mouth; two Winooski River Reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1460304; exact official name and Stream type in Chittenden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Chittenden County"
+        },
+        {
+          "name": "Otter Creek",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Addison",
+          "latitude": 44.2256084,
+          "longitude": -73.3248477,
+          "featureId": "1460510",
+          "verified": 1,
+          "sourceNote": "River record at its Champlain mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=1460510; exact official name and Stream type in Addison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Addison County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Connecticut River under states=NH and states=VT (no Stream record)",
+      "decision": "Corridor-only in both frames. Both state screens return only features named Connecticut River Reservoir (Lakes & Reservoirs class); no Stream record for the main stem is returned under NH or VT, so no river row is seeded in either frame and the river is drawn as a generalized corridor along each frame's boundary edge.",
+      "notClaimed": "The corridor lines are not channel centerlines or surveyed state boundaries."
+    },
+    {
+      "candidate": "Merrimack River and Saco River and Androscoggin River under states=NH",
+      "decision": "Not seeded. The Merrimack and Androscoggin screens return only River Reservoir impoundment records under NH, and the Saco screen is empty; their main-stem GNIS records key to their Maine/Massachusetts mouths. All three remain context corridors where drawn.",
+      "notClaimed": "Corridor treatment is not a claim that New Hampshire lacks these rivers."
+    },
+    {
+      "candidate": "Mount Monadnock (empty) vs Monadnock Mountain 868516",
+      "decision": "Seeded under the official GNIS name order Monadnock Mountain (Cheshire County Summit). The familiar Mount Monadnock order screened empty under states=NH.",
+      "notClaimed": "The seeded point is not a summit outline."
+    },
+    {
+      "candidate": "Saint Johnsbury spelling",
+      "decision": "GNIS spells the name Saint Johnsbury in full; the row is stored under that official spelling (Center and CDP records rejected).",
+      "notClaimed": "No abbreviation is implied for local usage."
+    },
+    {
+      "candidate": "Camels Hump spelling",
+      "decision": "GNIS spells the summit Camels Hump without an apostrophe; stored verbatim.",
+      "notClaimed": "The seeded point is not a summit outline."
+    },
+    {
+      "candidate": "Lake Champlain GNIS point (Grand Isle County, VT-associated record)",
+      "decision": "Seeded in Vermont on the VT-associated record returned for states=VT. The point sits in the Grand Isle reach; most of the lake lies west of the frame in New York.",
+      "notClaimed": "The stored point is not a shoreline, centroid, or state boundary."
+    }
+  ],
+  "knownLimitations": [
+    "New Hampshire and Vermont are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Mount Washington (6,288 feet) and Mount Mansfield (4,395 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Green Mountain and White Mountain amplitudes are illustrative, not a DEM.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include neighbouring-state land and (for Vermont) part of Lake Champlain and Canada-adjacent waters; no boundary geometry is claimed."
+  ]
+}

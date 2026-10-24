@@ -391,6 +391,26 @@ rebuilt, wiki 251; full suites in PR #141’s verification table.
 Next in sequence: nine state frames remain (AK, CT, HI, ME, MA, NH,
 NJ, RI, VT), then the country/planet thread.
 
+**Round 35 status (PR #143) (2026-10-23): partial.** New Hampshire
+and Vermont shipped as configurations 50–51, each with a 12/12
+per-ID `VERIFIED=1` GNIS starter register, labelled synthetic
+relief, generalized context corridors, and no DEM. Provenance and
+identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch17-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch17-source-register-2026-10-23.json);
+the round record is filed as
+[`backlog-execution-round-35-2026-10-23-pr143.md`](backlog-execution-round-35-2026-10-23-pr143.md)
+because PR #141's reconciliation holds the canonical round-35
+filename. Mount Washington (`871352`, Coos County, 6,288 ft) and
+Mount Mansfield (`1461774`, Chittenden County, 4,395 ft) keep their
+per-ID checks. Monadnock Mountain is seeded under its GNIS name
+order (Mount Monadnock screened empty); `Camels Hump` and `Saint
+Johnsbury` are stored verbatim. The Connecticut River returns only
+`Connecticut River Reservoir` impoundments under both NH and VT,
+the Merrimack and Androscoggin return reservoir-only records under
+NH, and the Saco screens empty under NH — all four main stems stay
+corridors. Seven state frames remain (AK, CT, HI, ME, MA, NJ, RI),
+then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
