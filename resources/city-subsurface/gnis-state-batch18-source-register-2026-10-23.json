@@ -1,0 +1,408 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 36 New Jersey-Connecticut state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for New Jersey and Connecticut. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type, state, returned primary county, permanent FEATURE_ID, and returned primary point; points are disclosed as points, never as boundaries, shorelines, lake polygons, or river centerlines.",
+  "services": {
+    "usgsGeocoder": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0 (term, states, include=gnis); accepted only on exact name/Type/state/county/FEATURE_ID/point agreement.",
+    "gnisDomesticNames": "per-state DomesticNames_Text zips staged by .github/workflows/arena-gnis-fetch.yml via tools/gnis_extract.py into resources/city-subsurface/gnis-candidates-batch7.json; the CI runner downloads because sandbox egress is allowlisted."
+  },
+  "selectionRules": [
+    "Exact official name, compatible returned class/type, intended state, returned primary county, permanent FEATURE_ID, and returned primary point must all identify the intended feature before VERIFIED=1.",
+    "The seeded coordinate is the GNIS primary point; it is never described as a boundary, shoreline, lake polygon, or river centerline.",
+    "A state screen that returns an empty array leaves the feature unseeded in that frame; it becomes a generalized context corridor or stays undisclosed-until-screened, never forced into a row.",
+    "Duplicate same-name records are separated by the official description locator where present (Bear Mountain, batch-12/round-28 rule), else by returned class/type and county; the loser is disclosed, never merged.",
+    "Records keyed to another state (Mount Frissell -> Massachusetts; Delaware River -> Delaware) are never seeded into this state's rows; the bordering frame either seeds its own-keyed record (delaware frame) or carries context only.",
+    "Connecticut's post-2022 planning-region counties are stored exactly as returned; historical county division records are rejected as divisions, and the register records both the Geocoder county string and the stored county."
+  ],
+  "frames": {
+    "newjersey": {
+      "title": "New Jersey starter register (round 36, batch 18)",
+      "state": "NJ",
+      "bbox": {
+        "lon0": -75.55,
+        "lat0": 38.93,
+        "lon1": -73.88,
+        "lat1": 41.36
+      },
+      "frameNote": "New Jersey batch-18 row: six populated-place anchors (Trenton capital, Newark, Jersey City, Elizabeth, Paterson, Camden) balanced with the Sussex High Point (per-id description \"Highest elevation in NJ at 1803 feet.\"), Lake Hopatcong (Sussex-keyed Reservoir), and four water rows (Raritan, Passaic, Manasquan, Delaware and Raritan Canal). The Delaware River states=NJ screen returns an empty array and stays a corridor citing the Delaware-frame row (FEATURE_ID 217887).",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Trenton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mercer",
+          "latitude": 40.2170534,
+          "longitude": -74.7429385,
+          "featureId": "884540",
+          "verified": 1,
+          "sourceNote": "State capital anchor at the Delaware fall line; the Trenton Gardens place and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Mercer County"
+        },
+        {
+          "name": "Newark",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Essex",
+          "latitude": 40.735657,
+          "longitude": -74.1723667,
+          "featureId": "878762",
+          "verified": 1,
+          "sourceNote": "Essex County urban anchor; the Newark Heights place, Newark Reach canal segment, Newark Bay, and historical Newark Army Air Field records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Jersey City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hudson",
+          "latitude": 40.7281575,
+          "longitude": -74.0776417,
+          "featureId": "877450",
+          "verified": 1,
+          "sourceNote": "Hudson County waterfront anchor on the Hudson; the Jersey City Aqueduct record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hudson County"
+        },
+        {
+          "name": "Elizabeth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Union",
+          "latitude": 40.6639916,
+          "longitude": -74.2107006,
+          "featureId": "876147",
+          "verified": 1,
+          "sourceNote": "Union County port city; the Elizabethport place, Elizabeth Channel, Elizabeth River, and Elizabethport Reach records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=876147; exact official name and Populated Place type in Union County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Union County"
+        },
+        {
+          "name": "Paterson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Passaic",
+          "latitude": 40.9167654,
+          "longitude": -74.171811,
+          "featureId": "879164",
+          "verified": 1,
+          "sourceNote": "Passaic County anchor at the Great Falls; the screen returned the city alone with no twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Passaic County"
+        },
+        {
+          "name": "Camden",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Camden",
+          "latitude": 39.9259463,
+          "longitude": -75.1196199,
+          "featureId": "875105",
+          "verified": 1,
+          "sourceNote": "Delaware River waterfront anchor opposite Philadelphia; the Camden County political-division record led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Camden County"
+        },
+        {
+          "name": "High Point",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Sussex",
+          "latitude": 41.3208723,
+          "longitude": -74.6615393,
+          "featureId": "877098",
+          "verified": 1,
+          "sourceNote": "New Jersey high point; the Domestic Names per-ID check (gaznames_default REST layer) reproduces Summit feature code 15048 at stored gaz_elevation 548 m with the official description \"Highest elevation in NJ at 1803 feet.\"; the same-name Ocean County populated place (FEATURE_ID 877099) led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Lake Hopatcong",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Sussex",
+          "latitude": 40.9486634,
+          "longitude": -74.6372713,
+          "featureId": "877238",
+          "verified": 1,
+          "sourceNote": "Largest New Jersey lake; the per-ID check returns gaz class Reservoir (feature code 39004, stored gaz_elevation 278 m, null description) keyed to Sussex County even though the shoreline spans Morris and Sussex; the same-name Morris County populated place (876215) and the census division (2806109) led the screen and are not seeded; the row is grouped under Lakes. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Lake type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Sussex County"
+        },
+        {
+          "name": "Raritan River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Middlesex",
+          "latitude": 40.4947753,
+          "longitude": -74.2714405,
+          "featureId": "879618",
+          "verified": 1,
+          "sourceNote": "Central Jersey river to Raritan Bay; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Middlesex County"
+        },
+        {
+          "name": "Passaic River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Essex",
+          "latitude": 40.7123243,
+          "longitude": -74.1181983,
+          "featureId": "879159",
+          "verified": 1,
+          "sourceNote": "Single exact stream return in the Passaic valley, keyed to Essex County. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Manasquan River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Monmouth",
+          "latitude": 40.1024981,
+          "longitude": -74.0343332,
+          "featureId": "878067",
+          "verified": 1,
+          "sourceNote": "Monmouth County coastal river; single exact stream return. USGS GNIS Geocoder (GNIS), FEATURE_ID=878067; exact official name and Stream type in Monmouth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Monmouth County"
+        },
+        {
+          "name": "Delaware and Raritan Canal",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Mercer",
+          "latitude": 40.4153835,
+          "longitude": -74.6296021,
+          "featureId": "875875",
+          "verified": 1,
+          "sourceNote": "Historic Mercer County feeder canal; single exact Streams & Canals return grouped under Stream rows rather than split into a new class. USGS GNIS Geocoder (GNIS), FEATURE_ID=875875; exact official name and Stream type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Mercer County"
+        }
+      ]
+    },
+    "connecticut": {
+      "title": "Connecticut starter register (round 36, batch 18)",
+      "state": "CT",
+      "bbox": {
+        "lon0": -73.7,
+        "lat0": 40.98,
+        "lon1": -71.79,
+        "lat1": 42.05
+      },
+      "frameNote": "Connecticut batch-18 row: six planning-region-keyed populated places (Hartford capital, Bridgeport, New Haven, Waterbury, Stamford, New London, Norwich) plus Bear Mountain (description-located highest Connecticut summit; Frissell high point has no CT record and is disclosed), Bantam Lake, and the CT/Housatonic/Thames streams. Returned counties are post-2022 planning regions throughout; historical county divisions are rejected.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Hartford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Capitol Planning Region",
+          "latitude": 41.7637111,
+          "longitude": -72.6850932,
+          "featureId": "213160",
+          "verified": 1,
+          "sourceNote": "Connecticut capital anchor; the Domestic Names per-ID check reproduces census class P1 with GSA/OPM 0280/280, stored gaz_elevation 15 m, and the description \"Capital of State of Connecticut and county seat.\"; the historical Hartford County division record and the Hartford reservoir series are not seeded; the returned county is the Capitol Planning Region after Connecticut's county rekeying (historical county records return as \"(historical)\"). USGS GNIS Geocoder (GNIS), FEATURE_ID=213160; exact official name and Populated Place type in Capitol Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Capitol Planning Region"
+        },
+        {
+          "name": "Bridgeport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greater Bridgeport Planning Region",
+          "latitude": 41.1670412,
+          "longitude": -73.2048348,
+          "featureId": "205720",
+          "verified": 1,
+          "sourceNote": "Fairfield County coast anchor; the harbor, entrance channel, ferry crossing, and historical Army Air Field records are not seeded; the returned county is the Greater Bridgeport Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=205720; exact official name and Populated Place type in Greater Bridgeport Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greater Bridgeport Planning Region"
+        },
+        {
+          "name": "New Haven",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "South Central Connecticut Planning Region",
+          "latitude": 41.3081527,
+          "longitude": -72.9281578,
+          "featureId": "209231",
+          "verified": 1,
+          "sourceNote": "South Central coast anchor; the historical New Haven County division, canal, harbor channel, harbor, and historical Army Air Field records are not seeded; the returned county is the South Central Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209231; exact official name and Populated Place type in South Central Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "South Central Connecticut Planning Region"
+        },
+        {
+          "name": "Waterbury",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Naugatuck Valley Planning Region",
+          "latitude": 41.5581525,
+          "longitude": -73.0514966,
+          "featureId": "211851",
+          "verified": 1,
+          "sourceNote": "Naugatuck Valley anchor; the Waterbury Reservoir Number 2 record is not seeded; the returned county is the Naugatuck Valley Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211851; exact official name and Populated Place type in Naugatuck Valley Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Naugatuck Valley Planning Region"
+        },
+        {
+          "name": "Stamford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Western Connecticut Planning Region",
+          "latitude": 41.0534302,
+          "longitude": -73.5387341,
+          "featureId": "211129",
+          "verified": 1,
+          "sourceNote": "Western Connecticut coast anchor; the Stamford Harbor record is not seeded; the returned county is the Western Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211129; exact official name and Populated Place type in Western Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Western Connecticut Planning Region"
+        },
+        {
+          "name": "New London",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Southeastern Connecticut Planning Region",
+          "latitude": 41.3556539,
+          "longitude": -72.0995209,
+          "featureId": "209237",
+          "verified": 1,
+          "sourceNote": "Thames River mouth city; the historical New London County division and harbor records are not seeded; the returned county is the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209237; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Southeastern Connecticut Planning Region"
+        },
+        {
+          "name": "Norwich",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Southeastern Connecticut Planning Region",
+          "latitude": 41.5242649,
+          "longitude": -72.0759105,
+          "featureId": "209410",
+          "verified": 1,
+          "sourceNote": "Upper Thames city; the Norwichtown place, Norwichtown Brook, and Norwich Pond records are not seeded; the returned county is the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209410; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Southeastern Connecticut Planning Region"
+        },
+        {
+          "name": "Bear Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Northwest Hills Planning Region",
+          "latitude": 42.0448053,
+          "longitude": -73.4548409,
+          "featureId": "205348",
+          "verified": 1,
+          "sourceNote": "Highest summit with a Connecticut-keyed GNIS record; the Domestic Names per-ID check description reads \"The highest summit located within the boudaries of the State of Connecticut.\" (verbatim, source typo preserved) at stored gaz_elevation 708 m; the same-name southern Connecticut summit (FEATURE_ID 205347, blank description, 271 m, about 66 km to the south, Western Connecticut Planning Region) is not seeded; the official USGS Elevations and Distances high point (Mount Frissell south slope at the state line, 2,380 feet, Litchfield) has no Connecticut-keyed GNIS record — the Mount Frissell summit keys to Berkshire County, Massachusetts (FEATURE_ID 607428) and is never seeded into this state row. USGS GNIS Geocoder (GNIS), FEATURE_ID=205348; exact official name and Summit type in Northwest Hills Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Northwest Hills Planning Region"
+        },
+        {
+          "name": "Bantam Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Northwest Hills Planning Region",
+          "latitude": 41.7045073,
+          "longitude": -73.2215068,
+          "featureId": "205246",
+          "verified": 1,
+          "sourceNote": "Largest natural lake in Connecticut; single exact Lakes & Reservoirs return in the Northwest Hills Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=205246; exact official name and Lake type in Northwest Hills Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Northwest Hills Planning Region"
+        },
+        {
+          "name": "Connecticut River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Lower Connecticut River Valley Planning Region",
+          "latitude": 41.272313,
+          "longitude": -72.332687,
+          "featureId": "206425",
+          "verified": 1,
+          "sourceNote": "State-namesake river; the main-stem Stream record is returned only under states=CT — the batch-17 New Hampshire and Vermont frames keep a corridor-only decision for the same river because neither of their state screens returns a Stream record; this record is keyed to the Lower Connecticut River Valley Planning Region and the Connecticut River Reservoir record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=206425; exact official name and Stream type in Lower Connecticut River Valley Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Lower Connecticut River Valley Planning Region"
+        },
+        {
+          "name": "Housatonic River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "South Central Connecticut Planning Region",
+          "latitude": 41.169264,
+          "longitude": -73.108442,
+          "featureId": "212670",
+          "verified": 1,
+          "sourceNote": "Western river to Long Island Sound; the Housatonic River Reservoir record is not seeded; the returned county is the South Central Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=212670; exact official name and Stream type in South Central Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "South Central Connecticut Planning Region"
+        },
+        {
+          "name": "Thames River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Southeastern Connecticut Planning Region",
+          "latitude": 41.3023207,
+          "longitude": -72.0795199,
+          "featureId": "211397",
+          "verified": 1,
+          "sourceNote": "Southeastern river to the Sound at New London; single exact stream return in the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211397; exact official name and Stream type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Southeastern Connecticut Planning Region"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "High Point name collision in New Jersey (Summit 877098 Sussex vs Populated Place 877099 Ocean)",
+      "decision": "Seed the Sussex County Summit; the Ocean County same-name populated place is not seeded.",
+      "notClaimed": "The populated place is not a high point; the Summit point is not the state boundary or a survey marker coordinate."
+    },
+    {
+      "candidate": "Lake Hopatcong records (Lake/Reservoir 877238 Sussex vs Populated Place 876215 Morris vs census division 2806109)",
+      "decision": "Seed the Sussex-keyed Reservoir record (per-ID: feature code 39004, 278 m, null description) under the Lake row class used by the UI; place and division records are not seeded.",
+      "notClaimed": "The primary point is not the shoreline; Sussex is the returned primary county although the lake spans Morris too."
+    },
+    {
+      "candidate": "Delaware River under states=NJ (empty array)",
+      "decision": "Corridor-only in the New Jersey frame; the national screen keys the Stream record to New Castle County, Delaware (217887), which main's delaware frame seeds as a row; same-name KS/NM rivers and the NY-keyed gorge record are not seeded here.",
+      "notClaimed": "The corridor is not a channel centerline or the Delaware state boundary."
+    },
+    {
+      "candidate": "Bear Mountain in Connecticut (two Summit records: 205348 Northwest Hills 708 m with description vs 205347 southern 271 m blank)",
+      "decision": "Seed 205348 by its official description locator (\"highest summit located within the boudaries of the State of Connecticut\"); the blank-description southern twin about 66 km away is disclosed, not seeded.",
+      "notClaimed": "The southern twin is not a duplicate rendering of the same summit; neither point is a boundary."
+    },
+    {
+      "candidate": "Connecticut state high point (USGS Elevations and Distances: Mount Frissell south slope at the state line, 2,380 feet, Litchfield)",
+      "decision": "No Connecticut-keyed GNIS record exists for the slope or summit (Mount Frissell keys to Berkshire County, Massachusetts 607428); the CT frame instead seeds Bear Mountain, GNIS's description-identified highest Connecticut summit, and discloses the official-table high point here rather than seeding a cross-state record.",
+      "notClaimed": "Bear Mountain's 708 m is not the official 2,380-foot south-slope figure; the MA-keyed Frissell record is not a Connecticut row."
+    },
+    {
+      "candidate": "Candlewood Lake / Sleeping Giant / Mashapaug Lake CT screens",
+      "decision": "Candlewood returns only communities (Club, Isle, Knolls, Orchards, Pines, Point, Shores, Springs) plus a hill brook and beach — no Lakes record under either name; Sleeping Giant and Mashapaug Lake return empty arrays; none are seeded.",
+      "notClaimed": "Absence from these screens is not a claim that the features do not exist on the ground."
+    },
+    {
+      "candidate": "Connecticut main stem versus batch-17",
+      "decision": "states=CT returns the Stream record 206425 (Lower Connecticut River Valley) which this frame seeds; batch-17's NH/VT frames record corridor-only decisions because their screens return reservoir records only — both treatments coexist in their respective frames.",
+      "notClaimed": "The CT-keyed point is not a mouth, centerline, or county boundary."
+    },
+    {
+      "candidate": "Hartford and the Connecticut county rekeying",
+      "decision": "Store the returned planning-region counties (Capitol Planning Region etc.) exactly; reject the \"(historical)\" county division records that lead several city screens; per-ID for Hartford reproduces P1/GSA 0280 and the capital description.",
+      "notClaimed": "Planning regions are not county boundaries of the pre-2022 system; the stored points are not municipal boundaries."
+    }
+  ],
+  "knownLimitations": [
+    "Relief is labelled synthetic generalized morphology (no DEM claim); the Atlantic and Long Island Sound coast lines are labelled synthetic context lines, not shoreline surveys, and rectangles are never boundary masks.",
+    "The DomesticNames extract for NJ and CT is produced by the arena-gnis-fetch CI workflow (sandbox egress cannot reach the S3 staging zips); this register's row assertions are enforced against the extract once CI lands it, and the gaznames_default REST per-ID checks plus Geocoder screens are the in-sandbox evidence of record.",
+    "New Jersey's High Point carries stored gaz_elevation 548 m against the official description's 1,803 feet (549.6 m rounding); both values are preserved as returned.",
+    "Delaware and Raritan Canal is stored as a Stream row (Geocoder type Streams & Canals) rather than introducing an untokenised Canal class row in the starter register.",
+    "Point coordinates are GNIS primary points: they are not boundaries, shorelines, lake polygons, river centerlines, municipal limits, or address geocodes."
+  ]
+}

@@ -16381,6 +16381,1103 @@
           "River record at its Champlain mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=1460510; exact official name and Stream type in Addison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "newjersey": {
+      "title": "New Jersey SUBSURFACE 4Dwm",
+      "subtitle": "New Jersey STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "New Jersey USGS GNIS REGISTER",
+      "gazNote": "Round 36 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "NJ",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -75.55,
+        "lat0": 38.93,
+        "lon1": -73.88,
+        "lat1": 41.36
+      },
+      "center": {
+        "lon": -74.69,
+        "lat": 40.14
+      },
+      "baseElevationM": 35,
+      "roughnessM": 55,
+      "hasWater": true,
+      "coast": [
+        [
+          -74.0,
+          40.47
+        ],
+        [
+          -74.03,
+          40.35
+        ],
+        [
+          -74.06,
+          40.18
+        ],
+        [
+          -74.13,
+          40.05
+        ],
+        [
+          -74.05,
+          39.93
+        ],
+        [
+          -74.09,
+          39.75
+        ],
+        [
+          -74.16,
+          39.6
+        ],
+        [
+          -74.24,
+          39.45
+        ],
+        [
+          -74.33,
+          39.36
+        ],
+        [
+          -74.45,
+          39.3
+        ],
+        [
+          -74.55,
+          39.22
+        ],
+        [
+          -74.65,
+          39.12
+        ],
+        [
+          -74.74,
+          39.02
+        ],
+        [
+          -74.85,
+          38.96
+        ],
+        [
+          -74.96,
+          38.93
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Kittatinny Ridge / High Point province",
+          "lon": -74.66,
+          "lat": 41.3,
+          "rx": 0.35,
+          "ry": 0.28,
+          "amp": 260,
+          "rot": -18
+        },
+        {
+          "name": "New Jersey Highlands",
+          "lon": -74.5,
+          "lat": 40.92,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": 170,
+          "rot": -15
+        },
+        {
+          "name": "Ridge-and-valley belt",
+          "lon": -74.95,
+          "lat": 40.75,
+          "rx": 0.5,
+          "ry": 0.3,
+          "amp": 220,
+          "rot": -30
+        },
+        {
+          "name": "Piedmont low hills",
+          "lon": -74.45,
+          "lat": 40.45,
+          "rx": 0.45,
+          "ry": 0.3,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Inner Coastal Plain",
+          "lon": -74.5,
+          "lat": 39.85,
+          "rx": 0.55,
+          "ry": 0.4,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Pine Barrens rise",
+          "lon": -74.42,
+          "lat": 39.52,
+          "rx": 0.45,
+          "ry": 0.35,
+          "amp": 75,
+          "rot": 0
+        },
+        {
+          "name": "Delaware Bay shore flats",
+          "lon": -74.92,
+          "lat": 39.2,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": 30,
+          "rot": -25
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i95-newjersey",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 / Northeast Corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -74.17,
+              40.73
+            ],
+            [
+              -74.3,
+              40.58
+            ],
+            [
+              -74.42,
+              40.49
+            ],
+            [
+              -74.62,
+              40.32
+            ],
+            [
+              -74.66,
+              40.22
+            ],
+            [
+              -74.76,
+              40.2
+            ],
+            [
+              -74.94,
+              39.94
+            ],
+            [
+              -75.1,
+              39.72
+            ],
+            [
+              -75.23,
+              39.66
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 / Northeast Corridor line linking the seeded Newark, Elizabeth, and Trenton anchors toward the Delaware Memorial Bridge; schematic polyline, not a highway alignment or survey centerline."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i78-newjersey",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 78 corridor (generalized)",
+          "short": "I-78",
+          "depthM": 0,
+          "path": [
+            [
+              -74.14,
+              40.73
+            ],
+            [
+              -74.36,
+              40.67
+            ],
+            [
+              -74.62,
+              40.63
+            ],
+            [
+              -74.88,
+              40.7
+            ],
+            [
+              -75.13,
+              40.7
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 78 corridor from the Newark-area anchors to the Pennsylvania line; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i80-newjersey",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 80 corridor (generalized)",
+          "short": "I-80",
+          "depthM": 0,
+          "path": [
+            [
+              -74.03,
+              40.85
+            ],
+            [
+              -74.33,
+              40.89
+            ],
+            [
+              -74.68,
+              40.96
+            ],
+            [
+              -74.98,
+              40.94
+            ],
+            [
+              -75.18,
+              40.9
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 80 corridor across northern New Jersey to the Pennsylvania line; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "garden-state-parkway",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Garden State Parkway corridor (generalized)",
+          "short": "GSP",
+          "depthM": 0,
+          "path": [
+            [
+              -74.04,
+              40.67
+            ],
+            [
+              -74.07,
+              40.36
+            ],
+            [
+              -74.13,
+              40.15
+            ],
+            [
+              -74.07,
+              39.93
+            ],
+            [
+              -74.15,
+              39.65
+            ],
+            [
+              -74.25,
+              39.45
+            ],
+            [
+              -74.45,
+              39.32
+            ],
+            [
+              -74.66,
+              39.17
+            ],
+            [
+              -74.87,
+              39.0
+            ]
+          ],
+          "facts": [
+            "Generalized Garden State Parkway corridor along the coastal plain; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "delaware-river-newjersey",
+          "layer": "water",
+          "tier": "context",
+          "name": "Delaware River estuary and border reach (generalized)",
+          "short": "Delaware R.",
+          "depthM": 0,
+          "path": [
+            [
+              -75.23,
+              39.66
+            ],
+            [
+              -75.14,
+              39.72
+            ],
+            [
+              -75.07,
+              39.88
+            ],
+            [
+              -75.05,
+              40.05
+            ],
+            [
+              -74.99,
+              40.2
+            ],
+            [
+              -74.9,
+              40.35
+            ],
+            [
+              -74.8,
+              40.55
+            ],
+            [
+              -74.68,
+              40.75
+            ],
+            [
+              -74.55,
+              40.92
+            ],
+            [
+              -74.43,
+              41.08
+            ],
+            [
+              -74.3,
+              41.26
+            ]
+          ],
+          "facts": [
+            "The Delaware River's states=NJ Geocoder screen returns an empty array; the national screen keys the river's Stream record to New Castle County, Delaware (FEATURE_ID 217887) — the same record seeded as a row in main's delaware frame — with same-name Kansas and New Mexico rivers also returned; the New Jersey reach stays a generalized context corridor (the New York-keyed Delaware River Gorge record is likewise not seeded here). Point line, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "USGS GNIS Geocoder screens (states=NJ empty; national screen 2026-10-23); corridor generalized, not survey geometry"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "trenton",
+          "name": "Trenton",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -74.7429385,
+          "lat": 40.2170534,
+          "depthM": 0,
+          "facts": [
+            "state capital anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 884540 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "newark",
+          "name": "Newark",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -74.1723667,
+          "lat": 40.735657,
+          "depthM": 0,
+          "facts": [
+            "Essex County urban anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 878762 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "jersey-city",
+          "name": "Jersey City",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -74.0776417,
+          "lat": 40.7281575,
+          "depthM": 0,
+          "facts": [
+            "Hudson County waterfront anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 877450 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "high-point",
+          "name": "High Point",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -74.6615393,
+          "lat": 41.3208723,
+          "depthM": 0,
+          "facts": [
+            "New Jersey state high point (1,803 feet per the GNIS official description). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 877098 (GNIS primary point)"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Trenton",
+          "Populated Place",
+          "pop.place",
+          "Mercer",
+          40.2170534,
+          -74.7429385,
+          null,
+          "884540",
+          1,
+          "State capital anchor at the Delaware fall line; the Trenton Gardens place and Trenton Channel records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=884540; exact official name and Populated Place type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Newark",
+          "Populated Place",
+          "pop.place",
+          "Essex",
+          40.735657,
+          -74.1723667,
+          null,
+          "878762",
+          1,
+          "Essex County urban anchor; the Newark Heights place, Newark Reach canal segment, Newark Bay, and historical Newark Army Air Field records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=878762; exact official name and Populated Place type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Jersey City",
+          "Populated Place",
+          "pop.place",
+          "Hudson",
+          40.7281575,
+          -74.0776417,
+          null,
+          "877450",
+          1,
+          "Hudson County waterfront anchor on the Hudson; the Jersey City Aqueduct record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877450; exact official name and Populated Place type in Hudson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Elizabeth",
+          "Populated Place",
+          "pop.place",
+          "Union",
+          40.6639916,
+          -74.2107006,
+          null,
+          "876147",
+          1,
+          "Union County port city; the Elizabethport place, Elizabeth Channel, Elizabeth River, and Elizabethport Reach records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=876147; exact official name and Populated Place type in Union County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Paterson",
+          "Populated Place",
+          "pop.place",
+          "Passaic",
+          40.9167654,
+          -74.171811,
+          null,
+          "879164",
+          1,
+          "Passaic County anchor at the Great Falls; the screen returned the city alone with no twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=879164; exact official name and Populated Place type in Passaic County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Camden",
+          "Populated Place",
+          "pop.place",
+          "Camden",
+          39.9259463,
+          -75.1196199,
+          null,
+          "875105",
+          1,
+          "Delaware River waterfront anchor opposite Philadelphia; the Camden County political-division record led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=875105; exact official name and Populated Place type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "High Point",
+          "Summit",
+          "phys.summit",
+          "Sussex",
+          41.3208723,
+          -74.6615393,
+          null,
+          "877098",
+          1,
+          "New Jersey high point; the Domestic Names per-ID check (gaznames_default REST layer) reproduces Summit feature code 15048 at stored gaz_elevation 548 m with the official description \"Highest elevation in NJ at 1803 feet.\"; the same-name Ocean County populated place (FEATURE_ID 877099) led the screen and is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=877098; exact official name and Summit type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Lake Hopatcong",
+          "Lake",
+          "hydro.lake",
+          "Sussex",
+          40.9486634,
+          -74.6372713,
+          null,
+          "877238",
+          1,
+          "Largest New Jersey lake; the per-ID check returns gaz class Reservoir (feature code 39004, stored gaz_elevation 278 m, null description) keyed to Sussex County even though the shoreline spans Morris and Sussex; the same-name Morris County populated place (876215) and the census division (2806109) led the screen and are not seeded; the row is grouped under Lakes. USGS GNIS Geocoder (GNIS), FEATURE_ID=877238; exact official name and Lake type in Sussex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Raritan River",
+          "Stream",
+          "hydro.stream",
+          "Middlesex",
+          40.4947753,
+          -74.2714405,
+          null,
+          "879618",
+          1,
+          "Central Jersey river to Raritan Bay; the Raritan River Cutoff record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=879618; exact official name and Stream type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Passaic River",
+          "Stream",
+          "hydro.stream",
+          "Essex",
+          40.7123243,
+          -74.1181983,
+          null,
+          "879159",
+          1,
+          "Single exact stream return in the Passaic valley, keyed to Essex County. USGS GNIS Geocoder (GNIS), FEATURE_ID=879159; exact official name and Stream type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Manasquan River",
+          "Stream",
+          "hydro.stream",
+          "Monmouth",
+          40.1024981,
+          -74.0343332,
+          null,
+          "878067",
+          1,
+          "Monmouth County coastal river; single exact stream return. USGS GNIS Geocoder (GNIS), FEATURE_ID=878067; exact official name and Stream type in Monmouth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Delaware and Raritan Canal",
+          "Stream",
+          "hydro.stream",
+          "Mercer",
+          40.4153835,
+          -74.6296021,
+          null,
+          "875875",
+          1,
+          "Historic Mercer County feeder canal; single exact Streams & Canals return grouped under Stream rows rather than split into a new class. USGS GNIS Geocoder (GNIS), FEATURE_ID=875875; exact official name and Stream type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "connecticut": {
+      "title": "Connecticut SUBSURFACE 4Dwm",
+      "subtitle": "Connecticut STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL",
+      "gazTitle": "Connecticut USGS GNIS REGISTER",
+      "gazNote": "Round 36 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "CT",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -73.7,
+        "lat0": 40.98,
+        "lon1": -71.79,
+        "lat1": 42.05
+      },
+      "center": {
+        "lon": -72.74,
+        "lat": 41.55
+      },
+      "baseElevationM": 90,
+      "roughnessM": 70,
+      "hasWater": true,
+      "coast": [
+        [
+          -73.66,
+          41.0
+        ],
+        [
+          -73.44,
+          41.03
+        ],
+        [
+          -73.25,
+          41.05
+        ],
+        [
+          -73.04,
+          41.1
+        ],
+        [
+          -72.85,
+          41.13
+        ],
+        [
+          -72.65,
+          41.2
+        ],
+        [
+          -72.45,
+          41.25
+        ],
+        [
+          -72.35,
+          41.31
+        ],
+        [
+          -72.15,
+          41.33
+        ],
+        [
+          -71.99,
+          41.32
+        ],
+        [
+          -71.9,
+          41.36
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Northwest Hills / Litchfield Highlands",
+          "lon": -73.42,
+          "lat": 41.95,
+          "rx": 0.35,
+          "ry": 0.28,
+          "amp": 320,
+          "rot": -20
+        },
+        {
+          "name": "Frissell slope / state-line high ground",
+          "lon": -73.48,
+          "lat": 42.04,
+          "rx": 0.18,
+          "ry": 0.14,
+          "amp": 280,
+          "rot": 0
+        },
+        {
+          "name": "Housatonic valley",
+          "lon": -73.25,
+          "lat": 41.72,
+          "rx": 0.28,
+          "ry": 0.4,
+          "amp": 140,
+          "rot": -15
+        },
+        {
+          "name": "Central Connecticut lowlands",
+          "lon": -72.75,
+          "lat": 41.65,
+          "rx": 0.5,
+          "ry": 0.3,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Eastern Connecticut uplands",
+          "lon": -72.12,
+          "lat": 41.75,
+          "rx": 0.4,
+          "ry": 0.35,
+          "amp": 130,
+          "rot": 0
+        },
+        {
+          "name": "Coastal low strip",
+          "lon": -72.9,
+          "lat": 41.1,
+          "rx": 0.6,
+          "ry": 0.15,
+          "amp": 40,
+          "rot": -5
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i91-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 91 corridor (generalized)",
+          "short": "I-91",
+          "depthM": 0,
+          "path": [
+            [
+              -72.68,
+              41.76
+            ],
+            [
+              -72.73,
+              41.65
+            ],
+            [
+              -72.8,
+              41.52
+            ],
+            [
+              -72.88,
+              41.4
+            ],
+            [
+              -72.93,
+              41.31
+            ],
+            [
+              -72.96,
+              41.2
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 91 corridor through the seeded Hartford and New Haven anchors up the Connecticut River valley; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i84-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 84 corridor (generalized)",
+          "short": "I-84",
+          "depthM": 0,
+          "path": [
+            [
+              -72.68,
+              41.76
+            ],
+            [
+              -72.85,
+              41.66
+            ],
+            [
+              -73.05,
+              41.56
+            ],
+            [
+              -73.28,
+              41.52
+            ],
+            [
+              -73.52,
+              41.5
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 84 corridor linking the seeded Hartford and Waterbury anchors toward the New York line; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i95-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 / coastal corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -73.66,
+              41.02
+            ],
+            [
+              -73.45,
+              41.06
+            ],
+            [
+              -73.2,
+              41.13
+            ],
+            [
+              -73.02,
+              41.18
+            ],
+            [
+              -72.91,
+              41.31
+            ],
+            [
+              -72.7,
+              41.36
+            ],
+            [
+              -72.45,
+              41.35
+            ],
+            [
+              -72.2,
+              41.36
+            ],
+            [
+              -71.95,
+              41.37
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 coastal corridor linking the seeded Stamford, Bridgeport, New Haven, and New London anchors to the Rhode Island line; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i395-connecticut",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 395 / eastern corridor (generalized)",
+          "short": "I-395",
+          "depthM": 0,
+          "path": [
+            [
+              -72.09,
+              41.52
+            ],
+            [
+              -72.03,
+              41.65
+            ],
+            [
+              -71.98,
+              41.8
+            ],
+            [
+              -71.95,
+              41.95
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 395 corridor up the eastern uplands from the seeded Norwich anchor; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "hartford",
+          "name": "Hartford",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -72.6850932,
+          "lat": 41.7637111,
+          "depthM": 0,
+          "facts": [
+            "state capital anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 213160 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "new-haven",
+          "name": "New Haven",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -72.9281578,
+          "lat": 41.3081527,
+          "depthM": 0,
+          "facts": [
+            "South Central coast anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 209231 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "bridgeport",
+          "name": "Bridgeport",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -73.2048348,
+          "lat": 41.1670412,
+          "depthM": 0,
+          "facts": [
+            "Fairfield County coast anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 205720 (GNIS primary point)"
+          ]
+        },
+        {
+          "id": "bear-mountain",
+          "name": "Bear Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -73.4548409,
+          "lat": 42.0448053,
+          "depthM": 0,
+          "facts": [
+            "Highest Connecticut-keyed GNIS summit (2,323 ft stored as 708 m); the official USGS table's Mount Frissell south slope high point has no Connecticut record. node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 205348 (GNIS primary point)"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Hartford",
+          "Populated Place",
+          "pop.place",
+          "Capitol Planning Region",
+          41.7637111,
+          -72.6850932,
+          null,
+          "213160",
+          1,
+          "Connecticut capital anchor; the Domestic Names per-ID check reproduces census class P1 with GSA/OPM 0280/280, stored gaz_elevation 15 m, and the description \"Capital of State of Connecticut and county seat.\"; the historical Hartford County division record and the Hartford reservoir series are not seeded; the returned county is the Capitol Planning Region after Connecticut's county rekeying (historical county records return as \"(historical)\"). USGS GNIS Geocoder (GNIS), FEATURE_ID=213160; exact official name and Populated Place type in Capitol Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bridgeport",
+          "Populated Place",
+          "pop.place",
+          "Greater Bridgeport Planning Region",
+          41.1670412,
+          -73.2048348,
+          null,
+          "205720",
+          1,
+          "Fairfield County coast anchor; the harbor, entrance channel, ferry crossing, and historical Army Air Field records are not seeded; the returned county is the Greater Bridgeport Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=205720; exact official name and Populated Place type in Greater Bridgeport Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New Haven",
+          "Populated Place",
+          "pop.place",
+          "South Central Connecticut Planning Region",
+          41.3081527,
+          -72.9281578,
+          null,
+          "209231",
+          1,
+          "South Central coast anchor; the historical New Haven County division, canal, harbor channel, harbor, and historical Army Air Field records are not seeded; the returned county is the South Central Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209231; exact official name and Populated Place type in South Central Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Waterbury",
+          "Populated Place",
+          "pop.place",
+          "Naugatuck Valley Planning Region",
+          41.5581525,
+          -73.0514966,
+          null,
+          "211851",
+          1,
+          "Naugatuck Valley anchor; the Waterbury Reservoir Number 2 record is not seeded; the returned county is the Naugatuck Valley Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211851; exact official name and Populated Place type in Naugatuck Valley Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Stamford",
+          "Populated Place",
+          "pop.place",
+          "Western Connecticut Planning Region",
+          41.0534302,
+          -73.5387341,
+          null,
+          "211129",
+          1,
+          "Western Connecticut coast anchor; the Stamford Harbor record is not seeded; the returned county is the Western Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211129; exact official name and Populated Place type in Western Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New London",
+          "Populated Place",
+          "pop.place",
+          "Southeastern Connecticut Planning Region",
+          41.3556539,
+          -72.0995209,
+          null,
+          "209237",
+          1,
+          "Thames River mouth city; the historical New London County division and harbor records are not seeded; the returned county is the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209237; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Norwich",
+          "Populated Place",
+          "pop.place",
+          "Southeastern Connecticut Planning Region",
+          41.5242649,
+          -72.0759105,
+          null,
+          "209410",
+          1,
+          "Upper Thames city; the Norwichtown place, Norwichtown Brook, and Norwich Pond records are not seeded; the returned county is the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=209410; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bear Mountain",
+          "Summit",
+          "phys.summit",
+          "Northwest Hills Planning Region",
+          42.0448053,
+          -73.4548409,
+          null,
+          "205348",
+          1,
+          "Highest summit with a Connecticut-keyed GNIS record; the Domestic Names per-ID check description reads \"The highest summit located within the boudaries of the State of Connecticut.\" (verbatim, source typo preserved) at stored gaz_elevation 708 m; the same-name southern Connecticut summit (FEATURE_ID 205347, blank description, 271 m, about 66 km to the south, Western Connecticut Planning Region) is not seeded; the official USGS Elevations and Distances high point (Mount Frissell south slope at the state line, 2,380 feet, Litchfield) has no Connecticut-keyed GNIS record — the Mount Frissell summit keys to Berkshire County, Massachusetts (FEATURE_ID 607428) and is never seeded into this state row. USGS GNIS Geocoder (GNIS), FEATURE_ID=205348; exact official name and Summit type in Northwest Hills Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Bantam Lake",
+          "Lake",
+          "hydro.lake",
+          "Northwest Hills Planning Region",
+          41.7045073,
+          -73.2215068,
+          null,
+          "205246",
+          1,
+          "Largest natural lake in Connecticut; single exact Lakes & Reservoirs return in the Northwest Hills Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=205246; exact official name and Lake type in Northwest Hills Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Connecticut River",
+          "Stream",
+          "hydro.stream",
+          "Lower Connecticut River Valley Planning Region",
+          41.272313,
+          -72.332687,
+          null,
+          "206425",
+          1,
+          "State-namesake river; the main-stem Stream record is returned only under states=CT — the batch-17 New Hampshire and Vermont frames keep a corridor-only decision for the same river because neither of their state screens returns a Stream record; this record is keyed to the Lower Connecticut River Valley Planning Region and the Connecticut River Reservoir record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=206425; exact official name and Stream type in Lower Connecticut River Valley Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Housatonic River",
+          "Stream",
+          "hydro.stream",
+          "South Central Connecticut Planning Region",
+          41.169264,
+          -73.108442,
+          null,
+          "212670",
+          1,
+          "Western river to Long Island Sound; the Housatonic River Reservoir record is not seeded; the returned county is the South Central Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=212670; exact official name and Stream type in South Central Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Thames River",
+          "Stream",
+          "hydro.stream",
+          "Southeastern Connecticut Planning Region",
+          41.3023207,
+          -72.0795199,
+          null,
+          "211397",
+          1,
+          "Southeastern river to the Sound at New London; single exact stream return in the Southeastern Connecticut Planning Region. USGS GNIS Geocoder (GNIS), FEATURE_ID=211397; exact official name and Stream type in Southeastern Connecticut Planning Region cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
     }
   }
 }
