@@ -152,10 +152,23 @@ Ebright Azimuth (447 feet), is a triangulation station with no GNIS
 Summit record. The machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch16-source-register-2026-10-23.json).
 
+Round 35 update: **2026-10-23**. `newhampshire` and `vermont` join as
+the fiftieth and fifty-first configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
+surfaces (candidates in the cumulative extract, now covering
+twenty-two states). Mount Washington (6,288 feet, New Hampshire high
+point) and Mount Mansfield (4,395 feet, Vermont high point) carry
+Domestic Names per-ID identity checks; Monadnock Mountain is seeded
+under its GNIS name order (Mount Monadnock screens empty), and the
+Connecticut, Merrimack, and Saco main stems stay corridors after
+reservoir-only or empty screens in both frames. The machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch17-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch17-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has forty-nine configurations — five cities,
-forty statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-one configurations — five cities,
+forty-two statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -209,6 +222,8 @@ its own offline Webxdc:
 | Florida (statewide) | `florida-subsurface.html` | `js/city-subsurface-data-florida.js` | `js/city-gazetteer-data-florida.js` | `florida-subsurface.xdc` |
 | Maryland (statewide) | `Maryland-subsurface.html` | `js/city-subsurface-data-Maryland.js` | `js/city-gazetteer-data-Maryland.js` | `Maryland-subsurface.xdc` |
 | Delaware (statewide) | `delaware-subsurface.html` | `js/city-subsurface-data-delaware.js` | `js/city-gazetteer-data-delaware.js` | `delaware-subsurface.xdc` |
+| New Hampshire (statewide) | `newhampshire-subsurface.html` | `js/city-subsurface-data-newhampshire.js` | `js/city-gazetteer-data-newhampshire.js` | `newhampshire-subsurface.xdc` |
+| Vermont (statewide) | `vermont-subsurface.html` | `js/city-subsurface-data-vermont.js` | `js/city-gazetteer-data-vermont.js` | `vermont-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
