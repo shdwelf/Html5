@@ -107,6 +107,10 @@
       <label>Year <span id="yearOutput">all years</span>
         <input id="yearInput" type="range" min="1993" max="1997" step="1" value="1993">
       </label>
+      <div id="sliceRow" hidden>
+        <span class="small muted">ARPANET time slice</span>
+        <span id="sliceButtons"></span>
+      </div>
       <button id="downloadJson" type="button">Export pack JSON</button>
       <button id="downloadCsv" type="button" class="secondary">Export observations CSV</button>
     </section>
@@ -229,7 +233,8 @@
         id: COMMS_HISTORY_PACK.id,
         label: "Comms history — ARPANET · FidoNet origin · Mojave payphone",
         heading: "ARPANET, FidoNet, and a desert payphone — as cited places.",
-        lede: "The first four ARPANET IMP sites (1969), FidoNet's San Francisco origin (1984), and the Mojave phone booth, as an observation-first layer. Coordinates are published approximations with context radii, not surveyed pins; edges are logical, never claimed cable routes.",
+        lede: "ARPANET from the first four IMP sites (1969) through the 15-node network of 1971 to the first international nodes of the 1977 slice, plus FidoNet's San Francisco origin (1984) and the Mojave phone booth, as an observation-first layer. Use the ARPANET time-slice buttons for the cumulative 1969 / 1971 / 1977 network. Coordinates are published approximations with context radii, not surveyed pins; edges are logical, never claimed cable routes.",
+        slices: [1969, 1971, 1977],
         notice: "The Mojave booth was removed on 17 May 2000; nothing remains on site. No FidoNet nodelist data is bundled — nodelists remain local-import-only under the checked prologue rights; use the local import below with your own snapshot.",
         schematicNote: "Schematic lon/lat scatter of published coordinates (context radii apply — see each record). The UCLA→SRI line marks the first host-to-host message of 29 Oct 1969 as a logical edge; the historical circuit route is not claimed.",
         pack: COMMS_HISTORY_PACK,
@@ -250,6 +255,7 @@
     let validation = null;
     let summary = null;
     let selectedObservationId = null;
+    let sliceYear = null;
     let localPack = null;
     let importByteBuffer = null;
     const MAX_IMPORT_BYTES = 5_000_000;
@@ -297,6 +303,10 @@
     };
 
     function includesSelectedYear(observation) {
+      if (sliceYear != null) {
+        const start = Date.parse(observation.validFrom ?? observation.observedAt ?? "");
+        return Number.isFinite(start) && start <= Date.UTC(sliceYear, 11, 31);
+      }
       const selected = Number($("yearInput").value);
       if (selected <= Number($("yearInput").min)) return true;
       const start = Date.parse(observation.validFrom ?? observation.observedAt ?? "");
@@ -583,10 +593,26 @@
       return node;
     };
 
+    function sliceVisibleNodeIds() {
+      if (sliceYear == null) return null;
+      const obsById = new Map((pack.observations ?? []).map((o) => [o.id, o]));
+      const visible = new Set();
+      for (const node of pack.nodes ?? []) {
+        const starts = (node.observationIds ?? []).map((id) => Date.parse(obsById.get(id)?.validFrom ?? obsById.get(id)?.observedAt ?? ""));
+        if (starts.some((t) => Number.isFinite(t) && t <= Date.UTC(sliceYear, 11, 31))) visible.add(node.id);
+      }
+      return visible;
+    }
+
     function renderSchematic() {
       const host = $("schematic");
       host.textContent = "";
-      const places = (pack.places ?? []).filter((place) => place.lat != null && place.lon != null);
+      let places = (pack.places ?? []).filter((place) => place.lat != null && place.lon != null);
+      const sliceNodes = sliceVisibleNodeIds();
+      if (sliceNodes) {
+        const keepPlaces = new Set((pack.nodes ?? []).filter((n) => sliceNodes.has(n.id)).map((n) => n.placeId));
+        places = places.filter((place) => keepPlaces.has(place.id));
+      }
       const svg = svgEl("svg", { viewBox: "0 0 520 250", width: "100%", role: "img" });
       svg.append(svgEl("title", {}, `${pack.title} — schematic place view`));
       if (!places.length) {
@@ -612,6 +638,7 @@
       const Y = (lat) => 220 - ((lat - lat0) / (lat1 - lat0)) * 190;
       const placeOfNode = new Map((pack.nodes ?? []).map((node) => [node.id, placeById().get(node.placeId)]));
       for (const edge of pack.edges ?? []) {
+        if (sliceNodes && !(sliceNodes.has(edge.fromNodeId) && sliceNodes.has(edge.toNodeId))) continue;
         const a = placeOfNode.get(edge.fromNodeId);
         const b = placeOfNode.get(edge.toNodeId);
         if (a?.lat != null && b?.lat != null) {
@@ -682,11 +709,37 @@
         : "—";
       $("statReady").textContent = validation.captureReady ? "YES" : "NO";
 
+      sliceYear = null;
+      renderSliceRow(entry);
       renderSchematic();
       renderValidation();
       renderMerges();
       renderRecords();
       renderDetail();
+    }
+
+    function renderSliceRow(entry) {
+      const row = $("sliceRow");
+      const host = $("sliceButtons");
+      host.textContent = "";
+      const years = entry.slices ?? [];
+      row.hidden = years.length === 0;
+      if (!years.length) return;
+      for (const year of [...years, null]) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "secondary";
+        b.textContent = year == null ? "All" : String(year);
+        b.dataset.slice = year == null ? "" : String(year);
+        b.addEventListener("click", () => {
+          sliceYear = year;
+          $("yearOutput").textContent = year == null ? "all years" : `ARPANET slice ${year}`;
+          host.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
+          renderRecords();
+          renderSchematic();
+        });
+        host.append(b);
+      }
     }
 
     for (const entry of PACKS) {
@@ -703,6 +756,8 @@
     $("searchInput").addEventListener("input", renderRecords);
     $("snapshotSelect").addEventListener("change", renderRecords);
     $("yearInput").addEventListener("input", () => {
+      sliceYear = null;
+      $("sliceButtons")?.querySelectorAll("button").forEach((x) => x.classList.remove("active"));
       const year = Number($("yearInput").value);
       $("yearOutput").textContent = year <= Number($("yearInput").min) ? "all years" : String(year);
       renderRecords();

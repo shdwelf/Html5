@@ -45,6 +45,45 @@
       "parser": "manual-fixture/2026-10-23",
       "issuedLabel": "accessed 2026-10-23",
       "rightsNote": "Public historical facts cited from this source; no source text, nodelist, or list data is bundled in this pack."
+    },
+    {
+      "id": "src-hobbes-rfc2235",
+      "title": "Hobbes' Internet Timeline (RFC 2235) — 1971: 15 nodes (23 hosts) list",
+      "publisher": "RFC 2235 / zakon.org",
+      "issued": null,
+      "captureUri": "https://www.zakon.org/robert/internet/timeline/",
+      "captureStatus": "citation-only-not-captured",
+      "sha256": null,
+      "rightsStatus": "citation-only",
+      "parser": "manual-fixture/2026-10-24",
+      "issuedLabel": "accessed 2026-10-24",
+      "rightsNote": "Public historical facts cited from this source; no source text or list data is bundled in this pack."
+    },
+    {
+      "id": "src-rfc235-site-status",
+      "title": "RFC 235 — Site status (BBN, 27 Sep 1971): network addresses and host computers",
+      "publisher": "IETF RFC 235",
+      "issued": "1971-09-27",
+      "captureUri": "https://www.rfc-editor.org/info/rfc235/",
+      "captureStatus": "citation-only-not-captured",
+      "sha256": null,
+      "rightsStatus": "citation-only",
+      "parser": "manual-fixture/2026-10-24",
+      "issuedLabel": "RFC 235 (1971-09-27)",
+      "rightsNote": "Public historical facts cited from this source; no source text is bundled in this pack."
+    },
+    {
+      "id": "src-norsar-ucl-1973",
+      "title": "NORSAR history; SATNET/UCL records — first international connections, June–July 1973; Hawaii IMP 17 Dec 1972",
+      "publisher": "NORSAR; Wikipedia SATNET/NORSAR compilations of primary reports",
+      "issued": null,
+      "captureUri": "https://www.norsar.no/about-us/history/",
+      "captureStatus": "citation-only-not-captured",
+      "sha256": null,
+      "rightsStatus": "citation-only",
+      "parser": "manual-fixture/2026-10-24",
+      "issuedLabel": "accessed 2026-10-24",
+      "rightsNote": "Public historical facts cited from this source; no source text is bundled in this pack."
     }
   ],
   "places": [
@@ -107,6 +146,156 @@
       "radiusKm": 12,
       "coordinateBasis": "city-centroid-context",
       "uncertaintyNote": "City-level context only; no specific BBS street address is claimed."
+    },
+    {
+      "id": "place-bbn-cambridge",
+      "label": "BBN, Cambridge, MA",
+      "granularity": "site",
+      "lat": 42.3879,
+      "lon": -71.1479,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-mit",
+      "label": "MIT, Cambridge, MA",
+      "granularity": "site",
+      "lat": 42.3601,
+      "lon": -71.0942,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-rand",
+      "label": "RAND Corporation, Santa Monica, CA",
+      "granularity": "site",
+      "lat": 34.0109,
+      "lon": -118.4909,
+      "radiusKm": 2,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-sdc",
+      "label": "System Development Corporation (SDC), Santa Monica, CA",
+      "granularity": "site",
+      "lat": 34.0195,
+      "lon": -118.4912,
+      "radiusKm": 3,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-harvard",
+      "label": "Harvard University, Cambridge, MA",
+      "granularity": "site",
+      "lat": 42.377,
+      "lon": -71.1167,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-lincoln-lab",
+      "label": "MIT Lincoln Laboratory, Lexington, MA",
+      "granularity": "site",
+      "lat": 42.4587,
+      "lon": -71.2656,
+      "radiusKm": 1.5,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-stanford",
+      "label": "Stanford University, CA",
+      "granularity": "site",
+      "lat": 37.4275,
+      "lon": -122.1697,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-uiuc",
+      "label": "University of Illinois, Urbana, IL",
+      "granularity": "site",
+      "lat": 40.1106,
+      "lon": -88.2073,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-cwru",
+      "label": "Case Western Reserve University, Cleveland, OH",
+      "granularity": "site",
+      "lat": 41.5045,
+      "lon": -81.6084,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-cmu",
+      "label": "Carnegie Mellon University, Pittsburgh, PA",
+      "granularity": "site",
+      "lat": 40.4433,
+      "lon": -79.9436,
+      "radiusKm": 0.7,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-nasa-ames",
+      "label": "NASA Ames Research Center, Moffett Field, CA",
+      "granularity": "site",
+      "lat": 37.415,
+      "lon": -122.055,
+      "radiusKm": 1.5,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-hawaii-manoa",
+      "label": "University of Hawaii, Manoa, Honolulu, HI",
+      "granularity": "site",
+      "lat": 21.3,
+      "lon": -157.819,
+      "radiusKm": 1,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-sdac",
+      "label": "Seismic Data Analysis Center (SDAC), Alexandria, VA",
+      "granularity": "site",
+      "lat": 38.8048,
+      "lon": -77.0469,
+      "radiusKm": 3,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-norsar",
+      "label": "NORSAR, Kjeller, Norway",
+      "granularity": "site",
+      "lat": 59.974,
+      "lon": 11.045,
+      "radiusKm": 2,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
+    },
+    {
+      "id": "place-ucl",
+      "label": "University College London; London, UK",
+      "granularity": "site",
+      "lat": 51.5246,
+      "lon": -0.134,
+      "radiusKm": 1,
+      "coordinateBasis": "published-institutional-approx",
+      "uncertaintyNote": "Campus/institution approximation from public sources; not surveyed."
     }
   ],
   "nodes": [
@@ -206,6 +395,261 @@
       ],
       "identifiers": [],
       "aliases": []
+    },
+    {
+      "id": "node-arpanet-bbn",
+      "name": "BBN, Cambridge — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-bbn-cambridge",
+      "observationIds": [
+        "obs-arpanet-bbn"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-10 host; DDP-516 IMP"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-mit",
+      "name": "MIT — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-mit",
+      "observationIds": [
+        "obs-arpanet-mit"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "Multics (Honeywell 645) and PDP-10 (Dynamic Modeling)"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-sdc",
+      "name": "SDC, Santa Monica — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-sdc",
+      "observationIds": [
+        "obs-arpanet-sdc"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "IBM 360/67"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-harvard",
+      "name": "Harvard — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-harvard",
+      "observationIds": [
+        "obs-arpanet-harvard"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-10 and PDP-1"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-stanford",
+      "name": "Stanford — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-stanford",
+      "observationIds": [
+        "obs-arpanet-stanford"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-10"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-lincoln",
+      "name": "MIT Lincoln Laboratory — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-lincoln-lab",
+      "observationIds": [
+        "obs-arpanet-lincoln"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "IBM 360/67 and TX-2"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-cmu",
+      "name": "Carnegie Mellon — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-cmu",
+      "observationIds": [
+        "obs-arpanet-cmu"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-10"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-cwru",
+      "name": "Case Western Reserve — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-cwru",
+      "observationIds": [
+        "obs-arpanet-cwru"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-10"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-rand",
+      "name": "RAND, Santa Monica — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-rand",
+      "observationIds": [
+        "obs-arpanet-rand"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "IBM 360/65"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-uiuc",
+      "name": "University of Illinois, Urbana — ARPANET IMP site",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-uiuc",
+      "observationIds": [
+        "obs-arpanet-uiuc"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "PDP-11"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-ames",
+      "name": "NASA Ames — ARPANET TIP site",
+      "network": "arpanet",
+      "kind": "tip-site",
+      "placeId": "place-nasa-ames",
+      "observationIds": [
+        "obs-arpanet-ames"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "Terminal IMP (DDP-316), no host"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-hawaii",
+      "name": "University of Hawaii — ARPANET IMP site (ALOHA satellite)",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-hawaii-manoa",
+      "observationIds": [
+        "obs-arpanet-hawaii"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "ALOHA host via satellite channel"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-sdac",
+      "name": "SDAC, Alexandria — ARPANET site (NORSAR US endpoint)",
+      "network": "arpanet",
+      "kind": "imp-site",
+      "placeId": "place-sdac",
+      "observationIds": [
+        "obs-arpanet-sdac"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "Seismic Data Analysis Center host systems"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-norsar",
+      "name": "NORSAR, Norway — first non-US ARPANET node",
+      "network": "arpanet",
+      "kind": "tip-site",
+      "placeId": "place-norsar",
+      "observationIds": [
+        "obs-arpanet-norsar"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "TIP at Kjeller"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "node-arpanet-ucl",
+      "name": "University College London — ARPANET TIP site",
+      "network": "arpanet",
+      "kind": "tip-site",
+      "placeId": "place-ucl",
+      "observationIds": [
+        "obs-arpanet-ucl"
+      ],
+      "identifiers": [
+        {
+          "kind": "host",
+          "value": "TIP; Peter Kirstein research group hosts"
+        }
+      ],
+      "aliases": []
     }
   ],
   "edges": [
@@ -220,6 +664,32 @@
       "observationIds": [
         "obs-arpanet-ucla",
         "obs-arpanet-sri"
+      ]
+    },
+    {
+      "id": "edge-sdac-norsar-satellite",
+      "fromNodeId": "node-arpanet-sdac",
+      "toNodeId": "node-arpanet-norsar",
+      "kind": "arpanet-link",
+      "validFrom": "1973-06-15",
+      "note": "Transatlantic satellite link via Tanum Earth Station (Sweden), June 1973 — NORSAR was the first non-US node. Straight-line context geometry only; the satellite path is not claimed.",
+      "geometryBasis": "logical-only",
+      "observationIds": [
+        "obs-arpanet-sdac",
+        "obs-arpanet-norsar"
+      ]
+    },
+    {
+      "id": "edge-norsar-ucl",
+      "fromNodeId": "node-arpanet-norsar",
+      "toNodeId": "node-arpanet-ucl",
+      "kind": "arpanet-link",
+      "validFrom": "1973-07-25",
+      "note": "Terrestrial circuit NORSAR to UCL; UCL passed its first packets 25 Jul 1973 and gatewayed to UK academic networks. Straight-line context geometry only; the circuit route is not claimed.",
+      "geometryBasis": "logical-only",
+      "observationIds": [
+        "obs-arpanet-norsar",
+        "obs-arpanet-ucl"
       ]
     }
   ],
@@ -345,8 +815,310 @@
         "City-level place precision only.",
         "No historical nodelist records are bundled in this pack."
       ]
+    },
+    {
+      "id": "obs-arpanet-bbn",
+      "snapshotId": "src-hobbes-rfc2235",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1970-06",
+      "validFrom": "1970-06-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "BBN, Cambridge — ARPANET IMP site",
+        "host": "PDP-10 host; DDP-516 IMP",
+        "networkAddress1971": "5",
+        "role": "Network Control Center (NCC)",
+        "impInstalled": "by June 1970 (1970 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-mit",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1970-06",
+      "validFrom": "1970-06-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "MIT — ARPANET IMP site",
+        "host": "Multics (Honeywell 645) and PDP-10 (Dynamic Modeling)",
+        "networkAddress1971": "6 / 70",
+        "impInstalled": "by June 1970 (1970 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-sdc",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1970-06",
+      "validFrom": "1970-06-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "SDC, Santa Monica — ARPANET IMP site",
+        "host": "IBM 360/67",
+        "networkAddress1971": "8",
+        "impInstalled": "by June 1970 (1970 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-harvard",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1970-06",
+      "validFrom": "1970-06-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Harvard — ARPANET IMP site",
+        "host": "PDP-10 and PDP-1",
+        "networkAddress1971": "9 / 73",
+        "impInstalled": "by June 1970 (1970 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-stanford",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-01",
+      "validFrom": "1971-01-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Stanford — ARPANET IMP site",
+        "host": "PDP-10",
+        "networkAddress1971": "11",
+        "impInstalled": "by January 1971 (1971 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-lincoln",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-01",
+      "validFrom": "1971-01-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "MIT Lincoln Laboratory — ARPANET IMP site",
+        "host": "IBM 360/67 and TX-2",
+        "networkAddress1971": "10 / 74",
+        "impInstalled": "by January 1971 (1971 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-cmu",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-01",
+      "validFrom": "1971-01-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Carnegie Mellon — ARPANET IMP site",
+        "host": "PDP-10",
+        "networkAddress1971": "14",
+        "impInstalled": "by January 1971 (1971 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-cwru",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-01",
+      "validFrom": "1971-01-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Case Western Reserve — ARPANET IMP site",
+        "host": "PDP-10",
+        "networkAddress1971": "13",
+        "impInstalled": "by January 1971 (1971 expansion cohort)"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-rand",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-04",
+      "validFrom": "1971-04-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "RAND, Santa Monica — ARPANET IMP site",
+        "host": "IBM 360/65",
+        "networkAddress1971": "7",
+        "impInstalled": "by April 1971 — completing the 15-node network (23 hosts) of Hobbes/RFC 2235"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-uiuc",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-04",
+      "validFrom": "1971-04-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "University of Illinois, Urbana — ARPANET IMP site",
+        "host": "PDP-11",
+        "networkAddress1971": "12",
+        "impInstalled": "by April 1971 — completing the 15-node network (23 hosts) of Hobbes/RFC 2235"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-ames",
+      "snapshotId": "src-rfc235-site-status",
+      "locator": "Hobbes' Internet Timeline (RFC 2235) 1971 15-node list; RFC 235 site-status table (Sep 1971)",
+      "observedAt": "1971-04",
+      "validFrom": "1971-04-01",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "NASA Ames — ARPANET TIP site",
+        "host": "Terminal IMP (DDP-316), no host",
+        "networkAddress1971": "16",
+        "kindNote": "TIP (Terminal IMP) per RFC 235; counted in the 15-node 1971 list.",
+        "impInstalled": "by April 1971 — completing the 15-node network (23 hosts) of Hobbes/RFC 2235"
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-hawaii",
+      "snapshotId": "src-norsar-ucl-1973",
+      "locator": "NORSAR institutional history; SATNET/UCL connection records (1972–1973)",
+      "observedAt": "1972-12",
+      "validFrom": "1972-12-17",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "University of Hawaii — ARPANET IMP site (ALOHA satellite)",
+        "host": "ALOHA host via satellite channel",
+        "networkAddress1971": "n/a (1971 list predates it)",
+        "link": "IMP installed 17 Dec 1972 connecting the ALOHA host to ARPANET by satellite channel."
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-sdac",
+      "snapshotId": "src-norsar-ucl-1973",
+      "locator": "NORSAR institutional history; SATNET/UCL connection records (1972–1973)",
+      "observedAt": "1973-06",
+      "validFrom": "1973-06-15",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "SDAC, Alexandria — ARPANET site (NORSAR US endpoint)",
+        "host": "Seismic Data Analysis Center host systems",
+        "networkAddress1971": "n/a",
+        "role": "US endpoint of the NORSAR transatlantic satellite link via Tanum Earth Station, Sweden."
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-norsar",
+      "snapshotId": "src-norsar-ucl-1973",
+      "locator": "NORSAR institutional history; SATNET/UCL connection records (1972–1973)",
+      "observedAt": "1973-06",
+      "validFrom": "1973-06-15",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "NORSAR, Norway — first non-US ARPANET node",
+        "host": "TIP at Kjeller",
+        "networkAddress1971": "n/a",
+        "role": "Norwegian Seismic Array; first country outside the US connected (June 1973)."
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
+    },
+    {
+      "id": "obs-arpanet-ucl",
+      "snapshotId": "src-norsar-ucl-1973",
+      "locator": "NORSAR institutional history; SATNET/UCL connection records (1972–1973)",
+      "observedAt": "1973-07",
+      "validFrom": "1973-07-25",
+      "validTo": null,
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "University College London — ARPANET TIP site",
+        "host": "TIP; Peter Kirstein research group hosts",
+        "networkAddress1971": "n/a",
+        "role": "First packets 25 Jul 1973 via terrestrial circuit to NORSAR; gateway to UK academic networks."
+      },
+      "warnings": [
+        "Site coordinates are institutional approximations."
+      ]
     }
   ],
   "mergeLog": [],
-  "seedNote": "Created 2026-10-23 (backlog round 19): six nodes / six places / one edge from cited public facts. No merges performed; every node rests on a single observation."
+  "seedNote": "Created 2026-10-23 (backlog round 19); extended 2026-10-24 (round 45, S6 time slices): the ARPANET cohorts of 1970 (BBN/MIT/SDC/Harvard), January 1971 (Stanford/Lincoln/CMU/Case) and April 1971 (RAND/Illinois/Ames TIP) complete the canonical 15-node 1971 network beside the 1969 first four; Hawaii (IMP 1972-12-17), SDAC + NORSAR (1973-06-15) and UCL (1973-07-25) seed the 1977 slice's international expansion. Not all 57 IMPs of 1977 are seeded — the slice marks dated, cited additions only. No merges performed; every node rests on a single observation."
 }

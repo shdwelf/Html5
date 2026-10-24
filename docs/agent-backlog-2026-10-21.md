@@ -635,6 +635,20 @@ box; year filter bounds are per-pack. Tests: historical-network suites
 16/16. Remaining: ARPANET 1971/1977 time slices; bulk FidoNet layer only
 with a redistributable snapshot.
 
+**Round 45 status (2026-10-24): ARPANET 1971/1977 time slices done.**
+The comms-history seed now carries dated ARPANET cohorts beside the
+1969 first four: 1970 (BBN/MIT/SDC/Harvard), January 1971
+(Stanford/Lincoln/CMU/Case) and April 1971 (RAND/Illinois/Ames TIP)
+complete the canonical 15-node network (Hobbes/RFC 2235; hosts from
+RFC 235), and Hawaii (IMP 1972-12-17), SDAC, NORSAR (1973-06-15) and
+UCL (1973-07-25) seed the 1977 slice's international expansion with
+two documented logical-only edges. The viewer offers cumulative
+1969/1971/1977/All ARPANET slice buttons filtering records and
+schematic; not all 57 IMPs of 1977 are seeded. The round record is
+[`backlog-execution-round-45-2026-10-24.md`](backlog-execution-round-45-2026-10-24.md).
+Remaining S6: a lawfully redistributable nodelist snapshot (rights) and
+a second independent Keyhole listing (capture) — both externally gated.
+
 **Round 17 status (2026-10-22): partial.** Phase 0 shipped as a tested
 Keyhole evidence fixture, standalone
 [`historical-network-viewer.html`](../historical-network-viewer.html), shared
