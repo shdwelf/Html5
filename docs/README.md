@@ -63,6 +63,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-25-2026-10-23.md](backlog-execution-round-25-2026-10-23.md) — backlog execution round 25 2026 10 23
 - [backlog-execution-round-26-2026-10-23.md](backlog-execution-round-26-2026-10-23.md) — backlog execution round 26 2026 10 23
 - [backlog-execution-round-27-2026-10-23.md](backlog-execution-round-27-2026-10-23.md) — backlog execution round 27 2026 10 23
+- [backlog-execution-round-28-2026-10-23.md](backlog-execution-round-28-2026-10-23.md) — backlog execution round 28 2026 10 23
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
 - [backlog-execution-round-5-2026-10-21.md](backlog-execution-round-5-2026-10-21.md) — backlog execution round 5 2026 10 21
