@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T00:52:08Z",
+ "retrieved": "2026-10-24T07:00:42Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4062,6 +4062,290 @@
      "county": "Chittenden",
      "lat": 44.5303255,
      "lon": -73.2745738
+    }
+   ]
+  },
+  "ME": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_ME_Text.zip",
+   "zipSha256": "487e81d9afcf1fe862db523d08efe2571e460ef8fc6c1cbe1dc27f2c839e7008",
+   "candidatesRequested": [
+    "Augusta",
+    "Portland",
+    "Bangor",
+    "Lewiston",
+    "Mount Katahdin",
+    "Cadillac Mountain",
+    "Moosehead Lake",
+    "Sebago Lake",
+    "Penobscot River",
+    "Kennebec River",
+    "Androscoggin River",
+    "Saco River"
+   ],
+   "rows": [
+    {
+     "featureId": "580918",
+     "name": "Androscoggin River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "Sagadahoc",
+     "lat": 43.9506344,
+     "lon": -69.8775485
+    },
+    {
+     "featureId": "581636",
+     "name": "Augusta",
+     "featureClass": "Populated Place",
+     "state": "Maine",
+     "county": "Kennebec",
+     "lat": 44.3106241,
+     "lon": -69.7794897
+    },
+    {
+     "featureId": "561558",
+     "name": "Bangor",
+     "featureClass": "Populated Place",
+     "state": "Maine",
+     "county": "Penobscot",
+     "lat": 44.8011821,
+     "lon": -68.7778138
+    },
+    {
+     "featureId": "563337",
+     "name": "Cadillac Mountain",
+     "featureClass": "Summit",
+     "state": "Maine",
+     "county": "Hancock",
+     "lat": 44.3512609,
+     "lon": -68.2264902
+    },
+    {
+     "featureId": "569110",
+     "name": "Kennebec River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "Sagadahoc",
+     "lat": 43.735085,
+     "lon": -69.7739341
+    },
+    {
+     "featureId": "569502",
+     "name": "Lewiston",
+     "featureClass": "Populated Place",
+     "state": "Maine",
+     "county": "Androscoggin",
+     "lat": 44.100351,
+     "lon": -70.2147764
+    },
+    {
+     "featureId": "571641",
+     "name": "Moosehead Lake",
+     "featureClass": "Reservoir",
+     "state": "Maine",
+     "county": "Piscataquis",
+     "lat": 45.5415997,
+     "lon": -69.6668586
+    },
+    {
+     "featureId": "579940",
+     "name": "Mount Katahdin",
+     "featureClass": "Summit",
+     "state": "Maine",
+     "county": "Piscataquis",
+     "lat": 45.9042751,
+     "lon": -68.9213561
+    },
+    {
+     "featureId": "573182",
+     "name": "Penobscot River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "Hancock",
+     "lat": 44.4409093,
+     "lon": -68.8280864
+    },
+    {
+     "featureId": "573692",
+     "name": "Portland",
+     "featureClass": "Populated Place",
+     "state": "Maine",
+     "county": "Cumberland",
+     "lat": 43.661471,
+     "lon": -70.2553259
+    },
+    {
+     "featureId": "574648",
+     "name": "Saco River",
+     "featureClass": "Stream",
+     "state": "Maine",
+     "county": "York",
+     "lat": 43.461773,
+     "lon": -70.3782538
+    },
+    {
+     "featureId": "575156",
+     "name": "Sebago Lake",
+     "featureClass": "Populated Place",
+     "state": "Maine",
+     "county": "Cumberland",
+     "lat": 43.760911,
+     "lon": -70.5256099
+    },
+    {
+     "featureId": "575155",
+     "name": "Sebago Lake",
+     "featureClass": "Reservoir",
+     "state": "Maine",
+     "county": "Cumberland",
+     "lat": 43.8561968,
+     "lon": -70.5486039
+    }
+   ]
+  },
+  "MA": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MA_Text.zip",
+   "zipSha256": "4803f0a1770f35b72ece43f7020992991e9d78d38dceb064c9e2b7151f6875a4",
+   "candidatesRequested": [
+    "Boston",
+    "Worcester",
+    "Springfield",
+    "Cambridge",
+    "Lowell",
+    "Provincetown",
+    "New Bedford",
+    "Mount Greylock",
+    "Quabbin Reservoir",
+    "Lake Chaubunagungamaug",
+    "Merrimack River",
+    "Charles River",
+    "Connecticut River"
+   ],
+   "rows": [
+    {
+     "featureId": "617565",
+     "name": "Boston",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Suffolk",
+     "lat": 42.3584308,
+     "lon": -71.0597732
+    },
+    {
+     "featureId": "617365",
+     "name": "Cambridge",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Middlesex",
+     "lat": 42.375097,
+     "lon": -71.1056079
+    },
+    {
+     "featureId": "610601",
+     "name": "Cambridge",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Worcester",
+     "lat": 42.2445377,
+     "lon": -71.8120157
+    },
+    {
+     "featureId": "619357",
+     "name": "Charles River",
+     "featureClass": "Stream",
+     "state": "Massachusetts",
+     "county": "Suffolk",
+     "lat": 42.3709306,
+     "lon": -71.0494953
+    },
+    {
+     "featureId": "206425",
+     "name": "Connecticut River",
+     "featureClass": "Stream",
+     "state": "Connecticut",
+     "county": "Lower Connecticut River Valley",
+     "lat": 41.272313,
+     "lon": -72.332687
+    },
+    {
+     "featureId": "619290",
+     "name": "Lake Chaubunagungamaug",
+     "featureClass": "Lake",
+     "state": "Massachusetts",
+     "county": "Worcester",
+     "lat": 42.0405934,
+     "lon": -71.8441508
+    },
+    {
+     "featureId": "611832",
+     "name": "Lowell",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Middlesex",
+     "lat": 42.6334247,
+     "lon": -71.3161718
+    },
+    {
+     "featureId": "619363",
+     "name": "Merrimack River",
+     "featureClass": "Stream",
+     "state": "Massachusetts",
+     "county": "Essex",
+     "lat": 42.8195362,
+     "lon": -70.8119957
+    },
+    {
+     "featureId": "607448",
+     "name": "Mount Greylock",
+     "featureClass": "Summit",
+     "state": "Massachusetts",
+     "county": "Berkshire",
+     "lat": 42.6371703,
+     "lon": -73.1659399
+    },
+    {
+     "featureId": "613714",
+     "name": "New Bedford",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Bristol",
+     "lat": 41.6362152,
+     "lon": -70.934205
+    },
+    {
+     "featureId": "616639",
+     "name": "Provincetown",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Barnstable",
+     "lat": 42.058436,
+     "lon": -70.1786375
+    },
+    {
+     "featureId": "619370",
+     "name": "Quabbin Reservoir",
+     "featureClass": "Reservoir",
+     "state": "Massachusetts",
+     "county": "Worcester",
+     "lat": 42.3910001,
+     "lon": -72.309392
+    },
+    {
+     "featureId": "609092",
+     "name": "Springfield",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Hampden",
+     "lat": 42.1014831,
+     "lon": -72.589811
+    },
+    {
+     "featureId": "617867",
+     "name": "Worcester",
+     "featureClass": "Populated Place",
+     "state": "Massachusetts",
+     "county": "Worcester",
+     "lat": 42.2625932,
+     "lon": -71.8022934
     }
    ]
   }
