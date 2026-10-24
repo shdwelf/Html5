@@ -10,56 +10,92 @@
 export const CITY = {
   "id": "missouri",
   "title": "MISSOURI SUBSURFACE 4Dwm",
-  "subtitle": "MISSOURI STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL",
+  "subtitle": "Ozarks · northern plains · Missouri and Mississippi confluence — statewide frame, Missouri",
   "state": "MO",
   "country": "United States",
   "county": "Statewide",
-  "baseElevationM": 240,
-  "roughnessM": 110,
+  "baseElevationM": 220,
+  "roughnessM": 60,
   "hasWater": false,
   "requiresDem": false
 };
 
-export const BBOX = {"lon0":-95.65,"lat0":35.9,"lon1":-89,"lat1":40.7};
-export const CENTER = {"lon":-92.3,"lat":38.3};
+export const BBOX = {"lon0":-95.9,"lat0":35.9,"lon1":-89,"lat1":40.7};
+export const CENTER = {"lon":-92.5,"lat":38.5};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 export const COAST = [];
 export const RELIEF = [
   {
-    "name": "Ozark Plateau",
-    "lon": -92.3,
-    "lat": 37.2,
-    "rx": 0.9,
-    "ry": 0.6,
+    "name": "Ozark plateau",
+    "lon": -92.6,
+    "lat": 37.3,
+    "rx": 1.3,
+    "ry": 0.8,
+    "amp": 320,
+    "rot": 0
+  },
+  {
+    "name": "St. Francois mountains",
+    "lon": -90.6,
+    "lat": 37.6,
+    "rx": 0.5,
+    "ry": 0.4,
+    "amp": 400,
+    "rot": 0
+  },
+  {
+    "name": "Springfield plateau",
+    "lon": -93.7,
+    "lat": 37.1,
+    "rx": 0.7,
+    "ry": 0.5,
+    "amp": 250,
+    "rot": 0
+  },
+  {
+    "name": "Northern plains",
+    "lon": -92.6,
+    "lat": 39.6,
+    "rx": 1.5,
+    "ry": 0.7,
+    "amp": 130,
+    "rot": 0
+  },
+  {
+    "name": "Northwestern glacial till",
+    "lon": -94.6,
+    "lat": 40.1,
+    "rx": 0.8,
+    "ry": 0.4,
     "amp": 150,
     "rot": 0
   },
   {
-    "name": "Saint Francois Mountains",
-    "lon": -90.65,
-    "lat": 37.6,
-    "rx": 0.4,
-    "ry": 0.3,
-    "amp": 240,
-    "rot": 0
-  },
-  {
-    "name": "Glaciated Plains",
-    "lon": -93.8,
-    "lat": 39.9,
-    "rx": 1,
-    "ry": 0.5,
-    "amp": 40,
-    "rot": 0
-  },
-  {
-    "name": "Mississippi Alluvial Plain",
-    "lon": -89.7,
-    "lat": 36.3,
-    "rx": 0.5,
-    "ry": 0.4,
+    "name": "Missouri River bottoms",
+    "lon": -93.2,
+    "lat": 38.7,
+    "rx": 1.6,
+    "ry": 0.2,
     "amp": -70,
+    "rot": 0
+  },
+  {
+    "name": "Mississippi bluffs",
+    "lon": -89.9,
+    "lat": 38.5,
+    "rx": 0.3,
+    "ry": 0.9,
+    "amp": 180,
+    "rot": 0
+  },
+  {
+    "name": "Osage plains",
+    "lon": -94.3,
+    "lat": 38.4,
+    "rx": 0.7,
+    "ry": 0.5,
+    "amp": 120,
     "rot": 0
   }
 ];
@@ -208,15 +244,23 @@ export const CORRIDORS = [
         38.9517053
       ],
       [
+        -90.85,
+        38.8
+      ],
+      [
         -90.1978889,
         38.6272733
+      ],
+      [
+        -89.65,
+        38.62
       ]
     ],
     "facts": [
-      "Generalized Interstate 70 corridor from Kansas City through Columbia to Saint Louis; schematic polyline through named anchors and generalized points, not a highway alignment."
+      "Generalized Interstate 70 corridor from Kansas City through Columbia and Wentzville to Saint Louis and the Illinois border; schematic polyline through named anchors and generalized points, not a highway alignment."
     ],
     "sources": [
-      "Generalized from public highway references; GNIS rows supply the named anchors"
+      "Generalized from public highway references (Interstate 70 routing); GNIS rows supply the named anchors"
     ]
   },
   {
@@ -228,44 +272,56 @@ export const CORRIDORS = [
     "depthM": 0,
     "path": [
       [
+        -90.1978889,
+        38.6272733
+      ],
+      [
+        -91.8,
+        37.9
+      ],
+      [
         -93.2982436,
         37.215326
       ],
       [
-        -92.4,
-        37.9
+        -94.5,
+        37.05
       ],
       [
-        -90.1978889,
-        38.6272733
+        -94.9,
+        36.95
       ]
     ],
     "facts": [
-      "Generalized Interstate 44 corridor from Springfield to Saint Louis; schematic polyline through named anchors and generalized points, not a highway alignment."
+      "Generalized Interstate 44 corridor from Saint Louis through Rolla and Springfield to Joplin and the Oklahoma border; schematic polyline through named anchors and generalized points, not a highway alignment."
     ],
     "sources": [
-      "Generalized from public highway references; GNIS rows supply the named anchors"
+      "Generalized from public highway references (Interstate 44 routing); GNIS rows supply the named anchors"
     ]
   },
   {
-    "id": "missouri-river",
+    "id": "missouri-river-missouri",
     "layer": "water",
     "tier": "context",
-    "name": "Missouri River corridor (generalized)",
+    "name": "Missouri River reach (generalized)",
     "short": "Missouri River",
     "depthM": 0,
     "path": [
-      [
-        -95.4,
-        39.65
-      ],
       [
         -94.5785667,
         39.0997266
       ],
       [
-        -92.1735164,
-        38.5767017
+        -93.3,
+        38.7
+      ],
+      [
+        -92.2,
+        38.6
+      ],
+      [
+        -91,
+        38.75
       ],
       [
         -90.1198297,
@@ -273,62 +329,54 @@ export const CORRIDORS = [
       ]
     ],
     "facts": [
-      "Generalized Missouri River corridor joining the seeded GNIS Kansas City, Jefferson City, and Saint Charles County mouth points; not a channel centerline or state boundary."
+      "Generalized Missouri River reach from the Kansas City anchor to the Saint Charles confluence sequence used by the gazetteer row; the first corridor to accompany a seeded Missouri River row after six empty upstream state screens. Schematic, not a channel centerline; the last vertex is the GNIS primary point."
     ],
     "sources": [
-      "Generalized from public geography; GNIS rows supply the named anchors"
+      "Generalized from public river references; GNIS FEATURE_ID 756398 for the confluence primary point"
     ]
   },
   {
     "id": "mississippi-river-missouri",
     "layer": "water",
     "tier": "context",
-    "name": "Mississippi River corridor (generalized)",
+    "name": "Mississippi River Missouri reach (generalized)",
     "short": "Mississippi River",
     "depthM": 0,
     "path": [
       [
-        -91.4,
+        -89.7,
         40.6
       ],
       [
-        -90.1978889,
-        38.6272733
+        -89.4,
+        39.9
       ],
       [
-        -89.55,
-        36.05
+        -89.1,
+        39.4
+      ],
+      [
+        -89.2,
+        38.8
+      ],
+      [
+        -89.4,
+        38.4
+      ],
+      [
+        -89.5,
+        37.8
+      ],
+      [
+        -90.1,
+        36.9
       ]
     ],
     "facts": [
-      "The states=MO exact-name screen returned no Streams record for the intended feature (empty array of stream results; only Mississippi River Hills area record), so the Mississippi main stem remains a context corridor in this frame. Not a channel centerline or state boundary."
+      "No Mississippi River gazetteer row is seeded in the Missouri frame: the 2026-10-23 states=MO Geocoder screen returned only a same-prefix Mississippi River Hills Area record (FEATURE_ID 758109, Knox County), which does not match the intended stream name or type. Generalized context reach along the eastern border and Bootheel; schematic, not a channel centerline or state boundary."
     ],
     "sources": [
-      "Generalized from public geography; GNIS rows supply the named anchors"
-    ]
-  },
-  {
-    "id": "current-river",
-    "layer": "water",
-    "tier": "context",
-    "name": "Current River corridor (generalized)",
-    "short": "Current River",
-    "depthM": 0,
-    "path": [
-      [
-        -91.5,
-        37.3
-      ],
-      [
-        -90.95,
-        36.6
-      ]
-    ],
-    "facts": [
-      "The states=MO exact-name screen returned an empty array; the Current River main-stem record is associated with its Arkansas mouth, so the river remains context in Missouri. Not a channel centerline or state boundary."
-    ],
-    "sources": [
-      "Generalized from public geography; GNIS rows supply the named anchors"
+      "Generalized from public river references; Geocoder screening recorded in the round-25 source register"
     ]
   }
 ];
@@ -343,30 +391,30 @@ export const NODES = [
     "lat": 38.5767017,
     "depthM": 0,
     "facts": [
-      "Missouri state capital on the Missouri River. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 758233; coordinate per gazetteer row"
     ]
   },
   {
-    "id": "kansas-city",
-    "name": "Kansas City",
+    "id": "saint-louis",
+    "name": "Saint Louis",
     "layer": "sites",
     "tier": "official",
     "kind": "building",
-    "lon": -94.5785667,
-    "lat": 39.0997266,
+    "lon": -90.1978889,
+    "lat": 38.6272733,
     "depthM": 0,
     "facts": [
-      "Largest Missouri city at the Kansas River confluence. node coordinate is the GNIS populated place primary point from the gazetteer row."
+      "Mississippi confluence anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
     ],
     "sources": [
-      "USGS GNIS FEATURE_ID 748198; coordinate per gazetteer row"
+      "USGS GNIS FEATURE_ID 765765; coordinate per gazetteer row"
     ]
   },
   {
-    "id": "taum-sauk-mountain",
+    "id": "taum-sauk",
     "name": "Taum Sauk Mountain",
     "layer": "sites",
     "tier": "official",
@@ -375,7 +423,7 @@ export const NODES = [
     "lat": 37.5712766,
     "depthM": 0,
     "facts": [
-      "Missouri state high point (1,772 ft) in the Saint Francois Mountains. node coordinate is the GNIS summit primary point from the gazetteer row."
+      "Missouri's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 752501; coordinate per gazetteer row"
@@ -391,7 +439,7 @@ export const NODES = [
     "lat": 38.1671829,
     "depthM": 0,
     "facts": [
-      "Osage River reservoir anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+      "Ozark reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
     ],
     "sources": [
       "USGS GNIS FEATURE_ID 729600; coordinate per gazetteer row"
@@ -404,8 +452,8 @@ export const VIEWS = [
     "label": "VIEW · OVERVIEW",
     "position": [
       0,
-      26.142870691147053,
-      40.6666877417843
+      27.050741376461747,
+      42.0789310300516
     ],
     "target": [
       0,
@@ -433,7 +481,7 @@ export const VIEWS = [
     "position": [
       0,
       4,
-      26.142870691147053
+      27.050741376461747
     ],
     "target": [
       0,
@@ -445,12 +493,12 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      12.780959004560781,
+      13.224806895159077,
       10,
       11.755392000000011
     ],
     "target": [
-      12.780959004560781,
+      13.224806895159077,
       0,
       11.755392000000011
     ]

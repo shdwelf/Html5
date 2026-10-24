@@ -319,6 +319,32 @@ two tests. Final: cities 33 (18/18), Node 806 = 796/10/0, vitest 307,
 wiki 244, city XDCs 81 entries. Next in sequence: South Carolina, then
 the remaining seaboard states, Florida, then the country/planet thread.
 
+**Round 33 status (2026-10-23): partial.** PR #139 merged into main
+under a main-preferred reconciliation (PRs #137/#140 had built
+Minnesota/Iowa/Missouri/Georgia in parallel; main's copies are kept).
+PR #139's non-duplicated frames — Wisconsin, Michigan, Illinois,
+Indiana, Ohio, Pennsylvania, Arkansas, Kentucky, Tennessee, Virginia,
+West Virginia, North Carolina, South Carolina, Florida — shipped as
+configurations 34–47, each with a 12/12 per-ID `VERIFIED=1` GNIS
+starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance is in
+`gnis-state-batch8-source-register-2026-10-23-pr139.json` (WI/MI),
+`gnis-state-batch9-source-register-2026-10-23-pr139.json` (IL/IN),
+`gnis-state-batch10-source-register-2026-10-23-pr139.json` (OH/PA),
+`gnis-state-batch11-source-register-2026-10-23-pr139.json` (AR),
+[`../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json) (KY/TN),
+[`../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json) (VA/WV),
+[`../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json) (NC/SC),
+and the Florida frame of
+[`../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json)
+(its Georgia frame is superseded by main's batch-11 Georgia). The
+gazetteer gained the `Ridge` class (Magazine Mountain), and PR #139's
+GNIS candidate-extraction pipeline (`tools/gnis_extract.py`,
+`.arena-gnis/candidates.json`, `arena-gnis-fetch.yml`) plus the
+cumulative `gnis-candidates-batch7.json` extract were retained.
+Final: cities 47 (26/26), Node 814 = 802 pass/12 skipped/0 fail.
+Next in sequence: the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

@@ -1,0 +1,443 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 26 Illinois-Indiana state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Illinois and Indiana. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Charles Mound and Hoosier Hill additionally carry Domestic Names per-ID identity checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<IL|IN>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, canals, pools, flowages, navigation pools, old channels, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_<IL|IN>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Charles Mound (423586) and Hoosier Hill (1851956), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-9; this register is the frozen batch-9 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "illinois": {
+      "title": "Illinois statewide frame (Illinois-Indiana batch)",
+      "state": "IL",
+      "bbox": {
+        "lon0": -91.55,
+        "lat0": 36.95,
+        "lon1": -87.05,
+        "lat1": 42.55
+      },
+      "frameNote": "Illinois-Indiana batch: the Springfield capital anchor and the Chicago lake-plain anchor are balanced with the per-ID Charles Mound high point, the Rend/Peoria lake pair, and three in-state river-mouth records (Illinois, Kaskaskia, Rock). The Mississippi and Ohio main stems and Lake Michigan remain corridors after empty states=IL screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Springfield",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Sangamon",
+          "latitude": 39.8017171,
+          "longitude": -89.6437107,
+          "featureId": "426595",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Sangamon County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=426595; exact official name and Cities & Populated Places type in Sangamon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Chicago",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cook",
+          "latitude": 41.850033,
+          "longitude": -87.6500523,
+          "featureId": "423587",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cook County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the state and Lake Michigan port; Chicago Heights (FEATURE_ID 406039), Chicago Ridge (FEATURE_ID 406048), and Chicago Loop (FEATURE_ID 406045) are separate populated places, and the Chicago River record (FEATURE_ID 406050) is not seeded here. USGS GNIS Geocoder (GNIS), FEATURE_ID=423587; exact official name and Cities & Populated Places type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Aurora",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kane",
+          "latitude": 41.7605849,
+          "longitude": -88.3200715,
+          "featureId": "403732",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kane County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Kane County city on the Fox River. USGS GNIS Geocoder (GNIS), FEATURE_ID=403732; exact official name and Cities & Populated Places type in Kane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Naperville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "DuPage",
+          "latitude": 41.7858629,
+          "longitude": -88.1472893,
+          "featureId": "421954",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "DuPage County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "DuPage County city on the DuPage River. USGS GNIS Geocoder (GNIS), FEATURE_ID=421954; exact official name and Cities & Populated Places type in DuPage County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rockford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Winnebago",
+          "latitude": 42.2711311,
+          "longitude": -89.0939952,
+          "featureId": "416843",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Winnebago County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest northern-Illinois city, on the Rock River. USGS GNIS Geocoder (GNIS), FEATURE_ID=416843; exact official name and Cities & Populated Places type in Winnebago County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Peoria",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Peoria",
+          "latitude": 40.6936488,
+          "longitude": -89.5889864,
+          "featureId": "415536",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Peoria County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Illinois River city; the Peoria County record (FEATURE_ID 1784920) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=415536; exact official name and Cities & Populated Places type in Peoria County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Charles Mound",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Jo Daviess",
+          "latitude": 42.5041312,
+          "longitude": -90.2396757,
+          "featureId": "423586",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Jo Daviess County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Illinois High Point and state high point at 1,235 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_IL_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 423586 as a Summit in Wayne County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=423586; exact official name and Summit type in Jo Daviess County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Rend Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Franklin",
+          "latitude": 38.1096376,
+          "longitude": -88.9626068,
+          "featureId": "416524",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Franklin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Franklin County reservoir on the Big Muddy River, among the largest lakes in the state. USGS GNIS Geocoder (GNIS), FEATURE_ID=416524; exact official name and Lakes & Reservoirs type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Peoria Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Tazewell",
+          "latitude": 40.7022598,
+          "longitude": -89.5545403,
+          "featureId": "415539",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Tazewell County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Tazewell County widening of the Illinois River opposite the seeded Peoria city record; the river's natural lake reach. USGS GNIS Geocoder (GNIS), FEATURE_ID=415539; exact official name and Lakes & Reservoirs type in Tazewell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Illinois River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Calhoun",
+          "latitude": 38.9703262,
+          "longitude": -90.4542829,
+          "featureId": "410769",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Calhoun County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Mississippi confluence in Calhoun County near Grafton. USGS GNIS Geocoder (GNIS), FEATURE_ID=410769; exact official name and Streams & Canals type in Calhoun County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Kaskaskia River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Randolph",
+          "latitude": 37.974942,
+          "longitude": -89.937372,
+          "featureId": "426395",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Randolph County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Longest river lying wholly in the state; GNIS primary point at the Mississippi confluence in Randolph County. The adjacent navigation-pool record (FEATURE_ID 1691040) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=426395; exact official name and Streams & Canals type in Randolph County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Rock River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Rock Island",
+          "latitude": 41.4825326,
+          "longitude": -90.6162489,
+          "featureId": "416824",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Rock Island County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Mississippi confluence in Rock Island County; four same-name lake/flowage records (FEATURE_ID 1692463, 1692265, 1691026, 1691024) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=416824; exact official name and Streams & Canals type in Rock Island County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "indiana": {
+      "title": "Indiana statewide frame (Illinois-Indiana batch)",
+      "state": "IN",
+      "bbox": {
+        "lon0": -88.1,
+        "lat0": 37.75,
+        "lon1": -84.75,
+        "lat1": 41.8
+      },
+      "frameNote": "Illinois-Indiana batch: the Indianapolis capital anchor is balanced with the per-ID Hoosier Hill high point, the Monroe/Patoka/Maxinkuckee lake set, and two in-state river-mouth records (Wabash, White). The Ohio main stem and Lake Michigan remain corridors after empty states=IN screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Indianapolis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Marion",
+          "latitude": 39.7683765,
+          "longitude": -86.1580423,
+          "featureId": "452890",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Marion County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=452890; exact official name and Cities & Populated Places type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Fort Wayne",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Allen",
+          "latitude": 41.1306041,
+          "longitude": -85.1288597,
+          "featureId": "434689",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Allen County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Allen County city at the Maumee River headwaters. USGS GNIS Geocoder (GNIS), FEATURE_ID=434689; exact official name and Cities & Populated Places type in Allen County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Evansville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Vanderburgh",
+          "latitude": 37.9747644,
+          "longitude": -87.5558482,
+          "featureId": "434258",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Vanderburgh County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Vanderburgh County Ohio River port. USGS GNIS Geocoder (GNIS), FEATURE_ID=434258; exact official name and Cities & Populated Places type in Vanderburgh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "South Bend",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Saint Joseph",
+          "latitude": 41.6833813,
+          "longitude": -86.2500066,
+          "featureId": "452796",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Saint Joseph County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Saint Joseph County city on the St. Joseph River. USGS GNIS Geocoder (GNIS), FEATURE_ID=452796; exact official name and Cities & Populated Places type in Saint Joseph County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Bloomington",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Monroe",
+          "latitude": 39.165325,
+          "longitude": -86.5263857,
+          "featureId": "431207",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Monroe County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Monroe County city; seat of Indiana University. USGS GNIS Geocoder (GNIS), FEATURE_ID=431207; exact official name and Cities & Populated Places type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Terre Haute",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Vigo",
+          "latitude": 39.4667034,
+          "longitude": -87.4139092,
+          "featureId": "444648",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Vigo County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Vigo County city on the Wabash River. USGS GNIS Geocoder (GNIS), FEATURE_ID=444648; exact official name and Cities & Populated Places type in Vigo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Hoosier Hill",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Wayne",
+          "latitude": 40.0002603,
+          "longitude": -84.8509693,
+          "featureId": "1851956",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Wayne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Indiana High Point and state high point at 1,257 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_IN_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1851956 as a Summit in Wayne County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851956; exact official name and Summit type in Wayne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Monroe Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Monroe",
+          "latitude": 39.055508,
+          "longitude": -86.4333117,
+          "featureId": "451234",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Monroe County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest lake lying wholly within the state (Monroe County reservoir on Salt Creek); the reversed-name screen ('Lake Monroe') returned an empty array, and the official name order is Monroe Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=451234; exact official name and Lakes & Reservoirs type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Patoka Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Orange",
+          "latitude": 38.4108996,
+          "longitude": -86.6373488,
+          "featureId": "451715",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Orange County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Orange County reservoir on the Patoka River. USGS GNIS Geocoder (GNIS), FEATURE_ID=451715; exact official name and Lakes & Reservoirs type in Orange County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Lake Maxinkuckee",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Marshall",
+          "latitude": 41.2041957,
+          "longitude": -86.4044435,
+          "featureId": "438748",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Marshall County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Second-largest natural lake in the state (Marshall County). USGS GNIS Geocoder (GNIS), FEATURE_ID=438748; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Wabash River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Posey",
+          "latitude": 37.7981003,
+          "longitude": -88.0272534,
+          "featureId": "449850",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Posey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Ohio River confluence in Posey County; the Wabash River Old Channel record (FEATURE_ID 445332) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=449850; exact official name and Streams & Canals type in Posey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "White River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Knox",
+          "latitude": 38.4142134,
+          "longitude": -87.742528,
+          "featureId": "445955",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Knox County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Wabash confluence in Knox County; the Gibson County populated place of the same name (FEATURE_ID 445956) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=445955; exact official name and Streams & Canals type in Knox County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Chicago Heights 406039, Chicago Ridge 406048, Chicago Loop 406045, Chicago River 406050",
+      "decision": "Rejected as distinct records. The seeded FEATURE_ID 423587 is the City of Chicago populated-place record; three suburban/neighborhood populated places and the river record name other features.",
+      "notClaimed": "The city point is not a municipal boundary or ward centroid."
+    },
+    {
+      "candidate": "Peoria County, FEATURE_ID 1784920",
+      "decision": "Rejected as a county record, following the county-record precedent; the Peoria city record 415536 and Peoria Lake record 415539 are seeded as separate classes with distinct points.",
+      "notClaimed": "Neither the city point nor the lake point is a boundary or shoreline."
+    },
+    {
+      "candidate": "Rock River lake/flowage records 1692463, 1692265, 1691026, 1691024",
+      "decision": "Rejected. The seeded 416824 is the Rock Island County stream record at the Mississippi confluence; four same-name lake/flowage records upstream are distinct features.",
+      "notClaimed": "The stream point is not a channel centerline."
+    },
+    {
+      "candidate": "Mississippi River under states=IL and Ohio River under states=IL and states=IN; Lake Michigan under states=IL and states=IN",
+      "decision": "Empty screens (each queried 2026-10-23; the Ohio River returns under another state's association, the Michigan record under states=MI Mason County, held to starter scope in the round-25 Michigan frame). No rows seeded; all remain generalized context corridors in both frames.",
+      "notClaimed": "The corridors are not channel centerlines, shorelines, or state boundaries."
+    },
+    {
+      "candidate": "Lake Monroe (reversed name order)",
+      "decision": "The states=IN screen for the reversed name returned an empty array; the official GNIS name is Monroe Lake (FEATURE_ID 451234, Monroe County), seeded under the official order with the variant rejected explicitly, following the Vermilion Lake precedent (round 24).",
+      "notClaimed": "No name normalization is claimed for other GNIS orders."
+    },
+    {
+      "candidate": "White River, FEATURE_ID 445956 (Gibson County populated place)",
+      "decision": "Rejected. The seeded 445955 is the Knox County stream record at the Wabash confluence; the Gibson County record is a small community of the same name.",
+      "notClaimed": "The stream point is not a channel centerline and does not locate the community."
+    },
+    {
+      "candidate": "Wabash River Old Channel, FEATURE_ID 445332",
+      "decision": "Rejected. A former-channel record in Posey County; the seeded 449850 is the main-stem river record at the Ohio confluence.",
+      "notClaimed": "The seeded point does not trace the old channel."
+    },
+    {
+      "candidate": "Hoosier Hill, FEATURE_ID 1851956",
+      "decision": "Seeded after a Domestic Names per-ID check reproduced Class=Summit, Primary County=Wayne County, and the Geocoder point exactly; the Geocoder returned a single exact Summit record. Its FEATURE_ID sits adjacent to the round-24 Hawkeye Point high-point record (1851955) in the same high-point record series.",
+      "notClaimed": "The primary point is not a surveyed boundary of the hill or county corner."
+    },
+    {
+      "candidate": "Joliet and Waukegan (Illinois); Gary (Indiana)",
+      "decision": "Identity-safe candidates in the batch-9 extract, omitted under the starter-scope treatment; the 12-row starters keep the capital anchors plus statewide coverage.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "Illinois and Indiana are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Charles Mound (1,235 feet) and Hoosier Hill (1,257 feet) elevations cite USGS-published state-highpoint values; GNIS identity for both rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}

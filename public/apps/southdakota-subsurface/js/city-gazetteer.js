@@ -22,6 +22,7 @@ import { GAZ_CLASSES as DEFAULT_CLASSES, GAZ_ROWS as DEFAULT_ROWS } from "./city
 export const GAZ_CLASS_META = {
   Range: { label: "Ranges", short: "RNG", swatch: "#ffb020" },
   Ridge: { label: "Ridges", short: "RDG", swatch: "#ffb45e" },
+  Ridge: { label: "Ridges", short: "RDG", swatch: "#ffb45e" },
   Summit: { label: "Summits", short: "PK", swatch: "#ffc55c" },
   Valley: { label: "Valleys", short: "VLY", swatch: "#7fd8a0" },
   Flat: { label: "Flats", short: "FLT", swatch: "#7fd8a0" },
