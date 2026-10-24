@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T07:41:20Z",
+ "retrieved": "2026-10-24T07:58:41Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4783,6 +4783,400 @@
      "county": "Kusilvak (CA)",
      "lat": 62.5986111,
      "lon": -164.8
+    }
+   ]
+  },
+  "NJ": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NJ_Text.zip",
+   "zipSha256": "551e673eae2bc9522b46c75ddb3331baa977dfa4724bda67992682ea047b39cd",
+   "candidatesRequested": [
+    "Trenton",
+    "Newark",
+    "Jersey City",
+    "Paterson",
+    "Camden",
+    "Atlantic City",
+    "High Point",
+    "Lake Hopatcong",
+    "Round Valley Reservoir",
+    "Passaic River",
+    "Raritan River",
+    "Mullica River",
+    "Delaware River",
+    "Elizabeth"
+   ],
+   "rows": [
+    {
+     "featureId": "874413",
+     "name": "Atlantic City",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Atlantic",
+     "lat": 39.3642834,
+     "lon": -74.4229266
+    },
+    {
+     "featureId": "875105",
+     "name": "Camden",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Camden",
+     "lat": 39.9259463,
+     "lon": -75.1196199
+    },
+    {
+     "featureId": "217887",
+     "name": "Delaware River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.4326121,
+     "lon": -75.528813
+    },
+    {
+     "featureId": "876147",
+     "name": "Elizabeth",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Union",
+     "lat": 40.6639916,
+     "lon": -74.2107006
+    },
+    {
+     "featureId": "877099",
+     "name": "High Point",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Ocean",
+     "lat": 39.7098421,
+     "lon": -74.1323586
+    },
+    {
+     "featureId": "877098",
+     "name": "High Point",
+     "featureClass": "Summit",
+     "state": "New Jersey",
+     "county": "Sussex",
+     "lat": 41.3208723,
+     "lon": -74.6615393
+    },
+    {
+     "featureId": "877450",
+     "name": "Jersey City",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Hudson",
+     "lat": 40.7281575,
+     "lon": -74.0776417
+    },
+    {
+     "featureId": "876215",
+     "name": "Lake Hopatcong",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Morris",
+     "lat": 40.9484317,
+     "lon": -74.6171046
+    },
+    {
+     "featureId": "877238",
+     "name": "Lake Hopatcong",
+     "featureClass": "Reservoir",
+     "state": "New Jersey",
+     "county": "Sussex",
+     "lat": 40.9486634,
+     "lon": -74.6372713
+    },
+    {
+     "featureId": "878659",
+     "name": "Mullica River",
+     "featureClass": "Stream",
+     "state": "New Jersey",
+     "county": "Ocean",
+     "lat": 39.5479342,
+     "lon": -74.4141769
+    },
+    {
+     "featureId": "878762",
+     "name": "Newark",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Essex",
+     "lat": 40.735657,
+     "lon": -74.1723667
+    },
+    {
+     "featureId": "879159",
+     "name": "Passaic River",
+     "featureClass": "Stream",
+     "state": "New Jersey",
+     "county": "Essex",
+     "lat": 40.7123243,
+     "lon": -74.1181983
+    },
+    {
+     "featureId": "879164",
+     "name": "Paterson",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Passaic",
+     "lat": 40.9167654,
+     "lon": -74.171811
+    },
+    {
+     "featureId": "879618",
+     "name": "Raritan River",
+     "featureClass": "Stream",
+     "state": "New Jersey",
+     "county": "Middlesex",
+     "lat": 40.4947753,
+     "lon": -74.2714405
+    },
+    {
+     "featureId": "879839",
+     "name": "Round Valley Reservoir",
+     "featureClass": "Reservoir",
+     "state": "New Jersey",
+     "county": "Hunterdon",
+     "lat": 40.6158907,
+     "lon": -74.8255854
+    },
+    {
+     "featureId": "884540",
+     "name": "Trenton",
+     "featureClass": "Populated Place",
+     "state": "New Jersey",
+     "county": "Mercer",
+     "lat": 40.2170534,
+     "lon": -74.7429385
+    }
+   ]
+  },
+  "HI": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_HI_Text.zip",
+   "zipSha256": "fb72d5629ba8d990e052bc1cd59ebacfe4a2ba8fb8eaa099c8c8acc5ac03ff2c",
+   "candidatesRequested": [
+    "Honolulu",
+    "Hilo",
+    "Kailua",
+    "Wailuku",
+    "L\u012bhu\u02bbe",
+    "Kaunakakai",
+    "Mauna Kea",
+    "Mauna Loa",
+    "Haleakal\u0101",
+    "Waiau",
+    "Lake Waiau",
+    "Wailuku River",
+    "Hanalei River"
+   ],
+   "rows": [
+    {
+     "featureId": "358929",
+     "name": "Haleakal\u0101",
+     "featureClass": "Summit",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.7014034,
+     "lon": -156.1733005
+    },
+    {
+     "featureId": "359043",
+     "name": "Hanalei River",
+     "featureClass": "Stream",
+     "state": "Hawaii",
+     "county": "Kauai",
+     "lat": 22.2147219,
+     "lon": -159.4977093
+    },
+    {
+     "featureId": "359187",
+     "name": "Hilo",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.722474,
+     "lon": -155.0868273
+    },
+    {
+     "featureId": "359331",
+     "name": "Honolulu",
+     "featureClass": "Civil",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.5541667,
+     "lon": -154.89
+    },
+    {
+     "featureId": "366212",
+     "name": "Honolulu",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Honolulu",
+     "lat": 21.3069444,
+     "lon": -157.8583333
+    },
+    {
+     "featureId": "359896",
+     "name": "Kailua",
+     "featureClass": "Bay",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.8990896,
+     "lon": -156.2046003
+    },
+    {
+     "featureId": "359892",
+     "name": "Kailua",
+     "featureClass": "Civil",
+     "state": "Hawaii",
+     "county": "Honolulu",
+     "lat": 21.3911111,
+     "lon": -157.7691667
+    },
+    {
+     "featureId": "359891",
+     "name": "Kailua",
+     "featureClass": "Civil",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.8527778,
+     "lon": -156.3669444
+    },
+    {
+     "featureId": "365355",
+     "name": "Kailua",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.6392732,
+     "lon": -155.9902382
+    },
+    {
+     "featureId": "359894",
+     "name": "Kailua",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Honolulu",
+     "lat": 21.4022222,
+     "lon": -157.7394444
+    },
+    {
+     "featureId": "359893",
+     "name": "Kailua",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.8917325,
+     "lon": -156.2142777
+    },
+    {
+     "featureId": "359895",
+     "name": "Kailua",
+     "featureClass": "Summit",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.8451528,
+     "lon": -156.3572357
+    },
+    {
+     "featureId": "360716",
+     "name": "Kaunakakai",
+     "featureClass": "Civil",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 21.1363889,
+     "lon": -156.9911111
+    },
+    {
+     "featureId": "360717",
+     "name": "Kaunakakai",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 21.0896357,
+     "lon": -157.0173984
+    },
+    {
+     "featureId": "361837",
+     "name": "L\u012bhu\u02bbe",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Kauai",
+     "lat": 21.9740821,
+     "lon": -159.3649025
+    },
+    {
+     "featureId": "366215",
+     "name": "Mauna Kea",
+     "featureClass": "Summit",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.8206065,
+     "lon": -155.4681155
+    },
+    {
+     "featureId": "362275",
+     "name": "Mauna Loa",
+     "featureClass": "Summit",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.4753891,
+     "lon": -155.605788
+    },
+    {
+     "featureId": "364573",
+     "name": "Waiau",
+     "featureClass": "Civil",
+     "state": "Hawaii",
+     "county": "Honolulu",
+     "lat": 21.4255556,
+     "lon": -157.9263889
+    },
+    {
+     "featureId": "364585",
+     "name": "Waiau",
+     "featureClass": "Lake",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.8114053,
+     "lon": -155.4775715
+    },
+    {
+     "featureId": "364574",
+     "name": "Waiau",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Honolulu",
+     "lat": 21.3902662,
+     "lon": -157.956748
+    },
+    {
+     "featureId": "364757",
+     "name": "Wailuku",
+     "featureClass": "Populated Place",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.8896075,
+     "lon": -156.5010595
+    },
+    {
+     "featureId": "364759",
+     "name": "Wailuku River",
+     "featureClass": "Stream",
+     "state": "Hawaii",
+     "county": "Hawaii",
+     "lat": 19.728148,
+     "lon": -155.087644
+    },
+    {
+     "featureId": "2777688",
+     "name": "Wailuku River",
+     "featureClass": "Stream",
+     "state": "Hawaii",
+     "county": "Maui",
+     "lat": 20.91019,
+     "lon": -156.48488
     }
    ]
   }

@@ -230,10 +230,26 @@ New Jersey and Hawaii are carried by the open PR #145 on the batch-20
 branch; when it merges, every US state has a statewide frame and the
 country/planet thread follows.
 
+Round 40 update: **2026-10-24**. `newjersey` and `hawaii` join as the
+fifty-seventh and fifty-eighth configurations, completing the
+50-state atlas. Their batch-20 evidence was produced on PR #145's
+branch (round 38 there); after PR #146 (Alaska) merged first, that PR
+became conflicting, so its unique work was re-integrated here under
+the main-preferred rule from PRs #141/#143: the frozen register
+[`resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json)
+is transferred verbatim, the NJ/HI extract states were merged into
+this branch's cumulative extract (now covering twenty-nine states,
+Alaska included), and the batch-20 test runs beside Alaska's. High
+Point (1,803 feet) and Mauna Kea (13,796 feet) keep their per-ID
+checks; the Delaware River stays a corridor in New Jersey, and Hawaii
+keeps its verbatim diacritic spellings. PR #145 is superseded by this
+round's pull request and can be closed unmerged. Next: the
+country/planet thread.
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifty-six configurations — five cities,
-forty-seven statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-eight configurations — five cities,
+forty-nine statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -294,6 +310,8 @@ its own offline Webxdc:
 | Connecticut (statewide) | `connecticut-subsurface.html` | `js/city-subsurface-data-connecticut.js` | `js/city-gazetteer-data-connecticut.js` | `connecticut-subsurface.xdc` |
 | Rhode Island (statewide) | `rhodeisland-subsurface.html` | `js/city-subsurface-data-rhodeisland.js` | `js/city-gazetteer-data-rhodeisland.js` | `rhodeisland-subsurface.xdc` |
 | Alaska (statewide) | `alaska-subsurface.html` | `js/city-subsurface-data-alaska.js` | `js/city-gazetteer-data-alaska.js` | `alaska-subsurface.xdc` |
+| New Jersey (statewide) | `newjersey-subsurface.html` | `js/city-subsurface-data-newjersey.js` | `js/city-gazetteer-data-newjersey.js` | `newjersey-subsurface.xdc` |
+| Hawaii (statewide) | `hawaii-subsurface.html` | `js/city-subsurface-data-hawaii.js` | `js/city-gazetteer-data-hawaii.js` | `hawaii-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
