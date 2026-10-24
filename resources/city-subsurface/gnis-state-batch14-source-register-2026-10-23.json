@@ -200,7 +200,7 @@
         "lon1": -78.5,
         "lat1": 35.25
       },
-      "frameNote": "North Carolina-South Carolina batch: the Columbia capital anchor is balanced with the per-ID Sassafras Mountain high point (3,553 ft), the Santee pair (Marion/Moultrie) plus Lake Murray, and three river records (Savannah mouth seeded on its SC-associated record; Congaree; Pee Dee at its returned Chesterfield keying, preserved verbatim like the Kanawha case). Lake Hartwell returns an empty states=SC screen (Georgia-associated) and is not seeded.",
+      "frameNote": "North Carolina-South Carolina batch: the Columbia capital anchor is balanced with the per-ID Sassafras Mountain high point (3,560 ft per the current USGS Elevations and Distances table; earlier USGS-published material 3,553 ft), the Santee pair (Marion/Moultrie) plus Lake Murray, and three river records (Savannah mouth seeded on its SC-associated record; Congaree; Pee Dee at its returned Chesterfield keying, preserved verbatim like the Kanawha case). Lake Hartwell returns an empty states=SC screen (Georgia-associated) and is not seeded.",
       "totalRows": 12,
       "verifiedRows": [
         {
@@ -277,7 +277,7 @@
           "longitude": -82.7776292,
           "featureId": "1015279",
           "verified": 1,
-          "sourceNote": "South Carolina High Point and state high point at 3,553 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_SC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1015279 as a Summit in Pickens County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "sourceNote": "South Carolina High Point and state high point at 3,560 feet per the current USGS Elevations and Distances online table (South Carolina | Sassafras Mountain | Pickens | 3,560; fetched 2026-10-23; earlier USGS-published material lists 3,553 feet, and that published figure is preserved here, not silently dropped); Domestic Names per-ID check (DomesticNames_SC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1015279 as a Summit in Pickens County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Summit",
           "geocoderCounty": "Pickens County"
         },
@@ -329,7 +329,7 @@
           "longitude": -80.8501103,
           "featureId": "1253486",
           "verified": 1,
-          "sourceNote": "The Savannah's GNIS primary point is its Atlantic mouth; the record is South Carolina-associated, so the border river is seeded once here and remains a corridor in Georgia (no Georgia frame exists yet; the decision is revisited if one is built). USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Stream type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "sourceNote": "The Savannah's GNIS primary point is its Atlantic mouth; the record is South Carolina-associated, so the border river is seeded once here and remains a corridor in Georgia (the Georgia frame on main now carries the batch-11 savannah-river context corridor on this same FEATURE_ID 1253486; that frame's states=GA Geocoder screen returned an empty array, so this SC-associated record is the only seeded instance). USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Stream type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
           "geocoderType": "Streams & Canals",
           "geocoderCounty": "Jasper County"
         },
@@ -397,8 +397,9 @@
   "knownLimitations": [
     "North Carolina and South Carolina are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
     "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
-    "The current DomesticNames text layout carries no elevation columns, so Mount Mitchell (6,684 feet), Kuwohi (6,643 feet), and Sassafras Mountain (3,553 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "The current DomesticNames text layout carries no elevation columns, so Mount Mitchell (6,684 feet), Kuwohi (6,643 feet), and Sassafras Mountain (3,560 feet in the current USGS Elevations and Distances table, versus 3,553 feet in earlier USGS-published material) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
     "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
-    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Atlantic waters); no boundary geometry is claimed."
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Atlantic waters); no boundary geometry is claimed.",
+    "Parallel #141 screen (2026-10-23, branch arena/0f04e91f-html5): a second, independent South Carolina generation was reconciled main-preferred into this batch-14 frame; its unique screening evidence is preserved here instead of its duplicate rows. The Rock Hill pair returns two same-name populated places ~78 km apart — York County 1250417 (census class P1, GSA/OPM 2200, the incorporated city) versus Fairfield County 1231736 (census class U6, unincorporated, returned first) — neither seeded in this frame; any future seeding must use the census-class tie-break rather than name or county. North Charleston 1225072 (Charleston) and Santee River 1250783 (Georgetown) were also per-ID verified in that screen as unseeded alternates. The parallel batch-12 South Carolina register from that branch was dropped in favour of this file; batch 12 remains Kentucky-Tennessee."
   ]
 }
