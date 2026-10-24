@@ -319,6 +319,31 @@ two tests. Final: cities 33 (18/18), Node 806 = 796/10/0, vitest 307,
 wiki 244, city XDCs 81 entries. Next in sequence: South Carolina, then
 the remaining seaboard states, Florida, then the country/planet thread.
 
+**Round 29 status (2026-10-23): partial.** South Carolina shipped as
+configuration 34 with a 12/12 per-ID `VERIFIED=1` GNIS starter register,
+labelled synthetic relief, five generalized context corridors, no DEM,
+and a labelled generalized Atlantic coast line. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
+Sassafras Mountain carries the per-ID check with a twist: the
+`gaznames_default` description field is **empty** (class Summit, feature
+code 15048, gaz_elevation 1078 confirmed), so the 3,560-foot figure is
+sourced from the official USGS Elevations and Distances table and the
+split provenance is disclosed — no invented GNIS quote. Rock Hill seeds
+the York County record 1250417 (census class P1, GSA/OPM 2200) over the
+Fairfield County same-name record 1231736 (census class U6, returned
+first, ~78 km away) — the register’s duplicate rule now covers
+census-class splits alongside description locators. The Savannah River
+row is FEATURE_ID 1253486, the same record whose states=GA screen
+returned an empty array in batch-11; it seeds in its home state with the
+cross-reference in row note and corridor. Lake Murray sheds the Shores
+populated place (1231458) and the Richland census record (2403200); all
+six cities shed county/census-division piles; Santee and Pee Dee seed as
+single exact streams. Final: cities 34 (19/19), Node 807 = 795/12/0,
+vitest 307, wiki 245, city XDCs 83 entries. Next in sequence: North
+Carolina, then Virginia and the remaining seaboard states, Florida, then
+the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

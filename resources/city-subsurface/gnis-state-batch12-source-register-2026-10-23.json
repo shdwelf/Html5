@@ -1,0 +1,267 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 29 Atlantic state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter register for South Carolina. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Sassafras Mountain and Rock Hill additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=SC&include=gnis&maxSuggestions=8",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. County records, divisions, canals, reservoirs, air bases, harbors, farms, heights, crossroads, census records, and same-name records of another county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "restQuery": "https://edits.nationalmap.gov/arcgis/rest/services/gaznames/gaznames_default/MapServer/0/query?where=gaz_id=<featureId>&outFields=*&returnGeometry=false&f=json",
+      "use": "Per-ID identity checks for Sassafras Mountain (1015279: gaz_featureclass Summit, feature code 15048, gaz_elevation 1078, EMPTY description field — the 3,560-foot figure is corroborated by the official USGS Elevations and Distances table instead) and Rock Hill (1250417 seeded with census class P1 plus GSA/OPM 2200; parallel Fairfield County record 1231736 disclosed with census class U6)."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that frame and the failure is disclosed; roster capacity holds are disclosed the same way.",
+    "Duplicate same-name records seed only the record identified as the intended feature — by an official Domestic Names description locator where one exists, or by census class and government codes where descriptions are empty (Rock Hill P1 with GSA/OPM 2200 seeds; the U6 unincorporated twin is disclosed, never merged).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. South Carolina ships a labelled generalized Atlantic coast line that is not a shoreline survey."
+  ],
+  "frames": {
+    "southcarolina": {
+      "title": "South Carolina statewide frame",
+      "state": "SC",
+      "bbox": {
+        "lon0": -83.5,
+        "lat0": 31.95,
+        "lon1": -78.4,
+        "lat1": 35.3
+      },
+      "frameNote": "Atlantic batch: the Columbia, Charleston, North Charleston, Rock Hill, Greenville, and Spartanburg anchors are balanced with the per-ID Sassafras Mountain record (empty GNIS description disclosed; USGS Elevations and Distances table gives 3,560 feet), the Rock Hill P1-versus-U6 census-class split over the Fairfield County twin, Lake Marion and Lake Murray, and the Savannah, Santee, and Pee Dee river records. The Savannah row is the same FEATURE_ID 1253486 that Georgia's empty states=GA screen could only surface nationally. County/census-division trap piles for all six cities and the Lake Murray population-record trap are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Columbia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Richland",
+          "latitude": 34.0007104,
+          "longitude": -81.0348144,
+          "featureId": "1245051",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Richland County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The screen led with Columbia Division (FEATURE_ID 1938234); rejected: Columbia Division, Columbia Canal (FEATURE_ID 1221698), Columbia Reservoir (FEATURE_ID 1238834), and the historical Columbia Air Base (FEATURE_ID 1244137). USGS GNIS Geocoder (GNIS), FEATURE_ID=1245051; exact official name and Cities & Populated Places type in Richland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Charleston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Charleston",
+          "latitude": 32.7765656,
+          "longitude": -79.9309216,
+          "featureId": "1221516",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Charleston County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Coastal port anchor. The screen led with Charleston Central Division (FEATURE_ID 2584536) and Charleston County (FEATURE_ID 1252740); rejected: Charleston Central Division, Charleston County, Charleston Crossroads in Abbeville County (FEATURE_ID 1231157), Charleston Farms (FEATURE_ID 1252745), Charleston Heights (FEATURE_ID 1221518), Charleston Harbor (FEATURE_ID 1221517), and the census Charleston-North Charleston Division (FEATURE_ID 1938224). USGS GNIS Geocoder (GNIS), FEATURE_ID=1221516; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "North Charleston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Charleston",
+          "latitude": 32.8546197,
+          "longitude": -79.9748103,
+          "featureId": "1225072",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Charleston County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with North Charleston Division (FEATURE_ID 2584539); rejected: North Charleston Division and the historical North Charleston Air Force Station (FEATURE_ID 2089735). USGS GNIS Geocoder (GNIS), FEATURE_ID=1225072; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rock Hill",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "York",
+          "latitude": 34.9248667,
+          "longitude": -81.0250784,
+          "featureId": "1250417",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "York County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 1250417 (York County): the GNIS Domestic Names per-ID check shows census class P1 (populated place) with GSA and OPM codes 2200, identifying the incorporated city. The parallel Fairfield County same-name record (FEATURE_ID 1231736) carries census class U6 (unincorporated) about 78 kilometres to the southwest and is a separate feature, not this city; it is disclosed and not seeded. The screen led with Rock Hill Division (FEATURE_ID 1938403) and returned the Fairfield record before the York record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250417; exact official name and Cities & Populated Places type in York County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Greenville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greenville",
+          "latitude": 34.8526176,
+          "longitude": -82.3940105,
+          "featureId": "1245842",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greenville County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Upstate anchor. The screen led with Greenville County (FEATURE_ID 1245489) and Greenville Division (FEATURE_ID 1938285); rejected: Greenville County and Greenville Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1245842; exact official name and Cities & Populated Places type in Greenville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Spartanburg",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Spartanburg",
+          "latitude": 34.9495672,
+          "longitude": -81.9320482,
+          "featureId": "1250982",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Spartanburg County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Upstate anchor. The screen led with Spartanburg County (FEATURE_ID 1248592) and Spartanburg Division (FEATURE_ID 1938427); rejected: Spartanburg County and Spartanburg Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250982; exact official name and Cities & Populated Places type in Spartanburg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Sassafras Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Pickens",
+          "latitude": 35.065108,
+          "longitude": -82.7776292,
+          "featureId": "1015279",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Pickens County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "South Carolina's highest summit. The Summit record passed a GNIS Domestic Names per-ID check against the official gaznames_default REST layer: gaz_featureclass Summit, feature code 15048, stored gaz_elevation 1078, and an EMPTY description field — no elevation sentence or High Point designation text exists on this record there. The 3,560-foot figure is corroborated by the official USGS Elevations and Distances table (Sassafras Mountain, Pickens, 3,560 feet), not by this record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Marion",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Clarendon",
+          "latitude": 33.4611873,
+          "longitude": -80.3848589,
+          "featureId": "1224315",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Clarendon County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result, returned first with no same-name twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224315; exact official name and Lakes & Reservoirs type in Clarendon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Murray",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lexington",
+          "latitude": 34.0736677,
+          "longitude": -81.3790225,
+          "featureId": "1224900",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lexington County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Lake Murray Shores (FEATURE_ID 1231458, Cities & Populated Places, Saluda County); rejected: Lake Murray Shores and the Lake Murray of Richland census record (FEATURE_ID 2403200). The Lexington County Lakes & Reservoirs record is the intended impoundment. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224900; exact official name and Lakes & Reservoirs type in Lexington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Savannah River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Jasper",
+          "latitude": 32.0377132,
+          "longitude": -80.8501103,
+          "featureId": "1253486",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Jasper County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result — and the same record Georgia could not surface: the states=GA screen in the batch-11 register returned an empty array, and only the no-state national screen returned this South Carolina record. This SC frame seeds it in its home state. The point is the Jasper County sequence at the Atlantic end of the boundary reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Streams & Canals type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Santee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Georgetown",
+          "latitude": 33.2351673,
+          "longitude": -79.4595064,
+          "featureId": "1250783",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Georgetown County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the point is the Georgetown County sequence near the coastal reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250783; exact official name and Streams & Canals type in Georgetown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Pee Dee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Chesterfield",
+          "latitude": 34.7209897,
+          "longitude": -79.8817302,
+          "featureId": "1251573",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Chesterfield County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the point is the Chesterfield County mid-reach sequence, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1251573; exact official name and Streams & Canals type in Chesterfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Sassafras Mountain, FEATURE_ID 1015279",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check against the gaznames_default REST layer confirmed gaz_featureclass Summit and feature code 15048 at the stored Pickens County point; the description field is EMPTY, so no GNIS elevation sentence exists for this record. The 3,560-foot highest-point figure is corroborated by the official USGS Elevations and Distances table (Sassafras Mountain, Pickens, 3,560 feet), a separate USGS publication.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground; the record is not claimed to carry a High Point designation or any description text, and gaz_elevation 1078 is stored as returned without a unit claim."
+    },
+    {
+      "candidate": "Rock Hill, FEATURE_ID 1250417 (pair with 1231736)",
+      "decision": "Seeded the York County record: the per-ID check shows census class P1 (populated place) with GSA and OPM codes 2200, identifying the incorporated city. The parallel Fairfield County same-name record (FEATURE_ID 1231736) carries census class U6 (unincorporated) about 78 kilometres to the southwest and is a separate feature; it is disclosed and not seeded. The suggestion order returned the division first and the Fairfield record before the York record.",
+      "notClaimed": "The primary point is not a municipal boundary, and the two same-name places are not treated as one feature."
+    },
+    {
+      "candidate": "Savannah River under states=SC",
+      "decision": "Single exact Streams & Canals record in Jasper County — the same FEATURE_ID 1253486 that the states=GA screen in the batch-11 register returned as an empty array and the no-state national screen surfaced for South Carolina only. This frame seeds the record in its home state.",
+      "notClaimed": "The point is not a channel centerline or a boundary monument; Georgia's failed screen is not retroactively claimed."
+    },
+    {
+      "candidate": "Columbia, FEATURE_ID 1245051",
+      "decision": "The Columbia Division led the screen; the Richland County Cities & Populated Places record is the capital and seeds; the division, canal, reservoir, and historical air base records are rejected by FEATURE_ID.",
+      "notClaimed": "No division, canal, reservoir, or military record stands in for the capital."
+    },
+    {
+      "candidate": "Charleston, FEATURE_ID 1221516",
+      "decision": "Charleston Central Division and Charleston County led the screen; the Charleston County Cities & Populated Places record seeds and the division, county, Abbeville County crossroads, farms, heights, harbor, and census division records are rejected by FEATURE_ID.",
+      "notClaimed": "No division, county, harbor, or out-of-county record stands in for the city."
+    },
+    {
+      "candidate": "North Charleston, FEATURE_ID 1225072",
+      "decision": "The North Charleston Division led the screen; the Charleston County Cities & Populated Place record seeds and the division and historical Air Force Station records are rejected.",
+      "notClaimed": "No division or military record stands in for the city."
+    },
+    {
+      "candidate": "Greenville, FEATURE_ID 1245842",
+      "decision": "Greenville County and Greenville Division led the screen; the Cities & Populated Places record in Greenville County seeds and both same-name political records are rejected.",
+      "notClaimed": "No county or division record stands in for the city."
+    },
+    {
+      "candidate": "Spartanburg, FEATURE_ID 1250982",
+      "decision": "Spartanburg County and Spartanburg Division led the screen; the Cities & Populated Places record in Spartanburg County seeds and both same-name political records are rejected.",
+      "notClaimed": "No county or division record stands in for the city."
+    },
+    {
+      "candidate": "Lake Murray, FEATURE_ID 1224900",
+      "decision": "The screen led with Lake Murray Shores (population record, Saluda County); the Lexington County Lakes & Reservoirs record is the intended impoundment and seeds; the Shores record and the Lake Murray of Richland census record are rejected by class.",
+      "notClaimed": "No population or census record stands in for the reservoir; the point is not a shoreline."
+    },
+    {
+      "candidate": "Santee River and Pee Dee River singles",
+      "decision": "Both screens returned single exact Streams & Canals records (Georgetown and Chesterfield counties respectively) with no same-name twins; both seed as returned.",
+      "notClaimed": "Neither primary point is a channel centerline, confluence polygon, or watershed boundary."
+    }
+  ],
+  "knownLimitations": [
+    "South Carolina is a starter register, not a statewide GNIS extract. It contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Sassafras Mountain and Rock Hill additionally carry per-ID Domestic Names detail checks; the Sassafras description field is empty and its elevation figure relies on a separate official USGS publication.",
+    "GNIS point data do not supply the displayed terrain or corridors. The frame uses explicitly synthetic relief gaussians and generalized context lines; the Atlantic coast line is generalized, not a shoreline survey.",
+    "State frames are rectangles, not state-boundary clipping masks. The South Carolina rectangle includes small areas outside the state outline; no boundary geometry is claimed."
+  ]
+}

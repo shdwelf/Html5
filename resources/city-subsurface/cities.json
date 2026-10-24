@@ -8433,6 +8433,562 @@
           "The screen led with Altamaha River Division (FEATURE_ID 1936077, Appling County); rejected: Altamaha River Division. The point is the McIntosh County sequence near the mouth, downstream of the seeded Ocmulgee and Oconee confluence sequences. USGS GNIS Geocoder (GNIS), FEATURE_ID=354294; exact official name and Streams & Canals type in McIntosh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
         ]
       ]
+    },
+    "southcarolina": {
+      "title": "SOUTH CAROLINA SUBSURFACE 4Dwm",
+      "subtitle": "Blue Ridge escarpment · Sandhills fall line · Grand Strand — statewide frame, South Carolina",
+      "gazTitle": "SOUTH CAROLINA USGS GNIS REGISTER",
+      "gazNote": "Round 29 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Sassafras Mountain and Rock Hill additionally carry GNIS Domestic Names per-ID checks (Sassafras: class and elevation field confirmed with an empty description field disclosed; Rock Hill: census-class split). Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "SC",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -83.5,
+        "lat0": 31.95,
+        "lon1": -78.4,
+        "lat1": 35.3
+      },
+      "center": {
+        "lon": -80.9,
+        "lat": 33.7
+      },
+      "baseElevationM": 130,
+      "roughnessM": 60,
+      "hasWater": true,
+      "coast": [
+        [
+          -78.56,
+          33.86
+        ],
+        [
+          -78.88,
+          33.69
+        ],
+        [
+          -79.28,
+          33.23
+        ],
+        [
+          -79.5,
+          33.0
+        ],
+        [
+          -79.93,
+          32.75
+        ],
+        [
+          -80.3,
+          32.48
+        ],
+        [
+          -80.62,
+          32.35
+        ],
+        [
+          -80.85,
+          32.03
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Blue Ridge escarpment",
+          "lon": -82.7,
+          "lat": 35.0,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 380,
+          "rot": 0
+        },
+        {
+          "name": "Piedmont rolling hills",
+          "lon": -81.0,
+          "lat": 34.5,
+          "rx": 0.7,
+          "ry": 0.55,
+          "amp": 130,
+          "rot": 0
+        },
+        {
+          "name": "Sandhills fall line",
+          "lon": -80.4,
+          "lat": 33.7,
+          "rx": 0.6,
+          "ry": 0.35,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Upper coastal plain",
+          "lon": -80.7,
+          "lat": 32.9,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 50,
+          "rot": 0
+        },
+        {
+          "name": "Grand Strand terraces",
+          "lon": -78.95,
+          "lat": 33.5,
+          "rx": 0.4,
+          "ry": 0.4,
+          "amp": 35,
+          "rot": 0
+        },
+        {
+          "name": "ACE Basin flats",
+          "lon": -80.45,
+          "lat": 32.6,
+          "rx": 0.45,
+          "ry": 0.3,
+          "amp": 30,
+          "rot": 0
+        },
+        {
+          "name": "Savannah river red hills",
+          "lon": -81.6,
+          "lat": 33.3,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": 75,
+          "rot": 0
+        },
+        {
+          "name": "Santee delta flat",
+          "lon": -79.4,
+          "lat": 33.1,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": -25,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i26-southcarolina",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 26 corridor (generalized)",
+          "short": "I-26",
+          "depthM": 0,
+          "path": [
+            [
+              -79.9309216,
+              32.7765656
+            ],
+            [
+              -80.4,
+              33.2
+            ],
+            [
+              -81.0348144,
+              34.0007104
+            ],
+            [
+              -81.4,
+              34.4
+            ],
+            [
+              -81.9320482,
+              34.9495672
+            ],
+            [
+              -82.2,
+              35.15
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 26 corridor from Charleston through Columbia and Spartanburg to the North Carolina line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 26 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i20-southcarolina",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 20 corridor (generalized)",
+          "short": "I-20",
+          "depthM": 0,
+          "path": [
+            [
+              -79.55,
+              34.45
+            ],
+            [
+              -80.1,
+              34.25
+            ],
+            [
+              -80.6,
+              34.12
+            ],
+            [
+              -81.0348144,
+              34.0007104
+            ],
+            [
+              -81.5,
+              33.87
+            ],
+            [
+              -81.95,
+              33.68
+            ],
+            [
+              -82.3,
+              33.5
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 20 corridor from the North Carolina line through Columbia and Aiken to the Georgia line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 20 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i95-southcarolina",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -79.4,
+              34.45
+            ],
+            [
+              -79.7,
+              34.3
+            ],
+            [
+              -79.8,
+              34.1
+            ],
+            [
+              -79.9,
+              33.7
+            ],
+            [
+              -80.4,
+              33.4
+            ],
+            [
+              -80.9,
+              33.15
+            ],
+            [
+              -81.3,
+              32.7
+            ],
+            [
+              -81.45,
+              32.5
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor from the North Carolina line past Florence and the Lowcountry to the Georgia line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 95 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i77-southcarolina",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 77 corridor (generalized)",
+          "short": "I-77",
+          "depthM": 0,
+          "path": [
+            [
+              -80.93,
+              35.2
+            ],
+            [
+              -81.0250784,
+              34.9248667
+            ],
+            [
+              -80.98,
+              34.5
+            ],
+            [
+              -81.0348144,
+              34.0007104
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 77 corridor from the North Carolina line through Rock Hill to its Columbia terminus; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 77 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "savannah-river-southcarolina",
+          "layer": "water",
+          "tier": "context",
+          "name": "Savannah River reach (generalized)",
+          "short": "Savannah R",
+          "depthM": 0,
+          "path": [
+            [
+              -83.3,
+              35.05
+            ],
+            [
+              -83.2,
+              34.6
+            ],
+            [
+              -82.7,
+              34.1
+            ],
+            [
+              -82.2,
+              33.55
+            ],
+            [
+              -81.7,
+              33.2
+            ],
+            [
+              -81.3,
+              32.7
+            ],
+            [
+              -81.0,
+              32.3
+            ],
+            [
+              -80.8501103,
+              32.0377132
+            ]
+          ],
+          "facts": [
+            "Generalized Savannah River reach from the Blue Ridge headwaters past Augusta to the Atlantic. The SC frame seeds GNIS record FEATURE_ID 1253486 — the same record whose states=GA screen in the batch-11 register returned an empty array, surfacing only on the no-state national screen; schematic reference, not the channel or the legal boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1253486 (Jasper County) per the batch-12 register, cross-referencing the batch-11 Georgia empty-screen disclosure"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "columbia",
+          "name": "Columbia",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -81.0348144,
+          "lat": 34.0007104,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1245051; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "charleston",
+          "name": "Charleston",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -79.9309216,
+          "lat": 32.7765656,
+          "depthM": 0,
+          "facts": [
+            "Coastal port anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline or harbor boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1221516; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "sassafras-mountain",
+          "name": "Sassafras Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -82.7776292,
+          "lat": 35.065108,
+          "depthM": 0,
+          "facts": [
+            "South Carolina's highest summit; node coordinate is the GNIS Summit primary point confirmed by the per-ID class check from the gazetteer row; the 3,560-foot figure comes from the USGS Elevations and Distances table, not a GNIS description."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1015279; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "greenville",
+          "name": "Greenville",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -82.3940105,
+          "lat": 34.8526176,
+          "depthM": 0,
+          "facts": [
+            "Upstate anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a municipal boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1245842; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Columbia",
+          "Populated Place",
+          "pop.place",
+          "Richland",
+          34.0007104,
+          -81.0348144,
+          null,
+          "1245051",
+          1,
+          "State capital. The screen led with Columbia Division (FEATURE_ID 1938234); rejected: Columbia Division, Columbia Canal (FEATURE_ID 1221698), Columbia Reservoir (FEATURE_ID 1238834), and the historical Columbia Air Base (FEATURE_ID 1244137). USGS GNIS Geocoder (GNIS), FEATURE_ID=1245051; exact official name and Cities & Populated Places type in Richland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "Charleston",
+          "Populated Place",
+          "pop.place",
+          "Charleston",
+          32.7765656,
+          -79.9309216,
+          null,
+          "1221516",
+          1,
+          "Coastal port anchor. The screen led with Charleston Central Division (FEATURE_ID 2584536) and Charleston County (FEATURE_ID 1252740); rejected: Charleston Central Division, Charleston County, Charleston Crossroads in Abbeville County (FEATURE_ID 1231157), Charleston Farms (FEATURE_ID 1252745), Charleston Heights (FEATURE_ID 1221518), Charleston Harbor (FEATURE_ID 1221517), and the census Charleston-North Charleston Division (FEATURE_ID 1938224). USGS GNIS Geocoder (GNIS), FEATURE_ID=1221516; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "North Charleston",
+          "Populated Place",
+          "pop.place",
+          "Charleston",
+          32.8546197,
+          -79.9748103,
+          null,
+          "1225072",
+          1,
+          "The screen led with North Charleston Division (FEATURE_ID 2584539); rejected: North Charleston Division and the historical North Charleston Air Force Station (FEATURE_ID 2089735). USGS GNIS Geocoder (GNIS), FEATURE_ID=1225072; exact official name and Cities & Populated Places type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "Rock Hill",
+          "Populated Place",
+          "pop.place",
+          "York",
+          34.9248667,
+          -81.0250784,
+          null,
+          "1250417",
+          1,
+          "Seeded FEATURE_ID 1250417 (York County): the GNIS Domestic Names per-ID check shows census class P1 (populated place) with GSA and OPM codes 2200, identifying the incorporated city. The parallel Fairfield County same-name record (FEATURE_ID 1231736) carries census class U6 (unincorporated) about 78 kilometres to the southwest and is a separate feature, not this city; it is disclosed and not seeded. The screen led with Rock Hill Division (FEATURE_ID 1938403) and returned the Fairfield record before the York record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250417; exact official name and Cities & Populated Places type in York County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "Greenville",
+          "Populated Place",
+          "pop.place",
+          "Greenville",
+          34.8526176,
+          -82.3940105,
+          null,
+          "1245842",
+          1,
+          "Upstate anchor. The screen led with Greenville County (FEATURE_ID 1245489) and Greenville Division (FEATURE_ID 1938285); rejected: Greenville County and Greenville Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1245842; exact official name and Cities & Populated Places type in Greenville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "Spartanburg",
+          "Populated Place",
+          "pop.place",
+          "Spartanburg",
+          34.9495672,
+          -81.9320482,
+          null,
+          "1250982",
+          1,
+          "Upstate anchor. The screen led with Spartanburg County (FEATURE_ID 1248592) and Spartanburg Division (FEATURE_ID 1938427); rejected: Spartanburg County and Spartanburg Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250982; exact official name and Cities & Populated Places type in Spartanburg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        ],
+        [
+          "Sassafras Mountain",
+          "Summit",
+          "phys.summit",
+          "Pickens",
+          35.065108,
+          -82.7776292,
+          null,
+          "1015279",
+          1,
+          "South Carolina's highest summit. The Summit record passed a GNIS Domestic Names per-ID check against the official gaznames_default REST layer: gaz_featureclass Summit, feature code 15048, stored gaz_elevation 1078, and an EMPTY description field — no elevation sentence or High Point designation text exists on this record there. The 3,560-foot figure is corroborated by the official USGS Elevations and Distances table (Sassafras Mountain, Pickens, 3,560 feet), not by this record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        ],
+        [
+          "Lake Marion",
+          "Lake",
+          "hydro.lake",
+          "Clarendon",
+          33.4611873,
+          -80.3848589,
+          null,
+          "1224315",
+          1,
+          "Single exact screen result, returned first with no same-name twins. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224315; exact official name and Lakes & Reservoirs type in Clarendon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        ],
+        [
+          "Lake Murray",
+          "Lake",
+          "hydro.lake",
+          "Lexington",
+          34.0736677,
+          -81.3790225,
+          null,
+          "1224900",
+          1,
+          "The screen led with Lake Murray Shores (FEATURE_ID 1231458, Cities & Populated Places, Saluda County); rejected: Lake Murray Shores and the Lake Murray of Richland census record (FEATURE_ID 2403200). The Lexington County Lakes & Reservoirs record is the intended impoundment. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224900; exact official name and Lakes & Reservoirs type in Lexington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        ],
+        [
+          "Savannah River",
+          "Stream",
+          "hydro.stream",
+          "Jasper",
+          32.0377132,
+          -80.8501103,
+          null,
+          "1253486",
+          1,
+          "Single exact screen result — and the same record Georgia could not surface: the states=GA screen in the batch-11 register returned an empty array, and only the no-state national screen returned this South Carolina record. This SC frame seeds it in its home state. The point is the Jasper County sequence at the Atlantic end of the boundary reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Streams & Canals type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        ],
+        [
+          "Santee River",
+          "Stream",
+          "hydro.stream",
+          "Georgetown",
+          33.2351673,
+          -79.4595064,
+          null,
+          "1250783",
+          1,
+          "Single exact screen result; the point is the Georgetown County sequence near the coastal reach, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250783; exact official name and Streams & Canals type in Georgetown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        ],
+        [
+          "Pee Dee River",
+          "Stream",
+          "hydro.stream",
+          "Chesterfield",
+          34.7209897,
+          -79.8817302,
+          null,
+          "1251573",
+          1,
+          "Single exact screen result; the point is the Chesterfield County mid-reach sequence, not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=1251573; exact official name and Streams & Canals type in Chesterfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        ]
+      ]
     }
   }
 }

@@ -113,10 +113,23 @@ only, and the Chattahoochee record is held to starter scope with its
 FEATURE_ID kept in the corridor. Its machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
 
+Round 29 update: **2026-10-23**. `southcarolina` joins as the
+thirty-fourth configuration, continuing the seaboard immediately north of
+Georgia. It starts with twelve all-GNIS `VERIFIED=1` rows; Sassafras
+Mountain carries a per-ID check whose **empty GNIS description field is
+disclosed** (the 3,560-foot figure comes from the official USGS
+Elevations and Distances table instead), Rock Hill resolves a two-record
+same-name pair by census class (P1 + GSA/OPM codes over the U6
+unincorporated twin), and the Savannah River row is the same FEATURE_ID
+1253486 whose Georgia screen returned an empty array in batch-11. The
+frame ships a labelled generalized Atlantic coast line. Its
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-three configurations — five cities,
-twenty-four statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-four configurations — five cities,
+twenty-five statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -154,6 +167,7 @@ its own offline Webxdc:
 | Mississippi (statewide) | `mississippi-subsurface.html` | `js/city-subsurface-data-mississippi.js` | `js/city-gazetteer-data-mississippi.js` | `mississippi-subsurface.xdc` |
 | Alabama (statewide) | `alabama-subsurface.html` | `js/city-subsurface-data-alabama.js` | `js/city-gazetteer-data-alabama.js` | `alabama-subsurface.xdc` |
 | Georgia (statewide) | `georgia-subsurface.html` | `js/city-subsurface-data-georgia.js` | `js/city-gazetteer-data-georgia.js` | `georgia-subsurface.xdc` |
+| South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

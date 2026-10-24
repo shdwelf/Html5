@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia", "southcarolina"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -2042,6 +2042,125 @@ test("Georgia opens the South Atlantic GNIS state batch", async () => {
   assert.ok(register.identityDecisions.some((d) => /330982/.test(d.candidate) && /319902/.test(d.decision)), "register must record the Lake Oconee pair decision");
   assert.ok(register.identityDecisions.some((d) => /Savannah River under states=GA/.test(d.candidate) && /empty array/.test(d.decision)), "register must record the Savannah River empty screen");
   assert.ok(register.identityDecisions.some((d) => /Lake Lanier term/.test(d.candidate) && /1688216/.test(d.decision)), "register must record the Lake Lanier mismatch");
+
+  const engine = read("js/city-subsurface.js");
+  for (const frameId of Object.keys(expectations)) {
+    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
+    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
+    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
+  }
+});
+
+test("South Carolina opens the seaboard GNIS state batch", async () => {
+  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json"));
+  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
+  const expectations = {
+    southcarolina: {
+      state: "SC",
+      bbox: { lon0: -83.5, lat0: 31.95, lon1: -78.4, lat1: 35.3 },
+      coastLines: 1,
+      rows: new Map([
+        ["Columbia|Populated Place", "1245051"],
+        ["Charleston|Populated Place", "1221516"],
+        ["North Charleston|Populated Place", "1225072"],
+        ["Rock Hill|Populated Place", "1250417"],
+        ["Greenville|Populated Place", "1245842"],
+        ["Spartanburg|Populated Place", "1250982"],
+        ["Sassafras Mountain|Summit", "1015279"],
+        ["Lake Marion|Lake", "1224315"],
+        ["Lake Murray|Lake", "1224900"],
+        ["Savannah River|Stream", "1253486"],
+        ["Santee River|Stream", "1250783"],
+        ["Pee Dee River|Stream", "1251573"],
+      ]),
+      anchor: ["Columbia|Populated Place", 34.0007104, -81.0348144],
+    },
+  };
+
+  for (const [frameId, expected] of Object.entries(expectations)) {
+    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
+    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
+
+    assert.equal(data.CITY.id, frameId);
+    assert.equal(data.CITY.state, expected.state);
+    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
+    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
+    {
+      const cfg = JSON.parse(read("resources/city-subsurface/cities.json")).cities[frameId];
+      // Mirror build project() + viewsFor(): w is the difference of two projected
+      // x coordinates, so the overview position matches bit-for-bit.
+      const cosLat = Math.cos((cfg.center.lat * Math.PI) / 180);
+      const x0 = (cfg.bbox.lon0 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const x1 = (cfg.bbox.lon1 - cfg.center.lon) * 111.32 * cosLat * 0.1;
+      const w = x1 - x0;
+      const overview = data.VIEWS.find((v) => v.id === "overview");
+      assert.deepEqual(overview.position, [0, Math.max(20, w * 0.45), Math.max(32, w * 0.7)], `${frameId}: overview framing must follow the build projection`);
+    }
+    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
+    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
+
+    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
+    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
+    assert.equal(gaz.GAZ_META.unverified, 0);
+    for (const row of gaz.GAZ_ROWS) {
+      const key = `${row[0]}|${row[1]}`;
+      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
+      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
+      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
+      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
+      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
+      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
+      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
+      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
+    }
+
+    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
+    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
+    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
+    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
+
+    const registerFrame = register.frames[frameId];
+    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
+    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
+    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
+    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-12 source register must reproduce the generated rows exactly`);
+    for (const registerRow of registerFrame.verifiedRows) {
+      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
+    }
+
+    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
+    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
+    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
+    for (const node of data.NODES) {
+      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
+      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
+    }
+  }
+
+  const scGaz = await import("../js/city-gazetteer-data-southcarolina.js");
+  const scData = await import("../js/city-subsurface-data-southcarolina.js");
+  const sassafras = scGaz.GAZ_ROWS.find((r) => r[0] === "Sassafras Mountain");
+  assert.match(sassafras[9], /gaznames_default/, "Sassafras Mountain note must cite the per-ID check");
+  assert.match(sassafras[9], /EMPTY description/, "Sassafras Mountain note must disclose the empty description field");
+  assert.match(sassafras[9], /3,560 feet/, "Sassafras Mountain note must preserve the USGS table elevation");
+  assert.match(sassafras[9], /Elevations and Distances/, "Sassafras Mountain note must cite the USGS publication");
+  const rockHill = scGaz.GAZ_ROWS.find((r) => r[0] === "Rock Hill");
+  assert.match(rockHill[9], /1231736/, "Rock Hill note must disclose the Fairfield County record");
+  assert.match(rockHill[9], /P1/, "Rock Hill note must record the seeded census class");
+  assert.match(rockHill[9], /U6/, "Rock Hill note must record the twin census class");
+  const charleston = scGaz.GAZ_ROWS.find((r) => r[0] === "Charleston");
+  assert.match(charleston[9], /1231157/, "Charleston note must reject the Abbeville County crossroads");
+  const lakeMurray = scGaz.GAZ_ROWS.find((r) => r[0] === "Lake Murray");
+  assert.match(lakeMurray[9], /1231458/, "Lake Murray note must reject the population record");
+  const savannah = scGaz.GAZ_ROWS.find((r) => r[0] === "Savannah River");
+  assert.match(savannah[9], /states=GA/, "Savannah River note must cross-reference the Georgia empty screen");
+  assert.match(savannah[9], /empty array/, "Savannah River note must record the Georgia empty array");
+  assert.ok(!scGaz.GAZ_ROWS.some((r) => r[0] === "Rock Hill" && r[3] === "Fairfield"), "the Fairfield County Rock Hill must not be seeded as a second row");
+  assert.ok(scData.CORRIDORS.some((c) => /Savannah River/.test(c.name) && /1253486/.test(c.facts[0]) && /empty array/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Sassafras Mountain, FEATURE_ID 1015279/.test(d.candidate) && /3,560 feet/.test(d.decision)), "register must record the Sassafras per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /1250417/.test(d.candidate) && /1231736/.test(d.decision)), "register must record the Rock Hill pair decision");
+  assert.ok(register.identityDecisions.some((d) => /Savannah River under states=SC/.test(d.candidate) && /1253486/.test(d.decision)), "register must record the Savannah River cross-state continuity");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
