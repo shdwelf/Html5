@@ -87,7 +87,6 @@ const DATA_LOADERS = {
   maine: () => import("./city-subsurface-data-maine.js"),
   massachusetts: () => import("./city-subsurface-data-massachusetts.js"),
   connecticut: () => import("./city-subsurface-data-connecticut.js"),
-  newjersey: () => import("./city-subsurface-data-newjersey.js"),
   rhodeisland: () => import("./city-subsurface-data-rhodeisland.js"),
   alaska: () => import("./city-subsurface-data-alaska.js"),
   newjersey: () => import("./city-subsurface-data-newjersey.js"),
@@ -148,7 +147,6 @@ const GAZ_LOADERS = {
   maine: () => import("./city-gazetteer-data-maine.js"),
   massachusetts: () => import("./city-gazetteer-data-massachusetts.js"),
   connecticut: () => import("./city-gazetteer-data-connecticut.js"),
-  newjersey: () => import("./city-gazetteer-data-newjersey.js"),
   rhodeisland: () => import("./city-gazetteer-data-rhodeisland.js"),
   alaska: () => import("./city-gazetteer-data-alaska.js"),
   newjersey: () => import("./city-gazetteer-data-newjersey.js"),
@@ -221,7 +219,6 @@ const DEM_LOADERS = {
   maine: () => importDem("./city-dem-grid-maine.js"),
   massachusetts: () => importDem("./city-dem-grid-massachusetts.js"),
   connecticut: () => importDem("./city-dem-grid-connecticut.js"),
-  newjersey: () => importDem("./city-dem-grid-newjersey.js"),
   rhodeisland: () => importDem("./city-dem-grid-rhodeisland.js"),
   alaska: () => importDem("./city-dem-grid-alaska.js"),
   newjersey: () => importDem("./city-dem-grid-newjersey.js"),
@@ -232,8 +229,19 @@ if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
   throw new Error(`unknown city: ${CITY_ID}`);
 }
 
-const data = await DATA_LOADERS[CITY_ID]();
-const gazPack = await GAZ_LOADERS[CITY_ID]();
+// Frame data arrives through the page's statically imported preload
+// (js/city-frame-preload-<city>.js runs first in document order).
+// Top-level await and boot-time dynamic import() are deliberately NOT used
+// here: Webxdc host webviews that fail to parse/evaluate them froze every
+// city frame before the first render while socal (static imports) worked.
+// The DATA_LOADERS/GAZ_LOADERS maps stay as the offline module graph the
+// XDC builder collects and the test suite asserts against.
+const preload = globalThis.__CITY_FRAME_PRELOAD__;
+if (!preload || preload.id !== CITY_ID) {
+  throw new Error(`frame preload missing for ${CITY_ID}; regenerate pages with scripts/build-city-subsurface.mjs`);
+}
+const data = preload.data;
+const gazPack = preload.gaz;
 const {
   CITY,
   BBOX,
@@ -367,9 +375,12 @@ function elevationAt(lon, lat) {
 }
 
 let demStatus = "synthetic relief field (RELIEF gaussians)";
-try {
-  const demMod = await DEM_LOADERS[CITY_ID]();
-  const grid = demMod.DEM ?? demMod.default;
+// The preload statically imports the checked-in DEM grid when one exists
+// (preload.dem), so boot needs neither top-level await nor a dynamic
+// import() here. DEM_LOADERS stays as the offline module graph the XDC
+// builder collects from.
+if (preload.dem) {
+  const grid = preload.dem.DEM ?? preload.dem.default;
   if (!grid || !installDem(grid)) throw new Error(`${CITY_ID} DEM grid is missing or invalid`);
   const info = demInfo();
   const sourcePixels = info.sourceRasterResolutionMeters == null
@@ -377,8 +388,7 @@ try {
     : `${info.sourceRasterResolutionMeters} m source pixels (not grid spacing)`;
   demStatus = `${info.source} · ${info.nx}×${info.ny} point samples · ${info.sampleSpacing} · ${sourcePixels} · ${info.verticalDatum} · ${info.retrieved}`;
   demDisclosure = info.disclosure;
-} catch (error) {
-  if (CITY.requiresDem) throw new Error(`${CITY.title} requires a bundled, valid USGS DEM grid; refusing synthetic relief`, { cause: error });
+} else {
   /* Cities without a checked-in DEM remain explicitly labelled as synthetic. */
   demDisclosure = "Synthetic RELIEF field; not USGS terrain.";
 }
