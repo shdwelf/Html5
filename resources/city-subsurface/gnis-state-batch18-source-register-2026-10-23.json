@@ -1,0 +1,399 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 36 Maine-Massachusetts state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Maine and Massachusetts. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Mount Katahdin and Mount Greylock carry Domestic Names per-ID identity checks. The three batch-17 corridor rivers that seed here (Androscoggin, Saco, Merrimack), the Sebago Lake adjacent-ID pair, and the still-unseeded Connecticut main stem are recorded below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<ME|MA>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County/township records, census-designated places, historical records, harbor/channel records, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<ME|MA>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Mount Katahdin (579940) and Mount Greylock (607448), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the summit elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-18; this register is the frozen batch-18 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (text class Reservoir for Moosehead Lake, Sebago Lake, and Quabbin Reservoir), Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor (the Connecticut main stem, now corridor-only in four consecutive frames).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "maine": {
+      "title": "Maine statewide frame (Maine-Massachusetts batch)",
+      "state": "ME",
+      "bbox": {
+        "lon0": -71.1,
+        "lat0": 43.0,
+        "lon1": -66.9,
+        "lat1": 47.5
+      },
+      "frameNote": "Maine-Massachusetts batch: the Augusta capital anchor is balanced with the per-ID Mount Katahdin high point (5,270 ft), Cadillac Mountain, Moosehead and Sebago lakes, and four river mouth records. Three of those rivers (Androscoggin, Saco, and — in Massachusetts — Merrimack) stayed corridor-only in New Hampshire (batch 17) and seed here on their Maine/Massachusetts mouth records, closing the northern New England river pattern.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Augusta",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kennebec",
+          "latitude": 44.3106241,
+          "longitude": -69.7794897,
+          "featureId": "581636",
+          "verified": 1,
+          "sourceNote": "place capital anchor on the Kennebec. USGS GNIS Geocoder (GNIS), FEATURE_ID=581636; exact official name and Populated Place type in Kennebec County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kennebec County"
+        },
+        {
+          "name": "Portland",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cumberland",
+          "latitude": 43.661471,
+          "longitude": -70.2553259,
+          "featureId": "573692",
+          "verified": 1,
+          "sourceNote": "place largest city anchor on Casco Bay; the Aroostook County Portland Lake and Oxford County Portland Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=573692; exact official name and Populated Place type in Cumberland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cumberland County"
+        },
+        {
+          "name": "Bangor",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Penobscot",
+          "latitude": 44.8011821,
+          "longitude": -68.7778138,
+          "featureId": "561558",
+          "verified": 1,
+          "sourceNote": "Penobscot valley anchor; the airport record and Bangor Hill summit are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=561558; exact official name and Populated Place type in Penobscot County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Penobscot County"
+        },
+        {
+          "name": "Lewiston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Androscoggin",
+          "latitude": 44.100351,
+          "longitude": -70.2147764,
+          "featureId": "569502",
+          "verified": 1,
+          "sourceNote": "Androscoggin valley anchor; Lewiston Junction, the Somerset County Lewiston Pond, and the armory record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=569502; exact official name and Populated Place type in Androscoggin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Androscoggin County"
+        },
+        {
+          "name": "Mount Katahdin",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Piscataquis",
+          "latitude": 45.9042751,
+          "longitude": -68.9213561,
+          "featureId": "579940",
+          "verified": 1,
+          "sourceNote": "Maine High Point (Baxter Peak, 5,270 feet, USGS-published elevation); Domestic Names per-ID check (DomesticNames_ME_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 579940 as a Summit in Piscataquis County at this point. The Mount Katahdin Township record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=579940; exact official name and Summit type in Piscataquis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Piscataquis County"
+        },
+        {
+          "name": "Cadillac Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Hancock",
+          "latitude": 44.3512609,
+          "longitude": -68.2264902,
+          "featureId": "563337",
+          "verified": 1,
+          "sourceNote": "Acadia anchor: the highest summit on the US Atlantic coast (1,527 feet, USGS-published). USGS GNIS Geocoder (GNIS), FEATURE_ID=563337; exact official name and Summit type in Hancock County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Hancock County"
+        },
+        {
+          "name": "Moosehead Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Piscataquis",
+          "latitude": 45.5415997,
+          "longitude": -69.6668586,
+          "featureId": "571641",
+          "verified": 1,
+          "sourceNote": "North Woods anchor at the Kennebec headwaters. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=571641; exact official name and Reservoir type in Piscataquis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Piscataquis County"
+        },
+        {
+          "name": "Sebago Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Cumberland",
+          "latitude": 43.8561968,
+          "longitude": -70.5486039,
+          "featureId": "575155",
+          "verified": 1,
+          "sourceNote": "Seeded on the Lakes & Reservoirs record; the same-name populated-place record (FEATURE_ID 575156, adjacent in the GNIS ID series) and the Sebago Lake Basin record are not seeded. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=575155; exact official name and Reservoir type in Cumberland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Cumberland County"
+        },
+        {
+          "name": "Penobscot River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Hancock",
+          "latitude": 44.4409093,
+          "longitude": -68.8280864,
+          "featureId": "573182",
+          "verified": 1,
+          "sourceNote": "River record at the head of Penobscot Bay; five Penobscot River Reservoir impoundment records (one historical) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=573182; exact official name and Stream type in Hancock County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Hancock County"
+        },
+        {
+          "name": "Kennebec River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Sagadahoc",
+          "latitude": 43.735085,
+          "longitude": -69.7739341,
+          "featureId": "569110",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth. The river stayed corridor-only in no earlier frame; it seeds here on its Maine mouth record. Five Kennebec River Reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=569110; exact official name and Stream type in Sagadahoc County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Sagadahoc County"
+        },
+        {
+          "name": "Androscoggin River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Sagadahoc",
+          "latitude": 43.9506344,
+          "longitude": -69.8775485,
+          "featureId": "580918",
+          "verified": 1,
+          "sourceNote": "River record at its Merrymeeting Bay mouth — the main stem stayed corridor-only in New Hampshire (batch 17, reservoir-only screen) and seeds here on its Maine record. USGS GNIS Geocoder (GNIS), FEATURE_ID=580918; exact official name and Stream type in Sagadahoc County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Sagadahoc County"
+        },
+        {
+          "name": "Saco River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "York",
+          "latitude": 43.461773,
+          "longitude": -70.3782538,
+          "featureId": "574648",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth — the main stem screened empty under New Hampshire (batch 17) and seeds here on its Maine record. USGS GNIS Geocoder (GNIS), FEATURE_ID=574648; exact official name and Stream type in York County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "York County"
+        }
+      ]
+    },
+    "massachusetts": {
+      "title": "Massachusetts statewide frame (Maine-Massachusetts batch)",
+      "state": "MA",
+      "bbox": {
+        "lon0": -73.55,
+        "lat0": 41.3,
+        "lon1": -69.9,
+        "lat1": 42.85
+      },
+      "frameNote": "Maine-Massachusetts batch: the Boston capital anchor is balanced with the per-ID Mount Greylock high point (3,491 ft), Quabbin Reservoir, Lake Chaubunagungamaug under its full official GNIS name, and the Merrimack and Charles mouth records. The Connecticut main stem returns only reservoir impoundments under states=MA — its fourth consecutive corridor-only frame — pending its Connecticut record.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Boston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Suffolk",
+          "latitude": 42.3584308,
+          "longitude": -71.0597732,
+          "featureId": "617565",
+          "verified": 1,
+          "sourceNote": "Commonwealth capital anchor; the harbor channels, Boston Harbor (Norfolk County keying), Boston Neck, and brook records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=617565; exact official name and Populated Place type in Suffolk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Suffolk County"
+        },
+        {
+          "name": "Worcester",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Worcester",
+          "latitude": 42.2625932,
+          "longitude": -71.8022934,
+          "featureId": "617867",
+          "verified": 1,
+          "sourceNote": "Second-city anchor; the Worcester County record and Worcester Brook are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=617867; exact official name and Populated Place type in Worcester County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Worcester County"
+        },
+        {
+          "name": "Springfield",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hampden",
+          "latitude": 42.1014831,
+          "longitude": -72.589811,
+          "featureId": "609092",
+          "verified": 1,
+          "sourceNote": "Connecticut valley anchor; Springfield Hill, the aqueduct, reservoir, and water-works records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=609092; exact official name and Populated Place type in Hampden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hampden County"
+        },
+        {
+          "name": "Cambridge",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Middlesex",
+          "latitude": 42.375097,
+          "longitude": -71.1056079,
+          "featureId": "617365",
+          "verified": 1,
+          "sourceNote": "Middlesex County Cambridge is seeded; the Worcester County Cambridge namesake (FEATURE_ID 610601), Cambridgeport, and the Cambridge Reservoir are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=617365; exact official name and Populated Place type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Middlesex County"
+        },
+        {
+          "name": "Lowell",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Middlesex",
+          "latitude": 42.6334247,
+          "longitude": -71.3161718,
+          "featureId": "611832",
+          "verified": 1,
+          "sourceNote": "Merrimack textile-city anchor; Lowell Junction and the Lowell Reservoir are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=611832; exact official name and Populated Place type in Middlesex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Middlesex County"
+        },
+        {
+          "name": "Provincetown",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Barnstable",
+          "latitude": 42.058436,
+          "longitude": -70.1786375,
+          "featureId": "616639",
+          "verified": 1,
+          "sourceNote": "Cape Cod tip anchor; Provincetown Harbor (adjacent FEATURE_ID 616640) and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=616639; exact official name and Populated Place type in Barnstable County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Barnstable County"
+        },
+        {
+          "name": "New Bedford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bristol",
+          "latitude": 41.6362152,
+          "longitude": -70.934205,
+          "featureId": "613714",
+          "verified": 1,
+          "sourceNote": "South Coast anchor; the New Bedford Reservoir — again the adjacent FEATURE_ID 613715 — the harbor, and the historical airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=613714; exact official name and Populated Place type in Bristol County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bristol County"
+        },
+        {
+          "name": "Mount Greylock",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Berkshire",
+          "latitude": 42.6371703,
+          "longitude": -73.1659399,
+          "featureId": "607448",
+          "verified": 1,
+          "sourceNote": "Commonwealth High Point at 3,491 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MA_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 607448 as a Summit in Berkshire County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=607448; exact official name and Summit type in Berkshire County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Berkshire County"
+        },
+        {
+          "name": "Quabbin Reservoir",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Worcester",
+          "latitude": 42.3910001,
+          "longitude": -72.309392,
+          "featureId": "619370",
+          "verified": 1,
+          "sourceNote": "Central Massachusetts water-supply anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=619370; exact official name and Reservoir type in Worcester County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Worcester County"
+        },
+        {
+          "name": "Lake Chaubunagungamaug",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Worcester",
+          "latitude": 42.0405934,
+          "longitude": -71.8441508,
+          "featureId": "619290",
+          "verified": 1,
+          "sourceNote": "Seeded under the full official GNIS name Lake Chaubunagungamaug (the Webster Lake of local usage) in Worcester County. USGS GNIS Geocoder (GNIS), FEATURE_ID=619290; exact official name and Lake type in Worcester County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Worcester County"
+        },
+        {
+          "name": "Merrimack River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Essex",
+          "latitude": 42.8195362,
+          "longitude": -70.8119957,
+          "featureId": "619363",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth — the main stem stayed corridor-only in New Hampshire (batch 17, reservoir-only screen) and seeds here on its Massachusetts record. USGS GNIS Geocoder (GNIS), FEATURE_ID=619363; exact official name and Stream type in Essex County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "Charles River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Suffolk",
+          "latitude": 42.3709306,
+          "longitude": -71.0494953,
+          "featureId": "619357",
+          "verified": 1,
+          "sourceNote": "River record at its Boston Harbor mouth; the Charles River Basin, Reservoir, and Grove/Station/Village records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=619357; exact official name and Stream type in Suffolk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Suffolk County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Sebago Lake FEATURE_ID 575155 (Lakes & Reservoirs) vs 575156 (Populated Place)",
+      "decision": "Seeded the water record 575155. GNIS registers the lake and the lakeside community under adjacent FEATURE_IDs; the class is the discriminator, and the rejected community record is named here rather than silently dropped.",
+      "notClaimed": "The seeded point is not a shoreline or centroid."
+    },
+    {
+      "candidate": "Adjacent-ID utility/harbor records at Provincetown (616640) and New Bedford Reservoir (613715)",
+      "decision": "Not seeded. Both are the immediate FEATURE_ID neighbours of seeded records (Provincetown 616639, New Bedford 613714); adjacency is recorded so the seeded identification does not rest on the ID sequence.",
+      "notClaimed": "Sequential IDs are not identity evidence; class, county, and point decide."
+    },
+    {
+      "candidate": "Cambridge same-name records (Middlesex 617365; Worcester 610601)",
+      "decision": "Seeded the Middlesex County record (the Charles River city, point matches); the Worcester County namesake community is not seeded.",
+      "notClaimed": "The seeded point is not a municipal boundary."
+    },
+    {
+      "candidate": "Connecticut River under states=MA (reservoir-only, fourth consecutive frame)",
+      "decision": "Corridor-only again. The MA screen returns only Connecticut River Reservoir impoundments, as under NH and VT (batch 17). The river has now been corridor-only in four frames (NH, VT, MA, and its Springfield reach); its Stream record is expected on the Connecticut screen in the next batch and will be seeded there if returned.",
+      "notClaimed": "The corridor is not a channel centerline or state boundary."
+    },
+    {
+      "candidate": "Androscoggin River 580918, Saco River 574648, Merrimack River 619363 (mouth records)",
+      "decision": "Seeded on their Maine/Massachusetts mouth records after reservoir-only or empty screens under New Hampshire (batch 17). This closes the batch-17 corridor pattern on the same terms as the Mississippi (Minnesota to Louisiana) and Pearl (Mississippi to Louisiana) chains.",
+      "notClaimed": "The stored points are GNIS primary points at the returned mouth counties, not centerlines."
+    }
+  ],
+  "knownLimitations": [
+    "Maine and Massachusetts are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Mount Katahdin (5,270 feet) and Mount Greylock (3,491 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. The Maine rectangle reaches to the Canadian border at latitude 47.5 and the Massachusetts rectangle includes Cape Cod and offshore water; no boundary geometry is claimed."
+  ]
+}

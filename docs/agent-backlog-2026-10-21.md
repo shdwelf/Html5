@@ -411,6 +411,27 @@ NH, and the Saco screens empty under NH — all four main stems stay
 corridors. Seven state frames remain (AK, CT, HI, ME, MA, NJ, RI),
 then the country/planet thread.
 
+**Round 36 status (2026-10-24): partial.** Maine and Massachusetts
+shipped as configurations 52–53, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch18-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch18-source-register-2026-10-23.json);
+the round record is filed as
+[`backlog-execution-round-36-2026-10-24.md`](backlog-execution-round-36-2026-10-24.md).
+Mount Katahdin (`579940`, Piscataquis County, 5,270 ft) and Mount
+Greylock (`607448`, Berkshire County, 3,491 ft) keep their per-ID
+checks; Cadillac Mountain (`563337`) anchors Acadia. Sebago Lake is
+seeded on its lakes record (`575155`) with the adjacent
+populated-place twin (`575156`) rejected by class. The Androscoggin
+(`580918`), Saco (`574648`), and Merrimack (`619363`) main stems seed
+on their ME/MA mouth records after corridor-only New Hampshire
+screens, while the Connecticut River returns only `Connecticut River
+Reservoir` impoundments under MA too — its fourth consecutive
+corridor-only frame — pending its Connecticut record, which the CT+RI
+pairing in the next batch can test. Five state frames remain (AK, CT,
+HI, NJ, RI), then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
