@@ -1,0 +1,436 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 27 Ohio-Pennsylvania state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Ohio and Pennsylvania. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Campbell Hill and Mount Davis additionally carry Domestic Names per-ID identity checks. The Indian Lake coordinate anomaly is recorded as a known service discrepancy.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<OH|PA>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. Counties, census divisions, pools, canals, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_<OH|PA>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Campbell Hill (1079572) and Mount Davis (1209050), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-10; this register is the frozen batch-10 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "A row is additionally rejected when the agreed GNIS point itself is geographically impossible for the named feature (see the Indian Lake discrepancy); two-surface agreement is necessary but not sufficient evidence.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "ohio": {
+      "title": "Ohio statewide frame (Ohio-Pennsylvania batch)",
+      "state": "OH",
+      "bbox": {
+        "lon0": -84.85,
+        "lat0": 38.4,
+        "lon1": -80.5,
+        "lat1": 42.25
+      },
+      "frameNote": "Ohio-Pennsylvania batch: the Columbus capital anchor is balanced with the per-ID Campbell Hill high point, the Grand Lake reservoir, three in-state river-mouth records (Scioto, Maumee, Cuyahoga), and a seeded Lake Erie GNIS anchor in Ohio waters. The Ohio main stem remains a corridor after its fourth consecutive empty state screen (IL, IN, OH, PA). Indian Lake is excluded: both USGS surfaces agree on a longitude that falls in Pennsylvania (see identityDecisions).",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Columbus",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Franklin",
+          "latitude": 39.9611755,
+          "longitude": -82.9987942,
+          "featureId": "1080996",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Franklin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1080996; exact official name and Cities & Populated Places type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Cleveland",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cuyahoga",
+          "latitude": 41.4994954,
+          "longitude": -81.6954088,
+          "featureId": "1066654",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cuyahoga County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lake Erie port and the frame's northern anchor; Cleveland Heights (FEATURE_ID 1048605) is a separate populated place. USGS GNIS Geocoder (GNIS), FEATURE_ID=1066654; exact official name and Cities & Populated Places type in Cuyahoga County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Cincinnati",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hamilton",
+          "latitude": 39.1034569,
+          "longitude": -84.5152726,
+          "featureId": "1066650",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hamilton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Ohio River port in the state's southwestern corner. USGS GNIS Geocoder (GNIS), FEATURE_ID=1066650; exact official name and Cities & Populated Places type in Hamilton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Toledo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lucas",
+          "latitude": 41.6639383,
+          "longitude": -83.555212,
+          "featureId": "1067015",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lucas County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Maumee River port at the western end of Lake Erie. USGS GNIS Geocoder (GNIS), FEATURE_ID=1067015; exact official name and Cities & Populated Places type in Lucas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Akron",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Summit",
+          "latitude": 41.0814447,
+          "longitude": -81.5190053,
+          "featureId": "1064305",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Summit County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Summit County city on the Cuyahoga River. USGS GNIS Geocoder (GNIS), FEATURE_ID=1064305; exact official name and Cities & Populated Places type in Summit County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Dayton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Montgomery",
+          "latitude": 39.7589478,
+          "longitude": -84.1916069,
+          "featureId": "1064514",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Montgomery County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Montgomery County city at the Great Miami River confluence. USGS GNIS Geocoder (GNIS), FEATURE_ID=1064514; exact official name and Cities & Populated Places type in Montgomery County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Campbell Hill",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Logan",
+          "latitude": 40.3702615,
+          "longitude": -83.720086,
+          "featureId": "1079572",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Logan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Ohio High Point and state high point at 1,550 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_OH_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1079572 as a Summit in Logan County at this point; the Pike County (FEATURE_ID 1048578) and Scioto County (FEATURE_ID 1038781) summits of the same name are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1079572; exact official name and Summit type in Logan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Lake Erie",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lake",
+          "latitude": 42.149115,
+          "longitude": -81.2410103,
+          "featureId": "1075813",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lake County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "The frame's Great Lakes anchor: the single GNIS record's primary point lies in Ohio waters, returned with a Lake County primary county. The Lake Erie screen under states=PA returned an empty array; the lake is seeded once, here. USGS GNIS Geocoder (GNIS), FEATURE_ID=1075813; exact official name and Lakes & Reservoirs type in Lake County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Grand Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Mercer",
+          "latitude": 40.5266733,
+          "longitude": -84.5007189,
+          "featureId": "1083992",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Mercer County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Mercer County reservoir (Grand Lake St. Marys), once the largest hand-constructed reservoir in the world. USGS GNIS Geocoder (GNIS), FEATURE_ID=1083992; exact official name and Lakes & Reservoirs type in Mercer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Scioto River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Scioto",
+          "latitude": 38.7306319,
+          "longitude": -83.0126747,
+          "featureId": "1072258",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Scioto County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Ohio River confluence at Portsmouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=1072258; exact official name and Streams & Canals type in Scioto County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Maumee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Lucas",
+          "latitude": 41.6994922,
+          "longitude": -83.4599325,
+          "featureId": "1084017",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Lucas County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Lake Erie mouth at Toledo. USGS GNIS Geocoder (GNIS), FEATURE_ID=1084017; exact official name and Streams & Canals type in Lucas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Cuyahoga River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Cuyahoga",
+          "latitude": 41.5036617,
+          "longitude": -81.712354,
+          "featureId": "1072205",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Cuyahoga County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Lake Erie mouth at Cleveland. USGS GNIS Geocoder (GNIS), FEATURE_ID=1072205; exact official name and Streams & Canals type in Cuyahoga County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "pennsylvania": {
+      "title": "Pennsylvania statewide frame (Ohio-Pennsylvania batch)",
+      "state": "PA",
+      "bbox": {
+        "lon0": -80.55,
+        "lat0": 39.7,
+        "lon1": -74.95,
+        "lat1": 42.3
+      },
+      "frameNote": "Ohio-Pennsylvania batch: the Harrisburg capital anchor is balanced with the per-ID Mount Davis high point, the Pymatuning/Raystown/Wallenpaupack lake set, and the two Pittsburgh confluence records (Allegheny, Monongahela). The Susquehanna, Delaware, Ohio main stem, and Lake Erie (seeded once, in the Ohio frame) remain corridors after empty states=PA screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Harrisburg",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Dauphin",
+          "latitude": 40.2737002,
+          "longitude": -76.8844179,
+          "featureId": "1213649",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Dauphin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital on the Susquehanna River; the Philadelphia County community of the same name (FEATURE_ID 1213812) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1213649; exact official name and Cities & Populated Places type in Dauphin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Philadelphia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Philadelphia",
+          "latitude": 39.952335,
+          "longitude": -75.163789,
+          "featureId": "1209052",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Philadelphia County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the state on the Delaware River; the Philadelphia County record (FEATURE_ID 1209187) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1209052; exact official name and Cities & Populated Places type in Philadelphia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Pittsburgh",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Allegheny",
+          "latitude": 40.4406248,
+          "longitude": -79.9958864,
+          "featureId": "1213644",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Allegheny County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "City at the Allegheny and Monongahela confluence forming the Ohio River. USGS GNIS Geocoder (GNIS), FEATURE_ID=1213644; exact official name and Cities & Populated Places type in Allegheny County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Allentown",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lehigh",
+          "latitude": 40.6084305,
+          "longitude": -75.4901833,
+          "featureId": "1213700",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lehigh County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lehigh County city on the Lehigh River; the Allegheny County community of the same name (FEATURE_ID 1202899) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1213700; exact official name and Cities & Populated Places type in Lehigh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Erie",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Erie",
+          "latitude": 42.1292241,
+          "longitude": -80.085059,
+          "featureId": "1174305",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Erie County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lake Erie port; the Erie County record (FEATURE_ID 1209178) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1174305; exact official name and Cities & Populated Places type in Erie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Scranton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lackawanna",
+          "latitude": 41.408969,
+          "longitude": -75.6624122,
+          "featureId": "1213652",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lackawanna County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lackawanna County city in the Wyoming Valley. USGS GNIS Geocoder (GNIS), FEATURE_ID=1213652; exact official name and Cities & Populated Places type in Lackawanna County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Davis",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Somerset",
+          "latitude": 39.7858675,
+          "longitude": -79.1766429,
+          "featureId": "1209050",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Somerset County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Pennsylvania High Point and state high point at 3,213 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_PA_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1209050 as a Summit in Somerset County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1209050; exact official name and Summit type in Somerset County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Pymatuning Reservoir",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Crawford",
+          "latitude": 41.4983867,
+          "longitude": -80.4614582,
+          "featureId": "1044806",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Crawford County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest lake in the state by surface area, on the Ohio line; the Geocoder returned two same-name reservoir records, and the multipoint duplicate FEATURE_ID 1199940 is recorded in the batch register rather than seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1044806; exact official name and Lakes & Reservoirs type in Crawford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Raystown Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Huntingdon",
+          "latitude": 40.3639311,
+          "longitude": -78.1022832,
+          "featureId": "1193175",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Huntingdon County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Huntingdon County reservoir on the Raystown Branch Juniata River; the largest lake lying wholly within the state. USGS GNIS Geocoder (GNIS), FEATURE_ID=1193175; exact official name and Lakes & Reservoirs type in Huntingdon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Lake Wallenpaupack",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Pike",
+          "latitude": 41.4131347,
+          "longitude": -75.2336679,
+          "featureId": "1199735",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Pike County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Pike County Poconos reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=1199735; exact official name and Lakes & Reservoirs type in Pike County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Allegheny River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Allegheny",
+          "latitude": 40.4434025,
+          "longitude": -80.0150536,
+          "featureId": "1209386",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Allegheny County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Pittsburgh confluence; the numbered navigation-pool records are separate lake records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1209386; exact official name and Streams & Canals type in Allegheny County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Monongahela River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Allegheny",
+          "latitude": 40.4417359,
+          "longitude": -80.0161647,
+          "featureId": "1209053",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Allegheny County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Pittsburgh confluence. USGS GNIS Geocoder (GNIS), FEATURE_ID=1209053; exact official name and Streams & Canals type in Allegheny County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Campbell Hill, FEATURE_ID 1048578 (Pike County) and 1038781 (Scioto County)",
+      "decision": "Rejected. Three Ohio summits share the name; the seeded Logan County record 1079572 matches the published Ohio high-point location near Bellefontaine, and the DomesticNames_OH_Text extract reproduces all three records at distinct points.",
+      "notClaimed": "The seeded point is not a surveyed summit outline."
+    },
+    {
+      "candidate": "Indian Lake, FEATURE_ID 1041943 (Logan County)",
+      "decision": "Not seeded. The Geocoder returned the Logan County lake at longitude -80.8753645, a point in western Pennsylvania roughly 275 km east of the Logan County reservoir (which lies near -83.88), and the DomesticNames_OH_Text extract reproduces the identical longitude, so the error is in the GNIS record itself rather than in either delivery surface. A Pennsylvania point cannot be stored in the Ohio frame; the feature is excluded pending a GNIS correction.",
+      "knownServiceDiscrepancy": "GNIS FEATURE_ID 1041943 carries a corrupted longitude on both USGS surfaces (Geocoder service and staged-products text agree exactly); county (Logan) and latitude are consistent with the true reservoir location. Recorded here rather than silently normalized; no coordinate was hand-corrected.",
+      "notClaimed": "No replacement point was estimated or stored for Indian Lake."
+    },
+    {
+      "candidate": "Ohio River under states=OH (and states=PA)",
+      "decision": "Empty screens, completing a four-state pattern (IL, IN, OH, PA all empty): the single main-stem record returns under another state's association. No row seeded in either frame; it remains a generalized context corridor in both.",
+      "notClaimed": "The corridors are not channel centerlines or state boundaries."
+    },
+    {
+      "candidate": "Pymatuning Reservoir, FEATURE_ID 1199940 (Crawford County)",
+      "decision": "Not seeded. The Geocoder returned two Lakes & Reservoirs records for the same border reservoir in the same county (1044806 and 1199940) at points about 4 km apart; 1044806 is seeded, following the Lake of the Woods multipoint precedent (round 24).",
+      "knownServiceDiscrepancy": "Two permanent FEATURE_IDs describe one intended reservoir (multipoint duplication); the register preserves the accepted record and names the unseeded duplicate.",
+      "notClaimed": "The seeded point is not a shoreline or the state-line segment of the reservoir."
+    },
+    {
+      "candidate": "Harrisburg, FEATURE_ID 1213812 (Philadelphia County) and Allentown, FEATURE_ID 1202899 (Allegheny County)",
+      "decision": "Rejected. Same-name communities at the opposite ends of the state; the seeded records are the Dauphin County capital (1213649) and the Lehigh County city (1213700).",
+      "notClaimed": "Neither seeded point is a municipal boundary."
+    },
+    {
+      "candidate": "Susquehanna River and Delaware River under states=PA; Lake Erie under states=PA",
+      "decision": "Empty screens. The Susquehanna record's primary point is the Maryland Chesapeake mouth and the Delaware record's is the Delaware Bay mouth; both rivers remain corridors. Lake Erie's single GNIS record returns under states=OH and is seeded once there (FEATURE_ID 1075813); Erie's city record anchors the Pennsylvania shore.",
+      "notClaimed": "The corridors are not channel centerlines, shorelines, or state boundaries."
+    },
+    {
+      "candidate": "Youngstown and Canton (Ohio); Reading and Bethlehem (Pennsylvania)",
+      "decision": "Identity-safe candidates in the batch-10 extract, omitted under the starter-scope treatment; the 12-row starters keep the capital anchors plus statewide coverage.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "Ohio and Pennsylvania are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point; the Indian Lake decision records the one case where both surfaces share a source-level error, and the feature was excluded rather than hand-corrected.",
+    "The current DomesticNames text layout carries no elevation columns, so Campbell Hill (1,550 feet) and Mount Davis (3,213 feet) elevations cite USGS-published state-highpoint values; GNIS identity for both rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Lake Erie row stores a mid-lake reference point and draws no shoreline.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Canadian waters of Lake Erie); no boundary geometry is claimed."
+  ]
+}

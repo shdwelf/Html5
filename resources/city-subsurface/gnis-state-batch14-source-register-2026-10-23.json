@@ -1,0 +1,404 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 31 North Carolina-South Carolina state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for North Carolina and South Carolina. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Mount Mitchell, Kuwohi, and Sassafras Mountain additionally carry Domestic Names per-ID identity checks. Kuwohi's seeding here closes the open Tennessee context decision from batch 12.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<NC|SC>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County/census divisions, historical places, and same-name records of another class or county were rejected explicitly where relevant. Screens use the official GNIS name (for example 'Kuwohi', 'B. Everett Jordan Lake'), not local short forms."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<NC|SC>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Mount Mitchell (1013745), Kuwohi (1326387), and Sassafras Mountain (1015279), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the summit elevations cite USGS-published values. The candidate extract file is cumulative across batches 7-14; this register is the frozen batch-14 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (the extract's text class for most batch-14 lake rows is Reservoir; Lake Marion's text class is Lake), Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "northcarolina": {
+      "title": "North Carolina statewide frame (North Carolina-South Carolina batch)",
+      "state": "NC",
+      "bbox": {
+        "lon0": -84.35,
+        "lat0": 33.75,
+        "lon1": -75.35,
+        "lat1": 36.6
+      },
+      "frameNote": "North Carolina-South Carolina batch: the Raleigh capital anchor is balanced with BOTH Appalachian high points — Mount Mitchell (6,684 ft, highest east of the Mississippi) and Kuwohi (6,643 ft, Tennessee's highest summit, seeded here on its NC record after batch 12 found no Tennessee record for it) — plus the Norman/Jordan reservoirs and the Cape Fear and Roanoke mouth records. Seeding Kuwohi here closes Tennessee's open context item.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Raleigh",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Wake",
+          "latitude": 35.772096,
+          "longitude": -78.6386145,
+          "featureId": "1024242",
+          "verified": 1,
+          "sourceNote": "North Carolina capital anchor; Raleigh Municipal Lake, Raleigh Bay, and the historical air field are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1024242; exact official name and Populated Place type in Wake County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Wake County"
+        },
+        {
+          "name": "Charlotte",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mecklenburg",
+          "latitude": 35.2270869,
+          "longitude": -80.8431268,
+          "featureId": "1019610",
+          "verified": 1,
+          "sourceNote": "Largest North Carolina city; the Charlotte Reservoir, plastics lakes, airport, and historical ammunition depot records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1019610; exact official name and Populated Place type in Mecklenburg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Mecklenburg County"
+        },
+        {
+          "name": "Greensboro",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Guilford",
+          "latitude": 36.0726355,
+          "longitude": -79.7919754,
+          "featureId": "1020557",
+          "verified": 1,
+          "sourceNote": "Piedmont Triad anchor; the country-park lakes are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1020557; exact official name and Populated Place type in Guilford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Guilford County"
+        },
+        {
+          "name": "Durham",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Durham",
+          "latitude": 35.9940329,
+          "longitude": -78.898619,
+          "featureId": "1020059",
+          "verified": 1,
+          "sourceNote": "Research Triangle anchor; Durham County (1008550) as a political division and the creek/lake namesakes are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1020059; exact official name and Populated Place type in Durham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Durham County"
+        },
+        {
+          "name": "Asheville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Buncombe",
+          "latitude": 35.6009452,
+          "longitude": -82.554015,
+          "featureId": "1018864",
+          "verified": 1,
+          "sourceNote": "Blue Ridge anchor city; the recreation-park lake is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1018864; exact official name and Populated Place type in Buncombe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Buncombe County"
+        },
+        {
+          "name": "Wilmington",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "New Hanover",
+          "latitude": 34.2257256,
+          "longitude": -77.9447102,
+          "featureId": "1023269",
+          "verified": 1,
+          "sourceNote": "Cape Fear port anchor; Wilmington Beach (997429) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1023269; exact official name and Populated Place type in New Hanover County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "New Hanover County"
+        },
+        {
+          "name": "Mount Mitchell",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Yancey",
+          "latitude": 35.7647624,
+          "longitude": -82.2648609,
+          "featureId": "1013745",
+          "verified": 1,
+          "sourceNote": "North Carolina High Point at 6,684 feet (USGS-published elevation), the highest summit east of the Mississippi; Domestic Names per-ID check (DomesticNames_NC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1013745 as a Summit in Yancey County at this point; the same-name Yancey (1021549) and Cabarrus (990428) populated places are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1013745; exact official name and Summit type in Yancey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Yancey County"
+        },
+        {
+          "name": "Kuwohi",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Swain",
+          "latitude": 35.562778,
+          "longitude": -83.498535,
+          "featureId": "1326387",
+          "verified": 1,
+          "sourceNote": "Tennessee's highest summit (6,643 feet), restored to the name Kuwohi in 2024, is seeded here on its North Carolina GNIS record: the Clingmans Dome name returns no record under states=TN, states=NC, or in the Tennessee text extract, so Tennessee's frame keeps the mountain as context and Mount Le Conte as its seeded summit. Domestic Names per-ID check (DomesticNames_NC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1326387 as a Summit in Swain County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1326387; exact official name and Summit type in Swain County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Swain County"
+        },
+        {
+          "name": "Lake Norman",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Iredell",
+          "latitude": 35.5416974,
+          "longitude": -80.9382056,
+          "featureId": "991183",
+          "verified": 1,
+          "sourceNote": "Largest lake in North Carolina, on the Catawba River; the same-name populated place (1852664) and CDPs are not seeded; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=991183; exact official name and Lake type in Iredell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Iredell County"
+        },
+        {
+          "name": "B. Everett Jordan Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Chatham",
+          "latitude": 35.7080038,
+          "longitude": -79.0346229,
+          "featureId": "980401",
+          "verified": 1,
+          "sourceNote": "Seeded under the official GNIS name order: the plain 'Jordan Lake' screen returned an empty array. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=980401; exact official name and Lake type in Chatham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Chatham County"
+        },
+        {
+          "name": "Cape Fear River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Brunswick",
+          "latitude": 33.8854525,
+          "longitude": -78.0127673,
+          "featureId": "1023879",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth at Cape Fear. USGS GNIS Geocoder (GNIS), FEATURE_ID=1023879; exact official name and Stream type in Brunswick County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Brunswick County"
+        },
+        {
+          "name": "Roanoke River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Bertie",
+          "latitude": 35.9423835,
+          "longitude": -76.6949441,
+          "featureId": "1502110",
+          "verified": 1,
+          "sourceNote": "The Roanoke's GNIS primary point is its Albemarle Sound mouth; the record is North Carolina-associated, so the river is seeded once here (its Virginia screen is upslope of the falls reach), following the established single-seeding convention. USGS GNIS Geocoder (GNIS), FEATURE_ID=1502110; exact official name and Stream type in Bertie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Bertie County"
+        }
+      ]
+    },
+    "southcarolina": {
+      "title": "South Carolina statewide frame (North Carolina-South Carolina batch)",
+      "state": "SC",
+      "bbox": {
+        "lon0": -83.4,
+        "lat0": 31.9,
+        "lon1": -78.5,
+        "lat1": 35.25
+      },
+      "frameNote": "North Carolina-South Carolina batch: the Columbia capital anchor is balanced with the per-ID Sassafras Mountain high point (3,553 ft), the Santee pair (Marion/Moultrie) plus Lake Murray, and three river records (Savannah mouth seeded on its SC-associated record; Congaree; Pee Dee at its returned Chesterfield keying, preserved verbatim like the Kanawha case). Lake Hartwell returns an empty states=SC screen (Georgia-associated) and is not seeded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Columbia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Richland",
+          "latitude": 34.0007104,
+          "longitude": -81.0348144,
+          "featureId": "1245051",
+          "verified": 1,
+          "sourceNote": "South Carolina capital anchor at the Congaree head; the Columbia Division (1938234), canal, reservoir, and historical air base records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1245051; exact official name and Populated Place type in Richland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Richland County"
+        },
+        {
+          "name": "Charleston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Charleston",
+          "latitude": 32.7765656,
+          "longitude": -79.9309216,
+          "featureId": "1221516",
+          "verified": 1,
+          "sourceNote": "Coastal anchor; Charleston County as a division record, Charleston Crossroads/Farms/Heights, the harbor, neck, and air base records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1221516; exact official name and Populated Place type in Charleston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Charleston County"
+        },
+        {
+          "name": "Greenville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greenville",
+          "latitude": 34.8526176,
+          "longitude": -82.3940105,
+          "featureId": "1245842",
+          "verified": 1,
+          "sourceNote": "Upstate anchor; the county and division records (1245489/1938285) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1245842; exact official name and Populated Place type in Greenville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greenville County"
+        },
+        {
+          "name": "Spartanburg",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Spartanburg",
+          "latitude": 34.9495672,
+          "longitude": -81.9320482,
+          "featureId": "1250982",
+          "verified": 1,
+          "sourceNote": "Upstate anchor; the county and division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1250982; exact official name and Populated Place type in Spartanburg County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Spartanburg County"
+        },
+        {
+          "name": "Myrtle Beach",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Horry",
+          "latitude": 33.6890603,
+          "longitude": -78.8866943,
+          "featureId": "1249770",
+          "verified": 1,
+          "sourceNote": "Grand Strand coastal anchor; the division, lagoon, golf ponds, and historical military records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1249770; exact official name and Populated Place type in Horry County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Horry County"
+        },
+        {
+          "name": "Sassafras Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Pickens",
+          "latitude": 35.065108,
+          "longitude": -82.7776292,
+          "featureId": "1015279",
+          "verified": 1,
+          "sourceNote": "South Carolina High Point and state high point at 3,553 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_SC_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1015279 as a Summit in Pickens County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1015279; exact official name and Summit type in Pickens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Pickens County"
+        },
+        {
+          "name": "Lake Marion",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Clarendon",
+          "latitude": 33.4611873,
+          "longitude": -80.3848589,
+          "featureId": "1224315",
+          "verified": 1,
+          "sourceNote": "Largest lake in South Carolina (Santee reservoir); the DomesticNames text class for this record is Lake, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224315; exact official name and Lake type in Clarendon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Clarendon County"
+        },
+        {
+          "name": "Lake Moultrie",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Berkeley",
+          "latitude": 33.3105044,
+          "longitude": -80.0535619,
+          "featureId": "1230046",
+          "verified": 1,
+          "sourceNote": "Santee system's second reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1230046; exact official name and Lake type in Berkeley County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Berkeley County"
+        },
+        {
+          "name": "Lake Murray",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lexington",
+          "latitude": 34.0736677,
+          "longitude": -81.3790225,
+          "featureId": "1224900",
+          "verified": 1,
+          "sourceNote": "Saluda River reservoir west of Columbia; the Lake Murray Shores community and CDP records are not seeded; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=1224900; exact official name and Lake type in Lexington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lexington County"
+        },
+        {
+          "name": "Savannah River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Jasper",
+          "latitude": 32.0377132,
+          "longitude": -80.8501103,
+          "featureId": "1253486",
+          "verified": 1,
+          "sourceNote": "The Savannah's GNIS primary point is its Atlantic mouth; the record is South Carolina-associated, so the border river is seeded once here and remains a corridor in Georgia (no Georgia frame exists yet; the decision is revisited if one is built). USGS GNIS Geocoder (GNIS), FEATURE_ID=1253486; exact official name and Stream type in Jasper County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Jasper County"
+        },
+        {
+          "name": "Congaree River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Richland",
+          "latitude": 33.7440461,
+          "longitude": -80.6192539,
+          "featureId": "1249468",
+          "verified": 1,
+          "sourceNote": "Short main-stem record below the Columbia confluence, primary point toward the Santee confluence reach. USGS GNIS Geocoder (GNIS), FEATURE_ID=1249468; exact official name and Stream type in Richland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Richland County"
+        },
+        {
+          "name": "Pee Dee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Chesterfield",
+          "latitude": 34.7209897,
+          "longitude": -79.8817302,
+          "featureId": "1251573",
+          "verified": 1,
+          "sourceNote": "River record keyed by GNIS to Chesterfield County at the state-line reach; the mouth is on the Georgetown coast, and both surfaces return the same primary point and county, preserved verbatim like the Kanawha case in batch 13. USGS GNIS Geocoder (GNIS), FEATURE_ID=1251573; exact official name and Stream type in Chesterfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Chesterfield County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Kuwohi (formerly Clingmans Dome), FEATURE_ID 1326387, Swain County NC",
+      "decision": "Seeded in North Carolina. Batch 12 established that no Tennessee GNIS record exists for the summit on either surface ('Clingmans Dome' empty under states=TN and states=NC; absent from the TN text). The current official name 'Kuwohi' (restored 2024) returns the Summit record under states=NC at the published summit point, and the NC text reproduces it. Tennessee's frame keeps the mountain as a context corridor and Mount Le Conte as its seeded summit, exactly as batch 12 recorded; this batch closes that decision rather than contradicting it.",
+      "notClaimed": "The seeded point is not a surveyed summit outline or a Tennessee-side boundary claim."
+    },
+    {
+      "candidate": "Mount Mitchell populated places 1021549 (Yancey) and 990428 (Cabarrus)",
+      "decision": "Rejected. The seeded record is the Summit (1013745); both same-name communities are not seeded.",
+      "notClaimed": "The seeded point is not a surveyed summit outline."
+    },
+    {
+      "candidate": "Jordan Lake under the plain name; Kerr Lake (NC screen)",
+      "decision": "The plain 'Jordan Lake' screen returned an empty array — the reservoir's official GNIS name is 'B. Everett Jordan Lake' (980401, Chatham) — and is seeded under the official name order (continuing the round-24 Vermilion Lake / round-26 Monroe Lake rule: seed the official name, do not invent a short form). Kerr Lake's NC screen returned no reservoir record this batch and it remains unseeded.",
+      "notClaimed": "The seeded point is not a shoreline."
+    },
+    {
+      "candidate": "Pee Dee River primary county Chesterfield (point at the state-line reach)",
+      "decision": "Seeded with the county both surfaces return (Chesterfield), preserved verbatim (the Kanawha batch-13 pattern). The GNIS record keys the border reach rather than the Georgetown-coast mouth; point, class, and name reproduce exactly on both surfaces and the point is geographically coherent.",
+      "notClaimed": "The county string is not a claim that the river's mouth lies in Chesterfield County."
+    },
+    {
+      "candidate": "Lake Norman populated place 1852664 and Lake Norman CDPs",
+      "decision": "Rejected in favour of the Iredell County reservoir record (991183). Same-name populated places around a reservoir are never seeded as the lake row.",
+      "notClaimed": "The seeded point is not a shoreline."
+    },
+    {
+      "candidate": "Lake Hartwell under states=SC; Lake Wylie (SC screen); Winston-Salem and Fayetteville (NC)",
+      "decision": "Lake Hartwell returned an empty states=SC array (the impoundment's record is Georgia-associated) and is not seeded. Identity-safe candidates omitted under the starter-scope treatment.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "North Carolina and South Carolina are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Mount Mitchell (6,684 feet), Kuwohi (6,643 feet), and Sassafras Mountain (3,553 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Atlantic waters); no boundary geometry is claimed."
+  ]
+}

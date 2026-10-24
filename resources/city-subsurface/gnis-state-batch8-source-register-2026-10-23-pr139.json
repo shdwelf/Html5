@@ -1,0 +1,458 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 25 Great Lakes state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Wisconsin and Michigan. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces: the USGS GNIS Geocoder service and the staged-products DomesticNames per-state text files (tools/gnis_extract.py; request .arena-gnis/candidates.json; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Timms Hill and Mount Arvon additionally carry Domestic Names per-ID identity checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<WI|MI>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, bays, resorts, flowages, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_<WI|MI>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID (name, class, state, primary county, primary point) and per-ID identity checks for Timms Hill (1575464) and Mount Arvon (1623751), extracted in a GitHub Actions runner by tools/gnis_extract.py (.github/workflows/arena-gnis-fetch.yml). The current text layout carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values rather than the text file. The candidate extract file is cumulative across batches 7-8; this register is the frozen batch-8 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "wisconsin": {
+      "title": "Wisconsin statewide frame (Great Lakes batch)",
+      "state": "WI",
+      "bbox": {
+        "lon0": -92.95,
+        "lat0": 42.45,
+        "lon1": -86.75,
+        "lat1": 47.1
+      },
+      "frameNote": "Great Lakes batch: the Madison capital anchor and the Milwaukee shore pair are balanced with the per-ID Timms Hill high point, the Winnebago/Mendota/Devils Lake set, and two in-state river-mouth records (Wisconsin River, Chippewa River). The Mississippi main stem, the cross-state Saint Croix record, and both Great Lakes remain corridors after empty or cross-state states=WI screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Madison",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Dane",
+          "latitude": 43.0730517,
+          "longitude": -89.4012302,
+          "featureId": "1581834",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Dane County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1581834; exact official name and Cities & Populated Places type in Dane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Milwaukee",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Milwaukee",
+          "latitude": 43.0389025,
+          "longitude": -87.9064736,
+          "featureId": "1577901",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Milwaukee County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the state and Lake Michigan port; the same-name county record (FEATURE_ID 1581100) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1577901; exact official name and Cities & Populated Places type in Milwaukee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Green Bay",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Brown",
+          "latitude": 44.519159,
+          "longitude": -88.019826,
+          "featureId": "1565801",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Brown County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "City at the Fox River mouth; the Green Bay bay records (FEATURE_ID 1565800, Door County, and 1565799, Winnebago County) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1565801; exact official name and Cities & Populated Places type in Brown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Kenosha",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kenosha",
+          "latitude": 42.5847425,
+          "longitude": -87.8211854,
+          "featureId": "1567416",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kenosha County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lake Michigan port city between Milwaukee and the Illinois line. USGS GNIS Geocoder (GNIS), FEATURE_ID=1567416; exact official name and Cities & Populated Places type in Kenosha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Racine",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Racine",
+          "latitude": 42.7261309,
+          "longitude": -87.7828523,
+          "featureId": "1572015",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Racine County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lake Michigan port city at the Root River mouth; the Racine County record (FEATURE_ID 1581111) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1572015; exact official name and Cities & Populated Places type in Racine County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Eau Claire",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Eau Claire",
+          "latitude": 44.811349,
+          "longitude": -91.4984941,
+          "featureId": "1564402",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Eau Claire County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Chippewa Valley city at the Eau Claire River confluence; the Eau Claire County record (FEATURE_ID 1581077) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1564402; exact official name and Cities & Populated Places type in Eau Claire County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Timms Hill",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Price",
+          "latitude": 45.4507963,
+          "longitude": -90.1953351,
+          "featureId": "1575464",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Price County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Wisconsin High Point and state high point at 1,951 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_WI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1575464 as a Summit in Price County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1575464; exact official name and Summit type in Price County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Lake Winnebago",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Winnebago",
+          "latitude": 44.0169756,
+          "longitude": -88.4095327,
+          "featureId": "1576879",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Winnebago County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest lake lying wholly within the state; the two numbered flowage records of similar name (FEATURE_ID 1792792 and 1793101, 'Lake Winnebago 6124') are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1576879; exact official name and Lakes & Reservoirs type in Winnebago County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Lake Mendota",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Dane",
+          "latitude": 43.1049997,
+          "longitude": -89.4199365,
+          "featureId": "1569337",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Dane County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest of Madison's Four Lakes, on the Yahara River chain. USGS GNIS Geocoder (GNIS), FEATURE_ID=1569337; exact official name and Lakes & Reservoirs type in Dane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Devils Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Sauk",
+          "latitude": 43.4173523,
+          "longitude": -89.7316274,
+          "featureId": "1563937",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Sauk County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Sauk County lake in the Baraboo Range (Devil's Lake State Park); eight same-name lakes in other counties (FEATURE_ID 1579123, 1563942, 1563938, 1579121, 1563939, 1563940, 1579122, 1563941) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1563937; exact official name and Lakes & Reservoirs type in Sauk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Wisconsin River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Crawford",
+          "latitude": 42.9894297,
+          "longitude": -91.1540184,
+          "featureId": "1580811",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Crawford County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Longest river lying wholly in the state; GNIS primary point at the Mississippi confluence near Prairie du Chien. USGS GNIS Geocoder (GNIS), FEATURE_ID=1580811; exact official name and Streams & Canals type in Crawford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Chippewa River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Pepin",
+          "latitude": 44.4091337,
+          "longitude": -92.0840583,
+          "featureId": "1578997",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Pepin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Mississippi confluence in Pepin County (Lake Pepin reach). USGS GNIS Geocoder (GNIS), FEATURE_ID=1578997; exact official name and Streams & Canals type in Pepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "michigan": {
+      "title": "Michigan statewide frame (Great Lakes batch)",
+      "state": "MI",
+      "bbox": {
+        "lon0": -90.45,
+        "lat0": 41.65,
+        "lon1": -82.1,
+        "lat1": 48.05
+      },
+      "frameNote": "Great Lakes batch: the Lansing capital anchor is balanced with the per-ID Mount Arvon high point, the Houghton/Torch inland lakes, in-state Grand/Saginaw river-mouth records, and one Great Lakes anchor (Lake Superior, whose single GNIS primary point lies in Michigan waters in-frame). Lake Huron and Lake Michigan returned in-frame Michigan-associated points but are held to starter scope; Lake Erie screened empty under states=MI.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Lansing",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ingham",
+          "latitude": 42.732535,
+          "longitude": -84.5555347,
+          "featureId": "1625035",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ingham County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1625035; exact official name and Cities & Populated Places type in Ingham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Detroit",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Wayne",
+          "latitude": 42.331427,
+          "longitude": -83.0457538,
+          "featureId": "1617959",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Wayne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the state on the Detroit River. USGS GNIS Geocoder (GNIS), FEATURE_ID=1617959; exact official name and Cities & Populated Places type in Wayne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Grand Rapids",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kent",
+          "latitude": 42.9633599,
+          "longitude": -85.6680863,
+          "featureId": "627105",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kent County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Kent County city on the Grand River; the small Ontonagon County populated place of the same name (FEATURE_ID 1620055) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=627105; exact official name and Cities & Populated Places type in Kent County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Ann Arbor",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washtenaw",
+          "latitude": 42.2708716,
+          "longitude": -83.7263294,
+          "featureId": "620133",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washtenaw County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Washtenaw County city on the Huron River; seat of the University of Michigan. USGS GNIS Geocoder (GNIS), FEATURE_ID=620133; exact official name and Cities & Populated Places type in Washtenaw County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Traverse City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Grand Traverse",
+          "latitude": 44.7630567,
+          "longitude": -85.6206317,
+          "featureId": "1615042",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Grand Traverse County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Grand Traverse Bay port at the base of the Leelanau and Old Mission peninsulas. USGS GNIS Geocoder (GNIS), FEATURE_ID=1615042; exact official name and Cities & Populated Places type in Grand Traverse County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Marquette",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Marquette",
+          "latitude": 46.5435442,
+          "longitude": -87.395417,
+          "featureId": "631600",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Marquette County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the Upper Peninsula and Lake Superior iron port; the Marquette County record (FEATURE_ID 1622994) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=631600; exact official name and Cities & Populated Places type in Marquette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Arvon",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Baraga",
+          "latitude": 46.7557395,
+          "longitude": -88.1552409,
+          "featureId": "1623751",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Baraga County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Michigan High Point and state high point at 1,979 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1623751 as a Summit in Baraga County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1623751; exact official name and Summit type in Baraga County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Houghton Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Roscommon",
+          "latitude": 44.3369774,
+          "longitude": -84.7216378,
+          "featureId": "628664",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Roscommon County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest inland lake in the state; the same-name populated place (FEATURE_ID 628665) on its shore is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=628664; exact official name and Lakes & Reservoirs type in Roscommon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Torch Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Antrim",
+          "latitude": 44.9674583,
+          "longitude": -85.3112611,
+          "featureId": "1614970",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Antrim County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Deep Antrim County lake; the Houghton County lake of the same name (FEATURE_ID 1614969), the Antrim County populated place (FEATURE_ID 1614971), and the Houghton County stream (FEATURE_ID 1618747) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1614970; exact official name and Lakes & Reservoirs type in Antrim County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Lake Superior",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Keweenaw",
+          "latitude": 47.5288158,
+          "longitude": -87.7600216,
+          "featureId": "1618946",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Keweenaw County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "The frame's Great Lakes anchor: the single GNIS record's primary point lies in Michigan waters north of the Keweenaw Peninsula (Keweenaw County). Lake Huron (FEATURE_ID 1624619) and Lake Michigan (FEATURE_ID 1623080) also returned in-frame Michigan-associated points but are held to starter scope; Lake Erie screened empty under states=MI. USGS GNIS Geocoder (GNIS), FEATURE_ID=1618946; exact official name and Lakes & Reservoirs type in Keweenaw County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Grand River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Ottawa",
+          "latitude": 43.0583508,
+          "longitude": -86.2508869,
+          "featureId": "627109",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Ottawa County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Longest river in the state; GNIS primary point at the Lake Michigan mouth at Grand Haven. USGS GNIS Geocoder (GNIS), FEATURE_ID=627109; exact official name and Streams & Canals type in Ottawa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Saginaw River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Bay",
+          "latitude": 43.6469667,
+          "longitude": -83.8505319,
+          "featureId": "636503",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Bay County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the Saginaw Bay mouth in Bay County. USGS GNIS Geocoder (GNIS), FEATURE_ID=636503; exact official name and Streams & Canals type in Bay County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Devils Lake, eight same-name lakes (Bayfield 1579123, Burnett 1563942, Fond du Lac 1563938, Forest 1579121, Marinette 1563939, Sawyer 1563940, Vilas 1579122, Washburn 1563941)",
+      "decision": "Rejected. The seeded Sauk County record 1563937 is the Baraboo Range lake of Devil's Lake State Park; the eight same-name lake records are distinct waterbodies screened by county.",
+      "notClaimed": "The seeded point is not a shoreline or the state-park boundary."
+    },
+    {
+      "candidate": "Green Bay, FEATURE_ID 1565800 (Door County) and 1565799 (Winnebago County), Bays & Harbors",
+      "decision": "Rejected. The seeded 1565801 is the Brown County city; both bay records name the waterbody, not the populated place.",
+      "notClaimed": "The city point is not a harbor outline and does not locate the bay."
+    },
+    {
+      "candidate": "Milwaukee County FEATURE_ID 1581100, Racine County 1581111, Eau Claire County 1581077, Marquette County 1622994",
+      "decision": "Rejected as county records, following the Des Moines County (round 24) and Wichita County (round 23) precedents; the populated-place records are seeded instead.",
+      "notClaimed": "City points are not municipal boundaries or county polygons."
+    },
+    {
+      "candidate": "Saint Croix River under states=WI",
+      "decision": "Empty screen under states=WI. The single GNIS record (FEATURE_ID 662324) returns under states=MN with a Washington County, Minnesota primary point at the Prescott confluence. Not seeded in the Wisconsin frame (and not seeded in the round-24 Minnesota starter either); it remains a generalized context corridor in both border narratives.",
+      "notClaimed": "The corridor is not a channel centerline and neither frame claims the shared record."
+    },
+    {
+      "candidate": "Mississippi River under states=WI; Lake Michigan and Lake Superior under states=WI",
+      "decision": "Empty screens. No rows are seeded; the Mississippi remains a border corridor anchored on the seeded Chippewa/Wisconsin River mouth records, and the Green Bay/Milwaukee/Racine/Kenosha city records anchor the Lake Michigan shore.",
+      "notClaimed": "City points are not shorelines or harbor polygons."
+    },
+    {
+      "candidate": "Grand Rapids, FEATURE_ID 1620055 (Ontonagon County)",
+      "decision": "Rejected. Same-name populated place in the western Upper Peninsula; the Kent County record 627105 is the Grand River city.",
+      "notClaimed": "Neither point is a municipal boundary."
+    },
+    {
+      "candidate": "Torch Lake, FEATURE_ID 1614969 (Houghton County lake), 1614971 (Antrim County populated place), 1618747 (Houghton County stream)",
+      "decision": "Rejected. The seeded 1614970 is the deep Antrim County lake of the Chain of Lakes; three same-name records of other counties/classes were screened out explicitly.",
+      "notClaimed": "The lake point is not a shoreline."
+    },
+    {
+      "candidate": "Houghton Lake, FEATURE_ID 628665 (Roscommon County populated place)",
+      "decision": "Rejected. The seeded 628664 is the lake itself, the state's largest inland lake; the community of the same name sits on its shore.",
+      "notClaimed": "The lake point is not a shoreline and does not locate the community center."
+    },
+    {
+      "candidate": "Lake Superior, FEATURE_ID 1618946 (Keweenaw County)",
+      "decision": "Seeded as the Michigan frame's Great Lakes anchor: unlike its empty states=MN and states=WI screens (rounds 24-25), the single GNIS record returns under states=MI with its primary point in Michigan waters north of the Keweenaw Peninsula, inside this frame.",
+      "notClaimed": "The stored point is a mid-lake reference point only: it is not a shoreline, a lake polygon, a depth sounding, or a boundary of Michigan waters."
+    },
+    {
+      "candidate": "Lake Huron, FEATURE_ID 1624619 (Alcona County) and Lake Michigan, FEATURE_ID 1623080 (Mason County)",
+      "decision": "Identity-safe records with in-frame Michigan-associated primary points, held to starter scope (the 12-row starter seeds one Great Lakes anchor, Lake Superior), under the Salina starter-scope precedent (round 23). Lake Erie screened empty under states=MI.",
+      "notClaimed": "Starter-scope omission is not a claim about feature identity or importance; no shoreline is drawn from the held points."
+    },
+    {
+      "candidate": "Higgins Lake, FEATURE_ID 628219 (lake) and 628220 (populated place), Roscommon County",
+      "decision": "Held to starter scope: identity-safe lake/community pair in the batch-8 extract, omitted in favor of the Torch/Houghton coverage of the northern Lower Peninsula.",
+      "notClaimed": "Starter-scope omission is not a claim about feature identity."
+    },
+    {
+      "candidate": "Appleton, La Crosse, and Superior (Wisconsin); Kalamazoo and Flint (Michigan)",
+      "decision": "Identity-safe candidates in the batch-8 extract, omitted under the starter-scope treatment; the 12-row starters keep the capital anchors plus statewide coverage.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "Wisconsin and Michigan are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point; the two sources agree to well under a metre at the stored precision.",
+    "The current DomesticNames text layout carries no elevation columns, so Timms Hill (1,951 feet) and Mount Arvon (1,979 feet) elevations cite USGS-published state-highpoint values; GNIS identity for both rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Lake Superior row stores a mid-lake reference point and draws no shoreline.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Canadian waters of the Great Lakes); no boundary geometry is claimed."
+  ]
+}
