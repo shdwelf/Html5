@@ -523,6 +523,23 @@ record is
 Remaining in the thread: the Ghidra PC Globe→Java experiment and
 the Red October planet viewer.
 
+**Round 43 status (2026-10-24): PC Globe experiment stages 1–2 done.**
+The S4 "Ghidra PC Globe→Java experiment" is scoped in
+[`pcglobe-ghidra-java-scope-2026-10-24.md`](pcglobe-ghidra-java-scope-2026-10-24.md):
+the Internet Archive item `PC_Globe_for_DOS` (1990) was fetched by
+`arena-pcglobe-fetch.yml` with **every file MD5-verified against the
+Archive's own metadata** (32/32, `.xfer/pcglobe/`), then
+`arena-pcglobe-ghidra.yml` (pinned Ghidra 12.1.4) statically analyzed
+`PCGLOBE.EXE` (DOS MZ, `x86:LE:16:Real Mode`, entry `348d:0010`;
+Ghidra MD5 independently matches the Archive pin) and probed the DAT
+strings into `research/pcglobe-ghidra/`. Findings: NAMES.DAT holds an
+alphabetical country index at `0xbc7`; COUNTRY1/2.DAT geography
+strings carry a 1–2 byte prefix (clipped first letters); DATABASE.DAT
+holds the resource/statistic vocabulary. The round record is
+[`backlog-execution-round-43-2026-10-24.md`](backlog-execution-round-43-2026-10-24.md).
+Remaining: the Java country-database reader (stage 3, defined in the
+round record), then the Red October planet viewer.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
