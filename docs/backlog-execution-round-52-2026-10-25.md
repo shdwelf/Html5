@@ -63,8 +63,9 @@ root pages plus `public/apps/Georgia-subsurface/index.html`,
 (`tests/lib-browser.mjs`, puppeteer-core + @sparticuz/chromium, optional
 deps like the other Blink suites) and asserts per route:
 
-- `#status` reaches `ready …` (greeran included — the engine got an explicit
-  ready line after `boot()`), no page errors;
+- `#status` reaches `ready …` — except greeran, whose boot contract keeps the
+  node-count line `/nodes · /` (the branch's interim ready line was reverted
+  to main's tested behaviour), no page errors;
 - no 404/failed requests except the documented optional
   `js/socal-dem-grid.js` probe (absent → shipped synthetic relief, disclosed
   in the demSource hint);
@@ -144,7 +145,8 @@ without weakening any assertion:
 ## Files touched (headline)
 
 - `js/city-subsurface.js` — gazetteer panel refs hoisted above population.
-- `js/greeran-subsurface.js` — explicit ready status after boot.
+- `tests/viewer-boot.test.mjs` — main's boot suite: its known-standalone
+  allowlist now registers the repaired `Georgia` alias (contract maintenance).
 - `js/country-viewer.js` — no-instrument-field disclosure.
 - `Georgia-subsurface.html`, `public/apps/Georgia-subsurface/**`,
   `Georgia-subsurface.xdc`, `georgia-subsurface.xdc` + all city XDCs/app dirs
