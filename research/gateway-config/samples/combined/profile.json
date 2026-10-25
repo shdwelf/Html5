@@ -6,5 +6,6 @@
   "tor": {"socks": "127.0.0.1:9050", "transProxy": "127.0.0.1:9040", "dnsPort": "127.0.0.1:9053", "perAppLayer": true},
   "dnscrypt": {"resolver": "cloudflare", "requireDnssec": true, "viaTunnel": true},
   "i2p": {"enabled": false},
+  "decisions": [{"decision":"killSwitch=true — Always-on VPN with block-without-VPN: no fallback to the bare interface on tunnel drop."}, {"decision":"blockIpv6=true — No IPv6 routes until the tunnel carries IPv6; an unrouted v6 stack leaks silently."}, {"decision":"allowLan=false — LAN bypass off (InviZible-style firewall posture); exceptions are per-app and explicit."}, {"decision":"tunMtu=1400 — tun-mtu 1400 / mssfix 1360 avoids fragmentation blackholes behind carrier NAT."}, {"decision":"dnsLeakProtection=true — All DNS forced through the encrypted path; no system resolver fallback."}, {"decision":"dnsMode=dnscrypt — DNSCrypt is reached through the VPN tunnel; the local network sees neither plaintext DNS nor the resolver choice."}],
   "warnings": []
 }
