@@ -620,6 +620,19 @@ WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WR
 liveuamap, NOTAMs; static layers for fire lookouts and KiwiSDR/SDR receivers; dish-pointing /
 satellite-alignment calculator layer; tv.garden / radio.garden transcription pipeline.
 
+
+**Round 48 status (2026-10-25): S5 opened — first slice shipped.** The
+source inventory with real access patterns is in
+[`s5-live-layers-inventory-2026-10-25.md`](s5-live-layers-inventory-2026-10-25.md):
+CHP CAD is public per-center HTML (no documented JSON API), WildCAD-E is
+agency CAD (not a public feed — no adapter, correctly), WFIGS publishes
+public ArcGIS services. Built and verified offline: the dish-pointing /
+satellite-alignment calculator (`js/dish-pointing.js` +
+`dish-pointing.html`, GEO look angles with known-answer tests) and the
+feed-agnostic layer normalizers (`js/incident-adapters.js`; loud
+rejections, dedupe, staleness, ArcGIS-point adapter; synthetic fixtures
+only). "WREN cameras" remains an unverified referent — flagged, not
+guessed. Live capture is F3 runner work; viewer wiring is next.
 ### S6 · BBS & telecom history: Keyhole, FidoNet/ARPANET, payphones, ColdFire — *partial*
 Keyhole BBS + forum deep dive and In-Q-Tel/VC mapping are new; the BBS→ColdFire port line has
 several docs already ([`bbs-abandonware-coldfire-port.md`](bbs-abandonware-coldfire-port.md),

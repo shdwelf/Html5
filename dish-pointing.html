@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dish Pointing — GEO look angles (S5)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:46rem;padding:0 1rem;line-height:1.5}
+  #out{font-family:ui-monospace,monospace;background:#111;color:#cfe8c8;padding:1rem;border-radius:.4rem;min-height:2.2rem;white-space:pre-wrap}
+  .meta{color:#555}
+  button,select,input{font:inherit;padding:.3rem .6rem}
+  label{margin-right:.6rem}
+</style>
+</head>
+<body>
+<h1>Dish Pointing — GEO look angles</h1>
+<p>Azimuth / elevation / slant range to a geostationary satellite, from the
+S5 layer math in <code>js/dish-pointing.js</code>. Spherical-Earth model:
+good to well under a degree for GEO alignment; add your local magnetic
+declination before trusting a compass, and expect refraction to lift the
+apparent elevation slightly near the horizon. Nothing here phones home —
+pair it with a satellite-longitude table of your own.</p>
+
+<p>
+  <label>Your latitude <input id="lat" type="number" step="0.01" value="34.05" style="width:7rem"></label>
+  <label>longitude <input id="lon" type="number" step="0.01" value="-118.24" style="width:7rem"></label>
+  <label>Satellite longitude <input id="sat" type="number" step="0.1" value="-137.2" style="width:7rem"></label>
+  <button id="go" type="button">Compute</button>
+</p>
+<div id="out"></div>
+<p id="arc" class="meta"></p>
+
+<script type="module">
+import { geoLookAngles, geoVisibleArc } from "./js/dish-pointing.js";
+const $ = (id) => document.getElementById(id);
+function show() {
+  const obs = { lat: Number($("lat").value), lon: Number($("lon").value) };
+  const sat = Number($("sat").value);
+  try {
+    const r = geoLookAngles(obs, sat);
+    $("out").textContent =
+      `azimuth   ${r.azimuthDeg.toFixed(1)}° (true north)\n` +
+      `elevation ${r.elevationDeg.toFixed(1)}°\n` +
+      `range     ${Math.round(r.rangeKm).toLocaleString()} km\n` +
+      (r.visible ? "above the horizon — point away." : "BELOW the horizon from here — pick another satellite.");
+    const arc = geoVisibleArc(obs, 5);
+    $("arc").textContent = arc
+      ? `From this site, GEO satellites sit ≥5° up between longitudes ${(obs.lon + arc.westOffsetDeg).toFixed(1)}° and ${(obs.lon + arc.eastOffsetDeg).toFixed(1)}°. Model: ${r.model}.`
+      : "No GEO satellite reaches 5° elevation from this site.";
+  } catch (e) {
+    $("out").textContent = String(e.message || e);
+    $("arc").textContent = "";
+  }
+}
+$("go").addEventListener("click", show);
+show();
+</script>
+</body>
+</html>
