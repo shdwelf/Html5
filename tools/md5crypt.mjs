@@ -17,10 +17,15 @@ function b64From24Bit(b2, b1, b0, n) {
   return res;
 }
 
+// Call-form contract (documented): passing a full `$1$salt$hash` string
+// round-trips to the full string (verification form); passing a raw salt
+// returns the encoded hash only (hash form). The two JtR suites depend on
+// both shapes and are both kept as written.
 export function md5crypt(password, saltString) {
   const pwd = Buffer.from(password, "utf8");
+  const fullInput = saltString.startsWith("$1$");
   let salt = saltString;
-  if (salt.startsWith("$1$")) {
+  if (fullInput) {
     salt = salt.slice(3).split("$")[0];
   }
   salt = salt.slice(0, 8);
@@ -95,5 +100,29 @@ export function md5crypt(password, saltString) {
   }
   encoded += b64From24Bit(0, 0, a[11], 2);
 
+  if (!fullInput) return encoded;
   return `$1$${salt}$${encoded}`;
+}
+
+// --- helpers consumed by the JtR vector suite (round-13 extension) ---
+
+export function parseMd5crypt(stored) {
+  if (typeof stored !== "string" || !stored.startsWith("$1$")) {
+    throw new Error("not a $1$ md5crypt string");
+  }
+  const body = stored.slice(3);
+  const cut = body.indexOf("$");
+  if (cut < 0) throw new Error("not a $1$ md5crypt string");
+  const saltFull = body.slice(0, cut);
+  const hash = body.slice(cut + 1);
+  return { salt: saltFull.slice(0, 8), saltFull, hash };
+}
+
+export function verifyMd5crypt(stored, password) {
+  const { saltFull, hash } = parseMd5crypt(stored);
+  const generated = md5crypt(password, saltFull);
+  const generatedHash = generated.includes("$")
+    ? generated.slice(generated.lastIndexOf("$") + 1)
+    : generated;
+  return generatedHash === hash;
 }
