@@ -1,0 +1,10 @@
+{
+  "profileVersion": 1,
+  "mode": "vpn",
+  "provider": {"name": "Riseup", "apiUrl": "https://riseup.net", "transport": "openvpn"},
+  "vpnService": {"alwaysOn": true, "blockWithoutVpn": true, "mtu": 1400, "addresses": ["10.66.0.2/24"], "routes": ["0.0.0.0/0"], "dnsServers": ["provider-pushed"], "allowLan": false},
+  "tor": null,
+  "dnscrypt": null,
+  "i2p": {"enabled": false},
+  "warnings": []
+}

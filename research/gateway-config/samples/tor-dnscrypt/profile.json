@@ -1,0 +1,10 @@
+{
+  "profileVersion": 1,
+  "mode": "tor-dnscrypt",
+  "provider": null,
+  "vpnService": {"alwaysOn": true, "blockWithoutVpn": true, "mtu": 1400, "addresses": ["10.66.0.2/24"], "routes": ["0.0.0.0/0"], "dnsServers": ["127.0.0.1"], "allowLan": false},
+  "tor": {"socks": "127.0.0.1:9050", "transProxy": "127.0.0.1:9040", "dnsPort": "127.0.0.1:9053", "perAppLayer": false},
+  "dnscrypt": {"resolver": "cloudflare", "requireDnssec": true, "viaTunnel": false},
+  "i2p": {"enabled": false},
+  "warnings": []
+}
