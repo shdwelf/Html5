@@ -77,6 +77,16 @@ DOSBox+Xvfb automation already existed and is CI-backed (smoke pair +
 refreshed. The round record is
 [`backlog-execution-round-46-2026-10-24.md`](backlog-execution-round-46-2026-10-24.md).
 
+**Round 47 status (2026-10-25): side project shipped.** The
+user-directed Riseup VPN × InviZible combination landed as clean-room
+deliverables (`backlog-execution-round-47-2026-10-25.md`): one
+configuration core (`js/gateway-config.js` + shared
+`GatewayConfig.java`), `gateway-config.html`, runner-built
+`research/gateway-config/gateway-config.jar` + debug APK, and the
+reproducible `gateway-config.war`. The Android app is an orchestration
+scaffold — no tunnel engines bundled, the VpnService deliberately does
+not establish the TUN; wiring ics-openvpn/tor-android submodules is the
+open follow-up.
 ### S3 · Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra — *partial*
 Format study and abandonware sweep (Easter eggs, walkthroughs, *Shadow President*), feeding
 the existing DOS disassembly line ([`dos-game-disassembly.md`](dos-game-disassembly.md),
