@@ -145,3 +145,42 @@ data/complete-urls.txt          (the §3 URLs, one per line)
 ```
 
 This committed document is the bag's human-readable register.
+
+## 7. Third pass — three patterns tried; fresh valid set created
+
+The user supplied three ID-3 patterns:
+
+1. `1ivT2F7BMYzYOhOMx[l,1]SDmpdStP2g5Ha2[1,l]K2[l,1]_2VJzMeY` (8 expansions)
+2. `1ivT2F7BMYzYOhOMx[l,1]SDmpdStP2g5Ha2lK2l_2VJzMeY` (= N1/N2, already 404)
+3. `1ivT2F7BMYzY[0,O]h[0,O]Mx[l,L,1]SDmpdStP2g5Ha2[L,1,l]K2[l,L,1]_2VJzMeY`
+   (108 expansions; only the rule-prioritised subset was probed:
+   crossed-zero `0h0`, `0hO`, `Oh0` with inserted `l`/`1` and the
+   `2lK2l` tail — the remaining 100 are unfocused glyph permutations
+   and were not brute-forced.)
+
+Every newly probed expansion (6 from pattern 1, 6 targeted from
+pattern 3) returned Drive API 404, and the spreadsheet census still
+lists only the same 2 unrelated files. Conclusion unchanged: the
+note's sheets are not accessible to the connected account.
+
+Per the user's fallback preference ("rather have three valid sheet
+ids two for chat and one to work on"), a fresh set was created in the
+connected Drive and verified by `files.get`:
+
+| Sheet | ID | Complete URL |
+|---|---|---|
+| CHAT A | `1HYP7RCRSpXG7F6r_1z6nJWDrM2BV4hrtTOo0gsqN1vY` | `https://docs.google.com/spreadsheets/d/1HYP7RCRSpXG7F6r_1z6nJWDrM2BV4hrtTOo0gsqN1vY/edit?usp=drive_link` |
+| CHAT B | `1YBFY5wATQH65OZQCNiPAUut4LNL2Avr8qrJLRgP2e7o` | `https://docs.google.com/spreadsheets/d/1YBFY5wATQH65OZQCNiPAUut4LNL2Avr8qrJLRgP2e7o/edit?usp=drive_link` |
+| Work Sheet | `1hkeFxMbHYW6oRqCVnvSaS_j3XSfN76avLZGM6EWdgNk` | `https://docs.google.com/spreadsheets/d/1hkeFxMbHYW6oRqCVnvSaS_j3XSfN76avLZGM6EWdgNk/edit?usp=drive_link` |
+
+Investigation of the created set (read-back via Drive export):
+- CHAT A / CHAT B each have tabs `Send | Receive | Chat AB`;
+  `Send!A1:A2` carries the instruction line and a seed message;
+  `Receive!A1` holds `=IMPORTRANGE("<other ID>","Send!A:A")`
+  (verified in the exported workbook XML for CHAT A → CHAT B;
+  CHAT B mirrors it). On first open, Sheets shows `#REF!` until
+  "Allow access" is clicked for each IMPORTRANGE — expected.
+- Three blank placeholder spreadsheets created during setup were
+  moved to trash; only the table above is canonical.
+- These new IDs are **verified valid** (Drive metadata retrieved).
+  The note-derived IDs in §3 remain **unverified**.
