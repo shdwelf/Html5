@@ -74,6 +74,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-9-2026-10-21.md](backlog-execution-round-9-2026-10-21.md) — backlog execution round 9 2026 10 21
 - [backlog-execution-round-49-2026-10-25.md](backlog-execution-round-49-2026-10-25.md) — backlog execution round 49 2026 10 25
 - [backlog-execution-round-50-2026-10-25.md](backlog-execution-round-50-2026-10-25.md) — backlog execution round 50 2026 10 25
+- [backlog-execution-round-51-2026-10-25.md](backlog-execution-round-51-2026-10-25.md) — backlog execution round 51 2026 10 25 (KeyViewer · PR #159)
+- [backlog-execution-round-54-2026-10-25.md](backlog-execution-round-54-2026-10-25.md) — backlog execution round 54 2026 10 25 (subsurface fleet proof · S4 closed · Georgia repair · renumbered from 52 after PR #162 claimed the slot)
+- [backlog-execution-round-53-2026-10-25.md](backlog-execution-round-53-2026-10-25.md) — backlog execution round 53 2026 10 25 (Drive recipe investigation · spy-manual challenge cookbook · Playfair decrypt fix)
 
 ## Research deep dives (the “ghirdra” line)
 

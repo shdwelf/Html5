@@ -78,6 +78,8 @@ function renderDetail(c) {
       <tr><th>National anthem</th><td>“${c.anthemTitle}”<br><span class="byline">${c.anthemLyricsMusic}</span></td></tr>
     </table>
     <p class="note">Anthem shown as Factbook title/credit text; audio is not bundled.
+    The Factbook source pin carries no national-instruments field, so none is shown
+    rather than substituting a value from another source.
     Fields are verbatim CIA World Factbook extractions (see source pin below).</p>`;
 }
 

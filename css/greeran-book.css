@@ -145,6 +145,17 @@ body.intro-active { overflow: hidden; }
   filter: blur(4px);
   background: radial-gradient(ellipse at 50% 80%, rgba(245,212,143,.66), rgba(185,150,91,.12) 36%, transparent 72%);
 }
+/* The open-book stage: a viewport-sized box (the "spread") that owns the
+   same perspective as .intro-world so the flight keeps its depth, with the
+   book itself hanging behind .intro-book-object (boxless, animation-neutral). */
+.intro-book-spread {
+  position: absolute;
+  inset: 0;
+  perspective: 1100px;
+}
+.intro-book-object {
+  display: contents;
+}
 .intro-book-flight {
   position: absolute;
   z-index: 1;

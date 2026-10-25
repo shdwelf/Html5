@@ -133,7 +133,9 @@ const opts = { skip: !JSDOM && "jsdom not installed" };
 
 test("every subsurface page is a configured frame or a known standalone", () => {
   const cities = Object.keys(JSON.parse(readFileSync(path.join(root, "resources/city-subsurface/cities.json"), "utf8")).cities);
-  const known = new Set([...cities, "socal", "socal-subsurface-inlined", "greeran"]);
+  // "Georgia" is the user-mandated legacy alias frame: data-city="georgia" + preload,
+  // packaged as Georgia-subsurface.xdc — repaired (not orphaned) in round 52.
+  const known = new Set([...cities, "socal", "socal-subsurface-inlined", "greeran", "Georgia"]);
   const pages = readdirSync(root).filter((f) => f.endsWith("-subsurface.html"))
     .map((f) => f.slice(0, -"-subsurface.html".length));
   for (const p of pages) assert.ok(known.has(p), `orphan subsurface page: ${p}-subsurface.html`);

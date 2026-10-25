@@ -105,7 +105,7 @@ Game Boy/Game Gear and Genesis Game Genie followed (`gameGenieGb`, `gameGenieGen
 Game Wizard needs its shareware binary (fetch-runner); a UHS88a reader is built
 (`js/uhs.js` + `uhs-reader.html`, `tests/uhs.test.mjs` 3/3); the Sierra sweep is editorial.
 
-### S4 · Subsurface viewers: California → 50 states → country → planet — *partial*
+### S4 · Subsurface viewers: California → 50 states → country → planet — *done*
 The GIS mega-task (line 6). Existing base: `socal-subsurface.html` +
 [`socal-subsurface.md`](socal-subsurface.md), [`city-subsurface.md`](city-subsurface.md),
 [`terrain-vector-overlay-deep-dive.md`](terrain-vector-overlay-deep-dive.md),
@@ -639,6 +639,30 @@ the live-API inventory, and tv.garden remain queued; S5 and T5.1 →
 partial. Round 48 opened S5 (inventory + feed normalizers + standalone `dish-pointing.html`); this round 49 adds the satellite-viewer panel as the complementary integration. The round record is
 [`backlog-execution-round-49-2026-10-25.md`](backlog-execution-round-49-2026-10-25.md).
 
+**Round 54 status (2026-10-25): done — formerly recorded as round 52; renumbered when parallel round 52 (PR #162) claimed the slot on main. — S4 closed, records reconciled.**
+Backfill: rounds 41–44 (country batches C1–C3, PC Globe experiment stages 1–3
+with [`pcglobe-ghidra-java-scope-2026-10-24.md`](pcglobe-ghidra-java-scope-2026-10-24.md),
+planet viewer reuse of the Red October globe) landed on main but never reached
+this file's JSON `next_actions` — the JSON stream now records the close-out and
+its status moves to `done`. Residual acceptance item finished honestly: the
+country viewer's Factbook note also discloses that the source pin has **no
+national-instruments field**, so no instrument is shown rather than a
+substituted value (the anthem already shipped as title/credit text). Stale
+next-actions are retired: the "nine state frames remain" item (atlas complete
+since rounds 38–40) and the California catalog line (La Casa Pacifica = Western
+White House and Oakville/Mondavi = vintner rows shipped in rounds 15–16;
+ephemeral categories stay catalogued as planned layers in
+[`city-subsurface.md`](city-subsurface.md) per the round-15 policy — no
+fabricated rows). Subsurface fleet proof:
+`tests/subsurface-viewers-browser.test.mjs` boots every root page plus the
+Georgia/socal/greeran app entries in real Chromium — 65 routes, `ready` status,
+zero page errors, no missing assets beyond the documented optional socal DEM
+probe, layers mounted, stage rasterised. Same round fixed the city engine's
+`gazClassesHost` TDZ boot-killer (every city page died before `ready` in real
+browsers — jsdom could not see it) and the Georgia frame's data-city/preload
+app-dir drift. The round record is
+[`backlog-execution-round-54-2026-10-25.md`](backlog-execution-round-54-2026-10-25.md).
+
 ### S5 · Live incident, camera & sensor layers — *partial*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -886,6 +910,10 @@ referent: Granite Island Group, TSCM = Technical Surveillance Countermeasures) �
 `resources/tscm/granite-island-inspection-2026-10-23.json` (10 threat levels,
 13-phase inspection sequence; defensive distillation only; tests 4/4).
 Remaining: Ghidra DTSearch (runner), cookbook recipes tail.
+*2026-10-25 round (T10.2, cont.):* cookbook recipes tail advanced — the
+spy-manual challenge section24 shipped alongside the T11.1 close-out
+([`backlog-execution-round-53-2026-10-25.md`](backlog-execution-round-53-2026-10-25.md));
+Ghidra DTSearch is now the only open T10.2 strand.
 *2026-10-23 round (T10.3):* course-reader sourcing round delivered —
 [`ucsb-course-readers-2026-10-23.md`](ucsb-course-readers-2026-10-23.md) (eleven UCSB CS
 texts sourced; CS 32's SBPrinter reader located; algorithms cross-check: Weiss/Sahni,
@@ -894,7 +922,7 @@ not CLRS). **T10.3 complete.**
 tour-only 0, orphans 0; guard suites green. Every enumerated sub-item is delivered;
 **T10.1 complete** (comparative tuning continues as a standing activity).
 
-### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *partial*
+### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *done*
 Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the “classified
 random name generator” links to the First Name Almanac `NAMES.EXE` lineage (historical
 context only — F2); locate the cold-war spy book’s 18 end-of-book challenges and distill
@@ -908,6 +936,17 @@ the source book.
 `js/wallet-card.js` renders/parses strict-BIP-39 wallet cards (public
 verification data only; haiku input fails closed); `tests/wallet-card.test.mjs` 4/4.
 Only the spy-book challenges remain, blocked on the source book.
+*2026-10-25 round (T11.1, cont.):* **spy-book strand closed — S11 done.** The
+source book was located on Drive: Philip Parker, *The Cold War Spy Pocket
+Manual* (Casemate,2021, ISBN978-1-910860-02-1); its printed challenge has
+**16** items (the18 above was a miscount). Methods distilled to cookbook
+section24 [`#spy-manual-challenges`](backlog-execution-round-53-2026-10-25.md)
+with [`tests/cyberchef-spy-challenge.test.mjs`](../tests/cyberchef-spy-challenge.test.mjs)
+(17/17: section figures re-read + re-baked, independent Vigenère/columnar/
+Playfair cross-checks), honest skip cards (image glyphs, Navajo table,
+acrostic extractor, English shorthand), and the `playfair` decrypt-mode fix
+found while distilling. No contest solutions claimed; no full ciphertext
+quoted.
 
 ### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *done (T12.1)*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;

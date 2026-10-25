@@ -128,7 +128,7 @@
     {
       "id": "S4",
       "title": "Subsurface viewers: California -> 50 states -> country -> planet",
-      "status": "partial",
+      "status": "done",
       "tasks": [
         "T4.1"
       ],
@@ -193,6 +193,7 @@
         "docs/backlog-execution-round-22-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 54 (2026-10-25): S4 CLOSED — status done. Backfill: rounds 41–44 landed on main (country batches C1–C3, PC Globe experiment stages 1–3 + docs/pcglobe-ghidra-java-scope-2026-10-24.md, planet viewer reusing the Red October globe) but never reached this JSON. Honesty item finished: country-viewer.js Factbook note now discloses that the source pin has no national-instruments field (none shown rather than substituted); anthem already ships as title/credit text. Stale next-actions retired: \"nine state frames remain\" (atlas complete rounds 38–40); California catalog line dispositioned (La Casa Pacifica = Western White House and Oakville/Mondavi = vintner rows shipped rounds 15–16; ephemeral categories stay planned layers in docs/city-subsurface.md — no fabricated rows). Fleet proof: tests/subsurface-viewers-browser.test.mjs — 65 routes (62 root pages + Georgia/socal/greeran app entries) boot to ready in real Chromium with zero page errors, no missing assets beyond the documented optional socal DEM probe, layers mounted, stage rasterised. Same round fixed the city engine gazClassesHost TDZ boot-killer and Georgia data-city/preload app-dir drift. Round record: docs/backlog-execution-round-54-2026-10-25.md (renumbered twice — parallel round 51 landed first as PR #159, which also carried the same city-engine TDZ fix and closed the country batch-3 thread; then a parallel round-52 record — Playwright 1.64 disassembly + JavaScript conversion, PR #162 — claimed the 52 slot on main, so this record renumbered again to round 54 at PR #160 merge).",
         "Round 35 (2026-10-23): PR #141 reconciled main-preferred twice — first against PR #139 (47 configurations; southcarolina = config 34/batch-14 generated twice, main's NC/SC batch kept, the branch's duplicate dropped except evidence transferred: Sassafras Mountain note now carries the current USGS Elevations and Distances value 3,560 ft beside the earlier USGS-published 3,553 ft, the Savannah River note's stale no-Georgia-frame parenthetical now cites the live batch-11 corridor on FEATURE_ID 1253486, and a known-limitation records the Rock Hill P1/U6 census-class tie-break), then against PR #142 (Maryland/Delaware claimed round 34; this record runs as round 35). Next: nine state frames remain — AK, CT, HI, ME, MA, NH, NJ, RI, VT — then the country/planet thread.",
         "Round 23 (2026-10-23): Central Plains batch SHIPPED — Nebraska and Kansas are city-subsurface configurations 23-24, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json. Panorama Point and Mount Sunflower carry Domestic Names per-ID checks (state High Points with the highest-elevation descriptions, NE 5424 ft and KS 4039 ft); Lincoln rejects its precinct/county pile; Grand Island rejects the Buffalo County island; Scottsbluff town and Scotts Bluff Summit seed as distinct features; North Platte town and river seed as distinct features; the Wyandotte County Kansas City stays separate from the Missouri side; the Kansas River multipoint service discrepancy is recorded; Missouri (NE+KS), Republican (NE) and Arkansas (KS) remain corridors after empty screens; Salina held to starter scope. Next: remaining plains/mountain states in dated batches, then the country/planet thread.",
         "Round 22 (2026-10-23): Dakotas batch SHIPPED — North Dakota and South Dakota are city-subsurface configurations 21-22, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json. White Butte and Black Elk Peak carry Domestic Names per-ID checks (Slope County High Point 1035239 over three same-name summits; 1261770 the 2016 Harney-to-Black Elk rename in Pennington County). Devils Lake town/lake seed as distinct classes; Missouri and both Red River spellings (ND) plus Missouri (SD), ND James River, Badlands NP, and Lake Sheridan stay unseeded after empty screens; the SD James River record seeds only in South Dakota. Remaining: Nebraska-Kansas next in dated per-row source-register batches, then remaining plains/mountain states; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
@@ -381,7 +382,7 @@
     {
       "id": "S11",
       "title": "Wallets, mnemonics, classified name generator, cold-war spy book challenges",
-      "status": "partial",
+      "status": "done",
       "tasks": [
         "T11.1"
       ],
@@ -396,7 +397,8 @@
       "next_actions": [
         "Wallet crypto-card + mnemonic investigations feed the existing bip39-haiku workbench",
         "Classified random name generator: link the First Name Almanac (NAMES.EXE) lineage as historical context per F2 constraints",
-        "Locate the cold-war spy book's 18 end-of-book challenges and derive CyberChef/cipher recipes"
+        "Locate the cold-war spy book's 18 end-of-book challenges and derive CyberChef/cipher recipes",
+        "Closed round 53 (2026-10-25): source book located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021); the printed challenge has 16 items; methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs 17/17 (docs/backlog-execution-round-53-2026-10-25.md)."
       ]
     },
     {
@@ -647,7 +649,7 @@
       "stream": "S10",
       "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
       "status": "partial",
-      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail."
+      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail. Cookbook recipes tail advanced 2026-10-25 (round 53): spy-manual challenge section 24 shipped as part of the T11.1 close-out; Ghidra DTSearch runner remains the only open strand."
     },
     {
       "id": "T10.3",
@@ -662,8 +664,8 @@
       "line": 5,
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
-      "status": "partial",
-      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book."
+      "status": "done",
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book. Round 53 (2026-10-25): spy-book strand CLOSED — the source book was located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021, ISBN 978-1-910860-02-1); its printed challenge has 16 items (not 18). Methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs (17/17), honest skip cards for image/Navajo/shorthand/acrostic items, and the playfair decrypt-mode fix (docs/backlog-execution-round-53-2026-10-25.md). No contest solutions claimed."
     },
     {
       "id": "T12.1",
