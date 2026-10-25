@@ -48,6 +48,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-11-2026-10-21.md](backlog-execution-round-11-2026-10-21.md) — backlog execution round 11 2026 10 21
 - [backlog-execution-round-12-2026-10-21.md](backlog-execution-round-12-2026-10-21.md) — backlog execution round 12 2026 10 21
 - [backlog-execution-round-13-2026-10-21.md](backlog-execution-round-13-2026-10-21.md) — backlog execution round 13 2026 10 21
+- [backlog-execution-round-14-2026-10-21.md](backlog-execution-round-14-2026-10-21.md) — backlog execution round 14 2026 10 21
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -80,6 +81,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [ghidra-dos-disasm-plan.md](ghidra-dos-disasm-plan.md) — ghidra dos disasm plan
 - [ghidra-headless-benign-sample-methodology.md](ghidra-headless-benign-sample-methodology.md) — ghidra headless benign sample methodology
 - [jcreator-jdk-ghidra.md](jcreator-jdk-ghidra.md) — jcreator jdk ghidra
+- [sneakers-headline-harry-layout-parity-2026-10-21.md](sneakers-headline-harry-layout-parity-2026-10-21.md) — sneakers headline harry layout parity 2026 10 21
 - [sneakers-original-ghidra-wasm-2026-10-18.md](sneakers-original-ghidra-wasm-2026-10-18.md) — sneakers original ghidra wasm 2026 10 18
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis

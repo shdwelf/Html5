@@ -96,9 +96,9 @@
         "docs/jsdos-cdn-deep-dive-2026-10-04.md"
       ],
       "next_actions": [
-        "Verify sneakers-press-kit.xdc keyboard/mouse side layout against headline-harry.xdc pattern and close the gap if any",
+        "Sneakers press-kit keyboard/mouse layout verified against headline-harry.xdc pattern (closed in docs/sneakers-headline-harry-layout-parity-2026-10-21.md)",
         "GitHub search: dosbox + xvfb automation notes (task line 165)",
-        "Re-summarize FindCrypt findings into the project wiki page and open the PR the task asks for"
+        "Re-summarize FindCrypt findings into the project wiki page"
       ]
     },
     {
