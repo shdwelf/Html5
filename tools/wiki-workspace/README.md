@@ -45,6 +45,7 @@ before publishing. Do not use an unreviewed snapshot as a public Internet site.
 | `repository.json` | Every included file, digest, explicit references, backlinks and every excluded path |
 | `tiddlers.json` | Safe, importable `text/plain` source tiddlers |
 | `mediawiki.xml` | MediaWiki 0.11 XML import, with title mapping and caveats in `conversion-report.json` |
+| `html5-repository.zim` | Kiwix ZIM edition of the documentation corpus (`npm run build:wiki-zim`, needs python-libzim); one HTML page per source plus a front page — see "Kiwix ZIM edition" below |
 | `WikiServer.javap.txt` | Actual `javap -c -p -s` bytecode disassembly, **not** C++ or native assembly |
 | `SHA256SUMS` | Artifact digests |
 
@@ -77,6 +78,26 @@ node tools/wiki-workspace/build.mjs --fixture
 # Build native TiddlyWiki/exports without compiling Java:
 node tools/wiki-workspace/build.mjs --no-java
 ```
+
+### Kiwix ZIM edition
+
+`make-zim.py` compiles the wikiinajar documentation corpus
+(`public/apps/wikiinajar/docs.json`) into an offline Kiwix archive — the
+Kiwix counterpart of the MediaWiki 0.11 export below:
+
+```sh
+python3 -m pip install libzim        # python-libzim binding (optional validator: lxml)
+npm run build:wikiinajar             # docs.json must be current
+npm run build:wiki-workspace         # recreates dist/wiki/, so run this before the ZIM step
+npm run build:wiki-zim               # -> dist/wiki/html5-repository.zim
+python3 -c "from libzim.reader import Archive; a=Archive('dist/wiki/html5-repository.zim'); print(a.entry_count, a.check())"
+```
+
+The ZIM carries one HTML page per documentation source plus a front
+`index.html`; it does **not** include the binary vault — use the JARs for
+exact bytes. Order matters: `build.mjs` recreates `dist/wiki/`, so build
+the ZIM after the workspace build (or standalone, as long as
+`build:wikiinajar` has produced `docs.json`).
 
 Dependency sources are pinned by commit and SHA-256, fetched into ignored
 `.cache/wiki-deps/`, and compiled locally. Once cached, the build needs no

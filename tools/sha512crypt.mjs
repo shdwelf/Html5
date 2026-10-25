@@ -19,10 +19,15 @@ function b64From24Bit(b2, b1, b0, n) {
   return res;
 }
 
+// Call-form contract (documented): passing a full `$6$…` string round-trips
+// to the full string (verification form); passing a raw salt returns the
+// encoded hash only (hash form). The two JtR suites depend on both shapes
+// and are both kept as written.
 export function sha512crypt(password, saltString, rounds = null) {
   const pwd = Buffer.from(password, "utf8");
+  const fullInput = saltString.startsWith("$6$");
   let salt = saltString;
-  if (salt.startsWith("$6$")) {
+  if (fullInput) {
     const parts = salt.split("$");
     if (parts[2]?.startsWith("rounds=")) {
       rounds = parseInt(parts[2].slice(7), 10);
@@ -158,8 +163,40 @@ export function sha512crypt(password, saltString, rounds = null) {
   }
   encoded += b64From24Bit(0, 0, c[63], 2);
 
+  if (!fullInput) return encoded;
   if (rounds !== null && rounds !== undefined && rounds !== 5000) {
     return `$6$rounds=${r}$${salt}$${encoded}`;
   }
   return `$6$${salt}$${encoded}`;
+}
+
+// --- helpers consumed by the JtR vector suite (round-13 extension) ---
+
+export function parseSha512crypt(stored) {
+  if (typeof stored !== "string" || !stored.startsWith("$6$")) {
+    throw new Error("not a $6$ sha512crypt string");
+  }
+  const parts = stored.slice(3).split("$");
+  let rounds = 5000;
+  let salt;
+  let hash;
+  if (parts[0]?.startsWith("rounds=")) {
+    rounds = parseInt(parts[0].slice(7), 10);
+    salt = parts[1] ?? "";
+    hash = parts[2] ?? "";
+  } else {
+    salt = parts[0] ?? "";
+    hash = parts[1] ?? "";
+  }
+  if (!hash || !Number.isFinite(rounds)) throw new Error("not a $6$ sha512crypt string");
+  return { salt, rounds, hash };
+}
+
+export function verifySha512crypt(stored, password) {
+  const { salt, rounds, hash } = parseSha512crypt(stored);
+  const generated = sha512crypt(password, salt, rounds);
+  const generatedHash = generated.includes("$")
+    ? generated.slice(generated.lastIndexOf("$") + 1)
+    : generated;
+  return generatedHash === hash;
 }

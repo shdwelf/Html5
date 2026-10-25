@@ -832,6 +832,20 @@ T9.1 remaining: physical-card load + personalisation write path.
 DELETE FILE on `js/cardreader.js` (PIN-gated issuer provisioning; duplicate-FID and
 MF protections; `tests/cardreader-personalisation.test.mjs` 4/4, card suites 13/13).
 T9.1's sole remainder is now physical-card/GlobalPlatform load (hardware).
+*2026-10-25 round (round 50, S9 wiki editions):* the repository wiki
+artifact family was rebuilt from the current corpus (268 pages):
+`more.wiki.in.a.jar` + `wiki.in.a.jar` + `tiddlywiki.in.a.jar` (295.7 MB
+each, compiled with the SHA-256-verified Temurin 21 recovered from
+`.relay/jdk` split parts), `tiddlywiki.html` / `tiddlywiki.xdc`, and a
+schema-valid `mediawiki.xml` (152 MB, lxml validator). The Kiwix step was
+an orphan — now `npm run build:wiki-zim` (wired to `make-zim.py`, README
+section added) produces `dist/wiki/html5-repository.zim` (269 entries,
+libzim self-check true) as the Kiwix counterpart of the MediaWiki export.
+All wiki suites green (workspace, server integration, backup restore,
+javacard 28/28); `dist/wiki/` stays untracked build output. The round
+record is
+[`backlog-execution-round-50-2026-10-25.md`](backlog-execution-round-50-2026-10-25.md).
+
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
