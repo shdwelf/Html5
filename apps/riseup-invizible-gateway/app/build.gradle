@@ -1,0 +1,30 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'org.arena.gateway'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'org.arena.gateway'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '0.1.0-scaffold'
+    }
+
+    buildTypes {
+        debug {
+            // Debug-signed scaffold build (arena-gateway-build workflow).
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
