@@ -207,3 +207,27 @@ test("planet viewer boots and finishes loading its plates", opts, async () => {
   assert.match(status, /plates|plate/i);
   assert.deepEqual(errors, []);
 });
+
+test("keyviewer (mathspace) boots and answers interactions", opts, async () => {
+  const { window, document, errors } = await bootPage("keyviewer.html");
+  // The compendium renders from js/mathspace.js data.
+  assert.ok(document.querySelectorAll("#identityCards .card").length >= 35, "identity cards render");
+  assert.ok(document.querySelectorAll("#formulaCards .card").length >= 45, "formula cards render");
+  assert.equal(document.querySelectorAll("#specialTable tr").length, 17, "special-angle table + header");
+  // Unit circle: 90° readout.
+  const angleInput = document.getElementById("angleDeg");
+  angleInput.value = "90";
+  angleInput.dispatchEvent(new window.Event("input", { bubbles: true }));
+  assert.match(document.getElementById("circleReadout").textContent, /sinθ = 1/);
+  // Search narrows the compendium.
+  const search = document.getElementById("compSearch");
+  search.value = "heron";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const heronCards = document.querySelectorAll("#formulaCards .card");
+  assert.ok(heronCards.length >= 1 && heronCards.length < 10, "search narrows to Heron-mentioning formulas");
+  assert.match(heronCards[0].textContent, /Heron/);
+  // Solver example produces the 3-4-5 solution.
+  document.getElementById("solve345").click();
+  assert.match(document.getElementById("solverOut").textContent, /area=6/);
+  assert.deepEqual(errors, []);
+});

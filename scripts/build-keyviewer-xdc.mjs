@@ -1,0 +1,73 @@
+/**
+ * Package the KeyViewer (Mathspace) as a Webxdc bundle.
+ *
+ * A .xdc is a deflated ZIP rooted at index.html + manifest.toml. This stages
+ * the root-level authoring sources (keyviewer.html, js/mathspace.js,
+ * js/keyviewer.js) into public/apps/keyviewer/ as a flat offline bundle,
+ * then zips it deterministically — same flow as build-country-viewer-xdc.mjs.
+ *
+ *   node scripts/build-keyviewer-xdc.mjs
+ */
+import { createHash } from "node:crypto";
+import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+// Prefer the installed package; fall back to the vendored copy so the build
+// works in a bare checkout with no node_modules.
+const { zipSync } = await import("fflate").catch(() => import("../vendor/fflate/index.mjs"));
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const appDir = path.join(root, "public", "apps", "keyviewer");
+const outName = "keyviewer.xdc";
+const mtime = new Date("2026-10-02T00:00:00.000Z"); // reproducible builds
+
+const manifest = `name = "KeyViewer - Mathspace (trig, geometry, complex)"
+source_code_url = "https://github.com/shdwelf/Html5"
+`;
+
+await rm(appDir, { recursive: true, force: true });
+await mkdir(path.join(appDir, "js"), { recursive: true });
+
+const html = await readFile(path.join(root, "keyviewer.html"), "utf8");
+await writeFile(path.join(appDir, "index.html"), html);
+for (const f of ["mathspace.js", "keyviewer.js"]) {
+  await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
+}
+
+// Simulator shim: Delta Chat replaces webxdc.js at runtime, but shipping one
+// keeps the bundle runnable from a plain static server too.
+await writeFile(
+  path.join(appDir, "webxdc.js"),
+  `/* webxdc simulator shim - the host overrides this file at runtime. */
+window.webxdc = window.webxdc || {
+  selfAddr: "local@device",
+  selfName: "local",
+  sendUpdate() {},
+  setUpdateListener: async () => 0,
+  getAllUpdates: async () => [],
+};
+`,
+);
+await writeFile(path.join(appDir, "manifest.toml"), manifest);
+
+async function walk(dir) {
+  const out = [];
+  for (const e of await readdir(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...(await walk(abs)));
+    else if (e.isFile()) out.push(abs);
+  }
+  return out;
+}
+
+const archive = {};
+for (const abs of (await walk(appDir)).sort()) {
+  const rel = path.relative(appDir, abs).split(path.sep).join("/");
+  archive[rel] = [new Uint8Array(await readFile(abs)), { level: 9, mtime }];
+}
+if (!archive["index.html"] || !archive["manifest.toml"]) throw new Error("bundle missing index.html/manifest.toml");
+const zipped = zipSync(archive, { level: 9 });
+await writeFile(path.join(root, outName), zipped);
+const sha = createHash("sha256").update(zipped).digest("hex");
+console.log(`Webxdc: ${outName} (${zipped.length.toLocaleString("en-US")} bytes, ${Object.keys(archive).length} entries)`);
+console.log(`  sha256: ${sha}`);
