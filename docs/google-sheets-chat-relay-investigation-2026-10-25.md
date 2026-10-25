@@ -199,3 +199,21 @@ combined with the unchanged census (only the 2 unrelated sheets plus
 the §7 created set are accessible), the note's third sheet — like
 IDs 1–2 — is not shared to this account. The §7 created set remains
 the verified three-ID deliverable.
+
+## 9. Fifth pass — capital-E variant set (108 more; 216 total)
+
+The user extended the final slot to `M[e,E]Y`, giving
+`1ivT2F7BMYzY[0,O]h[0,O]Mx[l,L,1]SDmpdStP2g5Ha2[L,1,l]K2[l,L,1]_2VJzM[e,E]Y`
+= **216 expansions**. The lowercase-`e` half is §8 (108/108, all 404).
+The capital-`E` half (108): 2 expansions had already been probed in
+earlier passes (`…OhOMx[l,1]…Ha2lK2l_2VJzMEY`, both 404); the
+remaining 106 were probed in enumerated order in this pass.
+**Result: all 108 capital-E expansions return Drive API 404 from
+the connected account; the complete 216-expansion sweep is now
+exhausted with zero hits.** This closes the ID-3 bracket patterns:
+no expansion of either the `MeY` or `MEY` reading is a verified
+link, and the §7 created set (CHAT A / CHAT B / Work Sheet) remains
+the only verified three-ID deliverable. Any future recovery of the
+note's original sheets would require the files to be shared to the
+connected account or exact IDs supplied from an account that can
+open them.
