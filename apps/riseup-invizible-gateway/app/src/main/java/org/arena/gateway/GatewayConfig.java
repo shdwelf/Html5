@@ -103,6 +103,12 @@ public final class GatewayConfig {
                 ? "{\"resolver\": \"" + dnscryptResolver + "\", \"requireDnssec\": true, \"viaTunnel\": " + "combined".equals(mode) + "}"
                 : "null").append(",\n");
         sb.append("  \"i2p\": {\"enabled\": ").append(i2pEnabled()).append("},\n");
+        sb.append("  \"decisions\": [");
+        for (int i = 0; i < decisions.size(); i++) {
+            sb.append(i == 0 ? "" : ", ").append("{\"decision\":\"")
+              .append(decisions.get(i).replace("\"", "'")).append("\"}");
+        }
+        sb.append("],\n");
         sb.append("  \"warnings\": [");
         for (int i = 0; i < warnings.size(); i++) {
             if (i > 0) sb.append(", ");

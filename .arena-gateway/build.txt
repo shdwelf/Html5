@@ -1,1 +1,1 @@
-build gateway jar + apk (round 47)
+rebuild jar with decisions parity (round 47)
