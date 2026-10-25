@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>GATEWAY CONFIG — Riseup VPN × InviZible combined profile builder</title>
+  <meta name="description" content="Clean-room combined configuration engine for a single VpnService front-end: Bitmask/LEAP provider VPN, InviZible-style Tor+DNSCrypt routing, or both layered. Every optimisation is a named, reasoned decision." />
+  <style>
+    :root { --bg:#0a1016; --panel:#0e1a22; --line:#24414f; --ink:#d7e3e8; --dim:#8a9aa3; --accent:#5cd6ff; --warn:#ffb020; --mono:"IBM Plex Mono",Menlo,Consolas,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono); font-size:13px; }
+    header { padding:14px 18px; border-bottom:1px solid var(--line); }
+    header h1 { margin:0; font-size:15px; letter-spacing:.16em; color:var(--accent); }
+    header p { margin:5px 0 0; color:var(--dim); max-width:75ch; line-height:1.5; }
+    main { display:grid; grid-template-columns:320px 1fr; gap:14px; padding:14px 18px; }
+    @media (max-width:800px){ main{ grid-template-columns:1fr; } }
+    section { background:var(--panel); border:1px solid var(--line); padding:12px 14px; }
+    h2 { font-size:11px; letter-spacing:.14em; color:var(--accent); margin:0 0 10px; }
+    label { display:block; margin:9px 0; color:var(--dim); }
+    select, input[type="text"] { width:100%; margin-top:4px; background:#08131a; color:var(--ink); border:1px solid var(--line); padding:6px; font-family:var(--mono); }
+    pre { white-space:pre-wrap; word-break:break-word; background:#08131a; border:1px solid var(--line); padding:10px; font-size:11px; max-height:340px; overflow:auto; }
+    li { margin:5px 0; line-height:1.45; }
+    .warn { color:var(--warn); }
+    code { color:var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GATEWAY CONFIG · RISEUP VPN × INVIZIBLE</h1>
+    <p>One Android <code>VpnService</code> front-end, three configurations: provider VPN (Bitmask/LEAP model), local Tor+DNSCrypt routing (InviZible model), or the combined layering. Clean-room configuration engine — no upstream code or binaries. Research: <code>docs/riseup-invizible-combined-gateway-research-2026-10-25.md</code>.</p>
+  </header>
+  <main>
+    <section>
+      <h2>INPUT</h2>
+      <label>Mode
+        <select id="modeSelect">
+          <option value="combined" selected>combined — VPN tunnel, DNSCrypt via tunnel, Tor per-app</option>
+          <option value="vpn">vpn — provider tunnel only (Bitmask-style)</option>
+          <option value="tor-dnscrypt">tor-dnscrypt — local Tor + DNSCrypt (InviZible-style)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="bridgesToggle" /> Censorship bridges (obfs4/snowflake)</label>
+      <label><input type="checkbox" id="i2pToggle" /> Enable Purple I2P (.i2p)</label>
+      <label><input type="checkbox" id="lanToggle" /> Allow LAN access</label>
+      <label>Per-app exceptions (package names, comma-separated)
+        <input type="text" id="exceptionsInput" placeholder="org.example.banking" />
+      </label>
+      <h2 style="margin-top:16px">DECISIONS</h2>
+      <ul id="decisionList"></ul>
+      <div id="warningList"></div>
+    </section>
+    <section>
+      <h2>UNIFIED PROFILE (JSON)</h2>
+      <pre id="profileOut"></pre>
+      <h2>OPENVPN DIRECTIVES</h2>
+      <pre id="ovpnOut"></pre>
+      <h2>TORRC</h2>
+      <pre id="torrcOut"></pre>
+      <h2>DNSCRYPT-PROXY.TOML</h2>
+      <pre id="dnscryptOut"></pre>
+    </section>
+  </main>
+  <script type="module">
+    import { buildGatewayConfig, renderDnscryptToml, renderOpenVpn, renderTorrc } from "./js/gateway-config.js";
+    const $ = (id) => document.getElementById(id);
+    function render() {
+      const input = {
+        mode: $("modeSelect").value,
+        censorshipBridges: $("bridgesToggle").checked,
+        enableI2p: $("i2pToggle").checked,
+        allowLan: $("lanToggle").checked,
+        appExceptions: $("exceptionsInput").value.split(",").map((s) => s.trim()).filter(Boolean),
+      };
+      const { config, decisions, warnings } = buildGatewayConfig(input);
+      $("profileOut").textContent = JSON.stringify(config, null, 2);
+      $("ovpnOut").textContent = renderOpenVpn(config);
+      $("torrcOut").textContent = renderTorrc(config);
+      $("dnscryptOut").textContent = renderDnscryptToml(config);
+      $("decisionList").innerHTML = decisions.map((d) => `<li><code>${d.name}</code> = ${JSON.stringify(d.value)} — ${d.rationale}</li>`).join("");
+      $("warningList").innerHTML = warnings.map((w) => `<p class="warn">⚠ ${w}</p>`).join("");
+    }
+    for (const id of ["modeSelect", "bridgesToggle", "i2pToggle", "lanToggle", "exceptionsInput"]) {
+      $(id).addEventListener("input", render);
+      $(id).addEventListener("change", render);
+    }
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "profileVersion": 1,
+  "mode": "vpn",
+  "provider": {"name": "Riseup", "apiUrl": "https://riseup.net", "transport": "openvpn"},
+  "vpnService": {"alwaysOn": true, "blockWithoutVpn": true, "mtu": 1400, "addresses": ["10.66.0.2/24"], "routes": ["0.0.0.0/0"], "dnsServers": ["provider-pushed"], "allowLan": false},
+  "tor": null,
+  "dnscrypt": null,
+  "i2p": {"enabled": false},
+  "decisions": [{"decision":"killSwitch=true — Always-on VPN with block-without-VPN: no fallback to the bare interface on tunnel drop."}, {"decision":"blockIpv6=true — No IPv6 routes until the tunnel carries IPv6; an unrouted v6 stack leaks silently."}, {"decision":"allowLan=false — LAN bypass off (InviZible-style firewall posture); exceptions are per-app and explicit."}, {"decision":"tunMtu=1400 — tun-mtu 1400 / mssfix 1360 avoids fragmentation blackholes behind carrier NAT."}, {"decision":"dnsLeakProtection=true — All DNS forced through the encrypted path; no system resolver fallback."}, {"decision":"dnsMode=provider — Provider DNS stays inside the OpenVPN tunnel (block-outside-dns semantics)."}],
+  "warnings": []
+}

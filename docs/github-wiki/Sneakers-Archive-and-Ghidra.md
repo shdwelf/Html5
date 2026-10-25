@@ -48,6 +48,37 @@ GitHub code search turned up several useful headless DOS patterns:
 
 A direct `xvfb-run dosbox` code search did not surface a more useful pattern than starting Xvfb explicitly. The Sneakers workflow adds a separate original-binary job beside the existing reconstruction test. The DOSBox/Xvfb job passed and produced screenshots/logs, but those remain diagnostic evidence until visually inspected; the sandbox's network policy blocked the artifact download.
 
+## Press-kit keyboard/mouse layout — verified against the headline-harry pattern (2026-10-24, round 46)
+
+The `sneakers-press-kit.xdc` player now has its keyboard/mouse layout
+pinned by test against the shell pattern that fixed Headline Harry
+(`docs/headline-harry-jsdos-fix-2026-10-04.md`): inside a Webxdc iframe
+the DOSBox canvas is not focused by default, so keys never arrive
+("no keyboard") and the first click can be eaten ("no mouse"). The new
+`keyboard/mouse layout matches the headline-harry pattern` test in
+`tests/sneakers-press-kit.test.mjs` asserts, for both shells:
+
+- canvas `tabindex="0"` focus discipline: focus after `Dos()`, on
+  `ci-ready`, and on capture-phase `pointerdown`/`keydown`;
+- the js-dos v8 boot contract (`url`, local `pathPrefix`, `autoStart`,
+  `noCloud`, `kiosk: false` so the ☰ sidebar stays reachable, `onEvent`
+  statuses, no v7 `.run()`);
+- DOSBox-side parity: identical `[cpu]/[mixer]/[sblaster]/[speaker]`
+  values in both bundles' `dosbox.conf`, and no `keyboardlayout` or
+  `[mouse]` override in either (DOSBox defaults apply to both).
+
+One delta was found and fixed: the Sneakers `ci-ready` status now also
+prints the ☰ sidebar hint (`js-dos sidebar: ☰ = on-screen
+keyboard/gamepad, 💾 = actions`), because the pre-boot overlay that
+carried the hint is gone once DOS runs. Sneakers keeps two deliberate
+strengthenings over the pattern — retry stops the previous instance and
+clears the container first. The XDC was rebuilt deterministically:
+805,280 bytes, 13 entries, sha256
+`e4d7d38295286b9ee182b35a064b52cc79e516e1e50bdee9aef0808afdd45b70`.
+Browser/DOSBox runtime behaviour remains covered by the existing
+DOSBox+Xvfb smoke pair (section above); the layout test is a static
+source-and-archive verification, not a claim about a booted screen.
+
 ## Open research
 
 - Extend the native Ghidra review from the entry-point excerpts to the program's resource-handling routines and GRASP data; the current zero-signature result does not rule out custom packing or transforms. Do not infer a cipher merely from the film's Scrabble puzzle.
