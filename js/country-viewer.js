@@ -45,7 +45,7 @@ function drawMap(canvas, selected) {
     ctx.fillStyle = selected && c.code === selected.code ? "#ffd75e" : "#7fd4ff";
     ctx.beginPath(); ctx.arc(x, y, selected && c.code === selected.code ? 5 : 3, 0, Math.PI * 2); ctx.fill();
   }
-  if (selected) {
+  if (selected && Number.isFinite(selected.capital.lat) && Number.isFinite(selected.capital.lon)) {
     const [x, y] = project(selected.capital.lon, selected.capital.lat, w, h);
     ctx.fillStyle = "#ff8a5e";
     ctx.fillRect(x - 3, y - 3, 6, 6);
@@ -54,6 +54,14 @@ function drawMap(canvas, selected) {
 
 function el(id) { return document.getElementById(id); }
 
+export function capitalText(c) {
+  const hasCoords = Number.isFinite(c.capital.lat) && Number.isFinite(c.capital.lon);
+  if (!c.capital.name && !hasCoords) return "none published (source profile lists no capital)";
+  if (!hasCoords) return `${c.capital.name} (no coordinates published)`;
+  if (!c.capital.name) return `(${c.capital.lat}, ${c.capital.lon})`;
+  return `${c.capital.name} (${c.capital.lat}, ${c.capital.lon})`;
+}
+
 function renderDetail(c) {
   const d = el("detail");
   if (!c) { d.innerHTML = "<p>Select a country.</p>"; return; }
@@ -61,7 +69,7 @@ function renderDetail(c) {
     <h2>${c.name}</h2>
     <p class="loc">${c.location}</p>
     <table>
-      <tr><th>Capital</th><td>${c.capital.name} (${c.capital.lat}, ${c.capital.lon})</td></tr>
+      <tr><th>Capital</th><td>${capitalText(c)}</td></tr>
       <tr><th>Country reference point</th><td>${c.lat}, ${c.lon}</td></tr>
       <tr><th>Area (total)</th><td>${formatInt(c.areaTotalSqKm)} sq km</td></tr>
       <tr><th>Population</th><td>${c.populationText}</td></tr>
@@ -81,7 +89,7 @@ function main() {
   function renderList() {
     const items = sortByName(filterCountries(COUNTRIES, searchEl.value));
     listEl.innerHTML = items.map((c) =>
-      `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.name} — ${c.capital.name}</button></li>`).join("");
+      `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.capital.name ? `${c.name} — ${c.capital.name}` : c.name}</button></li>`).join("");
     listEl.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
       selected = COUNTRIES.find((c) => c.code === b.dataset.code) || null;
       renderList(); renderDetail(selected); drawMap(canvas, selected);
