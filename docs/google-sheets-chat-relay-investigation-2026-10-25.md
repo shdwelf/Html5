@@ -184,3 +184,18 @@ Investigation of the created set (read-back via Drive export):
   moved to trash; only the table above is canonical.
 - These new IDs are **verified valid** (Drive metadata retrieved).
   The note-derived IDs in §3 remain **unverified**.
+
+## 8. Fourth pass — full pattern-3 expansion set (108)
+
+Pattern: `1ivT2F7BMYzY[0,O]h[0,O]Mx[l,L,1]SDmpdStP2g5Ha2[L,1,l]K2[l,L,1]_2VJzMeY`
+= 2×2×3×3×3 = **108 expansions**, all 44 chars. 14 were already probed
+in passes 1–3; the remaining 94 were probed in this pass in
+rule-prioritised order (crossed-zero `0h0` first, then `0hO`, `Oh0`,
+`OhO`; inserted `l`, then `L`, then `1`; tail slots in pattern order).
+One call (`…Oh0Mx1…2LK2L…`) first returned a transient Drive 400 and
+was re-probed: 404. **Result: all 108 expansions return Drive API
+404 from the connected account.** No expansion is a verified link;
+combined with the unchanged census (only the 2 unrelated sheets plus
+the §7 created set are accessible), the note's third sheet — like
+IDs 1–2 — is not shared to this account. The §7 created set remains
+the verified three-ID deliverable.
