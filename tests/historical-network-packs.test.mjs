@@ -46,6 +46,9 @@ test("the viewer offers all three bundled packs without any remote loading", () 
   assert.match(html, /historical-network-cicada-data\.js/);
   assert.match(html, /id="packSelect"/);
   assert.match(html, /id="schematic"/);
+  assert.match(html, /id="sliceRow"/, "viewer must offer the ARPANET time-slice row");
+  assert.match(html, /slices: \[1969, 1971, 1977\]/, "comms pack must declare its 1969/1971/1977 slices");
+  assert.match(html, /sliceVisibleNodeIds/, "schematic must honour the active slice");
   assert.match(html, /renderSchematic/);
   assert.doesNotMatch(html, /fetch\(/, "pack switching must stay offline; data modules are static imports");
   assert.doesNotMatch(html, /href="tel:/, "historical numbers must never become dial links");
