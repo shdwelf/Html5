@@ -253,12 +253,17 @@ An optional schema check uses Python `lxml` against the pinned upstream XSD:
 `python3 tools/wiki-workspace/validate-mediawiki.py dist/wiki/mediawiki.xml`.
 Build/run evidence and explicit pending checks are recorded in the research report.
 
-Optional real Chromium smoke (separate test-only dependencies, not shipped in
-any wiki). Start the JAR in another terminal first:
+Optional real Chromium smoke. Start the JAR in another terminal first.
+Browser automation is the dependency-free JavaScript conversion in
+`cdp-browser.mjs` (Playwright 1.64 disassembled and re-implemented over raw
+CDP; see `docs/playwright-164-disassembly-javascript-2026-10-25.md`), so the
+only external piece is a Chromium binary:
 
 ```sh
-npm install --prefix .cache/wiki-browser --no-save --no-package-lock --ignore-scripts playwright-core@1.64.1
 CHROMIUM_EXECUTABLE=/path/to/chromium node tools/wiki-workspace/browser-smoke.mjs
+# or, without a system Chromium, the test-only binary package:
+npm install --prefix .cache/wiki-browser --no-save --no-package-lock --ignore-scripts @sparticuz/chromium
+node tools/wiki-workspace/browser-smoke.mjs
 ```
 
 The script checks full-catalog/native counts, the metadata template, local-note
