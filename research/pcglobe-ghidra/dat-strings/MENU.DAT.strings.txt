@@ -1,0 +1,181 @@
+# MENU.DAT: 8178 bytes, 180 printable runs >=4
+00000844  Help
+00000849  World
+0000084f  Region
+00000856  Country
+0000085e  Database
+00000867  Utilities
+00000871  Quit
+00000876  Using the Menus
+00000886  World Map
+00000890  Select Continent/Region
+000008a8  Select Group
+000008b5  Active Country
+000008c4  Point and Shoot
+000008d4  Select Country
+000008e3  Select City
+000008ef  Change Active Color
+00000903  Active Continent/Region
+0000091b  Base Map
+00000924  Major Cities
+00000931  Elevations
+0000093c  Features
+00000945  Features Legend
+00000955  Data for Active Country
+0000096d  Database Selection
+00000980  Country Comparisons
+00000994  Map Display of Data
+000009a8  Change Parameters
+000009ba  City Distances/Bearings
+000009d2  Currency Conversion
+000009e6  Time Zones
+000009f1  File Import/Export
+00000a04  Change Colors
+00000a12  Print Screen
+00000a1f  Save Parameters/Exit
+00000a34  Exit
+00000a39  Previous Menu
+00000a47  Africa
+00000a4e  Asia
+00000a53  Australia & Oceania
+00000a67  Europe
+00000a6e  North America
+00000a7c  South America
+00000a8a  Central America
+00000a9a  Middle East
+00000aa6  Southeast Asia
+00000ad3  Prev.
+00000ad9  Standard/Metric Toggle
+00000af0  Country Borders Toggle
+00000b07  Shift World Center
+00000b1a  Latitude/Longitude Toggle
+00000b34  Country Map River Toggle
+00000b4d  Output Country Data
+00000b61  Save Graphics Display
+00000b77  Recall Graphics Display
+00000b8f  View Text File
+00000b9e  Invert Black/White
+00000bb1  Pull-Down Menu Colors
+00000bc7  Text Menu Colors
+00000bd8  Water Color
+00000be4  Country Map Color
+00000bf6  Normal
+00000bfd  Draft
+00001213  Help
+00001218  World
+0000121e  Region
+00001225  Country
+0000122d  Database
+00001236  Utilities
+00001240  Quit
+00001245  Using the Menus
+00001255  World Map
+0000125f  Select Continent/Region
+00001277  Select Group
+00001284  Active Country
+00001293  Point and Shoot
+000012a3  Select Country
+000012b2  Select City
+000012be  Change Active Color
+000012d2  Active Continent/Region
+000012ea  Base Map
+000012f3  Major Cities
+00001300  Elevations
+0000130b  Features
+00001314  Features Legend
+00001324  Data for Active Country
+0000133c  Database Selection
+0000134f  Country Comparisons
+00001363  Map Display of Data
+00001377  Change Parameters
+00001389  City Distances/Bearings
+000013a1  Currency Conversion
+000013b5  Time Zones
+000013c0  File Import/Export
+000013d3  Change Colors
+000013e1  Print Screen
+000013ee  Save Parameters/Exit
+00001403  Exit
+00001408  Previous Menu
+00001416  Africa
+0000141d  Asia
+00001422  Australia & Oceania
+00001436  Europe
+0000143d  North America
+0000144b  South America
+00001459  Central America
+00001469  Middle East
+00001475  Southeast Asia
+00001484  Standard/Metric Toggle
+0000149b  Country Borders Toggle
+000014b2  Shift World Center
+000014c5  Latitude/Longitude Toggle
+000014df  Country Map River Toggle
+000014f8  Output Country Data
+0000150c  Save Graphics Display
+00001522  Recall Graphics Display
+0000153a  View Text File
+00001549  Previous Color Palette
+00001560  Next Color Palette
+00001573  Text Menu Colors
+00001584  Normal
+0000158b  Draft
+00001c6f  Help
+00001c74  World
+00001c7a  Region
+00001c81  Country
+00001c89  Database
+00001c92  Utilities
+00001c9c  Quit
+00001ca1  Using the Menus
+00001cb1  World Map
+00001cbb  Select Continent/Region
+00001cd3  Select Group
+00001ce0  Active Country
+00001cef  Point and Shoot
+00001cff  Select Country
+00001d0e  Select City
+00001d1a  Change Active Pattern
+00001d30  Active Continent/Region
+00001d48  Base Map
+00001d51  Major Cities
+00001d5e  Elevations
+00001d69  Features
+00001d72  Features Legend
+00001d82  Data for Active Country
+00001d9a  Database Selection
+00001dad  Country Comparisons
+00001dc1  Map Display of Data
+00001dd5  Change Parameters
+00001de7  City Distances/Bearings
+00001dff  Currency Conversion
+00001e13  Time Zones
+00001e1e  File Import/Export
+00001e31  Change Colors
+00001e3f  Print Screen
+00001e4c  Save Parameters/Exit
+00001e61  Exit
+00001e66  Previous Menu
+00001e74  Africa
+00001e7b  Asia
+00001e80  Australia & Oceania
+00001e94  Europe
+00001e9b  North America
+00001ea9  South America
+00001eb7  Central America
+00001ec7  Middle East
+00001ed3  Southeast Asia
+00001ef6  Prev.
+00001efc  Standard/Metric Toggle
+00001f13  Country Borders Toggle
+00001f2a  Shift World Center
+00001f3d  Latitude/Longitude Toggle
+00001f57  Country Map River Toggle
+00001f70  Output Country Data
+00001f84  Save Graphics Display
+00001f9a  Recall Graphics Display
+00001fb2  View Text File
+00001fc1  Invert Black/White
+00001fd4  Text Menu Colors
+00001fe5  Normal
+00001fec  Draft

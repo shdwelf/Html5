@@ -1,0 +1,264 @@
+# HELP.DAT: 13848 bytes, 263 printable runs >=4
+0000002b  "h$?%
+0000003b  263c5
+00000041  6USING THE MENUS
+00000053  To remove the menus from the screen, press <Esc> or mouse
+0000008e  <right>.  To bring the menus back, press any key.  To access any
+000000d0  of the pull-down menus, move the cursor to your selection with
+00000110  the arrow keys and press <enter>, <space> bar or mouse <left>.
+00000150  Typing the first letter of any heading will also work.
+00000188  To activate any of the pull-down menu choices, move the cursor to
+000001cb  your selection and press <enter>, <space> bar or mouse <left>.
+0000020b  You may do the same by typing the number to the left of each
+00000249  choice.
+00000251  WORLD MAP
+0000025c  This option serves two purposes.  The first is to bring up the
+0000029c  world map display with all of the active parameter settings
+000002d9  (colors, borders, etc.).  The second is to clear the current
+00000317  world map display.
+0000032a  SELECT CONTINENT/REGION
+00000343  This option brings up a submenu from which you may select a
+00000380  continent or region.
+00000395  SELECT GROUP
+000003a3  This option accesses a submenu from which you may select one or
+000003e4  more international country groups or organizations.
+00000419  To view the names of the individual countries in a group, move
+00000459  the cursor to the Select Country option and press <enter>,
+00000495  <space> bar or mouse <left>.  All of the members in the group
+000004d4  will be highlighted on the country submenu.
+00000500  ACTIVE COUNTRY
+00000510  This option calls up your last country selection.  If you are
+0000054f  using the program for the first time and have never selected a
+0000058f  country, the USA will be the active country.
+000005bc  POINT AND SHOOT
+000005cd  This option allows you to identify any country you choose by
+0000060b  moving the cursor over it, using either a mouse or the keyboard
+0000064c  arrows.  As the center of the cursor passes into a new country,
+0000068d  the country's name will appear in the upper portion of the
+000006c9  screen.  To highlight any particular country using either colors
+0000070b  or hatch patterns, simply move the cursor over that country and
+0000074c  press <enter>, <space> bar or mouse <left>.  The last country you
+0000078f  choose will become your active country.  If you want to highlight
+000007d2  more than one country, you can change the colors or hatch
+0000080d  patterns by moving the cursor to the palette on the upper
+00000848  right-hand corner of the screen.  Simply move the cursor over the
+0000088b  new color or hatch pattern of your choice and press <enter>,
+000008c9  <space> bar or mouse <left>.
+000008e6  SELECT COUNTRY
+000008f6  This option accesses a submenu from which you may select any of
+00000937  the 177 countries.  To leave the submenu, press Esc or mouse
+00000975  <right> or place the cursor over ESCAPE and press <enter>,
+000009b1  <space> bar or mouse <left>.
+000009cf  The submenu offers several modes of selection.  If you prefer
+00000a0e  keyboard entry, you may select this option and another screen
+00000a4d  will prompt you for your choice.  PC Globe is smart enough to
+00000a8c  understand the first few letters of any country name.  If two or
+00000ace  more countries have the same first few letters, the program will
+00000b10  list them.  You may then place the cursor over your selection and
+00000b53  press <enter>, <space> bar or mouse <left>.
+00000b80  An easier selection process is simply to place the cursor over
+00000bc0  the country name of your choice and press <enter>, <space> bar or
+00000c03  mouse <left>.
+00000c11  SELECT CITY
+00000c1e  This option lets you select from a submenu of over 1,200
+00000c58  different cities.  To page through the entire list, press PgUp,
+00000c99  PgDn or place the cursor over NEXT PAGE or PREV PAGE and press
+00000cd9  <enter>, <space> bar or mouse <left>.  To jump to the very end of
+00000d1c  the list, hold down the Ctrl key and press the End key.  To jump
+00000d5e  back to the beginning of the list, hold down the Ctrl key and
+00000d9d  press the Home key.
+00000db2  The city submenu offers several modes of selection.  If you
+00000def  prefer keyboard entry, you may choose this option and another
+00000e2e  screen will prompt you for your choice.  An alternative selection
+00000e71  system is simply to place the cursor over a listed city and press
+00000eb4  <enter>, <space> bar or mouse <left>.
+00000edb  The city submenu also offers the choice of ONE, MANY, ALL or
+00000f19  CLEAR.  The ONE option lets you pick one city at a time.  The
+00000f58  MANY option allows you to select as many cities as you like
+00000f95  before viewing them.  As soon as you have finished making your
+00000fd5  selections, place the cursor over DONE and press <enter>, <space>
+00001018  bar or mouse <left>.  The ALL option displays all of the cities
+00001059  on the given map in the active color.
+0000107f  CHANGE ACTIVE COLOR (PATTERN)
+0000109e  PC Globe lets you select your own colors or hatch patterns.
+000010db  Change Active Color (Pattern) is a command found on the World and
+0000111e  Region menus.  This option allows you to determine the color (or
+00001160  hatch pattern) of your next fill selection (continent, region,
+000011a0  country or city).  The active color (or pattern) is displayed in
+000011e2  the bottom portion of the screen.
+00001204  ACTIVE CONTINENT/REGION
+0000121d  This option calls up the region of your active country.  If you
+0000125e  are using the program for the first time and have never selected
+000012a0  a continent or region, North America will be the active
+000012d9  continent.
+000012e4  BASE MAP
+000012ee  This option displays a basic outline map of the active country
+0000132e  with its major bodies of water.
+0000134e  MAJOR CITIES
+0000135c  This option brings up a map of the active country with numbered
+0000139d  dots showing the locations of up to 11 major cities.  City
+000013d9  Number 1 is the country's capital.  The other cities are ranked
+0000141a  in descending order by population.
+0000143d  ELEVATIONS
+00001449  This option accesses a topographical map of the active country.
+00001489  FEATURES
+00001493  This option calls up a map of the active country with up to 8
+000014d2  major geographical features, including bodies of water,
+0000150b  mountains, islands, deserts, plateaus, plains, forests, etc.
+00001548  FEATURES LEGEND
+00001559  This option presents a legend for all the feature symbols used on
+0000159c  the Features Map (mountains, deserts, rivers, etc.).
+000015d1  DATA FOR ACTIVE COUNTRY
+000015ea  This option brings up all of the database screens for the active
+0000162c  country in sequence.  If you have never used the program before,
+0000166e  all of the database screens for the USA will be shown in
+000016a8  sequence.  To advance to the next screen, press <enter>, <space>
+000016ea  bar, mouse <left>, down arrow, right arrow or PgDn.  To go back
+0000172b  to an earlier database screen, press up arrow, left arrow or
+00001769  PgUp.  Note that you can use the mouse only to go forward in the
+000017ab  database screens.  To exit the sequence, press Esc or mouse
+000017e8  <right>.
+000017f1  POINT AND SHOOT
+00001802  You can use the Point and Shoot feature to choose your active
+00001841  country.  As soon as you have made your choice, the database
+0000187f  screens for the selected country will appear in sequence.
+000018b9  SELECT COUNTRY
+000018c9  This option displays a submenu from which you may choose your
+00001908  active country.  As soon as you have made your choice, the
+00001944  database screens for the selected country will appear in
+0000197e  sequence.
+00001988  DATABASE SELECTION
+0000199c  The Database Selection submenu also offers the choice of ONE,
+000019db  MANY, ALL or CLEAR.  The ONE option lets you view one Database
+00001a1b  option at a time.  The MANY option allows you to select as many
+00001a5c  options as you like before viewing them.  As soon as you have
+00001a9b  finished making your selections, place the cursor over DONE and
+00001adc  press <enter>, <space> bar or mouse <left>.  The ALL option
+00001b19  displays all of the options in sequence.
+00001b43  To select a different country or a group of countries, return to
+00001b85  the database submenu and place the cursor over SELECT COUNTRIES
+00001bc6  and press <enter>, <space> bar or mouse <left>.  The country
+00001c04  submenu will appear.  You may select one country or as many
+00001c41  countries as you wish.  After you have made your country
+00001c7b  selections, place the cursor over DONE and press <enter>, <space>
+00001cbe  bar or mouse <left>.  The program will return to the database
+00001cfd  submenu.  If you select more than one country, your database
+00001d3b  choice will be displayed for all of your selections in sequence.
+00001d7d  To advance to the next screen, press <enter>, <space> bar, mouse
+00001dbf  <left>, down arrow, right arrow or PgDn.  To go back to an
+00001dfb  earlier database screen, press up arrow, left arrow or PgUp.
+00001e38  COUNTRY COMPARISONS
+00001e4d  In this submenu, you have the choice of displaying the top ten or
+00001e90  the bottom ten countries in each of the categories, the top ten
+00001ed1  or the bottom ten plus the active country, or up to eleven of
+00001f10  your own country selections.  To activate one of these choices,
+00001f51  place the cursor over TOP 10, TOP 10 + ACTIVE COUNTRY,
+00001f89  BOTTOM 10, BOTTOM 10 + ACTIVE COUNTRY, SELECT COUNTRIES or POINT
+00001fcb  AND SHOOT.  Press <enter>, <space> bar or mouse <left>.
+00002004  If you choose SELECT COUNTRIES, the country submenu will appear.
+00002046  From this, you may select up to eleven countries.  When you have
+00002088  finished your selections, place the cursor over DONE and press
+000020c8  <enter>, <space> bar or mouse <left>.  If you choose POINT AND
+00002108  SHOOT, you can select your own countries for comparison with the
+0000214a  mouse or cursor keys.  After you have made your selections, press
+0000218d  Esc or mouse <right>.
+000021a4  When using the Country Comparisons submenu, you again have the
+000021e4  choice of ONE, MANY, ALL or CLEAR.
+00002207  MAP DISPLAY OF DATA
+0000221c  This option brings up a submenu similar to the Country
+00002254  Comparisons submenu.  The difference here is that the statistical
+00002297  items are displayed on either the world map or on the maps of the
+000022da  various continents and regions rather than in barcharts.  In this
+0000231d  submenu you have a choice between displaying the information in 5
+00002360  RANGES or 9 RANGES.  Selecting five colors activates five
+0000239b  different ranges of values.  Selecting nine colors activates nine
+000023de  different ranges of values.
+000023fb  For the selections on the Map Display of Data submenu, you also
+0000243c  have the choice of ONE, MANY, ALL or CLEAR.
+00002468  CHANGE PARAMETERS
+0000247b  This option brings up a submenu which offers a series of
+000024b5  toggles.  To toggle to your preference, place the cursor over the
+000024f8  option of your choice and press <enter>, <space> bar or mouse
+00002537  <left>.
+0000253f  CITY DISTANCES/BEARINGS
+00002558  This selection provides two options: Select City or User-Defined
+0000259a  City/Point.  The Select City option applies to all cities
+000025d5  contained in PC Globe's database.  To select your city of origin,
+00002618  place the cursor over Change City of Origin and press <enter>,
+00002658  <space> bar or mouse <left>.  The city submenu will be
+00002690  displayed.  You may use the same procedure to select your city of
+000026d3  destination.  To display your selections on the map, place the
+00002713  cursor over Display on World Map and press <enter>, <space> bar
+00002754  or mouse <left>.
+00002766  The User-Defined City/Point option allows you to enter the names
+000027a8  and latitude-longitude points for locations not included in PC
+000027e8  Globe's database.  Place the cursor over Change Point of Origin
+00002829  and press <enter>, <space> bar or mouse <left>.  You may then
+00002868  type in the name of any location in the world.  Now enter the
+000028a7  latitude of the location and press <enter>. Now enter the
+000028e2  longitude and press <enter>.  To display your selections on the
+00002923  map, place the cursor over Display on World Map and press
+0000295e  <enter>, <space> bar or mouse <left>.
+00002984  TIME ZONES
+00002990  This option shows you the local time in the major cities of 177
+000029d1  different countries.  To view the local time in the cities of a
+00002a12  specific country, place the cursor on SELECT COUNTRY and press
+00002a52  <enter>, <space> bar or mouse <left>.
+00002a79  The calculation of times around the world is based on your local
+00002abb  time and time zone.  To adjust your local time, place the cursor
+00002afd  over Change Local Time and press <enter>, <space> bar or mouse
+00002b3d  <left>.  Type in your local time from 0:00 to 23:59 and press
+00002b7c  <enter>.
+00002b86  To indicate your local time, place the cursor over Change Local
+00002bc7  Reference--Select City or Change Local Reference--User-Defined
+00002c07  City and press <enter>, <space> bar or mouse <left>.  The Select
+00002c49  City option allows you to select a city with the same time zone
+00002c8a  as your own.  This will serve as your local reference.  The
+00002cc7  User-Defined City option allows you to type in your own time zone
+00002d0a  and the name of whatever city you would like to designate as your
+00002d4d  local reference.
+00002d5e  CURRENCY CONVERSION
+00002d73  This utility allows you to convert any amount of one currency to
+00002db5  another automatically.
+00002dcd  To change the amount of base currency on display, place the
+00002e0a  cursor over Change Amount of Base Currency and press <enter>,
+00002e49  <space> bar or mouse <left>.  Type in any number and press
+00002e85  <enter>.
+00002e8f  To change the base currency, place the cursor over Change Base
+00002ecf  Currency and press <enter>, <space> bar or mouse <left>.  You may
+00002f12  then make your selection from the country submenu.  To change the
+00002f55  base currency exchange rate in relation to the US dollar, place
+00002f96  the cursor over Change Base Currency Exchange Rate/$US and press
+00002fd8  <enter>, <space> bar or mouse <left>.  Type in your new exchange
+0000301a  rate and press <enter>.  Be sure to use the same numerical format
+0000305d  as the examples on display.  To change the target currency and
+0000309d  exchange rate or the conversion factor, follow the same
+000030d6  procedure.
+000030e8  FILE IMPORT/EXPORT
+000030fc  This option accesses several advanced functions which allow you to
+00003140  generate reports, export data, save screens, recall screens, view
+00003183  ASCII files and interface with other programs.
+000031b2  CHANGE COLORS
+000031c1  PC Globe gives the user considerable flexibility in altering the
+00003203  colors of maps, bodies of water, text, etc.  To access a list of
+00003245  color changes you can make, place the cursor over Change Colors
+00003286  and press <enter>, <space> bar or mouse <left>.
+000032b6  PRINT SCREEN
+000032c4  When you select this option, the current screen will be printed
+00003305  out with the program's built-in printer drivers.
+00003336  QUIT
+0000333c  To exit the program, select Quit.  You then have the choice
+00003379  between Save Parameters/Exit or Exit.  If you select the first
+000033b9  option the following parameters will be saved:
+000033e9  - Your active country (the country that you selected last)
+00003425  - Your active color (pattern) selections
+0000344f  - Your last database menu selections
+00003475  - Your last utilities selections.
+00003498  If you select Exit <enter>, the parameters from your previous
+000034d7  session (if any) will be restored.  The parameters from your
+00003515  current session, however, will be erased.  Your computer will
+00003554  return to DOS.
+00003563  POINT AND SHOOT
+00003574  You can use the Point and Shoot feature to choose your active
+000035b3  country.  As soon as you have made your choice, the map for the
+000035f4  selected country will be displayed.
