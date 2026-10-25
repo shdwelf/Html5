@@ -638,6 +638,18 @@ const gazIdx = makeGazetteerIndex(gazRows);
 const gazMeshes = [];
 const gazHeadByIdx = new Map();
 
+// Gazetteer panel hosts/state are declared here, before the boot-time
+// population loop below: addGazEntry() calls refreshGazClasses(), which
+// reads these consts — declaring them in the panel section further down
+// left them in the temporal dead zone and killed every frame at boot.
+const gazFacetSel = $("gazFacet");
+const gazClassesHost = $("gazClasses");
+const gazQuery = $("gazQuery");
+const gazHits = $("gazHits");
+const gazCaps = $("gazCaps");
+const gazState = { facet: "", classes: null };
+const gazClassToggles = [];
+
 /**
  * Draw one ADL GCS entry as a pin. Called for the static pack at boot and again
  * for every waypoint a local GPX import adds, so the register stays one code
@@ -779,14 +791,6 @@ for (const l of LAYERS) {
 }
 
 /* ------------------------------------------------------- gazetteer panel */
-
-const gazFacetSel = $("gazFacet");
-const gazClassesHost = $("gazClasses");
-const gazQuery = $("gazQuery");
-const gazHits = $("gazHits");
-const gazCaps = $("gazCaps");
-const gazState = { facet: "", classes: null };
-const gazClassToggles = [];
 
 if (gazFacetSel) {
   for (const f of GAZ_FACETS) {
