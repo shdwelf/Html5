@@ -212,7 +212,7 @@
     {
       "id": "S5",
       "title": "Live incident, camera & sensor layers",
-      "status": "open",
+      "status": "partial",
       "tasks": [
         "T5.1"
       ],
@@ -223,7 +223,7 @@
       ],
       "next_actions": [
         "API inventory + adapters: cad.chp.ca.gov incidents, CALTRANS + other state DOT cameras, WildCAD, interagency per-state incident lists (NIFC), WiFire, WREN cameras, liveuamap, NOTAMs",
-        "Static layers: fire lookouts, KiwiSDR/SDR receiver locations, dish-pointing/alignment calculator layer",
+        "Static layers: fire lookouts, KiwiSDR/SDR receiver locations remain; dish-pointing/alignment calculator layer shipped (round 46, 2026-10-25 — DISH ALIGNMENT panel in satellite-constellations.html, docs/backlog-execution-round-46-2026-10-25.md)",
         "tv.garden / radio.garden transcription pipeline + PR"
       ]
     },
@@ -525,7 +525,8 @@
       "line": 6,
       "stream": "S5",
       "text": "Live data layers: NIFC historical fires, WiFire, WREN cameras, WildCAD, interagency per-state incidents, CALTRANS/state DOT cameras, cad.chp.ca.gov API, liveuamap API, NOTAMs, fire lookouts, KiwiSDR locations, tv.garden/radio.garden transcription + PR",
-      "status": "open"
+      "status": "partial",
+      "note": "Round 46 (2026-10-25): dish-pointing/satellite-alignment calculator layer shipped as the DISH ALIGNMENT panel in /satellite-constellations.html (js/satellite-dish-pointing.js + DISH_SITES/DISH_SLOTS presets, 10 node tests, worked example az 109.33°/el 5.85° reproduced, ECEF→ENU vector cross-check). API inventory/adapters, fire lookouts, KiwiSDR static layers, and tv.garden/radio.garden remain."
     },
     {
       "id": "T6.1",

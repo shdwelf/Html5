@@ -2,6 +2,8 @@ import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
 import {
   CONSTELLATIONS,
+  DISH_SITES,
+  DISH_SLOTS,
   EARTH_RADIUS_KM,
   LAUNCH_WINDOWS,
   LAYERS,
@@ -9,6 +11,7 @@ import {
   VIEW_PRESETS,
   constellationDesignCount,
   countAtYear,
+  dishModelNote,
   horizonHalfAngleDeg,
   modelDisclaimer,
   oneWayLightTimeMs,
@@ -18,6 +21,7 @@ import {
   shellGeometry,
   visibleProxyCount,
 } from "./satellite-constellations-data.js";
+import { geostationaryLookAngles } from "./satellite-dish-pointing.js";
 
 const $ = (id) => document.getElementById(id);
 const canvas = $("stage");
@@ -503,8 +507,91 @@ function buildLaunchPanel() {
   }
 }
 
+function buildDishPanel() {
+  const host = $("dishBody"); if (!host) return;
+  host.textContent = "";
+
+  const siteSel = document.createElement("select"); siteSel.id = "dishSite"; siteSel.setAttribute("aria-label", "Site preset");
+  for (const s of DISH_SITES) {
+    const o = document.createElement("option"); o.value = s.id; o.textContent = s.name; siteSel.append(o);
+  }
+  const slotSel = document.createElement("select"); slotSel.id = "dishSlot"; slotSel.setAttribute("aria-label", "Satellite preset");
+  for (const s of DISH_SLOTS) {
+    const o = document.createElement("option"); o.value = s.id; o.textContent = s.name; slotSel.append(o);
+  }
+
+  const numRow = document.createElement("div");
+  numRow.style.cssText = "display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0";
+  const mkNum = (id, label, step) => {
+    const wrap = document.createElement("label"); wrap.style.cssText = "display:flex;gap:4px;align-items:center;font-size:11px";
+    wrap.append(`${label} `);
+    const inp = document.createElement("input"); inp.type = "number"; inp.id = id; inp.step = step; inp.style.width = "76px";
+    wrap.append(inp); numRow.append(wrap); return inp;
+  };
+  const latIn = mkNum("dishLat", "lat°", "any");
+  const lonIn = mkNum("dishLon", "lon°", "any");
+  const satIn = mkNum("dishSatLon", "sat°", "any");
+
+  const out = document.createElement("p"); out.id = "dishOut"; out.style.margin = "6px 0 2px";
+  const status = document.createElement("p"); status.className = "hint"; status.id = "dishStatus";
+
+  const compass = document.createElement("div");
+  compass.innerHTML = `<svg viewBox="0 0 100 100" width="132" height="132" aria-label="Compass with azimuth needle to the satellite" role="img">
+    <circle cx="50" cy="50" r="45" fill="none" stroke="#667" stroke-width="1"></circle>
+    <circle cx="50" cy="50" r="30" fill="none" stroke="#445" stroke-width="0.5" stroke-dasharray="2 3"></circle>
+    <text x="50" y="10" text-anchor="middle" fill="#9ab" font-size="8">N</text>
+    <text x="94" y="53" text-anchor="middle" fill="#667" font-size="7">E</text>
+    <text x="50" y="97" text-anchor="middle" fill="#667" font-size="7">S</text>
+    <text x="6" y="53" text-anchor="middle" fill="#667" font-size="7">W</text>
+    <line id="dishNeedle" x1="50" y1="50" x2="50" y2="12" stroke="#f472b6" stroke-width="2.5"></line>
+    <circle cx="50" cy="50" r="2.5" fill="#f472b6"></circle>
+  </svg>`;
+  const cite = document.createElement("p"); cite.className = "hint";
+  cite.textContent = "Default site + slot reproduce the worked example: az 109.33°, el 5.85° (SPU lecture, 52°N 0° → 66°E). Sources per preset.";
+  const caveat = document.createElement("p"); caveat.className = "hint"; caveat.textContent = dishModelNote;
+
+  const read = () => {
+    const lat = Number(latIn.value), lon = Number(lonIn.value), sat = Number(satIn.value);
+    if (![lat, lon, sat].every(Number.isFinite)) {
+      out.textContent = "—"; status.textContent = "enter finite numbers"; return;
+    }
+    let r;
+    try { r = geostationaryLookAngles({ siteLatDeg: lat, siteLonDeg: lon, satLonDeg: sat }); }
+    catch (err) { out.textContent = "—"; status.textContent = String(err.message || err); return; }
+    out.innerHTML = `<strong>az</strong> ${r.azimuthDeg === null ? "— (overhead)" : `${r.azimuthDeg.toFixed(2)}°`} · <strong>el</strong> ${r.elevationDeg.toFixed(2)}° · <strong>range</strong> ${Math.round(r.rangeKm).toLocaleString("en-US")} km · <strong>γ</strong> ${r.centralAngleDeg.toFixed(2)}°`;
+    const needle = compass.querySelector("#dishNeedle");
+    if (needle) {
+      if (r.azimuthDeg === null || !r.aboveHorizon) needle.setAttribute("opacity", "0.25");
+      else needle.setAttribute("opacity", "1");
+      needle.setAttribute("transform", `rotate(${(r.azimuthDeg ?? 0).toFixed(3)} 50 50)`);
+    }
+    status.textContent = r.aboveHorizon
+      ? `above the horizon · horizon cut at γ = ${r.horizonCentralAngleDeg.toFixed(1)}° of arc`
+      : `below the horizon — outside the γ = ${r.horizonCentralAngleDeg.toFixed(1)}° GEO arc for this site`;
+  };
+
+  siteSel.addEventListener("change", () => {
+    const s = DISH_SITES.find(x => x.id === siteSel.value);
+    if (s) { latIn.value = String(s.lat); lonIn.value = String(s.lon); }
+    read();
+  });
+  slotSel.addEventListener("change", () => {
+    const s = DISH_SLOTS.find(x => x.id === slotSel.value);
+    if (s) satIn.value = String(s.lon);
+    read();
+  });
+  for (const el of [latIn, lonIn, satIn]) el.addEventListener("input", read);
+
+  host.append(siteSel, slotSel, numRow, out, compass, status, cite, caveat);
+  // Seed the worked example so first paint shows the validated numbers.
+  const s0 = DISH_SITES[0], k0 = DISH_SLOTS.find(s => s.id === "ior66");
+  siteSel.value = s0.id; slotSel.value = k0.id;
+  latIn.value = String(s0.lat); lonIn.value = String(s0.lon); satIn.value = String(k0.lon);
+  read();
+}
+
 document.querySelectorAll(".pip").forEach(makeDraggable);
-buildLayerPanel(); buildTimeline(); buildLaunchPanel();
+buildLayerPanel(); buildTimeline(); buildLaunchPanel(); buildDishPanel();
 
 function flyTo(name) {
   const v = VIEW_PRESETS[name]; if (!v) return;
