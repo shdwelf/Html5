@@ -639,7 +639,7 @@ the live-API inventory, and tv.garden remain queued; S5 and T5.1 →
 partial. Round 48 opened S5 (inventory + feed normalizers + standalone `dish-pointing.html`); this round 49 adds the satellite-viewer panel as the complementary integration. The round record is
 [`backlog-execution-round-49-2026-10-25.md`](backlog-execution-round-49-2026-10-25.md).
 
-**Round 51 status (2026-10-25): done — S4 closed, records reconciled.**
+**Round 52 status (2026-10-25): done — S4 closed, records reconciled.**
 Backfill: rounds 41–44 (country batches C1–C3, PC Globe experiment stages 1–3
 with [`pcglobe-ghidra-java-scope-2026-10-24.md`](pcglobe-ghidra-java-scope-2026-10-24.md),
 planet viewer reuse of the Red October globe) landed on main but never reached
@@ -661,7 +661,7 @@ probe, layers mounted, stage rasterised. Same round fixed the city engine's
 `gazClassesHost` TDZ boot-killer (every city page died before `ready` in real
 browsers — jsdom could not see it) and the Georgia frame's data-city/preload
 app-dir drift. The round record is
-[`backlog-execution-round-51-2026-10-25.md`](backlog-execution-round-51-2026-10-25.md).
+[`backlog-execution-round-52-2026-10-25.md`](backlog-execution-round-52-2026-10-25.md).
 
 ### S5 · Live incident, camera & sensor layers — *partial*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,

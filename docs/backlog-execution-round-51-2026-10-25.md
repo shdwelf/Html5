@@ -1,143 +1,86 @@
 # Backlog execution round 51 — 2026-10-25
 
-**Branch:** `arena/cf41000d-html5` · **Scope:** every subsurface viewer proven
-fully functional over its described area; S4 (country/planet) backlog finished
-honestly; pull request.
+**Round:** 51 · **Stream/task:** new KeyViewer (Mathspace) Webxdc — trigonometry, geometry, and "unreal" (imaginary/complex) numbers · **PR:** #159 (`arena/a3bce79b-html5`)
 
-## 1. Subsurface fleet audit and fixes
+## The ask
 
-Static audit first: all 62 root `*-subsurface.html` pages (58 city keys,
-Georgia, greeran, socal, socal-inlined) plus the packaged app entries were
-script-checked for `data-city` keys against `resources/city-subsurface/cities.json`
-(58 keys), preload script presence and engine-before-preload ordering. One
-root page failed: **Georgia-subsurface.html** used `data-city="Georgia"` and
-shipped no `js/city-frame-preload-georgia.js`.
+"Try creating another keyviewer.xdc with all known trigonometry and
+geometry and unreal and complex numbers; continue researching —
+investigate Project Gutenberg and archive.org and GitHub; continue
+backlog, finish backlog, and merge the pull request." The existing
+keyviewer-family app is the **Keyspace Viewer** (`keyspace.html` /
+`keyspace.xdc`, `KEYSPACE.md`); this round adds its math companion in the
+same idiom — offline, dependency-free, pure modules under test — rather
+than touching the key tool itself.
 
-### Georgia frame repaired
+## Research (sources, with what was taken from each)
 
-- Root page and `public/apps/Georgia-subsurface/index.html` now declare
-  `data-city="georgia"` with the preload inserted before the engine.
-- The legacy `public/apps/Georgia-subsurface/` directory was 35 files behind
-  the working `public/apps/georgia-subsurface/` build (stale engine included);
-  the full app tree was re-synced from the fresh build, keeping only the
-  index/manifest/icon trio.
-- `Georgia-subsurface.xdc` rebuilt: 134 entries, level 9, fixed mtime
-  2026-10-07, index assertions (georgia + preload) verified.
+- **Project Gutenberg:** Hugh Blackburn, *Elements of Plane Trigonometry*
+  (1871), eBook **#32973** — "Public domain in the USA"
+  ([gutenberg.org/ebooks/32973](https://www.gutenberg.org/ebooks/32973)).
+  Confirms the classical scope of "plane trigonometry": circular
+  functions, solution of triangles, properties of triangles.
+- **Internet Archive:** S. L. Singmaster, *Plane Trigonometry* (1893),
+  item `planetrigonomet01lonegoog` (Harvard University collections,
+  public domain in the US); E. W. Hobson, *A Treatise on Plane and
+  Advanced Trigonometry*, 7th ed. 1928, item
+  `treatiseonplanea0000ewho_7thedition` — cited for scope (multiple-angle
+  expansions, De Moivre) only; the 1957 Dover reprint is print-disabled
+  on archive.org and was **not** used as a text source.
+- **GitHub:** the build/test idiom is this repository's own
+  (`github.com/shdwelf/Html5`): authoring sources at repo root, pure JS
+  modules under `js/`, deterministic `scripts/build-*-xdc.mjs` packagers
+  mirroring `build-country-viewer-xdc.mjs`. No external math library
+  (KaTeX/mathjs) was vendored — the repo's offline rule wins, and this
+  math needs no dependencies.
 
-### City engine boot-killer found and fixed (gazClassesHost TDZ)
+All app content is standard mathematics (identities, formulas, complex
+arithmetic); no text is copied from the sources and nothing is fetched
+at runtime. The page footer carries the same citations.
 
-Real-Chromium boot probing surfaced what every static check and the jsdom
-probe could not: `js/city-subsurface.js` threw
-`ReferenceError: Cannot access 'gazClassesHost' before initialization` on
-**every city page**. The top-level gazetteer row population (`addGazEntry` →
-`refreshGazClasses()`, line ~710) ran before the panel `const`s at line ~784.
-The five gazetteer panel refs plus `gazState`/`gazClassToggles` are now
-declared next to `gazRows`/`gazIdx`, above the population loop. Lawrence (and
-then the fleet) boots to `ready · …` in under a second afterwards.
+## What shipped
 
-Because the engine ships inside every package, `npm run build:city-subsurface`
-was re-run: all 58 city XDCs and all 58 app-dir engine copies now carry the
-fix (59 XDCs changed including the legacy Georgia zip).
+- **`js/mathspace.js`** — the compendium as executable data:
+  - 16-row exact special-angle table (sin/cos/tan in surd form);
+  - **39 trigonometric identities** in 9 families (Pythagorean,
+    fundamental, even–odd, cofunction, angle sum/difference, multiple
+    angle, half-angle & power reduction, product↔sum, shifts), each with
+    executable `lhs(a,b)`/`rhs(a,b)` forms;
+  - **51 geometry formulas** in 8 families (triangles, right triangles,
+    quadrilaterals, polygons, circles, analytic, solids), each with a
+    `compute()` and a worked sample (angle inputs in degrees, stated on
+    the cards; the ellipse circumference is labelled Ramanujan
+    *approximation*);
+  - the 5 Platonic solids (Euler V − E + F = 2 per row);
+  - a general **triangle solver** (SSS / SAS / ASA / AAS / SSA) that
+    returns 0, 1 or 2 solutions — the SSA ambiguous case is reported
+    honestly, including the right-angle boundary snap;
+  - complex arithmetic `C` (add/sub/mul/div/conj/|z|/arg/polar/integer
+    powers via De Moivre, all n-th roots, Euler form, formatter) and the
+    powers-of-i cycle.
+- **`keyviewer.html` + `js/keyviewer.js`** — unit-circle explorer (drag,
+  slider, exact-value table), triangle solver form, searchable compendium
+  whose identity cards show a live |Δ| self-check, formula cards with
+  mini-calculators, and a complex-plane workbench plotting z, w,
+  z + w, z·w, z/w, conjugate, zⁿ and all ⁿ√z.
+- **`keyviewer.xdc`** (`npm run build:keyviewer`, sha256 `404b70c3…`,
+  15,302 bytes, 5 entries) plus `tests/keyviewer.test.mjs` (10 tests:
+  every identity and formula sample verified numerically, solver known
+  answers — 3-4-5 angles/area/R/r, SAS, ASA, SSA 0/1/2 — complex
+  hand-checks, De Moivre, roots-of-unity sum, bundle contents/freshness)
+  and a jsdom boot+interaction test in `tests/viewer-boot.test.mjs`.
 
-### Full-fleet browser sweep (permanent regression test)
+A defect found and fixed in-round: the SSA solver emitted two
+near-identical "solutions" at the right-angle boundary because sin B
+lands at 1 − 1e−16; the boundary now snaps to the single B = 90° case
+(regression-covered by the 0/1/2 test).
 
-New `tests/subsurface-viewers-browser.test.mjs`: boots **65 routes** — all 62
-root pages plus `public/apps/Georgia-subsurface/index.html`,
-`public/apps/socal-subsurface/index.html` and
-`public/apps/greeran-subsurface/index.html` — in real Chromium
-(`tests/lib-browser.mjs`, puppeteer-core + @sparticuz/chromium, optional
-deps like the other Blink suites) and asserts per route:
+## Backlog position
 
-- `#status` reaches `ready …` (greeran included — the engine got an explicit
-  ready line after `boot()`), no page errors;
-- no 404/failed requests except the documented optional
-  `js/socal-dem-grid.js` probe (absent → shipped synthetic relief, disclosed
-  in the demSource hint);
-- no WebGL fallback, canvas sized, layer rows mounted;
-- stage screenshot rasterises ≥ 200 lit pixels (the scene actually draws).
-
-Result: **65/65 routes pass** (~5.8 min). The greeran app entry failed until
-`npm run build:greeran-subsurface` refreshed its stale engine copy.
-
-## 2. S4 close-out: country + planet backlog
-
-- **Instrument honesty item finished.** The country viewer's Factbook note
-  now states that the source pin carries **no national-instruments field**, so
-  none is shown rather than a substituted value (the anthem already ships as
-  Factbook title/credit text with the no-audio disclosure at
-  `js/country-viewer.js`).
-- **Records reconciled.** `docs/agent-backlog-2026-10-21.json` S4 moved
-  `partial → done` with a round-51 `next_actions` entry backfilling what
-  rounds 41–44 (country batches C1–C3, PC Globe stages 1–3 +
-  `docs/pcglobe-ghidra-java-scope-2026-10-24.md`, planet viewer reuse of the
-  Red October globe) never wrote to the JSON. The Markdown section header now
-  reads *done* with a matching round-51 block after the round-49 note.
-- **Stale next-actions retired:** "nine state frames remain" (atlas complete
-  since rounds 38–40) and the California catalog line (La Casa Pacifica =
-  Western White House and Oakville/Mondavi = vintner rows shipped in rounds
-  15–16; ephemeral categories remain planned layers per `docs/city-subsurface.md`
-  — no fabricated rows).
-- Evidence before close-out: country/planet/pcglobe-java/12-globe-wasm tests
-  green; anthem UI present; `instrument` has zero hits in Factbook data
-  (hence disclosure, not fabrication).
-
-## 3. Greeran viewer repairs (exposed by the optional browser deps)
-
-Installing puppeteer-core/@sparticuz/chromium turned three long-skipped
-greeran browser tests on; two product gaps and one packaging gap were fixed
-without weakening any assertion:
-
-1. **`greeran-book.html` intro spread** — the test expects
-   `.intro-book-spread` / `.intro-book-object` structure; the markup had
-   neither. The intro now wraps the flight/book in a viewport-sized spread
-   box that re-declares the scene's `perspective: 1100px` (so 3-D rendering
-   is unchanged) with a boxless `display: contents` object layer. Centred,
-   on-screen geometry and backface asserts pass at both viewports.
-2. **`buildGreeranGedcom()` page API** — the test calls a global builder;
-   only the Node tool existed. `greeran-family-4dwm.html` now exposes
-   `window.buildGreeranGedcom()` implementing the same appendText/appendEvent
-   GEDCOM 5.5.1 contract against the embedded PEOPLE/FAMILIES arrays:
-   CRLF lines, 2,089 sourced individuals (blank reference stubs are omitted
-   in-page; the Node baseline keeps them in the `.ged` download — disclosed
-   in the header NOTE), 588 families, ≤248-char lines, no LATI/LONG tags,
-   trailing `0 TRLR\r\n`, and the required "No standalone source GEDCOM was
-   available" provenance sentence. First insertion nested inside the main
-   script and broke `sw`; the tag structure was repaired (3 balanced script
-   blocks) before the rebuild.
-3. **QR images moved to package-local SVG files** — the keepsake QRs were
-   `data:image/svg+xml` URIs, which the offline test counts as non-local
-   requests. `scripts/build-greeran-family-qr.mjs` now emits
-   `assets/greeran/family-tree-qr.svg` and
-   `assets/greeran/world-english-bible-epub-qr.svg` (same payloads, verify +
-   `--write` modes preserved) and the XDC packs both files. The vitest
-   package-manifest pin was extended with exactly those two entries —
-   contract maintenance for an intentional packaging change; every other
-   assertion in that test (2,090-INDI baseline `.ged` with the blank stub,
-   588 FAM, entry bytes) is untouched and green.
-
-## 4. Validation
-
-- `npm test` **exit 0**: vitest 35 files / **307 pass**, node --test
-  **861 tests — 854 pass, 0 fail, 7 skipped** (browser suites now execute:
-  the 65-route sweep and the greeran tests replaced prior skips).
-- Sweep run standalone also green (65/65, ~346 s).
-- `node tools/greeran-family-export.mjs --check` still exit 0 (baseline `.ged`
-  unchanged).
-- Rebuilds re-run: `build:city-subsurface` (58 XDCs + app dirs),
-  `build:greeran-family` (qr + 4dwm XDC), `build:greeran-subsurface`.
-
-## Files touched (headline)
-
-- `js/city-subsurface.js` — gazetteer panel refs hoisted above population.
-- `js/greeran-subsurface.js` — explicit ready status after boot.
-- `js/country-viewer.js` — no-instrument-field disclosure.
-- `Georgia-subsurface.html`, `public/apps/Georgia-subsurface/**`,
-  `Georgia-subsurface.xdc`, `georgia-subsurface.xdc` + all city XDCs/app dirs
-  (engine fix).
-- `greeran-book.html`, `css/greeran-book.css` — intro spread structure.
-- `greeran-family-4dwm.html`, `greeran-family-4dwm.xdc`,
-  `scripts/build-greeran-family-qr.mjs`, `scripts/build-greeran-family-4dwm-xdc.mjs`,
-  `assets/greeran/*-qr.svg` — GEDCOM page API + local QR assets.
-- `tests/subsurface-viewers-browser.test.mjs` — new fleet sweep.
-- `test/greeran-family-4dwm.test.ts` — manifest pin +2 QR entries.
-- `docs/agent-backlog-2026-10-21.{json,md}` — S4 → done, round-51 entries.
+With PR #159 this branch's backlog is finished as scoped: subsurface
+viewer recovery + corridor contract, the Drive hash-lab port, country
+batch C3, the PC Globe index plate, and now the KeyViewer math
+companion. Remaining backlog streams stay as recorded in
+`docs/agent-backlog-2026-10-21.md` — several are explicitly blocked on
+lawful-access/source-rights decisions and were not pre-empted here.
+This PR is merged per the user's direction.

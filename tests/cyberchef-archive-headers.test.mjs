@@ -226,7 +226,7 @@ test("registry boots with the four round-13 ops and spotlight packs", () => {
   for (const id of ["arjHeader", "lhaHeader", "aceHeader", "paranoidUnzip"]) {
     assert.ok(ids.includes(id), `${id} registered`);
   }
-  assert.equal(ids.length, 515);
+  assert.equal(ids.length, 517);
   const packKeys = JSON.parse(dom.window.eval("JSON.stringify(Object.keys(RECIPE_PACKS))"));
   for (const key of [
     "Spotlight — Archive header triage (ARJ · LHA · ACE · ZIP, headers only)",

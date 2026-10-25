@@ -635,9 +635,13 @@ for (const node of NODES) {
 const labelHost = $("labels");
 const gazRows = [...GAZ_ROWS];
 const gazIdx = makeGazetteerIndex(gazRows);
-// Gazetteer panel DOM refs + state — declared before the row population
-// below, whose addGazEntry() calls refreshGazClasses() on every entry
-// (top-level `const` below that call would TDZ and kill every boot).
+const gazMeshes = [];
+const gazHeadByIdx = new Map();
+
+// Gazetteer panel hosts/state are declared here, before the boot-time
+// population loop below: addGazEntry() calls refreshGazClasses(), which
+// reads these consts — declaring them in the panel section further down
+// left them in the temporal dead zone and killed every frame at boot.
 const gazFacetSel = $("gazFacet");
 const gazClassesHost = $("gazClasses");
 const gazQuery = $("gazQuery");
@@ -645,8 +649,6 @@ const gazHits = $("gazHits");
 const gazCaps = $("gazCaps");
 const gazState = { facet: "", classes: null };
 const gazClassToggles = [];
-const gazMeshes = [];
-const gazHeadByIdx = new Map();
 
 /**
  * Draw one ADL GCS entry as a pin. Called for the static pack at boot and again

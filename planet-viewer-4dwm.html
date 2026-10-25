@@ -12,6 +12,16 @@
 <body data-mode="relief">
   <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
   <canvas id="globeStage" hidden>Globe plate: drag to rotate the Red October orthographic globe.</canvas>
+  <section id="pcgPanel" hidden aria-label="PC Globe 1990 index plate">
+    <h2>PC GLOBE (1990) · INDEX PLATE</h2>
+    <p class="small" id="pcgMeta">Decoded PC Globe index — names and label strings only.</p>
+    <p class="small dim">Index only: PC Globe's binary map payload (feature coordinates and the name-to-record
+      pointer table) is undecoded, so country records are listed by file position — not matched to country
+      names — and nothing from PC Globe is plotted on the terrain or globe plates. Globe markers are the
+      country viewer's Factbook capitals.</p>
+    <input type="search" id="pcgSearch" placeholder="filter country names, records, features…" autocomplete="off" />
+    <div id="pcgBody"></div>
+  </section>
   <div id="labels" aria-hidden="true"></div>
 
   <header class="topbar">
@@ -25,6 +35,7 @@
         <button type="button" data-plate="ange">SAN GABRIEL</button>
         <button type="button" data-plate="lawrence">LAWRENCE</button>
         <button type="button" data-plate="globe">GLOBE</button>
+        <button type="button" data-plate="pcg">PC GLOBE INDEX</button>
       </div>
       <div class="mode-switch" role="group" aria-label="View mode">
         <button type="button" data-mode="relief" class="active">RELIEF</button>

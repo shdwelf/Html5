@@ -100,12 +100,12 @@ test("the documented registry and pack counts match the live registry", () => {
   dom.window.eval("window.bake = () => Promise.resolve()");
   try {
     const ids = dom.window.eval("OPERATIONS.map(o => o.id)");
-    assert.equal(ids.length, 515, "the kitchen's registry size changed — update the cookbook");
+    assert.equal(ids.length, 517, "the kitchen's registry size changed — update the cookbook");
     const selectAll = dom.window.eval("applyRecipePacks(Object.keys(RECIPE_PACKS))");
     assert.equal(selectAll, ids.length, "SFX select-all must load the whole registry");
     assert.ok(text.includes("147 of the then-480"), "the card must preserve the historical audit count");
     assert.ok(text.includes("333 recipes"), "the card must state what the old select-all produced");
-    assert.ok(text.includes("515 of 515"), "the card must state the current full coverage");
+    assert.ok(text.includes("517 of 517"), "the card must state the current full coverage");
     assert.ok(ids.includes("averyLabels") && ids.includes("qrcode"), "the documented ops exist");
     assert.ok(ids.includes("complexityLab") && ids.includes("symbolicLogic"), "the local logic operations exist");
   } finally { dom.window.close(); }

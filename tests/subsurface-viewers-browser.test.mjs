@@ -54,12 +54,17 @@ test(
             if (!url.endsWith("favicon.ico") && !url.endsWith("/js/socal-dem-grid.js")) missing.push(`failed ${url} (${r.failure()?.errorText})`);
           });
           try {
+            const greeran = route.includes("greeran");
             await page.goto(`http://127.0.0.1:${port}${route}`, {
               waitUntil: "domcontentloaded",
               timeout: 30_000,
             });
+            // City/socal frames signal `ready · …`; greeran's boot contract keeps
+            // its node-count status line (tests/viewer-boot.test.mjs /nodes · /).
             await page.waitForFunction(
-              () => document.querySelector("#status")?.textContent.startsWith("ready"),
+              greeran
+                ? () => /nodes · /.test(document.querySelector("#status")?.textContent ?? "")
+                : () => document.querySelector("#status")?.textContent.startsWith("ready"),
               { timeout: 30_000 },
             );
             const info = await page.evaluate(() => ({
@@ -81,7 +86,8 @@ test(
             if (info.fallback) why.push("WebGL fallback shown");
             if (!(info.canvas[0] > 0 && info.canvas[1] > 0)) why.push(`canvas ${info.canvas.join("x")}`);
             if (info.layers < 1) why.push(`layers=${info.layers}`);
-            if (!/^ready/.test(info.status)) why.push(`status=${JSON.stringify(info.status.slice(0, 80))}`);
+            const statusOk = greeran ? /nodes · /.test(info.status) : /^ready/.test(info.status);
+            if (!statusOk) why.push(`status=${JSON.stringify(info.status.slice(0, 80))}`);
             if (!pix || pix.lit < 200) why.push(`stage not rasterised (lit=${pix ? pix.lit : "none"})`);
             if (why.length) failures.push(`${route}: ${why.join("; ")}`);
           } catch (e) {

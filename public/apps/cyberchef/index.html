@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 515 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 517 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -976,6 +976,40 @@ addOp('sha384','SHA-384','Hash','384-bit hash (WebCrypto).',[],async function(t,
 addOp('sha512','SHA-512','Hash','512-bit hash (WebCrypto).',[],async function(t,a){return wcHash('SHA-512',t);});
 addOp('sha3_256','SHA3-256','Hash','Keccak-based SHA-3, 256-bit.',[],function(t,a){return sha3hex(t,256);});
 addOp('sha3_512','SHA3-512','Hash','Keccak-based SHA-3, 512-bit.',[],function(t,a){return sha3hex(t,512);});
+addOp('blake2','BLAKE2 (b / s, keyed)','Hash','BLAKE2b / BLAKE2s (RFC 7693) with selectable digest size and optional key.',[
+  {key:'variant',label:'Variant',type:'select',default:'b512',options:[['b512','BLAKE2b-512'],['b384','BLAKE2b-384'],['b256','BLAKE2b-256'],['b160','BLAKE2b-160'],['s256','BLAKE2s-256'],['s224','BLAKE2s-224']]},
+  {key:'key',label:'Key (optional)',type:'text',default:''}
+],function(t,a){
+  const v=String(a.variant||'b512');
+  const bits=parseInt(v.slice(1),10);
+  const keyBytes=a.key?new TextEncoder().encode(a.key):null;
+  if(v.charAt(0)==='b'){
+    if(keyBytes&&keyBytes.length>64)throw new Error('BLAKE2b key must be at most 64 bytes.');
+    return util.toHex(blake2b(t,keyBytes,bits/8));
+  }
+  if(keyBytes&&keyBytes.length>32)throw new Error('BLAKE2s key must be at most 32 bytes.');
+  return util.toHex(blake2s(t,keyBytes,bits/8));
+});
+addOp('argon2','Argon2 (d / i / id)','Hash','Argon2 password hashing (RFC 9106, v1.3 / 0x13), pure JS. Verify vectors at small settings; large memory × time can take a while.',[
+  {key:'variant',label:'Variant',type:'select',default:'id',options:[['id','Argon2id'],['i','Argon2i'],['d','Argon2d']]},
+  {key:'salt',label:'Salt',type:'text',default:'somesalt'},
+  {key:'time',label:'Time cost (passes)',type:'number',default:'3'},
+  {key:'memoryKiB',label:'Memory (KiB)',type:'number',default:'4096'},
+  {key:'lanes',label:'Parallelism (lanes)',type:'number',default:'1'},
+  {key:'outlen',label:'Output bytes',type:'number',default:'32'}
+],function(t,a){
+  const time=parseInt(a.time,10), memoryKiB=parseInt(a.memoryKiB,10), lanes=parseInt(a.lanes,10), outlen=parseInt(a.outlen,10);
+  if(!(time>=1&&time<=10))throw new Error('Time cost must be 1..10.');
+  if(!(lanes>=1&&lanes<=8))throw new Error('Parallelism must be 1..8 lanes.');
+  if(!(memoryKiB>=8*lanes&&memoryKiB<=65536))throw new Error('Memory must be 8×lanes .. 65536 KiB.');
+  if(!(outlen>=8&&outlen<=64))throw new Error('Output length must be 8..64 bytes.');
+  const saltBytes=new TextEncoder().encode(a.salt||'');
+  if(saltBytes.length<4)throw new Error('Salt must be at least 4 bytes.');
+  const tag=argon2Raw(t,a.salt,{variant:a.variant,time:time,memoryKiB:memoryKiB,lanes:lanes,outlen:outlen});
+  const b64=function(bytes){let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/=+$/,'');};
+  const phc='$argon2'+a.variant+'$v=19$m='+memoryKiB+',t='+time+',p='+lanes+'$'+b64(saltBytes)+'$'+b64(tag);
+  return 'PHC : '+phc+'\nhex : '+util.toHex(tag);
+});
 addOp('crc32','CRC-32','Hash','Cyclic redundancy check (32-bit).',[],function(t,a){return crc32hex(t);});
 addOp('crc16','CRC-16 (CCITT)','Hash','16-bit CRC-CCITT.',[],function(t,a){return crc16ccitt(t);});
 addOp('adler32','Adler-32','Hash','Fletcher-style 32-bit checksum.',[],function(t,a){return adler32hex(t);});
@@ -3332,6 +3366,7 @@ const RECIPE_PACKS={
  'KEM → AEAD (ML-KEM)':[['mkkemFull',{}],['aesGCM',{mode:'encrypt'}]],
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
+ 'Spotlight — Hash lab (BLAKE2 keyed · Argon2 PHC)':[['blake2',{variant:'b512'}],['blake2',{variant:'s256'}],['argon2',{variant:'id'}],['argon2',{variant:'d'}]],
  'Boxentriq Puzzle & Code-Breaking Pack (Deferred Four — AMSCO · Morbit · Pollux · Nak-Nak)':[['amsco',{}],['morbit',{}],['pollux',{}],['naknak',{}]],
  'RFC 4493 / RFC 9285 — AES-CMAC & Base45 vectors':[['aesCmac',{infmt:'hex'}],['base45',{mode:'encode'}]],
  'FIPS 197 — AES Key Schedule & GF(2^8) Field Math':[['aesKeySched',{show:'rounds'}],['gf256',{op:'mul'}]],
@@ -4987,6 +5022,180 @@ function blake2b (input, key, outlen, salt, personal) {
 function blake2bHex (input, key, outlen, salt, personal) {
   const output = blake2b(input, key, outlen, salt, personal)
   return util.toHex(output)
+}
+
+/* ---- BLAKE2s + Argon2 (RFC 7693 / RFC 9106), clean-room on the blake2b above ----
+   Hash-lab port, 2026-10: vectors cross-checked against the reference C
+   implementation (PHC argon2 20190702 / argon2-cffi). See
+   docs/cyberchef-hash-lab-drive-investigation-2026-10-25.md. */
+const B2S_IV = new Uint32Array([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
+const B2_SIGMA = [
+  [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+  [14,10,4,8,9,15,13,6,1,12,0,2,11,7,5,3],
+  [11,8,12,0,5,2,15,13,10,14,3,6,7,1,9,4],
+  [7,9,3,1,13,12,11,14,2,6,5,10,4,0,15,8],
+  [9,0,5,7,2,4,10,15,14,1,11,12,6,8,3,13],
+  [2,12,6,10,0,11,8,3,4,13,7,5,15,14,1,9],
+  [12,5,1,15,14,13,4,10,0,7,6,3,9,2,8,11],
+  [13,11,7,14,12,1,3,9,5,0,15,4,8,6,2,10],
+  [6,15,14,9,11,3,0,8,12,2,13,7,1,4,10,5],
+  [10,2,8,4,7,6,1,5,15,11,9,14,3,12,13,0],
+];
+function blake2s(input, key, outlen) {
+  input = util.normalizeInput(input);
+  outlen = outlen || 32;
+  const kk = key ? key.length : 0;
+  const h = new Uint32Array(B2S_IV);
+  h[0] ^= 0x01010000 ^ (kk << 8) ^ outlen;
+  const rotr = (x, n) => ((x >>> n) | (x << (32 - n))) >>> 0;
+  const compress = (block, counted, isLast) => {
+    const m = new Uint32Array(16); const v = new Uint32Array(16);
+    for (let i = 0; i < 16; i++) m[i] = (block[i*4] | (block[i*4+1] << 8) | (block[i*4+2] << 16) | (block[i*4+3] << 24)) >>> 0;
+    v.set(h); v.set(B2S_IV, 8);
+    v[12] ^= counted >>> 0; v[13] ^= Math.floor(counted / 4294967296);
+    if (isLast) v[14] ^= 0xffffffff;
+    const G = (a,b,c,d,x,y2) => {
+      v[a] = (v[a] + v[b] + x) >>> 0; v[d] = rotr(v[d] ^ v[a], 16);
+      v[c] = (v[c] + v[d]) >>> 0; v[b] = rotr(v[b] ^ v[c], 12);
+      v[a] = (v[a] + v[b] + y2) >>> 0; v[d] = rotr(v[d] ^ v[a], 8);
+      v[c] = (v[c] + v[d]) >>> 0; v[b] = rotr(v[b] ^ v[c], 7);
+    };
+    for (let r = 0; r < 10; r++) {
+      const s = B2_SIGMA[r];
+      G(0,4,8,12,m[s[0]],m[s[1]]); G(1,5,9,13,m[s[2]],m[s[3]]); G(2,6,10,14,m[s[4]],m[s[5]]); G(3,7,11,15,m[s[6]],m[s[7]]);
+      G(0,5,10,15,m[s[8]],m[s[9]]); G(1,6,11,12,m[s[10]],m[s[11]]); G(2,7,8,13,m[s[12]],m[s[13]]); G(3,4,9,14,m[s[14]],m[s[15]]);
+    }
+    for (let i = 0; i < 8; i++) h[i] = (h[i] ^ v[i] ^ v[i+8]) >>> 0;
+  };
+  const head = new Uint8Array(kk > 0 ? 64 : 0);
+  if (kk > 0) head.set(key);
+  const all = new Uint8Array(head.length + input.length);
+  all.set(head); all.set(input, head.length);
+  let off = 0, counted = 0;
+  while (all.length - off > 64) { counted += 64; compress(all.subarray(off, off+64), counted, false); off += 64; }
+  const lastBlock = new Uint8Array(64); lastBlock.set(all.subarray(off));
+  counted += all.length - off;
+  compress(lastBlock, counted, true);
+  const full = new Uint8Array(32);
+  for (let i = 0; i < 8; i++) { full[i*4]=h[i]&0xff; full[i*4+1]=(h[i]>>>8)&0xff; full[i*4+2]=(h[i]>>>16)&0xff; full[i*4+3]=(h[i]>>>24)&0xff; }
+  return full.slice(0, outlen);
+}
+function a2le32(n) { return new Uint8Array([n&0xff,(n>>>8)&0xff,(n>>>16)&0xff,(n>>>24)&0xff]); }
+function a2cat(...arrs) { let n=0; for (const a of arrs) n+=a.length; const o=new Uint8Array(n); let p=0; for (const a of arrs) { o.set(a,p); p+=a.length; } return o; }
+function a2Hprime(outlen, data) {
+  if (outlen <= 64) return blake2b(a2cat(a2le32(outlen), data), null, outlen);
+  let v = blake2b(a2cat(a2le32(outlen), data), null, 64);
+  const parts = [v.subarray(0, 32)];
+  let remaining = outlen - 32;
+  while (remaining > 64) { v = blake2b(v, null, 64); parts.push(v.subarray(0, 32)); remaining -= 32; }
+  parts.push(blake2b(v, null, remaining));
+  return a2cat(...parts);
+}
+const A2_M64 = (1n<<64n) - 1n;
+function a2Word(arr, i) { let v=0n; for (let k=7;k>=0;k--) v = (v<<8n) | BigInt(arr[i*8+k]); return v; }
+function a2SetWord(arr, i, v) { for (let k=0;k<8;k++) { arr[i*8+k] = Number(v & 0xffn); v >>= 8n; } }
+function a2Compress(prev, ref) {
+  const R = new Uint8Array(1024);
+  for (let i=0;i<1024;i++) R[i] = prev[i] ^ ref[i];
+  const vals = new Array(128);
+  for (let i=0;i<128;i++) vals[i] = a2Word(R, i);
+  const f = (x, y) => (x + y + 2n * (x & 0xffffffffn) * (y & 0xffffffffn)) & A2_M64;
+  const GB = (arr,a,b,c,d) => {
+    let va=arr[a], vb=arr[b], vc=arr[c], vd=arr[d];
+    va=f(va,vb); vd=((vd^va)>>32n)|(((vd^va)<<32n)&A2_M64);
+    vc=f(vc,vd); vb=((vb^vc)>>24n)|(((vb^vc)<<40n)&A2_M64);
+    va=f(va,vb); vd=((vd^va)>>16n)|(((vd^va)<<48n)&A2_M64);
+    vc=f(vc,vd); vb=((vb^vc)>>63n)|(((vb^vc)<<1n)&A2_M64);
+    arr[a]=va&A2_M64; arr[b]=vb&A2_M64; arr[c]=vc&A2_M64; arr[d]=vd&A2_M64;
+  };
+  const P16 = (arr, base) => {
+    GB(arr,base,base+4,base+8,base+12); GB(arr,base+1,base+5,base+9,base+13);
+    GB(arr,base+2,base+6,base+10,base+14); GB(arr,base+3,base+7,base+11,base+15);
+    GB(arr,base,base+5,base+10,base+15); GB(arr,base+1,base+6,base+11,base+12);
+    GB(arr,base+2,base+7,base+8,base+13); GB(arr,base+3,base+4,base+9,base+14);
+  };
+  for (let r=0;r<8;r++) P16(vals, r*16);
+  for (let c=0;c<8;c++) {
+    const col = new Array(16);
+    for (let r=0;r<8;r++) { col[2*r]=vals[r*16+2*c]; col[2*r+1]=vals[r*16+2*c+1]; }
+    P16(col, 0);
+    for (let r=0;r<8;r++) { vals[r*16+2*c]=col[2*r]; vals[r*16+2*c+1]=col[2*r+1]; }
+  }
+  const Z = new Uint8Array(1024);
+  for (let i=0;i<128;i++) a2SetWord(Z, i, vals[i]);
+  const out = new Uint8Array(1024);
+  for (let i=0;i<1024;i++) out[i] = Z[i] ^ R[i];
+  return out;
+}
+function argon2Raw(password, salt, { variant="id", time=3, memoryKiB=4096, lanes=2, outlen=32 } = {}) {
+  const y = variant==="d"?0:variant==="i"?1:variant==="id"?2:-1;
+  if (y<0) throw new Error("variant must be d, i, or id");
+  const P = util.normalizeInput(password), S = util.normalizeInput(salt);
+  const H0 = blake2b(a2cat(a2le32(lanes), a2le32(outlen), a2le32(memoryKiB), a2le32(time), a2le32(0x13), a2le32(y),
+    a2le32(P.length), P, a2le32(S.length), S, a2le32(0), a2le32(0)), null, 64);
+  const SYNC = 4;
+  let memoryBlocks = Math.max(memoryKiB, 2*SYNC*lanes);
+  const segmentLength = Math.floor(memoryBlocks/(lanes*SYNC));
+  memoryBlocks = segmentLength * lanes * SYNC;
+  const laneLength = segmentLength * SYNC;
+  const B = new Array(memoryBlocks);
+  const at = (lane, slice, idx) => lane*laneLength + slice*segmentLength + idx;
+  for (let l=0;l<lanes;l++) {
+    B[at(l,0,0)] = a2Hprime(1024, a2cat(H0, a2le32(0), a2le32(l)));
+    B[at(l,0,1)] = a2Hprime(1024, a2cat(H0, a2le32(1), a2le32(l)));
+  }
+  const zeroBlock = new Uint8Array(1024);
+  for (let pass=0; pass<time; pass++) {
+    for (let slice=0; slice<SYNC; slice++) {
+      for (let lane=0; lane<lanes; lane++) {
+        const independent = y===1 || (y===2 && pass===0 && slice < SYNC/2);
+        let addressBlock = null, addressCounter = 0;
+        const nextAddresses = () => {
+          const input = new Uint8Array(1024);
+          a2SetWord(input,0,BigInt(pass)); a2SetWord(input,1,BigInt(lane)); a2SetWord(input,2,BigInt(slice));
+          a2SetWord(input,3,BigInt(memoryBlocks)); a2SetWord(input,4,BigInt(time)); a2SetWord(input,5,BigInt(y));
+          a2SetWord(input,6,BigInt(++addressCounter));
+          addressBlock = a2Compress(zeroBlock, a2Compress(zeroBlock, input));
+        };
+        let startIndex = 0;
+        if (pass===0 && slice===0) { startIndex = 2; if (independent) nextAddresses(); }
+        for (let index=startIndex; index<segmentLength; index++) {
+          const curr = at(lane, slice, index);
+          const lanePos = slice*segmentLength + index;
+          const prevIdx = lane*laneLength + ((lanePos + laneLength - 1) % laneLength);
+          let J1, J2;
+          if (independent) {
+            if (index % 128 === 0) nextAddresses();
+            const w = a2Word(addressBlock, index % 128);
+            J1 = Number(w & 0xffffffffn); J2 = Number(w >> 32n);
+          } else {
+            const w = a2Word(B[prevIdx], 0);
+            J1 = Number(w & 0xffffffffn); J2 = Number(w >> 32n);
+          }
+          const refLane = (pass===0 && slice===0) ? lane : (J2 % lanes);
+          const sameLane = refLane === lane;
+          let areaSize;
+          if (pass===0) {
+            if (slice===0) areaSize = index - 1;
+            else areaSize = sameLane ? slice*segmentLength + index - 1 : slice*segmentLength + (index===0 ? -1 : 0);
+          } else {
+            areaSize = sameLane ? laneLength - segmentLength + index - 1 : laneLength - segmentLength + (index===0 ? -1 : 0);
+          }
+          const rel = Number((((BigInt(J1)*BigInt(J1)) >> 32n) * BigInt(areaSize)) >> 32n);
+          const relPos = areaSize - 1 - rel;
+          const startPos = pass !== 0 ? (slice === SYNC-1 ? 0 : (slice+1)*segmentLength) : 0;
+          const absPos = (startPos + relPos) % laneLength;
+          const refIdx = refLane*laneLength + absPos;
+          const produced = a2Compress(B[prevIdx], B[refIdx]);
+          if (pass===0) B[curr] = produced;
+          else { const old = B[curr]; const nb = new Uint8Array(1024); for (let i=0;i<1024;i++) nb[i] = produced[i] ^ old[i]; B[curr] = nb; }
+        }
+      }
+    }
+  }
+  let finalBlock = B[at(0,0,laneLength-1)].slice();
+  for (let l=1;l<lanes;l++) { const lb = B[at(l,0,laneLength-1)]; for (let i=0;i<1024;i++) finalBlock[i] ^= lb[i]; }
+  return a2Hprime(outlen, finalBlock);
 }
 
 

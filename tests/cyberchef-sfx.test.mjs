@@ -14,7 +14,7 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // round-12 polyglotScan op, and the four round-13 archive-header ops.
 // T3.1 added the Game Genie family on top of the list above: gameGenieNes,
 // gameGenieSnes, gameGenieGb, and gameGenieGenesis (merged via PR #134).
-const expectedCount = report.counts.mergedRuntime + 37;
+const expectedCount = report.counts.mergedRuntime + 39;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {

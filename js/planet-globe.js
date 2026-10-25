@@ -9,12 +9,15 @@
  *  vendor/world/README.md) that the Red October globe draws.
  *
  *  What is plotted on it: the country viewer's capital markers
- *  (js/country-data.js, 233 Factbook profiles; capitals carry
- *  coordinates). Country reference points are not used for markers -
+ *  (js/country-data.js Factbook profiles whose capital carries
+ *  coordinates; capital-less profiles are skipped, never placed).
+ *  Country reference points are not used for markers -
  *  capitals are the labelled places. PC Globe (1990) records are NOT
  *  plotted: their binary map payload is reported undecoded by
  *  tools/pcglobe/PcGlobeReader.java, so inventing coordinates for its
- *  features would be fabrication.
+ *  features would be fabrication. The decoded PC Globe country and
+ *  name indexes are available as an index-only plate (names and label
+ *  strings, no coordinates) via js/pcglobe-index-data.js.
  *
  *  Pure functions on plain data, like the rest of the planet viewer:
  *  the page (js/planet-viewer-4dwm.js) owns the canvas, this module owns

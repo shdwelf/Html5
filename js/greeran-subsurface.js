@@ -953,6 +953,5 @@ function boot() {
 }
 
 boot();
-setStatus("ready · greeran subsurface — schematic only; not a survey, not a dig ticket, call 811");
 
 export { time, setTime, NODES, TIMELINE, LAYERS, TIER_COLOR };
