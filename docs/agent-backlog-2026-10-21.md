@@ -66,6 +66,17 @@ wiki draft [`Sneakers-Archive-and-Ghidra`](github-wiki/Sneakers-Archive-and-Ghid
 Remaining: verify the `sneakers-press-kit.xdc` keyboard/mouse layout against the
 headline-harry pattern, DOSBox+Xvfb automation notes, wiki refresh + PR.
 
+**Round 46 status (2026-10-24): S2 complete.** The Sneakers player
+shell and its packed XDC now have the keyboard/mouse layout pinned by
+a parity test against the headline-harry pattern (focus discipline,
+js-dos v8 boot contract, dosbox.conf section parity, engine file set);
+one delta was fixed (`ci-ready` status repeats the ☰ sidebar hint)
+and the XDC rebuilt deterministically (805,280 B, sha256 `e4d7d382…`).
+DOSBox+Xvfb automation already existed and is CI-backed (smoke pair +
+`arena-sneakers-smoke.yml`, run 39161148174); the wiki page is
+refreshed. The round record is
+[`backlog-execution-round-46-2026-10-24.md`](backlog-execution-round-46-2026-10-24.md).
+
 ### S3 · Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra — *partial*
 Format study and abandonware sweep (Easter eggs, walkthroughs, *Shadow President*), feeding
 the existing DOS disassembly line ([`dos-game-disassembly.md`](dos-game-disassembly.md),
