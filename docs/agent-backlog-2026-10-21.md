@@ -105,7 +105,7 @@ Game Boy/Game Gear and Genesis Game Genie followed (`gameGenieGb`, `gameGenieGen
 Game Wizard needs its shareware binary (fetch-runner); a UHS88a reader is built
 (`js/uhs.js` + `uhs-reader.html`, `tests/uhs.test.mjs` 3/3); the Sierra sweep is editorial.
 
-### S4 · Subsurface viewers: California → 50 states → country → planet — *partial*
+### S4 · Subsurface viewers: California → 50 states → country → planet — *done*
 The GIS mega-task (line 6). Existing base: `socal-subsurface.html` +
 [`socal-subsurface.md`](socal-subsurface.md), [`city-subsurface.md`](city-subsurface.md),
 [`terrain-vector-overlay-deep-dive.md`](terrain-vector-overlay-deep-dive.md),
@@ -638,6 +638,30 @@ substitute for a meter at the dish. Fire-lookout/KiwiSDR static layers,
 the live-API inventory, and tv.garden remain queued; S5 and T5.1 →
 partial. Round 48 opened S5 (inventory + feed normalizers + standalone `dish-pointing.html`); this round 49 adds the satellite-viewer panel as the complementary integration. The round record is
 [`backlog-execution-round-49-2026-10-25.md`](backlog-execution-round-49-2026-10-25.md).
+
+**Round 51 status (2026-10-25): done — S4 closed, records reconciled.**
+Backfill: rounds 41–44 (country batches C1–C3, PC Globe experiment stages 1–3
+with [`pcglobe-ghidra-java-scope-2026-10-24.md`](pcglobe-ghidra-java-scope-2026-10-24.md),
+planet viewer reuse of the Red October globe) landed on main but never reached
+this file's JSON `next_actions` — the JSON stream now records the close-out and
+its status moves to `done`. Residual acceptance item finished honestly: the
+country viewer's Factbook note also discloses that the source pin has **no
+national-instruments field**, so no instrument is shown rather than a
+substituted value (the anthem already shipped as title/credit text). Stale
+next-actions are retired: the "nine state frames remain" item (atlas complete
+since rounds 38–40) and the California catalog line (La Casa Pacifica = Western
+White House and Oakville/Mondavi = vintner rows shipped in rounds 15–16;
+ephemeral categories stay catalogued as planned layers in
+[`city-subsurface.md`](city-subsurface.md) per the round-15 policy — no
+fabricated rows). Subsurface fleet proof:
+`tests/subsurface-viewers-browser.test.mjs` boots every root page plus the
+Georgia/socal/greeran app entries in real Chromium — 65 routes, `ready` status,
+zero page errors, no missing assets beyond the documented optional socal DEM
+probe, layers mounted, stage rasterised. Same round fixed the city engine's
+`gazClassesHost` TDZ boot-killer (every city page died before `ready` in real
+browsers — jsdom could not see it) and the Georgia frame's data-city/preload
+app-dir drift. The round record is
+[`backlog-execution-round-51-2026-10-25.md`](backlog-execution-round-51-2026-10-25.md).
 
 ### S5 · Live incident, camera & sensor layers — *partial*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,

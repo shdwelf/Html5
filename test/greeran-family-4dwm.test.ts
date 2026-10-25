@@ -122,6 +122,8 @@ describe("Greeran Family Tree 4DWM", () => {
     const files = unzipSync(new Uint8Array(xdc));
     expect(Object.keys(files).sort()).toEqual([
       "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md",
+      "assets/greeran/family-tree-qr.svg",
+      "assets/greeran/world-english-bible-epub-qr.svg",
       "assets/greeran/world-english-bible.epub",
       "greeran-family-4dwm.ged",
       "icon.png",

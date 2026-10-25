@@ -635,6 +635,16 @@ for (const node of NODES) {
 const labelHost = $("labels");
 const gazRows = [...GAZ_ROWS];
 const gazIdx = makeGazetteerIndex(gazRows);
+// Gazetteer panel DOM refs + state — declared before the row population
+// below, whose addGazEntry() calls refreshGazClasses() on every entry
+// (top-level `const` below that call would TDZ and kill every boot).
+const gazFacetSel = $("gazFacet");
+const gazClassesHost = $("gazClasses");
+const gazQuery = $("gazQuery");
+const gazHits = $("gazHits");
+const gazCaps = $("gazCaps");
+const gazState = { facet: "", classes: null };
+const gazClassToggles = [];
 const gazMeshes = [];
 const gazHeadByIdx = new Map();
 
@@ -779,14 +789,6 @@ for (const l of LAYERS) {
 }
 
 /* ------------------------------------------------------- gazetteer panel */
-
-const gazFacetSel = $("gazFacet");
-const gazClassesHost = $("gazClasses");
-const gazQuery = $("gazQuery");
-const gazHits = $("gazHits");
-const gazCaps = $("gazCaps");
-const gazState = { facet: "", classes: null };
-const gazClassToggles = [];
 
 if (gazFacetSel) {
   for (const f of GAZ_FACETS) {

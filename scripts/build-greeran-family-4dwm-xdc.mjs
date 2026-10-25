@@ -38,6 +38,8 @@ const webuLicense = await readFile(path.join(webuDir, "LICENSE"));
 const webuReadme = await readFile(path.join(webuDir, "README.md"));
 const fnaArchive = await readFile(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP"));
 const wiktionaryNotice = await readFile(path.join(root, "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"));
+const familyQr = await readFile(path.join(root, "assets/greeran/family-tree-qr.svg"));
+const bibleQr = await readFile(path.join(root, "assets/greeran/world-english-bible-epub-qr.svg"));
 const icon = await readFile(path.join(root, "img/greeran-family-4dwm-icon.png"));
 const manifest = `name = "Greeran Family Tree · 4DWM"
 orientation = "landscape"
@@ -57,6 +59,8 @@ const archive = {
   "public/apps/greeran-family-bible/README.md": [new Uint8Array(webuReadme), { level: 9, mtime }],
   "samples/archive/kirkpatrick/FNA102B.ZIP": [new Uint8Array(fnaArchive), { level: 9, mtime }],
   "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md": [new Uint8Array(wiktionaryNotice), { level: 9, mtime }],
+  "assets/greeran/family-tree-qr.svg": [new Uint8Array(familyQr), { level: 9, mtime }],
+  "assets/greeran/world-english-bible-epub-qr.svg": [new Uint8Array(bibleQr), { level: 9, mtime }],
 };
 const bytes = zipSync(archive, { level: 9, mtime });
 
