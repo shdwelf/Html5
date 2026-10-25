@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 // Optional real-browser check. Run against your local build, not a third-party site.
-// Dependencies are deliberately separate from the production package; see README.
+// Browser automation is the dependency-free JavaScript conversion of the
+// Playwright slice (./cdp-browser.mjs — see docs/playwright-164-disassembly-javascript-2026-10-25.md);
+// the only external piece left is a Chromium binary (CHROMIUM_EXECUTABLE or
+// the optional @sparticuz/chromium package, kept outside the production
+// package on purpose; see README).
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
@@ -8,13 +12,13 @@ import path from 'node:path';
 import {ROOT} from './deps.mjs';
 import {decryptVault,validateWorkspaceVault} from './web/vault.mjs';
 import {readExchange} from './exchange.mjs';
+import {launchChromium} from './cdp-browser.mjs';
 const require=createRequire(path.join(process.env.WIKI_BROWSER_MODULES||path.join(ROOT,'.cache/wiki-browser'),'package.json'));
-const {chromium}=require('playwright-core');
 const browserPackage=process.env.CHROMIUM_EXECUTABLE?null:require('@sparticuz/chromium');
 const bundled=browserPackage?.default||browserPackage;
 const base=(process.argv[2]||'http://127.0.0.1:3003').replace(/\/$/,'');
 const screenshots=path.join(ROOT,'.cache/wiki-browser-results');mkdirSync(screenshots,{recursive:true});
-const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE||await bundled.executablePath(),args:bundled?.args||['--no-sandbox'],headless:true});
+const browser=await launchChromium({executablePath:process.env.CHROMIUM_EXECUTABLE||await bundled.executablePath(),args:bundled?.args||['--no-sandbox'],headless:true});
 try {
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
