@@ -47,3 +47,31 @@ test('john vectors: recomputation matches stored body', () => {
 test('john vectors: rejects non-$5$ input', () => {
   assert.throws(() => parseSha256crypt('$6$rounds=5000$salt$hash'), /not a \$5\$/);
 });
+
+import { sha512crypt } from '../tools/sha512crypt.mjs';
+import { md5crypt } from '../tools/md5crypt.mjs';
+
+export const JOHN_SHA512CRYPT_VECTORS = [
+  ['$6$saltstring$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1', 'Hello world!'],
+  ['$6$ojWH1AiTee9x1peC$QVEnTvRVlPRhcLQCk/HnHaZmlGAAjCfrAN0FtOsOnUk5K5Bn/9eLHHiRzrTzaIKjW9NTLNIBUCtNVOowWS2mN.', ''],
+  ['$6$mwt2GD73BqSk4$ol0oMY1zzm59tnAFnH0OM9R/7SL4gi3VJ42AIVQNcGrYx5S1rlZggq5TBqvOGNiNQ0AmjmUMPc.70kL8Lqost.', 'password'],
+];
+
+export const JOHN_MD5CRYPT_VECTORS = [
+  ['$1$12345678$aIccj83HRDBo6ux1bVx7D1', '0123456789ABCDE'],
+  ['$1$7Uu2iTBB$Y4hQl2WvrOA3LBbLDxbAf0', '12345'],
+  ['$1$$qRPK7m23GJusamGpoGLby/', ''],
+  ['$1$coin$rebm0t9KJ56mgGWJF5o5M0', 'lapin'],
+];
+
+test('john vectors: published sha512crypt fixtures verify', () => {
+  for (const [stored, pw] of JOHN_SHA512CRYPT_VECTORS) {
+    assert.equal(sha512crypt(pw, stored), stored, `sha512crypt vector for ${JSON.stringify(pw)}`);
+  }
+});
+
+test('john vectors: published md5crypt fixtures verify', () => {
+  for (const [stored, pw] of JOHN_MD5CRYPT_VECTORS) {
+    assert.equal(md5crypt(pw, stored), stored, `md5crypt vector for ${JSON.stringify(pw)}`);
+  }
+});

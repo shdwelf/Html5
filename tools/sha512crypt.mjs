@@ -1,117 +1,165 @@
-#!/usr/bin/env node
-// tools/sha512crypt.mjs — SHA-512 crypt (Drepper spec, $6$) verifier.
+// Reference implementation of Ulrich Drepper's "SHA-crypt" algorithm ($6$, SHA-512).
+// Specification: "Unix crypt with SHA-256/SHA-512", Ulrich Drepper, 2007.
+// Matches Openwall John the Ripper's sha512crypt implementation (src/sha512crypt_common.h).
 //
-// Sibling of tools/sha256crypt.mjs ($5$, backlog round 11): implements the
-// published "Unix crypt using SHA-256 and SHA-512" algorithm (Ulrich
-// Drepper) so that John the Ripper's **public format test vectors** can be
-// wired into local, non-secret regression audits (backlog round 13;
-// docs/john-ghidra-diablo-research.md open question 4).
-// Verification only — no cracking.
+// Digest output length: 64 bytes.
+// Default rounds: 5000 (clamped to 1000..999999999).
+// Salt length: up to 16 characters from [a-zA-Z0-9./].
+import { createHash } from "node:crypto";
 
-import crypto from 'node:crypto';
+const B64_CHARS = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-const B64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-const ROUNDS_DEFAULT = 5000;
-const ROUNDS_MIN = 1000;
-const ROUNDS_MAX = 999999999;
-
-function sha512(...chunks) {
-  const h = crypto.createHash('sha512');
-  for (const c of chunks) h.update(c);
-  return h.digest();
-}
-
-function repeatTo(buf, len) {
-  const out = Buffer.alloc(len);
-  for (let i = 0; i < len; i++) out[i] = buf[i % buf.length];
-  return out;
-}
-
-/** b64_from_24bit(B2, B1, B0, n) from the spec. */
-function b64From24(b2, b1, b0, n, out) {
-  let w = (b2 << 16) | (b1 << 8) | b0;
-  for (let i = 0; i < n; i++) {
-    out.push(B64[w & 0x3f]);
+function b64From24Bit(b2, b1, b0, n) {
+  let w = ((b2 & 0xff) << 16) | ((b1 & 0xff) << 8) | (b0 & 0xff);
+  let res = "";
+  while (n-- > 0) {
+    res += B64_CHARS[w & 0x3f];
     w >>= 6;
   }
+  return res;
 }
 
-/** Compute the $6$ hash body (without '$6$' / 'rounds=' prefix) for pw+salt. */
-export function sha512crypt(password, salt, rounds = ROUNDS_DEFAULT) {
-  const pw = Buffer.from(password, 'utf8');
-  const sl = Buffer.from(salt, 'utf8');
-  const roundsClamped = Math.min(Math.max(rounds, ROUNDS_MIN), ROUNDS_MAX);
-
-  // Alternate sum (digest B).
-  const alt = sha512(pw, sl, pw);
-  // Digest A: single pass — pw + salt + B-chunks (64-byte digest) + bit loop.
-  const acc = [pw, sl];
-  for (let cnt = pw.length; cnt > 64; cnt -= 64) acc.push(alt);
-  acc.push(alt.subarray(0, pw.length % 64 || (pw.length ? 64 : 0)));
-  for (let cnt = pw.length; cnt > 0; cnt >>= 1) {
-    acc.push((cnt & 1) ? alt : pw);
+export function sha512crypt(password, saltString, rounds = null) {
+  const pwd = Buffer.from(password, "utf8");
+  let salt = saltString;
+  if (salt.startsWith("$6$")) {
+    const parts = salt.split("$");
+    if (parts[2]?.startsWith("rounds=")) {
+      rounds = parseInt(parts[2].slice(7), 10);
+      salt = parts[3] ?? "";
+    } else {
+      salt = parts[2] ?? "";
+    }
   }
-  let A = sha512(...acc);
+  salt = salt.slice(0, 16);
+  const saltBuf = Buffer.from(salt, "utf8");
 
-  // P sequence: digest of pw repeated pwlen *times*, stretched to pwlen.
-  const dp = sha512(Buffer.concat(Array(pw.length).fill(pw)));
-  const P = pw.length ? repeatTo(dp, pw.length) : Buffer.alloc(0);
-
-  // S sequence: digest of salt repeated (16 + A[0]) *times*, stretched.
-  const ds = sha512(Buffer.concat(Array(16 + A[0]).fill(sl)));
-  const S = sl.length ? repeatTo(ds, sl.length) : Buffer.alloc(0);
-
-  // Rounds loop.
-  for (let i = 0; i < roundsClamped; i++) {
-    const parts = [];
-    parts.push((i & 1) ? P : A);
-    if (i % 3) parts.push(S);
-    if (i % 7) parts.push(P);
-    parts.push((i & 1) ? A : P);
-    A = sha512(...parts);
+  let r = 5000;
+  if (rounds !== null && rounds !== undefined) {
+    r = Math.max(1000, Math.min(999999999, rounds));
   }
 
-  // Spec's permuted base64 output (64 bytes → 86 chars).
-  const out = [];
-  b64From24(A[0], A[21], A[42], 4, out);
-  b64From24(A[22], A[43], A[1], 4, out);
-  b64From24(A[44], A[2], A[23], 4, out);
-  b64From24(A[3], A[24], A[45], 4, out);
-  b64From24(A[25], A[46], A[4], 4, out);
-  b64From24(A[47], A[5], A[26], 4, out);
-  b64From24(A[6], A[27], A[48], 4, out);
-  b64From24(A[28], A[49], A[7], 4, out);
-  b64From24(A[50], A[8], A[29], 4, out);
-  b64From24(A[9], A[30], A[51], 4, out);
-  b64From24(A[31], A[52], A[10], 4, out);
-  b64From24(A[53], A[11], A[32], 4, out);
-  b64From24(A[12], A[33], A[54], 4, out);
-  b64From24(A[34], A[55], A[13], 4, out);
-  b64From24(A[56], A[14], A[35], 4, out);
-  b64From24(A[15], A[36], A[57], 4, out);
-  b64From24(A[37], A[58], A[16], 4, out);
-  b64From24(A[59], A[17], A[38], 4, out);
-  b64From24(A[18], A[39], A[60], 4, out);
-  b64From24(A[40], A[61], A[19], 4, out);
-  b64From24(A[62], A[20], A[41], 4, out);
-  b64From24(0, 0, A[63], 2, out);
-  return out.join('');
-}
+  // Digest B = H(key || salt || key)
+  const hashB = createHash("sha512");
+  hashB.update(pwd);
+  hashB.update(saltBuf);
+  hashB.update(pwd);
+  const b = hashB.digest();
 
-/** Parse a $6$... stored string → { salt, rounds, hash } (salt truncated to 16). */
-export function parseSha512crypt(stored) {
-  const m = /^\$6\$(?:rounds=(\d+)\$)?([^$]*)\$([^$]*)$/.exec(String(stored));
-  if (!m) throw new Error('not a $6$ string');
-  return {
-    rounds: m[1] ? parseInt(m[1], 10) : ROUNDS_DEFAULT,
-    salt: m[2].slice(0, 16),
-    saltFull: m[2],
-    hash: m[3],
-  };
-}
+  // Digest A = H(key || salt || B-repeats || bit-loop)
+  const hashA = createHash("sha512");
+  hashA.update(pwd);
+  hashA.update(saltBuf);
 
-/** Verify: true when password produces the stored hash. */
-export function verifySha512crypt(stored, password) {
-  const { salt, rounds, hash } = parseSha512crypt(stored);
-  return sha512crypt(password, salt, rounds) === hash;
+  let plen = pwd.length;
+  while (plen > 64) {
+    hashA.update(b);
+    plen -= 64;
+  }
+  hashA.update(b.subarray(0, plen));
+
+  for (let cnt = pwd.length; cnt > 0; cnt >>= 1) {
+    if (cnt & 1) {
+      hashA.update(b);
+    } else {
+      hashA.update(pwd);
+    }
+  }
+  let a = hashA.digest();
+
+  // DP = repeated passes of pwd to get length equal to pwd.length * pwd.length bytes
+  const hashDP = createHash("sha512");
+  for (let i = 0; i < pwd.length; i++) hashDP.update(pwd);
+  const dpFull = hashDP.digest();
+  const pSeq = Buffer.alloc(pwd.length);
+  for (let off = 0; off < pwd.length; off += 64) {
+    dpFull.copy(pSeq, off, 0, Math.min(64, pwd.length - off));
+  }
+
+  // DS = repeated passes of salt to get length equal to salt.length * (16 + a[0]) bytes
+  const hashDS = createHash("sha512");
+  for (let i = 0; i < 16 + a[0]; i++) hashDS.update(saltBuf);
+  const dsFull = hashDS.digest();
+  const sSeq = Buffer.alloc(saltBuf.length);
+  for (let off = 0; off < saltBuf.length; off += 64) {
+    dsFull.copy(sSeq, off, 0, Math.min(64, saltBuf.length - off));
+  }
+
+  // Rounds loop
+  let c = a;
+  for (let i = 0; i < r; i++) {
+    const h = createHash("sha512");
+    if (i & 1) {
+      h.update(pSeq);
+    } else {
+      h.update(c);
+    }
+    if (i % 3 !== 0) h.update(sSeq);
+    if (i % 7 !== 0) h.update(pSeq);
+    if (i & 1) {
+      h.update(c);
+    } else {
+      h.update(pSeq);
+    }
+    c = h.digest();
+  }
+
+  // Permutation table for 64-byte SHA-512 output:
+  // triplets:
+  // 0, 21, 42
+  // 22, 43, 1
+  // 44, 2, 23
+  // 3, 24, 45
+  // 25, 46, 4
+  // 47, 5, 26
+  // 6, 27, 48
+  // 28, 49, 7
+  // 50, 8, 29
+  // 9, 30, 51
+  // 31, 52, 10
+  // 53, 11, 32
+  // 12, 33, 54
+  // 34, 55, 13
+  // 56, 14, 35
+  // 15, 36, 57
+  // 37, 58, 16
+  // 59, 17, 38
+  // 18, 39, 60
+  // 40, 61, 19
+  // 62, 20, 41
+  // 63 (single byte -> 2 chars)
+  const perm = [
+    [0, 21, 42],
+    [22, 43, 1],
+    [44, 2, 23],
+    [3, 24, 45],
+    [25, 46, 4],
+    [47, 5, 26],
+    [6, 27, 48],
+    [28, 49, 7],
+    [50, 8, 29],
+    [9, 30, 51],
+    [31, 52, 10],
+    [53, 11, 32],
+    [12, 33, 54],
+    [34, 55, 13],
+    [56, 14, 35],
+    [15, 36, 57],
+    [37, 58, 16],
+    [59, 17, 38],
+    [18, 39, 60],
+    [40, 61, 19],
+    [62, 20, 41],
+  ];
+
+  let encoded = "";
+  for (const [b0, b1, b2] of perm) {
+    encoded += b64From24Bit(c[b0], c[b1], c[b2], 4);
+  }
+  encoded += b64From24Bit(0, 0, c[63], 2);
+
+  if (rounds !== null && rounds !== undefined && rounds !== 5000) {
+    return `$6$rounds=${r}$${salt}$${encoded}`;
+  }
+  return `$6$${salt}$${encoded}`;
 }
