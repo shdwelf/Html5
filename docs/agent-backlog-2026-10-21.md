@@ -614,11 +614,32 @@ S4 sequence (California → 50 states → country → PC Globe → planet) is
 complete; this branch also carries round 43 verbatim and supersedes
 PR #151.
 
-### S5 · Live incident, camera & sensor layers — *open*
+*2026-10-25 round (round 49, S5 continuation — after the round-48 opener):* the in-viewer **dish-pointing /
+satellite-alignment calculator layer** shipped inside
+`/satellite-constellations.html` as a new DISH ALIGNMENT panel —
+closed-form GEO look angles (`js/satellite-dish-pointing.js`) on the
+viewer's spherical model (R = 6371 km, GEO radius from μ/ω_E ≈ 42164 km),
+five site presets (including the worked-example 52°N 0°) and four cited
+slot presets (GOES-19 75.2°W + GOES-18 137.0°W from NOAA's operations
+status page, GOES-16 storage 104.7°W from WMO OSCAR + orbitalfocus, all
+checked 2026-10-25, plus the lecture's own IOR 66°E figure). Validation:
+reproduces the published worked example (az 109.33°, el 5.85° within
+0.05°), matches the classic closed form to 1e-9° and an independent
+ECEF→ENU vector derivation to 1e-6° across a grid, and pins the 81.3°
+horizon arc (10 new node tests). In-panel disclosures: sphere vs the
+6378 km figures published examples use (~0.1°), slots drift, and
+terrain/structures/magnetic-north/LNB skew are unmodelled — not a
+substitute for a meter at the dish. Fire-lookout/KiwiSDR static layers,
+the live-API inventory, and tv.garden remain queued; S5 and T5.1 →
+partial. Round 48 opened S5 (inventory + feed normalizers + standalone `dish-pointing.html`); this round 49 adds the satellite-viewer panel as the complementary integration. The round record is
+[`backlog-execution-round-49-2026-10-25.md`](backlog-execution-round-49-2026-10-25.md).
+
+### S5 · Live incident, camera & sensor layers — *partial*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
 liveuamap, NOTAMs; static layers for fire lookouts and KiwiSDR/SDR receivers; dish-pointing /
-satellite-alignment calculator layer; tv.garden / radio.garden transcription pipeline.
+satellite-alignment calculator layer *(standalone app round 48 + in-viewer DISH panel round 49 — see the status notes)*;
+tv.garden / radio.garden transcription pipeline.
 
 
 **Round 48 status (2026-10-25): S5 opened — first slice shipped.** The

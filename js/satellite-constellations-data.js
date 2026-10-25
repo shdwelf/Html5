@@ -432,3 +432,61 @@ export const VIEW_PRESETS = {
   geo: { pos: [0, 50, 80], target: [0, 0, 0] },
   polar: { pos: [0, 78, 0.1], target: [0, 0, 0] },
 };
+
+export const DISH_SITES = [
+  {
+    id: "london52",
+    name: "Worked-example site · 52°N 0°",
+    lat: 52,
+    lon: 0,
+    note: "Site exactly as plugged into the lecture worked example (text says London Dockland region); reproduces azimuth 109.33° / elevation 5.85°.",
+    sources: ["https://spu.edu.sy/downloads/files/1537008470_ms-sat4.pdf"],
+  },
+  { id: "seattle", name: "Seattle, WA · city center", lat: 47.6062, lon: -122.3321, note: "Public city-center coordinates — a starting point, not an address-level site.", sources: [] },
+  { id: "denver", name: "Denver, CO · city center", lat: 39.7392, lon: -104.9903, note: "Public city-center coordinates — a starting point, not an address-level site.", sources: [] },
+  { id: "miami", name: "Miami, FL · city center", lat: 25.7617, lon: -80.1918, note: "Public city-center coordinates — a starting point, not an address-level site.", sources: [] },
+  { id: "sanjuan", name: "San Juan, PR · city center", lat: 18.4655, lon: -66.1057, note: "Public city-center coordinates — a starting point, not an address-level site.", sources: [] },
+];
+
+export const DISH_SLOTS = [
+  {
+    id: "goes19",
+    name: "GOES-19 · GOES-East",
+    lon: -75.2,
+    note: "Operational GOES-East since 2025-04-07 at 75.2°W (NOAA status page, checked 2026-10-25).",
+    sources: [
+      "https://www.ospo.noaa.gov/operations/goes/status.html",
+      "https://www.noaa.gov/news-release/noaa-s-goes-19-satellite-now-operational-providing-critical-new-data-to-forecasters",
+    ],
+  },
+  {
+    id: "goes18",
+    name: "GOES-18 · GOES-West",
+    lon: -137,
+    note: "Operational GOES-West since 2023-01-04 at 137.0°W (NOAA status page / WMO OSCAR, checked 2026-10-25).",
+    sources: [
+      "https://www.ospo.noaa.gov/operations/goes/status.html",
+      "https://space.oscar.wmo.int/satellites/view/goes_18",
+    ],
+  },
+  {
+    id: "goes16",
+    name: "GOES-16 · on-orbit storage",
+    lon: -104.7,
+    note: "Standby/storage position 104.7°W per WMO OSCAR and public geostationary catalogues (checked 2026-10-25); slots drift — re-check before any real pointing.",
+    sources: [
+      "https://space.oscar.wmo.int/satellites/view/goes_16",
+      "https://www.orbitalfocus.uk/Diaries/Launches/GeoSS/geo-loc.php",
+    ],
+  },
+  {
+    id: "ior66",
+    name: "INTELSAT IOR · 66°E (worked example)",
+    lon: 66,
+    note: "Satellite longitude exactly as used by the lecture worked example — the example's own figure, not a current slot claim.",
+    sources: ["https://spu.edu.sy/downloads/files/1537008470_ms-sat4.pdf"],
+  },
+];
+
+export const dishModelNote =
+  "DISH ALIGNMENT MODEL — spherical Earth (this viewer's R = 6371 km), GEO radius derived from μ/ω_E (≈ 42164 km), closed-form look angles. Published worked examples and commercial calculators often use R = 6378 km, so agreement with them is only to ~0.1°. Slots are published assignments (checked 2026-10-25) and drift over time. Terrain, structures, magnetic-north offsets, and LNB skew are not modelled — not a substitute for a meter at the dish.";
