@@ -1,16 +1,18 @@
-# Backlog execution round 46 — 2026-10-25
+# Backlog execution round 49 — 2026-10-25
 
-**Round:** 46 · **Stream/task:** S5 · T5.1 (opener) · **PR:** session branch (`arena/05d57723-html5`, PR #154)
+**Round:** 49 · **Stream/task:** S5 · T5.1 (continuation after round 48) · **PR:** session branch (`arena/05d57723-html5`, PR #154)
+
+> **Renumber note:** originally written as "round 46" before the parallel-session merge; main then took 46 (S2 sneakers), 47 (gateway), and 48 (S5 opener) while PR #154 was open, so this record was renumbered to **49** per the conflict rule (main keeps its numbering; this round moves to the next free slot).
 
 ## Position check (parallel-session rule)
 
-- `git fetch origin main` → main at `272e809` (round 44 = S4 complete, merged as PR #152); local merge of `origin/main` completed clean after deepening the fresh shallow clone (its depth-1 history had refused the merge with `unrelated histories`).
-- `gh pr list` → round 45 is claimed by open PR #153 (S6 ARPANET). Next free round = **46**.
-- Open PRs respected: #155 (S2 sneakers, other session), #153 (S6, other session), #154 (this session's freeze fix), #138, #46. Nobody is on **S5** — the round opens S5/T5.1.
+- Pre-merge: rounds 40–44 were on main (`272e809`); round 45 was claimed by open PR #153 (S6 ARPANET), and this session originally took the then-free **46**.
+- During PR #154's open window, main advanced: **round 46** (S2 sneakers, PR #155), **round 47** (Riseup VPN × InviZible gateway), **round 48** (S5 opener — source inventory, feed normalizers, standalone dish calculator). Merging `origin/main` into the branch surfaced wiki conflicts only (`docs.json` / `wikiinajar.xdc`, resolved main-preferred then rebuilt) — code paths were disjoint.
+- Reconciliation: main's numbering, records, and tests kept as-is; this round renumbered **46 → 49** (next free), its S5-**opener** claim corrected (round 48 opened S5), and round-48 evidence folded into the backlog fields round 48 left untouched (JSON `next_actions` / `T5.1` note).
 
 ## Scope
 
-S5's static-layer next-action item: the **dish-pointing / satellite-alignment calculator layer**, delivered inside the existing `/satellite-constellations.html` viewer as a new **DISH ALIGNMENT** panel. The live-API inventory (item 1), the fire-lookout + KiwiSDR static layers (item 2 remainder), and the tv.garden/radio.garden pipeline (item 3) stay queued.
+Complement to round 48's opener: that round shipped the live-layer inventory ([`s5-live-layers-inventory-2026-10-25.md`](s5-live-layers-inventory-2026-10-25.md)), the feed-agnostic normalizers (`js/incident-adapters.js`), and a **standalone** dish calculator (`dish-pointing.html` + `js/dish-pointing.js`). This round delivers the **in-viewer** half of S5's "dish-pointing / satellite-alignment calculator layer": the calculator as an integrated layer inside the existing `/satellite-constellations.html` theater, with its own independent validation chain and cited GEO-slot presets. The two implementations coexist deliberately — different host apps (standalone page vs viewer panel), different modules, different test files, no duplicate generation; neither replaces the other. Still queued: fire-lookout + KiwiSDR static layers, live capture (F3 runner work per round 48), viewer wiring for the incident layers, tv.garden/radio.garden.
 
 ## What shipped
 

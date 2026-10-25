@@ -1,0 +1,5 @@
+// Clean-room combined gateway app (side project). No upstream code:
+// the configuration core is this repo's own GatewayConfig.java.
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}

@@ -25,7 +25,7 @@ a = Earth radius + altitude
 - Uses a year slider from **1957–2032** so the viewer can illustrate the shift from early satellite navigation to large LEO broadband constellations.
 - Downsamples very large constellations into proxy markers. For example, Starlink and OneWeb are drawn as representative swarms instead of thousands of individual meshes.
 - Draws elliptical launch/transfer orbit classes (GTO, Molniya-type HEO) via the conic equation, and carries a LAUNCH WINDOWS panel: the window taxonomy per mission class plus dated, sourced launch opportunities (`LAUNCH_WINDOWS` in the data pack).
-- **DISH ALIGNMENT panel (added 2026-10-25, round 46):** closed-form geostationary look angles (azimuth, elevation, slant range, central angle) for a site and a GEO slot — the dish-pointing/alignment calculator layer from backlog S5/T5.1. See below.
+- **DISH ALIGNMENT panel (added 2026-10-25, round 49):** closed-form geostationary look angles (azimuth, elevation, slant range, central angle) for a site and a GEO slot — the in-viewer half of backlog S5/T5.1's calculator layer (the standalone `dish-pointing.html` shipped first in round 48). See below.
 
 ## What the viewer does not do
 

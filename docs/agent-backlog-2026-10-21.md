@@ -66,6 +66,27 @@ wiki draft [`Sneakers-Archive-and-Ghidra`](github-wiki/Sneakers-Archive-and-Ghid
 Remaining: verify the `sneakers-press-kit.xdc` keyboard/mouse layout against the
 headline-harry pattern, DOSBox+Xvfb automation notes, wiki refresh + PR.
 
+**Round 46 status (2026-10-24): S2 complete.** The Sneakers player
+shell and its packed XDC now have the keyboard/mouse layout pinned by
+a parity test against the headline-harry pattern (focus discipline,
+js-dos v8 boot contract, dosbox.conf section parity, engine file set);
+one delta was fixed (`ci-ready` status repeats the ☰ sidebar hint)
+and the XDC rebuilt deterministically (805,280 B, sha256 `e4d7d382…`).
+DOSBox+Xvfb automation already existed and is CI-backed (smoke pair +
+`arena-sneakers-smoke.yml`, run 39161148174); the wiki page is
+refreshed. The round record is
+[`backlog-execution-round-46-2026-10-24.md`](backlog-execution-round-46-2026-10-24.md).
+
+**Round 47 status (2026-10-25): side project shipped.** The
+user-directed Riseup VPN × InviZible combination landed as clean-room
+deliverables (`backlog-execution-round-47-2026-10-25.md`): one
+configuration core (`js/gateway-config.js` + shared
+`GatewayConfig.java`), `gateway-config.html`, runner-built
+`research/gateway-config/gateway-config.jar` + debug APK, and the
+reproducible `gateway-config.war`. The Android app is an orchestration
+scaffold — no tunnel engines bundled, the VpnService deliberately does
+not establish the TUN; wiring ics-openvpn/tor-android submodules is the
+open follow-up.
 ### S3 · Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra — *partial*
 Format study and abandonware sweep (Easter eggs, walkthroughs, *Shadow President*), feeding
 the existing DOS disassembly line ([`dos-game-disassembly.md`](dos-game-disassembly.md),
@@ -593,7 +614,7 @@ S4 sequence (California → 50 states → country → PC Globe → planet) is
 complete; this branch also carries round 43 verbatim and supersedes
 PR #151.
 
-*2026-10-25 round (round 46, S5/T5.1 opener):* the S5 **dish-pointing /
+*2026-10-25 round (round 49, S5 continuation — after the round-48 opener):* the in-viewer **dish-pointing /
 satellite-alignment calculator layer** shipped inside
 `/satellite-constellations.html` as a new DISH ALIGNMENT panel —
 closed-form GEO look angles (`js/satellite-dish-pointing.js`) on the
@@ -610,16 +631,29 @@ horizon arc (10 new node tests). In-panel disclosures: sphere vs the
 terrain/structures/magnetic-north/LNB skew are unmodelled — not a
 substitute for a meter at the dish. Fire-lookout/KiwiSDR static layers,
 the live-API inventory, and tv.garden remain queued; S5 and T5.1 →
-partial. The round record is
-[`backlog-execution-round-46-2026-10-25.md`](backlog-execution-round-46-2026-10-25.md).
+partial. Round 48 opened S5 (inventory + feed normalizers + standalone `dish-pointing.html`); this round 49 adds the satellite-viewer panel as the complementary integration. The round record is
+[`backlog-execution-round-49-2026-10-25.md`](backlog-execution-round-49-2026-10-25.md).
 
 ### S5 · Live incident, camera & sensor layers — *partial*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
 liveuamap, NOTAMs; static layers for fire lookouts and KiwiSDR/SDR receivers; dish-pointing /
-satellite-alignment calculator layer *(shipped round 46 — see the status note above)*;
+satellite-alignment calculator layer *(standalone app round 48 + in-viewer DISH panel round 49 — see the status notes)*;
 tv.garden / radio.garden transcription pipeline.
 
+
+**Round 48 status (2026-10-25): S5 opened — first slice shipped.** The
+source inventory with real access patterns is in
+[`s5-live-layers-inventory-2026-10-25.md`](s5-live-layers-inventory-2026-10-25.md):
+CHP CAD is public per-center HTML (no documented JSON API), WildCAD-E is
+agency CAD (not a public feed — no adapter, correctly), WFIGS publishes
+public ArcGIS services. Built and verified offline: the dish-pointing /
+satellite-alignment calculator (`js/dish-pointing.js` +
+`dish-pointing.html`, GEO look angles with known-answer tests) and the
+feed-agnostic layer normalizers (`js/incident-adapters.js`; loud
+rejections, dedupe, staleness, ArcGIS-point adapter; synthetic fixtures
+only). "WREN cameras" remains an unverified referent — flagged, not
+guessed. Live capture is F3 runner work; viewer wiring is next.
 ### S6 · BBS & telecom history: Keyhole, FidoNet/ARPANET, payphones, ColdFire — *partial*
 Keyhole BBS + forum deep dive and In-Q-Tel/VC mapping are new; the BBS→ColdFire port line has
 several docs already ([`bbs-abandonware-coldfire-port.md`](bbs-abandonware-coldfire-port.md),
