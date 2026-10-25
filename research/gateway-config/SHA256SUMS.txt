@@ -1,1 +1,2 @@
-958dacda1fd42b6e76581acb76d42896dd9da60aac8c1164787468daadeafb52  gateway-debug.apk
+b4fcfda0fa837a21fb8d67a9801edfa3bf8096dfd598bf539fa0bbb3ae57b5bc  gateway-config.jar
+b7b7ea3aefaf95393a124eafa73f3cb28d01534e8ccaaa5a7b08c0fc872e1ea0  gateway-debug.apk
