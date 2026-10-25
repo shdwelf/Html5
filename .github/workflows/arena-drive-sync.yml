@@ -49,7 +49,13 @@ jobs:
           node-version: '22'
 
       - name: Fetch Drive artifacts
-        run: python3 .arena-drive/fetch.py
+        env:
+          # Dropbox temporary link for the Chipwright tarball, set as a repo
+          # secret when Drive's anonymous download quota is exhausted.
+          ARENA_FETCH_URL_1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV: ${{ secrets.CHIPWRIGHT_TARBALL_URL }}
+        run: |
+          pip install -q gdown || echo "gdown install failed; plain endpoints only"
+          python3 .arena-drive/fetch.py
 
       - name: Diff every manifest against this tree
         run: |
@@ -72,17 +78,31 @@ jobs:
           [ "$found" = 1 ] || echo "No manifests arrived — see .arena-drive/fetch.log (likely NOT-SHARED)."
 
       - name: Restore the delta
-        if: inputs.restore
+        # Runs on dispatch with restore=true, and on push whenever the fetch
+        # step actually landed a snapshot tarball in payload/ (the loop below
+        # is nullglob-guarded, so it is a no-op when there is nothing to do).
+        if: ${{ !cancelled() }}
         run: |
           shopt -s nullglob
           for t in .arena-drive/payload/*.tar.gz; do
-            mkdir -p /tmp/snap && tar xzf "$t" -C /tmp/snap
-            root=$(find /tmp/snap -maxdepth 1 -mindepth 1 -type d | head -1)
+            rm -rf /tmp/snap && mkdir -p /tmp/snap && tar xzf "$t" -C /tmp/snap
             base=$(basename "$t" .tar.gz)
             stamp=${base##*-}                       # e.g. 12c463f
-            man=$(ls .arena-drive/payload/*"$stamp"*.sha256 2>/dev/null | head -1)
+            man=$(ls .arena-drive/payload/*"$stamp"*.sha256 docs/drive-sync/*"$stamp"*.sha256 2>/dev/null | head -1)
             [ -n "$man" ] || { echo "no manifest matching $stamp; skipping $t"; continue; }
-            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write
+            # Snapshot root = the directory actually holding the tree. The old
+            # `find -maxdepth 1 -type d | head -1` picked the first subdir
+            # (e.g. apps/) when the tarball also carries top-level files, so
+            # drive-sync-apply found 0 candidates and silently restored
+            # nothing. Locate a known top-level file instead.
+            root=/tmp/snap
+            if [ ! -f "$root/chipwright.html" ]; then
+              f=$(find /tmp/snap -name chipwright.html -print -quit)
+              [ -n "$f" ] && root=$(dirname "$f")
+            fi
+            echo "restore: tarball=$t stamp=$stamp manifest=$man root=$root"
+            find /tmp/snap -maxdepth 2 | head -20
+            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write 2>&1 | tee "docs/drive-sync/restore-$stamp.log"
           done
           for z in .arena-drive/payload/*.zip; do unzip -o "$z" -d .arena-drive/payload/unzipped; done
 

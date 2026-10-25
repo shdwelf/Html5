@@ -52,7 +52,7 @@
     {
       "id": "S1",
       "title": "Archive formats & crypto-forensics corpus",
-      "status": "partial",
+      "status": "done",
       "tasks": [
         "T1.1",
         "T1.2",
@@ -69,6 +69,7 @@
         "research/kgk-arj-listing-extract.txt"
       ],
       "next_actions": [
+        "Closed round 12 (ZIP legacy-garble note was the last open item; docs/backlog-execution-round-12-2026-10-21.md). Round 13 added header-walk ops (arjHeader/lhaHeader/aceHeader/paranoidUnzip, header-only per F2/F4). T1.1 stays grouped under S13 for execution.",
         "Decompressor recipe matrix (ace rar arj uue zip 7z iso img peazip pkware) as GHIDRA_COOKBOOK additions + CyberChef recipes",
         "Keep ARJ/SFX password work at recipe level per F2",
         "BagIt the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I together with its Drive PDF once relay fetch is available (task line 16/153)"
@@ -93,12 +94,14 @@
         "docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md",
         "docs/github-wiki/Sneakers-Archive-and-Ghidra.md",
         "docs/headline-harry-jsdos-fix-2026-10-04.md",
-        "docs/jsdos-cdn-deep-dive-2026-10-04.md"
+        "docs/jsdos-cdn-deep-dive-2026-10-04.md",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
-        "Sneakers press-kit keyboard/mouse layout verified against headline-harry.xdc pattern (closed in docs/sneakers-headline-harry-layout-parity-2026-10-21.md)",
+        "Verify sneakers-press-kit.xdc keyboard/mouse side layout against headline-harry.xdc pattern and close the gap if any",
         "GitHub search: dosbox + xvfb automation notes (task line 165)",
-        "Re-summarize FindCrypt findings into the project wiki page"
+        "Re-summarize FindCrypt findings into the project wiki page and open the PR the task asks for"
       ]
     },
     {
@@ -117,8 +120,9 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "Rounds 7–13: cow-level, Jeopardy/WoF+Snopes, Radmin/SMTP, polyglot+omniglot, portals + toy MZ, MIME + JtR audit ($5$/$6$/$1$), ZIP garble note + polyglotScan op, Spotlight packs (docs/backlog-execution-round-{7..13}-2026-10-21.md). S1 closed.",
-        "Next: archive ops (arj/lha/ace/unzip), HVD/Puzzle Code tiles, S2 sneakers layout"
+        "Round 14 (2026-10-22): spotlight closure complete (tour-only 85->0, pinned by tests/cyberchef-spotlight-coverage.test.mjs) and polyglot_scan MIME fields landed (CLI + registry op). Next: S4/S6 stream work; registry line idle until new ops arrive.",
+        "Round 13 (2026-10-22): header ops implemented, spotlight batch (archive triage, TomTom round-trip, SHA-2/checksums, data encodings; tour-only 95->85), md5crypt/sha512crypt JtR-vector audit added. Next: remaining tour-only spotlight batches; optional polyglot_scan MIME fields.",
+        "Next: header/ACE/LHA/unzip ops (flagged missing), spotlight packs, md5crypt/sha512crypt vectors"
       ]
     },
     {
@@ -139,18 +143,76 @@
         "docs/gazetteer-sync-2026-10-04.md",
         "planet-viewer-4dwm.html",
         "docs/planet-viewer-deep-dive.md",
-        "red-october-4dwm.html"
+        "red-october-4dwm.html",
+        "california-subsurface.html",
+        "california-subsurface.xdc",
+        "nevada-subsurface.html",
+        "nevada-subsurface.xdc",
+        "arizona-subsurface.html",
+        "arizona-subsurface.xdc",
+        "resources/city-subsurface/gnis-state-source-register-2026-10-22.json",
+        "guam-subsurface.html",
+        "guam-subsurface.xdc",
+        "americansamoa-subsurface.html",
+        "americansamoa-subsurface.xdc",
+        "usvirginislands-subsurface.html",
+        "usvirginislands-subsurface.xdc",
+        "midway-subsurface.html",
+        "midway-subsurface.xdc",
+        "resources/city-subsurface/gnis-territory-source-register-2026-10-22.json",
+        "utah-subsurface.html",
+        "utah-subsurface.xdc",
+        "colorado-subsurface.html",
+        "colorado-subsurface.xdc",
+        "newmexico-subsurface.html",
+        "newmexico-subsurface.xdc",
+        "resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json",
+        "socal-subsurface-inlined.html",
+        "socal-subsurface-inlined.xdc",
+        "scripts/build-socal-subsurface-inlined.mjs",
+        "docs/backlog-execution-round-19-2026-10-23.md",
+        "oregon-subsurface.html",
+        "oregon-subsurface.xdc",
+        "washington-subsurface.html",
+        "washington-subsurface.xdc",
+        "idaho-subsurface.html",
+        "idaho-subsurface.xdc",
+        "resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json",
+        "docs/backlog-execution-round-20-2026-10-23.md",
+        "montana-subsurface.html",
+        "montana-subsurface.xdc",
+        "wyoming-subsurface.html",
+        "wyoming-subsurface.xdc",
+        "resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json",
+        "docs/backlog-execution-round-21-2026-10-23.md",
+        "northdakota-subsurface.html",
+        "northdakota-subsurface.xdc",
+        "southdakota-subsurface.html",
+        "southdakota-subsurface.xdc",
+        "resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json",
+        "docs/backlog-execution-round-22-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 35 (2026-10-23): PR #141 reconciled main-preferred twice — first against PR #139 (47 configurations; southcarolina = config 34/batch-14 generated twice, main's NC/SC batch kept, the branch's duplicate dropped except evidence transferred: Sassafras Mountain note now carries the current USGS Elevations and Distances value 3,560 ft beside the earlier USGS-published 3,553 ft, the Savannah River note's stale no-Georgia-frame parenthetical now cites the live batch-11 corridor on FEATURE_ID 1253486, and a known-limitation records the Rock Hill P1/U6 census-class tie-break), then against PR #142 (Maryland/Delaware claimed round 34; this record runs as round 35). Next: nine state frames remain — AK, CT, HI, ME, MA, NH, NJ, RI, VT — then the country/planet thread.",
+        "Round 23 (2026-10-23): Central Plains batch SHIPPED — Nebraska and Kansas are city-subsurface configurations 23-24, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json. Panorama Point and Mount Sunflower carry Domestic Names per-ID checks (state High Points with the highest-elevation descriptions, NE 5424 ft and KS 4039 ft); Lincoln rejects its precinct/county pile; Grand Island rejects the Buffalo County island; Scottsbluff town and Scotts Bluff Summit seed as distinct features; North Platte town and river seed as distinct features; the Wyandotte County Kansas City stays separate from the Missouri side; the Kansas River multipoint service discrepancy is recorded; Missouri (NE+KS), Republican (NE) and Arkansas (KS) remain corridors after empty screens; Salina held to starter scope. Next: remaining plains/mountain states in dated batches, then the country/planet thread.",
+        "Round 22 (2026-10-23): Dakotas batch SHIPPED — North Dakota and South Dakota are city-subsurface configurations 21-22, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json. White Butte and Black Elk Peak carry Domestic Names per-ID checks (Slope County High Point 1035239 over three same-name summits; 1261770 the 2016 Harney-to-Black Elk rename in Pennington County). Devils Lake town/lake seed as distinct classes; Missouri and both Red River spellings (ND) plus Missouri (SD), ND James River, Badlands NP, and Lake Sheridan stay unseeded after empty screens; the SD James River record seeds only in South Dakota. Remaining: Nebraska-Kansas next in dated per-row source-register batches, then remaining plains/mountain states; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
+        "Round 21 (2026-10-23): Northern Rockies batch SHIPPED — Montana and Wyoming are city-subsurface configurations 19-20, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json. Granite Peak and Jackson Lake carry Domestic Names per-ID checks (Park County Summit 784178 High Point vs two same-name summits; Teton County Jackson Lake stored as Reservoir 1609177 vs Natrona 1590031). Yellowstone/Missouri (MT) and North Platte/Snake/Green River main stem (WY) remain corridors after empty or mismatched state screens; Glacier National Park returned only Division records; Bighorn River seeded only in Montana. Remaining: remaining states in dated per-row source-register batches; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
+        "Round 20 (2026-10-23): Pacific Northwest batch SHIPPED — Oregon, Washington, and Idaho are city-subsurface configurations 16-18, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors/coasts, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json. Guards include Mount Hood Summit vs populated place, Klamath County Crater Lake vs same-name lakes, Columbia River seeded under Oregon only after the Washington screen returned empty, Spokane River omitted for two exact stream candidates, Snake River seeded under Washington only after the Idaho screen returned no exact stream, and Bear Lake omitted in Idaho. Remaining: remaining states in dated per-row source-register batches; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
+        "Round 19 packaging (2026-10-23): finished the SoCal Subsurface inlined edition beside the canonical multi-file XDC — socal-subsurface-inlined.html (863,145 bytes) and six-entry socal-subsurface-inlined.xdc, reproducible via scripts/build-socal-subsurface-inlined.mjs with optional-DEM build-time handling (checked-in build uses the documented synthetic relief). Geographic status unchanged: remaining states still require dated per-row GNIS source-register batches; bulk California themes/archived classes still require explicit source decisions.",
+        "Round 18 (2026-10-22): Four Corners batch SHIPPED — Utah, Colorado, and New Mexico are city-subsurface configurations 13-15, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json. Guards include Green River Stream vs town, Grand Lake lake vs town, South Platte River Domestic Names sequence-1/returned-Logan-County provenance, Sierra Blanca Peak vs range, San Juan County Animas River vs Hidalgo County same-name stream, and New Mexico Wheeler Peak vs Nevada Wheeler Peak. Bear Lake (UT), Arkansas/Rio Grande/Colorado rivers (CO), and Rio Grande/San Juan/Pecos rivers (NM) were not seeded where exact records were absent, out of frame, or ambiguous; they remain context corridors only where shown. Remaining: remaining states in dated per-row source-register batches; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
+        "Round 17 (2026-10-22): territory sequence SHIPPED — Guam, American Samoa (Tutuila–Manuʻa frame only; Swains Island and Rose Atoll explicitly omitted), U.S. Virgin Islands, and Midway are city-subsurface configurations 9-12 with 12/12/12/6 VERIFIED=1 GNIS starter rows, generalized multi-polyline coasts, synthetic relief, and no DEM. Hagåtña is GNIS Civil 1389443 (not a populated place); Midway used bounded queries because State=null and states=UM returned no suggestions. Machine-readable provenance: resources/city-subsurface/gnis-territory-source-register-2026-10-22.json. Shared engine is now hemisphere-aware and accepts one or several coastline polylines. Remaining: remaining states next in dated per-row source-register batches; archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; country/PC Globe thread open.",
+        "Round 16 (2026-10-22): California per-ID GNIS extract SHIPPED — 27 rows total: 16 VERIFIED=1 (LA/SF/Sacramento/San Diego/Oakville/Manzanar locality, Whitney/Shasta/Death Valley, Sacramento/San Joaquin/Russian rivers, Lake Tahoe/Salton Sea/Morris Reservoir/Tule Lake Swamp) and the 11 round-15 cultural rows retained VERIFIED=0. Same-name guards are explicit: Manzanar locality does not verify the National Historic Site, Morris Reservoir does not verify Morris Dam, and Tule Lake Swamp does not verify the relocation center. Nevada + Arizona SHIPPED as the 7th/8th city-subsurface configurations, each with a 12/12 VERIFIED=1 GNIS starter register, generalized relief/corridors, and no DEM. Machine-readable provenance: resources/city-subsurface/gnis-state-source-register-2026-10-22.json. Remaining: archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; territories next before remaining states; country/PC Globe thread open.",
+        "Round 15 (2026-10-22): California statewide frame SHIPPED as 6th config of the city-subsurface build (california-subsurface.html/.xdc) with a 16-row VERIFIED=0 starter gazetteer (LA/SF/Sacramento/San Diego anchors; UC Berkeley+UCLA; Manzanar; Tule Lake; Nike SF-88L; Morris Dam; Aerojet Rancho Cordova; Empire Mine; La Casa Pacifica; Stow House/Rancho La Patera; Clair Tappaan Lodge; Oakville/Mondavi), scale-aware views+fog, generalized coast/relief/corridors. Remaining: GNIS-verified statewide extract (Lawrence/KC treatment), bulk layers only with per-row source registers, ephemeral categories (factory outlets, Renaissance faires, Red Cross/evacuation) catalogued as planned layers in docs/city-subsurface.md — not data rows. Then Nevada/Arizona as before.",
         "California state-wide viewer: extend DEM/state layers from socal-subsurface pattern; state layer catalog (Nike sites, Aerojet, Morris Dam, Manzanar/POW camps, Western White House, vineyards-by-vintner, UC campuses, Sierra Club huts, mine maps, factory outlets, Renaissance faires, Red Cross/evacuation centers)",
         "Nevada + Arizona next; then territories (Guam, American Samoa, USVI, Midway) before the other states",
-        "Country viewer merge a la PC Globe + CIA Factbook notes (anthem/instrument); PC Globe abandonware study and Ghidra->Java experiment; reuse Red October globe in planet viewer"
+        "Country viewer merge a la PC Globe + CIA Factbook notes (anthem/instrument); PC Globe abandonware study and Ghidra->Java experiment; reuse Red October globe in planet viewer",
+        "Round 38 (2026-10-24): RECONCILIATION ONLY — this branch staged New Jersey + Connecticut (round 36 / batch 18) while parallel sessions landed PR #144 (ME/MA/CT/RI, rounds 36-37, batches 18-19), PR #146 (Alaska, round 39) and PR #147 (New Jersey + Hawaii, round 40, configurations 57-58, 50-state atlas complete). Main-preferred: duplicate Connecticut and New Jersey generations dropped (NJ roster differed: main kept Atlantic City/Mullica/Round Valley over this branch's Elizabeth/Manasquan/D&R Canal). Kept: workflow branch-list entry, cumulative 27->29-state extract lesson, README fifty-eight bundle count fix, and a batch-20 register known-limitation transferring the unseeded trio (Elizabeth 876147, Manasquan 878067, D&R Canal 875875). Next: country/planet thread — state frames complete."
       ]
     },
     {
       "id": "S5",
       "title": "Live incident, camera & sensor layers",
-      "status": "open",
+      "status": "partial",
       "tasks": [
         "T5.1"
       ],
@@ -160,8 +222,8 @@
         "docs/satellite-launch-windows-research-2026-10-04.md"
       ],
       "next_actions": [
-        "API inventory + adapters: cad.chp.ca.gov incidents, CALTRANS + other state DOT cameras, WildCAD, interagency per-state incident lists (NIFC), WiFire, WREN cameras, liveuamap, NOTAMs",
-        "Static layers: fire lookouts, KiwiSDR/SDR receiver locations, dish-pointing/alignment calculator layer",
+        "API inventory + adapters: inventory doc with real access patterns shipped round 48 (docs/s5-live-layers-inventory-2026-10-25.md) plus feed-agnostic normalizers (js/incident-adapters.js, round 48); live capture is F3 runner work, and viewer wiring for incident/camera layers remains — cad.chp.ca.gov, CALTRANS/state DOT cameras, WildCAD, NIFC, WiFire, WREN (unverified referent, flagged), liveuamap, NOTAMs",
+        "Static layers: fire lookouts, KiwiSDR/SDR receiver locations remain; dish-pointing/alignment calculator layer shipped in two complementary parts — round 48 standalone dish-pointing.html + js/dish-pointing.js, round 49 in-viewer DISH ALIGNMENT panel (2026-10-25, satellite-constellations.html, docs/backlog-execution-round-49-2026-10-25.md)",
         "tv.garden / radio.garden transcription pipeline + PR"
       ]
     },
@@ -181,9 +243,24 @@
         "docs/bbs-viewer-and-netcat-capture.md",
         "docs/synchronet-build-and-uclinux-notes.md",
         "docs/phreaking-boxes-vlsi-notes.md",
-        "docs/xport-pro-synchronet-fit.md"
+        "docs/xport-pro-synchronet-fit.md",
+        "docs/keyhole-disambiguation-deep-dive-2026-10-22.md",
+        "docs/historical-network-viewer-scope-2026-10-22.md",
+        "docs/historical-network-keyhole-fixture-2026-10-22.md",
+        "historical-network-viewer.html",
+        "js/historical-network.js",
+        "resources/historical-network/keyhole-evidence-pack-2026-10-22.json",
+        "docs/historical-network-fidonet-adapter-2026-10-22.md",
+        "docs/fidonet-arpanet-map-layers-2026-10-23.md",
+        "resources/historical-network/comms-history-seed-2026-10-23.json",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js"
       ],
       "next_actions": [
+        "Round 20 (2026-10-23): viewer renders all three bundled packs (pack picker, schematic scatter, logical edges). Remaining: ARPANET 1971/1977 time-slice snapshots; lawfully redistributable FidoNet snapshot for a bulk layer (else local-import-only); forum archaeology + angel mapping remain open.",
+        "Round 17 (2026-10-22): S6 Phase 0 SHIPPED — observation-first Keyhole evidence fixture, standalone historical-network-viewer.html, shared js/historical-network.js validator/merge rules, deterministic generated data module, and a local TEXTFILES-style BBS-list importer (docs/historical-network-keyhole-fixture-2026-10-22.md). Rights decision: USBBS is citation-only in-repo and local-import-only for bulk data, so the fixture is structurally valid but captureReady=false (uncaptured snapshots, null SHA-256, restrictive rights). TEXTFILES.COM 303 historical list repeats Denver Keyhole BBS with a retrospective 1994-1996 span, but its per-record source is unstated, so independence from USBBS remains unresolved. Exact NodelistDB system/sysop searches found no Denver FidoNet match; the distinct 818 Keyhole BBS is a rejected same-name match. Remaining: lawfully capture and hash redistributable source snapshots under F3 before bundled datasets; then one complete FidoNet nodelist + applied diff, dated ARPANET textual snapshot, and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
+        "Round 16 (2026-10-22): consumer historical-network viewer SCOPED in docs/historical-network-viewer-scope-2026-10-22.md — a separate offline map/topology/records product with an observation-first schema, explicit place granularity, edge-geometry basis, snapshot diffs, source drawer, and acceptance gates. No ARPANET/FidoNet/payphone dataset was seeded. Keyhole BBS: a second dated listing was located in USBBS134.LST (Jul 1995), repeating 303-477-6337 / Denver / Linda McCraw / Keyhole BBS with first-listed code 123; this is temporal persistence in the same publication lineage, NOT a second independent listing. Indexed exact/FidoNet-oriented searches on 2026-10-22 found no Boardwatch/FidoNet listing. Remaining: USBBS rights decision (its header restricts modification/bundling), lawful F3 captures of Denver-area FidoNet nodelists/Boardwatch, Phase-1 Keyhole vertical slice, then FidoNet/ARPANET adapters and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
+        "Round 15 (2026-10-22): Keyhole disambiguation DEEP DIVE DONE (docs/keyhole-disambiguation-deep-dive-2026-10-22.md) — 'Keyhole BBS' is a documented Denver dial-up board (USBBS #127, Nov 1994, 303-477-6337, sysop Linda McCraw), unrelated to Keyhole Inc./EarthViewer; In-Q-Tel investment pinned from IQT's primary 2003-06-25 release (invested Feb 2003, first engagement for NIMA). Remaining: second independent listing for the Denver board (FidoNet nodelists/Boardwatch; F3 capture rules), angel-investor mapping beyond IQT, and FidoNet/ARPANET/payphone LAYER DATASETS — deferred to a round that builds a consumer historical-network viewer (the california frame deliberately does not absorb S6 layers).",
         "Keyhole BBS + forum deep dive; In-Q-Tel / VC / angel-investor mapping",
         "FidoNet + ARPANET map layers; payphone census (Mojave, rest stops, ZIP-coded)",
         "BBS abandonware survey on archive.org + GitHub OSS BBS -> ColdFire JAR for ColdFireJVM continuation"
@@ -203,9 +280,16 @@
         "tools/build_unit_cad.mjs",
         "docs/hp-aio-xport-modem-adapter-feasibility.md",
         "docs/xport-nucleo-v92-eio-fax-card.md",
-        "docs/lantronix-uclinux-deep-dive-2026-10-08.md"
+        "docs/lantronix-uclinux-deep-dive-2026-10-08.md",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 19 toolchain research (2026-10-23): GitHub OpenJDK/OpenJVM/OpenJRE/Sun/Oracle/Zulu/Temurin survey re-verified Temurin 21 locally and pinned/hash-checked the Zulu 8 JavaCard route, so “no JDK” is no longer the blanket blocker. S7 remains externally blocked on the actual gina.dll binary, physical teardown data, or proprietary GoldKey drivers; local Ghidra distribution still needs CI/relay. Do not invent substitutes.",
+        "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/goldkey-parity-gina-and-units.md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
+        "Round-14 audit (2026-10-22): check:unit-cad 54/54 + gina suite 29/29 green; one vendor spec conflict on record (nMU 2U dims). Remaining = hierarchy write-up + uClinux fax JAR (JDK-gated in sandbox).",
         "Finish master/grandmaster key hierarchy write-up and per-unit CAD/BOM completeness check",
         "Parity backup system design in tandem with gold key drivers",
         "uClinux transcription + softmodem fax JAR build"
@@ -222,7 +306,12 @@
       ],
       "refs": [
         "docs/RESEARCH_SMARTCARD.md",
-        "docs/feitian-javacard-toolchain.md"
+        "docs/feitian-javacard-toolchain.md",
+        "docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md",
+        "xdc-viewer.html",
+        "tools/build_xdc_wars.mjs",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
         "QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock/number-porting caselaw notes via LexisNexis alternatives)",
@@ -247,9 +336,15 @@
         "docs/wiki-samples-vault-drive-map-2026-10-16.md",
         "docs/RESEARCH_SMARTCARD.md",
         "docs/wiki-javacard-validation-2026-10-15.md",
-        "docs/lecture-hall-research-2026-09-20.md"
+        "docs/lecture-hall-research-2026-09-20.md",
+        "docs/shufflecake-stego-cyberchef-2026-10-23.md",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "tools/build_mealplan_applet.sh",
+        "tests/mealplan-applet-sim.test.mjs",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 19 smartcard status (2026-10-23): MealPlan Java Card toolchain now self-prepares from pinned GitHub inputs with SHA-256 checks; live simulator suite passes 18/18 when GitHub is reachable and skips card-backed cases explicitly offline. Physical-card/GlobalPlatform load remains unproven.",
         "Catalog OCR haiku into haiku vault; verify enso generators + haiku randomizers against the standard vault format",
         "Shufflecake + steganographic algorithms -> CyberChef recipes; smartcard filesystem candidates (BasicCard et al., 4MB XPort Pro / 2MB S.S.E. URL budget)",
         "Boot-chain concept write-up (LUKS/GRUB/LILO/liveboot, AES pass-through dongle, dock-unlock) as research note",
@@ -273,7 +368,8 @@
         "docs/recipe-sourcing-round-5-2026-10-14.md",
         "docs/virtual-intelligence-lecture-hall-update-2026-10-05.md",
         "docs/ucsb-2001-first-quarter-research.md",
-        "docs/arxiv-course-reader-research-2026-09-28.md"
+        "docs/arxiv-course-reader-research-2026-09-28.md",
+        "docs/ucsb-course-readers-2026-10-23.md"
       ],
       "next_actions": [
         "Comparative pass over all CyberChef recipes for optimal enhancement (task line 7)",
@@ -316,7 +412,9 @@
         "docs/geomate-sg7-firmware-analysis.md",
         "docs/geomate-viewermade-source-check-2026-10-07.md",
         "research/warrick_geomate_audit",
-        "docs/lecture-hall-research-2026-09-29.md"
+        "docs/lecture-hall-research-2026-09-29.md",
+        "docs/cicada-3301-qr-locations-2026-10-23.md",
+        "resources/historical-network/cicada-3301-poster-seed-2026-10-23.json"
       ],
       "next_actions": [
         "Cicada 3301 QR + lat/long hunt; add finds to the US subsurface viewer and cipher-machine/Hall-of-Fame lecture",
@@ -327,13 +425,15 @@
     {
       "id": "S13",
       "title": "Intelligence-archive research: bin Laden hard drive release",
-      "status": "open",
+      "status": "done",
       "tasks": [
         "T13.1"
       ],
-      "refs": [],
+      "refs": [
+        "docs/abbottabad-release-research-2026-10-23.md"
+      ],
       "next_actions": [
-        "Archival research pass over the publicly released (CIA/FOIA/archive.org) material only; produce a source-checked research note in house style"
+        "Closed 2026-10-23. If the corpus is ever mirrored locally: prefer the CIA 2017-11-09 repost, BagIt with per-file SHA-256, keep inert."
       ]
     },
     {
@@ -344,9 +444,12 @@
         "T14.1"
       ],
       "refs": [
-        "docs/changelly-drainer-analysis.md"
+        "docs/changelly-drainer-analysis.md",
+        "docs/changelly-dev-panel-v327-2026-10-23.md"
       ],
-      "next_actions": []
+      "next_actions": [
+        "Second stage, dev panel v3.27, and an independent campaign variant documented 2026-10-23; the campaign runs multiple Doc/Sheet dead drops, so track panel DOM/global fingerprints rather than per-instance hashes."
+      ]
     }
   ],
   "tasks": [
@@ -355,7 +458,8 @@
       "line": 2,
       "stream": "S1",
       "text": "Ghidra/encryption research over the Osama bin Laden hard-drive release (cia.gov, archive.org)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23 (docs/abbottabad-release-research-2026-10-23.md): no encrypted containers or runnable binaries in the public CIA/ODNI releases; executables defanged in the 2017-11-09 repost, malware withheld. Ghidra not applicable."
     },
     {
       "id": "T1.2",
@@ -363,7 +467,7 @@
       "stream": "S1",
       "text": "Universal decompressor recipes (ace rar arj uue zip 7z iso img peazip 7zip pkware) via GitHub + Ghidra",
       "status": "partial",
-      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note"
+      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note ZipCrypto half closed 2026-10-23: docs/zipcrypto-identification-notes-2026-10-23.md (identification only per F4: flag bits 0/3, 12-byte header, CRC-high vs DOS-time-high check byte with worked examples, WinZip AES method 99 / 0x9901 distinction, Biham-Kocher legacy context; companion op paranoidUnzip). Remaining: Ghidra-side universal decompressor work, blocked on a JVM in the sandbox."
     },
     {
       "id": "T1.3",
@@ -378,7 +482,8 @@
       "line": 157,
       "stream": "S2",
       "text": "FindCrypt + Ghidra (Temurin JVM) over the Sneakers press kit; disassemble; update wiki",
-      "status": "partial"
+      "status": "partial",
+      "note": "round 19: JDK/Ghidra availability refreshed — Temurin 21 relay verified locally, official Temurin release bytes remain sandbox-blocked at the GitHub asset CDN, and Ghidra 12.2 should stay on the existing GitHub Actions/Temurin route until a distribution relay is staged; no new Sneakers disassembly was claimed."
     },
     {
       "id": "T2.2",
@@ -400,7 +505,7 @@
       "stream": "S3",
       "text": "Game Genie / Game Wizard / Universal Hint System; Sierra abandonware Easter eggs & walkthroughs; Shadow President; Ghidra encryption",
       "status": "partial",
-      "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors + Sierra/Shadow President/Game Wizard sweep (round 5); cross-title egg-string sweep implemented as tools/sierra_xgrep.mjs + Game Wizard 32 machine-binding entry in the protection encyclopedia (round 6, docs/backlog-execution-round-6-2026-10-21.md)"
+      "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors + Sierra/Shadow President/Game Wizard sweep (round 5); cross-title egg-string sweep implemented as tools/sierra_xgrep.mjs + Game Wizard 32 machine-binding entry in the protection encyclopedia (round 6, docs/backlog-execution-round-6-2026-10-21.md) Game Genie (NES) decode/encode now shipped in CyberChef as gameGenieNes in both builds, with known-answer (SXIOPO -> $91D9 <- $AD) and round-trip tests in tests/cyberchef-game-genie.test.mjs (bit formulas per tuxnes/NESDev; QUUX: in 6/8-letter codes the 3rd letter carries one unused bit, so a twin code with that bit flipped is equivalent). SNES Game Genie also shipped as gameGenieSnes (letter substitution DF4709156BC8A23E, address bit transposition ijklqrst opabcduv wxefghmn -> abcdefgh ijklmnop qrstuvwx; worked example ABCD-EFFF = C4A704:C9; optional LoROM/HiROM file-offset conversion). Game Boy/Game Gear (gameGenieGb; FF1-234-123 anchors $B123/$FF/compare $7E per the source check-byte example) and Genesis (gameGenieGenesis; ABD5-78F7 = BE47BD:1F00 worked example, 5-bit alphabet + 40-bit transposition via BigInt) ops followed in both builds; suite now 7/7. Remaining strands researched in docs/game-wizard-uhs-sierra-status-2026-10-23.md: Game Wizard is a DOS live-memory TSR (archive.org shareware; DOSBox runs tables/search, state-save broken) needing the binary via fetch-runner; UHS formats documented (88a line format buildable, 91a/96a via OpenUHS); Sierra egg sweep is editorial over sierrahelp.com. T3.1 stays partial on those three strands. UHS88a reader then built (js/uhs.js + uhs-reader.html; cipher known-answer gHrGtGs iqrGr -> Opening Scene; tests/uhs.test.mjs 3/3; 91a/95a/96a detected and referred to OpenUHS; synthetic fixtures only). T3.1 now partial only on Game Wizard (needs binary via fetch-runner) and the editorial Sierra sweep."
     },
     {
       "id": "T4.1",
@@ -412,91 +517,104 @@
         "S4",
         "S5",
         "S6"
-      ]
+      ],
+      "note": "round 38 (2026-10-24, reconciliation): state atlas completed by PRs #144/#146/#147 (rounds 36-37 + 39-40, configs 52-58) while this branch staged NJ+CT as round 36/batch 18 — duplicate generations dropped main-preferred (first two collisions needed zero/limited transfer); this branch retained the workflow branch entry, the cumulative-candidates extract lesson, the README fifty-eight fix, and a batch-20 known-limitation recording its unseeded NJ trio. | round 35 (PR #143, merged after main-preferred reconciliation vs PR #141): New Hampshire/Vermont shipped as configurations 50-51 with 12/12 GNIS VERIFIED=1 starter rows each on the two-surface pipeline; Mount Washington 871352 Coos 6,288 ft and Mount Mansfield 1461774 Chittenden 4,395 ft per-ID checks; Monadnock Mountain official name order; Connecticut/Merrimack/Androscoggin/Saco main stems corridor-only after reservoir-only/empty screens; 7 state frames remain (AK CT HI ME MA NJ RI). round 34: Maryland/Delaware shipped as configurations 48-49 with 12/12 GNIS VERIFIED=1 starter rows each on the two-surface pipeline; Hoye-Crest 1959484 Garrett 3,360 ft per-ID check seeded under its GNIS name (Backbone Mountain record keys to WV); Choptank River parallel duplicate 213797 rejected for in-series 583766; Baltimore (city) identity and St. Mary's normalization preserved; Delaware seeds Iron Hill 214151 because Ebright Azimuth (447 ft) has no GNIS Summit record, Nanticoke corridor-only; 9 state frames remain (AK CT HI ME MA NH NJ RI VT). round 33: PR #139 merged (main-preferred reconciliation vs PRs #137/#140): retained PR #139-only GNIS frames Wisconsin, Michigan, Illinois, Indiana, Ohio, Pennsylvania, Arkansas, Kentucky, Tennessee, Virginia, West Virginia, North Carolina, South Carolina, Florida as configurations 34-47, 12/12 VERIFIED=1 each; evidence registers gnis-state-batch8-11-source-register-2026-10-23-pr139.json + batch12-15 registers + cumulative gnis-candidates-batch7.json extract; duplicated Minnesota/Iowa/Missouri/Georgia kept from main. round 24: Oklahoma/Texas shipped as configurations 25-26 with 12/12 GNIS VERIFIED=1 starter rows; batch-7 register at resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json records the Guadalupe Peak per-ID high-point check, the Black Mesa empty screens, the per-ID Red River Brown County rejection, the third-state Arkansas River empty screen, the Bay/Valley class mappings, and empty-screen/starter-scope exclusions; round 23: Nebraska/Kansas shipped as configurations 23-24 with 12/12 GNIS VERIFIED=1 starter rows; batch-6 register at resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json records the Panorama Point and Mount Sunflower per-ID high-point checks, the Scottsbluff/Scotts Bluff and North Platte town/river splits, the Kansas River multipoint service discrepancy, and empty-screen river exclusions (Missouri NE+KS, Republican NE, Arkansas KS); round 22: North Dakota/South Dakota shipped as configurations 21-22 with 12/12 GNIS VERIFIED=1 starter rows; batch-5 register at resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json records the White Butte and Black Elk Peak per-ID checks, the Devils Lake town/lake split, and empty-screen river/park exclusions; round 21: Montana/Wyoming shipped as configurations 19-20 with 12/12 GNIS VERIFIED=1 starter rows; batch-4 register at resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json records the Granite Peak and Jackson Lake per-ID checks plus river/park screen exclusions; round 20: Oregon/Washington/Idaho shipped as configurations 16-18 with 12/12/12 GNIS VERIFIED=1 starter rows; batch-3 register at resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json records the Columbia/Snake state-screen asymmetry, Spokane River two-record omission, Bear Lake omission, and other identity guards; remaining states and PC Globe threads remain open; round 19: SoCal Subsurface gained a finished single-file edition and six-entry inlined XDC beside the canonical multi-file package; no new geographic/GNIS claims were added and the checked-in inlined build still uses synthetic relief. round 18: Utah/Colorado/New Mexico shipped as configurations 13-15 with 12/12/12 GNIS VERIFIED=1 starter rows, completing the Four Corners state set; batch-2 register at resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json records identity guards and unseeded Bear Lake/Arkansas/Rio Grande/Colorado/San Juan/Pecos candidates; remaining states and PC Globe threads remain open; round 17: Guam/American Samoa (Tutuila–Manuʻa only)/USVI/Midway frames shipped as configurations 9-12 with 12/12/12/6 GNIS VERIFIED=1 rows; hemisphere-aware formatting and disconnected coastlines are in the shared engine; territory register at resources/city-subsurface/gnis-territory-source-register-2026-10-22.json; remaining states and PC Globe threads remain open; round 16: CA now has 16 per-ID GNIS VERIFIED=1 rows + 11 curated VERIFIED=0 rows; Nevada/Arizona frames shipped with 12/12 GNIS rows each; source register at resources/city-subsurface/gnis-state-source-register-2026-10-22.json; S6 historical-network layers scoped separately, not absorbed into city-subsurface; round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open; Round 25 (2026-10-23): Iowa and Missouri shipped as configurations 27-28 with the 12+12-row GNIS source register gnis-state-batch8-source-register-2026-10-23.json (per-ID Hawkeye Point and Taum Sauk Mountain high points; first statewide Missouri River row; St./Saint spelling gates); Round 26 (2026-10-23): Minnesota and Louisiana shipped as configurations 29-30 with the 12+12-row GNIS source register gnis-state-batch9-source-register-2026-10-23.json (first seeded Mississippi River row; Red River chain closed; Eagle Mountain/Driskill per-ID high points; St./Saint gates three and four); Round 27 (2026-10-23): Mississippi and Alabama shipped as configurations 31-32 with the 12+12-row GNIS source register gnis-state-batch10-source-register-2026-10-23.json (per-ID Woodall 806 ft and Cheaha 2407 ft high points; Guntersville decision-card tie-break and Wheeler same-name-lake separation; Mississippi main-stem fifth empty screen keeps it corridor-only; first register tie-break rule for parallel duplicate records); Round 28 (2026-10-23): Georgia shipped as configuration 33 with the 12+12-row GNIS source register gnis-state-batch11-source-register-2026-10-23.json (Brasstown Bald per-ID high point 4784 feet; Lake Oconee two-record description-locator tie-break; Savannah River empty and Lake Lanier mismatch disclosures; Ocmulgee/Oconee confluence pair) plus reconciliation of PR #134 Game Genie count guards (511 to 515 in four sites) and the kitchen bake teardown race; Round 35 (2026-10-23): main-preferred reconciliation with PR #139 — main's South Carolina (config 34, gnis-state-batch14 NC/SC register) retained over this branch's independent South Carolina/batch-12 generation; transferred evidence = dual Sassafras elevation disclosure (3,560 ft current USGS table / 3,553 ft earlier USGS-published), Savannah River Georgia empty-screen cross-reference replacing the stale no-Georgia-frame text, Rock Hill P1 versus U6 census-class tie-break preserved as a known limitation, batch12 remains Kentucky-Tennessee"
     },
     {
       "id": "T5.1",
       "line": 6,
       "stream": "S5",
       "text": "Live data layers: NIFC historical fires, WiFire, WREN cameras, WildCAD, interagency per-state incidents, CALTRANS/state DOT cameras, cad.chp.ca.gov API, liveuamap API, NOTAMs, fire lookouts, KiwiSDR locations, tv.garden/radio.garden transcription + PR",
-      "status": "open"
+      "status": "partial",
+      "note": "Round 48 (parallel session): source inventory (docs/s5-live-layers-inventory-2026-10-25.md), feed-agnostic layer normalizers (js/incident-adapters.js), and standalone dish calculator (dish-pointing.html + js/dish-pointing.js) with known-answer tests; WREN cameras flagged as an unverified referent. Round 49 (2026-10-25, this session): in-viewer DISH ALIGNMENT panel in /satellite-constellations.html (js/satellite-dish-pointing.js + DISH_SITES/DISH_SLOTS cited presets, 10 node tests — published worked example az 109.33°/el 5.85° reproduced within 0.05°, classic closed form to 1e-9°, independent ECEF→ENU vector derivation to 1e-6°, 81.3° horizon arc). Fire-lookout/KiwiSDR static layers, live capture, incident viewer wiring, and tv.garden/radio.garden remain."
     },
     {
       "id": "T6.1",
       "line": 6,
       "stream": "S6",
       "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
-      "status": "open"
+      "status": "partial",
+      "note": "round 18: FidoNet local nodelist/nodediff adapter and browser SHA-256 capture metadata shipped, but no historical nodelist was bundled or parsed into the Keyhole fixture, so the Denver evidence and independence status are unchanged; round 17: Keyhole Phase 0 evidence fixture/viewer/local importer shipped; TEXTFILES 303 compilation gives a 1994-1996 retrospective span but per-record independence from USBBS is unresolved; exact NodelistDB searches found no Denver match; distinct 818 Keyhole BBS remains rejected; round 16: USBBS134 (Jul 1995) repeats the Denver Keyhole BBS listing and gives first-listed code 123, but it is the same publication lineage—not independent corroboration; consumer historical-network viewer scoped in docs/historical-network-viewer-scope-2026-10-22.md; round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
     },
     {
       "id": "T6.2",
       "line": 6,
       "stream": "S6",
       "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes",
-      "status": "open"
+      "status": "partial",
+      "note": "round 18: FTS-5000 parser, edition-checked nodediff chain engine, format detection, address/flag search+CSV, and local viewer nodelist import shipped with synthetic tests; status remains open because no bundled FidoNet/ARPANET/payphone dataset was seeded—historical nodelist rights remain local-import-only absent written consent and header CRC is parsed, not verified; round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open. Round 19 (2026-10-23): first bundled comms-history pack seeded in the historical-network schema (ARPANET IMP #1-4 1969 + first-message edge, FidoNet origin SF 1984, Mojave phone booth) from cited public facts — resources/historical-network/comms-history-seed-2026-10-23.json, docs/fidonet-arpanet-map-layers-2026-10-23.md. No nodelist/USBBS bulk data bundled (rights decision stands). Remaining: viewer rendering, ARPANET 1971/1977 slices, bulk layer only with a redistributable snapshot. Round 20 (2026-10-23): viewer wiring done — historical-network-viewer.html pack picker renders Keyhole + comms-history + Cicada packs (schematic scatter, per-pack year bounds); builder generalized to three data modules; tests 16/16. Remaining: ARPANET 1971/1977 slices; bulk layer only with redistributable snapshot."
     },
     {
       "id": "T6.3",
       "line": 167,
       "stream": "S6",
       "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). m68k cross-build proven 2026-10-23 via runner (.github/workflows/arena-m68k-crossbuild.yml, run 40027253569): m68k-linux-gnu-gcc 13.3 compiled ftnpkt.c -Werror-clean to a static MC68000 ELF (sha256 efb8e6b83a81...), executed under qemu-m68k 8.2.2 with dump + --news output byte-identical to the host build on the synthetic fixture (tools/bbs/make_fixture.mjs; .arena-m68k/result.md). Sandbox zig route ruled out (its LLVM has no m68k backend). Remaining: uClinux bFLT target, ColdFire hardware run, live peering (real uplink)."
     },
     {
       "id": "T7.1",
       "line": 166,
       "stream": "S7",
       "text": "Parity backup system with gold key drivers; Ghidra Gina.dll (DriverGuide); master/grandmaster key hierarchy; CAD + BOM per unit; science.edu/earth vitamins research",
-      "status": "partial"
+      "status": "partial",
+      "note": "round 19: JDK availability narrowed but did not close this task — Temurin 21 and pinned Zulu 8 routes are proven, while the gina.dll binary/teardown/driver artifacts remain absent."
     },
     {
       "id": "T7.2",
       "line": 8,
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round. m68k cross-build proven 2026-10-23 via runner (.github/workflows/arena-m68k-crossbuild.yml, run 40027253569): m68k-linux-gnu-gcc 13.3 compiled ftnpkt.c -Werror-clean to a static MC68000 ELF (sha256 efb8e6b83a81...), executed under qemu-m68k 8.2.2 with dump + --news output byte-identical to the host build on the synthetic fixture (tools/bbs/make_fixture.mjs; .arena-m68k/result.md). Sandbox zig route ruled out (its LLVM has no m68k backend). Remaining: uClinux bFLT target, ColdFire hardware run, live peering (real uplink)."
     },
     {
       "id": "T8.1",
       "line": 10,
       "stream": "S8",
       "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu",
-      "status": "open"
+      "status": "open",
+      "note": "round 19: Temurin/Zulu/Ghidra toolchain research refreshed in docs/github-jdk-runtime-research-2026-10-23.md; Android virtualization lab itself remains open and no Ghidra whole-toolchain claim was made."
     },
     {
       "id": "T8.2",
       "line": 10,
       "stream": "S8",
       "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
-      "status": "open"
+      "status": "open",
+      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open. TI-calc strand scoped 2026-10-23 (docs/ti-calc-port-status-2026-10-23.md): calc/ SITE-K engine re-verified green in-sandbox (make -C calc test: host, 6-device C/JS differential, ti_pack container selftest); socal-subsurface full port ruled out with numbers (863 KB WebGL app vs 24 KB RAM / 96x64 LCD); honest follow-ons defined - SUBSURF sector-grid sketch screens in the SITE-K pattern, sdcc toolchain via runner for real .8xp binaries, F-Droid WebView wrapper via runner. Correction appended 2026-10-23: the TI expression already exists - socal-calc/ is a complete SOCAL SUBSURFACE calculator port (5 screens, data pack from the live app via xdc2c.py, 8584 B of data); make -C socal-calc test re-verified green (host, 3-device differential, package selftest). TI strand therefore stands at: port built and proven; only sdcc/tigcc device compilation (runner toolchain fetch) and the F-Droid wrapper (runner) remain."
     },
     {
       "id": "T8.3",
       "line": 10,
       "stream": "S8",
       "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet",
-      "status": "open"
+      "status": "partial",
+      "note": "Research cluster closed 2026-10-23 (docs/iparty-voipblaster-duck-2026-10-23.md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass."
     },
     {
       "id": "T8.4",
       "line": 168,
       "stream": "S8",
       "text": "SIM lock research (LexisNexis + alternatives, GitHub/GitLab); QEMU phone lab; xdc format conversions",
-      "status": "open"
+      "status": "partial",
+      "note": "SIM-lock research delivered 2026-10-23 (docs/sim-lock-research-2026-10-23.md) from free primary sources only: DMCA 1201 exemption timeline 2006-2024 (Pub. L. 113-144; 89 FR 85437 renewed 2024), CTIA six commitments, FCC 24-77 NPRM unadopted, DA 26-43 (2026) waiving Verizon 60-day rule; LexisNexis alternatives mapped (govinfo/eCFR/Federal Register/CourtListener; citator gap stated honestly); lawful-path only, no bypass tooling. xdc conversions discharged via the WAR line. Remaining: QEMU phone lab (qemu-system + device images via runner); user-mode qemu proven on this branch by the m68k build."
     },
     {
       "id": "T9.1",
       "line": 9,
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
-      "status": "open"
+      "status": "partial",
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work. Virtualized reader built 2026-10-23: js/cardreader.js models the ISO 7816-4 substrate shared by BasicCard/JavaCard work (APDU codec, MF/DF/EF tree with access conditions, VERIFY PIN retry lockout 63Cx->6983, SELECT by file ID and by applet AID with proprietary-INS routing; reader talks only APDU bytes). tests/cardreader.test.mjs 6/6. Not a JVM or a Basic interpreter - applets arrive as APDU handlers. Remaining T9.1: smartcard filesystem choice write-up, algorithms book, boot-chain note. Smartcard FS choice (docs/smartcard-filesystem-choice-2026-10-23.md): ISO/IEC 7816-4 MF/DF/EF chosen for storage (the cardreader.js model), BasicCard FS + FAT rejected with sources, JavaCard applets borrowed for behaviour only. Boot-chain note (docs/boot-chain-dongle-note-2026-10-23.md): key-release not data-path; PKCS#11/FIDO2 token unlock already exists in the systemd/cryptsetup stack; evil-maid and recovery caveats recorded. Remaining: algorithms book sourcing pass. Algorithms book strand closed 2026-10-23 (docs/card-algorithms-book-2026-10-23.md): the card-tractable subset of the canon (CLRS/Weiss) implemented as js/card-algorithms.js - CRC-16/CCITT-FALSE, Luhn (ISO 7812-1), binary search, insertion sort, Euclid GCD, FNV-1a, uint16 repeated-squaring modExp - bound as the AID A000000002 ALGO-BOOK applet on the virtual reader, pinned by published known answers (tests/card-algorithms.test.mjs 3/3). INS gaps forced by the 7816-4 core claiming A4/20/B0/D6 (Luhn on 0x22). FFT/geometry/hand-rolled RSA/external-memory chapters excluded with reasons. T9.1 remaining: physical-card/GlobalPlatform load (hardware) and card personalisation write path. Personalisation write path built 2026-10-23: CREATE FILE (E0) / DELETE FILE (E4) on the virtual card - PIN-gated issuer provisioning of DF/EF onto the MF tree, duplicate-FID and MF protections, selection fallback on delete (js/cardreader.js; tests/cardreader-personalisation.test.mjs 4/4; card suites 13/13). T9.1 now stands at: every sandbox-buildable strand closed (reader, FS choice, algorithms book, boot-chain note, personalisation); the sole remainder is physical-card/GlobalPlatform load, which needs hardware."
     },
     {
       "id": "T9.2",
       "line": 171,
       "stream": "S9",
       "text": "Catalog OCR haiku into haiku vault; enso generators + haiku randomizers vs standard vault format; endpoints + filesystem persistence",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: generator/catalog half built - js/haiku-vault.js (seeded phrase-bank generator, 5-7-5 by construction with bank self-verification; OCR cataloger grouping triples with counted meter + leftover reporting; collection payload builder) seals/opens haiku-vault-v1 via WebCrypto, byte-identical to the format draft section 2 test vector (tests/haiku-vault-gen.test.mjs 6/6 incl. tamper/wrong-passphrase rejection); haiku-vault.html workbench adds localStorage persistence + .vault download. Remaining: live OCR capture endpoints against real scans."
     },
     {
       "id": "T9.3",
@@ -511,51 +629,64 @@
       "line": 171,
       "stream": "S9",
       "text": "Quine -> S.S.E. URL with password + QR/data-matrix export (Avery Label Pro); RFC drafts for BagIt and haiku-vault formats",
-      "status": "partial",
-      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains"
+      "status": "done",
+      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains S.S.E. URL/QR half closed 2026-10-23: js/quine-sse.js + quine-sse.html - quines are verified by execution (byte-identical output) before packing, sealed under a password into a quine-sse-v1. URL fragment (PBKDF2/AES-GCM house envelope, explicitly NOT Paranoia Works SSE v3 byte-compat, which stays in sse-webxdc), with QR-budget verdicts and an Avery 5160 QR label sheet. tests/quine-sse.test.mjs 4/4. T9.4 complete (RFC drafts were round 2)."
     },
     {
       "id": "T10.1",
       "line": 7,
       "stream": "S10",
       "text": "Comparative optimization of all CyberChef recipes",
-      "status": "partial",
-      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops"
+      "status": "done",
+      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept; round 14: spotlight sub-item CLOSED (18 packs, tour-only 0, guard test added); polyglot MIME fields done Closed 2026-10-23: final audit re-run - scripts/compare-cyberchef-recipe-packs.mjs --spotlights reports 515 ops, tour-only 0, orphans 0 (254 ops in exactly one pack), and the guard suites (cyberchef-recipe-sync, cyberchef-spotlight-coverage) pass; every enumerated sub-item (comparative pass, KAT vectors, thin categories, spotlight batches, polyglot MIME fields) is delivered. Comparative tuning remains a standing activity, not a finish line."
     },
     {
       "id": "T10.2",
       "line": 169,
       "stream": "S10",
       "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail."
     },
     {
       "id": "T10.3",
       "line": 169,
       "stream": "S10",
       "text": "Course readers from class schedule / bookstore catalog / cs.ucsb.edu",
-      "status": "partial"
+      "status": "done",
+      "note": "2026-10-23: sourcing round delivered in docs/ucsb-course-readers-2026-10-23.md - Campus Store lookup + Library Course Reserves as catalogues of record; eleven UCSB CS course texts sourced with editions/terms from cs.ucsb.edu course pages (Savitch, Main & Savitch, Rosen, Weiss, Sahni, AIMA, OSTEP, Mitzenmacher & Upfal); the one true printed reader in the sample located (CS 32, SBPrinter/UCEN); algorithms cross-check answered (Weiss/Sahni/Mitzenmacher-Upfal assigned, not CLRS). T10.3 complete as scoped."
     },
     {
       "id": "T11.1",
       "line": 5,
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book."
     },
     {
       "id": "T12.1",
       "line": 170,
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
-      "status": "partial"
+      "status": "done",
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2). Hall-of-Fame lecture closed 2026-10-23: Lecture Hall record cicada-3301-hall-of-fame added to the Cipher Machines suite (Pc 33 -> 34) via tools/patch_lecture_hall_cicada_hof.py; tools/verify_lecture_hall.mjs all checks passed (record on the raised-bar list, four new content assertions); doc docs/cicada-3301-hall-of-fame-lecture-2026-10-23.md. T12.1 complete: QR/lat-long research, Warrick application, Hall-of-Fame lecture all delivered; Geomate Jr material already filed under its own docs."
+    },
+    {
+      "id": "T12.2",
+      "line": 171,
+      "stream": "S12",
+      "text": "Dual-shuffle explorers on the modern net: CyTube and shuffle sites reviewed; two-deck merge fairness explored and built locally",
+      "status": "done",
+      "note": "2026-10-23: surveyed CyTube (calzoneman/sync, cytu.be) and successors (OpenTogetherTube, Watch2Gether, Metastream, Kosmi, SyncUp) - shared-queue rooms, no published two-queue fairness model. Built dual-shuffle.html + js/dual-shuffle.js: both Fisher-Yates duals, naive swap (convicted by permutation-distribution probe; its single-card marginals are uniform, verified), interleave/riffle/blocks/concat-shuffle merges, seeded RNG, dual bias meters. tests/dual-shuffle.test.mjs 4/4. Doc: docs/dual-shuffle-explorers-2026-10-23.md. No live CyTube room created (third-party service)."
     },
     {
       "id": "T13.1",
       "line": 2,
       "stream": "S13",
       "text": "Archival research on the bin Laden hard-drive release (see T1.1; grouped for execution)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23: docs/abbottabad-release-research-2026-10-23.md (release timeline, withholding categories, preservation guidance)."
     },
     {
       "id": "T14.1",
@@ -564,7 +695,7 @@
       "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b",
       "status": "partial",
       "flag": "F2",
-      "note": "Preservation path already built (docs/fna102b-xena-preservation.md); ungarble application is out of scope per standing decision"
+      "note": "Changelly half DONE 2026-10-23: Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I loader + Sheet second stage retrieved inert, BagIt + Xena preserved (dist/changelly-drainer-xena/, gitignored), Ghidra assessed not-applicable (JavaScript text; no MZ/ELF/PE, no crypto keywords). Dev panel v3.27: docs/changelly-dev-panel-v327-2026-10-23.md. KGK.ARJ/FNA102B parts remain out of scope per standing decisions F2/F4; ungarble application is out of scope per standing decision"
     },
     {
       "id": "T15.1",

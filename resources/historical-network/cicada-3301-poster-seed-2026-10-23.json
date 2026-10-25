@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "id": "cicada-3301-poster-locations-us-seed",
+  "title": "Cicada 3301 (2012) — US physical QR poster locations, historical seed",
+  "status": "reviewed-seed-not-yet-rendered",
+  "generated": "2026-10-23",
+  "backlog": "T12.1 / S12",
+  "rightsDecision": "Published historical coordinates and solver-documented outcomes from cited public sources only. The posters are ephemeral 2012 artifacts and are long gone; this pack documents history and must not be read as 'something is there now'. No puzzle material, QR payloads, or onion addresses are reproduced.",
+  "seedNote": "Created 2026-10-23 (backlog T12.1). US subset (8 of the 14 coordinates published 2012-01-09) for the historical-network viewer; the full global list is tabulated in docs/cicada-3301-qr-locations-2026-10-23.md.",
+  "snapshots": [
+    {
+      "id": "src-cicada-poster-matrices",
+      "title": "Cicada 3301 poster-location matrices (Uncovering Cicada wiki; scream314/cicada3301 2012.md coordinate list)",
+      "publisher": "solver-community documentation",
+      "issuedLabel": "accessed 2026-10-23",
+      "captureUri": "https://uncovering-cicada.fandom.com/wiki/Map_of_all_locations_of_3301s_posters",
+      "captureStatus": "citation-only-not-captured",
+      "sha256": null,
+      "rightsStatus": "citation-only",
+      "rightsNote": "Coordinates and found/not-recovered outcomes cited as facts; no wiki text, images, QR payloads, or puzzle content bundled.",
+      "parser": "manual-fixture/2026-10-23"
+    }
+  ],
+  "places": [
+    {
+      "id": "place-cicada-seattle-u-district",
+      "label": "Seattle — University Way NE (poster site)",
+      "granularity": "site",
+      "lat": 47.664196,
+      "lon": -122.313301,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (4739 University Way NE, Seattle, WA 98105). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-seattle-queen-anne",
+      "label": "Seattle — Crockett St (poster site)",
+      "granularity": "site",
+      "lat": 47.63752,
+      "lon": -122.346277,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (514 Crockett St, Seattle, WA 98109). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-seattle-capitol-hill",
+      "label": "Seattle — 15th Ave E (poster site)",
+      "granularity": "site",
+      "lat": 47.622993,
+      "lon": -122.312576,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (428 15th Ave E, Seattle, WA 98112). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-fayetteville-ar",
+      "label": "Fayetteville — W Dickson St (poster FOUND)",
+      "granularity": "site",
+      "lat": 36.0665472222222,
+      "lon": -94.1726416666667,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (853-899 W Dickson St, University of Arkansas, Fayetteville, AR 72701). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-chino-ca",
+      "label": "Chino — Euclid Ave (poster site)",
+      "granularity": "site",
+      "lat": 33.966808,
+      "lon": -117.650488,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (15717-15735 Euclid Ave, Chino, CA 91708). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-new-orleans-la",
+      "label": "New Orleans area — Hwy 407 (poster site)",
+      "granularity": "site",
+      "lat": 29.909098706850486,
+      "lon": -89.99312818050385,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (Published as 'State Highway 407, New Orleans, LA 70131' in solver matrices). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-miami-fl",
+      "label": "Miami — SW 152nd Ave (poster FOUND)",
+      "granularity": "site",
+      "lat": 25.684702,
+      "lon": -80.441289,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (8718-8798 SW 152nd Ave, Miami, FL 33193). 2012 poster site; nothing remains."
+    },
+    {
+      "id": "place-cicada-haleiwa-hi",
+      "label": "Haleiwa — Kamehameha Hwy (poster site)",
+      "granularity": "site",
+      "lat": 21.584069,
+      "lon": -158.104211,
+      "radiusKm": 0.3,
+      "coordinateBasis": "published-puzzle-coordinates",
+      "uncertaintyNote": "Coordinate as published by Cicada 3301 on 2012-01-09 (66-420 Kamehameha Hwy, Haleiwa, HI). 2012 poster site; nothing remains."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node-cicada-seattle-u-district",
+      "name": "Seattle — University Way NE (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-seattle-u-district",
+      "observationIds": [
+        "obs-cicada-seattle-u-district"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-seattle-queen-anne",
+      "name": "Seattle — Crockett St (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-seattle-queen-anne",
+      "observationIds": [
+        "obs-cicada-seattle-queen-anne"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-seattle-capitol-hill",
+      "name": "Seattle — 15th Ave E (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-seattle-capitol-hill",
+      "observationIds": [
+        "obs-cicada-seattle-capitol-hill"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-fayetteville-ar",
+      "name": "Fayetteville — W Dickson St (poster FOUND)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-fayetteville-ar",
+      "observationIds": [
+        "obs-cicada-fayetteville-ar"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-chino-ca",
+      "name": "Chino — Euclid Ave (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-chino-ca",
+      "observationIds": [
+        "obs-cicada-chino-ca"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-new-orleans-la",
+      "name": "New Orleans area — Hwy 407 (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-new-orleans-la",
+      "observationIds": [
+        "obs-cicada-new-orleans-la"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-miami-fl",
+      "name": "Miami — SW 152nd Ave (poster FOUND)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-miami-fl",
+      "observationIds": [
+        "obs-cicada-miami-fl"
+      ],
+      "identifiers": [],
+      "aliases": []
+    },
+    {
+      "id": "node-cicada-haleiwa-hi",
+      "name": "Haleiwa — Kamehameha Hwy (poster site)",
+      "network": "cicada-3301-2012",
+      "kind": "qr-poster-site",
+      "placeId": "place-cicada-haleiwa-hi",
+      "observationIds": [
+        "obs-cicada-haleiwa-hi"
+      ],
+      "identifiers": [],
+      "aliases": []
+    }
+  ],
+  "edges": [],
+  "observations": [
+    {
+      "id": "obs-cicada-seattle-u-district",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Seattle — University Way NE (poster site)",
+        "publishedCoordinate": "47.664196, -122.313301",
+        "addressAsDocumented": "4739 University Way NE, Seattle, WA 98105",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-seattle-queen-anne",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Seattle — Crockett St (poster site)",
+        "publishedCoordinate": "47.63752, -122.346277",
+        "addressAsDocumented": "514 Crockett St, Seattle, WA 98109",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-seattle-capitol-hill",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Seattle — 15th Ave E (poster site)",
+        "publishedCoordinate": "47.622993, -122.312576",
+        "addressAsDocumented": "428 15th Ave E, Seattle, WA 98112",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-fayetteville-ar",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Fayetteville — W Dickson St (poster FOUND)",
+        "publishedCoordinate": "36.0665472222222, -94.1726416666667",
+        "addressAsDocumented": "853-899 W Dickson St, University of Arkansas, Fayetteville, AR 72701",
+        "outcome": "poster FOUND (solver-documented)"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-chino-ca",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Chino — Euclid Ave (poster site)",
+        "publishedCoordinate": "33.966808, -117.650488",
+        "addressAsDocumented": "15717-15735 Euclid Ave, Chino, CA 91708",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-new-orleans-la",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "New Orleans area — Hwy 407 (poster site)",
+        "publishedCoordinate": "29.909098706850486, -89.99312818050385",
+        "addressAsDocumented": "Published as 'State Highway 407, New Orleans, LA 70131' in solver matrices",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-miami-fl",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Miami — SW 152nd Ave (poster FOUND)",
+        "publishedCoordinate": "25.684702, -80.441289",
+        "addressAsDocumented": "8718-8798 SW 152nd Ave, Miami, FL 33193",
+        "outcome": "poster FOUND (solver-documented)"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    },
+    {
+      "id": "obs-cicada-haleiwa-hi",
+      "snapshotId": "src-cicada-poster-matrices",
+      "locator": "2012 coordinate list published 2012-01-09 17:00 UTC; solver location matrix",
+      "observedAt": "2012-01",
+      "validFrom": "2012-01-09",
+      "validTo": "2012-01-31",
+      "evidenceTier": "retrospective-compilation",
+      "rawTextStatus": "cited-facts-no-excerpt",
+      "rawText": null,
+      "fields": {
+        "name": "Haleiwa — Kamehameha Hwy (poster site)",
+        "publishedCoordinate": "21.584069, -158.104211",
+        "addressAsDocumented": "66-420 Kamehameha Hwy, Haleiwa, HI",
+        "outcome": "listed coordinate; recovery not asserted here"
+      },
+      "warnings": [
+        "Historical 2012 site. Do not visit expecting a poster; several matrices disagree on recovery status, so only well-attested FOUNDs are marked."
+      ]
+    }
+  ],
+  "mergeLog": []
+}

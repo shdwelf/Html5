@@ -28,6 +28,8 @@ html, body {
 }
 
 #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#globeStage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 5; cursor: grab; background: var(--bg); touch-action: none; }
+#globeStage:active { cursor: grabbing; }
 #labels { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
 #labels .lbl {
   position: absolute; left: 0; top: 0;

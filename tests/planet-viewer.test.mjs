@@ -102,10 +102,10 @@ test("the page wires every control the viewer binds", () => {
   const html = readFileSync(new URL("../planet-viewer-4dwm.html", import.meta.url), "utf8");
   assert.match(html, /css\/planet-viewer-4dwm\.css/);
   assert.match(html, /<script type="module" src="\.\/js\/planet-viewer-4dwm\.js"><\/script>/);
-  for (const id of ["stage", "labels", "layerList", "checkList", "infoTitle", "infoBody", "cardList", "pipLayer", "wm4dDesk", "wm4dTray", "wm4dStatus", "statPlate", "statChecks", "hudFps", "status", "btnLabels", "btnVrml", "btnReset", "vertExag", "vertExagVal", "searchBox", "searchResults"]) {
+  for (const id of ["stage", "globeStage", "labels", "layerList", "checkList", "infoTitle", "infoBody", "cardList", "pipLayer", "wm4dDesk", "wm4dTray", "wm4dStatus", "statPlate", "statChecks", "hudFps", "status", "btnLabels", "btnVrml", "btnReset", "vertExag", "vertExagVal", "searchBox", "searchResults"]) {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
-  for (const b of ["chey", "ange", "lawrence"]) assert.ok(html.includes(`data-plate="${b}"`));
+  for (const b of ["chey", "ange", "lawrence", "globe"]) assert.ok(html.includes(`data-plate="${b}"`));
   for (const m of ["relief", "wire", "xray"]) assert.ok(html.includes(`data-mode="${m}"`));
 });
 
@@ -117,4 +117,73 @@ test("the viewer reuses the shared modules rather than re-deriving", () => {
   // Metre/kilometre convention is stated and the exaggeration is explicit.
   assert.match(app, /one kilometre/i);
   assert.match(app, /exag \/ 1000/);
+});
+
+/* ======================================================================
+   globe plate (S4 tail, round 44): the Red October globe, reused
+   ====================================================================== */
+
+import { COUNTRIES } from "../js/country-data.js";
+import {
+  GLOBE_PROVENANCE,
+  coastlineRings,
+  globeMarkers,
+  graticule,
+  projectOrthographic,
+  projectSegments,
+  visibleMarkers,
+} from "../js/planet-globe.js";
+
+test("globe reuses the Red October orthographic projection, not a copy", () => {
+  const src = readFileSync(new URL("../js/planet-globe.js", import.meta.url), "utf8");
+  assert.match(src, /from "\.\.\/apps\/red-october-command-viewer\/core\.js"/);
+  assert.ok(GLOBE_PROVENANCE.projection.includes("red-october-command-viewer"));
+  const centre = projectOrthographic(20, 10, 20, 10);
+  assert.ok(centre.visible && Math.abs(centre.x) < 1e-12 && Math.abs(centre.y) < 1e-12);
+  assert.ok(!projectOrthographic(-20, 190, 20, 10).visible, "antipode must be hidden");
+  const east = projectOrthographic(0, 90, 0, 0);
+  assert.ok(east.visible && Math.abs(east.x - 1) < 1e-9, "limb point projects to disc edge");
+});
+
+test("globe markers are the country viewer's capitals, never invented points", () => {
+  const { markers, skipped } = globeMarkers(COUNTRIES);
+  assert.equal(markers.length + skipped, COUNTRIES.length);
+  assert.ok(markers.length >= 230, `expected nearly all 233 capitals, got ${markers.length}`);
+  for (const m of markers) {
+    assert.ok(Number.isFinite(m.lat) && Number.isFinite(m.lon));
+    assert.ok(m.capital.length > 0, `${m.code}: marker carries its capital name`);
+  }
+  const us = markers.find((m) => m.code === "us");
+  assert.ok(us && /Washington/.test(us.capital), "US marker is its Factbook capital");
+  const vis = visibleMarkers(markers, 20, 10);
+  assert.ok(vis.length > 50 && vis.length < markers.length, "one hemisphere shows a proper subset");
+  for (const v of vis) assert.ok(v.z >= 0 && v.x * v.x + v.y * v.y <= 1.000001, "visible markers stay on the disc");
+});
+
+test("globe coastlines come from the bundled Natural Earth outlines", () => {
+  const geo = JSON.parse(readFileSync(new URL("../vendor/world/countries.geo.json", import.meta.url), "utf8"));
+  const rings = coastlineRings(geo);
+  assert.ok(rings.length >= 180, `expected rings for 180 features, got ${rings.length}`);
+  let pts = 0;
+  for (const ring of rings) {
+    for (const [lon, lat] of ring) {
+      assert.ok(lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90, "coastline coordinate in range");
+      pts++;
+    }
+  }
+  assert.ok(pts > 5000, `coastline should be substantial, got ${pts} points`);
+  const segs = projectSegments(rings[0], 35, 62);
+  for (const seg of segs) for (const p of seg) assert.ok(p.z >= 0, "segment points are visible-side only");
+  const grat = graticule(20);
+  assert.equal(grat.meridians.length, 18);
+  assert.equal(grat.parallels.length, 9);
+});
+
+test("globe plate wiring lives in the viewer, with an honest VRML guard", () => {
+  const app = readFileSync(new URL("../js/planet-viewer-4dwm.js", import.meta.url), "utf8");
+  for (const sym of ["globeMarkers", "visibleMarkers", "coastlineRings", "projectSegments", "drawGlobe", "setGlobe"]) {
+    assert.ok(app.includes(sym), `viewer does not use ${sym}`);
+  }
+  assert.match(app, /VRML export belongs to the terrain plates/);
+  assert.match(app, /vendor\/world\/countries\.geo\.json/);
 });

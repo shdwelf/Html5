@@ -1,0 +1,634 @@
+{
+  "generated": "2026-10-22",
+  "title": "Round 18 Four Corners state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Utah, Colorado, and New Mexico, completing the Four Corners state set beside the round-16 Arizona frame. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate; South Platte River also carries a GNIS Domestic Names per-ID check.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<UT|CO|NM>&include=gnis&maxSuggestions=<10|20>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Political divisions and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for South Platte River (201759) and the three Eddy County Pecos River candidates (900170, 900171, 900172). The South Platte check confirms Class=Stream and coordinate sequence 1; the Pecos checks do not identify one statewide river record."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake or Reservoir according to the official feature name and kind, and Streams & Canals to Stream for the accepted river records.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit/valley/flat outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from the gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "utah": {
+      "title": "UTAH SUBSURFACE 4Dwm",
+      "state": "UT",
+      "bbox": {
+        "lon0": -114.25,
+        "lat0": 36.95,
+        "lon1": -108.85,
+        "lat1": 42.05
+      },
+      "frameNote": "Four Corners batch: Wasatch Front and Great Basin anchors are balanced with Uinta, Green River, Sevier River, and Colorado Plateau records. Bear Lake remains unseeded because the screen returned several same-name lake records, including two in Rich County.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Salt Lake City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Salt Lake",
+          "latitude": 40.7607794,
+          "longitude": -111.8910474,
+          "featureId": "1454997",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Salt Lake County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the separate Salt Lake City Division record (FEATURE_ID 1939415). USGS GNIS Geocoder (GNIS), FEATURE_ID=1454997; exact official name and Cities & Populated Places type in Salt Lake County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Provo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Utah",
+          "latitude": 40.2338438,
+          "longitude": -111.6585337,
+          "featureId": "1444661",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Utah County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Provo-Orem Division record (FEATURE_ID 1939408). USGS GNIS Geocoder (GNIS), FEATURE_ID=1444661; exact official name and Cities & Populated Places type in Utah County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Ogden",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Weber",
+          "latitude": 41.223,
+          "longitude": -111.9738304,
+          "featureId": "1444049",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Weber County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Ogden Division and other political-division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1444049; exact official name and Cities & Populated Places type in Weber County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Saint George",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washington",
+          "latitude": 37.1041476,
+          "longitude": -113.5841233,
+          "featureId": "1455098",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washington County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Saint George Division record (FEATURE_ID 1939413). USGS GNIS Geocoder (GNIS), FEATURE_ID=1455098; exact official name and Cities & Populated Places type in Washington County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Moab",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Grand",
+          "latitude": 38.5733155,
+          "longitude": -109.5498395,
+          "featureId": "1430389",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Grand County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Moab Division, Moab Valley, and Moab Canyon records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1430389; exact official name and Cities & Populated Places type in Grand County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Logan",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cache",
+          "latitude": 41.7354862,
+          "longitude": -111.834388,
+          "featureId": "1442849",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cache County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Logan Division record (FEATURE_ID 1939386). USGS GNIS Geocoder (GNIS), FEATURE_ID=1442849; exact official name and Cities & Populated Places type in Cache County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Great Salt Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Box Elder",
+          "latitude": 41.1628677,
+          "longitude": -112.5353656,
+          "featureId": "1441459",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Box Elder County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the separate Great Salt Lake Desert Plain record (FEATURE_ID 1455061). USGS GNIS Geocoder (GNIS), FEATURE_ID=1441459; exact official name and Lakes & Reservoirs type in Box Elder County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Utah Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Utah",
+          "latitude": 40.2099837,
+          "longitude": -111.8241534,
+          "featureId": "1446894",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Utah County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the Utah Lake distributing/district canal records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1446894; exact official name and Lakes & Reservoirs type in Utah County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Green River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Wayne",
+          "latitude": 38.189153,
+          "longitude": -109.8854026,
+          "featureId": "1428399",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Wayne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record was selected rather than the same-name Green River populated place (FEATURE_ID 1428398) and Green River Division (FEATURE_ID 1939372). USGS GNIS Geocoder (GNIS), FEATURE_ID=1428399; exact official name and Streams & Canals type in Wayne County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Sevier River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Millard",
+          "latitude": 39.0489161,
+          "longitude": -113.1339425,
+          "featureId": "1445451",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Millard County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1445451; exact official name and Streams & Canals type in Millard County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Kings Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Duchesne",
+          "latitude": 40.7763756,
+          "longitude": -110.3728037,
+          "featureId": "1442332",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Duchesne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Utah's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=1442332; exact official name and Summit type in Duchesne County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Bonneville Salt Flats",
+          "featureClass": "Flat",
+          "ftt": "phys.flat",
+          "county": "Tooele",
+          "latitude": 40.7996521,
+          "longitude": -113.8000029,
+          "featureId": "1425872",
+          "verified": 1,
+          "geocoderType": "Flat",
+          "geocoderCounty": "Tooele County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1425872; exact official name and Flat type in Tooele County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a salt-flat polygon or surveyed surface boundary."
+        }
+      ]
+    },
+    "colorado": {
+      "title": "COLORADO SUBSURFACE 4Dwm",
+      "state": "CO",
+      "bbox": {
+        "lon0": -109.07,
+        "lat0": 36.98,
+        "lon1": -102.04,
+        "lat1": 41.02
+      },
+      "frameNote": "Four Corners batch: Front Range populated places are balanced with high summits, Grand Lake, Blue Mesa Reservoir, San Luis Valley, and the per-ID-checked South Platte River. The Colorado and Arkansas rivers appear as context corridors only.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Denver",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Denver",
+          "latitude": 39.7391536,
+          "longitude": -104.9847034,
+          "featureId": "201738",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Denver County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the separate Denver County (FEATURE_ID 198131) and Denver Division (FEATURE_ID 1935444) records. USGS GNIS Geocoder (GNIS), FEATURE_ID=201738; exact official name and Cities & Populated Places type in Denver County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Colorado Springs",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "El Paso",
+          "latitude": 38.8338816,
+          "longitude": -104.8213634,
+          "featureId": "204797",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "El Paso County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Colorado Springs Division record (FEATURE_ID 1935430). USGS GNIS Geocoder (GNIS), FEATURE_ID=204797; exact official name and Cities & Populated Places type in El Paso County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Boulder",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Boulder",
+          "latitude": 40.0149856,
+          "longitude": -105.2705456,
+          "featureId": "178680",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Boulder County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Boulder County (FEATURE_ID 198122) and Boulder Division (FEATURE_ID 1935409) records. USGS GNIS Geocoder (GNIS), FEATURE_ID=178680; exact official name and Cities & Populated Places type in Boulder County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Fort Collins",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Larimer",
+          "latitude": 40.5852602,
+          "longitude": -105.084423,
+          "featureId": "204673",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Larimer County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Fort Collins Division record (FEATURE_ID 1935463). USGS GNIS Geocoder (GNIS), FEATURE_ID=204673; exact official name and Cities & Populated Places type in Larimer County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Aspen",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Pitkin",
+          "latitude": 39.1910983,
+          "longitude": -106.8175387,
+          "featureId": "204686",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Pitkin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Pitkin County populated-place record was selected rather than the Aspen Division and the same-name populated-place records in other counties. USGS GNIS Geocoder (GNIS), FEATURE_ID=204686; exact official name and Cities & Populated Places type in Pitkin County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Durango",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "La Plata",
+          "latitude": 37.27528,
+          "longitude": -107.8800667,
+          "featureId": "202983",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "La Plata County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Durango division and school-district records. USGS GNIS Geocoder (GNIS), FEATURE_ID=202983; exact official name and Cities & Populated Places type in La Plata County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Elbert",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Lake",
+          "latitude": 39.1178687,
+          "longitude": -106.4452569,
+          "featureId": "180381",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Lake County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Colorado's highest summit. The Summit record was selected rather than Mount Elbert Forebay (FEATURE_ID 197617). USGS GNIS Geocoder (GNIS), FEATURE_ID=180381; exact official name and Summit type in Lake County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Pikes Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "El Paso",
+          "latitude": 38.8405839,
+          "longitude": -105.0449035,
+          "featureId": "204770",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "El Paso County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Summit record was selected rather than the Pikes Peak Division record (FEATURE_ID 1935546). USGS GNIS Geocoder (GNIS), FEATURE_ID=204770; exact official name and Summit type in El Paso County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "South Platte River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Logan",
+          "latitude": 39.2916567,
+          "longitude": -105.2088815,
+          "featureId": "201759",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Logan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder; GNIS Domestic Names detail coordinate sequence 1",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=201759; exact official name and Streams & Canals type cross-checked 2026-10-22. GNIS Domestic Names detail confirms Class=Stream, describes the 439-mile tributary of the North Platte River, and gives the stored coordinate as sequence 1; its Primary County field and the Geocoder County field both say Logan County, preserved here as returned primary-county provenance rather than a claim about the county containing sequence 1. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Grand Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Grand",
+          "latitude": 40.2435656,
+          "longitude": -105.8146544,
+          "featureId": "204950",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Grand County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the separate Grand Lake populated place (FEATURE_ID 202505). USGS GNIS Geocoder (GNIS), FEATURE_ID=204950; exact official name and Lakes & Reservoirs type in Grand County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Blue Mesa Reservoir",
+          "featureClass": "Reservoir",
+          "ftt": "hydro.reservoir",
+          "county": "Gunnison",
+          "latitude": 38.4713913,
+          "longitude": -107.2113433,
+          "featureId": "186973",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Gunnison County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=186973; exact official name and Lakes & Reservoirs type in Gunnison County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."
+        },
+        {
+          "name": "San Luis Valley",
+          "featureClass": "Valley",
+          "ftt": "phys.valley",
+          "county": "Alamosa",
+          "latitude": 37.7250001,
+          "longitude": -105.8505761,
+          "featureId": "1930540",
+          "verified": 1,
+          "geocoderType": "Valley",
+          "geocoderCounty": "Alamosa County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Valley record was selected rather than the San Luis Valley Canal and irrigation-drain records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1930540; exact official name and Valley type in Alamosa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a valley outline or valley-floor polygon."
+        }
+      ]
+    },
+    "newmexico": {
+      "title": "NEW MEXICO SUBSURFACE 4Dwm",
+      "state": "NM",
+      "bbox": {
+        "lon0": -109.06,
+        "lat0": 31.32,
+        "lon1": -102.99,
+        "lat1": 37.01
+      },
+      "frameNote": "Four Corners batch: Rio Grande valley, Four Corners, Sangre de Cristo, Sacramento Mountains, and eastern-plains anchors are represented. The Rio Grande and Pecos appear as context corridors only for the reasons recorded in identityDecisions.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Santa Fe",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Santa Fe",
+          "latitude": 35.6869752,
+          "longitude": -105.937799,
+          "featureId": "936823",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Santa Fe County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the Santa Fe County, division, and grant records. USGS GNIS Geocoder (GNIS), FEATURE_ID=936823; exact official name and Cities & Populated Places type in Santa Fe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Albuquerque",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bernalillo",
+          "latitude": 35.0844909,
+          "longitude": -106.6511367,
+          "featureId": "928679",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bernalillo County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Albuquerque Division record (FEATURE_ID 1937492). USGS GNIS Geocoder (GNIS), FEATURE_ID=928679; exact official name and Cities & Populated Places type in Bernalillo County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Las Cruces",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Dona Ana",
+          "latitude": 32.3123157,
+          "longitude": -106.7783374,
+          "featureId": "899715",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Dona Ana County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Las Cruces Division record (FEATURE_ID 1937547). USGS GNIS Geocoder (GNIS), FEATURE_ID=899715; exact official name and Cities & Populated Places type in Dona Ana County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Roswell",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Chaves",
+          "latitude": 33.3942655,
+          "longitude": -104.5230242,
+          "featureId": "894171",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Chaves County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Roswell Division record (FEATURE_ID 1937579). USGS GNIS Geocoder (GNIS), FEATURE_ID=894171; exact official name and Cities & Populated Places type in Chaves County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Farmington",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "San Juan",
+          "latitude": 36.7280583,
+          "longitude": -108.2186856,
+          "featureId": "902246",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "San Juan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Farmington Division record (FEATURE_ID 1937532). USGS GNIS Geocoder (GNIS), FEATURE_ID=902246; exact official name and Cities & Populated Places type in San Juan County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Taos",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Taos",
+          "latitude": 36.4072485,
+          "longitude": -105.5730665,
+          "featureId": "911545",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Taos County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Taos populated-place record was selected rather than Taos County, the division records, and the separate Taos Pueblo records. USGS GNIS Geocoder (GNIS), FEATURE_ID=911545; exact official name and Cities & Populated Places type in Taos County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Wheeler Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Taos",
+          "latitude": 36.5569142,
+          "longitude": -105.416856,
+          "featureId": "928839",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Taos County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "New Mexico's highest summit; this is the Taos County record, not Nevada's Wheeler Peak (FEATURE_ID 861956). USGS GNIS Geocoder (GNIS), FEATURE_ID=928839; exact official name and Summit type in Taos County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Sierra Blanca Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Otero",
+          "latitude": 33.3742819,
+          "longitude": -105.8087673,
+          "featureId": "920702",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Otero County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Summit record was selected rather than the near-coincident Sierra Blanca Mountain Ranges record (FEATURE_ID 912567). USGS GNIS Geocoder (GNIS), FEATURE_ID=920702; exact official name and Summit type in Otero County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Elephant Butte Reservoir",
+          "featureClass": "Reservoir",
+          "ftt": "hydro.reservoir",
+          "county": "Sierra",
+          "latitude": 33.2386283,
+          "longitude": -107.1747822,
+          "featureId": "888840",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Sierra County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=888840; exact official name and Lakes & Reservoirs type in Sierra County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."
+        },
+        {
+          "name": "Rio Chama",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Rio Arriba",
+          "latitude": 36.042245,
+          "longitude": -106.0878013,
+          "featureId": "923661",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Rio Arriba County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record was selected rather than the Rio Chama Division record (FEATURE_ID 1937577). USGS GNIS Geocoder (GNIS), FEATURE_ID=923661; exact official name and Streams & Canals type in Rio Arriba County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Animas River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "San Juan",
+          "latitude": 36.7138917,
+          "longitude": -108.2217411,
+          "featureId": "900284",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "San Juan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The San Juan County stream record was selected rather than the separate same-name Hidalgo County stream record (FEATURE_ID 900283). USGS GNIS Geocoder (GNIS), FEATURE_ID=900284; exact official name and Streams & Canals type in San Juan County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Conchas Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "San Miguel",
+          "latitude": 35.3849418,
+          "longitude": -104.2179539,
+          "featureId": "897344",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "San Miguel County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=897344; exact official name and Lakes & Reservoirs type in San Miguel County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Green River, Utah: Stream 1428399, populated place 1428398, Division 1939372",
+      "decision": "Seeded the Stream record only.",
+      "notClaimed": "The stream primary point does not verify the town or political division."
+    },
+    {
+      "candidate": "Bear Lake, Utah",
+      "decision": "Omitted from the starter register.",
+      "reason": "The states=UT screen returned same-name Lakes & Reservoirs records in Duchesne, Garfield, Rich, and Summit counties, including two distinct Rich County FEATURE_IDs (1438482 and 377174); no per-ID statewide-lake identity was established in this round."
+    },
+    {
+      "candidate": "Grand Lake, Colorado: Lake 204950 and populated place 202505",
+      "decision": "Seeded the Lake record only.",
+      "notClaimed": "The lake primary point is not the town point, boundary, or shoreline."
+    },
+    {
+      "candidate": "South Platte River, FEATURE_ID 201759",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Stream, the 439-mile tributary description, and coordinate sequence 1 at the stored point.",
+      "serviceDiscrepancy": "Both the Geocoder County field and Domestic Names Primary County field say Logan County while coordinate sequence 1 is a headwaters-area point from the Deckers map. The stored county preserves that returned primary-county provenance and is not asserted as the county containing sequence 1."
+    },
+    {
+      "candidate": "Arkansas River and Rio Grande under states=CO; Rio Grande, San Juan River, and Canadian River under states=NM",
+      "decision": "No gazetteer rows seeded; generalized context corridors only where shown.",
+      "reason": "The state-filtered Geocoder screens did not return the intended exact stream records (Arkansas River Canyon and Rio Grande canals/places are different features; San Juan River and Canadian River returned empty arrays under states=NM)."
+    },
+    {
+      "candidate": "Colorado River, FEATURE_ID 45730",
+      "decision": "Omitted from the Utah and Colorado gazetteer rows; generalized Colorado context corridor only.",
+      "reason": "The returned GNIS primary point (31.9, -114.9508333) lies outside both frames, as already recorded for California, Nevada, and Arizona."
+    },
+    {
+      "candidate": "Sierra Blanca Peak, Summit 920702, versus Sierra Blanca, Mountain Ranges 912567",
+      "decision": "Seeded Sierra Blanca Peak as the Summit row.",
+      "notClaimed": "The summit primary point is not a mountain-range polygon."
+    },
+    {
+      "candidate": "Animas River: San Juan County Stream 900284 and Hidalgo County Stream 900283",
+      "decision": "Seeded the San Juan County record for the northwestern New Mexico river.",
+      "notClaimed": "It does not verify the separate bootheel stream of the same name."
+    },
+    {
+      "candidate": "Pecos River, Eddy County FEATURE_IDs 900170, 900171, and 900172",
+      "decision": "Omitted from the gazetteer; generalized context corridor only.",
+      "reason": "GNIS Domestic Names identifies 900170 as Class Canal and both 900171 and 900172 as Class Stream, each with only nearby Lake McMillan-area coordinate sequences. Neither Stream record is distinguished as the statewide Pecos River record, so choosing one would violate the identity-safe rule."
+    },
+    {
+      "candidate": "White Sands and Carlsbad Caverns, New Mexico",
+      "decision": "Omitted from the starter register.",
+      "reason": "The White Sands screen returned a populated place, census place, missile-range records, and a broad Area record without establishing a dunefield-specific identity-safe class for this starter batch; the exact Carlsbad Caverns Geocoder screen returned an empty array."
+    },
+    {
+      "candidate": "Wheeler Peak in New Mexico (928839) and Nevada (861956)",
+      "decision": "Seeded the Taos County record in New Mexico and retained the White Pine County record in Nevada.",
+      "notClaimed": "The same official name does not make the two state high-point records interchangeable."
+    }
+  ],
+  "knownLimitations": [
+    "Utah, Colorado, and New Mexico are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening and, for South Platte River, a Domestic Names per-ID check are part of the evidence.",
+    "GNIS point data do not supply the displayed terrain. All three frames use explicitly synthetic relief gaussians and generalized context corridors.",
+    "State frames are rectangles, not state-boundary clipping masks. Utah and New Mexico rectangles include small areas outside their notched state outlines; no boundary geometry is claimed."
+  ]
+}

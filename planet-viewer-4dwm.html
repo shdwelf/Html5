@@ -11,6 +11,7 @@
 </head>
 <body data-mode="relief">
   <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <canvas id="globeStage" hidden>Globe plate: drag to rotate the Red October orthographic globe.</canvas>
   <div id="labels" aria-hidden="true"></div>
 
   <header class="topbar">
@@ -23,6 +24,7 @@
         <button type="button" data-plate="chey" class="active">CHEYENNE</button>
         <button type="button" data-plate="ange">SAN GABRIEL</button>
         <button type="button" data-plate="lawrence">LAWRENCE</button>
+        <button type="button" data-plate="globe">GLOBE</button>
       </div>
       <div class="mode-switch" role="group" aria-label="View mode">
         <button type="button" data-mode="relief" class="active">RELIEF</button>

@@ -66,7 +66,7 @@ by the ace-c reimplementation and format summaries:
 
 | Item | Recipe-level fact |
 | --- | --- |
-| Identify | MAIN block signature `**ACE**` at offset 7 of the main header; `HEAD_FLAGS` **bit 3** = encrypted (archive- or per-member-level) |
+| Identify | MAIN block signature `**ACE**` at offset 7 of the main header; per-member encryption = FILE-header `HEAD_FLAGS` **bit 14** (`0x4000`, `FLAG_PASSWORD`) — *corrected 2026-10-22, see §5* |
 | Key schedule | password (≤ 50 chars) → **single SHA-1 application** → 160-bit Blowfish key; the "ACE-flavoured Blowfish" variant keeps Schneier's π-derived P/S tables but uses ACE's own key schedule, 8-byte block padding, reverse-order subkey walk on decrypt ([ace-c notes](https://github.com/seb3773/ace-c)) |
 | Data | Blowfish **CBC with a constant zero IV**, applied to the compressed stream *after* compression, each archive member restarted separately |
 | Verify | **none in the format** — no salt, no password verifier; the only check is CRC32 of the decompressed data after a successful decrypt (`acefile`; inverted CRC-32 poly `0x04C11DB7`, headers use a truncated CRC16) |
@@ -105,3 +105,16 @@ first, the embedded archive second.
   `acefile`, `ace-c`), CVE-2018-20250, ARJ XOR-summary corroboration.
 - **Not done (by design):** decryption of any garbled/encrypted member, password
   recovery procedures, or bypass tooling (F2/F4).
+nal §3/§4 claim
+  “`HEAD_FLAGS` bit 3 = encrypted” was wrong. Two independent implementations
+  agree the password flag is FILE-header **bit 14** (`16384`): `acefile`'s
+  `FLAG_PASSWORD = 1 << 14` (the predicate behind `AceMember.is_enc()`) and
+  unace's `BASE_ACESTRUC_FLAG_PASSWORD 16384 //file` (bit 14 means `LOCK` in
+  MAIN headers). Round 13 verified this end-to-end: a synthetic ACE built for
+  `tests/cyberchef-archive-headers.test.mjs` parses in upstream `acefile` with
+  `is_enc()` true exactly for the bit-14 member. The §3 row and §4 recipe
+  above are corrected in place.
+- **Round-13 tooling:** the three formats now have header-walk CyberChef ops
+  (`arjHeader` / `lhaHeader` / `aceHeader`, plus `paranoidUnzip` for ZIP) —
+  headers only, same posture; see
+  [`backlog-execution-round-13-2026-10-22.md`](backlog-execution-round-13-2026-10-22.md).

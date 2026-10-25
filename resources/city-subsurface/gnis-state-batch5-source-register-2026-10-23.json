@@ -1,0 +1,447 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 22 Dakotas state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for North Dakota and South Dakota. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. White Butte and Black Elk Peak additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<ND|SD>&include=gnis&maxSuggestions=<10|20>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Political divisions, counties, reservations, canals, falls, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for White Butte (1035239), where four same-name Summit records were returned, and Black Elk Peak (1261770), where the per-ID detail confirms Class=Summit in Pennington County, the High Point designation, and the 2016 Board rename from Harney Peak."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "northdakota": {
+      "title": "North Dakota statewide frame",
+      "state": "ND",
+      "bbox": {
+        "lon0": -104.3,
+        "lat0": 45.9,
+        "lon1": -96.5,
+        "lat1": 49.1
+      },
+      "frameNote": "Dakotas batch: the capital and Red River Valley cities are balanced with the Devils Lake town-and-lake pair, Lake Sakakawea, per-ID White Butte, and Sheyenne/Heart rivers. Missouri and Red River remain corridors after both Red River spellings and the Missouri screen returned empty arrays under states=ND.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Bismarck",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Burleigh",
+          "latitude": 46.8083268,
+          "longitude": -100.7837392,
+          "featureId": "1035849",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Burleigh County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1035849; exact official name and Cities & Populated Places type in Burleigh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Fargo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cass",
+          "latitude": 46.8771863,
+          "longitude": -96.7898034,
+          "featureId": "1028945",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cass County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1028945; exact official name and Cities & Populated Places type in Cass County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Grand Forks",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Grand Forks",
+          "latitude": 47.9252568,
+          "longitude": -97.0328547,
+          "featureId": "1029197",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Grand Forks County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Grand Forks County record (FEATURE_ID 1034218). USGS GNIS Geocoder (GNIS), FEATURE_ID=1029197; exact official name and Cities & Populated Places type in Grand Forks County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Minot",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ward",
+          "latitude": 48.2325095,
+          "longitude": -101.2962732,
+          "featureId": "1030249",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ward County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1030249; exact official name and Cities & Populated Places type in Ward County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Williston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Williams",
+          "latitude": 48.1469683,
+          "longitude": -103.6179745,
+          "featureId": "1032815",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Williams County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1032815; exact official name and Cities & Populated Places type in Williams County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Dickinson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Stark",
+          "latitude": 46.8791756,
+          "longitude": -102.7896242,
+          "featureId": "1028683",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Stark County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1028683; exact official name and Cities & Populated Places type in Stark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Devils Lake",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ramsey",
+          "latitude": 48.1122482,
+          "longitude": -98.876031,
+          "featureId": "1028672",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ramsey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was seeded separately from the same-name Devils Lake record (FEATURE_ID 1034194); both are Ramsey County records with distinct classes and distinct points. USGS GNIS Geocoder (GNIS), FEATURE_ID=1028672; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Devils Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Ramsey",
+          "latitude": 48.0462688,
+          "longitude": -98.9976006,
+          "featureId": "1034194",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Ramsey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was seeded separately from the same-name Devils Lake populated place (FEATURE_ID 1028672); the lake point is not the town point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1034194; exact official name and Lakes & Reservoirs type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Sakakawea",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Dunn",
+          "latitude": 47.7715919,
+          "longitude": -102.3295725,
+          "featureId": "1033989",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Dunn County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1033989; exact official name and Lakes & Reservoirs type in Dunn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "White Butte",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Slope",
+          "latitude": 46.3870238,
+          "longitude": -103.3025551,
+          "featureId": "1035239",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Slope County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "North Dakota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Slope County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in ND at 3506 feet; same-name Summit records in Hettinger County (FEATURE_ID 1032775), Morton County (FEATURE_ID 2761541), and Stark County (FEATURE_ID 1032774) were rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1035239; exact official name and Summit type in Slope County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Sheyenne River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Cass",
+          "latitude": 47.0235771,
+          "longitude": -96.825358,
+          "featureId": "1035146",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Cass County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1035146; exact official name and Streams & Canals type in Cass County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Heart River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Morton",
+          "latitude": 46.7674942,
+          "longitude": -100.8420738,
+          "featureId": "1034918",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Morton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1034918; exact official name and Streams & Canals type in Morton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "southdakota": {
+      "title": "South Dakota statewide frame",
+      "state": "SD",
+      "bbox": {
+        "lon0": -104.3,
+        "lat0": 42.45,
+        "lon1": -96.4,
+        "lat1": 46.0
+      },
+      "frameNote": "Dakotas batch: the eastern cities and Black Hills anchors are balanced with Lake Oahe, per-ID Black Elk Peak, and the Bad/Cheyenne/James rivers. Missouri River remains corridor-only after an empty states=SD screen; Badlands National Park and Lake Sheridan exact-name screens also returned empty arrays; the Belle Fourche river/reservoir records remain out of the 12-row starter.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Pierre",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hughes",
+          "latitude": 44.3683156,
+          "longitude": -100.3509665,
+          "featureId": "1266887",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hughes County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1266887; exact official name and Cities & Populated Places type in Hughes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Sioux Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Minnehaha",
+          "latitude": 43.5499749,
+          "longitude": -96.700327,
+          "featureId": "1267670",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Minnehaha County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the same-name Sioux Falls waterfall record (FEATURE_ID 1258087) and Sioux Falls Junction (FEATURE_ID 1261066). USGS GNIS Geocoder (GNIS), FEATURE_ID=1267670; exact official name and Cities & Populated Places type in Minnehaha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rapid City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Pennington",
+          "latitude": 44.0805434,
+          "longitude": -103.2310149,
+          "featureId": "1265333",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Pennington County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1265333; exact official name and Cities & Populated Places type in Pennington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Aberdeen",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Brown",
+          "latitude": 45.4646985,
+          "longitude": -98.4864829,
+          "featureId": "1253581",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Brown County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1253581; exact official name and Cities & Populated Places type in Brown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mitchell",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Davison",
+          "latitude": 43.7094283,
+          "longitude": -98.0297992,
+          "featureId": "1256500",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Davison County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than same-name Mitchell Lake records in Hyde County (FEATURE_ID 1256502) and Pennington County (FEATURE_ID 1262938). USGS GNIS Geocoder (GNIS), FEATURE_ID=1256500; exact official name and Cities & Populated Places type in Davison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Yankton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Yankton",
+          "latitude": 42.8711088,
+          "longitude": -97.3972813,
+          "featureId": "1259091",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Yankton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Yankton County and Yankton Reservation records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1259091; exact official name and Cities & Populated Places type in Yankton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Belle Fourche",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Butte",
+          "latitude": 44.6713733,
+          "longitude": -103.852148,
+          "featureId": "1265119",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Butte County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record; the same hydronym appears separately as Belle Fourche River (FEATURE_ID 1265120) and Belle Fourche Reservoir (FEATURE_ID 1253838), which are different features not seeded in this 12-row starter. USGS GNIS Geocoder (GNIS), FEATURE_ID=1265119; exact official name and Cities & Populated Places type in Butte County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Black Elk Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Pennington",
+          "latitude": 43.865991,
+          "longitude": -103.5312013,
+          "featureId": "1261770",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Pennington County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "South Dakota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Pennington County, coordinate sequence 1 marked High Point at the stored point, and the Board on Geographic Names' 2016 rename from Harney Peak (the former name returned no record under states=SD). USGS GNIS Geocoder (GNIS), FEATURE_ID=1261770; exact official name and Summit type in Pennington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Oahe",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hughes",
+          "latitude": 44.4510925,
+          "longitude": -100.4023574,
+          "featureId": "1266878",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hughes County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1266878; exact official name and Lakes & Reservoirs type in Hughes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Bad River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Stanley",
+          "latitude": 44.3544267,
+          "longitude": -100.3679112,
+          "featureId": "1265114",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Stanley County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1265114; exact official name and Streams & Canals type in Stanley County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Cheyenne River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Dewey",
+          "latitude": 44.74332,
+          "longitude": -101.06804,
+          "featureId": "1267017",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Dewey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record was selected rather than the Cheyenne River Reservation record (FEATURE_ID 1267254); it is a South Dakota stream, not a Wyoming feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=1267017; exact official name and Streams & Canals type in Dewey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "James River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Yankton",
+          "latitude": 42.8713859,
+          "longitude": -97.2906104,
+          "featureId": "1261082",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Yankton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1261082; exact official name and Streams & Canals type in Yankton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "White Butte, North Dakota: Summit records 1035239 (Slope County), 1032775 (Hettinger County), 2761541 (Morton County), and 1032774 (Stark County)",
+      "decision": "Seeded 1035239 after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=North Dakota, Primary County=Slope County, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in ND at 3506 feet; coordinate matches the Geocoder exactly.",
+      "notClaimed": "The Hettinger, Morton, and Stark County Summit records are different features and are not verified by this row."
+    },
+    {
+      "candidate": "Devils Lake, North Dakota: populated place 1028672 and lake 1034194, both Ramsey County",
+      "decision": "Seeded both as separate classes with their own returned points.",
+      "notClaimed": "The town point is not the shoreline or lake-area centroid, and the lake point is not the town or a municipal boundary."
+    },
+    {
+      "candidate": "Black Elk Peak, FEATURE_ID 1261770, versus the former Harney Peak name under states=SD",
+      "decision": "Seeded Black Elk Peak after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Pennington County, coordinate sequence 1 marked High Point, and the Board on Geographic Names 2016 rename; the Harney Peak screen returned an empty array.",
+      "notClaimed": "The summit primary point is not a peak-area polygon or forest boundary; variant historic names are recorded but not seeded as rows."
+    },
+    {
+      "candidate": "Sioux Falls, South Dakota: populated place 1267670, falls 1258087, junction 1261066",
+      "decision": "Seeded the populated-place record only.",
+      "notClaimed": "The town point does not verify the waterfall or the junction."
+    },
+    {
+      "candidate": "Missouri River under states=ND and states=SD; Red River and Red River of the North under states=ND",
+      "decision": "No gazetteer rows seeded; generalized context corridors only in both states.",
+      "reason": "All four exact-name state-filtered screens returned empty arrays."
+    },
+    {
+      "candidate": "James River under states=ND",
+      "decision": "The North Dakota screen returned an empty array, so no North Dakota James River row is claimed; the unique South Dakota Yankton County stream record (1261082) is seeded only in South Dakota.",
+      "notClaimed": "The South Dakota primary point does not verify the North Dakota reach of the same-named river."
+    },
+    {
+      "candidate": "Cheyenne River, South Dakota: stream 1267017 and Cheyenne River Reservation 1267254",
+      "decision": "Seeded the stream record only.",
+      "notClaimed": "The stream point does not verify the reservation, and neither record verifies Wyoming features bearing similar names."
+    },
+    {
+      "candidate": "Mitchell and Yankton, South Dakota",
+      "decision": "Seeded the populated-place records only: Mitchell rather than the two same-name Mitchell Lakes (1256502, 1262938), and Yankton rather than Yankton County and Yankton Reservation records.",
+      "notClaimed": "Neither town point verifies a same-name county, reservation, or lake."
+    },
+    {
+      "candidate": "Belle Fourche town 1265119, Belle Fourche River 1265120, and Belle Fourche Reservoir 1253838",
+      "decision": "Seeded the town only in this 12-row starter; the river and reservoir records are identity-safe but left out for starter scope, as with Rogue River in round 20.",
+      "notClaimed": "The town point is not the river or reservoir, and the three features are distinct."
+    },
+    {
+      "candidate": "Badlands National Park and Lake Sheridan under states=SD",
+      "decision": "Omitted from the starter register.",
+      "reason": "Both exact-name screens returned empty arrays."
+    }
+  ],
+  "knownLimitations": [
+    "North Dakota and South Dakota are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. White Butte and Black Elk Peak additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}

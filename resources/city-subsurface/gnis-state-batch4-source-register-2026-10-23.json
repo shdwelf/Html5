@@ -1,0 +1,452 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 21 Northern Rockies state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Montana and Wyoming. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Granite Peak and Jackson Lake also carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<MT|WY>&include=gnis&maxSuggestions=<10|20>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Political divisions, counties, springs, canals, ranges, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Granite Peak (784178), where three same-name Summit records were returned, and Jackson Lake (1609177), where the per-ID detail identifies Class=Reservoir in Teton County rather than the same-name Natrona County lake record."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake or Reservoir according to the official feature kind confirmed per ID where records are ambiguous, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "montana": {
+      "title": "Montana statewide frame",
+      "state": "MT",
+      "bbox": {
+        "lon0": -116.4,
+        "lat0": 44.3,
+        "lon1": -104.0,
+        "lat1": 49.1
+      },
+      "frameNote": "Northern Rockies batch: Helena, Billings, and the western Montana cities are balanced with Flathead, Fort Peck, and Lake McDonald records plus per-ID verified Granite Peak. Yellowstone and Missouri rivers remain unseeded because the states=MT screen returned no exact stream records; Glacier National Park returned only Division records.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Helena",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lewis and Clark",
+          "latitude": 46.5927122,
+          "longitude": -112.036109,
+          "featureId": "802116",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lewis and Clark County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the Helena Division record (FEATURE_ID 1940643). USGS GNIS Geocoder (GNIS), FEATURE_ID=802116; exact official name and Cities & Populated Places type in Lewis and Clark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Billings",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Yellowstone",
+          "latitude": 45.7832856,
+          "longitude": -108.5006904,
+          "featureId": "802034",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Yellowstone County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Billings Division record (FEATURE_ID 1940572). USGS GNIS Geocoder (GNIS), FEATURE_ID=802034; exact official name and Cities & Populated Places type in Yellowstone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Missoula",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Missoula",
+          "latitude": 46.872146,
+          "longitude": -113.9939982,
+          "featureId": "787504",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Missoula County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Missoula County and Missoula Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=787504; exact official name and Cities & Populated Places type in Missoula County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Great Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cascade",
+          "latitude": 47.5002354,
+          "longitude": -111.3008083,
+          "featureId": "802113",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cascade County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Great Falls and Great Falls North Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=802113; exact official name and Cities & Populated Places type in Cascade County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Bozeman",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Gallatin",
+          "latitude": 45.6796526,
+          "longitude": -111.0385582,
+          "featureId": "769173",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Gallatin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Bozeman Division record (FEATURE_ID 1940577). USGS GNIS Geocoder (GNIS), FEATURE_ID=769173; exact official name and Cities & Populated Places type in Gallatin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Butte",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Silver Bow",
+          "latitude": 46.0038153,
+          "longitude": -112.5347447,
+          "featureId": "780689",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Silver Bow County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Butte populated-place record was selected rather than the Butte Division, Butte-Silver Bow, and separate same-name Butte Creek historical populated-place records. USGS GNIS Geocoder (GNIS), FEATURE_ID=780689; exact official name and Cities & Populated Places type in Silver Bow County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Miles City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Custer",
+          "latitude": 46.4083362,
+          "longitude": -105.8405582,
+          "featureId": "774202",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Custer County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Miles City Division record (FEATURE_ID 1940671). USGS GNIS Geocoder (GNIS), FEATURE_ID=774202; exact official name and Cities & Populated Places type in Custer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Flathead Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lake",
+          "latitude": 47.8868683,
+          "longitude": -114.1315966,
+          "featureId": "783514",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lake County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=783514; exact official name and Lakes & Reservoirs type in Lake County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Fort Peck Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Valley",
+          "latitude": 47.7553683,
+          "longitude": -106.8626277,
+          "featureId": "771516",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Valley County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=771516; exact official name and Lakes & Reservoirs type in Valley County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake McDonald",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Flathead",
+          "latitude": 48.5834243,
+          "longitude": -113.9259346,
+          "featureId": "787038",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Flathead County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the same-name Lake McDonald populated place (FEATURE_ID 785919). USGS GNIS Geocoder (GNIS), FEATURE_ID=787038; exact official name and Lakes & Reservoirs type in Flathead County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Bighorn River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Yellowstone",
+          "latitude": 46.1549867,
+          "longitude": -107.4745155,
+          "featureId": "779903",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Yellowstone County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=779903; exact official name and Streams & Canals type in Yellowstone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Granite Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Park",
+          "latitude": 46.0375523,
+          "longitude": -110.3044365,
+          "featureId": "784178",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Park County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Montana's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Park County, and coordinate sequence 1 marked High Point at the stored point; same-name Summit records in Madison County (FEATURE_ID 784179) and Park County (FEATURE_ID 784177) were rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=784178; exact official name and Summit type in Park County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        }
+      ]
+    },
+    "wyoming": {
+      "title": "Wyoming statewide frame",
+      "state": "WY",
+      "bbox": {
+        "lon0": -111.4,
+        "lat0": 40.95,
+        "lon1": -104.0,
+        "lat1": 45.1
+      },
+      "frameNote": "Northern Rockies batch: southeast Wyoming towns and the Teton/high-country anchors are balanced with Yellowstone Lake, per-ID Reservoir-class Jackson Lake, and Shoshone River. North Platte, Snake, Bighorn, and the Green River main stem remain unseeded for the state-screen reasons recorded below.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Cheyenne",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Laramie",
+          "latitude": 41.1399814,
+          "longitude": -104.8202462,
+          "featureId": "1609077",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Laramie County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the Cheyenne, Cheyenne East, and Cheyenne West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1609077; exact official name and Cities & Populated Places type in Laramie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Casper",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Natrona",
+          "latitude": 42.866632,
+          "longitude": -106.313081,
+          "featureId": "1586424",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Natrona County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Casper Division records; it does not verify the separate Casper Mountain populated place (FEATURE_ID 1853199) or Casper Reservoir records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1586424; exact official name and Cities & Populated Places type in Natrona County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Laramie",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Albany",
+          "latitude": 41.3113669,
+          "longitude": -105.5911007,
+          "featureId": "1590526",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Albany County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Laramie Division and Laramie County records; it does not verify the separate Laramie River, Laramie Mountains, Laramie Plains, or Laramie Peak records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1590526; exact official name and Cities & Populated Places type in Albany County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Jackson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Teton",
+          "latitude": 43.4799291,
+          "longitude": -110.7624282,
+          "featureId": "1604404",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Teton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Jackson Hole Division record (FEATURE_ID 1939716). USGS GNIS Geocoder (GNIS), FEATURE_ID=1604404; exact official name and Cities & Populated Places type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rock Springs",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Sweetwater",
+          "latitude": 41.5874644,
+          "longitude": -109.2029043,
+          "featureId": "1593588",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Sweetwater County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the same-name Springs records in Carbon County (FEATURE_ID 1593589) and Hot Springs County (FEATURE_ID 1593590) and the north/south division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1593588; exact official name and Cities & Populated Places type in Sweetwater County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Green River",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Sweetwater",
+          "latitude": 41.5285757,
+          "longitude": -109.4662461,
+          "featureId": "1589126",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Sweetwater County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Green River North and South Division records; the state screen returned only a different same-name Stream record in Weston County (FEATURE_ID 1600086), so no Green River stream row is claimed. USGS GNIS Geocoder (GNIS), FEATURE_ID=1589126; exact official name and Cities & Populated Places type in Sweetwater County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Gannett Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Fremont",
+          "latitude": 43.1843012,
+          "longitude": -109.6541217,
+          "featureId": "1599903",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Fremont County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Wyoming's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=1599903; exact official name and Summit type in Fremont County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Grand Teton",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Teton",
+          "latitude": 43.7411243,
+          "longitude": -110.8024781,
+          "featureId": "1609199",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Teton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Summit record was selected rather than the same-name Grand Teton Canal record (FEATURE_ID 1589026). USGS GNIS Geocoder (GNIS), FEATURE_ID=1609199; exact official name and Summit type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Devils Tower",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Crook",
+          "latitude": 44.59045,
+          "longitude": -104.7151657,
+          "featureId": "1609083",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Crook County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Summit record was selected rather than the same-name Devils Tower populated place (FEATURE_ID 1604684). USGS GNIS Geocoder (GNIS), FEATURE_ID=1609083; exact official name and Summit type in Crook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Yellowstone Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Teton",
+          "latitude": 44.4475292,
+          "longitude": -110.4858976,
+          "featureId": "1609324",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Teton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1609324; exact official name and Lakes & Reservoirs type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Jackson Lake",
+          "featureClass": "Reservoir",
+          "ftt": "hydro.reservoir",
+          "county": "Teton",
+          "latitude": 43.9005638,
+          "longitude": -110.6738972,
+          "featureId": "1609177",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Teton County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Teton County record was selected after a GNIS Domestic Names per-ID check confirmed Class=Reservoir, Primary County=Teton County, and coordinate sequence 1 at the stored point; the same-name Natrona County lake record (FEATURE_ID 1590031) was rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1609177; exact official name and Lakes & Reservoirs type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."
+        },
+        {
+          "name": "Shoshone River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Big Horn",
+          "latitude": 44.8621774,
+          "longitude": -108.2048332,
+          "featureId": "1594293",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Big Horn County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1594293; exact official name and Streams & Canals type in Big Horn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Granite Peak, Montana: Summit records 784178 (Park County), 784179 (Madison County), and 784177 (Park County)",
+      "decision": "Seeded 784178 after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Montana, Primary County=Park County, and coordinate sequence 1 at the stored point marked High Point on the Crazy Peak map; coordinate matches the Geocoder exactly.",
+      "notClaimed": "The Madison County Summit record (784179) and the second Park County Summit record (784177) are different features and are not verified by this row."
+    },
+    {
+      "candidate": "Lake McDonald, Montana: Lake 787038 and populated place 785919",
+      "decision": "Seeded the Lake record only.",
+      "notClaimed": "The lake primary point is not the settlement point, shoreline, or lake-area centroid."
+    },
+    {
+      "candidate": "Yellowstone River and Missouri River under states=MT",
+      "decision": "No gazetteer rows seeded; generalized context corridors only.",
+      "reason": "Both exact-name state-filtered Geocoder screens returned empty arrays."
+    },
+    {
+      "candidate": "Glacier National Park under states=MT",
+      "decision": "Omitted from the starter register.",
+      "reason": "The screen returned only Glacier National Park Division records (FEATURE_IDs 1940629 and 1940630), not a park feature record; archived Park classes are likewise absent from the current Geocoder surface, as previously recorded for California."
+    },
+    {
+      "candidate": "Bighorn River: Montana screen returned Yellowstone County Stream 779903; Wyoming screen returned an empty array",
+      "decision": "Seeded the Montana record only.",
+      "notClaimed": "The Montana primary point does not verify the Wyoming reach of the same-named river; no Wyoming Bighorn River row is claimed."
+    },
+    {
+      "candidate": "North Platte River, Snake River, and the Green River main stem under states=WY",
+      "decision": "No gazetteer rows seeded; generalized context corridors only where shown.",
+      "reason": "The North Platte screen returned an empty array; the Snake River screen returned only the Snake River Mountain Ranges record; the Green River screen returned town/division/canal records plus a different same-name Weston County Stream record (1600086), not the main-stem river."
+    },
+    {
+      "candidate": "Jackson Lake, Wyoming: Teton County 1609177 and Natrona County 1590031",
+      "decision": "Seeded 1609177 as a Reservoir row after a GNIS Domestic Names per-ID check confirmed Class=Reservoir, Primary County=Teton County, and coordinate sequence 1 at the stored point (variant name Jackson Lake Reservoir).",
+      "notClaimed": "The Natrona County same-name lake record (1590031) is a different feature and is not verified by this row; the stored point is not a shoreline or dam structure."
+    },
+    {
+      "candidate": "Devils Tower: Summit 1609083 and populated place 1604684",
+      "decision": "Seeded the Summit record only.",
+      "notClaimed": "The summit primary point does not verify the settlement."
+    },
+    {
+      "candidate": "Grand Teton: Summit 1609199 and Grand Teton Canal 1589026",
+      "decision": "Seeded the Summit record only.",
+      "notClaimed": "The summit primary point is not the canal record or a peak-area polygon."
+    },
+    {
+      "candidate": "Rock Springs: populated place 1593588 versus Springs records 1593589 and 1593590",
+      "decision": "Seeded the populated-place record only.",
+      "notClaimed": "The town point does not verify either spring."
+    },
+    {
+      "candidate": "Wind River under states=WY",
+      "decision": "Omitted from the starter register.",
+      "reason": "The screen returned a populated place, reservation/division records, two canals, a Hot Springs County Stream record, a Teton County lake, and a mountain range under the same name; the 12-row starter composition does not require resolving that pile, and no per-ID statewide-river identity was established in this round."
+    }
+  ],
+  "knownLimitations": [
+    "Montana and Wyoming are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Granite Peak and Jackson Lake additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}

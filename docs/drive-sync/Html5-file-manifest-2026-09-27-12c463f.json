@@ -1,0 +1,6185 @@
+{
+  "manifest": ".arena-drive/payload/Html5-file-manifest-2026-09-27-12c463f.sha256",
+  "quoted_paths": 0,
+  "base": "/home/runner/work/Html5/Html5",
+  "strip": 0,
+  "malformed": 0,
+  "counts": {
+    "drive_files": 827,
+    "repo_files": 2685,
+    "identical": 733,
+    "differing": 69,
+    "only_on_drive": 25,
+    "only_in_repo": 1883
+  },
+  "in_sync": false,
+  "differing": [
+    {
+      "path": ".gitignore",
+      "drive": "735c9179f753afc2992dbc025a9c6d192ca7690501bd23e847e60305aac32747",
+      "repo": "bc4c40d270e147225c2c89f04ef92cc89f996435932c2b5852851c5fd7c2fa25",
+      "bytes": 926
+    },
+    {
+      "path": "KEYSPACE.md",
+      "drive": "a3fe8a66c061e3531a4fa9edbbe3d3b8bc8811f53894d00d432ed30996bd28d9",
+      "repo": "2ee8c8f39c9f56a6fa8eba9a6eef34c0256511fd97662d5835932cc421ae123a",
+      "bytes": 15697
+    },
+    {
+      "path": "README.md",
+      "drive": "3d9f0a9b1c488177df6b8bdab31a09de7bbb25987e0b73c944bd9fef8460b80c",
+      "repo": "e83e165d94a9ed9302858f36d0bf14dbed68f86197d0305893a26763729b6c3b",
+      "bytes": 49452
+    },
+    {
+      "path": "adl.xdc",
+      "drive": "0662bf25a8657e1f589103b429c2c279d95af7c8ed25a8cd724e54b618a41555",
+      "repo": "3693369e2b2ee8b495e19bdce1f3b4e273a9159dcc0b039e9aa329668bfb9c79",
+      "bytes": 2271545
+    },
+    {
+      "path": "apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html",
+      "drive": "d7133822c5340601b501d116d2bdb91f23b4235ea710ac9e5266ea167624ea63",
+      "repo": "1409508923d8c01f80fedea3a87c147132c396670b732e4800c31519f6daab14",
+      "bytes": 1125671
+    },
+    {
+      "path": "apps/README.md",
+      "drive": "f0b60abfa26bbc54096fc04d36eba2a10708287dec7f2ef30fc9508ef3f6776a",
+      "repo": "1f61694affd9ebf3f0e246474416416c797dbd290db30eb6d8816b43d96f467f",
+      "bytes": 18605
+    },
+    {
+      "path": "apps/Rodger_Ramrod_HTML5_Quine.html",
+      "drive": "30cbd5385f70c6875c6257a670778fa51193e004e943be539d7a9e9ef1c894df",
+      "repo": "4bca65fcc80410891a288a305b5b1260a0bf64561768d51036ea471ffa3c4432",
+      "bytes": 234247
+    },
+    {
+      "path": "apps/cyberchef.html",
+      "drive": "286ded82d496871034729f2e8422447589a2ac3adebb03c0496c3fcae599e9ed",
+      "repo": "1b0241467f9348273a0183a6673c858e6e11d3b64802edc34434fa03c842d7df",
+      "bytes": 180839
+    },
+    {
+      "path": "apps/gedcom-family-tree-viewer-1",
+      "drive": "529c6372714b696fd30a09687a6517e47f300a6e822d30649f9db7be1b3190cc",
+      "repo": "3a5b6f3f4bca2e599077e802195958b58921dec02edf052688f92bc1c8fc8618",
+      "bytes": 50109
+    },
+    {
+      "path": "apps/kryptos_vrml.html",
+      "drive": "f9f04ba9bec59202af47bf451051f05798bc3f85f2be8573c37e474ab9e51e5a",
+      "repo": "f2b0b06689000a94b0588b80127712aca34f205bf44275008c1b01036dff9e6e",
+      "bytes": 64441
+    },
+    {
+      "path": "apps/rodger-ramrod.html",
+      "drive": "4ac6c7caf7c0a12c678a4d5ce2069b884c3c39fcdcac38f6dd3fa6e6edec4a37",
+      "repo": "afa16eed3e4ad2063c6d11a6090da4f274be72d71ff7188e4cbac851a5c103a6",
+      "bytes": 242441
+    },
+    {
+      "path": "casefiles.html",
+      "drive": "54411682c703e5d556e27847686fe58babde64dd6e5bbb60951e2aa407ccd522",
+      "repo": "3eb91630a636846bafbd39b0288266d99a3512c188c50255ac7afc9471a6c79c",
+      "bytes": 12341
+    },
+    {
+      "path": "css/app.css",
+      "drive": "241c9e98f638ce04f4d3edead685f5f529c9ad6d8fecb952dab4f878f7ffc67d",
+      "repo": "921f68ada69932a7d2a9f2db874d2861e8fa7e3e8bd24d6a9004864974fddff9",
+      "bytes": 5136
+    },
+    {
+      "path": "css/dalton-race-4dwm.css",
+      "drive": "3e9f630023dcb62bb290822cd4541af81363f21cb8219dc344be9f752ffb5fad",
+      "repo": "bd51ea562e1e52b1f7bf9cf377b8ffb7efaa5a173168de516935e31d5e6c30dc",
+      "bytes": 5571
+    },
+    {
+      "path": "css/jp-grid.css",
+      "drive": "9d5a5037ab8c8c6d09baf52c2ec8a69c911f0fcc8a2d99a99cc98bfd21251af4",
+      "repo": "1f91bc2840868439fb88d5d4400adff4e7bada795841db1e51c3ae6b06d19d83",
+      "bytes": 9225
+    },
+    {
+      "path": "css/viewer.css",
+      "drive": "d72de235aa1284f261bada7bd8f52a8954ab71856dfb9a628cb662f6917f1558",
+      "repo": "2f53c1e4e006a0d35fd63150ca73990d1ca165efaf99bcb3cab1b79aca2137a0",
+      "bytes": 12757
+    },
+    {
+      "path": "css/wm.css",
+      "drive": "f60e5efb3df4fd18aa9fbefc6af7af116ed5afed74dc6cbcd948b1c43b7bcca2",
+      "repo": "04ca05b71b8f303df8ca579892ea27ae192a69ed9db46d5131ae8d0f003214c1",
+      "bytes": 12141
+    },
+    {
+      "path": "dalton-race-4dwm.html",
+      "drive": "ee2952554d780b17ad13b19396e2afdaf2c6781c207fe7ba7405a35afdd4e7f0",
+      "repo": "eaf88215a95d9f83901b61834d7b5308471221e16497e700481abdcf5734d055",
+      "bytes": 4306
+    },
+    {
+      "path": "docs/dss-casefiles-riddle-warrick.md",
+      "drive": "42c3cf40266b673c76a99ed8d45ec71f26b72a833e62c75dc24ba3a0b2038311",
+      "repo": "c3fd5f0e090ae839a2e74d73e3cdb158d2f15469451fa2206137698c830b9798",
+      "bytes": 44991
+    },
+    {
+      "path": "docs/sanborn-kryptos-webxdc.md",
+      "drive": "b5b79d117c9afefe2149a8fbecbc995d53d96f359f91706d795167acf62aecd3",
+      "repo": "9772c99527c503631a1a33823801332606af49029980e3e0bff73140bbebd53d",
+      "bytes": 10309
+    },
+    {
+      "path": "ghidra-lab.html",
+      "drive": "d28d05e32d2acd6bfc2d100d628399db3c4f4db1cd941bf0125684337d33d932",
+      "repo": "f0e3e450a32d6a9ba726e272e3785b592acfffca635482abe61d826e77fe4051",
+      "bytes": 8707
+    },
+    {
+      "path": "glendora.html",
+      "drive": "602eff5733060bbb2a955d265e36486f648a1fa69922562827d8e78a4a72fed0",
+      "repo": "9237d980b50cb200da7894952af2afc8f3dc90ee1fc6ffba13e53b28227965d5",
+      "bytes": 4512
+    },
+    {
+      "path": "greeran-book-bibliography.html",
+      "drive": "300dbbed75c5ffa1618f0ca1b9d2e646489d3d59146d3c8e46ae6eac2f8cbff4",
+      "repo": "4852b690dac6852e1a4fda7f96a2c10549bb874188fd464b625f22a6d5e3c361",
+      "bytes": 94773
+    },
+    {
+      "path": "greeran-book.html",
+      "drive": "cd193ffe09fff453e98e3d2f24f98111d6538b21000ae9541b3804c9ee73b57f",
+      "repo": "85becc3b9cb43722c6d61e1b38606dbb58647d8c0e355c027516c0a08357abd9",
+      "bytes": 266094
+    },
+    {
+      "path": "index.html",
+      "drive": "a22456a2bf375bd6d10128644e3b559f32365f351f13224ea827bf14df068e90",
+      "repo": "afac760dd8037f7451c85c3516b97394e6b3ec13e0032de9d63ca89750113902",
+      "bytes": 8545
+    },
+    {
+      "path": "js/app.js",
+      "drive": "ac42fb811d6f14bc47930e40661f4aecd256ff37c61d3ff489450f02e97d38b4",
+      "repo": "0f2e6c70e212aef0400d88903f79aa669988b071faae368557a915904a74b757",
+      "bytes": 5195
+    },
+    {
+      "path": "js/bip39.js",
+      "drive": "2172e41cc052e921e128342c66a50de583d7043f6a3468c22fda0ee217e534d2",
+      "repo": "5709fb95d6492eaf78839861cdf617294105fb9a6af074f6be9979d484d30bd4",
+      "bytes": 7004
+    },
+    {
+      "path": "js/casefiles.js",
+      "drive": "a951202e78e163117b152631da9c174345af186a1305c8ff59a64323e4fbe67f",
+      "repo": "d79f786ce86bf1a7c08a184c1bab2979e186a244de68eaee17554d5a8bec7d25",
+      "bytes": 92520
+    },
+    {
+      "path": "js/dalton-race-4dwm.js",
+      "drive": "ccde472423fa9b0126f954d4e59a80b9a8f87ce8bfe1bb03091a6cdd040e2888",
+      "repo": "dcabc756906cee5607c26bb61eca17bc84d1b2672644695ba51e243eff76b40f",
+      "bytes": 19282
+    },
+    {
+      "path": "js/enso-id.js",
+      "drive": "d8f46d977f5b4d2cee7b84e17884e93e99eafa38405b97bde35c6dda2a762dc9",
+      "repo": "70478257a2405c8b0026e917730e118c351f3eddb80bc43ad87f8a8f40cbcd5e",
+      "bytes": 7405
+    },
+    {
+      "path": "js/forms3d.js",
+      "drive": "c29eb42268f0a53bceaaa5d031b90a679b4a089ad982d8a474d027d48ed5bad2",
+      "repo": "5a3be9b5e9c2829adbb00f925bb22d29fd9d3c45360d4e0a703cc9c24b01b56f",
+      "bytes": 9609
+    },
+    {
+      "path": "js/ghidra-wasm.js",
+      "drive": "ceb6a77d9ce1a8da7056b5dfb2f09bd69056487369b0fedcb741b18e702718c8",
+      "repo": "e9705843b7f534adc49813492d1f8e53289f1ebbd647540366e1ee51abeb4a8d",
+      "bytes": 7401
+    },
+    {
+      "path": "js/jp-grid.js",
+      "drive": "cc3f3fb28515edf154822e64e0cc803f913551317d1fd20deac4e253a42d628e",
+      "repo": "dd57bb4a4890bd6acc6ee2470b93ab35a54920518360f10ea958c2fc8f1dc08f",
+      "bytes": 36075
+    },
+    {
+      "path": "js/site-id.js",
+      "drive": "6161b4287c745cda87f6b0907be66514fc38cecf74630e09392a08d8c03b7f07",
+      "repo": "5d3ffea24c42c29d340c9531b4235f088f9f394db3dc2e27110aa9df4da443a2",
+      "bytes": 1000
+    },
+    {
+      "path": "js/studio.js",
+      "drive": "a03089bb3afa7f8c05e23d04331921dacce648227c2335233eb0fd27ac711e99",
+      "repo": "ea915383c6c08cd4516a0d3d7ec303aeaf58e7b788ccc26d6c65e0f9c2d6adf9",
+      "bytes": 62188
+    },
+    {
+      "path": "js/viewer.js",
+      "drive": "a3d65d24e5aaef8db7db1bceb68435d8319ce91df683096b0feb6e5fe541268d",
+      "repo": "3c9c5f07f723f42e9c1e1565fbe4f8e7cf5a0c1c1a61a39127944f0651fbe638",
+      "bytes": 40894
+    },
+    {
+      "path": "js/vrml-export.js",
+      "drive": "b274562b482ff35bd3e192a87d8dd56e3f6179a4e2bd14b38d7b6e092cd0e1f6",
+      "repo": "2b802bb1fd912884bed0300ea8c1733bf392182cdd0ae1f95518eab04dcbc83b",
+      "bytes": 6950
+    },
+    {
+      "path": "keyspace.html",
+      "drive": "76dad9b0255c6ce004d86fed472e10dd9072188e90d7d724599a92a8fb87eb3a",
+      "repo": "b9e40d08367fe1c6b1351926345601d88757b97b8dd47218bcfc2079e9e04649",
+      "bytes": 13449
+    },
+    {
+      "path": "keyspace.xdc",
+      "drive": "0a89d9ee44122527e874239d4520cde010f42f18bd5952086b3a269b1c167611",
+      "repo": "2b235a587e3598438c72fce88f2766c7d08785bce74b42ee4ae24000f09f1f4e",
+      "bytes": 446430
+    },
+    {
+      "path": "kryptos-vrml.xdc",
+      "drive": "8a4eb7f19d507365cb7bbd3047e7453764a028f19a6107d40e4db4009e972d29",
+      "repo": "63cf53d82a5f2f3d0f36f643478bff6256de90954f40b82e991f8baf0f51e80f",
+      "bytes": 159162
+    },
+    {
+      "path": "package-lock.json",
+      "drive": "9fa3b3bd63cfb2724b6f7b43f3391e48f2a35823c2f14b3d46dd16f86cfe4480",
+      "repo": "4c94ef4ec0dab2796f705d36d179b248c0a77e873410ce63038879bafcb72575",
+      "bytes": 148402
+    },
+    {
+      "path": "package.json",
+      "drive": "553b5a186bafc6389e5007966210a3346a501e6e70d792c2d0bd168d345fb3da",
+      "repo": "dabda3e04f0de2bfe001322b8b7bba8f147db35fea394c1fd5f096426ba9de5d",
+      "bytes": 3606
+    },
+    {
+      "path": "public/apps/cookbook/index.html",
+      "drive": "020933ae91640f466c1f6c684d8ddb8e2a8811b42b991096a05f11934a2c1537",
+      "repo": "5609298a76548050527b51c9e3f1f37ecb968c91834c4559e0a7bc3964a85afc",
+      "bytes": 174872
+    },
+    {
+      "path": "public/apps/cyberchef/index.html",
+      "drive": "b37c69887b1fe88b7177fddb803f60369dc848c9254b43b67a7b91f285f1eda9",
+      "repo": "cb208a8e8310b3feae70a0c1c399e03082bf01965571baec4b7160e6509df64c",
+      "bytes": 1760243
+    },
+    {
+      "path": "public/apps/index.html",
+      "drive": "0d0efa6aa749b0513237c113271266587919d02e0761cdfa4b783e7b9c922ba3",
+      "repo": "f8d55df0d3f540bccff300bad52c06bab71e4373b45662ec9995e2e1192de5b0",
+      "bytes": 5205
+    },
+    {
+      "path": "public/apps/kryptos-vrml/index.html",
+      "drive": "aa4a4fe02ec3b7769524494b57f8d0e73301612b0fbcde2cac40109f01aa0be3",
+      "repo": "84fd8c68f9e834b7c4d450f9630e5d246e9032220cf1c5f1c28b4ccda0c7a014",
+      "bytes": 81707
+    },
+    {
+      "path": "resources/README.md",
+      "drive": "9b26dfddb989b1f9c359d18de8bf82fc2c8a683b3c5e8e1e5a13aefef2a8fb8c",
+      "repo": "2f33303d5874efb63d9ecbb6dcd62ca292e1b1acd67db1ac98f8aeb4f77dd6b1",
+      "bytes": 13370
+    },
+    {
+      "path": "scripts/build-xdc.mjs",
+      "drive": "39052068cb7c3ef1bdc982ac207ed0fb2a5a8577f86a5f05c27319eeb75b5682",
+      "repo": "c0b3c4486dfda5f4301a8ac6c6fa33a264509fb837b9eb7251bfb1bedd99a6aa",
+      "bytes": 3868
+    },
+    {
+      "path": "sitek.xdc",
+      "drive": "0443842138dc52cc1e8b121a248ed8fd0454196932b052c5e25bb111128acfd7",
+      "repo": "d73db589a017f1e36ee940c30c811dff43f936535d026acbf6a069e6e6a1d083",
+      "bytes": 11193239
+    },
+    {
+      "path": "sw.js",
+      "drive": "2cc1358fb72c8b206436fa24206783669ad41b0820a9023ad1d20fb590be1930",
+      "repo": "fe8e8809e3e7bbb116057b38681a66f01dc8e0c4a3f6e5e5fb55945ee167d1d3",
+      "bytes": 6738
+    },
+    {
+      "path": "tests/08-syllables.mjs",
+      "drive": "690739e643d46846d71c6d65dad84a91e45ac422ea28040f0a4555fbd73ae7bd",
+      "repo": "934c7ef8776f667259db5c3f7b68c0fff3e1c87a7e1a890f788e31309d98181c",
+      "bytes": 2834
+    },
+    {
+      "path": "tests/11-wallet-coins.mjs",
+      "drive": "18089fb44db4591c9b8873b0709f0352cae00b4712d21a48cabeb65aed5072a6",
+      "repo": "a547f12002bba43bc97bdc9251f9040445e28f4a06194b4652e0c60691883ad6",
+      "bytes": 19779
+    },
+    {
+      "path": "tests/lib-browser.mjs",
+      "drive": "7717e551cd8ebf593b47e9fced50efd9286483257e773e69a0bdcb8cc0673bbb",
+      "repo": "b9dc327a7e0073611267e95f190e03491c8d4b636170f7bdc81875ad3424f78b",
+      "bytes": 5925
+    },
+    {
+      "path": "tests/run.sh",
+      "drive": "30f7eab1c9a8824d81908cc6e7d2133660d6770d3c83a3bf9ca9b73651db4896",
+      "repo": "7b030a5a9e71fd31bdf5fd32531bae59bdeaf1046943e187420a90a405898dc8",
+      "bytes": 10724
+    },
+    {
+      "path": "tools/README.md",
+      "drive": "d2157778de5c644a7ba0c514c9aaa612c7cd43ea2322b1ef52155d5aced54914",
+      "repo": "cb8e081331f88c8619e72ed42935fce716d8c80f8460d0c0bc53b595d5306aa5",
+      "bytes": 8272
+    },
+    {
+      "path": "tools/dom-stub.mjs",
+      "drive": "f35e6c9db4785c9fbfa586b4c38729181a3c124defef0d098de480cf168b90d6",
+      "repo": "c022f8fb7f7d7f28c3baf8004c0adbffc40355f0523d33f91bc3921d03e5c815",
+      "bytes": 17608
+    },
+    {
+      "path": "tools/exe_triage.py",
+      "drive": "2ffc217839867977c4782111882027e9dde66a6e44a47a700e9bf4a4f59f149f",
+      "repo": "597c18b2d2dbe919f6df19c55339312ccf233b006da885917c22de7129e1d53c",
+      "bytes": 5468
+    },
+    {
+      "path": "tools/pack_keyspace.sh",
+      "drive": "31561232b511353b74d16d3f409c0cc26798ff8d2f38e419c35b0381ce51e0d8",
+      "repo": "395c16a7eedd4cf89f819bb7d6e78ecd89f0d63af477afb01773a375b7df573b",
+      "bytes": 1437
+    },
+    {
+      "path": "tools/pack_xdc.sh",
+      "drive": "f37c1b30702c4b4f99cd61447415fe2961e4c336047164c7bea87e34f78d39df",
+      "repo": "0189fd3fbf8ec6adb776f3b85d20eda9d691ba9f68ed6ba5646a7a581fbb9719",
+      "bytes": 2613
+    },
+    {
+      "path": "tools/stage_ghidra_specs.py",
+      "drive": "520e48b525b0c19128fab473fc89d8f2be86318e2cc55e2717a49d5001033156",
+      "repo": "9cd5939ecdbd72a7a70de6aa9e39cb71f008a1531c8cb782eabb0ae2d4fcbaed",
+      "bytes": 3308
+    },
+    {
+      "path": "tools/verify_casefiles.mjs",
+      "drive": "ac44a12982260b6e6f150866be7cdff57b80581cb192eb2fc44aaf19eb2ddcee",
+      "repo": "71ea56184ff8599c3546f81065940b61eab5d0541b188da264496c1a5fb7f91a",
+      "bytes": 33919
+    },
+    {
+      "path": "vitest.config.ts",
+      "drive": "78666e165d8b8cf2f60fa75a7a47b2a1bb4cb0eab673e81f1dfc5ec50f429e3e",
+      "repo": "f23c9021d1ba78431d6f6ec81912b51b38951015359d0ffa62c91bc8bb2c66d4",
+      "bytes": 597
+    },
+    {
+      "path": "wasm/ghidra/processors.json",
+      "drive": "94023509a4af0f6d60ad433f2658614f8f169e5338d5642b825c305ca94cdab6",
+      "repo": "07344489fd4ae92e3e839559a9762c71dd7fed5db671e2519ab1c76f3153737d",
+      "bytes": 5011
+    },
+    {
+      "path": "webxdc-dos/dos-binary-loader.xdc",
+      "drive": "e0edf08a13c9b9fa04177549960d84071ccad2c36e9dd31483e61eb265055084",
+      "repo": "e5b5840bd71fb62a1b846d9b3ac6d2c95d5ac4152a3a54d098f15c702e9846e5",
+      "bytes": 2268150
+    },
+    {
+      "path": "webxdc-dos/index.html",
+      "drive": "d6aabbb8ab31980daac96804763cd6ae95f77cad08556ec8fe86fe732777028d",
+      "repo": "d432c460755eedd4631881fe95755260c685b0d51e8b32c003df881ac7e96c4d",
+      "bytes": 60343
+    },
+    {
+      "path": "webxdc-dos/package-lock.json",
+      "drive": "f86d19f5e5c85697ee8618b010d6ed35be9f6bc79c9d457c1138358fe93106d5",
+      "repo": "ab408f0b87fefcfb5fc83f36316ce48a68df6f149ba0ae47724f7e0214217d13",
+      "bytes": 36840
+    },
+    {
+      "path": "webxdc-dos/package.json",
+      "drive": "b4ce09c247c208e1ec89e4f74674d303c22e1ddd57a643c663e271f9ac125deb",
+      "repo": "de5f545848a2d7d746a1d2c1cf929a02742fe9139605ad09bf27c871976ce9ef",
+      "bytes": 406
+    },
+    {
+      "path": "webxdc-dos/vite.config.js",
+      "drive": "c0e84f381dd680da63afbfa180b2371df48205355cae88cc27615430e481ae9b",
+      "repo": "a6be0eafec6edc24b311256cb6b2e5a7b5916b3d09c7b1d061cae9bd7f3e57dc",
+      "bytes": 470
+    },
+    {
+      "path": "webxdc.js",
+      "drive": "cfb3c659029698828ee3a03f37e72925c194e5ca82f6d27886fefa651a22ef4e",
+      "repo": "d7810ebad473a289e4129dead3dbc41f5a82b9fd5924eca16f04c48e31ee4d59",
+      "bytes": 545
+    }
+  ],
+  "only_on_drive": [
+    {
+      "path": "CHIPWRIGHT.md",
+      "hash": "0133376aabe8c0d6874c7ed3d7d0c8db07714dadc07b2ce9b28113fc2f52e595"
+    },
+    {
+      "path": "chipwright.html",
+      "hash": "46070aba6f49929c8d98c7c855ea10b30ce7f3ced8e9d8146f1ce4331087b84d"
+    },
+    {
+      "path": "chipwright.xdc",
+      "hash": "0e6a47dc25a7987f15796faec9608fe2969cc414ff0cfc8930a52168f80c268c"
+    },
+    {
+      "path": "css/chipwright.css",
+      "hash": "008408811a680c3636bd0fc4479c4b41dd2ca4a8ca827b3a4bb3c4246873e9c6"
+    },
+    {
+      "path": "js/cw-app.js",
+      "hash": "818caa51bf51704713073b0ca531ca53b42a2b3f7f5153562cdac7d4317292d2"
+    },
+    {
+      "path": "js/cw-arch.js",
+      "hash": "e648c1c9c23e838b4b75a8b065c11df4a138511792dd52dc2cf61aa06c66f3ea"
+    },
+    {
+      "path": "js/cw-data-firmware.js",
+      "hash": "726a5bdf7da589c91738df9c1d073225c0d9a820b9cee12f0968425a5de2567e"
+    },
+    {
+      "path": "js/cw-data-jvm.js",
+      "hash": "b07252a0f96a6edf46f8a3a4ecaf05f9b38b70310abcee53d1ed3475e2039f93"
+    },
+    {
+      "path": "js/cw-data-onewire.js",
+      "hash": "ff1f18000aa810791a999a1608647fd7f02448782ba3ca7605f19dd730ae1feb"
+    },
+    {
+      "path": "js/cw-data-storage.js",
+      "hash": "fc19430b3020452107af4e8f1021998a19fe77d9c8afd5f6b800fdf1de8b6398"
+    },
+    {
+      "path": "js/cw-data-uefi.js",
+      "hash": "2cafa7e96ff705cc06e65c33e40fa2c53f9c160a03294bd8979df9050ee14099"
+    },
+    {
+      "path": "js/cw-data.js",
+      "hash": "3dd2fdeb061eff046291c5290ae6a8eadfbb7c05ddb1046c7fa2f97d90899652"
+    },
+    {
+      "path": "js/cw-firmware.js",
+      "hash": "495132a6401c6c54f36d3c9556b14ee1062982a397e2249a6e9cba3f6c59f622"
+    },
+    {
+      "path": "js/cw-prime.js",
+      "hash": "8af9dbe11799c20085f81548ac48d7507047b450a259afbee7209e1e43da8d9b"
+    },
+    {
+      "path": "js/cw-probe.js",
+      "hash": "8791a705f5a1dbcff61dc7510dcefe54b069d3b0f3fa1db1a1bb9cb88e89f64f"
+    },
+    {
+      "path": "js/cw-subst.js",
+      "hash": "08a0f242c6e1a1105adb208656326b9f44c702252eae731f99b01c5df8f33006"
+    },
+    {
+      "path": "js/cw-synth.js",
+      "hash": "43cda11f777c382fc37d2538945349681b8d7a9e1431ef7f5321ef1b69327652"
+    },
+    {
+      "path": "js/cw-tap.js",
+      "hash": "e7ac2feb83fbf68b351c8ca634393010b13d599f3bc89dfdcc5aa09a02b1afe3"
+    },
+    {
+      "path": "js/cw-webxdc.js",
+      "hash": "0dbe167c3b7881cd37270c53896c527258de2fc6d720919c49efe591351677e6"
+    },
+    {
+      "path": "js/cw-xdc.js",
+      "hash": "37504bd00ef6ac7cb5a872e275e8dff8b1219e39889c4de059e43963c82f4e6e"
+    },
+    {
+      "path": "tools/chipwright-dom.mjs",
+      "hash": "b4d734cc38af2bae95d18ba2022f0612aaa9c960021642d785ae4361706baf3d"
+    },
+    {
+      "path": "tools/pack_chipwright_xdc.sh",
+      "hash": "b1337a0f236445db4c8589ec08f43949eaaaefad72c674e22a6b2aa62918c452"
+    },
+    {
+      "path": "tools/test_chipwright_webxdc.mjs",
+      "hash": "84853771874fd11ea2795552c327d46915f09bd722ba4e26c3f88cbef9b273e9"
+    },
+    {
+      "path": "tools/verify_chipwright.mjs",
+      "hash": "9c80a24ac41ef17af26461849321a82c1c85cdcc27d2c8bc03099397f6ec1b09"
+    },
+    {
+      "path": "tools/verify_chipwright_xdc.mjs",
+      "hash": "064b6eeac50e77b44a1ae92c97b18d16ac61bab0fad6646a5cc5376ec1da311f"
+    }
+  ],
+  "only_in_repo": [
+    {
+      "path": ".arena-archive/fetch.log"
+    },
+    {
+      "path": ".arena-archive/fetch.py"
+    },
+    {
+      "path": ".arena-archive/requests.txt"
+    },
+    {
+      "path": ".arena-drive/fetch.log"
+    },
+    {
+      "path": ".arena-drive/fetch.py"
+    },
+    {
+      "path": ".arena-drive/requests.txt"
+    },
+    {
+      "path": ".arena-relay/artifact-probe"
+    },
+    {
+      "path": ".arena-relay/extract1"
+    },
+    {
+      "path": ".arena-relay/harry-fetch.txt"
+    },
+    {
+      "path": ".arena-relay/harry-ghidra.txt"
+    },
+    {
+      "path": ".arena-relay/probe-results.txt"
+    },
+    {
+      "path": ".arena-relay/run3"
+    },
+    {
+      "path": ".arena-relay/run4"
+    },
+    {
+      "path": ".arena-relay/run5"
+    },
+    {
+      "path": ".arena-relay/run6"
+    },
+    {
+      "path": ".arena-relay/run7"
+    },
+    {
+      "path": ".arena-relay/run8"
+    },
+    {
+      "path": ".arena-relay/scripts/extract.py"
+    },
+    {
+      "path": ".arena-relay/scripts/extract.txt"
+    },
+    {
+      "path": ".arena-relay/scripts/fetch_jdk.sh"
+    },
+    {
+      "path": ".arena-relay/scripts/recon.py"
+    },
+    {
+      "path": ".arena-relay/trigger"
+    },
+    {
+      "path": ".github/workflows/arena-archive-fetch.yml"
+    },
+    {
+      "path": ".github/workflows/arena-deep2.yml"
+    },
+    {
+      "path": ".github/workflows/arena-deep3.yml"
+    },
+    {
+      "path": ".github/workflows/arena-drive-sync.yml"
+    },
+    {
+      "path": ".github/workflows/arena-extract.yml"
+    },
+    {
+      "path": ".github/workflows/arena-headline-harry-ghidra.yml"
+    },
+    {
+      "path": ".github/workflows/arena-headline-harry.yml"
+    },
+    {
+      "path": ".github/workflows/arena-relay.yml"
+    },
+    {
+      "path": ".github/workflows/arena-sneakers-smoke.yml"
+    },
+    {
+      "path": ".github/workflows/drsolomon-ghidra.yml"
+    },
+    {
+      "path": ".github/workflows/flash-decompile.yml"
+    },
+    {
+      "path": ".github/workflows/jcreator-ghidra.yml"
+    },
+    {
+      "path": ".github/workflows/spycraft-ghidra.yml"
+    },
+    {
+      "path": ".relay-jdk.log"
+    },
+    {
+      "path": ".relay/extract.log"
+    },
+    {
+      "path": ".relay/jdk/jdk21.sha256"
+    },
+    {
+      "path": ".relay/jdk/jdk21.tar.gz.part-00"
+    },
+    {
+      "path": ".relay/jdk/jdk21.tar.gz.part-01"
+    },
+    {
+      "path": ".relay/jdk/jdk21.tar.gz.part-02"
+    },
+    {
+      "path": ".relay/recon/full-manifest.tsv.gz"
+    },
+    {
+      "path": ".relay/recon/ioc-hits.tsv"
+    },
+    {
+      "path": ".relay/recon/pe-members.tsv.gz"
+    },
+    {
+      "path": ".relay/recon/recon.log"
+    },
+    {
+      "path": ".relay/recon/redacted-pe.tsv.gz"
+    },
+    {
+      "path": ".relay/recon/redacted.txt"
+    },
+    {
+      "path": ".relay/recon/roots.txt"
+    },
+    {
+      "path": ".relay/recon/small-redacted-pe.tsv"
+    },
+    {
+      "path": ".relay/samples/0554BE676566850593276A84381E8B1A_Clock_Data4.exe"
+    },
+    {
+      "path": ".relay/samples/13649B559F74AAB726CD4B56F3F4E855_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/28D7F700019EE925E937A3964E3EB12D_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/4A0F36311FCD5D6366196082948C0D5A_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/58ECEBFA7B06739DB937B3CEAFB7CC21_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/6ADD5166139BBBC85E81E94571C790FA_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/8C3F387E85090907ED7864D07980AF86_A0262141.exe"
+    },
+    {
+      "path": ".relay/samples/8DB04E099E22116919ABD4DFCB2A6530_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/8EC740ED0E4D6EF2C669C1BEF52E588F_CLScc.exe"
+    },
+    {
+      "path": ".relay/samples/91985CF1B695F95A72DF8E27C75EAFC5_AGENTCPD.DLL"
+    },
+    {
+      "path": ".relay/samples/A131FCA432B42AEC82DFEFC02AA4879C_Setup1.exe"
+    },
+    {
+      "path": ".relay/samples/A31D62C63DCDABC8B21FCF8FC66F6F3D_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/A7AC1F99F190A7966FE4874989A08C26_Clock_Data5.exe"
+    },
+    {
+      "path": ".relay/samples/AB07ED5EBB0167C6704D8D024AFFF74D_TSXP.EXE"
+    },
+    {
+      "path": ".relay/samples/C529D4AADE464BF5C8C65F79CA7ED9EC_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/EF93E5FA6220AAA0241ADD163706F30B_REGSVR.EXE"
+    },
+    {
+      "path": ".relay/samples/F4878E9A997F130FFFB12A2ACDE5F1EE_ƒÚóÕ½___ƒÚÛ_½_.exe"
+    },
+    {
+      "path": ".relay/samples/F54E8E2D4A979D6D83AC636569596369_GLB1.tmp"
+    },
+    {
+      "path": ".relay/samples/F8294A40F19351B9F2C05717D6350B2E_cr_tw123a.exe"
+    },
+    {
+      "path": ".relay/samples/FB0C718C7DE194CD046D3D8AF9268DCF_KeyGen.exe"
+    },
+    {
+      "path": ".relay/samples/INDEX.tsv"
+    },
+    {
+      "path": ".xfer/harry/disks/disk1.img"
+    },
+    {
+      "path": ".xfer/harry/disks/disk2.img"
+    },
+    {
+      "path": ".xfer/harry/disks/disk3.img"
+    },
+    {
+      "path": ".xfer/harry/disks/disk4.img"
+    },
+    {
+      "path": ".xfer/harry/disks/expected.sha1"
+    },
+    {
+      "path": ".xfer/harry/game-raw/ANIM.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BACK.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BALL.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BORDER2.PIC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BRIEF1.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BRIEF2.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BUTFRAM.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/BUTTON.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/CRONO.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/DD.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/DDR.INC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/DDRS.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/DOSS.DAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/DOSS.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/EDIT.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/EDIT2.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/EDIT3.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/FORE.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/FORE1.DAC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/FORE2.DAC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/HARRY.BAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/HEAD.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/ICON.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/INSTALL.EXE"
+    },
+    {
+      "path": ".xfer/harry/game-raw/INSTALL.INF"
+    },
+    {
+      "path": ".xfer/harry/game-raw/INTRO.EXE"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK1.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK2.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK3.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK4.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK5.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MACK6.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MAP.EXE"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MAPE.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MAPS.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MEMTEST.EXE"
+    },
+    {
+      "path": ".xfer/harry/game-raw/MENU.DAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/NEWENG.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/NOTE.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/OPEN.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/ORIGDISK.ID"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PAGE.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PAPER.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PAPER.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILDDR.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILEDIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILLOSE.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILOPEN.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILTIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PHILWIN.MDI"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PLAY2.DAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/PLAYER.DAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.001"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.002"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.003"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.004"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.005"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.006"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.007"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.008"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.009"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.010"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.011"
+    },
+    {
+      "path": ".xfer/harry/game-raw/RAND.012"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.001"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.002"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.003"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.004"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.005"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.006"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.007"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.008"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.009"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.010"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.011"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SCEN.012"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SETUP.BAT"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SETUP.INF"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.001"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.002"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.003"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.004"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.005"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.006"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.007"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.008"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.009"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.010"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.011"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SEXT.012"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SND1.DAC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SND1.SFM"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SND2.DAC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SND2.SFM"
+    },
+    {
+      "path": ".xfer/harry/game-raw/SND3.DAC"
+    },
+    {
+      "path": ".xfer/harry/game-raw/STATETEX.DTA"
+    },
+    {
+      "path": ".xfer/harry/game-raw/STICONS.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TAXI.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE0.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE1.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE2.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE3.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE4.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TITLE5.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.001"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.002"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.003"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.004"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.005"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.006"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.007"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.008"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.009"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.010"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.011"
+    },
+    {
+      "path": ".xfer/harry/game-raw/TRAV.012"
+    },
+    {
+      "path": ".xfer/harry/game-raw/UNINSTAL.COM"
+    },
+    {
+      "path": ".xfer/harry/game-raw/W4EDIT.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/W4EDIT2.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/W4OPEN.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/WIN1.SPR"
+    },
+    {
+      "path": ".xfer/harry/game-raw/WIN1A.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/WIN1B.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/WIN2.PAK"
+    },
+    {
+      "path": ".xfer/harry/game-raw/WIN2.SPR"
+    },
+    {
+      "path": ".xfer/harry/install/dosbox.log"
+    },
+    {
+      "path": ".xfer/harry/install/game-run.log"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_15s.png"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_30s.png"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_45s.png"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_60s.png"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_75s.png"
+    },
+    {
+      "path": ".xfer/harry/install/game-shots/game_90s.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/final.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_1.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_10.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_11.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_12.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_13.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_14.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_15.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_16.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_17.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_18.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_19.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_2.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_20.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_21.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_22.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_23.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_24.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_25.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_3.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_4.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_5.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_6.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_7.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_8.png"
+    },
+    {
+      "path": ".xfer/harry/install/shots/shot_9.png"
+    },
+    {
+      "path": ".xfer/harry/installed/ANIM.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BACK.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BALL.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BORDER2.PIC"
+    },
+    {
+      "path": ".xfer/harry/installed/BRIEF1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BRIEF2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BUTFRAM.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/BUTTON.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/CRONO.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/DD.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/DDR.INC"
+    },
+    {
+      "path": ".xfer/harry/installed/DDRS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/DOSS.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/DOSS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/EDIT.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/EDIT2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/EDIT3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/FORE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/FORE1.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/FORE2.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HARRY.BAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HEAD.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/ANIM.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BACK.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BALL.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BORDER2.PIC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BRIEF1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BRIEF2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BUTFRAM.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/BUTTON.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/CRONO.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/DD.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/DDR.INC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/DDRS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/DOSS.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/DOSS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/EDIT.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/EDIT2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/EDIT3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/FORE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/FORE1.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/FORE2.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/HARRY.BAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/HEAD.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/ICON.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/INSTALL.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/INSTALL.INF"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/INTRO.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK4.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK5.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MACK6.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MAP.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MAPE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MAPS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MEMTEST.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/MENU.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/NEWENG.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/NOTE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/OPEN.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PAGE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PAPER.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PAPER.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILDDR.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILEDIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILLOSE.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILOPEN.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILTIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PHILWIN.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PLAY2.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/PLAYER.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.001"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.002"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.003"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.004"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.005"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.006"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.007"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.008"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.009"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.010"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.011"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/RAND.012"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.001"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.002"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.003"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.004"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.005"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.006"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.007"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.008"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.009"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.010"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.011"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SCEN.012"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SETUP.BAT"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SETUP.INF"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.001"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.002"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.003"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.004"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.005"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.006"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.007"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.008"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.009"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.010"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.011"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SEXT.012"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SND1.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SND1.SFM"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SND2.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SND2.SFM"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/SND3.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/STATETEX.DTA"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/STICONS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TAXI.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE0.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE4.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TITLE5.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.001"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.002"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.003"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.004"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.005"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.006"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.007"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.008"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.009"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.010"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.011"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/TRAV.012"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/UNINSTAL.COM"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/W4EDIT.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/W4EDIT2.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/W4OPEN.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/WIN1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/WIN1A.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/WIN1B.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/WIN2.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/HH/WIN2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/ICON.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/INSTALL.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/INSTALL.INF"
+    },
+    {
+      "path": ".xfer/harry/installed/INTRO.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK4.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK5.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MACK6.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MAP.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/MAPE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/MAPS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/MEMTEST.EXE"
+    },
+    {
+      "path": ".xfer/harry/installed/MENU.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/NEWENG.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/NOTE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/OPEN.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/PAGE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/PAPER.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/PAPER.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILDDR.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILEDIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILLOSE.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILOPEN.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILTIT.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PHILWIN.MDI"
+    },
+    {
+      "path": ".xfer/harry/installed/PLAY2.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/PLAYER.DAT"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.001"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.002"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.003"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.004"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.005"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.006"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.007"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.008"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.009"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.010"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.011"
+    },
+    {
+      "path": ".xfer/harry/installed/RAND.012"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.001"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.002"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.003"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.004"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.005"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.006"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.007"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.008"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.009"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.010"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.011"
+    },
+    {
+      "path": ".xfer/harry/installed/SCEN.012"
+    },
+    {
+      "path": ".xfer/harry/installed/SETUP.BAT"
+    },
+    {
+      "path": ".xfer/harry/installed/SETUP.INF"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.001"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.002"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.003"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.004"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.005"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.006"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.007"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.008"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.009"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.010"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.011"
+    },
+    {
+      "path": ".xfer/harry/installed/SEXT.012"
+    },
+    {
+      "path": ".xfer/harry/installed/SND1.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/SND1.SFM"
+    },
+    {
+      "path": ".xfer/harry/installed/SND2.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/SND2.SFM"
+    },
+    {
+      "path": ".xfer/harry/installed/SND3.DAC"
+    },
+    {
+      "path": ".xfer/harry/installed/STATETEX.DTA"
+    },
+    {
+      "path": ".xfer/harry/installed/STICONS.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TAXI.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE0.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE2.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE3.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE4.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TITLE5.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.001"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.002"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.003"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.004"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.005"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.006"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.007"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.008"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.009"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.010"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.011"
+    },
+    {
+      "path": ".xfer/harry/installed/TRAV.012"
+    },
+    {
+      "path": ".xfer/harry/installed/UNINSTAL.COM"
+    },
+    {
+      "path": ".xfer/harry/installed/W4EDIT.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/W4EDIT2.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/W4OPEN.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/WIN1.SPR"
+    },
+    {
+      "path": ".xfer/harry/installed/WIN1A.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/WIN1B.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/WIN2.PAK"
+    },
+    {
+      "path": ".xfer/harry/installed/WIN2.SPR"
+    },
+    {
+      "path": ".xfer/harry/listing.txt"
+    },
+    {
+      "path": ".xfer/harry/raw-listing.txt"
+    },
+    {
+      "path": "4DWM_GODMODE_CODE_REVIEW.md"
+    },
+    {
+      "path": "ASTRONOMY.md"
+    },
+    {
+      "path": "PRIME.md"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4.swf"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4/Background_004.JPG"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4/Clock_Data4.htm"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4/Clock_Data4.swf"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4_0.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4_1.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data4_2.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5.swf"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5/Background_005.JPG"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5/Clock_Data5.htm"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5/Clock_Data5.swf"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5_0.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5_1.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/flash/Clock_Data5_2.jpg"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/triage.json"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/unpacked-local/CLScc.unpacked.exe"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/unpacked-local/KeyGen_FSG.unpacked.exe"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/unpacked-local/cr_tw123a.stage2.exe"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/unpacked/Clock_Data4.unpacked.exe"
+    },
+    {
+      "path": "abbottabad-ghidra/evidence/unpacked/Clock_Data5.unpacked.exe"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/A0262141/decompiled/entry_00401000.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/A0262141/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/A0262141/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/REPORT.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001000_FUN_10001000.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001015_FUN_10001015.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001114_FUN_10001114.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001455_FUN_10001455.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100015a2_FUN_100015a2.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100016bb_FUN_100016bb.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001886_FUN_10001886.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001893_FUN_10001893.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001a85_FUN_10001a85.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001b1b_FUN_10001b1b.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001bb8_FUN_10001bb8.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001e7f_FUN_10001e7f.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001eee_FUN_10001eee.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001f65_FUN_10001f65.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10001fd0_FUN_10001fd0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100020fb_FUN_100020fb.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002174_FUN_10002174.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002254_FUN_10002254.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100022d8__start_16.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100022e9_FUN_100022e9.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000232f_FUN_1000232f.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000243d_FUN_1000243d.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002478_FUN_10002478.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100024b9_FUN_100024b9.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100024bd_FUN_100024bd.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100024d7_FUN_100024d7.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002507_FUN_10002507.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100025aa_FUN_100025aa.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100027d7_FUN_100027d7.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100029fd_FUN_100029fd.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002a97_FUN_10002a97.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002bee_FUN_10002bee.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002c01_FUN_10002c01.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002c14_FUN_10002c14.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002c27_FUN_10002c27.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002d31_FUN_10002d31.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002e56_FUN_10002e56.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002e69_FUN_10002e69.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002e7c_FUN_10002e7c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002ea2_FUN_10002ea2.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10002eb5_FUN_10002eb5.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000316f_FUN_1000316f.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003310_FUN_10003310.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100033c4_FUN_100033c4.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003410_FUN_10003410.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000347c_FUN_1000347c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003575_FUN_10003575.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003618_FUN_10003618.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100036d4_FUN_100036d4.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100036ee_FUN_100036ee.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003838_FUN_10003838.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000386d_FUN_1000386d.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100038e3_FUN_100038e3.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100038ec_FUN_100038ec.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003907_FUN_10003907.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003a1d_FUN_10003a1d.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003b5b_FUN_10003b5b.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003bc8_FUN_10003bc8.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003d01_FUN_10003d01.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003e02_FUN_10003e02.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003eac_FUN_10003eac.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10003fda_FUN_10003fda.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000407f_FUN_1000407f.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004098_FUN_10004098.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004104_FUN_10004104.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004231_FUN_10004231.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004249_FUN_10004249.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100042be_FUN_100042be.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100042cb_FUN_100042cb.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100042d5_FUN_100042d5.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000432a_FUN_1000432a.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100044a2_FUN_100044a2.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000461b_FUN_1000461b.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000469e_FUN_1000469e.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004786_FUN_10004786.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/1000493b_FUN_1000493b.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004990_FUN_10004990.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100049db_FUN_100049db.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/100049f6_FUN_100049f6.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004a11_FUN_10004a11.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004b9b_FUN_10004b9b.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004c58_FUN_10004c58.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004c89_FUN_10004c89.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004cff_FUN_10004cff.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004dd0_FUN_10004dd0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004e0c_FUN_10004e0c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/all/10004eb7_entry.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/decompiled/CreateToolhelp32Snapshot_10004f8c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/decompiled/Process32First_10004f86.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/decompiled/Process32Next_10004f80.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/decompiled/_start_16_100022d8.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/decompiled/entry_10004eb7.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/function_index.tsv"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/iocs.txt"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/strings.txt"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/100016bb_bmp_harvest.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/10001893_mutex_thread.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/10001bb8_shell_persistence.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/100022d8_start16.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/run1.err"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/AGENTCPD/wasm/run2.err"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/CreateFileA_00401014.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/ExitProcess_00401064.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/GetAsyncKeyState_00403cb4.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/GetStartupInfoA_0040109c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/GetWindowThreadProcessId_00403ccc.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/OpenProcess_00403c2c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/VirtualAlloc_00401128.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/WriteFile_0040105c.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/WriteProcessMemory_00403c34.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/decompiled/entry_00404534.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/CLScc_unpacked/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/__exit_00401bd9.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/__global_unwind2_00402498.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/__local_unwind2_004024da.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/__nh_malloc_00401b39.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/_malloc_00401b27.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/_memset_004041b0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/_strlen_00403570.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/_strncpy_004039b0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/entry_004019b9.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/decompiled/operator_new_004019ab.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/Clock4_unpacked/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/GLB1/decompiled/_MainWndProc_16_00402a80.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/GLB1/decompiled/_StubFileWrite_12_00403082.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/GLB1/decompiled/entry_004021af.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/GLB1/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/GLB1/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/decompiled/ExitProcess_004017d8.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/decompiled/SendDlgItemMessageA_00401838.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/decompiled/SendMessageA_0040183e.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/decompiled/entry_0040102e.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/KeyGen_FSG_unpacked/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/REPORT_SECONDARY.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a/decompiled/entry_0041c001.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a_stage2/decompiled/entry_0041cb33.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a_stage2/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/cr_tw123a_stage2/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x57c0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6300.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6430.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6570.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x66f0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x68d0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6a90.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6d90.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x6f50.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x7170.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/decompiled/0x71e0.c"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/report.json"
+    },
+    {
+      "path": "abbottabad-ghidra/outputs/kodachi-b43-fwcutter/report.md"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/ghidra_dump.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/ghidra_recon.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/map_pe.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/triage.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/dump_cr2.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/dump_pec2.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/trace_cr.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/uni_cr.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/uni_force.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/uni_oep.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/unpack/uni_unpack.py"
+    },
+    {
+      "path": "abbottabad-ghidra/scripts/wasm_decompile.cjs"
+    },
+    {
+      "path": "apps/neural-augment-lab.html"
+    },
+    {
+      "path": "apps/stalag-luft-iv-vrml.html"
+    },
+    {
+      "path": "apps/stalag-luft-iv.wrl"
+    },
+    {
+      "path": "apps/vincennes-command-viewer.html"
+    },
+    {
+      "path": "apps/z3950-interface.html"
+    },
+    {
+      "path": "apps/z3950-sru-gopher-terminal.html"
+    },
+    {
+      "path": "arcanechat-lab.html"
+    },
+    {
+      "path": "assets/los-alamos/NOTICE-bulletin-montage.txt"
+    },
+    {
+      "path": "assets/los-alamos/NOTICE-frankel.txt"
+    },
+    {
+      "path": "assets/los-alamos/NOTICE-metropolis.txt"
+    },
+    {
+      "path": "assets/los-alamos/bethe.jpg"
+    },
+    {
+      "path": "assets/los-alamos/bulletin-montage-reference.jpg"
+    },
+    {
+      "path": "assets/los-alamos/duffield.jpg"
+    },
+    {
+      "path": "assets/los-alamos/fermi.png"
+    },
+    {
+      "path": "assets/los-alamos/feynman.jpg"
+    },
+    {
+      "path": "assets/los-alamos/frankel.jpg"
+    },
+    {
+      "path": "assets/los-alamos/metropolis.jpg"
+    },
+    {
+      "path": "assets/los-alamos/oppenheimer.jpg"
+    },
+    {
+      "path": "astronomy.html"
+    },
+    {
+      "path": "astronomy.xdc"
+    },
+    {
+      "path": "atlanta-subsurface.html"
+    },
+    {
+      "path": "atlanta-subsurface.xdc"
+    },
+    {
+      "path": "avr-lab.html"
+    },
+    {
+      "path": "bluetops-gso-4dwm.html"
+    },
+    {
+      "path": "bluetops-gso-4dwm.xdc"
+    },
+    {
+      "path": "buffalo-subsurface.html"
+    },
+    {
+      "path": "buffalo-subsurface.xdc"
+    },
+    {
+      "path": "buscador-deep-dive.md"
+    },
+    {
+      "path": "calc.html"
+    },
+    {
+      "path": "calc/.gitignore"
+    },
+    {
+      "path": "calc/Makefile"
+    },
+    {
+      "path": "calc/README.md"
+    },
+    {
+      "path": "calc/core/app.c"
+    },
+    {
+      "path": "calc/core/fb.c"
+    },
+    {
+      "path": "calc/core/grid.c"
+    },
+    {
+      "path": "calc/core/keys.c"
+    },
+    {
+      "path": "calc/core/sitek.h"
+    },
+    {
+      "path": "calc/core/tables.c"
+    },
+    {
+      "path": "calc/core/util.c"
+    },
+    {
+      "path": "calc/devices.json"
+    },
+    {
+      "path": "calc/host/main.c"
+    },
+    {
+      "path": "calc/host/tests.c"
+    },
+    {
+      "path": "calc/plat/ti83/crt0.asm"
+    },
+    {
+      "path": "calc/plat/ti83/lcd.asm"
+    },
+    {
+      "path": "calc/plat/ti83/main.c"
+    },
+    {
+      "path": "calc/plat/ti85/lcd.asm"
+    },
+    {
+      "path": "calc/plat/ti85/main.c"
+    },
+    {
+      "path": "calc/plat/ti89/main.c"
+    },
+    {
+      "path": "calc/plat/ti90/main.c"
+    },
+    {
+      "path": "calc/plat/ti92/main.c"
+    },
+    {
+      "path": "calc/tools/build_device.py"
+    },
+    {
+      "path": "calc/tools/c2js.py"
+    },
+    {
+      "path": "calc/tools/difftest.py"
+    },
+    {
+      "path": "calc/tools/gen_tables.py"
+    },
+    {
+      "path": "calc/tools/js_dump.mjs"
+    },
+    {
+      "path": "calc/tools/ti_pack.py"
+    },
+    {
+      "path": "casefiles-inlined.html"
+    },
+    {
+      "path": "casefiles.xdc"
+    },
+    {
+      "path": "cheyenne.html"
+    },
+    {
+      "path": "cheyenne.xdc"
+    },
+    {
+      "path": "chipset-lab.html"
+    },
+    {
+      "path": "cia-museum.xdc"
+    },
+    {
+      "path": "convention-centers.html"
+    },
+    {
+      "path": "css/astronomy.css"
+    },
+    {
+      "path": "css/bluetops-gso-4dwm.css"
+    },
+    {
+      "path": "css/calc.css"
+    },
+    {
+      "path": "css/campus-4dwm.css"
+    },
+    {
+      "path": "css/casefiles-4dwm.css"
+    },
+    {
+      "path": "css/cheyenne.css"
+    },
+    {
+      "path": "css/city-subsurface.css"
+    },
+    {
+      "path": "css/convention-centers.css"
+    },
+    {
+      "path": "css/distro-dossier.css"
+    },
+    {
+      "path": "css/flash-decompiler.css"
+    },
+    {
+      "path": "css/four-corners-calc.css"
+    },
+    {
+      "path": "css/four-corners.css"
+    },
+    {
+      "path": "css/greeran-subsurface.css"
+    },
+    {
+      "path": "css/ingress-intel.css"
+    },
+    {
+      "path": "css/lantronix-lab.css"
+    },
+    {
+      "path": "css/los-alamos.css"
+    },
+    {
+      "path": "css/planet-viewer-4dwm.css"
+    },
+    {
+      "path": "css/prime.css"
+    },
+    {
+      "path": "css/project-y-4dwm.css"
+    },
+    {
+      "path": "css/project-y-sites.css"
+    },
+    {
+      "path": "css/red-october-4dwm.css"
+    },
+    {
+      "path": "css/satellite-constellations.css"
+    },
+    {
+      "path": "css/socal-calc.css"
+    },
+    {
+      "path": "css/socal-subsurface.css"
+    },
+    {
+      "path": "css/vincennes-4dwm.css"
+    },
+    {
+      "path": "cyberchef.xdc"
+    },
+    {
+      "path": "dalton-race-4dwm.xdc"
+    },
+    {
+      "path": "data/bluetops/README.md"
+    },
+    {
+      "path": "data/bluetops/awards.json"
+    },
+    {
+      "path": "data/bluetops/dem.json"
+    },
+    {
+      "path": "data/bluetops/register.json"
+    },
+    {
+      "path": "data/flash-decompiler-targets.json"
+    },
+    {
+      "path": "data/lawrence/dem-anchors.json"
+    },
+    {
+      "path": "data/project-y/catalog.js"
+    },
+    {
+      "path": "data/project-y/commons-index.txt"
+    },
+    {
+      "path": "data/project-y/manifest.json"
+    },
+    {
+      "path": "data/vincennes/README.md"
+    },
+    {
+      "path": "data/vincennes/dem.json"
+    },
+    {
+      "path": "data/vincennes/djvu/fogarty-encl5-timeline.djvu"
+    },
+    {
+      "path": "data/vincennes/djvu/graybook-v1-savo.djvu"
+    },
+    {
+      "path": "data/vincennes/djvu/graybook-v5-formosa.djvu"
+    },
+    {
+      "path": "data/vincennes/djvu/icao-figure-1-positions.djvu"
+    },
+    {
+      "path": "data/vincennes/plates.json"
+    },
+    {
+      "path": "distro-dossier.html"
+    },
+    {
+      "path": "docs/GHIDRA_COOKBOOK.md"
+    },
+    {
+      "path": "docs/RESEARCH_SMARTCARD.md"
+    },
+    {
+      "path": "docs/UEFI_OPENBIOS_JAVAC.md"
+    },
+    {
+      "path": "docs/VCHIP.md"
+    },
+    {
+      "path": "docs/acme-httpd-ecj.md"
+    },
+    {
+      "path": "docs/arcanechat-xdc-games-research-2026-10-02.md"
+    },
+    {
+      "path": "docs/arxiv-course-reader-research-2026-09-28.md"
+    },
+    {
+      "path": "docs/berlin-wall-monument-deep-dive-2026-10-05.md"
+    },
+    {
+      "path": "docs/casefiles-4dwm.md"
+    },
+    {
+      "path": "docs/catalog-internal-server.md"
+    },
+    {
+      "path": "docs/cheyenne.md"
+    },
+    {
+      "path": "docs/city-subsurface.md"
+    },
+    {
+      "path": "docs/convention-venues.md"
+    },
+    {
+      "path": "docs/crow-cryptogram-solution-research-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-cryptogram-stecker-audit-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-cyrillic-hypothesis-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-gemini-battery-2026-10-03-output.txt"
+    },
+    {
+      "path": "docs/crow-poem-keyspace-search-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-secom-deep-dive-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-source-check-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-structured-extraction-search-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-ukrainian-source-check-2026-10-02.md"
+    },
+    {
+      "path": "docs/crow-wikipedia-secom-source-check-2026-10-02.md"
+    },
+    {
+      "path": "docs/cyberchef-cipher-machine-recipe-checks-2026-10-05.md"
+    },
+    {
+      "path": "docs/cyberchef-classical-cipher-deep-dive.md"
+    },
+    {
+      "path": "docs/cyberchef-matrix-deep-dive.md"
+    },
+    {
+      "path": "docs/cyberchef-modern-cryptography-research-2026-09-29.md"
+    },
+    {
+      "path": "docs/cyberchef-recipe-sync-2026-10-07.json"
+    },
+    {
+      "path": "docs/cyberchef-sfx-coverage-audit-2026-10-09.md"
+    },
+    {
+      "path": "docs/dos-game-disassembly.md"
+    },
+    {
+      "path": "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.asm"
+    },
+    {
+      "path": "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.c"
+    },
+    {
+      "path": "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json"
+    },
+    {
+      "path": "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.strings.txt"
+    },
+    {
+      "path": "docs/dr-solomon-virus-encyclopaedia-ghidra.md"
+    },
+    {
+      "path": "docs/drive-backup-2026-10-08.md"
+    },
+    {
+      "path": "docs/drive-inventory-2026-10-04.json"
+    },
+    {
+      "path": "docs/drive-repo-sync-2026-10-04.md"
+    },
+    {
+      "path": "docs/drive-sync/README.md"
+    },
+    {
+      "path": "docs/esgvrop-deep-dive.md"
+    },
+    {
+      "path": "docs/exe-compressors-and-scumm.md"
+    },
+    {
+      "path": "docs/exe-protection-deep-dive.md"
+    },
+    {
+      "path": "docs/federal-reclassification-deep-dive-2026-10-05.md"
+    },
+    {
+      "path": "docs/flash-decompiler-workflow.md"
+    },
+    {
+      "path": "docs/for-dummies-catalog-list.md"
+    },
+    {
+      "path": "docs/for-dummies-source-check.md"
+    },
+    {
+      "path": "docs/four-corners.md"
+    },
+    {
+      "path": "docs/game-corpus-evidence/keen1-unpacked-entry.c"
+    },
+    {
+      "path": "docs/game-corpus-evidence/lzexe-unpack.txt"
+    },
+    {
+      "path": "docs/game-corpus-evidence/qfg1-sci-interp-entry.c"
+    },
+    {
+      "path": "docs/game-corpus-evidence/tetris1986-entry.c"
+    },
+    {
+      "path": "docs/game-corpus-evidence/triage.txt"
+    },
+    {
+      "path": "docs/gazetteer-sync-2026-10-04.md"
+    },
+    {
+      "path": "docs/geneva-icj-research-2026-10-06.md"
+    },
+    {
+      "path": "docs/geomate-gpx-preservation.md"
+    },
+    {
+      "path": "docs/geomate-jr-firmware-research.md"
+    },
+    {
+      "path": "docs/geomate-sg7-firmware-analysis.md"
+    },
+    {
+      "path": "docs/geomate-viewermade-source-check-2026-10-07.md"
+    },
+    {
+      "path": "docs/ghidra-cyberchef-recipes.md"
+    },
+    {
+      "path": "docs/ghidra-dos-disasm-plan.md"
+    },
+    {
+      "path": "docs/ghidra-headless-benign-sample-methodology.md"
+    },
+    {
+      "path": "docs/ghidra/dos-crypto-scan.md"
+    },
+    {
+      "path": "docs/ghidra/dos-disasm-report.md"
+    },
+    {
+      "path": "docs/greeran-book-ideas-backlog.md"
+    },
+    {
+      "path": "docs/greeran-family-4dwm.md"
+    },
+    {
+      "path": "docs/headline-harry-jsdos-fix-2026-10-04.md"
+    },
+    {
+      "path": "docs/iacr-research-watch-2026-09-28.md"
+    },
+    {
+      "path": "docs/ingress-intel-connector-research-2026-10-07.md"
+    },
+    {
+      "path": "docs/ingress-intel-map-viewer.md"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/GE2001.exe.c"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/GE2001.exe.ghidra.json"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/GE2001.exe.strings.txt"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreator.exe.c"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreator.exe.ghidra.json"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreator.exe.strings.txt"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreatorSetup.exe.c"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreatorSetup.exe.ghidra.json"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/JCreatorSetup.exe.strings.txt"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/inventory.json"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/zlib.dll.c"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/zlib.dll.ghidra.json"
+    },
+    {
+      "path": "docs/jcreator-ghidra-evidence/zlib.dll.strings.txt"
+    },
+    {
+      "path": "docs/jcreator-jdk-coupling.md"
+    },
+    {
+      "path": "docs/jcreator-jdk-ghidra.md"
+    },
+    {
+      "path": "docs/john-ghidra-diablo-research.md"
+    },
+    {
+      "path": "docs/jsdos-cdn-deep-dive-2026-10-04.md"
+    },
+    {
+      "path": "docs/lantronix-uclinux-deep-dive-2026-10-08.md"
+    },
+    {
+      "path": "docs/lawrence-kansas-subsurface.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-09-14.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-09-20.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-09-27.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-09-29.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-10-02-sylichenko.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-10-02.md"
+    },
+    {
+      "path": "docs/lecture-hall-research-2026-10-03-crow-gemini-battery.md"
+    },
+    {
+      "path": "docs/los-alamos-bulletin.md"
+    },
+    {
+      "path": "docs/los-alamos-domain-deep-dive-2026-09-30.md"
+    },
+    {
+      "path": "docs/los-alamos-frankel.md"
+    },
+    {
+      "path": "docs/los-alamos-metropolis.md"
+    },
+    {
+      "path": "docs/los-alamos-source-check-2026-09-30.md"
+    },
+    {
+      "path": "docs/lost-treasure-source-check-2026-10-04.md"
+    },
+    {
+      "path": "docs/norton-ghost-deep-dive.md"
+    },
+    {
+      "path": "docs/pdfdrive-deep-dive-2026-10-13.md"
+    },
+    {
+      "path": "docs/planet-viewer-deep-dive.md"
+    },
+    {
+      "path": "docs/project-y-catalog.md"
+    },
+    {
+      "path": "docs/project-y-sites.md"
+    },
+    {
+      "path": "docs/project-y-verification.md"
+    },
+    {
+      "path": "docs/reclassification-budget-draft-bill-2026-10-05.md"
+    },
+    {
+      "path": "docs/reclassification-legislation-catalog-2026-10-05.md"
+    },
+    {
+      "path": "docs/reclassification-source-check-2026-10-05.md"
+    },
+    {
+      "path": "docs/reclassification-symbolic-logic-2026-10-05.md"
+    },
+    {
+      "path": "docs/red-october-akula-ghost.png"
+    },
+    {
+      "path": "docs/red-october-cutaway-deep-dive.md"
+    },
+    {
+      "path": "docs/red-october-dallas-xray.png"
+    },
+    {
+      "path": "docs/red-october-typhoon-section.png"
+    },
+    {
+      "path": "docs/sanborn-suite-deep-dive.md"
+    },
+    {
+      "path": "docs/satellite-constellations.md"
+    },
+    {
+      "path": "docs/satellite-launch-windows-research-2026-10-04.md"
+    },
+    {
+      "path": "docs/sgreeran-resume-chronology.md"
+    },
+    {
+      "path": "docs/simgirls-disassembly-research.md"
+    },
+    {
+      "path": "docs/socal-radio-propagation.md"
+    },
+    {
+      "path": "docs/socal-subsurface.md"
+    },
+    {
+      "path": "docs/socal-usgs-gazetteer.md"
+    },
+    {
+      "path": "docs/socal-utilities-orbital.md"
+    },
+    {
+      "path": "docs/software-protection-encyclopedia.md"
+    },
+    {
+      "path": "docs/source-check-2026-09-28.md"
+    },
+    {
+      "path": "docs/source-check-2026-09-29-vincennes.md"
+    },
+    {
+      "path": "docs/source-check-2026-09-29.md"
+    },
+    {
+      "path": "docs/source-check-bibliography.md"
+    },
+    {
+      "path": "docs/source-check-four-corners-2026-10-04.md"
+    },
+    {
+      "path": "docs/spectre-press-source-check.md"
+    },
+    {
+      "path": "docs/spycraft-ghidra-analysis.md"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/analysis.json"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/inventory.json"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/01-FILEIO.DLL/FILEIO.DLL.c"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/01-FILEIO.DLL/FILEIO.DLL.ghidra.json"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/01-FILEIO.DLL/FILEIO.DLL.strings.txt"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/02-SPYCRAFT.EXE/SPYCRAFT.EXE.c"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/02-SPYCRAFT.EXE/SPYCRAFT.EXE.ghidra.json"
+    },
+    {
+      "path": "docs/spycraft-ghidra-evidence/reports/02-SPYCRAFT.EXE/SPYCRAFT.EXE.strings.txt"
+    },
+    {
+      "path": "docs/spycraft-research.md"
+    },
+    {
+      "path": "docs/terrain-vector-overlay-deep-dive.md"
+    },
+    {
+      "path": "docs/territorial-classification-deep-dive-2026-10-06.md"
+    },
+    {
+      "path": "docs/ucsb-2001-first-quarter-research.md"
+    },
+    {
+      "path": "docs/vincennes-4dwm-deep-dive.md"
+    },
+    {
+      "path": "docs/virtual-intelligence-lecture-hall-update-2026-10-05.md"
+    },
+    {
+      "path": "docs/virus-encyclopedia-xena-preservation.md"
+    },
+    {
+      "path": "docs/virus-encyclopedia.md"
+    },
+    {
+      "path": "docs/wikiinajar-image-support.md"
+    },
+    {
+      "path": "docs/wimax-pi-powerline-variants-2026-10-08.md"
+    },
+    {
+      "path": "docs/wireless-charging-pad-2026-10-08.md"
+    },
+    {
+      "path": "docs/yubnub-crypto-transport-audit-2026-10-13.md"
+    },
+    {
+      "path": "docs/yubnub-description-matches-2026-10-13.md"
+    },
+    {
+      "path": "docs/yubnub-github-archive-research-2026-10-13.md"
+    },
+    {
+      "path": "docs/yubnub-opensource-backing-2026-10-13.md"
+    },
+    {
+      "path": "docs/z3950-server-deep-dive-2026-09-28.md"
+    },
+    {
+      "path": "docs/zlib-apk-triage/SUMMARY.md"
+    },
+    {
+      "path": "docs/zlib-apk-triage/Z-Lib_1.11.4_APKPure.md"
+    },
+    {
+      "path": "docs/zlib-apk-triage/disasm-Z-Lib_1.11.4_APKPure.md"
+    },
+    {
+      "path": "docs/zlib-apk-triage/disasm-z+Library_1.0.5_APKPure.md"
+    },
+    {
+      "path": "docs/zlib-apk-triage/z+Library_1.0.5_APKPure.md"
+    },
+    {
+      "path": "docs/zlibrary-apk-ghidra-research-2026-10-13.md"
+    },
+    {
+      "path": "docs/zshaolin-javascript-port.md"
+    },
+    {
+      "path": "esgvrop-4dwm.html"
+    },
+    {
+      "path": "esgvrop-4dwm.xdc"
+    },
+    {
+      "path": "flash-decompiler.html"
+    },
+    {
+      "path": "four-corners-calc.html"
+    },
+    {
+      "path": "four-corners-calc/.gitignore"
+    },
+    {
+      "path": "four-corners-calc/Makefile"
+    },
+    {
+      "path": "four-corners-calc/README.md"
+    },
+    {
+      "path": "four-corners-calc/build.json"
+    },
+    {
+      "path": "four-corners-calc/core/app.c"
+    },
+    {
+      "path": "four-corners-calc/core/fcdata.c"
+    },
+    {
+      "path": "four-corners-calc/core/fcdata.h"
+    },
+    {
+      "path": "four-corners-calc/core/fctables.c"
+    },
+    {
+      "path": "four-corners-calc/core/fourcorners.h"
+    },
+    {
+      "path": "four-corners-calc/core/geo.c"
+    },
+    {
+      "path": "four-corners-calc/devices.json"
+    },
+    {
+      "path": "four-corners-calc/host/elevfix.h"
+    },
+    {
+      "path": "four-corners-calc/host/main.c"
+    },
+    {
+      "path": "four-corners-calc/host/tests.c"
+    },
+    {
+      "path": "four-corners-calc/plat/ti83/crt0.asm"
+    },
+    {
+      "path": "four-corners-calc/plat/ti83/lcd.asm"
+    },
+    {
+      "path": "four-corners-calc/plat/ti83/main.c"
+    },
+    {
+      "path": "four-corners-calc/plat/ti89/main.c"
+    },
+    {
+      "path": "four-corners-calc/plat/ti92/main.c"
+    },
+    {
+      "path": "four-corners-calc/tools/fc_dump.mjs"
+    },
+    {
+      "path": "four-corners-calc/tools/gen_tables.py"
+    },
+    {
+      "path": "four-corners-calc/tools/js_dump.mjs"
+    },
+    {
+      "path": "four-corners-calc/tools/xdc2c.py"
+    },
+    {
+      "path": "four-corners.css"
+    },
+    {
+      "path": "four-corners.html"
+    },
+    {
+      "path": "four-corners.js"
+    },
+    {
+      "path": "four-corners.xdc"
+    },
+    {
+      "path": "glendora-high-4dwm.html"
+    },
+    {
+      "path": "glendora-high-4dwm.xdc"
+    },
+    {
+      "path": "greeran-family-4dwm.html"
+    },
+    {
+      "path": "greeran-family-4dwm.xdc"
+    },
+    {
+      "path": "greeran-subsurface.html"
+    },
+    {
+      "path": "greeran-subsurface.xdc"
+    },
+    {
+      "path": "hardware/lantronix-wallplug/BOM.md"
+    },
+    {
+      "path": "hardware/lantronix-wallplug/README.md"
+    },
+    {
+      "path": "hardware/lantronix-wallplug/lantronix-wallplug.brd"
+    },
+    {
+      "path": "hardware/lantronix-wallplug/lantronix-wallplug.lbr"
+    },
+    {
+      "path": "hardware/lantronix-wallplug/lantronix-wallplug.sch"
+    },
+    {
+      "path": "hardware/pi-wall-socket/BOM.md"
+    },
+    {
+      "path": "hardware/pi-wall-socket/README.md"
+    },
+    {
+      "path": "hardware/pi-wall-socket/pi-wall-socket.brd"
+    },
+    {
+      "path": "hardware/pi-wall-socket/pi-wall-socket.lbr"
+    },
+    {
+      "path": "hardware/pi-wall-socket/pi-wall-socket.sch"
+    },
+    {
+      "path": "hardware/plc-bridge/BOM.md"
+    },
+    {
+      "path": "hardware/plc-bridge/README.md"
+    },
+    {
+      "path": "hardware/plc-bridge/plc-bridge.brd"
+    },
+    {
+      "path": "hardware/plc-bridge/plc-bridge.lbr"
+    },
+    {
+      "path": "hardware/plc-bridge/plc-bridge.sch"
+    },
+    {
+      "path": "hardware/wimax-cpe/BOM.md"
+    },
+    {
+      "path": "hardware/wimax-cpe/README.md"
+    },
+    {
+      "path": "hardware/wimax-cpe/wimax-cpe.brd"
+    },
+    {
+      "path": "hardware/wimax-cpe/wimax-cpe.lbr"
+    },
+    {
+      "path": "hardware/wimax-cpe/wimax-cpe.sch"
+    },
+    {
+      "path": "headline-harry.xdc"
+    },
+    {
+      "path": "img/bluetops-icon-256.png"
+    },
+    {
+      "path": "img/bluetops-icon.png"
+    },
+    {
+      "path": "img/greeran-family-4dwm-icon.png"
+    },
+    {
+      "path": "img/vincennes-icon-256.png"
+    },
+    {
+      "path": "ingress-intel.html"
+    },
+    {
+      "path": "ingress-intel.xdc"
+    },
+    {
+      "path": "js/astronomy-viewer.js"
+    },
+    {
+      "path": "js/astronomy.js"
+    },
+    {
+      "path": "js/avr-lab.js"
+    },
+    {
+      "path": "js/avrdis.js"
+    },
+    {
+      "path": "js/avrhex.js"
+    },
+    {
+      "path": "js/bluetops-gso-4dwm.js"
+    },
+    {
+      "path": "js/bootchain.js"
+    },
+    {
+      "path": "js/calc-core.js"
+    },
+    {
+      "path": "js/calc.js"
+    },
+    {
+      "path": "js/casefiles-4dwm.js"
+    },
+    {
+      "path": "js/cheyenne-borders.js"
+    },
+    {
+      "path": "js/cheyenne-data.js"
+    },
+    {
+      "path": "js/cheyenne-dem-data.js"
+    },
+    {
+      "path": "js/cheyenne-dem.js"
+    },
+    {
+      "path": "js/cheyenne-geo.js"
+    },
+    {
+      "path": "js/cheyenne.js"
+    },
+    {
+      "path": "js/chipset-lab.js"
+    },
+    {
+      "path": "js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "js/city-gazetteer-data.js"
+    },
+    {
+      "path": "js/city-gazetteer.js"
+    },
+    {
+      "path": "js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "js/city-subsurface.js"
+    },
+    {
+      "path": "js/distro-dossier.js"
+    },
+    {
+      "path": "js/esgvrop-4dwm.js"
+    },
+    {
+      "path": "js/flash-decompiler.js"
+    },
+    {
+      "path": "js/four-corners-calc.js"
+    },
+    {
+      "path": "js/four-corners-core.js"
+    },
+    {
+      "path": "js/four-corners-data.js"
+    },
+    {
+      "path": "js/four-corners-geo.js"
+    },
+    {
+      "path": "js/four-corners.js"
+    },
+    {
+      "path": "js/glendora-high-4dwm.js"
+    },
+    {
+      "path": "js/gpx-geocache.js"
+    },
+    {
+      "path": "js/greeran-subsurface-data.js"
+    },
+    {
+      "path": "js/greeran-subsurface.js"
+    },
+    {
+      "path": "js/ingress-intel-data.js"
+    },
+    {
+      "path": "js/ingress-intel-feed.js"
+    },
+    {
+      "path": "js/ingress-intel-globe.js"
+    },
+    {
+      "path": "js/ingress-intel-proto.js"
+    },
+    {
+      "path": "js/ingress-intel-sim.js"
+    },
+    {
+      "path": "js/ingress-intel.js"
+    },
+    {
+      "path": "js/jvmdis.js"
+    },
+    {
+      "path": "js/key-stats.js"
+    },
+    {
+      "path": "js/lantronix-lab.js"
+    },
+    {
+      "path": "js/lecture-ciphers.js"
+    },
+    {
+      "path": "js/los-alamos-data.js"
+    },
+    {
+      "path": "js/los-alamos.js"
+    },
+    {
+      "path": "js/mealcard.js"
+    },
+    {
+      "path": "js/pip-deck.js"
+    },
+    {
+      "path": "js/planet-viewer-4dwm.js"
+    },
+    {
+      "path": "js/planet-viewer-checks.js"
+    },
+    {
+      "path": "js/planet-viewer-data.js"
+    },
+    {
+      "path": "js/prime-viewer.js"
+    },
+    {
+      "path": "js/primes.js"
+    },
+    {
+      "path": "js/project-y-4dwm.js"
+    },
+    {
+      "path": "js/project-y-catalog-utils.js"
+    },
+    {
+      "path": "js/project-y-sites-data.js"
+    },
+    {
+      "path": "js/project-y-sites.js"
+    },
+    {
+      "path": "js/red-october-4dwm.js"
+    },
+    {
+      "path": "js/red-october-checks.js"
+    },
+    {
+      "path": "js/red-october-data.js"
+    },
+    {
+      "path": "js/red-october-geo.js"
+    },
+    {
+      "path": "js/red-october-vrml.js"
+    },
+    {
+      "path": "js/satellite-constellations-data.js"
+    },
+    {
+      "path": "js/satellite-constellations.js"
+    },
+    {
+      "path": "js/sitek-catalog.js"
+    },
+    {
+      "path": "js/socal-calc.js"
+    },
+    {
+      "path": "js/socal-core.js"
+    },
+    {
+      "path": "js/socal-gazetteer-data.js"
+    },
+    {
+      "path": "js/socal-gazetteer.js"
+    },
+    {
+      "path": "js/socal-geo.js"
+    },
+    {
+      "path": "js/socal-orbital.js"
+    },
+    {
+      "path": "js/socal-overlays-data.js"
+    },
+    {
+      "path": "js/socal-overlays.js"
+    },
+    {
+      "path": "js/socal-propagation.js"
+    },
+    {
+      "path": "js/socal-radio-data.js"
+    },
+    {
+      "path": "js/socal-radio.js"
+    },
+    {
+      "path": "js/socal-relief.js"
+    },
+    {
+      "path": "js/socal-sites-extended.js"
+    },
+    {
+      "path": "js/socal-subsurface-data.js"
+    },
+    {
+      "path": "js/socal-subsurface.js"
+    },
+    {
+      "path": "js/socal-utilities-data.js"
+    },
+    {
+      "path": "js/socal-utilities.js"
+    },
+    {
+      "path": "js/vchip-model.js"
+    },
+    {
+      "path": "js/venue-sites-data.js"
+    },
+    {
+      "path": "js/venue-sites.js"
+    },
+    {
+      "path": "js/vincennes-4dwm.js"
+    },
+    {
+      "path": "js/vincennes-dem.js"
+    },
+    {
+      "path": "js/vincennes-djvu.js"
+    },
+    {
+      "path": "js/vincennes-logmath.js"
+    },
+    {
+      "path": "js/vincennes-logs-data.js"
+    },
+    {
+      "path": "js/wallet-derivatives.js"
+    },
+    {
+      "path": "js/wireless-charge-lab.js"
+    },
+    {
+      "path": "js/wireless-charge.js"
+    },
+    {
+      "path": "jurisdictions-viewer.html"
+    },
+    {
+      "path": "kansascity-subsurface.html"
+    },
+    {
+      "path": "kansascity-subsurface.xdc"
+    },
+    {
+      "path": "kitchen-meal-card.html"
+    },
+    {
+      "path": "kodachi-deep-dive.md"
+    },
+    {
+      "path": "lantronix-lab.html"
+    },
+    {
+      "path": "lattice-viewer.html"
+    },
+    {
+      "path": "lattice-viewer.xdc"
+    },
+    {
+      "path": "lawrence-subsurface.html"
+    },
+    {
+      "path": "lawrence-subsurface.xdc"
+    },
+    {
+      "path": "los-alamos.html"
+    },
+    {
+      "path": "los-alamos.xdc"
+    },
+    {
+      "path": "models/project-y/castle-bravo.wrl"
+    },
+    {
+      "path": "models/project-y/hanford.wrl"
+    },
+    {
+      "path": "models/project-y/ivy-mike.wrl"
+    },
+    {
+      "path": "models/project-y/los-alamos.wrl"
+    },
+    {
+      "path": "models/project-y/oak-ridge.wrl"
+    },
+    {
+      "path": "models/project-y/trinity.wrl"
+    },
+    {
+      "path": "models/venues/anaheim-cc.wrl"
+    },
+    {
+      "path": "models/venues/delano-tower.wrl"
+    },
+    {
+      "path": "models/venues/javits.wrl"
+    },
+    {
+      "path": "models/venues/lvcc.wrl"
+    },
+    {
+      "path": "models/venues/sands-expo.wrl"
+    },
+    {
+      "path": "models/venues/walter-e-washington.wrl"
+    },
+    {
+      "path": "npi-search.html"
+    },
+    {
+      "path": "planet-viewer-4dwm.html"
+    },
+    {
+      "path": "planet-viewer-4dwm.xdc"
+    },
+    {
+      "path": "prime.html"
+    },
+    {
+      "path": "prime.xdc"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/css/city-subsurface.css"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-gazetteer.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/city-subsurface.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/atlanta-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/css/city-subsurface.css"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-gazetteer.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/city-subsurface.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/buffalo-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/cheyenne/css/cheyenne.css"
+    },
+    {
+      "path": "public/apps/cheyenne/icon.png"
+    },
+    {
+      "path": "public/apps/cheyenne/index.html"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne-borders.js"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne-data.js"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne-dem-data.js"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne-dem.js"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne-geo.js"
+    },
+    {
+      "path": "public/apps/cheyenne/js/cheyenne.js"
+    },
+    {
+      "path": "public/apps/cheyenne/manifest.toml"
+    },
+    {
+      "path": "public/apps/cheyenne/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/cheyenne/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/cheyenne/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/cheyenne/webxdc.js"
+    },
+    {
+      "path": "public/apps/cia-museum/README.md"
+    },
+    {
+      "path": "public/apps/cia-museum/app.js"
+    },
+    {
+      "path": "public/apps/cia-museum/icon.svg"
+    },
+    {
+      "path": "public/apps/cia-museum/index.html"
+    },
+    {
+      "path": "public/apps/cia-museum/manifest.toml"
+    },
+    {
+      "path": "public/apps/cia-museum/models/campus.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/a12-oxcart.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/afghanistan.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/azorian.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/berlin-tunnel.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/bin-ladin.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/canadian-six.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/coded-ceiling.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/corona.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/oss.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/pan-am-103.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/exhibits/technology.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/field-sites/camp-peary.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/field-sites/camp-x.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/field-sites/site-x-st-croix.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/a12-grounds.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/berlin-wall.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/headquarters-seal.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/kryptos.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/memorial-wall.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/museum.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/oss-memorial.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/models/grounds/u2.wrl"
+    },
+    {
+      "path": "public/apps/cia-museum/museum.css"
+    },
+    {
+      "path": "public/apps/cia-museum/vrml-engine.js"
+    },
+    {
+      "path": "public/apps/cyberchef-merged/icon.png"
+    },
+    {
+      "path": "public/apps/cyberchef-merged/index.html"
+    },
+    {
+      "path": "public/apps/cyberchef-merged/manifest.toml"
+    },
+    {
+      "path": "public/apps/cyberchef-merged/webxdc.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/css/dalton-race-4dwm.css"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/icon.png"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/index.html"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/js/ca-geo.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/js/dalton-race-4dwm.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/js/site-id.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/js/vrml-export.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/manifest.toml"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/dalton-race-4dwm/webxdc.js"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/css/campus-4dwm.css"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/icon.png"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/index.html"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/js/esgvrop-4dwm.js"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/manifest.toml"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/esgvrop-4dwm/webxdc.js"
+    },
+    {
+      "path": "public/apps/four-corners/css/four-corners.css"
+    },
+    {
+      "path": "public/apps/four-corners/icon.png"
+    },
+    {
+      "path": "public/apps/four-corners/index.html"
+    },
+    {
+      "path": "public/apps/four-corners/js/four-corners-data.js"
+    },
+    {
+      "path": "public/apps/four-corners/js/four-corners-geo.js"
+    },
+    {
+      "path": "public/apps/four-corners/js/four-corners.js"
+    },
+    {
+      "path": "public/apps/four-corners/manifest.toml"
+    },
+    {
+      "path": "public/apps/four-corners/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/four-corners/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/four-corners/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/four-corners/webxdc.js"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/css/campus-4dwm.css"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/icon.png"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/index.html"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/js/ghs-data.js"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/js/glendora-high-4dwm.js"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/manifest.toml"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/glendora-high-4dwm/webxdc.js"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/css/greeran-subsurface.css"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/js/greeran-subsurface-data.js"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/js/greeran-subsurface.js"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/greeran-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/headline-harry/index.html"
+    },
+    {
+      "path": "public/apps/ingress-intel/css/ingress-intel.css"
+    },
+    {
+      "path": "public/apps/ingress-intel/icon.png"
+    },
+    {
+      "path": "public/apps/ingress-intel/index.html"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel-data.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel-feed.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel-globe.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel-proto.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel-sim.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/ingress-intel.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/socal-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/socal-gazetteer.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/socal-geo.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/socal-sites-extended.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/js/socal-subsurface-data.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/manifest.toml"
+    },
+    {
+      "path": "public/apps/ingress-intel/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/ingress-intel/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/ingress-intel/vendor/world/countries.geo.json"
+    },
+    {
+      "path": "public/apps/ingress-intel/webxdc.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/css/city-subsurface.css"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-gazetteer.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/city-subsurface.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/kansascity-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/css/city-subsurface.css"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-gazetteer.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/city-subsurface.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/lawrence-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/index.html"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/manifest.toml"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/research-source-check.md"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/sanborn-restaurant.wrl"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/sanborn-restaurant-4dwm/webxdc.js"
+    },
+    {
+      "path": "public/apps/sanborn-suite/icon.png"
+    },
+    {
+      "path": "public/apps/sanborn-suite/index.html"
+    },
+    {
+      "path": "public/apps/sanborn-suite/manifest.toml"
+    },
+    {
+      "path": "public/apps/sanborn-suite/webxdc.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/css/socal-subsurface.css"
+    },
+    {
+      "path": "public/apps/socal-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/socal-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-gazetteer.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-geo.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-orbital.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-overlays-data.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-overlays.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-propagation.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-radio-data.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-radio.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-relief.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-sites-extended.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-subsurface-data.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-subsurface.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-utilities-data.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/js/socal-utilities.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/socal-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/socal-subsurface/vendor/fflate/LICENSE"
+    },
+    {
+      "path": "public/apps/socal-subsurface/vendor/fflate/index.mjs"
+    },
+    {
+      "path": "public/apps/socal-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/socal-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/css/city-subsurface.css"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/icon.png"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/index.html"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-dem-grid-lawrence.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data-toronto.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer-data.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-gazetteer.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface-data-atlanta.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface-data-buffalo.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface-data-kansascity.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface-data-lawrence.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface-data-toronto.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/city-subsurface.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/js/gpx-geocache.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/manifest.toml"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/vendor/OrbitControls.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/vendor/THREE_LICENSE"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/vendor/three.module.min.js"
+    },
+    {
+      "path": "public/apps/toronto-subsurface/webxdc.js"
+    },
+    {
+      "path": "public/apps/ufopaedia/index.html"
+    },
+    {
+      "path": "public/apps/yubnub/icon.png"
+    },
+    {
+      "path": "public/apps/yubnub/index.html"
+    },
+    {
+      "path": "public/apps/yubnub/manifest.toml"
+    },
+    {
+      "path": "public/apps/yubnub/webxdc.js"
+    },
+    {
+      "path": "reclassification-catalog.html"
+    },
+    {
+      "path": "red-october-4dwm.html"
+    },
+    {
+      "path": "red-october-4dwm.xdc"
+    },
+    {
+      "path": "research/behind_the_dune_backup_manifest.md"
+    },
+    {
+      "path": "research/gentoo-evidence-matching.md"
+    },
+    {
+      "path": "research/jim-sanborn-source-check.md"
+    },
+    {
+      "path": "research/warrick_geomate_audit/audit_summary.json"
+    },
+    {
+      "path": "research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate___update_kit_zip_package/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate___update_kit_zip_package_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_loader_1_3_installer__software_informer_/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_main_site_root/index.html"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_main_site_root/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_main_site_root_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_qt_gui_app_executable/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_qt_gui_app_executable_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_sg6_survey_receiver_firmware__disambiguation_target_/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_web_update_portal/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/geomate_web_update_portal_recoveryLog.out"
+    },
+    {
+      "path": "research/warrick_geomate_audit/update_kit_zip_package/warrick.log"
+    },
+    {
+      "path": "research/warrick_geomate_audit/update_kit_zip_package_recoveryLog.out"
+    },
+    {
+      "path": "resources/city-subsurface-template.html"
+    },
+    {
+      "path": "resources/city-subsurface/cities.json"
+    },
+    {
+      "path": "resources/session-14-hewitt-military-pow.md"
+    },
+    {
+      "path": "resources/session-15-301bg-vienna-stalag-luft-iv.md"
+    },
+    {
+      "path": "resources/stalag-luft-iv.wrl"
+    },
+    {
+      "path": "rtl/ata_security_fsm.v"
+    },
+    {
+      "path": "rtl/boot_vector_lock.v"
+    },
+    {
+      "path": "rtl/formal/vchip_formal_top.v"
+    },
+    {
+      "path": "rtl/golden/vchip_transcript.txt"
+    },
+    {
+      "path": "rtl/golden/vchip_vectors.h"
+    },
+    {
+      "path": "rtl/golden/vchip_vectors.json"
+    },
+    {
+      "path": "rtl/scenarios/vchip_scenarios.json"
+    },
+    {
+      "path": "rtl/vchip_mix.v"
+    },
+    {
+      "path": "rtl/vchip_pkg.vh"
+    },
+    {
+      "path": "rtl/vchip_top.v"
+    },
+    {
+      "path": "samples/archive/INSPECT.md"
+    },
+    {
+      "path": "samples/archive/PROVENANCE.md"
+    },
+    {
+      "path": "samples/archive/digitallab/FT50V099.ZIP"
+    },
+    {
+      "path": "samples/archive/digitallab/GK-102.ZIP"
+    },
+    {
+      "path": "samples/archive/digitallab/MAGSR099.ZIP"
+    },
+    {
+      "path": "samples/archive/digitallab/MAKI.RDC"
+    },
+    {
+      "path": "samples/archive/digitallab/PCSC.TXT"
+    },
+    {
+      "path": "samples/archive/digitallab/SCE-202.ZIP"
+    },
+    {
+      "path": "samples/archive/digitallab/UCE32.ZIP"
+    },
+    {
+      "path": "samples/archive/digitallab/VB6LIB.ZIP"
+    },
+    {
+      "path": "samples/archive/dr7/99info.zip"
+    },
+    {
+      "path": "samples/archive/dr7/at90sart.zip"
+    },
+    {
+      "path": "samples/archive/dr7/avrprogrammer.zip"
+    },
+    {
+      "path": "samples/archive/dr7/avrsetup.zip"
+    },
+    {
+      "path": "samples/archive/dr7/avrskels.zip"
+    },
+    {
+      "path": "samples/archive/dr7/disavr121.zip"
+    },
+    {
+      "path": "samples/archive/dr7/esfaq103199.zip"
+    },
+    {
+      "path": "samples/archive/dr7/newbieprogramming.zip"
+    },
+    {
+      "path": "samples/archive/dr7/prginst.zip"
+    },
+    {
+      "path": "samples/archive/games/3dduke13SW.zip"
+    },
+    {
+      "path": "samples/archive/games/DUKE2.zip"
+    },
+    {
+      "path": "samples/archive/games/PLAYFATE.zip"
+    },
+    {
+      "path": "samples/archive/games/Tetris_1986.zip"
+    },
+    {
+      "path": "samples/archive/games/doom-sw.zip"
+    },
+    {
+      "path": "samples/archive/games/heretic-sw.zip"
+    },
+    {
+      "path": "samples/archive/games/keen1.zip"
+    },
+    {
+      "path": "samples/archive/games/qfg1demo.zip"
+    },
+    {
+      "path": "samples/archive/games/xcom-tftd-demo.ima"
+    },
+    {
+      "path": "samples/archive/glinet/openwrt-mt300n-v2-3.203-0805.bin"
+    },
+    {
+      "path": "samples/archive/hackhu/9pincom.htm"
+    },
+    {
+      "path": "samples/archive/hackhu/about.htm"
+    },
+    {
+      "path": "samples/archive/kirkpatrick/FNA102B.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/Adapter.zip"
+    },
+    {
+      "path": "samples/archive/makinterface/DMS_DE.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/DMS_EN.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/IC-PROG.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKI-PRO.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKITEST.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKI_DE.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKI_EN.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKS_DE.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MAKS_EN.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MANUAL-D.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MANUAL.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/MaksAct.zip"
+    },
+    {
+      "path": "samples/archive/makinterface/PONYPROG.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/PRSC.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/Pinout.zip"
+    },
+    {
+      "path": "samples/archive/makinterface/SCPROG.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/SMARTCRD.ZIP"
+    },
+    {
+      "path": "samples/archive/makinterface/dms.zip"
+    },
+    {
+      "path": "samples/archive/makinterface/makstripe.zip"
+    },
+    {
+      "path": "samples/archive/virushistory/README.md"
+    },
+    {
+      "path": "samples/archive/virushistory/cascade1701a.vom"
+    },
+    {
+      "path": "samples/archive/virushistory/cascade1701b.vom"
+    },
+    {
+      "path": "samples/archive/virushistory/jerusalem664.vom"
+    },
+    {
+      "path": "samples/archive/virushistory/michelangelo.boo"
+    },
+    {
+      "path": "samples/archive/virushistory/stoned-standard.boo"
+    },
+    {
+      "path": "samples/archive/virushistory/whale.vom"
+    },
+    {
+      "path": "samples/archive/virushistory/whale.vxe"
+    },
+    {
+      "path": "samples/avr/PROVENANCE.md"
+    },
+    {
+      "path": "samples/avr/micronucleus_m328p_extclock.hex"
+    },
+    {
+      "path": "samples/avr/optiboot_atmega328.hex"
+    },
+    {
+      "path": "samples/avr/optiboot_atmega328.lst"
+    },
+    {
+      "path": "samples/cookbook/VECTORS.md"
+    },
+    {
+      "path": "samples/exeprotect/VECTORS.md"
+    },
+    {
+      "path": "samples/exeprotect/tpe_cipher_ref.c"
+    },
+    {
+      "path": "samples/javacard/AesApplet.java"
+    },
+    {
+      "path": "samples/javacard/DesApplet.java"
+    },
+    {
+      "path": "samples/javacard/EcApplet.java"
+    },
+    {
+      "path": "samples/javacard/HmacApplet.java"
+    },
+    {
+      "path": "samples/javacard/REPORT.md"
+    },
+    {
+      "path": "samples/javacard/RsaApplet.java"
+    },
+    {
+      "path": "samples/javacard/ShaApplet.java"
+    },
+    {
+      "path": "sanborn-installations.xdc"
+    },
+    {
+      "path": "sanborn-restaurant-4dwm.html"
+    },
+    {
+      "path": "sanborn-restaurant-4dwm.xdc"
+    },
+    {
+      "path": "sanborn-restaurant.wrl"
+    },
+    {
+      "path": "sanborn-suite.xdc"
+    },
+    {
+      "path": "satellite-constellations.html"
+    },
+    {
+      "path": "scripts/audit-cyberchef-sfx-coverage.mjs"
+    },
+    {
+      "path": "scripts/build-bluetops-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-casefiles-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-cheyenne-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-cia-museum-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-city-dem-data.mjs"
+    },
+    {
+      "path": "scripts/build-city-subsurface-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-city-subsurface.mjs"
+    },
+    {
+      "path": "scripts/build-cyberchef-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-dalton-race-4dwm-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-esgvrop-4dwm-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-four-corners-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-glendora-high-4dwm-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-greeran-family-4dwm-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-greeran-subsurface-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-headline-harry-jsdos.mjs"
+    },
+    {
+      "path": "scripts/build-ingress-intel-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-planet-viewer-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-project-y-catalog.mjs"
+    },
+    {
+      "path": "scripts/build-project-y-models.mjs"
+    },
+    {
+      "path": "scripts/build-red-october-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-sanborn-restaurant-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-sanborn-suite.mjs"
+    },
+    {
+      "path": "scripts/build-socal-gazetteer.mjs"
+    },
+    {
+      "path": "scripts/build-socal-subsurface-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-venue-models.mjs"
+    },
+    {
+      "path": "scripts/build-vincennes-xdc.mjs"
+    },
+    {
+      "path": "scripts/build-yubnub-xdc.mjs"
+    },
+    {
+      "path": "scripts/crypto-find.py"
+    },
+    {
+      "path": "scripts/dos-disasm.py"
+    },
+    {
+      "path": "scripts/drive-rsync-diff.mjs"
+    },
+    {
+      "path": "scripts/drive-sync-apply.mjs"
+    },
+    {
+      "path": "scripts/drive-sync-audit.mjs"
+    },
+    {
+      "path": "scripts/fetch-3dep-dem.py"
+    },
+    {
+      "path": "scripts/fetch-lawrence-dem.py"
+    },
+    {
+      "path": "scripts/fix-headline-harry-xdc.mjs"
+    },
+    {
+      "path": "scripts/flash_decompile_urls.mjs"
+    },
+    {
+      "path": "scripts/ghidra-dos-disasm.sh"
+    },
+    {
+      "path": "scripts/ghidra_dos_summary.py"
+    },
+    {
+      "path": "scripts/merge-cyberchef-recipes.mjs"
+    },
+    {
+      "path": "scripts/serve-los-alamos.py"
+    },
+    {
+      "path": "scripts/sync-gazetteer.mjs"
+    },
+    {
+      "path": "socal-calc.html"
+    },
+    {
+      "path": "socal-calc/.gitignore"
+    },
+    {
+      "path": "socal-calc/Makefile"
+    },
+    {
+      "path": "socal-calc/README.md"
+    },
+    {
+      "path": "socal-calc/build.json"
+    },
+    {
+      "path": "socal-calc/core/app.c"
+    },
+    {
+      "path": "socal-calc/core/geo.c"
+    },
+    {
+      "path": "socal-calc/core/sctables.c"
+    },
+    {
+      "path": "socal-calc/core/socal.h"
+    },
+    {
+      "path": "socal-calc/core/socaldata.c"
+    },
+    {
+      "path": "socal-calc/core/socaldata.h"
+    },
+    {
+      "path": "socal-calc/devices.json"
+    },
+    {
+      "path": "socal-calc/host/elevfix.h"
+    },
+    {
+      "path": "socal-calc/host/main.c"
+    },
+    {
+      "path": "socal-calc/host/tests.c"
+    },
+    {
+      "path": "socal-calc/plat/ti83/crt0.asm"
+    },
+    {
+      "path": "socal-calc/plat/ti83/lcd.asm"
+    },
+    {
+      "path": "socal-calc/plat/ti83/main.c"
+    },
+    {
+      "path": "socal-calc/plat/ti89/main.c"
+    },
+    {
+      "path": "socal-calc/plat/ti92/main.c"
+    },
+    {
+      "path": "socal-calc/tools/gen_tables.py"
+    },
+    {
+      "path": "socal-calc/tools/js_dump.mjs"
+    },
+    {
+      "path": "socal-calc/tools/socal_dump.mjs"
+    },
+    {
+      "path": "socal-calc/tools/xdc2c.py"
+    },
+    {
+      "path": "socal-subsurface.html"
+    },
+    {
+      "path": "socal-subsurface.xdc"
+    },
+    {
+      "path": "src/lib/lattice.test.ts"
+    },
+    {
+      "path": "src/lib/lattice.ts"
+    },
+    {
+      "path": "sse-webxdc.xdc"
+    },
+    {
+      "path": "sse-webxdc/icon.png"
+    },
+    {
+      "path": "sse-webxdc/index.html"
+    },
+    {
+      "path": "sse-webxdc/manifest.toml"
+    },
+    {
+      "path": "sync-outgoing/0001-Sync-6-Crow-field-cipher-CyberChef-recipes-from-shdw.patch"
+    },
+    {
+      "path": "sync-outgoing/README.md"
+    },
+    {
+      "path": "sync-outgoing/cyberchef-crow-field-recipes.bundle"
+    },
+    {
+      "path": "test/cyberchef-bootstrap.test.ts"
+    },
+    {
+      "path": "test/cyberchef-classical-deep-dive.test.ts"
+    },
+    {
+      "path": "test/cyberchef-field-museum.test.ts"
+    },
+    {
+      "path": "test/cyberchef-ghidra-recipes.test.ts"
+    },
+    {
+      "path": "test/cyberchef-matrix-deep-dive.test.ts"
+    },
+    {
+      "path": "test/exe-protection-recipes.test.ts"
+    },
+    {
+      "path": "test/gpx-geocache.test.ts"
+    },
+    {
+      "path": "test/greeran-family-4dwm.test.ts"
+    },
+    {
+      "path": "test/site-sw.test.ts"
+    },
+    {
+      "path": "test/socal-gazetteer.test.ts"
+    },
+    {
+      "path": "test/socal-radio.test.ts"
+    },
+    {
+      "path": "test/socal-utilities.test.ts"
+    },
+    {
+      "path": "test/ufopaedia.test.ts"
+    },
+    {
+      "path": "test/virus-encyclopedia-recipes.test.ts"
+    },
+    {
+      "path": "tests/11-chipset-lab.mjs"
+    },
+    {
+      "path": "tests/13-avr-lab.mjs"
+    },
+    {
+      "path": "tests/14-javacard.mjs"
+    },
+    {
+      "path": "tests/15-mealcard.mjs"
+    },
+    {
+      "path": "tests/16-key-stats.mjs"
+    },
+    {
+      "path": "tests/17-primes.mjs"
+    },
+    {
+      "path": "tests/18-astronomy.mjs"
+    },
+    {
+      "path": "tests/19-vincennes.mjs"
+    },
+    {
+      "path": "tests/20-wallplug.mjs"
+    },
+    {
+      "path": "tests/21-jvmdis.mjs"
+    },
+    {
+      "path": "tests/22-lantronix-lab.mjs"
+    },
+    {
+      "path": "tests/23-variants.mjs"
+    },
+    {
+      "path": "tests/24-substitutes.mjs"
+    },
+    {
+      "path": "tests/casefiles-4dwm.test.mjs"
+    },
+    {
+      "path": "tests/cia-museum.test.mjs"
+    },
+    {
+      "path": "tests/city-subsurface.test.mjs"
+    },
+    {
+      "path": "tests/cyberchef-barcode-pixels.test.mjs"
+    },
+    {
+      "path": "tests/cyberchef-barcode.test.mjs"
+    },
+    {
+      "path": "tests/cyberchef-cookbook.test.mjs"
+    },
+    {
+      "path": "tests/cyberchef-file-io.test.mjs"
+    },
+    {
+      "path": "tests/cyberchef-recipe-sync.test.mjs"
+    },
+    {
+      "path": "tests/four-corners.test.mjs"
+    },
+    {
+      "path": "tests/ghidra-headless-methodology.test.mjs"
+    },
+    {
+      "path": "tests/ingress-intel-browser.mjs"
+    },
+    {
+      "path": "tests/ingress-intel.test.mjs"
+    },
+    {
+      "path": "tests/los-alamos.test.mjs"
+    },
+    {
+      "path": "tests/planet-viewer-browser.mjs"
+    },
+    {
+      "path": "tests/planet-viewer.test.mjs"
+    },
+    {
+      "path": "tests/project-y-4dwm.test.mjs"
+    },
+    {
+      "path": "tests/project-y-catalog-browser.mjs"
+    },
+    {
+      "path": "tests/project-y-catalog.test.mjs"
+    },
+    {
+      "path": "tests/project-y-sites-browser.mjs"
+    },
+    {
+      "path": "tests/project-y-sites.test.mjs"
+    },
+    {
+      "path": "tests/red-october-browser.mjs"
+    },
+    {
+      "path": "tests/red-october.test.mjs"
+    },
+    {
+      "path": "tests/rodger-cdn.test.mjs"
+    },
+    {
+      "path": "tests/sanborn-suite.test.mjs"
+    },
+    {
+      "path": "tests/sanborn-viewer-sources.test.mjs"
+    },
+    {
+      "path": "tests/satellite-constellations.test.mjs"
+    },
+    {
+      "path": "tests/spycraft-research.test.mjs"
+    },
+    {
+      "path": "tests/venue-sites.test.mjs"
+    },
+    {
+      "path": "tests/virus-xena.test.mjs"
+    },
+    {
+      "path": "tests/webxdc-packages.test.mjs"
+    },
+    {
+      "path": "tests/wireless-charge.test.mjs"
+    },
+    {
+      "path": "tests/yubnub.test.mjs"
+    },
+    {
+      "path": "tools/apk_disasm.py"
+    },
+    {
+      "path": "tools/apk_triage.py"
+    },
+    {
+      "path": "tools/archive_inspect.py"
+    },
+    {
+      "path": "tools/arjwalk.py"
+    },
+    {
+      "path": "tools/bootchain.py"
+    },
+    {
+      "path": "tools/build-wallplug-eagle.mjs"
+    },
+    {
+      "path": "tools/build_casefiles.mjs"
+    },
+    {
+      "path": "tools/build_virus_xena.mjs"
+    },
+    {
+      "path": "tools/check-source-check-bibliography.mjs"
+    },
+    {
+      "path": "tools/cheyenne-boot-smoke.mjs"
+    },
+    {
+      "path": "tools/cheyenne/compile-dem.mjs"
+    },
+    {
+      "path": "tools/cheyenne/make-3dep-urls.mjs"
+    },
+    {
+      "path": "tools/cheyenne/make-3dep-urls2.mjs"
+    },
+    {
+      "path": "tools/cheyenne/raw/A1-grid.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/A2-crest.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/A3-places.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/A45-crestlines.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/A67-canyons.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/A8-floors.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C1-grid.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C2-massif.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C3-places.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C4-loop.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C5-rampart.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C6-fountain.json"
+    },
+    {
+      "path": "tools/cheyenne/raw/C7C8C9.json"
+    },
+    {
+      "path": "tools/cia-museum-boot-smoke.mjs"
+    },
+    {
+      "path": "tools/cookbook_to_javacard.mjs"
+    },
+    {
+      "path": "tools/cookbook_vectors.mjs"
+    },
+    {
+      "path": "tools/crow_gemini_battery.py"
+    },
+    {
+      "path": "tools/decompile_boot.mjs"
+    },
+    {
+      "path": "tools/decompile_elf.mjs"
+    },
+    {
+      "path": "tools/decompile_mz.mjs"
+    },
+    {
+      "path": "tools/drsolomon_extract.py"
+    },
+    {
+      "path": "tools/drsolomon_report.py"
+    },
+    {
+      "path": "tools/eda-blocks.mjs"
+    },
+    {
+      "path": "tools/eda-core.mjs"
+    },
+    {
+      "path": "tools/eda-packages.mjs"
+    },
+    {
+      "path": "tools/exeprotect.py"
+    },
+    {
+      "path": "tools/game_triage.py"
+    },
+    {
+      "path": "tools/gen_vchip_vectors.mjs"
+    },
+    {
+      "path": "tools/ghidra_avr.mjs"
+    },
+    {
+      "path": "tools/ghidra_scripts/CryptoInventory.java"
+    },
+    {
+      "path": "tools/ghidra_scripts/EncyclopediaReport.java"
+    },
+    {
+      "path": "tools/ghidra_scripts/GenericProgramReport.java"
+    },
+    {
+      "path": "tools/ghidra_scripts/JdkToolchainReport.java"
+    },
+    {
+      "path": "tools/ghidra_scripts/SpycraftReport.java"
+    },
+    {
+      "path": "tools/ghostimg.py"
+    },
+    {
+      "path": "tools/harry/qemu_mon.py"
+    },
+    {
+      "path": "tools/import-kicad-footprints.mjs"
+    },
+    {
+      "path": "tools/java-compiler/README.md"
+    },
+    {
+      "path": "tools/java-compiler/ecj-4.4.jar"
+    },
+    {
+      "path": "tools/java-compiler/fetch-rtjar.sh"
+    },
+    {
+      "path": "tools/java-compiler/javac.sh"
+    },
+    {
+      "path": "tools/jcreator_fetch.py"
+    },
+    {
+      "path": "tools/jcreator_report.py"
+    },
+    {
+      "path": "tools/jcreator_unpack.py"
+    },
+    {
+      "path": "tools/make-vincennes-dem.mjs"
+    },
+    {
+      "path": "tools/make-vincennes-plates.mjs"
+    },
+    {
+      "path": "tools/npi/README.md"
+    },
+    {
+      "path": "tools/npi/build_index.py"
+    },
+    {
+      "path": "tools/npi/serve.py"
+    },
+    {
+      "path": "tools/npi/test_search.cjs"
+    },
+    {
+      "path": "tools/pack_astronomy.sh"
+    },
+    {
+      "path": "tools/pack_los_alamos_xdc.sh"
+    },
+    {
+      "path": "tools/pack_prime.sh"
+    },
+    {
+      "path": "tools/pack_sanborn_suite_xdc.sh"
+    },
+    {
+      "path": "tools/patch_lecture_hall_kryptos.py"
+    },
+    {
+      "path": "tools/patch_lecture_hall_packers.py"
+    },
+    {
+      "path": "tools/patch_lecture_hall_records.py"
+    },
+    {
+      "path": "tools/patch_lecture_hall_records_r2.py"
+    },
+    {
+      "path": "tools/patch_spy_museum_crow.py"
+    },
+    {
+      "path": "tools/patch_sylichenko_lab.py"
+    },
+    {
+      "path": "tools/pi-socket-model.mjs"
+    },
+    {
+      "path": "tools/pklite.py"
+    },
+    {
+      "path": "tools/plc-bridge-model.mjs"
+    },
+    {
+      "path": "tools/replacement-parts.mjs"
+    },
+    {
+      "path": "tools/run_vchip_scenarios.mjs"
+    },
+    {
+      "path": "tools/run_warrick.sh"
+    },
+    {
+      "path": "tools/scumm.py"
+    },
+    {
+      "path": "tools/search_crow_extractions.py"
+    },
+    {
+      "path": "tools/secom_probe.py"
+    },
+    {
+      "path": "tools/secom_ref_impl.py"
+    },
+    {
+      "path": "tools/serve_prime_preview.mjs"
+    },
+    {
+      "path": "tools/setup_rtl.sh"
+    },
+    {
+      "path": "tools/setup_warrick_perl.sh"
+    },
+    {
+      "path": "tools/sim/probe.cc"
+    },
+    {
+      "path": "tools/sim/vchip_driver.cc"
+    },
+    {
+      "path": "tools/smoke_casefiles_bundle.mjs"
+    },
+    {
+      "path": "tools/smoke_sneakers_dosbox.sh"
+    },
+    {
+      "path": "tools/socal-gazetteer-query.mjs"
+    },
+    {
+      "path": "tools/spycraft/build_report.py"
+    },
+    {
+      "path": "tools/spycraft/inventory.py"
+    },
+    {
+      "path": "tools/update_cicada_lab_research.py"
+    },
+    {
+      "path": "tools/update_cicada_source_check.py"
+    },
+    {
+      "path": "tools/verify_avrdis.mjs"
+    },
+    {
+      "path": "tools/verify_bootchain.mjs"
+    },
+    {
+      "path": "tools/verify_casefiles_inline_decompile.mjs"
+    },
+    {
+      "path": "tools/verify_lecture_hall.mjs"
+    },
+    {
+      "path": "tools/verify_rtl.py"
+    },
+    {
+      "path": "tools/verify_wireless_charge.mjs"
+    },
+    {
+      "path": "tools/wallplug-drc.mjs"
+    },
+    {
+      "path": "tools/wallplug-model.mjs"
+    },
+    {
+      "path": "tools/warrick/CachedUrls.pm"
+    },
+    {
+      "path": "tools/warrick/Logger.pm"
+    },
+    {
+      "path": "tools/warrick/MementoThread.pm"
+    },
+    {
+      "path": "tools/warrick/UrlUtil.pm"
+    },
+    {
+      "path": "tools/warrick/ai_timegates.o"
+    },
+    {
+      "path": "tools/warrick/aweu_timegates.o"
+    },
+    {
+      "path": "tools/warrick/b_timegates.o"
+    },
+    {
+      "path": "tools/warrick/bl_timegates.o"
+    },
+    {
+      "path": "tools/warrick/can_timegates.o"
+    },
+    {
+      "path": "tools/warrick/cdlib_timegates.o"
+    },
+    {
+      "path": "tools/warrick/di_timegates.o"
+    },
+    {
+      "path": "tools/warrick/eu_timegates.o"
+    },
+    {
+      "path": "tools/warrick/g_timegates.o"
+    },
+    {
+      "path": "tools/warrick/ia_timegates.o"
+    },
+    {
+      "path": "tools/warrick/loc_timegates.o"
+    },
+    {
+      "path": "tools/warrick/mcurl.pl"
+    },
+    {
+      "path": "tools/warrick/mementoParser.pm"
+    },
+    {
+      "path": "tools/warrick/nara_timegates.o"
+    },
+    {
+      "path": "tools/warrick/timegates.o"
+    },
+    {
+      "path": "tools/warrick/uk_timegates.o"
+    },
+    {
+      "path": "tools/warrick/warrick.pl"
+    },
+    {
+      "path": "tools/warrick/wc_timegates.o"
+    },
+    {
+      "path": "tools/warrick/wiki_timegates.o"
+    },
+    {
+      "path": "tools/warrick/wikia_timegates.o"
+    },
+    {
+      "path": "tools/warrick/y_timegates.o"
+    },
+    {
+      "path": "tools/warrick_geomate_audit.py"
+    },
+    {
+      "path": "tools/wikiinajar/ImageFilter.java"
+    },
+    {
+      "path": "tools/wimax-cpe-model.mjs"
+    },
+    {
+      "path": "tools/z3950-server.mjs"
+    },
+    {
+      "path": "tools/z3950-terminal.php"
+    },
+    {
+      "path": "toronto-subsurface.html"
+    },
+    {
+      "path": "toronto-subsurface.xdc"
+    },
+    {
+      "path": "vendor/cxxrtl/PROVENANCE.md"
+    },
+    {
+      "path": "vendor/cxxrtl/README.txt"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/capi/cxxrtl_capi.cc"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/capi/cxxrtl_capi.h"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/capi/cxxrtl_capi_vcd.cc"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/capi/cxxrtl_capi_vcd.h"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/cxxrtl.h"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/cxxrtl_replay.h"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/cxxrtl_time.h"
+    },
+    {
+      "path": "vendor/cxxrtl/cxxrtl/cxxrtl_vcd.h"
+    },
+    {
+      "path": "vincennes-4dwm.html"
+    },
+    {
+      "path": "vincennes-4dwm.xdc"
+    },
+    {
+      "path": "warrick.html"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/atmega256.pspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr32a.cspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr32a.pspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr32a.sla"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8.pspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8.sla"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8egcc.cspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8eind.sla"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8gcc.cspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8iarV1.cspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8imgCraftV8.cspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8xmega.pspec"
+    },
+    {
+      "path": "wasm/ghidra/Processors/Atmel/data/languages/avr8xmega.sla"
+    },
+    {
+      "path": "webxdc-dos/public/js-dos/wlibzip.js"
+    },
+    {
+      "path": "webxdc-dos/public/js-dos/wlibzip.wasm"
+    },
+    {
+      "path": "webxdc-dos/public/roms/DOSDEMO.jsdos"
+    },
+    {
+      "path": "webxdc-dos/public/roms/SNEAKERS.jsdos"
+    },
+    {
+      "path": "webxdc-dos/scripts/build-rom-bundles.mjs"
+    },
+    {
+      "path": "webxdc-dos/vendor/fflate.mjs"
+    },
+    {
+      "path": "webxdc-headline-harry/.gitignore"
+    },
+    {
+      "path": "webxdc-headline-harry/README.md"
+    },
+    {
+      "path": "webxdc-headline-harry/app/icon.png"
+    },
+    {
+      "path": "webxdc-headline-harry/app/index.html"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/emulators.js"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/js-dos.css"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/js-dos.js"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/wdosbox.js"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/wdosbox.wasm"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/wlibzip.js"
+    },
+    {
+      "path": "webxdc-headline-harry/app/js-dos/wlibzip.wasm"
+    },
+    {
+      "path": "webxdc-headline-harry/app/manifest.toml"
+    },
+    {
+      "path": "webxdc-headline-harry/app/roms/headline-harry.jsdos"
+    },
+    {
+      "path": "webxdc-headline-harry/app/webxdc.js"
+    },
+    {
+      "path": "webxdc-headline-harry/build-xdc.sh"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/ANALYSIS.md"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/INTRO.EXE.asm"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/INTRO.EXE.c"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/INTRO.EXE.ghidra.json"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/INTRO.EXE.strings.txt"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/MAP.EXE.asm"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/MAP.EXE.c"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/MAP.EXE.ghidra.json"
+    },
+    {
+      "path": "webxdc-headline-harry/ghidra/MAP.EXE.strings.txt"
+    },
+    {
+      "path": "webxdc-headline-harry/headline-harry.xdc"
+    },
+    {
+      "path": "webxdc-headline-harry/serve-preview.py"
+    },
+    {
+      "path": "wireless-charge-pad.html"
+    },
+    {
+      "path": "yubnub-deep-dive.md"
+    },
+    {
+      "path": "yubnub.html"
+    },
+    {
+      "path": "yubnub.xdc"
+    },
+    {
+      "path": "z3950-sru-gopher-terminal.xdc"
+    }
+  ]
+}

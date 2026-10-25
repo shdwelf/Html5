@@ -47,9 +47,24 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-10-2026-10-21.md](backlog-execution-round-10-2026-10-21.md) — backlog execution round 10 2026 10 21
 - [backlog-execution-round-11-2026-10-21.md](backlog-execution-round-11-2026-10-21.md) — backlog execution round 11 2026 10 21
 - [backlog-execution-round-12-2026-10-21.md](backlog-execution-round-12-2026-10-21.md) — backlog execution round 12 2026 10 21
-- [backlog-execution-round-13-2026-10-21.md](backlog-execution-round-13-2026-10-21.md) — backlog execution round 13 2026 10 21
-- [backlog-execution-round-14-2026-10-21.md](backlog-execution-round-14-2026-10-21.md) — backlog execution round 14 2026 10 21
+- [backlog-execution-round-13-2026-10-22.md](backlog-execution-round-13-2026-10-22.md) — backlog execution round 13 2026 10 22
+- [backlog-execution-round-14-2026-10-22.md](backlog-execution-round-14-2026-10-22.md) — backlog execution round 14 2026 10 22
+- [backlog-execution-round-15-2026-10-22.md](backlog-execution-round-15-2026-10-22.md) — backlog execution round 15 2026 10 22
+- [backlog-execution-round-16-2026-10-22.md](backlog-execution-round-16-2026-10-22.md) — backlog execution round 16 2026 10 22
+- [backlog-execution-round-17-2026-10-22.md](backlog-execution-round-17-2026-10-22.md) — backlog execution round 17 2026 10 22
+- [backlog-execution-round-18-2026-10-22.md](backlog-execution-round-18-2026-10-22.md) — backlog execution round 18 2026 10 22
+- [backlog-execution-round-19-2026-10-23.md](backlog-execution-round-19-2026-10-23.md) — backlog execution round 19 2026 10 23
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
+- [backlog-execution-round-20-2026-10-23.md](backlog-execution-round-20-2026-10-23.md) — backlog execution round 20 2026 10 23
+- [backlog-execution-round-21-2026-10-23.md](backlog-execution-round-21-2026-10-23.md) — backlog execution round 21 2026 10 23
+- [backlog-execution-round-22-2026-10-23.md](backlog-execution-round-22-2026-10-23.md) — backlog execution round 22 2026 10 23
+- [backlog-execution-round-23-2026-10-23.md](backlog-execution-round-23-2026-10-23.md) — backlog execution round 23 2026 10 23
+- [backlog-execution-round-24-2026-10-23.md](backlog-execution-round-24-2026-10-23.md) — backlog execution round 24 2026 10 23
+- [backlog-execution-round-25-2026-10-23.md](backlog-execution-round-25-2026-10-23.md) — backlog execution round 25 2026 10 23
+- [backlog-execution-round-26-2026-10-23.md](backlog-execution-round-26-2026-10-23.md) — backlog execution round 26 2026 10 23
+- [backlog-execution-round-27-2026-10-23.md](backlog-execution-round-27-2026-10-23.md) — backlog execution round 27 2026 10 23
+- [backlog-execution-round-28-2026-10-23.md](backlog-execution-round-28-2026-10-23.md) — backlog execution round 28 2026 10 23
+- [backlog-execution-round-35-2026-10-23.md](backlog-execution-round-35-2026-10-23.md) — backlog execution round 35 2026 10 23
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
 - [backlog-execution-round-5-2026-10-21.md](backlog-execution-round-5-2026-10-21.md) — backlog execution round 5 2026 10 21
@@ -57,6 +72,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-7-2026-10-21.md](backlog-execution-round-7-2026-10-21.md) — backlog execution round 7 2026 10 21
 - [backlog-execution-round-8-2026-10-21.md](backlog-execution-round-8-2026-10-21.md) — backlog execution round 8 2026 10 21
 - [backlog-execution-round-9-2026-10-21.md](backlog-execution-round-9-2026-10-21.md) — backlog execution round 9 2026 10 21
+- [backlog-execution-round-49-2026-10-25.md](backlog-execution-round-49-2026-10-25.md) — backlog execution round 49 2026 10 25
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -81,7 +97,6 @@ IANA media types (RFC 6838 / BCP 13).
 - [ghidra-dos-disasm-plan.md](ghidra-dos-disasm-plan.md) — ghidra dos disasm plan
 - [ghidra-headless-benign-sample-methodology.md](ghidra-headless-benign-sample-methodology.md) — ghidra headless benign sample methodology
 - [jcreator-jdk-ghidra.md](jcreator-jdk-ghidra.md) — jcreator jdk ghidra
-- [sneakers-headline-harry-layout-parity-2026-10-21.md](sneakers-headline-harry-layout-parity-2026-10-21.md) — sneakers headline harry layout parity 2026 10 21
 - [sneakers-original-ghidra-wasm-2026-10-18.md](sneakers-original-ghidra-wasm-2026-10-18.md) — sneakers original ghidra wasm 2026 10 18
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis
@@ -178,6 +193,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [geomate-jr-firmware-research.md](geomate-jr-firmware-research.md) — geomate jr firmware research
 - [geomate-sg7-firmware-analysis.md](geomate-sg7-firmware-analysis.md) — geomate sg7 firmware analysis
 - [geomate-viewermade-source-check-2026-10-07.md](geomate-viewermade-source-check-2026-10-07.md) — geomate viewermade source check 2026 10 07
+- [github-jdk-runtime-research-2026-10-23.md](github-jdk-runtime-research-2026-10-23.md) — github jdk runtime research 2026 10 23
 - [goldkey-parity-gina-and-units.md](goldkey-parity-gina-and-units.md) — goldkey parity gina and units
 - [greeran-book-ideas-backlog.md](greeran-book-ideas-backlog.md) — greeran book ideas backlog
 - [greeran-commencement-research-2026-10-16.md](greeran-commencement-research-2026-10-16.md) — greeran commencement research 2026 10 16
@@ -187,10 +203,14 @@ IANA media types (RFC 6838 / BCP 13).
 - [gta-text-decoder-2026-10-21.md](gta-text-decoder-2026-10-21.md) — gta text decoder 2026 10 21
 - [haiku-vault-format-draft.md](haiku-vault-format-draft.md) — haiku vault format draft
 - [headline-harry-jsdos-fix-2026-10-04.md](headline-harry-jsdos-fix-2026-10-04.md) — headline harry jsdos fix 2026 10 04
+- [historical-network-fidonet-adapter-2026-10-22.md](historical-network-fidonet-adapter-2026-10-22.md) — historical network fidonet adapter 2026 10 22
+- [historical-network-keyhole-fixture-2026-10-22.md](historical-network-keyhole-fixture-2026-10-22.md) — historical network keyhole fixture 2026 10 22
+- [historical-network-viewer-scope-2026-10-22.md](historical-network-viewer-scope-2026-10-22.md) — historical network viewer scope 2026 10 22
 - [hp-aio-xport-modem-adapter-feasibility.md](hp-aio-xport-modem-adapter-feasibility.md) — hp aio xport modem adapter feasibility
 - [iacr-research-watch-2026-09-28.md](iacr-research-watch-2026-09-28.md) — iacr research watch 2026 09 28
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
+- [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
 - [kromecorp-rodger-ramrod-casefile.md](kromecorp-rodger-ramrod-casefile.md) — kromecorp rodger ramrod casefile
 - [lantronix-uclinux-deep-dive-2026-10-08.md](lantronix-uclinux-deep-dive-2026-10-08.md) — lantronix uclinux deep dive 2026 10 08
 - [lawrence-kansas-subsurface.md](lawrence-kansas-subsurface.md) — lawrence kansas subsurface
@@ -256,3 +276,4 @@ IANA media types (RFC 6838 / BCP 13).
 - [z3950-server-deep-dive-2026-09-28.md](z3950-server-deep-dive-2026-09-28.md) — z3950 server deep dive 2026 09 28
 - [zshaolin-javascript-port.md](zshaolin-javascript-port.md) — zshaolin javascript port
 
+- [backlog-execution-round-38-2026-10-24.md](backlog-execution-round-38-2026-10-24.md) — backlog execution round 38 2026 10 24

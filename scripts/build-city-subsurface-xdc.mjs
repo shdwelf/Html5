@@ -29,8 +29,9 @@ const mtime = new Date("2026-10-07T00:00:00.000Z");
 function moduleSpecifiers(source) {
   const specs = [];
   const staticImport = /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g;
-  const dynamicImport = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
-  for (const pattern of [staticImport, dynamicImport]) {
+  const dynamicImport = /\bimport\s*\(\s*(?:\/\*.*?\*\/\s*)?["']([^"']+)["']\s*\)/g;
+  const optionalDemImport = /\bimportDem\s*\(\s*["']([^"']+)["']\s*\)/g;
+  for (const pattern of [staticImport, dynamicImport, optionalDemImport]) {
     for (const match of source.matchAll(pattern)) specs.push(match[1]);
   }
   return specs;
@@ -87,6 +88,8 @@ for (const [cityId, city] of Object.entries(config.cities)) {
     '<script src="./webxdc.js"></script>\n  <script type="module" src="./js/city-subsurface.js"></script>',
   );
   await writeFile(path.join(appDir, "index.html"), html);
+  await copyFile(path.join(root, "js", `city-frame-preload-${cityId}.js`),
+    path.join(appDir, "js", `city-frame-preload-${cityId}.js`));
   await copyFile(path.join(root, "css", "city-subsurface.css"), path.join(appDir, "css", "city-subsurface.css"));
 
   const { modules, optional } = await collectModules(path.join(root, "js", "city-subsurface.js"));
@@ -125,7 +128,8 @@ icon = "icon.png"
     const rel = path.relative(appDir, abs).split(path.sep).join("/");
     archive[rel] = [new Uint8Array(await readFile(abs)), { level: 9, mtime }];
   }
-  if (!archive["index.html"] || !archive["manifest.toml"]) throw new Error(`bundle missing index.html/manifest.toml for ${cityId}`);
+  if (!archive["index.html"] || !archive["manifest.toml"] || !archive[`js/city-frame-preload-${cityId}.js`])
+    throw new Error(`bundle missing index.html/manifest.toml/frame preload for ${cityId}`);
   const bytes = zipSync(archive, { level: 9, mtime });
   await writeFile(path.join(root, outName), bytes);
   await mkdir(path.join(root, "dist"), { recursive: true });

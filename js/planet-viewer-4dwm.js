@@ -11,6 +11,8 @@ import { GAZ_ROWS as tor } from "./city-gazetteer-data-toronto.js";
 import { demToVrml, downloadText } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
+import { COUNTRIES } from "./country-data.js";
+import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments } from "./planet-globe.js";
 
 /* =========================================================================
    PLANET VIEWER · 4DWM
@@ -40,6 +42,12 @@ let labelsOn = true;
 let exag = 3;
 let wm = null;
 let gazIndex = null;
+
+// Globe plate state (S4 tail): the Red October orthographic globe, reused.
+let globeOn = false;
+let globeCentre = { lat: 20, lon: 10 };
+let globeData = null; // { markers, skipped } from js/planet-globe.js
+let globeRings = null; // coastline rings from vendor/world/countries.geo.json
 let fpsAcc = { n: 0, t0: 0, fps: 0 };
 
 const COL = { sky: 0x0a1016, contour: 0x5cd6ff, marker: 0xffb020 };
@@ -173,9 +181,106 @@ function applyMode() {
   announce(`${mode.toUpperCase()} · ${plate.name}`);
 }
 
+/* ------------------------------------------------------------ globe plate
+   The Red October globe, reused (S4 tail): orthographic projection from
+   apps/red-october-command-viewer/core.js, the same bundled Natural Earth
+   outlines, and the country viewer's capitals as markers. Drag rotates.
+   Coastline fetch failure degrades to graticule + markers, announced -
+   the same fallback the Red October globe itself uses. */
+
+function drawGlobe() {
+  const cv = $("globeStage");
+  if (!cv || !globeOn) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const w = innerWidth;
+  const h = innerHeight;
+  if (cv.width !== w * dpr || cv.height !== h * dpr) {
+    cv.width = w * dpr;
+    cv.height = h * dpr;
+  }
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const cx = w / 2;
+  const cy = h / 2;
+  const R = Math.min(w, h) * 0.42;
+  const { lat: cLat, lon: cLon } = globeCentre;
+  const toPx = (p) => [cx + p.x * R, cy - p.y * R];
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fillStyle = "#0d1a24";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(92,214,255,0.5)";
+  ctx.stroke();
+
+  const drawLine = (coords, style) => {
+    ctx.strokeStyle = style;
+    ctx.beginPath();
+    for (const seg of projectSegments(coords, cLat, cLon)) {
+      seg.forEach((p, i) => {
+        const [x, y] = toPx(p);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+    }
+    ctx.stroke();
+  };
+  const grat = graticule(20);
+  ctx.lineWidth = 0.5;
+  for (const line of [...grat.meridians, ...grat.parallels]) drawLine(line, "rgba(125,143,153,0.25)");
+  if (globeRings) {
+    ctx.lineWidth = 0.7;
+    for (const ring of globeRings) drawLine(ring, "rgba(92,214,255,0.75)");
+  }
+
+  if (globeData) {
+    const vis = visibleMarkers(globeData.markers, cLat, cLon);
+    ctx.fillStyle = "#ffb020";
+    for (const m of vis) {
+      const [x, y] = toPx(m);
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (labelsOn) {
+      ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--mono");
+      ctx.fillStyle = "rgba(215,227,232,0.9)";
+      for (const m of vis.filter((v) => v.z > 0.55).slice(-42)) {
+        const [x, y] = toPx(m);
+        ctx.fillText(m.capital || m.name, x + 4, y - 3);
+      }
+    }
+  }
+}
+
+function setGlobe(on) {
+  globeOn = on;
+  const cv = $("globeStage");
+  if (cv) cv.hidden = !on;
+  if (terrainGroup) terrainGroup.visible = !on;
+  if (on) {
+    const sh = $("statPlate");
+    if (sh) sh.textContent = "plate: globe";
+    renderChecks();
+    renderLayers();
+    drawGlobe();
+    announce(
+      globeRings
+        ? `globe · ${globeData ? globeData.markers.length : 0} capital markers · Red October orthographic · drag to rotate`
+        : "globe · coastlines unavailable — graticule and capital markers remain (offline fallback)",
+    );
+  }
+}
+
 function selectPlate(id) {
+  if (id === "globe") {
+    setGlobe(true);
+    return;
+  }
   const next = plates[id];
   if (!next) return;
+  if (globeOn) setGlobe(false);
   plate = next;
   if (terrainGroup) {
     scene.remove(terrainGroup);
@@ -199,6 +304,11 @@ function selectPlate(id) {
 }
 
 function frame() {
+  if (globeOn) {
+    globeCentre = { lat: 20, lon: 10 };
+    drawGlobe();
+    return;
+  }
   const { w, d } = plate.world;
   camera.position.set(w * 0.5, w * 0.55, d * 0.85);
   controls.target.set(0, 0, 0);
@@ -256,6 +366,10 @@ function renderLayers() {
 /* ------------------------------------------------------------- VRML out */
 
 function exportVrml() {
+  if (globeOn) {
+    announce("VRML export belongs to the terrain plates — select CHEYENNE, SAN GABRIEL or LAWRENCE");
+    return;
+  }
   const wrl = demToVrml(plate.grid, { w: plate.world.w, d: plate.world.d, elevScale: exag / 1000 }, null, `Planet viewer — ${plate.name}`, {
     layers: { weather: false, glass: false },
   });
@@ -268,6 +382,10 @@ function exportVrml() {
 function syncLabels() {
   const host = $("labels");
   if (!host) return;
+  if (globeOn) {
+    host.innerHTML = "";
+    return;
+  }
   if (!labelsOn || !terrainGroup) {
     host.innerHTML = "";
     labelMarkers.forEach((m) => (m.el = null));
@@ -368,7 +486,26 @@ function bind() {
     renderer.setSize(innerWidth, innerHeight, false);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
+    if (globeOn) drawGlobe();
   });
+
+  const gc = $("globeStage");
+  if (gc) {
+    let drag = null;
+    gc.addEventListener("pointerdown", (e) => {
+      drag = { x: e.clientX, y: e.clientY };
+      gc.setPointerCapture(e.pointerId);
+    });
+    gc.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      globeCentre.lon -= (e.clientX - drag.x) * 0.25;
+      globeCentre.lat = Math.max(-80, Math.min(80, globeCentre.lat + (e.clientY - drag.y) * 0.25));
+      drag = { x: e.clientX, y: e.clientY };
+      drawGlobe();
+    });
+    gc.addEventListener("pointerup", () => (drag = null));
+    gc.addEventListener("pointercancel", () => (drag = null));
+  }
 
   document.querySelectorAll("[data-plate]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -412,6 +549,21 @@ function bind() {
 function init() {
   gazIndex = makeGazetteerIndex([...atl, ...buf, ...ksc, ...law, ...tor]);
   plates = buildPlates(140, 100);
+  globeData = globeMarkers(COUNTRIES);
+  // Same bundled coastline file the Red October globe draws; failure is a
+  // disclosed fallback (graticule + markers), never a fabricated outline.
+  fetch("./vendor/world/countries.geo.json")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => {
+      if (j) {
+        globeRings = coastlineRings(j);
+        if (globeOn) {
+          renderLayers();
+          drawGlobe();
+        }
+      }
+    })
+    .catch(() => {});
 
   const canvas = $("stage");
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });

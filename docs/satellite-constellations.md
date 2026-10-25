@@ -25,6 +25,7 @@ a = Earth radius + altitude
 - Uses a year slider from **1957–2032** so the viewer can illustrate the shift from early satellite navigation to large LEO broadband constellations.
 - Downsamples very large constellations into proxy markers. For example, Starlink and OneWeb are drawn as representative swarms instead of thousands of individual meshes.
 - Draws elliptical launch/transfer orbit classes (GTO, Molniya-type HEO) via the conic equation, and carries a LAUNCH WINDOWS panel: the window taxonomy per mission class plus dated, sourced launch opportunities (`LAUNCH_WINDOWS` in the data pack).
+- **DISH ALIGNMENT panel (added 2026-10-25, round 49):** closed-form geostationary look angles (azimuth, elevation, slant range, central angle) for a site and a GEO slot — the in-viewer half of backlog S5/T5.1's calculator layer (the standalone `dish-pointing.html` shipped first in round 48). See below.
 
 ## What the viewer does not do
 
@@ -33,6 +34,16 @@ a = Earth radius + altitude
 - No collision / conjunction screening.
 - No certified service coverage, latency, brightness, or debris-risk analysis.
 - No operational advice for satellite users or operators.
+
+## Dish alignment panel
+
+`js/satellite-dish-pointing.js` (pure math, imported by the viewer and by `tests/satellite-dish-pointing.test.mjs`):
+
+- Model: the viewer's spherical Earth (`EARTH_RADIUS_KM` = 6371 km); GEO radius derived from the pack's `MU_EARTH_KM3_S2` and ω_E = 7.2921150e-5 rad/s (≈ 42,164 km).
+- Central angle `cos γ = cos φ · cos Δλ`; azimuth `atan2(sin Δλ, −sin φ · cos Δλ)` (handles both hemispheres and the sub-point degenerate case); elevation `atan2(cos γ − R/r, sin γ)`; range by the law of cosines; horizon cut at `acos(R/r)` ≈ **81.3°** of arc.
+- Validation: reproduces the published worked example (52°N 0° → 66°E: az **109.33°**, el **5.85°**, within 0.05° — that example uses a 6378 km sphere), agrees with the classic `atan((cos φ cos Δλ − k)/√(1 − cos²φ cos²Δλ))` form to 1e-9° and with an independent ECEF→ENU vector derivation to 1e-6° across a test grid.
+- Presets: `DISH_SITES` (worked-example site + city-center sites — city centers, not address-level) and `DISH_SLOTS` with sources per slot: GOES-19 75.2°W and GOES-18 137.0°W (NOAA operations status page), GOES-16 storage 104.7°W (WMO OSCAR + orbitalfocus listing), IOR 66°E (the lecture example's own figure). Slot positions checked **2026-10-25** and drift over time.
+- Limits, stated in-panel (`dishModelNote`): sphere vs the 6378 km figures published calculators use (~0.1° expected disagreement), no terrain/structures, no magnetic-north offset, no LNB skew — **not a substitute for a meter at the dish**. No TLEs, no live tracking — consistent with the viewer's standing footer.
 
 ## Included constellation summaries
 
@@ -75,13 +86,16 @@ a = Earth radius + altitude
 - `satellite-constellations.html` — app shell.
 - `css/satellite-constellations.css` — dark 4Dwm-style PiP layout.
 - `js/satellite-constellations-data.js` — sourced constellation parameters and orbital math helpers.
-- `js/satellite-constellations.js` — Three.js rendering, timeline, picking, charts, minimap.
+- `js/satellite-constellations.js` — Three.js rendering, timeline, picking, charts, minimap, DISH ALIGNMENT panel.
+- `js/satellite-dish-pointing.js` — closed-form GEO look angles (pure math).
 - `tests/satellite-constellations.test.mjs` — data and math checks.
+- `tests/satellite-dish-pointing.test.mjs` — look-angle checks: worked example, dual-derivation cross-checks, presets.
 
 ## Validation
 
 ```sh
 node --test tests/satellite-constellations.test.mjs
+node --test tests/satellite-dish-pointing.test.mjs
 node --check js/satellite-constellations-data.js js/satellite-constellations.js
 python3 scripts/serve-los-alamos.py --host 0.0.0.0 --port 5173
 # open http://localhost:5173/satellite-constellations.html

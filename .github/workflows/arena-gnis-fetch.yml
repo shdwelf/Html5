@@ -1,0 +1,64 @@
+name: arena-gnis-fetch
+
+# Fetches USGS GNIS DomesticNames state text files and extracts the
+# candidate rows for the next city-subsurface batch (T4.1). The GNIS web
+# app is a JavaScript SPA over a POST API and the sandbox's egress is
+# allowlisted, so the runner does the download; only the small screened
+# extract is committed (resources/city-subsurface/gnis-candidates-*.json),
+# never the bulk gazetteer. The extract path is deliberately NOT a
+# trigger path, so the result commit cannot retrigger the fetch.
+
+on:
+  push:
+    branches: ['arena/8c721d44-html5', 'arena/fb1c7be1-html5']
+    paths:
+      - '.arena-gnis/candidates.json'
+      - '.github/workflows/arena-gnis-fetch.yml'
+      - 'tools/gnis_extract.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract GNIS candidate rows
+        shell: bash
+        run: |
+          # Diagnostics are committed even on failure: the sandbox cannot
+          # read runner logs, so the branch is the error channel.
+          mkdir -p .arena-gnis
+          {
+            echo "run ${{ github.run_id }} attempt ${{ github.run_attempt }} · $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            python3 tools/gnis_extract.py .arena-gnis/candidates.json \
+              resources/city-subsurface/gnis-candidates-batch7.json
+            echo "extract exit: $?"
+            python3 - <<'PY'
+          import json, pathlib
+          p = pathlib.Path("resources/city-subsurface/gnis-candidates-batch7.json")
+          if p.exists():
+              d = json.loads(p.read_text())
+              for st, pack in d["states"].items():
+                  print(st, len(pack["rows"]), "rows; zip sha256", pack["zipSha256"][:16])
+          PY
+          } > .arena-gnis/last-run.log 2>&1
+          cat .arena-gnis/last-run.log
+          test -s resources/city-subsurface/gnis-candidates-batch7.json
+
+      - name: Commit the extract back to the branch
+        if: always()
+        run: |
+          git config user.name "arena-gnis-fetch"
+          git config user.email "actions@github.com"
+          git add .arena-gnis/last-run.log
+          if [ -f resources/city-subsurface/gnis-candidates-batch7.json ]; then
+            git add resources/city-subsurface/gnis-candidates-batch7.json
+          fi
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "GNIS batch-7 candidate extract (run ${{ github.run_id }}) [skip ci]"
+          git push

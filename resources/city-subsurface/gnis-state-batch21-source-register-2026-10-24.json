@@ -1,0 +1,229 @@
+{
+  "generated": "2026-10-24",
+  "title": "Round 39 Alaska state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter register for Alaska, the final state frame. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Mount McKinley carries the Domestic Names per-ID identity check. The summit's official-name history, the Utqiaġvik diacritic spelling, the extract's shortened county strings, the antimeridian frame limit, and the displaced Mount Foraker record are documented below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=AK&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. Borough/census-area political records, creek/bay/island records of the same name, and census-designated places were rejected explicitly where relevant. Note: the DomesticNames county column shortens several borough names and suffixes census areas with (CA) (e.g. Bethel (CA)); the stored county reproduces the extract string verbatim, while each register row's geocoderCounty preserves the full Geocoder form (Bethel Census Area)."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_AK_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and the per-ID identity check for Mount McKinley (1414314), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so elevations cite USGS-published values. The candidate extract file is cumulative across batches 7-21 (on this branch line); this register is the frozen batch-21 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county-equivalent, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake, Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from the gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "alaska": {
+      "title": "Alaska statewide frame (single-state batch)",
+      "state": "AK",
+      "bbox": {
+        "lon0": -171.0,
+        "lat0": 51.3,
+        "lon1": -129.85,
+        "lat1": 71.42
+      },
+      "frameNote": "Batch 21 (single-state): the Juneau capital anchor is balanced with the per-ID Mount McKinley check (20,310 ft, North American high point), Iliamna Lake, the Yukon and Kuskokwim mouth records, and community anchors from Ketchikan to Utqiaġvik to Unalaska. With Alaska, every US state has a statewide frame on this branch line.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Juneau",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Juneau",
+          "latitude": 58.3019444,
+          "longitude": -134.4197222,
+          "featureId": "1404263",
+          "verified": 1,
+          "sourceNote": "State capital anchor (the consolidated city and borough of Juneau); the borough and census-subarea political records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404263; exact official name and Populated Place type in Juneau City and Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Juneau City and Borough"
+        },
+        {
+          "name": "Anchorage",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Anchorage",
+          "latitude": 61.2180556,
+          "longitude": -149.9002778,
+          "featureId": "1398242",
+          "verified": 1,
+          "sourceNote": "Largest-city anchor (Municipality of Anchorage); the municipal and census records and the Anchorage Cove, Bay, and Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1398242; exact official name and Populated Place type in Anchorage Municipality cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Anchorage Municipality"
+        },
+        {
+          "name": "Fairbanks",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Fairbanks North Star",
+          "latitude": 64.8377778,
+          "longitude": -147.7163889,
+          "featureId": "1401958",
+          "verified": 1,
+          "sourceNote": "Interior anchor at the Tanana valley; the two Fairbanks Creek records and the permafrost test station record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1401958; exact official name and Populated Place type in Fairbanks North Star Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Fairbanks North Star Borough"
+        },
+        {
+          "name": "Utqiaġvik",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "North Slope",
+          "latitude": 71.2905556,
+          "longitude": -156.7886111,
+          "featureId": "1398635",
+          "verified": 1,
+          "sourceNote": "Northernmost community in the United States, seeded under its official GNIS spelling (the g carries a combining dot above, U+0307, in the DomesticNames text; the community was renamed from Barrow in 2016). USGS GNIS Geocoder (GNIS), FEATURE_ID=1398635; exact official name and Populated Place type in North Slope Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "North Slope Borough"
+        },
+        {
+          "name": "Nome",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Nome (CA)",
+          "latitude": 64.5011111,
+          "longitude": -165.4063889,
+          "featureId": "1407125",
+          "verified": 1,
+          "sourceNote": "Seward Peninsula anchor; the Nome River and Nome Mountains records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1407125; exact official name and Populated Place type in Nome Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Nome Census Area"
+        },
+        {
+          "name": "Ketchikan",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ketchikan Gateway",
+          "latitude": 55.3422222,
+          "longitude": -131.6461111,
+          "featureId": "1423039",
+          "verified": 1,
+          "sourceNote": "Inside Passage anchor; Ketchikan Creek (adjacent FEATURE_ID 1423040) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1423039; exact official name and Populated Place type in Ketchikan Gateway Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ketchikan Gateway Borough"
+        },
+        {
+          "name": "Kodiak",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kodiak Island",
+          "latitude": 57.79,
+          "longitude": -152.4072222,
+          "featureId": "1404875",
+          "verified": 1,
+          "sourceNote": "Kodiak Island anchor; the island record (FEATURE_ID 1404877) and Kodiak Harbor record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1404875; exact official name and Populated Place type in Kodiak Island Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kodiak Island Borough"
+        },
+        {
+          "name": "Unalaska",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Aleutians West (CA)",
+          "latitude": 53.8736111,
+          "longitude": -166.5366667,
+          "featureId": "1419424",
+          "verified": 1,
+          "sourceNote": "Aleutian anchor (the Dutch Harbor port community); the bay, island, and Unalaska Lake records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1419424; exact official name and Populated Place type in Aleutians West Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Aleutians West Census Area"
+        },
+        {
+          "name": "Mount McKinley",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Denali",
+          "latitude": 63.0691018,
+          "longitude": -151.0062617,
+          "featureId": "1414314",
+          "verified": 1,
+          "sourceNote": "North American High Point at 20,310 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_AK_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1414314 as a Summit in Denali Borough at this point. Seeded under the current official GNIS name: the summit was renamed Denali in 2015 and the name Mount McKinley was restored by federal action in 2025, which the GNIS record reflects — a states=AK screen for Denali returns the borough, Denali Park, and Denali Pass records but no summit record. Both names are preserved here so the row is findable under either. USGS GNIS Geocoder (GNIS), FEATURE_ID=1414314; exact official name and Summit type in Denali Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Denali Borough"
+        },
+        {
+          "name": "Iliamna Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lake and Peninsula",
+          "latitude": 59.5528805,
+          "longitude": -155.0881217,
+          "featureId": "1403764",
+          "verified": 1,
+          "sourceNote": "Largest lake entirely within Alaska; DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=1403764; exact official name and Lake type in Lake and Peninsula Borough cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lake and Peninsula Borough"
+        },
+        {
+          "name": "Yukon River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Kusilvak (CA)",
+          "latitude": 62.5986111,
+          "longitude": -164.8,
+          "featureId": "1416412",
+          "verified": 1,
+          "sourceNote": "River record at its Bering Sea delta mouth — among the longest free-flowing rivers in North America. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416412; exact official name and Stream type in Kusilvak Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Kusilvak Census Area"
+        },
+        {
+          "name": "Kuskokwim River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Bethel (CA)",
+          "latitude": 60.0830556,
+          "longitude": -162.3338889,
+          "featureId": "1416402",
+          "verified": 1,
+          "sourceNote": "River record at its Kuskokwim Bay mouth on the Bering Sea. USGS GNIS Geocoder (GNIS), FEATURE_ID=1416402; exact official name and Stream type in Bethel Census Area cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Bethel Census Area"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Denali (screen returns no summit) vs Mount McKinley FEATURE_ID 1414314",
+      "decision": "Seeded under the current official GNIS name Mount McKinley. The summit was renamed Denali in 2015; federal action in 2025 restored Mount McKinley, and the GNIS record reflects the current name — the GNIS 'Denali' screen returns the borough, Denali Park, and Denali Pass records only. The row's note preserves both names; identity rests on the FEATURE_ID, class, borough, and point, not on which name a reader prefers.",
+      "notClaimed": "No position is taken on the name; the register reports which name the cited federal record carries and when each applied."
+    },
+    {
+      "candidate": "Utqiaġvik spelling (precomposed ġ and plain ASCII both failed to reproduce)",
+      "decision": "The DomesticNames text stores the name with a decomposed g + combining dot above (U+0307); staging matched only after that exact form was used (the Līhuʻe/Haleakalā literal-spelling precedent from batch 20). The stored name reproduces the extract bytes.",
+      "notClaimed": "The stored name is the GNIS form, not a typographic preference."
+    },
+    {
+      "candidate": "Extract county strings (shortened boroughs, '(CA)' census-area suffixes)",
+      "decision": "Stored counties reproduce the DomesticNames county column verbatim (e.g. 'Bethel (CA)', 'North Slope'); each register row separately preserves the Geocoder's full returned county string (Bethel Census Area, North Slope Borough), so both surfaces remain auditable.",
+      "notClaimed": "Shortened strings are source artefacts, not official short names."
+    },
+    {
+      "candidate": "Far-western Aleutians (Attu / Near Islands, east longitudes in GNIS)",
+      "decision": "Not seeded. The frame uses the -171..-129.85 longitude convention of every other frame; GNIS keys the far-western chain at positive (east) longitudes across the antimeridian, which a single signed bbox cannot span without inverting the frame. Unalaska is the frame's Aleutian anchor and the limit is disclosed here and in knownLimitations.",
+      "notClaimed": "The frame rectangle is not the state's extent."
+    },
+    {
+      "candidate": "Mount Foraker FEATURE_ID 1402265 (valid Summit record, Denali Borough)",
+      "decision": "Returned a valid, identity-safe record but is not seeded: the 12-row starter register takes one summit (the continental high point). Recorded so the omission is a selection, not a screening failure (the Farmington/Kahului precedent).",
+      "notClaimed": "Absence from the gazetteer is not absence from GNIS."
+    }
+  ],
+  "knownLimitations": [
+    "Alaska is a starter register, not a statewide GNIS extract. It contains 12 deliberately selected identity-safe rows across an enormous state; density is deliberately low.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so the Mount McKinley elevation (20,310 feet) cites the USGS-published value; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. The frame uses explicitly synthetic relief gaussians and generalized context lines.",
+    "The state frame is a rectangle, not a state-boundary clipping mask. It spans -171..-129.85 longitude and therefore excludes the far-western Aleutians across the antimeridian (see identityDecisions). No boundary geometry is claimed."
+  ]
+}

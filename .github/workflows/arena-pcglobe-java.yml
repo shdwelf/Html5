@@ -1,0 +1,76 @@
+name: PC Globe — Java country-database reader
+
+# Stage 3 of the S4 PC Globe -> Java experiment (round 44): compiles the
+# dependency-free tools/pcglobe/PcGlobeReader.java with a runner JDK (the
+# sandbox has no JVM) and runs it against the hash-pinned 1990 database
+# files in .xfer/pcglobe/ (round 43). The reader is a pure file parser -
+# it never executes the recovered DOS program. Output is committed to
+# research/pcglobe-java/, which is deliberately NOT a trigger path, so the
+# result commit cannot retrigger the build.
+
+on:
+  push:
+    branches: ['arena/3c1048e1-html5']
+    paths:
+      - '.arena-pcglobe/java.txt'
+      - 'tools/pcglobe/PcGlobeReader.java'
+      - '.github/workflows/arena-pcglobe-java.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reader:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Require fetched media (round 43)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in NAMES.DAT COUNTRY1.DAT COUNTRY2.DAT DATABASE.DAT; do
+            test -f ".xfer/pcglobe/$f" || {
+              echo "::error title=missing input::Run arena-pcglobe-fetch first - .xfer/pcglobe is produced by the archive.org fetch."
+              exit 2
+            }
+          done
+          (cd .xfer/pcglobe && sha256sum -c SHA256SUMS)
+
+      - name: Compile and run PcGlobeReader
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/pcglobe-java" research/pcglobe-java
+          javac -d "$RUNNER_TEMP/pcglobe-java" tools/pcglobe/PcGlobeReader.java
+          java -cp "$RUNNER_TEMP/pcglobe-java" PcGlobeReader .xfer/pcglobe research/pcglobe-java
+          ls -la research/pcglobe-java/
+          head -20 research/pcglobe-java/countries.txt
+
+      - name: Commit reader dump
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "# PC Globe Java reader - last run"
+            echo
+            echo "- workflow: $GITHUB_WORKFLOW"
+            echo "- run: $GITHUB_RUN_ID"
+            date -u +"# %Y-%m-%dT%H:%M:%SZ"
+            grep -c '^\[' research/pcglobe-java/countries.txt | sed 's/^/record lines: /'
+          } > .arena-pcglobe/last-java-run.log
+          git config user.name arena-pcglobe-java
+          git config user.email arena-pcglobe-java@users.noreply.github.com
+          git add research/pcglobe-java/ .arena-pcglobe/last-java-run.log
+          git commit -q -m "pcglobe-java: country database dump (177 records, NAMES 216)" || exit 0
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done

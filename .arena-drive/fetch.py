@@ -36,7 +36,10 @@ the bytes are the right ones.
 """
 
 import hashlib
+import json
+import os
 import pathlib
+import subprocess
 import re
 import sys
 import urllib.error
@@ -54,7 +57,9 @@ UA = "arena-drive-sync/1.0 (+https://github.com/shdwelf/Html5; backup reconcilia
 # serves them directly with confirm=t.
 ENDPOINTS = (
     "https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t",
+    "https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t&supportsAllDrives=true&acknowledgeAbuse=true",
     "https://drive.google.com/uc?export=download&id={id}&confirm=t",
+    "https://drive.google.com/uc?export=download&id={id}&confirm=t&supportsAllDrives=true",
 )
 
 
@@ -81,18 +86,38 @@ def looks_like_html(body: bytes) -> bool:
 
 def describe_block(body: bytes) -> str:
     """Why Drive gave us a page instead of a file."""
-    text = body[:200_000].decode("utf-8", "replace").lower()
+    raw = body[:200_000].decode("utf-8", "replace")
+    m = re.search(r"<title[^>]*>(.*?)</title>", raw, re.I | re.S)
+    title = re.sub(r"\s+", " ", m.group(1)).strip()[:120] if m else ""
+    text = raw.lower()
     if "sign in" in text or "accounts.google.com" in text:
-        return "NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)"
+        return f"NOT-SHARED sign-in page (title: {title!r})"
     if "quota" in text or "too many" in text:
-        return "RATE-LIMITED (Drive download quota exceeded for this file)"
+        return f"RATE-LIMITED page (title: {title!r})"
     if "can't scan" in text or "virus" in text:
         return "SCAN-INTERSTITIAL (confirm token not accepted)"
-    return "HTML page returned instead of file bytes"
+    return f"HTML page instead of file bytes (title: {title!r})" if title else "HTML page returned instead of file bytes"
+
+
+BROWSER_UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
 
 def get(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    # curl first: Dropbox shared-link downloads (dl=1/raw=1) rely on redirect
+    # chains + cookies that urllib handles poorly (both the dl.dropboxusercontent
+    # form and www dl=1 were rejected/404 while the link was valid). urllib is
+    # the fallback where curl is unavailable.
+    try:
+        r = subprocess.run(
+            ["curl", "-fSL", "--max-time", "280", "-A", BROWSER_UA,
+             "-c", "/tmp/arena-cookies.txt", "-b", "/tmp/arena-cookies.txt", url],
+            capture_output=True, timeout=300)
+        if r.returncode == 0 and r.stdout:
+            return r.stdout
+    except Exception:                           # noqa: BLE001
+        pass
+    req = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
     with urllib.request.urlopen(req, timeout=300) as r:
         return r.read()
 
@@ -123,21 +148,68 @@ def main() -> int:
             ok += 1
             continue
 
-        body, err = None, None
-        for tmpl in ENDPOINTS:
+        # Optional per-file URL override (e.g. a Dropbox temporary link handed
+        # to the runner as an Actions secret when Drive's anonymous endpoints
+        # are quota-blocked): ARENA_FETCH_URL_<id with non-alnum -> '_'>.
+        san = re.sub(r"[^A-Za-z0-9]", "_", item["id"])
+        override = os.environ.get(f"ARENA_FETCH_URL_{san}")
+        if not override:
+            # File-based override (e.g. a revocable Dropbox shared link used
+            # when Drive's anonymous quota is exhausted). Removed after use.
             try:
-                candidate = get(tmpl.format(id=item["id"]))
+                overrides = json.loads((ROOT / ".arena-drive" / "url-overrides.json").read_text())
+                override = overrides.get(item["id"])
+            except Exception:
+                override = None
+        over_list = override if isinstance(override, list) else ([override] if override else [])
+        urls = list(over_list) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
+
+        body, err = None, None
+        errs = []
+        for url in urls:
+            try:
+                candidate = get(url)
             except urllib.error.HTTPError as e:
                 err = f"HTTP {e.code}"
+                errs.append(err)
                 continue
             except Exception as e:                      # noqa: BLE001
                 err = type(e).__name__
+                errs.append(err)
                 continue
             if looks_like_html(candidate):
                 err = describe_block(candidate)
+                errs.append(err)
                 continue
             body = candidate
             break
+
+        if body is None:
+            # Last resort: gdown implements Drive's confirm-token / quota
+            # interstitial flow that the plain uc endpoints have been
+            # 404ing on for the 33 MB worktree tarball (fetched fine once,
+            # then 404 on every later run despite anyoneWithLink + canDownload).
+            tmp = DEST / (name + ".gdown.part")
+            try:
+                r = subprocess.run(
+                    [sys.executable, "-m", "gdown", "--quiet", "-O", str(tmp),
+                     f"https://drive.google.com/uc?id={item['id']}"],
+                    capture_output=True, text=True, timeout=1200)
+                if r.returncode == 0 and tmp.exists() and tmp.stat().st_size > 0:
+                    candidate = tmp.read_bytes()
+                    if not looks_like_html(candidate):
+                        body = candidate
+                        print(f"gdown fallback succeeded for {name} ({len(candidate)} bytes)")
+                    else:
+                        errs.append("gdown: HTML interstitial")
+                else:
+                    errs.append(f"gdown rc={r.returncode}: {(r.stderr or '')[-200:]}")
+            except Exception as e:                      # noqa: BLE001
+                errs.append(f"gdown {type(e).__name__}")
+            finally:
+                tmp.unlink(missing_ok=True)
+            if body is None and errs:
+                err = "; ".join(errs)
 
         if body is None:
             log.append(f"FAIL  {name}  {err or 'no response'}")

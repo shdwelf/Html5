@@ -1,0 +1,4 @@
+	MSD.EXE is a diagnostic tool written by Microsoft Corporation.  Feel free to use it to check out your system configuration.  It is helpful especially when used with online technical support.  Please have MSD.EXE handy when calling Z-Nix Company Technical Support.
+
+19 FEB 90
+	Z-Nix now has online technical support for modem users.  The BBS number is (714) 629-9065.  It will offer our current mouse driver, some popular shareware programs, and the ability to receive feedback from users like yourself.  Set your modem on 8 data bits, 1 stop bits, and no parity.  If available to you, please use the Z-Modem protocol to transfer your files.  It offers the best efficiency and error correction.  If you call during the day, please have all your questions ready in case you wish to query online.

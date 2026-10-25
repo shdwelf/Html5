@@ -5,9 +5,13 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(root, "dist", "changelly-drainer-xena");
+const ZIP_OUT = `${OUT}.zip`;
+const XENA_OUT = `${OUT}.xena`;
+const XENA_SIDECAR = `${OUT}.xena.json`;
 const BUILDER = path.join(root, "tools", "build_changelly_drainer_xena.mjs");
 
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
@@ -21,8 +25,8 @@ const sha256 = (b) => createHash("sha256").update(b).digest("hex");
  * the instructions, is worse than no artifact.
  */
 
-function build() {
-  const r = execFileSync(process.execPath, [BUILDER, OUT], { cwd: root, encoding: "utf8" });
+function build(extraArgs = []) {
+  const r = execFileSync(process.execPath, [BUILDER, OUT, ...extraArgs], { cwd: root, encoding: "utf8" });
   return r;
 }
 
@@ -158,6 +162,121 @@ test("no payload file is oversized", () => {
   for (const rel of walk(OUT)) {
     const size = statSync(path.join(OUT, rel)).size;
     assert.ok(size < 16 * 1024, `${rel} is ${size} bytes, over the 16 KiB bound`);
+  }
+});
+
+test("the bag carries the deep dive, attack chain, detection rules, and bag-info", () => {
+  build();
+  for (const rel of [
+    path.join("data", "normalized", "deep-dive.md"),
+    path.join("data", "normalized", "attack-chain.json"),
+    path.join("data", "normalized", "detection-rules.txt"),
+    "bag-info.txt",
+  ]) {
+    assert.ok(existsSync(path.join(OUT, rel)), `missing ${rel}`);
+  }
+  const info = readFileSync(path.join(OUT, "bag-info.txt"), "utf8");
+  assert.match(info, /Payload-Oxum: \d+\.7/, "bag-info should record the 7-file payload oxum");
+  const chain = JSON.parse(readFileSync(path.join(OUT, "data/normalized/attack-chain.json"), "utf8"));
+  assert.equal(chain.observedSecondStage, false);
+  assert.equal(chain.stages.length, 7);
+  assert.equal(chain.stages.at(-1).status.includes("unobserved"), true);
+  const rules = readFileSync(path.join(OUT, "data/normalized/detection-rules.txt"), "utf8");
+  assert.match(rules, /rule Changelly_Exploit_First_Stage_Loader/);
+  assert.match(rules, /Do not use these rules to retrieve the live payload/);
+  const dive = readFileSync(path.join(OUT, "data/normalized/deep-dive.md"), "utf8");
+  assert.match(dive, /## Verdict/);
+  assert.match(dive, /precise behaviour of the second stage/);
+});
+
+test("stage two serializes the bag and wraps it in a Xena binary record", () => {
+  build();
+  assert.ok(existsSync(ZIP_OUT), "serialized BagIt ZIP should exist");
+  assert.ok(existsSync(XENA_OUT), "Xena record should exist");
+  assert.ok(existsSync(XENA_SIDECAR), "Xena sidecar should exist");
+
+  const zipBytes = readFileSync(ZIP_OUT);
+  const entries = unzipSync(new Uint8Array(zipBytes));
+  const bagFiles = walk(OUT).map((rel) => rel.split(path.sep).join("/")).sort();
+  assert.deepEqual(Object.keys(entries).sort(), bagFiles, "the ZIP should serialize exactly the bag files");
+  for (const rel of bagFiles) {
+    assert.deepEqual(Buffer.from(entries[rel]), readFileSync(path.join(OUT, rel)), `ZIP entry differs from bag file: ${rel}`);
+  }
+
+  const sidecar = JSON.parse(readFileSync(XENA_SIDECAR, "utf8"));
+  assert.equal(sidecar.serializedBag.sha256, sha256(zipBytes));
+  assert.equal(sidecar.serializedBag.bytes, zipBytes.length);
+  assert.equal(sidecar.xena.processedByXena, false, "the record is hand-built to the schemas, not Xena output");
+  assert.equal(sidecar.safety.secondStageFetched, false);
+  assert.equal(sidecar.safety.loaderExecuted, false);
+
+  const xenaBytes = readFileSync(XENA_OUT);
+  assert.equal(sidecar.xena.sha256, sha256(xenaBytes));
+  assert.equal(sidecar.xena.bytes, xenaBytes.length);
+  const xena = xenaBytes.toString("utf8");
+  assert.match(xena, /<\?xml version="1\.0" encoding="UTF-8"\?>/);
+  assert.match(xena, /<meta_data_wrapper_name>Default Package Wrapper<\/meta_data_wrapper_name>/);
+  assert.match(xena, /BinaryToXenaBinaryNormaliser/);
+  assert.match(xena, /binary-object:binary-object/);
+
+  const m = xena.match(/<binary-object:binary-object[^>]*>([\s\S]*?)<\/binary-object:binary-object>/);
+  assert.ok(m, "Xena record should carry a binary-object payload");
+  const wrapped = Buffer.from(m[1].replace(/\s+/g, ""), "base64");
+  assert.deepEqual(wrapped, zipBytes, "decoding the Xena record should reproduce the serialized BagIt ZIP byte for byte");
+});
+
+test("a supplied second-stage CSV is bagged inert, hashed, and analysed — never executed", () => {
+  const fixture = path.join(root, "dist", "_stage2-fixture.csv");
+  writeFileSync(fixture, 'name,value\nnode,"NODE_PART_1, with comma"\npath,"PATH_PART_2"\n');
+  try {
+    const log = build(["--second-stage-csv", fixture]);
+    assert.match(log, /second-stage payload fetched: yes, as inert text/);
+    const payloadPath = path.join(OUT, "data", "original", "second-stage-payload.txt");
+    assert.ok(existsSync(payloadPath), "the assembled second stage should be bagged as .txt");
+    assert.equal(readFileSync(payloadPath, "utf8"), "NODE_PART_1, with commaPATH_PART_2");
+    const ioc = JSON.parse(readFileSync(path.join(OUT, "data/normalized/ioc.json"), "utf8"));
+    assert.equal(ioc.secondStage.retrieved, true);
+    assert.equal(ioc.executed, false);
+    const s2 = JSON.parse(readFileSync(path.join(OUT, "data/normalized/second-stage-iocs.json"), "utf8"));
+    assert.equal(s2.executed, false);
+    assert.equal(s2.ghidra.applicable, false);
+    const panel = s2.behaviourOnReviewedSample.devPanel;
+    assert.equal(panel.accessKey, "admin");
+    assert.equal(panel.targetVersion, "3.27");
+    assert.equal(panel.versions.filter((v) => v.selectable).length, 1);
+    assert.equal(panel.versions.filter((v) => v.selectable)[0].version, "3.27");
+    assert.equal(panel.progressSequence.length, 6);
+    assert.equal(panel.teardownWiredToUi, false);
+    const ev = JSON.parse(readFileSync(path.join(OUT, "metadata/preservation-event.json"), "utf8"));
+    assert.equal(ev.counts.secondStageRetrieved, true);
+  } finally {
+    rmSync(fixture, { force: true });
+    build(); // restore the default location-only bag for the remaining tests
+  }
+});
+
+test("--second-stage-csv before the out dir never treats the CSV as the output", () => {
+  // Regression (2026-10-23): the flag's value used to be picked up as the
+  // positional out dir, so `--second-stage-csv google_drive/API` deleted the
+  // CSV and wrote the bag over it.
+  const fixture = path.join(root, "dist", "_stage2-argv-fixture.csv");
+  const tmpOut = path.join(root, "dist", "_stage2-argv-out");
+  const csvText = 'name,value\nnode,"AAA"\npath,"BBB"\n';
+  writeFileSync(fixture, csvText);
+  try {
+    execFileSync(process.execPath, [BUILDER, "--second-stage-csv", fixture, tmpOut], {
+      cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+    });
+    assert.equal(readFileSync(fixture, "utf8"), csvText, "the input CSV must survive the build");
+    assert.ok(existsSync(path.join(tmpOut, "bagit.txt")), "the bag should land in the explicit out dir");
+    assert.equal(
+      readFileSync(path.join(tmpOut, "data/original/second-stage-payload.txt"), "utf8"),
+      "AAABBB",
+    );
+  } finally {
+    rmSync(fixture, { force: true });
+    rmSync(tmpOut, { recursive: true, force: true });
+    for (const ext of [".zip", ".xena", ".xena.json"]) rmSync(`${tmpOut}${ext}`, { force: true });
   }
 });
 

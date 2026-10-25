@@ -1,0 +1,404 @@
+{
+  "generated": "2026-10-24",
+  "title": "Round 37 Connecticut-Rhode Island state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Connecticut and Rhode Island. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county (Connecticut: planning region), permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Bear Mountain and Jerimoth Hill carry Domestic Names per-ID identity checks. The Connecticut River closure, the Mount Frissell slope problem, the Connecticut planning-region county equivalents, and the unseedable Candlewood Lake screen are recorded below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<CT|RI>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. Historical county records (Connecticut's abolished counties), adjacent harbour/reservoir records, census-designated places, and shoreline-community records were rejected explicitly where relevant. Note: for Connecticut the Geocoder county strings are the nine planning regions with their full 'Planning Region' suffix, while the DomesticNames county column stores the same regions without the suffix (e.g. Capitol); the stored county reproduces the extract value."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<CT|RI>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Bear Mountain (205348) and Jerimoth Hill (1219566), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the summit elevations cite USGS-published values. The candidate extract file is cumulative across batches 7-19; this register is the frozen batch-19 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county (or Connecticut planning region), permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (text class Reservoir for Lake Lillinonah and Scituate Reservoir), Streams & Canals to Stream, and Summit to Summit. Bay-class records (Narragansett Bay, the named harbours) are outside the seeded row classes and remain context corridors.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor (the Pawcatuck River under RI; Candlewood Lake's shoreline-community screen).",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "connecticut": {
+      "title": "Connecticut statewide frame (Connecticut-Rhode Island batch)",
+      "state": "CT",
+      "bbox": {
+        "lon0": -73.75,
+        "lat0": 40.95,
+        "lon1": -71.75,
+        "lat1": 42.06
+      },
+      "frameNote": "Connecticut-Rhode Island batch: the Hartford capital anchor is balanced with the per-ID Bear Mountain summit check (2,323 ft), Bantam Lake and Lake Lillinonah, and three Long Island Sound river mouths. The Connecticut River seeds here on FEATURE_ID 206425, closing the corridor chain that ran through New Hampshire, Vermont, and Massachusetts (batches 17-18). County strings are the GNIS planning regions.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Hartford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Capitol",
+          "latitude": 41.7637111,
+          "longitude": -72.6850932,
+          "featureId": "213160",
+          "verified": 1,
+          "sourceNote": "State capital anchor on the Connecticut River. Connecticut GNIS county equivalents are the councils-of-governments planning regions (county governments were abolished in 1960); the stored county reproduces the DomesticNames region value, while the Geocoder returns the same region with its Planning Region suffix. The historical Hartford County record and the numbered Hartford reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=213160; exact official name and Populated Place type in Capitol Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Capitol Planning Region"
+        },
+        {
+          "name": "New Haven",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "South Central Connecticut",
+          "latitude": 41.3081527,
+          "longitude": -72.9281578,
+          "featureId": "209231",
+          "verified": 1,
+          "sourceNote": "Harbor-city anchor; the harbor, entrance channel, canal, and historical county and airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=209231; exact official name and Populated Place type in South Central Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "South Central Connecticut Planning Region"
+        },
+        {
+          "name": "Bridgeport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greater Bridgeport",
+          "latitude": 41.1670412,
+          "longitude": -73.2048348,
+          "featureId": "205720",
+          "verified": 1,
+          "sourceNote": "Largest-city anchor on Long Island Sound; the harbor, entrance channel, ferry crossing, and historical airfield records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=205720; exact official name and Populated Place type in Greater Bridgeport Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greater Bridgeport Planning Region"
+        },
+        {
+          "name": "Stamford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Western Connecticut",
+          "latitude": 41.0534302,
+          "longitude": -73.5387341,
+          "featureId": "211129",
+          "verified": 1,
+          "sourceNote": "Southwestern anchor; Stamford Harbor (adjacent FEATURE_ID 211130) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=211129; exact official name and Populated Place type in Western Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Western Connecticut Planning Region"
+        },
+        {
+          "name": "Waterbury",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Naugatuck Valley",
+          "latitude": 41.5581525,
+          "longitude": -73.0514966,
+          "featureId": "211851",
+          "verified": 1,
+          "sourceNote": "Naugatuck Valley anchor; the numbered Waterbury reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=211851; exact official name and Populated Place type in Naugatuck Valley Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Naugatuck Valley Planning Region"
+        },
+        {
+          "name": "New London",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Southeastern Connecticut",
+          "latitude": 41.3556539,
+          "longitude": -72.0995209,
+          "featureId": "209237",
+          "verified": 1,
+          "sourceNote": "Thames mouth anchor; New London Harbor (adjacent FEATURE_ID 209238) and the historical county record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=209237; exact official name and Populated Place type in Southeastern Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Southeastern Connecticut Planning Region"
+        },
+        {
+          "name": "Bear Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Northwest Hills",
+          "latitude": 42.0448053,
+          "longitude": -73.4548409,
+          "featureId": "205348",
+          "verified": 1,
+          "sourceNote": "Highest summit in Connecticut at 2,323 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_CT_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 205348 as a Summit in the Northwest Hills region at this point. Connecticut's highest ground, the Mount Frissell south slope (2,379 feet on the Massachusetts line), carries no Connecticut GNIS record — Mount Frissell screens empty under states=CT because its summit record keys to Massachusetts — so the slope itself is not seeded. The Danbury-area Bear Mountain namesake (FEATURE_ID 205347) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=205348; exact official name and Summit type in Northwest Hills Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Northwest Hills Planning Region"
+        },
+        {
+          "name": "Bantam Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Northwest Hills",
+          "latitude": 41.7045073,
+          "longitude": -73.2215068,
+          "featureId": "205246",
+          "verified": 1,
+          "sourceNote": "Largest natural lake in the state; DomesticNames classifies the record as Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=205246; exact official name and Lake type in Northwest Hills Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Northwest Hills Planning Region"
+        },
+        {
+          "name": "Lake Lillinonah",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Western Connecticut",
+          "latitude": 41.4688125,
+          "longitude": -73.3222477,
+          "featureId": "208464",
+          "verified": 1,
+          "sourceNote": "Housatonic impoundment anchor. DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. Candlewood Lake, the state's largest lake by surface area, is not identity-seeded: its Geocoder screen returns only shoreline communities (Candlewood Isle, Knolls, Lake Club, Orchards, Pines, Shores, and Springs), so no lake record was taken. USGS GNIS Geocoder (GNIS), FEATURE_ID=208464; exact official name and Reservoir type in Western Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Western Connecticut Planning Region"
+        },
+        {
+          "name": "Connecticut River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Lower Connecticut River Valley",
+          "latitude": 41.272313,
+          "longitude": -72.332687,
+          "featureId": "206425",
+          "verified": 1,
+          "sourceNote": "River record at its Long Island Sound mouth — the closure of the four-frame corridor chain: the main stem stayed corridor-only in New Hampshire, Vermont, and Massachusetts (batches 17-18, reservoir-only screens) and seeds here on its Connecticut mouth record. The Capitol-region Connecticut River Reservoir impoundment is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=206425; exact official name and Stream type in Lower Connecticut River Valley Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Lower Connecticut River Valley Planning Region"
+        },
+        {
+          "name": "Housatonic River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "South Central Connecticut",
+          "latitude": 41.169264,
+          "longitude": -73.108442,
+          "featureId": "212670",
+          "verified": 1,
+          "sourceNote": "River record at its Long Island Sound mouth; the Housatonic River Reservoir record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=212670; exact official name and Stream type in South Central Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "South Central Connecticut Planning Region"
+        },
+        {
+          "name": "Thames River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Southeastern Connecticut",
+          "latitude": 41.3023207,
+          "longitude": -72.0795199,
+          "featureId": "211397",
+          "verified": 1,
+          "sourceNote": "River record at its New London mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=211397; exact official name and Stream type in Southeastern Connecticut Planning Region cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Southeastern Connecticut Planning Region"
+        }
+      ]
+    },
+    "rhodeisland": {
+      "title": "Rhode Island statewide frame (Connecticut-Rhode Island batch)",
+      "state": "RI",
+      "bbox": {
+        "lon0": -71.9,
+        "lat0": 41.1,
+        "lon1": -71.1,
+        "lat1": 42.05
+      },
+      "frameNote": "Connecticut-Rhode Island batch: the Providence capital anchor is balanced with the per-ID Jerimoth Hill high point (812 ft), Scituate Reservoir, Block Island's New Shoreham record, and the Blackstone, Sakonnet, and Providence river records. Narragansett Bay itself stays context: bay-class records are outside the seeded row classes.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Providence",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Providence",
+          "latitude": 41.8239891,
+          "longitude": -71.4128343,
+          "featureId": "1219851",
+          "verified": 1,
+          "sourceNote": "State capital anchor at the head of Narragansett Bay; the harbor and Providence Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219851; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Newport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Newport",
+          "latitude": 41.4901024,
+          "longitude": -71.3128285,
+          "featureId": "1217986",
+          "verified": 1,
+          "sourceNote": "Aquidneck Island anchor on Narragansett Bay; Newport Harbor (FEATURE_ID 1217985), Newport Neck, the Census Designated Place, and the historical military records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1217986; exact official name and Populated Place type in Newport County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Newport County"
+        },
+        {
+          "name": "Warwick",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kent",
+          "latitude": 41.700101,
+          "longitude": -71.4161671,
+          "featureId": "1220018",
+          "verified": 1,
+          "sourceNote": "Greenwich Bay anchor; the Warwick Brook, Pond, Cove, Neck, and Point records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1220018; exact official name and Populated Place type in Kent County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kent County"
+        },
+        {
+          "name": "Cranston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Providence",
+          "latitude": 41.7798226,
+          "longitude": -71.4372796,
+          "featureId": "1218689",
+          "verified": 1,
+          "sourceNote": "Providence-metro anchor; Cranstons Corner (historical), the print-works pond, and Cranston Cove records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218689; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Pawtucket",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Providence",
+          "latitude": 41.878711,
+          "longitude": -71.3825558,
+          "featureId": "1218926",
+          "verified": 1,
+          "sourceNote": "Blackstone mouth anchor at Pawtucket Falls; the reservoir records, the falls record itself, and the historical armory are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218926; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Woonsocket",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Providence",
+          "latitude": 42.0028761,
+          "longitude": -71.5147839,
+          "featureId": "1219339",
+          "verified": 1,
+          "sourceNote": "Blackstone Valley anchor at the Massachusetts line; the numbered reservoir records, Woonsocket Falls, and Woonsocket Hill records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219339; exact official name and Populated Place type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "New Shoreham",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washington",
+          "latitude": 41.1723258,
+          "longitude": -71.5578329,
+          "featureId": "1219853",
+          "verified": 1,
+          "sourceNote": "Block Island anchor, seeded as the island community's populated-place record; New Shoreham Center and the Census Designated Place record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219853; exact official name and Populated Place type in Washington County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washington County"
+        },
+        {
+          "name": "Jerimoth Hill",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Providence",
+          "latitude": 41.8494158,
+          "longitude": -71.7788736,
+          "featureId": "1219566",
+          "verified": 1,
+          "sourceNote": "Rhode Island High Point at 812 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_RI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1219566 as a Summit in Providence County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219566; exact official name and Summit type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Scituate Reservoir",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Providence",
+          "latitude": 41.7724732,
+          "longitude": -71.6108501,
+          "featureId": "1218622",
+          "verified": 1,
+          "sourceNote": "Providence water-supply anchor; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218622; exact official name and Reservoir type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Blackstone River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Providence",
+          "latitude": 41.8764888,
+          "longitude": -71.3833891,
+          "featureId": "1218929",
+          "verified": 1,
+          "sourceNote": "River record at its Pawtucket Falls reach; five Blackstone River Reservoir impoundment records sharing the name stem are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218929; exact official name and Stream type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Providence County"
+        },
+        {
+          "name": "Sakonnet River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Newport",
+          "latitude": 41.4639923,
+          "longitude": -71.224491,
+          "featureId": "1218198",
+          "verified": 1,
+          "sourceNote": "Tidal river record between Aquidneck Island and the mainland shore. USGS GNIS Geocoder (GNIS), FEATURE_ID=1218198; exact official name and Stream type in Newport County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Newport County"
+        },
+        {
+          "name": "Providence River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Providence",
+          "latitude": 41.8139892,
+          "longitude": -71.4003336,
+          "featureId": "1219586",
+          "verified": 1,
+          "sourceNote": "Tidal river record at the head of Narragansett Bay, below the seeded capital point; the harbor record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1219586; exact official name and Stream type in Providence County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Providence County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Connecticut River FEATURE_ID 206425 (Streams & Canals, Lower Connecticut River Valley region)",
+      "decision": "Seeded on its Connecticut mouth record. After reservoir-only screens under NH and VT (batch 17) and MA (batch 18), the main stem seeds at the fourth frame of the chain — the counterpart of the Mississippi (Minnesota to Louisiana), Pearl (Mississippi to Louisiana), Androscoggin/Saco/Merrimack (New Hampshire to Maine/Massachusetts) closures.",
+      "notClaimed": "The stored point is the GNIS primary point, not a channel centerline."
+    },
+    {
+      "candidate": "Mount Frissell under states=CT (empty screen) vs Bear Mountain FEATURE_ID 205348",
+      "decision": "Seeded Bear Mountain, the highest Connecticut summit (2,323 ft). Connecticut's highest ground is the Mount Frissell south slope (2,379 ft), but the Frissell summit record keys to Massachusetts and the CT screen returns an empty array, so no Connecticut record exists to seed for the slope. The Danbury-area Bear Mountain namesake (205347) is rejected by region, point, and elevation context.",
+      "notClaimed": "Bear Mountain is not represented as the state high point — the register distinguishes highest summit from highest ground."
+    },
+    {
+      "candidate": "Candlewood Lake Geocoder screen (shoreline communities only)",
+      "decision": "Not seeded. Both the exact-name and bare-name screens return only Candlewood Isle/Knolls/Lake Club/Orchards/Pines/Point/Shores/Springs community and CDP records; no identity-safe lake record was returned, so the state's largest lake by area stays unseeded and Bantam Lake (largest natural lake) plus Lake Lillinonah carry the frame's lake rows.",
+      "notClaimed": "No community point is presented as the lake."
+    },
+    {
+      "candidate": "Farmington River FEATURE_ID 207042 (valid Stream record, Capitol region)",
+      "decision": "Returned a valid, identity-safe record but is not seeded: the 12-row starter register prioritizes the three Sound-draining main stems (Connecticut, Housatonic, Thames). Recorded here so the omission is a visible selection, not a screening failure.",
+      "notClaimed": "Absence from the gazetteer is not absence from GNIS."
+    },
+    {
+      "candidate": "Pawcatuck River under states=RI (empty screen)",
+      "decision": "Corridor-only in the Rhode Island frame. The Pawcatuck forms the RI/CT border; its RI-filtered screen returns an empty array, consistent with a Connecticut-keyed primary record. The Connecticut extract staging also screened the name under CT candidate lists without a seeded row being taken in either frame.",
+      "notClaimed": "The corridor is not a channel centerline or state boundary."
+    },
+    {
+      "candidate": "Connecticut county equivalents (planning regions) vs Rhode Island counties",
+      "decision": "Connecticut rows store the DomesticNames planning-region strings (Capitol, Northwest Hills, ...) because GNIS replaced the abolished county governments with the nine councils of governments; the Geocoder returns the same regions with the Planning Region suffix, preserved in each register row's geocoderCounty. Rhode Island keeps its five constitutional counties and stores County names normally.",
+      "notClaimed": "Planning-region strings are GNIS county equivalents, not revived counties."
+    }
+  ],
+  "knownLimitations": [
+    "Connecticut and Rhode Island are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Bear Mountain (2,323 feet) and Jerimoth Hill (812 feet) elevations cite USGS-published values; GNIS identity rests on the per-ID class/county/point reproduction. Connecticut's highest ground (Mount Frissell south slope, 2,379 feet) has no Connecticut GNIS record and is documented rather than seeded.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. The Connecticut rectangle includes Long Island Sound water and the Rhode Island rectangle reaches Block Island; no boundary geometry is claimed."
+  ]
+}

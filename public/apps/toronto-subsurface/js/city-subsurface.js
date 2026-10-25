@@ -38,6 +38,59 @@ const DATA_LOADERS = {
   kansascity: () => import("./city-subsurface-data-kansascity.js"),
   buffalo: () => import("./city-subsurface-data-buffalo.js"),
   toronto: () => import("./city-subsurface-data-toronto.js"),
+  california: () => import("./city-subsurface-data-california.js"),
+  nevada: () => import("./city-subsurface-data-nevada.js"),
+  arizona: () => import("./city-subsurface-data-arizona.js"),
+  guam: () => import("./city-subsurface-data-guam.js"),
+  americansamoa: () => import("./city-subsurface-data-americansamoa.js"),
+  usvirginislands: () => import("./city-subsurface-data-usvirginislands.js"),
+  midway: () => import("./city-subsurface-data-midway.js"),
+  utah: () => import("./city-subsurface-data-utah.js"),
+  colorado: () => import("./city-subsurface-data-colorado.js"),
+  newmexico: () => import("./city-subsurface-data-newmexico.js"),
+  oregon: () => import("./city-subsurface-data-oregon.js"),
+  washington: () => import("./city-subsurface-data-washington.js"),
+  idaho: () => import("./city-subsurface-data-idaho.js"),
+  montana: () => import("./city-subsurface-data-montana.js"),
+  wyoming: () => import("./city-subsurface-data-wyoming.js"),
+  northdakota: () => import("./city-subsurface-data-northdakota.js"),
+  southdakota: () => import("./city-subsurface-data-southdakota.js"),
+  nebraska: () => import("./city-subsurface-data-nebraska.js"),
+  kansas: () => import("./city-subsurface-data-kansas.js"),
+  oklahoma: () => import("./city-subsurface-data-oklahoma.js"),
+  texas: () => import("./city-subsurface-data-texas.js"),
+  iowa: () => import("./city-subsurface-data-iowa.js"),
+  missouri: () => import("./city-subsurface-data-missouri.js"),
+  minnesota: () => import("./city-subsurface-data-minnesota.js"),
+  louisiana: () => import("./city-subsurface-data-louisiana.js"),
+  mississippi: () => import("./city-subsurface-data-mississippi.js"),
+  alabama: () => import("./city-subsurface-data-alabama.js"),
+  georgia: () => import("./city-subsurface-data-georgia.js"),
+  wisconsin: () => import("./city-subsurface-data-wisconsin.js"),
+  michigan: () => import("./city-subsurface-data-michigan.js"),
+  illinois: () => import("./city-subsurface-data-illinois.js"),
+  indiana: () => import("./city-subsurface-data-indiana.js"),
+  ohio: () => import("./city-subsurface-data-ohio.js"),
+  pennsylvania: () => import("./city-subsurface-data-pennsylvania.js"),
+  arkansas: () => import("./city-subsurface-data-arkansas.js"),
+  Kentucky: () => import("./city-subsurface-data-Kentucky.js"),
+  tennessee: () => import("./city-subsurface-data-tennessee.js"),
+  virginia: () => import("./city-subsurface-data-virginia.js"),
+  westvirginia: () => import("./city-subsurface-data-westvirginia.js"),
+  northcarolina: () => import("./city-subsurface-data-northcarolina.js"),
+  southcarolina: () => import("./city-subsurface-data-southcarolina.js"),
+  florida: () => import("./city-subsurface-data-florida.js"),
+  Maryland: () => import("./city-subsurface-data-Maryland.js"),
+  delaware: () => import("./city-subsurface-data-delaware.js"),
+  newhampshire: () => import("./city-subsurface-data-newhampshire.js"),
+  vermont: () => import("./city-subsurface-data-vermont.js"),
+  maine: () => import("./city-subsurface-data-maine.js"),
+  massachusetts: () => import("./city-subsurface-data-massachusetts.js"),
+  connecticut: () => import("./city-subsurface-data-connecticut.js"),
+  rhodeisland: () => import("./city-subsurface-data-rhodeisland.js"),
+  alaska: () => import("./city-subsurface-data-alaska.js"),
+  newjersey: () => import("./city-subsurface-data-newjersey.js"),
+  hawaii: () => import("./city-subsurface-data-hawaii.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -45,27 +98,150 @@ const GAZ_LOADERS = {
   kansascity: () => import("./city-gazetteer-data-kansascity.js"),
   buffalo: () => import("./city-gazetteer-data-buffalo.js"),
   toronto: () => import("./city-gazetteer-data-toronto.js"),
+  california: () => import("./city-gazetteer-data-california.js"),
+  nevada: () => import("./city-gazetteer-data-nevada.js"),
+  arizona: () => import("./city-gazetteer-data-arizona.js"),
+  guam: () => import("./city-gazetteer-data-guam.js"),
+  americansamoa: () => import("./city-gazetteer-data-americansamoa.js"),
+  usvirginislands: () => import("./city-gazetteer-data-usvirginislands.js"),
+  midway: () => import("./city-gazetteer-data-midway.js"),
+  utah: () => import("./city-gazetteer-data-utah.js"),
+  colorado: () => import("./city-gazetteer-data-colorado.js"),
+  newmexico: () => import("./city-gazetteer-data-newmexico.js"),
+  oregon: () => import("./city-gazetteer-data-oregon.js"),
+  washington: () => import("./city-gazetteer-data-washington.js"),
+  idaho: () => import("./city-gazetteer-data-idaho.js"),
+  montana: () => import("./city-gazetteer-data-montana.js"),
+  wyoming: () => import("./city-gazetteer-data-wyoming.js"),
+  northdakota: () => import("./city-gazetteer-data-northdakota.js"),
+  southdakota: () => import("./city-gazetteer-data-southdakota.js"),
+  nebraska: () => import("./city-gazetteer-data-nebraska.js"),
+  kansas: () => import("./city-gazetteer-data-kansas.js"),
+  oklahoma: () => import("./city-gazetteer-data-oklahoma.js"),
+  texas: () => import("./city-gazetteer-data-texas.js"),
+  iowa: () => import("./city-gazetteer-data-iowa.js"),
+  missouri: () => import("./city-gazetteer-data-missouri.js"),
+  minnesota: () => import("./city-gazetteer-data-minnesota.js"),
+  louisiana: () => import("./city-gazetteer-data-louisiana.js"),
+  mississippi: () => import("./city-gazetteer-data-mississippi.js"),
+  alabama: () => import("./city-gazetteer-data-alabama.js"),
+  georgia: () => import("./city-gazetteer-data-georgia.js"),
+  wisconsin: () => import("./city-gazetteer-data-wisconsin.js"),
+  michigan: () => import("./city-gazetteer-data-michigan.js"),
+  illinois: () => import("./city-gazetteer-data-illinois.js"),
+  indiana: () => import("./city-gazetteer-data-indiana.js"),
+  ohio: () => import("./city-gazetteer-data-ohio.js"),
+  pennsylvania: () => import("./city-gazetteer-data-pennsylvania.js"),
+  arkansas: () => import("./city-gazetteer-data-arkansas.js"),
+  Kentucky: () => import("./city-gazetteer-data-Kentucky.js"),
+  tennessee: () => import("./city-gazetteer-data-tennessee.js"),
+  virginia: () => import("./city-gazetteer-data-virginia.js"),
+  westvirginia: () => import("./city-gazetteer-data-westvirginia.js"),
+  northcarolina: () => import("./city-gazetteer-data-northcarolina.js"),
+  southcarolina: () => import("./city-gazetteer-data-southcarolina.js"),
+  florida: () => import("./city-gazetteer-data-florida.js"),
+  Maryland: () => import("./city-gazetteer-data-Maryland.js"),
+  delaware: () => import("./city-gazetteer-data-delaware.js"),
+  newhampshire: () => import("./city-gazetteer-data-newhampshire.js"),
+  vermont: () => import("./city-gazetteer-data-vermont.js"),
+  maine: () => import("./city-gazetteer-data-maine.js"),
+  massachusetts: () => import("./city-gazetteer-data-massachusetts.js"),
+  connecticut: () => import("./city-gazetteer-data-connecticut.js"),
+  rhodeisland: () => import("./city-gazetteer-data-rhodeisland.js"),
+  alaska: () => import("./city-gazetteer-data-alaska.js"),
+  newjersey: () => import("./city-gazetteer-data-newjersey.js"),
+  hawaii: () => import("./city-gazetteer-data-hawaii.js"),
 };
+// DEM packs are optional for every frame except a config marked
+// demRequired. Route them through a variable-specifier import so a missing
+// optional pack rejects into the catch below instead of failing a bundler's
+// static import analysis. The XDC builder explicitly scans importDem()
+// calls when collecting the offline module graph.
+const importDem = (specifier) => import(/* @vite-ignore */ specifier);
 const DEM_LOADERS = {
   lawrence: async () => {
     try {
-      return await import("./city-dem-grid-lawrence-highres.js");
+      return await importDem("./city-dem-grid-lawrence-highres.js");
     } catch {
-      return import("./city-dem-grid-lawrence.js");
+      return importDem("./city-dem-grid-lawrence.js");
     }
   },
-  atlanta: () => import("./city-dem-grid-atlanta.js"),
-  kansascity: () => import("./city-dem-grid-kansascity.js"),
-  buffalo: () => import("./city-dem-grid-buffalo.js"),
-  toronto: () => import("./city-dem-grid-toronto.js"),
+  atlanta: () => importDem("./city-dem-grid-atlanta.js"),
+  kansascity: () => importDem("./city-dem-grid-kansascity.js"),
+  buffalo: () => importDem("./city-dem-grid-buffalo.js"),
+  toronto: () => importDem("./city-dem-grid-toronto.js"),
+  california: () => importDem("./city-dem-grid-california.js"),
+  nevada: () => importDem("./city-dem-grid-nevada.js"),
+  arizona: () => importDem("./city-dem-grid-arizona.js"),
+  guam: () => importDem("./city-dem-grid-guam.js"),
+  americansamoa: () => importDem("./city-dem-grid-americansamoa.js"),
+  usvirginislands: () => importDem("./city-dem-grid-usvirginislands.js"),
+  midway: () => importDem("./city-dem-grid-midway.js"),
+  utah: () => importDem("./city-dem-grid-utah.js"),
+  colorado: () => importDem("./city-dem-grid-colorado.js"),
+  newmexico: () => importDem("./city-dem-grid-newmexico.js"),
+  oregon: () => importDem("./city-dem-grid-oregon.js"),
+  washington: () => importDem("./city-dem-grid-washington.js"),
+  idaho: () => importDem("./city-dem-grid-idaho.js"),
+  montana: () => importDem("./city-dem-grid-montana.js"),
+  wyoming: () => importDem("./city-dem-grid-wyoming.js"),
+  northdakota: () => importDem("./city-dem-grid-northdakota.js"),
+  southdakota: () => importDem("./city-dem-grid-southdakota.js"),
+  nebraska: () => importDem("./city-dem-grid-nebraska.js"),
+  kansas: () => importDem("./city-dem-grid-kansas.js"),
+  oklahoma: () => importDem("./city-dem-grid-oklahoma.js"),
+  texas: () => importDem("./city-dem-grid-texas.js"),
+  iowa: () => importDem("./city-dem-grid-iowa.js"),
+  missouri: () => importDem("./city-dem-grid-missouri.js"),
+  minnesota: () => importDem("./city-dem-grid-minnesota.js"),
+  louisiana: () => importDem("./city-dem-grid-louisiana.js"),
+  mississippi: () => importDem("./city-dem-grid-mississippi.js"),
+  alabama: () => importDem("./city-dem-grid-alabama.js"),
+  georgia: () => importDem("./city-dem-grid-georgia.js"),
+  wisconsin: () => importDem("./city-dem-grid-wisconsin.js"),
+  michigan: () => importDem("./city-dem-grid-michigan.js"),
+  illinois: () => importDem("./city-dem-grid-illinois.js"),
+  indiana: () => importDem("./city-dem-grid-indiana.js"),
+  ohio: () => importDem("./city-dem-grid-ohio.js"),
+  pennsylvania: () => importDem("./city-dem-grid-pennsylvania.js"),
+  arkansas: () => importDem("./city-dem-grid-arkansas.js"),
+  Kentucky: () => importDem("./city-dem-grid-Kentucky.js"),
+  tennessee: () => importDem("./city-dem-grid-tennessee.js"),
+  virginia: () => importDem("./city-dem-grid-virginia.js"),
+  westvirginia: () => importDem("./city-dem-grid-westvirginia.js"),
+  northcarolina: () => importDem("./city-dem-grid-northcarolina.js"),
+  southcarolina: () => importDem("./city-dem-grid-southcarolina.js"),
+  florida: () => importDem("./city-dem-grid-florida.js"),
+  Maryland: () => importDem("./city-dem-grid-Maryland.js"),
+  delaware: () => importDem("./city-dem-grid-delaware.js"),
+  newhampshire: () => importDem("./city-dem-grid-newhampshire.js"),
+  vermont: () => importDem("./city-dem-grid-vermont.js"),
+  maine: () => importDem("./city-dem-grid-maine.js"),
+  massachusetts: () => importDem("./city-dem-grid-massachusetts.js"),
+  connecticut: () => importDem("./city-dem-grid-connecticut.js"),
+  rhodeisland: () => importDem("./city-dem-grid-rhodeisland.js"),
+  alaska: () => importDem("./city-dem-grid-alaska.js"),
+  newjersey: () => importDem("./city-dem-grid-newjersey.js"),
+  hawaii: () => importDem("./city-dem-grid-hawaii.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
   throw new Error(`unknown city: ${CITY_ID}`);
 }
 
-const data = await DATA_LOADERS[CITY_ID]();
-const gazPack = await GAZ_LOADERS[CITY_ID]();
+// Frame data arrives through the page's statically imported preload
+// (js/city-frame-preload-<city>.js runs first in document order).
+// Top-level await and boot-time dynamic import() are deliberately NOT used
+// here: Webxdc host webviews that fail to parse/evaluate them froze every
+// city frame before the first render while socal (static imports) worked.
+// The DATA_LOADERS/GAZ_LOADERS maps stay as the offline module graph the
+// XDC builder collects and the test suite asserts against.
+const preload = globalThis.__CITY_FRAME_PRELOAD__;
+if (!preload || preload.id !== CITY_ID) {
+  throw new Error(`frame preload missing for ${CITY_ID}; regenerate pages with scripts/build-city-subsurface.mjs`);
+}
+const data = preload.data;
+const gazPack = preload.gaz;
 const {
   CITY,
   BBOX,
@@ -199,9 +375,12 @@ function elevationAt(lon, lat) {
 }
 
 let demStatus = "synthetic relief field (RELIEF gaussians)";
-try {
-  const demMod = await DEM_LOADERS[CITY_ID]();
-  const grid = demMod.DEM ?? demMod.default;
+// The preload statically imports the checked-in DEM grid when one exists
+// (preload.dem), so boot needs neither top-level await nor a dynamic
+// import() here. DEM_LOADERS stays as the offline module graph the XDC
+// builder collects from.
+if (preload.dem) {
+  const grid = preload.dem.DEM ?? preload.dem.default;
   if (!grid || !installDem(grid)) throw new Error(`${CITY_ID} DEM grid is missing or invalid`);
   const info = demInfo();
   const sourcePixels = info.sourceRasterResolutionMeters == null
@@ -209,8 +388,7 @@ try {
     : `${info.sourceRasterResolutionMeters} m source pixels (not grid spacing)`;
   demStatus = `${info.source} · ${info.nx}×${info.ny} point samples · ${info.sampleSpacing} · ${sourcePixels} · ${info.verticalDatum} · ${info.retrieved}`;
   demDisclosure = info.disclosure;
-} catch (error) {
-  if (CITY.requiresDem) throw new Error(`${CITY.title} requires a bundled, valid USGS DEM grid; refusing synthetic relief`, { cause: error });
+} else {
   /* Cities without a checked-in DEM remain explicitly labelled as synthetic. */
   demDisclosure = "Synthetic RELIEF field; not USGS terrain.";
 }
@@ -220,7 +398,12 @@ if (CITY.requiresDem && !DEM) throw new Error(`${CITY.title} requires a bundled 
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x05080d);
-const FOG = new THREE.Fog(0x05080d, 45, 130);
+// Fog range scales with the frame diagonal so a statewide frame is not
+// fogged out at its far edge; city frames keep the original 45/130 range.
+const [fogX0, fogZ0] = project(BBOX.lon0, BBOX.lat1);
+const [fogX1, fogZ1] = project(BBOX.lon1, BBOX.lat0);
+const frameDiag = Math.hypot(fogX1 - fogX0, fogZ1 - fogZ0);
+const FOG = new THREE.Fog(0x05080d, Math.max(45, frameDiag * 0.55), Math.max(130, frameDiag * 1.9));
 scene.fog = FOG;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
@@ -301,8 +484,15 @@ const sea = new THREE.Mesh(
 );
 if (CITY.hasWater) groups.terrain.add(sea);
 
-if (COAST && COAST.length > 1) {
-  const pts = COAST.map(([lon, lat]) => {
+// COAST is backward-compatible: either one polyline ([[lon, lat], ...]) or
+// several disconnected island polylines ([[[lon, lat], ...], ...]).
+const coastLines = !COAST?.length
+  ? []
+  : Array.isArray(COAST[0]?.[0])
+    ? COAST.filter((line) => Array.isArray(line) && line.length > 1)
+    : [COAST];
+for (const line of coastLines) {
+  const pts = line.map(([lon, lat]) => {
     const [x, z] = project(lon, lat);
     return new THREE.Vector3(x, elevY(Math.max(0, elevationAt(lon, lat))) + 0.05, z);
   });
@@ -983,7 +1173,7 @@ function rebuildDepths() {
 /* ----------------------------------------------------------- detail panel */
 
 const detailBody = $("detailBody");
-const fmtLL = ([lon, lat]) => `${lat.toFixed(3)}°N ${Math.abs(lon).toFixed(3)}°W`;
+const fmtLL = ([lon, lat]) => `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}°${lon >= 0 ? "E" : "W"}`;
 
 function renderDetail(record) {
   if (!record) {
@@ -1100,9 +1290,9 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   const hit = raycaster.intersectObjects([terrain], false)[0];
   if (!hit) return;
   const [lon, lat] = lonLatFromXZ(hit.point.x, hit.point.z);
-  const e = elevationAt(lon, lat);
-  if (hud.lonlat) hud.lonlat.textContent = `${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W`;
-  if (hud.elev) hud.elev.textContent = `${Math.round(e)} m (${Math.round(e * 3.281)} ft)`;
+  const elev = elevationAt(lon, lat);
+  if (hud.lonlat) hud.lonlat.textContent = `${Math.abs(lat).toFixed(3)}${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}${lon >= 0 ? "E" : "W"}`;
+  if (hud.elev) hud.elev.textContent = `${Math.round(elev)} m (${Math.round(elev * 3.281)} ft)`;
 });
 
 /* ------------------------------------------------------------ webxdc wire */
@@ -1211,7 +1401,7 @@ function tick(now) {
   if (hud.cam) hud.cam.textContent = `${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}`;
   if (hud.target) {
     const [lon, lat] = lonLatFromXZ(controls.target.x, controls.target.z);
-    hud.target.textContent = `${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W`;
+    hud.target.textContent = `${Math.abs(lat).toFixed(3)}${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}${lon >= 0 ? "E" : "W"}`;
   }
   renderer.render(scene, camera);
   if (miniRenderer && miniCam) {

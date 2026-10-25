@@ -65,6 +65,16 @@ const POST_MERGE_OPS = [
   "mignotte",
   // 2026-10-21 backlog round 12 (docs/backlog-execution-round-12-2026-10-21.md).
   "polyglotScan",
+  // 2026-10-22 backlog round 13 (docs/backlog-execution-round-13-2026-10-22.md).
+  "arjHeader",
+  "lhaHeader",
+  "aceHeader",
+  "paranoidUnzip",
+  // 2026-10-23 backlog T3.1 (Game Genie family; merged via PR #134).
+  "gameGenieNes",
+  "gameGenieSnes",
+  "gameGenieGb",
+  "gameGenieGenesis",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

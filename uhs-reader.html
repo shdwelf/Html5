@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UHS88a Reader — hints without spoilers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:52rem;padding:0 1rem;line-height:1.5}
+  textarea{width:100%;height:7rem;font-family:ui-monospace,monospace}
+  .section{margin:.4rem 0 .4rem 1.2rem}
+  .q{display:block;margin:.3rem 0;padding:.35rem .7rem;text-align:left}
+  .hints{margin:.2rem 0 .6rem 1.2rem}
+  .hint{background:#fffbe6;border-left:3px solid #d9a400;padding:.25rem .6rem;margin:.25rem 0}
+  #err{color:#b00;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>UHS88a Reader</h1>
+<p>The Universal Hint System (Jason Strautman, 1988) answers the question you pick, one
+hint at a time, so nothing is spoiled early. This reader covers the original
+<strong>UHS88a</strong> format, parsed locally in your browser — no file leaves your machine.
+(91a/96a hunk files are detected and pointed at OpenUHS.) No hint files are bundled;
+bring your own <span style="font-family:ui-monospace,monospace">.uhs</span>, or try the synthetic demo.</p>
+
+<p>
+  <input id="file" type="file" accept=".uhs,.txt">
+  <button id="demo" type="button">Load synthetic demo</button>
+</p>
+<textarea id="src" placeholder="…or paste UHS88a text here, then press Read"></textarea>
+<p><button id="read" type="button">Read</button></p>
+<div id="err"></div>
+<h2 id="title"></h2>
+<div id="tree"></div>
+
+<script type="module">
+import { parseUhs88a, encrypt88a } from "./js/uhs.js";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
+
+function demoText() {
+  const L = ["UHS", "Demo Adventure (synthetic)", "9", "15"];
+  L.push(encrypt88a("The Sunken Shrine"), "5");
+  L.push(encrypt88a("About this demo"), "12");
+  L.push(encrypt88a("How do I open the shrine door"), "9");
+  L.push(encrypt88a("What is the bell for"), "11");
+  L.push(encrypt88a("Look at the carvings by the door."), encrypt88a("Three carvings, three syllables. The bell repeats what you ring."));
+  L.push(encrypt88a("Ring it in the order the carvings suggest: tide, gull, wave."));
+  L.push(encrypt88a("It demonstrates the reader."), encrypt88a("Each question reveals one hint at a time."), encrypt88a("That is the whole UHS idea: help without spoilers."), encrypt88a("Bring a real .uhs file to read genuine hints locally."));
+  return L.join("\r\n") + "\r\n";
+}
+
+function renderItems(items, parent) {
+  for (const item of items) {
+    if (item.type === "section") {
+      const div = document.createElement("div");
+      div.className = "section";
+      div.innerHTML = `<strong>${esc(item.label)}</strong>`;
+      parent.appendChild(div);
+      renderItems(item.items, div);
+    } else {
+      const btn = document.createElement("button");
+      btn.className = "q";
+      btn.textContent = item.label + "?";
+      const box = document.createElement("div");
+      box.className = "hints";
+      let shown = 0;
+      btn.addEventListener("click", () => {
+        if (shown < item.hints.length) {
+          const h = document.createElement("div");
+          h.className = "hint";
+          h.textContent = item.hints[shown++];
+          box.appendChild(h);
+          btn.textContent = shown < item.hints.length ? `${item.label}? — one more hint (${shown}/${item.hints.length})` : `${item.label}? — all ${item.hints.length} hint(s) shown`;
+        }
+      });
+      parent.appendChild(btn);
+      parent.appendChild(box);
+    }
+  }
+}
+
+function read(text) {
+  $("err").textContent = "";
+  $("tree").innerHTML = "";
+  try {
+    const doc = parseUhs88a(text);
+    $("title").textContent = doc.title;
+    renderItems(doc.items, $("tree"));
+  } catch (e) {
+    $("title").textContent = "";
+    $("err").textContent = e.message;
+  }
+}
+
+$("read").addEventListener("click", () => read($("src").value));
+$("demo").addEventListener("click", () => { $("src").value = demoText(); read($("src").value); });
+$("file").addEventListener("change", async () => {
+  const f = $("file").files[0];
+  if (f) read(await f.text());
+});
+</script>
+</body>
+</html>

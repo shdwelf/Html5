@@ -1,0 +1,401 @@
+# COUNTRY1.DAT: 351426 bytes, 787 printable runs >=4
+00000a48  indu Kush
+00000a52  Mountains
+00000a5d  afid
+00000a62  Mountains
+00000a6d  igestan
+00000a75  Desert
+00000a7d  argow Desert
+00000a8b  abul River
+00000a97  elmand River
+00001978  inaric Alps
+00001985  orth
+0000198a  Albanian Alps
+00001999  rin River
+000019a4  ake Ohrid
+000019af  trait of
+000019b8  Otranto
+000019c1  driatic Sea
+0000238b  ell Atlas
+00002395  Mountains
+000023a0  ahara Atlas
+000023ac  Mountains
+000023b7  haggar
+000023be  Plateau
+000023c7  ahara Desert
+000023d5  editerranean
+00002a34  yrenees
+00002a3c  Mountains
+00002a47  ndorra
+00002a4e  Valley
+00002a56  alira River
+00002a63  rinsal River
+00002a71  adriu River
+00003429  abinda
+00003431  ount Moco
+0000343c  ambezi River
+0000344a  uanza River
+00003457  ubango River
+00003465  tlantic
+0000346d  Ocean
+00003a03  ntigua
+00003a0b  arbuda
+00003a13  oggy Peak
+00003a1e  oral Reefs
+00003a2a  edonda
+00003a32  aribbean Sea
+00004e21  he Pampas
+00004e2c  atagonia
+00004e36  ndes
+00004e3b  Mountains
+00004e46  ierra del
+00004e50  Fuego
+00004e57  arana River
+00004e64  trait of
+00004e6d  Magellan
+00004e77  tlantic
+00004e7f  Ocean
+00006efd  reat
+00006f02  Dividing
+00006f0b  Range
+00006f12  reat
+00006f17  Artesian
+00006f20  Basin
+00006f27  reat
+00006f2c  Victoria
+00006f35  Desert
+00006f3d  reat Sandy
+00006f48  Desert
+00006f50  asmania
+00006f59  reat Barrier
+00006f66  Reef
+00006f6c  ulf of
+00006f73  Carpentaria
+00006f80  ndian Ocean
+00007c6e  he Alps
+00007c77  anube River
+00007c84  renner Pass
+00007c91  eusiedler
+00007c9b  Lake
+00007ca5  Constance
+00008baf  ndros Island
+00008bc0  Providence
+00008bcb  Island
+00008bd3  rand Bahama
+00008bdf  Island
+00008be7  reat Abaco
+00008bf2  Island
+00008bfa  reat Inagua
+00008c06  Island
+00008c0e  tlantic
+00008c16  Ocean
+00009010  l-Bahrayn
+0000901a  Island
+00009022  l-Muharraq
+0000902d  Island
+00009035  mm Nassan
+0000903f  Island
+00009047  ulf of
+0000904e  Bahrain
+00009057  ersian Gulf
+00009beb  anges River
+00009bf8  amuna
+00009bfe  (Brahmaputra)
+00009c0c  River
+00009c13  hittagong
+00009c1d  Hills
+00009c24  eghne River
+00009c31  ay of Bengal
+00009fc6  ount Hillaby
+00009fd4  ruce Vale
+00009fdf  onstitution
+00009feb  River
+00009ff2  arlisle Bay
+00009fff  tlantic
+0000a007  Ocean
+0000ab0f  chelde River
+0000ab1d  landers
+0000ab25  Plain
+0000ab2c  ambre-Meuse
+0000ab38  River
+0000ab3f  rdennes
+0000ab48  orth Sea
+0000b65d  Mountains
+0000b668  elize River
+0000b675  ew River
+0000b67f  urneffe
+0000b687  Islands
+0000b690  hetumal Bay
+0000b69d  ulf of
+0000b6a4  Honduras
+0000b6ae  aribbean Sea
+0000bc39  iger River
+0000bc45  takora
+0000bc4c  Mountains
+0000bc57  ekrou River
+0000bc64  ueme River
+0000bc70  ulf of
+0000bc77  Guinea
+0000c3c4  reat Bermuda
+0000c3d1  Island
+0000c3d9  omerset
+0000c3e1  Island
+0000c3e9  t. Georges
+0000c3f4  Island
+0000c3fc  t. Davids
+0000c406  Island
+0000c40e  reat Sound
+0000c41a  astle Harbor
+0000c428  tlantic
+0000c430  Ocean
+0000ca9e  reater
+0000caa5  Himalayan
+0000caaf  Mountains
+0000caba  nner
+0000cabf  Himalayan
+0000cac9  Mountains
+0000cad4  uars Plain
+0000cae0  ankosh River
+0000caee  anas River
+0000d767  ndes
+0000d76c  Mountains
+0000d777  ltiplano
+0000d780  Plateau
+0000d789  ake Titicaca
+0000d797  eni Plain
+0000d7a1  (Northern
+0000d7ab  Llanos)
+0000d7b4  haco Plain
+0000d7bf  (Southern
+0000d7c9  Llanos)
+0000d7d2  ake Poopo
+0000d7dd  amore River
+0000d7ea  eni River
+0000dd5e  alahari
+0000dd66  Desert
+0000dd6e  kavango
+0000dd76  Swamp
+0000dd7d  akgadikgadi
+0000dd89  Salt Pan
+0000dd93  otletle
+0000dd9b  River
+0000dda2  impopo River
+00010219  mazon River
+00010226  mazon
+0001022c  Rainforest
+00010238  io Parana
+00010243  guazu Falls
+00010250  io Negro
+0001025a  razilian
+00010263  Highlands
+0001026e  ato Grasso
+00010279  Plateau
+00010282  uiana
+00010288  Highlands
+00010e7a  elait River
+00010e87  utong River
+00010e94  emburong
+00010e9d  River
+00010ea4  runei Bay
+00010eaf  outh China
+00011c6e  alkan
+00011c74  Mountains
+00011c7f  hodope
+00011c86  Mountains
+00011c91  anube River
+00011c9e  aritsa River
+00011cac  lack Sea
+00012229  lack Volta
+00012234  River
+0001223b  hite Volta
+00012246  River
+0001224d  ed Volta
+00012256  River
+00013434  rrawaddy
+0001343d  River
+00013444  hin Hills
+0001344f  han Plateau
+0001345c  ay of Bengal
+0001346a  ndaman Sea
+00013d23  Tanganyika
+00013d2f  usizi River
+00013d3c  alagarasi
+00013d46  River
+00013d4d  uvubu River
+00013d5a  ake Rugwero
+00014e58  ekong River
+00014e65  onle Sap
+00014e6e  Lake
+00014e74  ardamomes
+00014e7e  Mountains
+00014e89  lephant
+00014e91  Range
+00014e97  Mountains
+00014ea2  ulf of
+00014ea9  Thailand
+00015b4c  ake Chad
+00015b56  ount
+00015b5b  Cameroon
+00015b65  anaga River
+00015b72  damaoua
+00015b7a  Plateau
+00015b83  bakou
+00015b89  Reservoir
+00015b94  ulf of
+00015b9b  Guinea
+000190ca  t. Lawrence
+000190d6  Seaway
+000190dd  (Great Lakes)
+000190ec  udson Bay
+000190f7  entral
+000190fe  Plains
+00019106  ocky
+0001910b  Mountains /
+00019117  Pacific
+0001911f  Coast Ranges
+0001912d  orthwest
+00019136  Territories
+00019142  (Arctic
+0001914a  Islands)
+00019154  ake Winnipeg
+00019162  ancouver
+0001916b  Island
+00019173  ewfoundland
+0001996b  ao Tiago
+00019974  Island
+0001997c  oa Vista
+00019985  Island
+0001998d  al Island
+00019998  ao Nicolau
+000199a3  Island
+000199ab  anto Antao
+000199b6  Island
+000199be  tlantic
+000199c6  Ocean
+0001a360  bangi River
+0001a36d  omu River
+0001a378  otto River
+0001a384  obaye River
+0001a391  ongos
+0001a397  Mountains
+0001abe3  ake Chad
+0001abed  hari River
+0001abf9  ogone River
+0001ac06  odele
+0001ac0c  Depression
+0001ac18  ibesti
+0001ac1f  Mountains
+0001bf3f  ndes
+0001bf44  Mountains
+0001bf4f  entral
+0001bf56  Valley
+0001bf5e  tacama
+0001bf65  Desert
+0001bf6d  trait of
+0001bf76  Magellan
+0001bf80  ierra del
+0001bf8a  Fuego
+0001bf91  acific Ocean
+0001d70a  angtze River
+0001d718  uang Ho
+0001d720  (Yellow)
+0001d729  River
+0001d730  reat Wall
+0001d73b  anchurian
+0001d745  Plain
+0001d74c  ibetan
+0001d753  Plateau
+0001d75b  (Himalayan
+0001d766  Mountains)
+0001d772  ellow Sea
+0001d77d  ast China
+0001d78c  outh China
+0001e975  ndes
+0001e97a  Mountains
+0001e985  agdalena
+0001e98e  River
+0001e995  lanos Plains
+0001e9a3  aribbean Sea
+0001e9b1  acific Ocean
+0001f6e4  rande Comore
+0001f6f1  Island
+0001f6f9  njouan
+0001f700  Island
+0001f708  oheli Island
+0001f716  ayotte
+0001f71d  Island
+0001f725  ndian Ocean
+0001ff17  ongo River
+0001ff23  iari River
+0001ff2f  ayombe
+0001ff36  Highlands
+0001ff41  bangi River
+0001ff4e  ango River
+0001ff5a  tlantic
+0001ff62  Ocean
+00020aba  alamanca
+00020ac3  Cordillera
+00020ace  Mountains
+00020ad9  uancaste
+00020ae2  Cordillera
+00020aed  Mountains
+00020af8  an Juan
+00020b00  River
+00020b07  aribbean Sea
+00020b15  acific Ocean
+00021aae  andama River
+00021abc  omoe River
+00021ac8  assandra
+00021ad1  River
+00021ad8  avally River
+00021ae6  ulf of
+00021aed  Guinea
+000227a0  ierra del
+000227aa  los Organos
+000227b6  Mountains
+000227c1  ierra de
+000227ca  Trinidad
+000227d3  Mountains
+000227de  ierra
+000227e4  Maestra
+000227ec  Mountains
+000227f7  sla de la
+00022801  Juventud
+0002280b  ay of Pigs
+00022817  aribbean Sea
+00022825  tlantic
+0002282d  Ocean
+00022fab  yrenia
+00022fb2  Mountains
+00022fbd  esaoria
+00022fc5  Plain
+00022fcc  roodos
+00022fd3  Mountains
+00022fde  arpas
+00022fe4  Peninsula
+00022fef  editerranean
+00023e6e  udeten
+00023e75  Mountains
+00023e80  arpathian
+00023e8a  Mountains
+00023e95  ohemian
+00023e9d  Forest
+00023ea5  abe (Elbe)
+00023eb0  River
+00023eb7  anube River
+000262c3  utland
+000262cb  ealand
+000262d3  yn Island
+000262de  ornholm
+000262e7  reenland
+000262f1  attegat Sea
+000262fe  kagerrak Sea
+0002630c  orth Sea
+000269c3  ake Abbe
+000269cd  ake Assal
+000269d8  ab el-Mandeb
+000269e5  Strait
+000269ed  ulf of
+000269f4  Tadjoura
+000269fe  ulf of Aden
+000270d4  orne

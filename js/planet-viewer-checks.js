@@ -14,6 +14,8 @@ import { GAZ_ROWS as law } from "./city-gazetteer-data-lawrence.js";
 import { GAZ_ROWS as tor } from "./city-gazetteer-data-toronto.js";
 import { demToVrml } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER, bboxKm } from "./planet-viewer-data.js";
+import { COUNTRIES } from "./country-data.js";
+import { globeMarkers, projectOrthographic } from "./planet-globe.js";
 
 const RHO = 1;
 const ALL_GAZ_ROWS = [...atl, ...buf, ...ksc, ...law, ...tor];
@@ -172,6 +174,32 @@ export function runChecks(plates = buildPlates(96, 72)) {
     expected: "grid max/min within the control envelope",
     actual: `grid ${chey.min.toFixed(0)}–${chey.max.toFixed(0)} m from ${control} control points; grain between them is disclosed texture`,
     ok: Number.isFinite(chey.min) && Number.isFinite(chey.max) && chey.max > chey.min,
+  });
+
+  /* · the globe plate (S4 tail): Red October projection + capital markers --- */
+  const { markers, skipped } = globeMarkers(COUNTRIES);
+  const allFinite = markers.every((m) => Number.isFinite(m.lat) && Number.isFinite(m.lon));
+  out.push({
+    id: "globe/markers",
+    plate: null,
+    label: "Globe: every Factbook capital with coordinates becomes a marker",
+    kind: "consistency",
+    tier: "official",
+    expected: "markers + skipped = 233 profiles, all finite",
+    actual: `${markers.length} markers, ${skipped} skipped (no capital coordinates)`,
+    ok: markers.length + skipped === COUNTRIES.length && markers.length >= 230 && allFinite,
+  });
+  const centre = projectOrthographic(20, 10, 20, 10);
+  const antipode = projectOrthographic(-20, 190, 20, 10);
+  out.push({
+    id: "globe/projection",
+    plate: null,
+    label: "Globe: Red October orthographic projection centres and hides correctly",
+    kind: "closure",
+    tier: "context",
+    expected: "centre visible at disc centre, antipode hidden",
+    actual: `centre z=${centre.z.toFixed(3)} visible=${centre.visible}; antipode visible=${antipode.visible}`,
+    ok: centre.visible && Math.abs(centre.z - 1) < 1e-9 && !antipode.visible,
   });
 
   void RHO;

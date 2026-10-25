@@ -48,13 +48,25 @@ test('polyglot_scan: unknown bytes classify as unknown', () => {
   assert.equal(r.matches.length, 0);
 });
 
-test('polyglot_scan: export surface is stable', () => {
+test('polyglot_scan: export surface is stable (incl. round-14 MIME labels)', () => {
   assert.ok(Array.isArray(SIGS) && SIGS.length >= 15);
   for (const s of SIGS) {
     assert.equal(typeof s.id, 'string');
     assert.ok(Array.isArray(s.magic) && s.magic.length >= 2);
     assert.equal(typeof s.anywhere, 'boolean');
+    assert.match(s.mime, /^(image|application)\/[\w.+-]+$/, `${s.id} carries an IANA-style MIME label`);
   }
+});
+
+test('polyglot_scan: matches carry the MIME label of their signature', () => {
+  const gifar = scanBuffer(Buffer.concat([S('GIF89a....'), S('PK\x03\x04jarbytes')]));
+  assert.equal(gifar.matches.find((m) => m.id === 'gif89').mime, 'image/gif');
+  assert.equal(gifar.matches.find((m) => m.id === 'zip').mime, 'application/zip');
+  const png = scanBuffer(Buffer.concat([S('\x89PNG\r\n\x1a\n'), S('x')]));
+  assert.equal(png.matches[0].mime, 'image/png');
+  const sfx = scanBuffer(Buffer.concat([S('MZ\x90\x00stub'), S('\x60\xea')]));
+  assert.equal(sfx.matches.find((m) => m.id === 'mz').mime, 'application/x-msdownload');
+  assert.equal(sfx.matches.find((m) => m.id === 'arj').mime, 'application/x-arj');
 });
 
 test('polyglot_scan: PDF + ZIP EOCD non-overlap reports both', () => {

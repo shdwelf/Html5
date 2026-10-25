@@ -21,6 +21,8 @@ import { GAZ_CLASSES as DEFAULT_CLASSES, GAZ_ROWS as DEFAULT_ROWS } from "./city
 /** UI metadata per GNIS FEATURE_CLASS (label, marker swatch, facet branch). */
 export const GAZ_CLASS_META = {
   Range: { label: "Ranges", short: "RNG", swatch: "#ffb020" },
+  Ridge: { label: "Ridges", short: "RDG", swatch: "#ffb45e" },
+  Ridge: { label: "Ridges", short: "RDG", swatch: "#ffb45e" },
   Summit: { label: "Summits", short: "PK", swatch: "#ffc55c" },
   Valley: { label: "Valleys", short: "VLY", swatch: "#7fd8a0" },
   Flat: { label: "Flats", short: "FLT", swatch: "#7fd8a0" },
@@ -32,6 +34,8 @@ export const GAZ_CLASS_META = {
   Reservoir: { label: "Reservoirs", short: "RSV", swatch: "#4c7fd6" },
   Spring: { label: "Springs", short: "SPR", swatch: "#54e0c7" },
   Stream: { label: "Streams", short: "STM", swatch: "#9db2e8" },
+  Swamp: { label: "Swamps / marshes", short: "SWP", swatch: "#54e0c7" },
+  Dam: { label: "Dams", short: "DAM", swatch: "#4c7fd6" },
   Mine: { label: "Mines", short: "MNE", swatch: "#e0876c" },
   Oilfield: { label: "Oil fields", short: "OIL", swatch: "#c7894f" },
   Tunnel: { label: "Tunnels", short: "TUN", swatch: "#b9a08e" },
@@ -43,6 +47,9 @@ export const GAZ_CLASS_META = {
   Locale: { label: "Locales", short: "LCL", swatch: "#b8c4d6" },
   Canal: { label: "Canals", short: "CNL", swatch: "#56c8f5" },
   Cape: { label: "Capes", short: "CPE", swatch: "#eab68b" },
+  Bay: { label: "Bays / harbors", short: "BAY", swatch: "#38bdf8" },
+  Island: { label: "Islands", short: "ISL", swatch: "#86efac" },
+  Civil: { label: "Civil divisions", short: "CIV", swatch: "#f0c674" },
   Census: { label: "Census/CDPs", short: "CDP", swatch: "#f0e6c8" },
   Military: { label: "Military", short: "MIL", swatch: "#9fb6a3" },
   "Populated Place": { label: "Populated places", short: "PPL", swatch: "#f8fafc" },

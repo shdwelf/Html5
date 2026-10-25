@@ -57,8 +57,8 @@ test("registry boots with polyglotScan and the spotlight pack", () => {
 test("polyglotScan: GIF + ZIP hex input classifies parasite-or-stack", async () => {
   const out = text(await opRun(dom, "polyglotScan", "47 49 46 38 39 61 50 4b 03 04", {}));
   assert.match(out, /parasite-or-stack/);
-  assert.match(out, /GIF89a/);
-  assert.match(out, /ZIP local file/);
+  assert.match(out, /GIF89a \(image\/gif\)/);
+  assert.match(out, /ZIP local file \(application\/zip\)/);
 });
 
 test("polyglotScan: doubled JPEG marker overlaps = chimera-candidate", async () => {

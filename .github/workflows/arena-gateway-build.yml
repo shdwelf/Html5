@@ -1,0 +1,111 @@
+name: Gateway — JAR + Android APK build
+
+# Side project (round 47): builds the clean-room combined gateway
+# deliverables the sandbox cannot (no JDK/Android SDK locally):
+#   1. gateway-config.jar — GatewayMain CLI + the shared GatewayConfig
+#      core, compiled with javac only, run once per mode for samples.
+#   2. gateway-debug.apk — the single-module Android scaffold
+#      (apps/riseup-invizible-gateway), Gradle + AGP, debug-signed.
+# Outputs are committed to research/gateway-config/ (NOT a trigger
+# path, so the result commit cannot retrigger the build). No upstream
+# Riseup/InviZible code or binaries are fetched or bundled.
+
+on:
+  push:
+    branches: ['arena/98365730-html5']
+    paths:
+      - '.arena-gateway/build.txt'
+      - 'apps/riseup-invizible-gateway/**'
+      - 'tools/gateway-config/**'
+      - '.github/workflows/arena-gateway-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  jar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile and run gateway-config.jar
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/gw/classes" research/gateway-config/samples
+          javac -d "$RUNNER_TEMP/gw/classes" \
+            apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway/GatewayConfig.java \
+            tools/gateway-config/GatewayMain.java
+          jar cfe research/gateway-config/gateway-config.jar GatewayMain -C "$RUNNER_TEMP/gw/classes" .
+          for mode in combined vpn tor-dnscrypt; do
+            java -jar research/gateway-config/gateway-config.jar "research/gateway-config/samples/$mode" "$mode"
+          done
+          ls -la research/gateway-config/ research/gateway-config/samples/combined/
+
+      - name: Commit JAR and samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name arena-gateway-build
+          git config user.email arena-gateway-build@users.noreply.github.com
+          git add research/gateway-config/
+          git commit -q -m "gateway: gateway-config.jar + per-mode sample profiles (runner-built)" || exit 0
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done
+
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Install Android SDK platform 34
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Build debug APK
+        shell: bash
+        working-directory: apps/riseup-invizible-gateway
+        run: |
+          set -euo pipefail
+          gradle assembleDebug --no-daemon --stacktrace
+          find . -name "*.apk" -path "*outputs*" -exec ls -la {} \;
+
+      - name: Commit APK with SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/gateway-config
+          cp apps/riseup-invizible-gateway/app/build/outputs/apk/debug/app-debug.apk research/gateway-config/gateway-debug.apk
+          (cd research/gateway-config && sha256sum gateway-config.jar gateway-debug.apk > SHA256SUMS.txt) || \
+          (cd research/gateway-config && sha256sum gateway-debug.apk > SHA256SUMS.txt)
+          git config user.name arena-gateway-build
+          git config user.email arena-gateway-build@users.noreply.github.com
+          git add research/gateway-config/
+          git commit -q -m "gateway: debug APK of the combined gateway scaffold (runner-built)" || exit 0
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done

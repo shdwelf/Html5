@@ -1,0 +1,88 @@
+{
+  "format": "tscm-inspection-checklist-v1",
+  "source": {
+    "firm": "Granite Island Group (Gloucester, MA; founded 1987; president/senior engineer James M. Atkinson)",
+    "expansion": "TSCM = Technical Surveillance Counter Measures (the firm's own expansion of the acronym)",
+    "pages": [
+      { "title": "Technical Surveillance Threat Levels and Defensive Countermeasures", "url": "http://www.tscm.com/threatlvls.html" },
+      { "title": "Sequence of Events for a TSCM Inspection", "url": "http://www.tscm.com/TSCMSequence.html" },
+      { "title": "Mission and Purpose Statement", "url": "http://www.tscm.com/mission.html" },
+      { "title": "Background and Qualifications - James M. Atkinson", "url": "http://www.tscm.com/biojma.html" }
+    ],
+    "retrieved": "2026-10-23",
+    "note": "Paraphrased distillation of Granite Island Group's published defensive doctrine, for defensive inspection planning only. Nothing here describes how to build, place, or operate an eavesdropping device; the source pages' offensive-detail material is deliberately not reproduced."
+  },
+  "principles": [
+    "Secure contact first: never discuss a suspected compromise over a suspect phone, cordless, or cellular link; meet away from the suspect facility.",
+    "Escalate silently: passive, non-alerting inspection phases precede any activity that could alert an eavesdropper; each phase only runs if the threat model justifies its cost.",
+    "Detection difficulty rises roughly an order of magnitude per threat level (Granite's levels 1-9), so the inspection level must be matched to the adversary class, not to budget habit.",
+    "An inspection always covers the full emanations picture: RF from 20 Hz to above 110 GHz, light spectra 250 nm to 1750 nm, all wiring (AC, telecom, LAN, HVAC, alarm), imaging equipment, and phone lines verified back to the central office.",
+    "If a device is found: stop, document, preserve forensically, and notify law enforcement where appropriate - do not simply remove and discard the evidence."
+  ],
+  "threatClusters": [
+    {
+      "id": "consumer",
+      "graniteLevels": "1",
+      "actors": "Spouses, curious amateurs; consumer toys and gadgets not designed for eavesdropping (wireless mics, intercoms, baby monitors, Wavecom transmitters)",
+      "profile": "Mostly below 1 GHz (49 MHz, 88-108, 143, 171, 470, 900-925 MHz), under 50 mW, AM/NFM/WFM, high harmonic content; infrared clustered near 900 nm",
+      "detectedAtPhases": [5],
+      "kitBenchmarkUsd": "under $1,500 (digital multimeter, handheld/near-field RF detectors)"
+    },
+    {
+      "id": "amateur-professional",
+      "graniteLevels": "2 and upward",
+      "actors": "Private investigators, spy shops, advanced amateurs; quasi-consumer broadcast/ham/maritime gear misused for surveillance",
+      "profile": "Broadcast UHF/VHF wireless microphones, industrial wireless video, 2.4 GHz ISM spread spectrum; phone-line devices still betray parasitic power draw on a meter test",
+      "detectedAtPhases": [5, 6],
+      "kitBenchmarkUsd": "field detectors plus communications/search receivers"
+    },
+    {
+      "id": "law-enforcement-professional",
+      "graniteLevels": "middle levels",
+      "actors": "Law-enforcement and professional eavesdroppers; the typical threat for corporate offices",
+      "profile": "Devices engineered for surveillance: conducted (carrier-current/VLF on wiring), PBX and voicemail compromises, laser and infrared optical paths",
+      "detectedAtPhases": [7, 8],
+      "kitBenchmarkUsd": "spectrum analysis to 40 GHz-class, telephone analyser, time-domain reflectometer"
+    },
+    {
+      "id": "government-intelligence",
+      "graniteLevels": "highest levels (to 10)",
+      "actors": "Diplomatic, intelligence, and state-level adversaries; defence contractors, aerospace, law firms at the top of the risk scale",
+      "profile": "Long-term, high-risk technical surveillance designed to defeat inspection; burst, hopping, and stored-and-forward exfiltration",
+      "detectedAtPhases": [9, 10],
+      "kitBenchmarkUsd": "at least $750,000 in TSCM equipment at the top level (spectrum/vector analysers DC-40 GHz, NLJD, portable X-ray, TDR)"
+    },
+    {
+      "id": "emerging-and-fantasy",
+      "graniteLevels": "fourth grouping",
+      "actors": "Emerging technologies - and claimed threats based on misunderstanding or fantasy, which Granite explicitly separates from real levels",
+      "profile": "Assess against physics first; a large share of reported 'impossible' surveillance resolves to ordinary emanations or error",
+      "detectedAtPhases": [4],
+      "kitBenchmarkUsd": "threat-model review before any instrument is unpacked"
+    }
+  ],
+  "phases": [
+    { "n": 1, "title": "Client initiates secure contact", "alerting": "procedural", "checks": ["Contact made away from the suspect facility, never over a suspect telephone/cordless/cellular link", "Background materials on the facility sent to the TSCM firm", "Secure face-to-face meeting arranged if requested"] },
+    { "n": 2, "title": "Initial meeting and commissioning", "alerting": "procedural", "checks": ["Sterile meeting location away from the facility", "Client concerns and vulnerabilities discussed", "Plan agreed in advance for the event a device or hazard is found", "Services commissioned if appropriate"] },
+    { "n": 3, "title": "Pre-inspection survey and reconnaissance", "alerting": "passive", "checks": ["Facility blueprints reviewed", "External RF survey (9 kHz to 26.5/40 GHz)", "Facility exterior reconnaissance"] },
+    { "n": 4, "title": "Vulnerability analysis", "alerting": "passive", "checks": ["Threat assessment and threat model developed", "Physical and electronic security assessments", "Internal RF survey", "Communications systems and facilities audited", "Sensitive areas, intercept locations, and probable listening posts identified", "Structural elements (walls, ceilings, floors) evaluated; furnishings inventoried"] },
+    { "n": 5, "title": "Silent / passive walk-through", "alerting": "passive", "checks": ["Non-alerting activity only - nothing to tip off an eavesdropper", "Automated bug and wireless-microphone detection (9 kHz to 3 GHz)", "Initial VLF inspection of AC, telecom, LAN, and HVAC wiring", "Infrared/laser, video camera, recorder, and ultrasonic detection", "Catches most PI, spy-shop, and amateur devices (~4 h for a brief walk-through)"] },
+    { "n": 6, "title": "Passive RF and light spectrum monitoring", "alerting": "passive", "checks": ["Full passive RF spectrum sweep (20 Hz to above 110 GHz)", "Full passive light spectrum sweep (300 nm to 1710 nm)", "Ambient cover maintained (music, normal phone use, drapes pulled)", "Catches advanced amateur devices"] },
+    { "n": 7, "title": "Active inspection - non-alerting", "alerting": "active-non-alerting", "checks": ["VLF/RF checks on AC mains at outlets, switches, fixtures; HVAC, alarm, fire sensors", "All phone lines evaluated and traced back to the central office", "Telephone sets, PBX (hardware and software), and voicemail checked for modification", "Computer, LAN, printer, and imaging-device inspection", "Forensic light sweeps (UV under 400 nm, IR above 700 nm, tuned sources 250-1750 nm)", "Oblique-light and wallplate/baseboard inspection", "Catches law-enforcement and professional devices; typical corporate threat level"] },
+    { "n": 8, "title": "Active scan - alerting", "alerting": "active-alerting", "checks": ["Chirp detection of hidden microphones and transducers", "IR/audio/ultrasonic countermeasure jamming as required; device rendered temporarily inoperative", "Furnishings, ceilings, walls, and HVAC ducts opened and inspected", "Thermal and acoustical-leakage inspection", "Borescope inspection of wallplates and electrical boxes", "Catches professional devices; typical for Fortune 500 offices and law firms"] },
+    { "n": 9, "title": "Active scan - alerting / evaluation", "alerting": "active-alerting", "checks": ["TDR/FEXT/NEXT verification and tracing of every conductor class (telephone, LAN, CCTV, AC mains, HVAC, alarm, fire)", "PBX/ESS translations and voicemail evaluated", "Copier and fax inspection; PBX/alarm/HVAC security verified", "Wall, floor, and ceiling cavity inspection - every cubic centimetre", "Catches diplomatic, law-enforcement, and intelligence devices; typical for attorneys, defence contractors, aerospace"] },
+    { "n": 10, "title": "Special inspection activities (as needed)", "alerting": "active-alerting", "checks": ["Non-linear junction detector (NLJD) inspection, active and passive - finds electronics whether or not they transmit", "X-ray, radiographic, and fluoroscope inspection", "Magnetic anomaly inspection"] },
+    { "n": 11, "title": "Preventive actions (special request only)", "alerting": "preventive", "checks": ["Cavities, wallplates, and artifacts sealed and dusted for tamper evidence", "Acoustic, ultrasonic, IR, and RF countermeasure 'cloaks' installed as needed", "In-place monitoring (IPM) alarms installed", "Encryption devices, high-security locks, doors, and hinges installed", "Client education and training"] },
+    { "n": 12, "title": "Post-inspection activities", "alerting": "procedural", "checks": ["Verbal presentation of findings before leaving the site", "Hard-copy report if requested", "Corrective and follow-up actions agreed", "Recurring TSCM service scheduled if the threat model warrants it"] },
+    { "n": 13, "title": "If an eavesdropping device or activity is detected", "alerting": "response", "checks": ["Document the device or activity in place - collection before disturbance", "Notify law-enforcement agencies if appropriate", "Forensic identification and analysis of the device", "Counter-surveillance and counter-intelligence follow-up"] }
+  ],
+  "generalParameters": [
+    "Analysis of all RF/electromagnetic emanations from 20 Hz to above 110 GHz",
+    "Active and passive light spectra examined from 250 nm to 1750 nm",
+    "All outlets, switches, and lighting inspected for VLF/RF devices",
+    "All PBX, LAN, WAN connections and equipment inspected; computers audited for security anomalies",
+    "All copier, fax, and imaging equipment inspected; fibre-optic connections and cabling inspected",
+    "All phone lines inspected and verified back to the central office",
+    "All locks, safes, and physical security devices evaluated"
+  ]
+}

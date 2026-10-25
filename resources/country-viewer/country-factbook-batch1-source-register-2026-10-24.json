@@ -1,0 +1,689 @@
+{
+  "generated": "2026-10-24",
+  "title": "Country thread batch C1: PC-Globe-style country viewer Factbook source register",
+  "scope": "Seed register for the country viewer (docs/agent-backlog-2026-10-21.md stream S4: 'PC-Globe-style country viewer with CIA Factbook notes'). Fields are extracted verbatim from the CIA World Factbook as mirrored by factbook/factbook.json at a pinned upstream commit; every seeded file carries its SHA-256 so the extraction is re-verifiable. This is a starter set (25 countries), not full Factbook coverage; the raw upstream files are not committed.",
+  "upstream": {
+    "repo": "https://github.com/factbook/factbook.json",
+    "commit": "144d6977b2b01ac1cbd220de754c0a005616760b",
+    "license": "CC0 1.0 Universal (mirror); CIA World Factbook content is public domain.",
+    "fetched": "2026-10-24",
+    "fetcher": "tools/fetch_factbook_countries.py"
+  },
+  "countries": [
+    {
+      "code": "us",
+      "factbookPath": "north-america/us.json",
+      "fileSha256": "5cea8e0d12f88d14c9d8e4f8c6a7039216cb3d146eb2824fda935788b1fa76f4",
+      "name": "United States",
+      "capital": {
+        "name": "Washington, D.C.",
+        "coords": [
+          38.8833,
+          -77.0333
+        ]
+      },
+      "coords": [
+        38.0,
+        -97.0
+      ],
+      "areaTotalSqKm": 9833517,
+      "population": 338016259,
+      "populationText": "338,016,259 (2025 est.)",
+      "languages": "English only (official) 78.2%, Spanish 13.4%, Chinese 1.1%, other 7.3% (2017 est.)",
+      "governmentType": "constitutional federal republic",
+      "anthem": {
+        "title": "\"The Star-Spangled Banner\"",
+        "lyricsMusic": "Francis Scott KEY/John Stafford SMITH"
+      },
+      "location": "North America, bordering both the North Atlantic Ocean and the North Pacific Ocean, between Canada and Mexico"
+    },
+    {
+      "code": "ca",
+      "factbookPath": "north-america/ca.json",
+      "fileSha256": "59b01d0e322ac802fa002b2c1f620745d2154629603fac4c20f926bfc00bdd53",
+      "name": "Canada",
+      "capital": {
+        "name": "Ottawa",
+        "coords": [
+          45.4167,
+          -75.7
+        ]
+      },
+      "coords": [
+        60.0,
+        -95.0
+      ],
+      "areaTotalSqKm": 9984670,
+      "population": 39187155,
+      "populationText": "39,187,155 (2025 est.)",
+      "languages": "English (official) 87.1%, French (official) 29.1%, Chinese languages 4.2%, Spanish 3.2%, Punjabi 2.6%, Arabic 2.4%, Tagalog 2.3%, Italian 1.5% (2022 est.)",
+      "governmentType": "federal parliamentary democracy (Parliament of Canada) under a constitutional monarchy; a Commonwealth realm; federal and state authorities and responsibilities regulated in constitution",
+      "anthem": {
+        "title": "\"God Save the King\"",
+        "lyricsMusic": "unknown"
+      },
+      "location": "Northern North America, bordering the North Atlantic Ocean on the east, North Pacific Ocean on the west, and the Arctic Ocean on the north, north of the conterminous US"
+    },
+    {
+      "code": "mx",
+      "factbookPath": "north-america/mx.json",
+      "fileSha256": "ba055c408b5bba549ac958a4c68f417429b3062e8a10ebcd32753b17fb5cee24",
+      "name": "Mexico",
+      "capital": {
+        "name": "Mexico City (Ciudad de Mexico)",
+        "coords": [
+          19.4333,
+          -99.1333
+        ]
+      },
+      "coords": [
+        23.0,
+        -102.0
+      ],
+      "areaTotalSqKm": 1964375,
+      "population": 130739927,
+      "populationText": "130,739,927 (2024 est.)",
+      "languages": "Spanish only 93.8%, Spanish and indigenous languages (including Mayan, Nahuatl, and others) 5.4%, indigenous only 0.6%, unspecified 0.2% (2020 est.)",
+      "governmentType": "federal presidential republic",
+      "anthem": {
+        "title": "\"Himno Nacional Mexicano\" (National Anthem of Mexico)",
+        "lyricsMusic": "Francisco Gonzalez BOCANEGRA/Jaime Nuno ROCA"
+      },
+      "location": "North America, bordering the Caribbean Sea and the Gulf of America, between Belize and the United States and bordering the North Pacific Ocean, between Guatemala and the United States"
+    },
+    {
+      "code": "gt",
+      "factbookPath": "central-america-n-caribbean/gt.json",
+      "fileSha256": "d12d0fcaef02c3dff1de3e5e1b424c6e521ffa627bc3413322fcc00cb7fcc2f9",
+      "name": "Guatemala",
+      "capital": {
+        "name": "Guatemala City",
+        "coords": [
+          14.6167,
+          -90.5167
+        ]
+      },
+      "coords": [
+        15.5,
+        -90.25
+      ],
+      "areaTotalSqKm": 108889,
+      "population": 18255216,
+      "populationText": "18,255,216 (2024 est.)",
+      "languages": "Spanish (official) 69.9%, Maya languages 29.7% (Q'eqchi' 8.3%, K'iche 7.8%, Mam 4.4%, Kaqchikel 3%, Q'anjob'al 1.2%, Poqomchi' 1%, other 4%), other 0.4% (includes Xinca and Garifuna) (2018 est.)",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Himno Nacional de Guatemala\" (National Anthem of Guatemala)",
+        "lyricsMusic": "Jose Joaquin PALMA/Rafael Alvarez OVALLE"
+      },
+      "location": "Central America, bordering the North Pacific Ocean, between El Salvador and Mexico, and bordering the Gulf of Honduras (Caribbean Sea) between Honduras and Belize"
+    },
+    {
+      "code": "br",
+      "factbookPath": "south-america/br.json",
+      "fileSha256": "e9ec91597184c938cc4a325a146e31570bec58d74101effd5cec6b0a4d43de1b",
+      "name": "Brazil",
+      "capital": {
+        "name": "Brasília",
+        "coords": [
+          -15.7833,
+          -47.9167
+        ]
+      },
+      "coords": [
+        -10.0,
+        -55.0
+      ],
+      "areaTotalSqKm": 8515770,
+      "population": 221359387,
+      "populationText": "221,359,387 (2025 est.)",
+      "languages": "Portuguese (official and most widely spoken language); less common languages include Spanish (border areas and schools), German, Italian, Japanese, English, and many minor Amerindian languages",
+      "governmentType": "federal presidential republic",
+      "anthem": {
+        "title": "\"Hino Nacional Brasileiro\" (Brazilian National Anthem)",
+        "lyricsMusic": "Joaquim Osorio Duque ESTRADA/Francisco Manoel DA SILVA"
+      },
+      "location": "Eastern South America, bordering the Atlantic Ocean"
+    },
+    {
+      "code": "ar",
+      "factbookPath": "south-america/ar.json",
+      "fileSha256": "9e960f01e7e612ca18395fcbb99bfe75feec59132638e274a30244def526dcfe",
+      "name": "Argentina",
+      "capital": {
+        "name": "Buenos Aires",
+        "coords": [
+          -34.6,
+          -58.3667
+        ]
+      },
+      "coords": [
+        -34.0,
+        -64.0
+      ],
+      "areaTotalSqKm": 2780400,
+      "population": 45418098,
+      "populationText": "45,418,098 (2025 est.)",
+      "languages": "Spanish (official), Italian, English, German, French, indigenous (Quechua, Guarani, Mapudungun)",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Himno Nacional Argentino\" (Argentine National Anthem)",
+        "lyricsMusic": "Vicente LOPEZ y PLANES/Jose Blas PARERA"
+      },
+      "location": "Southern South America, bordering the South Atlantic Ocean, between Chile and Uruguay"
+    },
+    {
+      "code": "uk",
+      "factbookPath": "europe/uk.json",
+      "fileSha256": "9a39bcd1bf70f3a5f9f82db14397b33d396042b8e958d40c422a5db185ffc3c1",
+      "name": "United Kingdom",
+      "capital": {
+        "name": "London",
+        "coords": [
+          51.5,
+          -0.0833
+        ]
+      },
+      "coords": [
+        54.0,
+        -2.0
+      ],
+      "areaTotalSqKm": 243610,
+      "population": 68751311,
+      "populationText": "68,751,311 (2025 est.)",
+      "languages": "English",
+      "governmentType": "parliamentary constitutional monarchy; a Commonwealth realm",
+      "anthem": {
+        "title": "\"God Save the King\"",
+        "lyricsMusic": "unknown"
+      },
+      "location": "Western Europe, islands - including the northern one-sixth of the island of Ireland - between the North Atlantic Ocean and the North Sea; northwest of France"
+    },
+    {
+      "code": "fr",
+      "factbookPath": "europe/fr.json",
+      "fileSha256": "c5d1106d08f85f374175dfb64daa1799b71519f606df7b56ec60308ba013909c",
+      "name": "France",
+      "capital": {
+        "name": "Paris",
+        "coords": [
+          48.8667,
+          2.3333
+        ]
+      },
+      "coords": [
+        46.0,
+        2.0
+      ],
+      "areaTotalSqKm": 643801,
+      "population": 68512806,
+      "populationText": "68,512,806 (2025 est.)",
+      "languages": "French (official) 100%, declining regional dialects and languages (Provençal, Breton, Alsatian, Corsican, Catalan, Basque, Flemish, Occitan, Picard)",
+      "governmentType": "semi-presidential republic",
+      "anthem": {
+        "title": "\"La Marseillaise\" (The Song of Marseille)",
+        "lyricsMusic": "Claude-Joseph ROUGET de Lisle"
+      },
+      "location": "metropolitan France: Western Europe, bordering the Bay of Biscay and English Channel, between Belgium and Spain, southeast of the UK; bordering the Mediterranean Sea, between Italy and Spain French Guiana: Northern South America, bordering "
+    },
+    {
+      "code": "gm",
+      "factbookPath": "europe/gm.json",
+      "fileSha256": "b540efd0548d24780080613164df770b86ed478fd0f2ac0066a7002444da4cf8",
+      "name": "Germany",
+      "capital": {
+        "name": "Berlin",
+        "coords": [
+          52.5167,
+          13.4
+        ]
+      },
+      "coords": [
+        51.0,
+        9.0
+      ],
+      "areaTotalSqKm": 357022,
+      "population": 84012284,
+      "populationText": "84,012,284 (2025 est.)",
+      "languages": "German (official); note - Danish, Frisian, Sorbian, and Romani are official minority languages; Low German, Danish, North Frisian, Sater Frisian, Lower Sorbian, Upper Sorbian, and Romani are recognized as regional languages",
+      "governmentType": "federal parliamentary republic",
+      "anthem": {
+        "title": "“Lied der Deutschen”(Song of the Germans)",
+        "lyricsMusic": "August Heinrich HOFFMANN VON FALLERSLEBEN/Franz Joseph HAYDN"
+      },
+      "location": "Central Europe, bordering the Baltic Sea and the North Sea, between the Netherlands and Poland, south of Denmark"
+    },
+    {
+      "code": "it",
+      "factbookPath": "europe/it.json",
+      "fileSha256": "c7f38105d116e944cd9037f2e2907a960ea01d3b2c92a580c284a762cd25b06c",
+      "name": "Italy",
+      "capital": {
+        "name": "Rome",
+        "coords": [
+          41.9,
+          12.4833
+        ]
+      },
+      "coords": [
+        42.8333,
+        12.8333
+      ],
+      "areaTotalSqKm": 301340,
+      "population": 60924851,
+      "populationText": "60,924,851 (2025 est.)",
+      "languages": "Italian (official), German (parts of Trentino-Alto Adige region are predominantly German-speaking), French (small French-speaking minority in Valle d'Aosta region), Slovene (Slovene-speaking minority in the Trieste-Gorizia area), Croatian (",
+      "governmentType": "parliamentary republic",
+      "anthem": {
+        "title": "\"Il Canto degli Italiani\" (The Song of the Italians)",
+        "lyricsMusic": "Goffredo MAMELI/Michele NOVARO"
+      },
+      "location": "Southern Europe, a peninsula extending into the central Mediterranean Sea, northeast of Tunisia"
+    },
+    {
+      "code": "sp",
+      "factbookPath": "europe/sp.json",
+      "fileSha256": "72f3ae65f8eff3fc2a09a868961ec886f6afb159d5b2495999ac20a5e9d13d19",
+      "name": "Spain",
+      "capital": {
+        "name": "Madrid",
+        "coords": [
+          40.4,
+          -3.6833
+        ]
+      },
+      "coords": [
+        40.0,
+        -4.0
+      ],
+      "areaTotalSqKm": 505370,
+      "population": 47280433,
+      "populationText": "47,280,433 (2024 est.)",
+      "languages": "Castilian Spanish (official) 74%, Catalan (official in Catalonia, the Balearic Islands, and the Valencian Community) 17%, Galician (official in Galicia) 7%, Basque (official in the Basque Country and Navarre) 2%, Aranese (official in part o",
+      "governmentType": "parliamentary constitutional monarchy",
+      "anthem": {
+        "title": "\"Himno Nacional Espanol\" (National Anthem of Spain)",
+        "lyricsMusic": "no lyrics/unknown"
+      },
+      "location": "Southwestern Europe, bordering the Mediterranean Sea, North Atlantic Ocean, Bay of Biscay, and Pyrenees Mountains; southwest of France"
+    },
+    {
+      "code": "up",
+      "factbookPath": "europe/up.json",
+      "fileSha256": "04cec3f28e5f0c9d75ac4494f6641e70ce40648bdfdbd4be7e4ac9113622f9a3",
+      "name": "Ukraine",
+      "capital": {
+        "name": "Kyiv (Kiev is the transliteration from Russian)",
+        "coords": [
+          50.4333,
+          30.5167
+        ]
+      },
+      "coords": [
+        49.0,
+        32.0
+      ],
+      "areaTotalSqKm": 603550,
+      "population": 35661826,
+      "populationText": "35,661,826 (2024 est.)",
+      "languages": "Ukrainian (official) 67.5%, Russian (regional language) 29.6%, other (includes Crimean Tatar, Moldovan/Romanian, and Hungarian) 2.9% (2001 est.)",
+      "governmentType": "semi-presidential republic",
+      "anthem": {
+        "title": "\"Shche ne vmerla Ukraina\" (Ukraine Has Not Yet Perished)",
+        "lyricsMusic": "Paul CHUBYNSKYI/Mikhail VERBYTSKYI"
+      },
+      "location": "Eastern Europe, bordering the Black Sea, between Poland, Belarus, Romania, and Moldova in the west and Russia in the east"
+    },
+    {
+      "code": "sf",
+      "factbookPath": "africa/sf.json",
+      "fileSha256": "955a5945f35eda49a55295b10f0367651da2b8e2529e47a0bc4f6347ec4d63b8",
+      "name": "South Africa",
+      "capital": {
+        "name": "Pretoria (administrative capital); Cape Town (legislative capital); Bloemfontein (judicial capital)",
+        "coords": [
+          -25.7,
+          28.2167
+        ]
+      },
+      "coords": [
+        -29.0,
+        24.0
+      ],
+      "areaTotalSqKm": 1219090,
+      "population": 61089926,
+      "populationText": "61,089,926 (2025 est.)",
+      "languages": "isiZulu or Zulu (official) 25.3%, isiXhosa or Xhosa (official) 14.8%, Afrikaans (official) 12.2%, Sepedi or Pedi (official) 10.1%, Setswana or Tswana (official) 9.1%, English (official) 8.1%, Sesotho or Sotho (official) 7.9%, Xitsonga or Ts",
+      "governmentType": "parliamentary republic",
+      "anthem": {
+        "title": "\"National Anthem of South Africa\"",
+        "lyricsMusic": "Enoch SONTONGA and Cornelius Jacob LANGENHOVEN/Enoch SONTONGA and Marthinus LOURENS de Villiers"
+      },
+      "location": "Southern Africa, at the southern tip of the continent of Africa"
+    },
+    {
+      "code": "eg",
+      "factbookPath": "africa/eg.json",
+      "fileSha256": "24da5422db36ea2a78e44afe1983379241b56be3d1f29b94da4f30cabfd3b7b8",
+      "name": "Egypt",
+      "capital": {
+        "name": "Cairo",
+        "coords": [
+          30.05,
+          31.25
+        ]
+      },
+      "coords": [
+        27.0,
+        30.0
+      ],
+      "areaTotalSqKm": 1001450,
+      "population": 112870457,
+      "populationText": "112,870,457 (2025 est.)",
+      "languages": "Arabic (official); English and French widely understood by educated classes",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Bilady, Bilady, Bilady\" (My Homeland, My Homeland, My Homeland)",
+        "lyricsMusic": "Younis-al QADI/Sayed DARWISH"
+      },
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Libya and the Gaza Strip, and the Red Sea north of Sudan, and includes the Asian Sinai Peninsula"
+    },
+    {
+      "code": "ni",
+      "factbookPath": "africa/ni.json",
+      "fileSha256": "93dbb46cd66270fb0ff9f5306ad77276d86c96ab299ec47d0310e997b94220eb",
+      "name": "Nigeria",
+      "capital": {
+        "name": "Abuja",
+        "coords": [
+          9.0833,
+          7.5333
+        ]
+      },
+      "coords": [
+        10.0,
+        8.0
+      ],
+      "areaTotalSqKm": 923768,
+      "population": 244344065,
+      "populationText": "244,344,065 (2025 est.)",
+      "languages": "English (official), Hausa, Yoruba, Igbo (Ibo), Fulani, over 500 additional indigenous languages",
+      "governmentType": "federal presidential republic",
+      "anthem": {
+        "title": "\"Nigeria, We Hail Thee\"",
+        "lyricsMusic": "Lillie Jean WILLIAMS/Frances BERDA"
+      },
+      "location": "Western Africa, bordering the Gulf of Guinea, between Benin and Cameroon"
+    },
+    {
+      "code": "tu",
+      "factbookPath": "middle-east/tu.json",
+      "fileSha256": "dd91a5bb0629c5a7a0a32dd64e240d2e21f8e322173d6a7ea436335cb8e1233f",
+      "name": "Turkey",
+      "capital": {
+        "name": "Ankara",
+        "coords": [
+          39.9333,
+          32.8667
+        ]
+      },
+      "coords": [
+        39.0,
+        35.0
+      ],
+      "areaTotalSqKm": 783562,
+      "population": 84625585,
+      "populationText": "84,625,585 (2025 est.)",
+      "languages": "Turkish (official), Kurdish, other minority languages",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Istiklal Marsi\" (The March of Independence)",
+        "lyricsMusic": "Mehmet Akif ERSOY/Zeki UNGOR"
+      },
+      "location": "Southeastern Europe and Southwestern Asia (that portion of Turkey west of the Bosporus is geographically part of Europe), bordering the Black Sea, between Bulgaria and Georgia, and bordering the Aegean Sea and the Mediterranean Sea, between"
+    },
+    {
+      "code": "is",
+      "factbookPath": "middle-east/is.json",
+      "fileSha256": "795e3676c8aced2c3235c79bf32389f739883a89ee45c54c1c9486e7b49cc5ff",
+      "name": "Israel",
+      "capital": {
+        "name": "Jerusalem",
+        "coords": [
+          31.7667,
+          35.2333
+        ]
+      },
+      "coords": [
+        31.5,
+        34.75
+      ],
+      "areaTotalSqKm": 21937,
+      "population": 9402617,
+      "populationText": "9,402,617 (2024 est.)",
+      "languages": "Hebrew (official), Arabic (special status under Israeli law), English (most commonly used foreign language)",
+      "governmentType": "parliamentary democracy",
+      "anthem": {
+        "title": "\"Hatikvah\" (The Hope)",
+        "lyricsMusic": "Naftali Herz IMBER/traditional, arranged by Samuel COHEN"
+      },
+      "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Lebanon"
+    },
+    {
+      "code": "kz",
+      "factbookPath": "central-asia/kz.json",
+      "fileSha256": "7aec672d70dd465e097af3d62a58f4875cda137cb563eaa74b7a7d2468987e92",
+      "name": "Kazakhstan",
+      "capital": {
+        "name": "Astana",
+        "coords": [
+          51.1667,
+          71.4167
+        ]
+      },
+      "coords": [
+        48.0,
+        68.0
+      ],
+      "areaTotalSqKm": 2724900,
+      "population": 20432662,
+      "populationText": "20,432,662 (2025 est.)",
+      "languages": "Kazakh (official, Qazaq) 80.1%, Russian 83.7%, English 35.1% (2021 est.)",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Menin Qazaqstanim\" (My Kazakhstan)",
+        "lyricsMusic": "Zhumeken NAZHIMEDENOV and Nursultan NAZARBAYEV/Shamshi KALDAYAKOV"
+      },
+      "location": "Central Asia, northwest of China; a small portion west of the Ural (Oral) River in easternmost Europe"
+    },
+    {
+      "code": "rs",
+      "factbookPath": "central-asia/rs.json",
+      "fileSha256": "e106a10f80b3081d81859d0ab1ab235bec76c9e79ba5decc0624efa727f6f584",
+      "name": "Russia",
+      "capital": {
+        "name": "Moscow",
+        "coords": [
+          55.75,
+          37.6
+        ]
+      },
+      "coords": [
+        60.0,
+        100.0
+      ],
+      "areaTotalSqKm": 17098242,
+      "population": 140134279,
+      "populationText": "140,134,279 (2025 est.)",
+      "languages": "Russian (official) 85.7%, Tatar 3.2%, Chechen 1%, other 10.1% (2010 est.)",
+      "governmentType": "semi-presidential federation",
+      "anthem": {
+        "title": "“Gosudarstvenny Gimn Rossiyskoy Federatsii” (National Anthem of the Russian Federation)",
+        "lyricsMusic": "Sergey Vladimirovich MIKHALKOV/Aleksandr Vasilyevich ALEKSANDROV"
+      },
+      "location": "North Asia bordering the Arctic Ocean, extending from Eastern Europe (the portion west of the Urals) to the North Pacific Ocean"
+    },
+    {
+      "code": "in",
+      "factbookPath": "south-asia/in.json",
+      "fileSha256": "01b7d4c2b5fff2c8ef1cb2b0933a8eecfca5fb94cb9478c783e9b649f44a75dd",
+      "name": "India",
+      "capital": {
+        "name": "New Delhi",
+        "coords": [
+          28.6,
+          77.2
+        ]
+      },
+      "coords": [
+        20.0,
+        77.0
+      ],
+      "areaTotalSqKm": 3287263,
+      "population": 1419316933,
+      "populationText": "1,419,316,933 (2025 est.)",
+      "languages": "Hindi 43.6%, Bengali 8%, Marathi 6.9%, Telugu 6.7%, Tamil 5.7%, Gujarati 4.6%, Urdu 4.2%, Kannada 3.6%, Odia 3.1%, Malayalam 2.9%, Punjabi 2.7%, Assamese 1.3%, Maithili 1.1%, other 5.6%; English is the subsidiary official language but is th",
+      "governmentType": "federal parliamentary republic",
+      "anthem": {
+        "title": "\"Jana-Gana-Mana\" (Thou Art the Ruler of the Minds of All People)",
+        "lyricsMusic": "Rabindranath TAGORE"
+      },
+      "location": "Southern Asia, bordering the Arabian Sea and the Bay of Bengal, between Burma and Pakistan"
+    },
+    {
+      "code": "ch",
+      "factbookPath": "east-n-southeast-asia/ch.json",
+      "fileSha256": "2a716db51c04e2ddd3de01b4de03638e7e09f5f414f64cde842e9faddf2140b6",
+      "name": "China",
+      "capital": {
+        "name": "Beijing",
+        "coords": [
+          39.9167,
+          116.3833
+        ]
+      },
+      "coords": [
+        35.0,
+        105.0
+      ],
+      "areaTotalSqKm": 9596960,
+      "population": 1407181209,
+      "populationText": "1,407,181,209 (2025 est.)",
+      "languages": "Standard Chinese or Mandarin (official; Putonghua, based on the Beijing dialect), Yue (Cantonese), Wu (Shanghainese), Minbei (Fuzhou), Minnan (Hokkien-Taiwanese), Xiang, Gan, Hakka dialects, minority languages; note - Zhuang is official in ",
+      "governmentType": "communist party-led state",
+      "anthem": {
+        "title": "\"Yiyongjun Jinxingqu\" (The March of the Volunteers)",
+        "lyricsMusic": "TIAN Han/NIE Er"
+      },
+      "location": "Eastern Asia, bordering the East China Sea, Korea Bay, Yellow Sea, and South China Sea, between North Korea and Vietnam"
+    },
+    {
+      "code": "ja",
+      "factbookPath": "east-n-southeast-asia/ja.json",
+      "fileSha256": "a5ff800a4c7e1e39225f23d079cd3fae12520d9bd73706c00958bebf3acd7186",
+      "name": "Japan",
+      "capital": {
+        "name": "Tokyo",
+        "coords": [
+          35.6833,
+          139.75
+        ]
+      },
+      "coords": [
+        36.0,
+        138.0
+      ],
+      "areaTotalSqKm": 377915,
+      "population": 123201945,
+      "populationText": "123,201,945 (2024 est.)",
+      "languages": "Japanese",
+      "governmentType": "parliamentary constitutional monarchy",
+      "anthem": {
+        "title": "\"Kimigayo\" (“His Majesty’s Reign)",
+        "lyricsMusic": "unknown/Hiromori HAYASHI"
+      },
+      "location": "Eastern Asia, island chain between the North Pacific Ocean and the Sea of Japan, east of the Korean Peninsula"
+    },
+    {
+      "code": "id",
+      "factbookPath": "east-n-southeast-asia/id.json",
+      "fileSha256": "07f4422aad6d3010605e30542e94deaa24c12817209543b277694b4929b8668b",
+      "name": "Indonesia",
+      "capital": {
+        "name": "Jakarta",
+        "coords": [
+          -6.1667,
+          106.8167
+        ]
+      },
+      "coords": [
+        -5.0,
+        120.0
+      ],
+      "areaTotalSqKm": 1904569,
+      "population": 283587097,
+      "populationText": "283,587,097 (2025 est.)",
+      "languages": "Bahasa Indonesia (official, modified form of Malay), English, Dutch, local dialects (of which the most widely spoken is Javanese); note - more than 700 languages are used in Indonesia",
+      "governmentType": "presidential republic",
+      "anthem": {
+        "title": "\"Indonesia Raya\" (Great Indonesia)",
+        "lyricsMusic": "Wage Rudolf SOEPRATMAN"
+      },
+      "location": "Southeastern Asia, archipelago between the Indian Ocean and the Pacific Ocean"
+    },
+    {
+      "code": "as",
+      "factbookPath": "australia-oceania/as.json",
+      "fileSha256": "f13dbb236fb3a6a15f3bde24b54a3f1579248b714f5e05486a452f0c6813bb40",
+      "name": "Australia",
+      "capital": {
+        "name": "Canberra",
+        "coords": [
+          -35.2667,
+          149.1333
+        ]
+      },
+      "coords": [
+        -27.0,
+        133.0
+      ],
+      "areaTotalSqKm": 7741220,
+      "population": 27490921,
+      "populationText": "27,490,921 (2025 est.)",
+      "languages": "English 72%, Mandarin 2.7%, Arabic 1.4%, Vietnamese 1.3%, Cantonese 1.2%, other 15.7%, unspecified 5.7% (2021 est.)",
+      "governmentType": "federal parliamentary democracy under a constitutional monarchy; a Commonwealth realm",
+      "anthem": {
+        "title": "\"God Save the King\"",
+        "lyricsMusic": "unknown"
+      },
+      "location": "Oceania, continent between the Indian Ocean and the South Pacific Ocean"
+    },
+    {
+      "code": "nz",
+      "factbookPath": "australia-oceania/nz.json",
+      "fileSha256": "4cc5b12693fb06f4084bea64fe2b9ad833481efe15e987962a418eceada5ee43",
+      "name": "New Zealand",
+      "capital": {
+        "name": "Wellington",
+        "coords": [
+          -41.3,
+          174.7833
+        ]
+      },
+      "coords": [
+        -41.0,
+        174.0
+      ],
+      "areaTotalSqKm": 268838,
+      "population": 5161211,
+      "populationText": "5,161,211 (2024 est.)",
+      "languages": "English (de facto official) 95.4%, Maori (de jure official) 4%, Samoan 2.2%, Northern Chinese 2%, Hindi 1.5%, French 1.2%, Yue 1.1%, New Zealand Sign Language (de jure official) 0.5%, other or not stated 17.2% (2018 est.)",
+      "governmentType": "parliamentary democracy under a constitutional monarchy; a Commonwealth realm",
+      "anthem": {
+        "title": "\"God Save the King\"",
+        "lyricsMusic": "unknown"
+      },
+      "location": "Oceania, islands in the South Pacific Ocean, southeast of Australia"
+    }
+  ]
+}

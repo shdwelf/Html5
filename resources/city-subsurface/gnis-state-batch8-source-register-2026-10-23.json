@@ -1,0 +1,452 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 25 West North Central state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Iowa and Missouri. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Hawkeye Point and Taum Sauk Mountain additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<IA|MO>&include=gnis&maxSuggestions=10",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, divisions, beaches, harbors, airports, ordnance plants, bends, planning regions, hills, hollows, ranges, and same-name records of another class or county were rejected explicitly where relevant. Punctuation variants (St. versus Saint) were screened both ways and recorded."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Hawkeye Point (1851955), confirming the Iowa High Point description, and Taum Sauk Mountain (752501), confirming the Missouri High Point description, its Tom Sauk variant, and a 1e-7-degree coordinate print difference from the Geocoder value."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, or the returned record does not match the intended name and type, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "iowa": {
+      "title": "Iowa statewide frame",
+      "state": "IA",
+      "bbox": {
+        "lon0": -96.8,
+        "lat0": 40.3,
+        "lon1": -90.0,
+        "lat1": 43.6
+      },
+      "frameNote": "West North Central batch: the Des Moines, Cedar Rapids, Quad Cities, and Sioux City anchors are balanced with per-ID Hawkeye Point, three reservoirs, and the Des Moines/Iowa river records. Mississippi and Missouri main stems stay unseeded after empty states=IA screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Des Moines",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Polk",
+          "latitude": 41.6005448,
+          "longitude": -93.6091064,
+          "featureId": "465961",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Polk County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than Des Moines County (FEATURE_ID 465217), the same-name Des Moines River record (FEATURE_ID 465582, seeded below), Des Moines Beach (FEATURE_ID 465336), Des Moines International Airport (FEATURE_ID 2832672), and the historical Des Moines Ordnance Plant (FEATURE_ID 2650335). USGS GNIS Geocoder (GNIS), FEATURE_ID=465961; exact official name and Cities & Populated Places type in Polk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Cedar Rapids",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Linn",
+          "latitude": 42.0083328,
+          "longitude": -91.6440683,
+          "featureId": "465941",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Linn County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the same-name Cedar Rapids Beach in Dickinson County (FEATURE_ID 1907561). USGS GNIS Geocoder (GNIS), FEATURE_ID=465941; exact official name and Cities & Populated Places type in Linn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Davenport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Scott",
+          "latitude": 41.5236437,
+          "longitude": -90.5776367,
+          "featureId": "455799",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Scott County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the same-name Davenport Harbor record (FEATURE_ID 455800). USGS GNIS Geocoder (GNIS), FEATURE_ID=455799; exact official name and Cities & Populated Places type in Scott County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Iowa City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Johnson",
+          "latitude": 41.6611277,
+          "longitude": -91.5301683,
+          "featureId": "457827",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Johnson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=457827; exact official name and Cities & Populated Places type in Johnson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Sioux City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Woodbury",
+          "latitude": 42.4999942,
+          "longitude": -96.4003069,
+          "featureId": "461653",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Woodbury County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the historical Sioux City Army Air Base (FEATURE_ID 2096207). USGS GNIS Geocoder (GNIS), FEATURE_ID=461653; exact official name and Cities & Populated Places type in Woodbury County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Dubuque",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Dubuque",
+          "latitude": 42.5005583,
+          "longitude": -90.6645718,
+          "featureId": "456040",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Dubuque County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Dubuque County (FEATURE_ID 465219) and the Dubuque Hills mountain range record (FEATURE_ID 1930549). USGS GNIS Geocoder (GNIS), FEATURE_ID=456040; exact official name and Cities & Populated Places type in Dubuque County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Hawkeye Point",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Osceola",
+          "latitude": 43.4603174,
+          "longitude": -95.7087663,
+          "featureId": "1851955",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Osceola County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Iowa's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Iowa, Primary County=Osceola County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in IA at 1670 feet on a farm south of the Iowa-Minnesota border; coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851955; exact official name and Summit type in Osceola County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "West Okoboji Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Dickinson",
+          "latitude": 43.3844078,
+          "longitude": -95.1594407,
+          "featureId": "462893",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Dickinson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=462893; exact official name and Lakes & Reservoirs type in Dickinson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Saylorville Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Polk",
+          "latitude": 41.7552981,
+          "longitude": -93.7321414,
+          "featureId": "461452",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Polk County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=461452; exact official name and Lakes & Reservoirs type in Polk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Red Rock",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Marion",
+          "latitude": 41.4009842,
+          "longitude": -93.0583071,
+          "featureId": "460560",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Marion County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=460560; exact official name and Lakes & Reservoirs type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Des Moines River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Lee",
+          "latitude": 41.3811553,
+          "longitude": -91.4223753,
+          "featureId": "465582",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Lee County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record; distinct from the same-name Des Moines populated place (FEATURE_ID 465961), which rejects it in its own note, plus Des Moines County (465217) and Des Moines Beach (465336). The point is the Lee County primary sequence near the mouth, not the channel through the capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=465582; exact official name and Streams & Canals type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Iowa River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Louisa",
+          "latitude": 41.1605885,
+          "longitude": -91.0237563,
+          "featureId": "457834",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Louisa County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=457834; exact official name and Streams & Canals type in Louisa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "missouri": {
+      "title": "Missouri statewide frame",
+      "state": "MO",
+      "bbox": {
+        "lon0": -95.9,
+        "lat0": 35.9,
+        "lon1": -89.0,
+        "lat1": 40.7
+      },
+      "frameNote": "West North Central batch: the Missouri River corridor cities are balanced with per-ID Taum Sauk Mountain, the first statewide Missouri River row (Saint Charles confluence sequence), the Meramec, and two Ozark reservoirs. St./Saint spelling screens, the Mississippi River Hills name mismatch, and the Kansas City/Missouri River multipoint sequences shared with the Kansas City city frame are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Jefferson City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cole",
+          "latitude": 38.5767017,
+          "longitude": -92.1735164,
+          "featureId": "758233",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cole County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the same-name Jefferson City Reach river bend record (FEATURE_ID 2123475). USGS GNIS Geocoder (GNIS), FEATURE_ID=758233; exact official name and Cities & Populated Places type in Cole County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Saint Louis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "City of Saint Louis",
+          "latitude": 38.6272733,
+          "longitude": -90.1978889,
+          "featureId": "765765",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "City of Saint Louis",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official name uses the Saint spelling: the St. Louis term returned an empty states=MO screen on 2026-10-23 while Saint Louis returned this populated place. Rejected: Saint Louis County (FEATURE_ID 758549), Saint Louis Place (FEATURE_ID 2469207), and the historical Saint Louis Air Force Station (FEATURE_ID 2832924). USGS GNIS Geocoder (GNIS), FEATURE_ID=765765; exact official name and Cities & Populated Places type in City of Saint Louis cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Kansas City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Jackson",
+          "latitude": 39.0997266,
+          "longitude": -94.5785667,
+          "featureId": "748198",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Jackson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Missouri-side populated place in Jackson County; the same FEATURE_ID also appears in the Kansas City city frame at a higher-precision returned series (39.09973358320847, -94.57857413444238, county recorded as Multiple counties) from an earlier extraction, and this batch stores the values returned by this screen. The same-name Kansas City Reach river bend record (FEATURE_ID 2107891) and the Kansas-side Kansas City record (FEATURE_ID 478635) are rejected here. USGS GNIS Geocoder (GNIS), FEATURE_ID=748198; exact official name and Cities & Populated Places type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Columbia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Boone",
+          "latitude": 38.9517053,
+          "longitude": -92.3340724,
+          "featureId": "716133",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Boone County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the same-name Columbia Bottom river bend record in Saint Louis County (FEATURE_ID 755913). USGS GNIS Geocoder (GNIS), FEATURE_ID=716133; exact official name and Cities & Populated Places type in Boone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Springfield",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greene",
+          "latitude": 37.215326,
+          "longitude": -93.2982436,
+          "featureId": "735864",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greene County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Springfield Plain (FEATURE_ID 758114) and Springfield Hollow (FEATURE_ID 752327). USGS GNIS Geocoder (GNIS), FEATURE_ID=735864; exact official name and Cities & Populated Places type in Greene County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Saint Joseph",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Buchanan",
+          "latitude": 39.7686055,
+          "longitude": -94.8466322,
+          "featureId": "730205",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Buchanan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official name uses the Saint spelling: the St. Joseph term returned an empty states=MO screen on 2026-10-23 while Saint Joseph returned this populated place. Rejected: Saint Joseph Lake (FEATURE_ID 760517) and the historical Saint Joseph Army Air Field (FEATURE_ID 2095889). USGS GNIS Geocoder (GNIS), FEATURE_ID=730205; exact official name and Cities & Populated Places type in Buchanan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Branson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Taney",
+          "latitude": 36.6436731,
+          "longitude": -93.2185144,
+          "featureId": "739970",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Taney County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Branson West in Stone County (FEATURE_ID 1669588). USGS GNIS Geocoder (GNIS), FEATURE_ID=739970; exact official name and Cities & Populated Places type in Taney County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Taum Sauk Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Iron",
+          "latitude": 37.5712766,
+          "longitude": -90.7291683,
+          "featureId": "752501",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Iron County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Missouri's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Missouri, Primary County=Iron County, coordinate sequence 1 marked High Point (the per-ID page prints -90.7291684, a one-in-a-hundred-millionth-degree rounding difference from the Geocoder value stored here, same mapped point), the description Highest elevation in MO at 1772 feet, and a 1938 Board decision. The per-ID variant name Tom Sauk Mountain (Board revision) is a variant of this same record, not a separate feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=752501; exact official name and Summit type in Iron County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Missouri River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Saint Charles",
+          "latitude": 38.8136597,
+          "longitude": -90.1198297,
+          "featureId": "756398",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Saint Charles County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The first statewide Missouri River row after empty screens in Montana, North Dakota, South Dakota, Nebraska, Kansas, and Iowa. This multipoint FEATURE_ID also appears in the Kansas City city frame with a different returned sequence (39.123899988352946, -94.5613514316943, county recorded as Multiple counties); this batch stores the Saint Charles confluence sequence returned by this screen. The point is the confluence area, not a channel trace, and it does not verify the upstream reaches whose state screens were empty. USGS GNIS Geocoder (GNIS), FEATURE_ID=756398; exact official name and Streams & Canals type in Saint Charles County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Meramec River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Jefferson",
+          "latitude": 38.3897761,
+          "longitude": -90.3442847,
+          "featureId": "756378",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Jefferson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=756378; exact official name and Streams & Canals type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Lake of the Ozarks",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Camden",
+          "latitude": 38.1671829,
+          "longitude": -92.9654568,
+          "featureId": "729600",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Camden County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the Lake of the Ozarks Planning Region record (FEATURE_ID 754105). USGS GNIS Geocoder (GNIS), FEATURE_ID=729600; exact official name and Lakes & Reservoirs type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Mark Twain Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Monroe",
+          "latitude": 39.5008627,
+          "longitude": -91.7761635,
+          "featureId": "766204",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Monroe County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=766204; exact official name and Lakes & Reservoirs type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Hawkeye Point, FEATURE_ID 1851955",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Iowa, Primary County=Osceola County, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in IA at 1670 feet south of the Iowa-Minnesota border; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground or the state border."
+    },
+    {
+      "candidate": "Taum Sauk Mountain, FEATURE_ID 752501",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Missouri, Primary County=Iron County, coordinate sequence 1 at the stored point marked High Point, the description Highest elevation in MO at 1772 feet, and a 1938 Board decision; the Geocoder returned a single exact Summit record.",
+      "knownServiceDiscrepancy": "The per-ID page prints the sequence-1 longitude as -90.7291684 while the Geocoder returned -90.7291683 (a 1e-7-degree rounding difference, same mapped point). The per-ID variant name Tom Sauk Mountain (Board revision) is a variant of this same record, not a separate feature, and is not seeded as a row."
+    },
+    {
+      "candidate": "St. versus Saint spelling: St. Louis and St. Joseph under states=MO",
+      "decision": "Both St.-spelled screens returned empty arrays on 2026-10-23; the Saint-spelled screens returned the official populated places Saint Louis 765765 (City of Saint Louis) and Saint Joseph 730205 (Buchanan). Both Saint records are seeded; their same-name county/lake/place/airfield records are rejected in their notes.",
+      "reason": "The official GNIS name field uses the Saint spelling, so the punctuation screen is an identity gate rather than a second feature. This matches the round-24 Grand Lake apostrophe treatment."
+    },
+    {
+      "candidate": "Missouri River: first seeded statewide row, FEATURE_ID 756398",
+      "decision": "Seeded in the Missouri frame at the returned Saint Charles County confluence sequence (38.8136597, -90.1198297) after empty states screens in Montana, North Dakota, South Dakota, Nebraska, Kansas, and Iowa; the Iowa frame keeps its western-border corridor only.",
+      "knownServiceDiscrepancy": "The same multipoint FEATURE_ID appears in the Kansas City city frame at a different returned sequence (39.123899988352946, -94.5613514316943, county recorded as Multiple counties). Both describe the same official record at different returned sequences; neither is a channel trace, and the row does not verify the upstream reaches whose state screens were empty."
+    },
+    {
+      "candidate": "Mississippi River under states=IA and states=MO",
+      "decision": "No gazetteer rows seeded in either frame; generalized border corridors only.",
+      "reason": "The Iowa screen returned an empty array. The Missouri screen returned only a same-prefix Mississippi River Hills Area record (FEATURE_ID 758109, Knox County), which fails the exact-name and type match for the intended stream, so nothing was seeded."
+    },
+    {
+      "candidate": "Des Moines, FEATURE_ID 465961 versus county, river, beach, and military records",
+      "decision": "Seeded the Polk County populated place; rejected Des Moines County 465217, Des Moines Beach 465336, Des Moines International Airport 2832672, and the historical Des Moines Ordnance Plant 2650335. The same-name Des Moines River record 465582 seeds separately as a stream.",
+      "notClaimed": "Neither the city point nor the river mouth point verifies the other or the county."
+    },
+    {
+      "candidate": "Kansas City, FEATURE_ID 748198, Missouri side",
+      "decision": "Seeded the Jackson County populated place with this screens returned series (39.0997266, -94.5785667); rejected the Kansas City Reach bend record 2107891 and the Kansas-side Kansas City record 478635 used by the Kansas frame.",
+      "knownServiceDiscrepancy": "The Kansas City city frame stores the same FEATURE_ID at a higher-precision series (39.09973358320847, -94.57857413444238, county recorded as Multiple counties) from an earlier extraction; the two rows differ by less than a metre and describe the same record."
+    },
+    {
+      "candidate": "Iowa same-name shore and range records",
+      "decision": "Cedar Rapids rejects Cedar Rapids Beach 1907561; Davenport rejects Davenport Harbor 455800; Dubuque rejects Dubuque County 465219 and Dubuque Hills 1930549; Sioux City rejects the historical Army Air Base 2096207; Iowa City needed no same-name rejection in its screen.",
+      "notClaimed": "No beach, harbor, county, range, or airfield point verifies its namesake city."
+    },
+    {
+      "candidate": "Missouri corridor-city same-name piles",
+      "decision": "Jefferson City rejects the Jefferson City Reach bend 2123475; Columbia rejects Columbia Bottom 755913; Springfield rejects Springfield Plain 758114 and Springfield Hollow 752327; Branson rejects Branson West 1669588; Lake of the Ozarks rejects the Planning Region record 754105; Mark Twain Lake and Meramec River needed no same-name rejection in their screens.",
+      "notClaimed": "No bend, plain, hollow, planning region, or namesake town point verifies its counterpart."
+    },
+    {
+      "candidate": "Current River under states=MO",
+      "decision": "No row seeded; the exact-name state-filtered screen returned an empty array.",
+      "reason": "Empty screens stay unseeded under the round-20 through round-24 rule; no corridor was drawn because the frame already carries four context corridors."
+    },
+    {
+      "candidate": "Waterloo, FEATURE_ID 462727",
+      "decision": "Identity-safe (the screen also returned the same-name Waterloo Creek 462729) but left out of the 12-row starter, the same starter-scope treatment as Rogue River (round 20), Belle Fourche river/reservoir (round 22), Salina (round 23), and Colorado River/Quartz Mountain/Padre Island (round 24).",
+      "notClaimed": "No exclusion on identity grounds; the screen result is recorded here so the omission is visible."
+    }
+  ],
+  "knownLimitations": [
+    "Iowa and Missouri are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Hawkeye Point and Taum Sauk Mountain additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}
