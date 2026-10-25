@@ -70,6 +70,43 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
   }
 });
 
+test("corridor geometry stays inside its frame, except five documented context reaches", async () => {
+  // Corridor polylines are generalized context lines. Five endpoints run
+  // deliberately past a state frame's edge to the real feature they trace —
+  // the Tennessee and Cumberland rivers to their Ohio River confluence
+  // (Kentucky), the Florida Keys chain to Key West, the Connecticut River in
+  // from Massachusetts, and the Northwest highlands context to Mount
+  // Greylock (Massachusetts). project() is centre-relative and elevationAt()
+  // falls back to the labelled synthetic field outside the DEM grid, so the
+  // lines render past the terrain plate rather than stopping mid-feature.
+  // Any NEW out-of-frame point, moved endpoint, or stale exception fails.
+  const EXCEPTIONS = new Map([
+    ["tennessee:1:0", [-88.5647687, 37.0672787, "Tennessee River corridor (generalized)"]],
+    ["tennessee:2:0", [-88.4075385, 37.1433889, "Cumberland River corridor (generalized)"]],
+    ["florida:4:2", [-81.78, 24.56, "Florida Keys context (generalized)"]],
+    ["connecticut:0:0", [-72.589811, 42.1014831, "Connecticut River corridor (generalized)"]],
+    ["connecticut:4:2", [-73.1659399, 42.6371703, "Northwest highlands context (generalized)"]],
+  ]);
+  const seen = new Set();
+  for (const city of cities) {
+    const data = await import(`../js/city-subsurface-data-${city}.js`);
+    const { lon0, lat0, lon1, lat1 } = data.BBOX;
+    data.CORRIDORS.forEach((corridor, ci) => {
+      corridor.path.forEach(([lon, lat], pi) => {
+        if (lon >= lon0 && lon <= lon1 && lat >= lat0 && lat <= lat1) return;
+        const key = `${city}:${ci}:${pi}`;
+        const expected = EXCEPTIONS.get(key);
+        assert.ok(expected, `${key} (${lon},${lat}) is outside its frame and not a documented exception`);
+        assert.deepEqual([lon, lat], [expected[0], expected[1]], `${key}: exception endpoint moved`);
+        assert.equal(corridor.name, expected[2], `${key}: exception corridor renamed`);
+        seen.add(key);
+      });
+    });
+  }
+  assert.deepEqual([...seen].sort(), [...EXCEPTIONS.keys()].sort(),
+    "every documented exception must still exist (no stale exceptions)");
+});
+
 test("Lawrence and Kansas City contain only the cross-checked GNIS seed points", async () => {
   const lawrenceData = await import("../js/city-subsurface-data-lawrence.js");
   const lawrence = await import("../js/city-gazetteer-data-lawrence.js");

@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-// Builds js/country-data.js from the frozen Factbook source register
-// (resources/country-viewer/country-factbook-batch1-source-register-2026-10-24.json).
-// The register (tools/fetch_factbook_countries.py) is the source of truth; this
-// generator only reshapes it. tests/country-viewer.test.mjs deep-checks the two.
+// Builds js/country-data.js from the frozen Factbook source register.
+// The current register is the batch-3 completion register
+// (tools/fetch_factbook_completion.py; batches 1-2 remain in
+// resources/country-viewer/ as the audit trail). The register is the source
+// of truth; this generator only reshapes it. tests/country-viewer.test.mjs
+// deep-checks the two.
 import { readFile, writeFile } from "node:fs/promises";
 
-const REGISTER = "resources/country-viewer/country-factbook-batch2-source-register-2026-10-24.json";
+const REGISTER = "resources/country-viewer/country-factbook-batch3-source-register-2026-10-25.json";
 const OUT = "js/country-data.js";
 
 const register = JSON.parse(await readFile(REGISTER, "utf8"));

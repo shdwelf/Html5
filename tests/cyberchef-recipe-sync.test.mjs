@@ -75,6 +75,10 @@ const POST_MERGE_OPS = [
   "gameGenieSnes",
   "gameGenieGb",
   "gameGenieGenesis",
+  // 2026-10-25 hash-lab port from the Drive SSE patch (clean-room RFC 7693/9106;
+  // docs/cyberchef-hash-lab-drive-investigation-2026-10-25.md).
+  "blake2",
+  "argon2",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

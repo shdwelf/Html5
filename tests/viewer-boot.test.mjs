@@ -179,14 +179,24 @@ test("socal and greeran engines boot clean", opts, async () => {
 test("country viewer renders its register and answers search + selection", opts, async () => {
   const { window, document, errors } = await bootPage("country-viewer.html");
   const buttons = document.querySelectorAll("#countries button");
-  assert.equal(buttons.length, 233);
+  // 250 profiles since the batch-3 completion register (233 batch-2 seeds
+  // + 17 capital-less profiles seeded verbatim; only the EU profile skips).
+  assert.equal(buttons.length, 250);
   buttons[0].click();
   assert.match(document.getElementById("detail").textContent, /Capital/);
   const search = document.getElementById("search");
   search.value = "japan";
   search.dispatchEvent(new window.Event("input", { bubbles: true }));
   const filtered = [...document.querySelectorAll("#countries button")];
-  assert.ok(filtered.length >= 1 && filtered.length < 233);
+  assert.ok(filtered.length >= 1 && filtered.length < 250);
+  // A capital-less profile (Hong Kong) renders its honest capital line.
+  search.value = "Hong Kong";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const HongKongButtons = [...document.querySelectorAll("#countries button")];
+  assert.equal(HongKongButtons.length, 1);
+  HongKongButtons[0].click();
+  assert.match(document.getElementById("detail").textContent,
+    /none published \(source profile lists no capital\)/);
   assert.deepEqual(errors, []);
 });
 

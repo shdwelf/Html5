@@ -105,7 +105,10 @@ test("the page wires every control the viewer binds", () => {
   for (const id of ["stage", "globeStage", "labels", "layerList", "checkList", "infoTitle", "infoBody", "cardList", "pipLayer", "wm4dDesk", "wm4dTray", "wm4dStatus", "statPlate", "statChecks", "hudFps", "status", "btnLabels", "btnVrml", "btnReset", "vertExag", "vertExagVal", "searchBox", "searchResults"]) {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
-  for (const b of ["chey", "ange", "lawrence", "globe"]) assert.ok(html.includes(`data-plate="${b}"`));
+  for (const b of ["chey", "ange", "lawrence", "globe", "pcg"]) assert.ok(html.includes(`data-plate="${b}"`));
+  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody"]) {
+    assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
+  }
   for (const m of ["relief", "wire", "xray"]) assert.ok(html.includes(`data-mode="${m}"`));
 });
 
@@ -186,4 +189,56 @@ test("globe plate wiring lives in the viewer, with an honest VRML guard", () => 
   }
   assert.match(app, /VRML export belongs to the terrain plates/);
   assert.match(app, /vendor\/world\/countries\.geo\.json/);
+});
+
+/* ======================================================================
+   PC Globe index plate (S4 tail completion): decoded NAMES.DAT country
+   names + COUNTRY1/2.DAT record labels. Index only — the binary map
+   payload (coordinates, name->record pointers) is undecoded, so the
+   data module must contain nothing plot-shaped.
+   ====================================================================== */
+
+import {
+  PCGLOBE_INDEX_META,
+  PCGLOBE_COUNTRY_NAMES,
+  PCGLOBE_COUNTRY_RECORDS,
+} from "../js/pcglobe-index-data.js";
+
+test("PC Globe index carries the decoded registers at full count", () => {
+  assert.equal(PCGLOBE_COUNTRY_NAMES.length, 216);
+  assert.equal(PCGLOBE_COUNTRY_NAMES[0], "AFGHANISTAN");
+  assert.equal(PCGLOBE_COUNTRY_NAMES[215], "RHODESIA");
+  assert.equal(PCGLOBE_COUNTRY_RECORDS.length, 177);
+  const features = PCGLOBE_COUNTRY_RECORDS.reduce((n, r) => n + r.features.length, 0);
+  assert.equal(features, PCGLOBE_INDEX_META.featureCount);
+  assert.ok(features >= 1000, `expected 1063 decoded feature labels, got ${features}`);
+  assert.deepEqual(PCGLOBE_INDEX_META.cityNameRun, { count: 1268, first: "KABUL", last: "Sinoia" });
+  // Every source file is hash-pinned in the index metadata.
+  for (const f of ["NAMES.DAT", "COUNTRY1.DAT", "COUNTRY2.DAT", "DATABASE.DAT"]) {
+    assert.match(PCGLOBE_INDEX_META.files[f].sha256, /^[0-9a-f]{64}$/, `${f} sha256 pinned`);
+  }
+});
+
+test("PC Globe index is index-only by construction (no coordinates anywhere)", () => {
+  for (const r of PCGLOBE_COUNTRY_RECORDS) {
+    assert.deepEqual(Object.keys(r).sort(),
+      ["features", "file", "index", "length", "offset", "undecodedPayloadBytes"]);
+    assert.ok(r.undecodedPayloadBytes > 0, "each record still carries its undecoded payload, disclosed");
+  }
+  assert.match(PCGLOBE_INDEX_META.disclosure, /undecoded/);
+  assert.match(PCGLOBE_INDEX_META.disclosure, /nothing from PC Globe is plotted/);
+});
+
+test("PC Globe index plate wiring is honest and complete", () => {
+  const app = readFileSync(new URL("../js/planet-viewer-4dwm.js", import.meta.url), "utf8");
+  for (const sym of ["PCGLOBE_INDEX_META", "PCGLOBE_COUNTRY_NAMES", "PCGLOBE_COUNTRY_RECORDS", "renderPcGlobe", "setPcGlobe"]) {
+    assert.ok(app.includes(sym), `viewer does not use ${sym}`);
+  }
+  assert.match(app, /index-only/i);
+  const html = readFileSync(new URL("../planet-viewer-4dwm.html", import.meta.url), "utf8");
+  assert.match(html, /nothing from PC Globe is plotted/);
+  // The checks runner reports the index as a consistency check.
+  const plates = buildPlates(32, 24);
+  const check = runChecks(plates).find((c) => c.id === "pcglobe/index");
+  assert.ok(check && check.ok, `pcglobe/index check must pass: ${check?.actual}`);
 });

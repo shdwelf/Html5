@@ -13,6 +13,7 @@ import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
 import { COUNTRIES } from "./country-data.js";
 import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments } from "./planet-globe.js";
+import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
 
 /* =========================================================================
    PLANET VIEWER · 4DWM
@@ -45,6 +46,7 @@ let gazIndex = null;
 
 // Globe plate state (S4 tail): the Red October orthographic globe, reused.
 let globeOn = false;
+let pcgOn = false; // PC Globe index plate (index-only; nothing plotted)
 let globeCentre = { lat: 20, lon: 10 };
 let globeData = null; // { markers, skipped } from js/planet-globe.js
 let globeRings = null; // coastline rings from vendor/world/countries.geo.json
@@ -273,13 +275,66 @@ function setGlobe(on) {
   }
 }
 
+/* ------------------------------------------------------- PC Globe index
+   Index-only plate: decoded NAMES.DAT country names and COUNTRY1/2.DAT
+   record label strings (js/pcglobe-index-data.js). The map payload is
+   undecoded, so records stay in file order, unmatched to names, and no
+   PC Globe geometry is ever drawn. */
+
+function renderPcGlobe(filter) {
+  const host = $("pcgBody");
+  if (!host) return;
+  const q = (filter || "").trim().toLowerCase();
+  const names = PCGLOBE_COUNTRY_NAMES.filter((n) => !q || n.toLowerCase().includes(q));
+  const records = PCGLOBE_COUNTRY_RECORDS.filter((r) =>
+    !q || r.features.some((f) => f.toLowerCase().includes(q)) || `${r.file} ${r.index}`.toLowerCase().includes(q));
+  host.innerHTML =
+    `<h3>NAMES.DAT country index — ${names.length} of ${PCGLOBE_INDEX_META.countryNameCount} names</h3>` +
+    `<div class="cols">${names.map((n) => esc(n)).join("<br>")}</div>` +
+    `<h3>COUNTRY1.DAT / COUNTRY2.DAT records — ${records.length} of ${PCGLOBE_INDEX_META.countryRecordCount} records · ${PCGLOBE_INDEX_META.featureCount} decoded feature labels</h3>` +
+    records.map((r) =>
+      `<p class="rec"><b>${esc(r.file)} #${r.index}</b> · offset ${r.offset} · ${r.length} bytes ` +
+      `(${r.undecodedPayloadBytes} undecoded) — ${r.features.map(esc).join(" · ") || "<i>no label strings</i>"}</p>`).join("") +
+    `<p class="small dim">NAMES.DAT also carries a city-name run (${PCGLOBE_INDEX_META.cityNameRun.count} strings, ` +
+    `${esc(PCGLOBE_INDEX_META.cityNameRun.first)} … ${esc(PCGLOBE_INDEX_META.cityNameRun.last)}) and a currency run ` +
+    `(${PCGLOBE_INDEX_META.currencyRun.count}, ${esc(PCGLOBE_INDEX_META.currencyRun.first)} … ${esc(PCGLOBE_INDEX_META.currencyRun.last)}); ` +
+    `only their counts were decoded, so they are reported, not listed.</p>`;
+}
+
+function setPcGlobe(on) {
+  pcgOn = on;
+  const panel = $("pcgPanel");
+  if (panel) panel.hidden = !on;
+  if (terrainGroup) terrainGroup.visible = !on && !globeOn;
+  if (on) {
+    const meta = $("pcgMeta");
+    if (meta) {
+      meta.textContent =
+        `${PCGLOBE_INDEX_META.source} · ${PCGLOBE_INDEX_META.countryNameCount} country names · ` +
+        `${PCGLOBE_INDEX_META.countryRecordCount} country records · ${PCGLOBE_INDEX_META.featureCount} feature labels · ` +
+        `decoded by ${PCGLOBE_INDEX_META.decodedBy}`;
+    }
+    const sh = $("statPlate");
+    if (sh) sh.textContent = "plate: pcglobe index";
+    renderPcGlobe($("pcgSearch")?.value || "");
+    announce("PC Globe index plate · decoded names and labels only — coordinates undecoded, nothing plotted");
+  }
+}
+
 function selectPlate(id) {
+  if (id === "pcg") {
+    if (globeOn) setGlobe(false);
+    setPcGlobe(true);
+    return;
+  }
   if (id === "globe") {
+    setPcGlobe(false);
     setGlobe(true);
     return;
   }
   const next = plates[id];
   if (!next) return;
+  if (pcgOn) setPcGlobe(false);
   if (globeOn) setGlobe(false);
   plate = next;
   if (terrainGroup) {
@@ -533,6 +588,7 @@ function bind() {
     selectPlate(plate.id);
   });
   $("searchBox")?.addEventListener("input", (e) => doSearch(e.target.value.trim()));
+  $("pcgSearch")?.addEventListener("input", (e) => renderPcGlobe(e.target.value));
 
   renderer.domElement.addEventListener("pointerdown", (ev) => {
     const r = renderer.domElement.getBoundingClientRect();

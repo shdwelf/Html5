@@ -16,6 +16,7 @@ import { demToVrml } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER, bboxKm } from "./planet-viewer-data.js";
 import { COUNTRIES } from "./country-data.js";
 import { globeMarkers, projectOrthographic } from "./planet-globe.js";
+import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
 
 const RHO = 1;
 const ALL_GAZ_ROWS = [...atl, ...buf, ...ksc, ...law, ...tor];
@@ -185,7 +186,7 @@ export function runChecks(plates = buildPlates(96, 72)) {
     label: "Globe: every Factbook capital with coordinates becomes a marker",
     kind: "consistency",
     tier: "official",
-    expected: "markers + skipped = 233 profiles, all finite",
+    expected: `markers + skipped = ${COUNTRIES.length} profiles, all finite`,
     actual: `${markers.length} markers, ${skipped} skipped (no capital coordinates)`,
     ok: markers.length + skipped === COUNTRIES.length && markers.length >= 230 && allFinite,
   });
@@ -200,6 +201,24 @@ export function runChecks(plates = buildPlates(96, 72)) {
     expected: "centre visible at disc centre, antipode hidden",
     actual: `centre z=${centre.z.toFixed(3)} visible=${centre.visible}; antipode visible=${antipode.visible}`,
     ok: centre.visible && Math.abs(centre.z - 1) < 1e-9 && !antipode.visible,
+  });
+
+  /* · PC Globe index plate: decoded names/labels, coordinates undecoded --- */
+  const pcgFeatures = PCGLOBE_COUNTRY_RECORDS.reduce((n, r) => n + r.features.length, 0);
+  const pcgCoordFields = PCGLOBE_COUNTRY_RECORDS.filter((r) =>
+    Object.keys(r).some((k) => /lat|lon|coord/i.test(k))).length;
+  out.push({
+    id: "pcglobe/index",
+    plate: null,
+    label: "PC Globe index: decoded names and record labels only — no coordinates exist to plot",
+    kind: "consistency",
+    tier: "context",
+    expected: `${PCGLOBE_INDEX_META.countryNameCount} country names, ${PCGLOBE_INDEX_META.countryRecordCount} records, 0 coordinate fields`,
+    actual: `${PCGLOBE_COUNTRY_NAMES.length} names, ${PCGLOBE_COUNTRY_RECORDS.length} records, ${pcgFeatures} feature labels, ${pcgCoordFields} records with coordinate fields`,
+    ok: PCGLOBE_COUNTRY_NAMES.length === PCGLOBE_INDEX_META.countryNameCount
+      && PCGLOBE_COUNTRY_RECORDS.length === PCGLOBE_INDEX_META.countryRecordCount
+      && pcgFeatures === PCGLOBE_INDEX_META.featureCount
+      && pcgCoordFields === 0,
   });
 
   void RHO;

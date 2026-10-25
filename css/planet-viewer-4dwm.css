@@ -30,6 +30,17 @@ html, body {
 #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #globeStage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 5; cursor: grab; background: var(--bg); touch-action: none; }
 #globeStage:active { cursor: grabbing; }
+#pcgPanel {
+  position: fixed; inset: 64px 16px 48px 16px; z-index: 7; overflow: auto;
+  background: var(--bg); border: 1px solid rgba(92,214,255,0.35); border-radius: 10px;
+  padding: 16px 20px;
+}
+#pcgPanel h2 { margin: 0 0 6px; font-size: 15px; letter-spacing: 0.08em; }
+#pcgPanel h3 { margin: 18px 0 6px; font-size: 12px; letter-spacing: 0.08em; color: var(--warn, #ffb020); }
+#pcgSearch { width: 100%; margin: 10px 0; }
+#pcgBody .cols { columns: 3; column-gap: 28px; font-size: 11px; line-height: 1.5; }
+#pcgBody .rec { margin: 0 0 8px; font-size: 11px; line-height: 1.5; break-inside: avoid; }
+#pcgBody .rec b { color: var(--warn, #ffb020); }
 #labels { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
 #labels .lbl {
   position: absolute; left: 0; top: 0;
