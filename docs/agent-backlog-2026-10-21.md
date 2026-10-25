@@ -910,6 +910,10 @@ referent: Granite Island Group, TSCM = Technical Surveillance Countermeasures) �
 `resources/tscm/granite-island-inspection-2026-10-23.json` (10 threat levels,
 13-phase inspection sequence; defensive distillation only; tests 4/4).
 Remaining: Ghidra DTSearch (runner), cookbook recipes tail.
+*2026-10-25 round (T10.2, cont.):* cookbook recipes tail advanced — the
+spy-manual challenge section24 shipped alongside the T11.1 close-out
+([`backlog-execution-round-53-2026-10-25.md`](backlog-execution-round-53-2026-10-25.md));
+Ghidra DTSearch is now the only open T10.2 strand.
 *2026-10-23 round (T10.3):* course-reader sourcing round delivered —
 [`ucsb-course-readers-2026-10-23.md`](ucsb-course-readers-2026-10-23.md) (eleven UCSB CS
 texts sourced; CS 32's SBPrinter reader located; algorithms cross-check: Weiss/Sahni,
@@ -918,7 +922,7 @@ not CLRS). **T10.3 complete.**
 tour-only 0, orphans 0; guard suites green. Every enumerated sub-item is delivered;
 **T10.1 complete** (comparative tuning continues as a standing activity).
 
-### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *partial*
+### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *done*
 Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the “classified
 random name generator” links to the First Name Almanac `NAMES.EXE` lineage (historical
 context only — F2); locate the cold-war spy book’s 18 end-of-book challenges and distill
@@ -932,6 +936,17 @@ the source book.
 `js/wallet-card.js` renders/parses strict-BIP-39 wallet cards (public
 verification data only; haiku input fails closed); `tests/wallet-card.test.mjs` 4/4.
 Only the spy-book challenges remain, blocked on the source book.
+*2026-10-25 round (T11.1, cont.):* **spy-book strand closed — S11 done.** The
+source book was located on Drive: Philip Parker, *The Cold War Spy Pocket
+Manual* (Casemate,2021, ISBN978-1-910860-02-1); its printed challenge has
+**16** items (the18 above was a miscount). Methods distilled to cookbook
+section24 [`#spy-manual-challenges`](backlog-execution-round-53-2026-10-25.md)
+with [`tests/cyberchef-spy-challenge.test.mjs`](../tests/cyberchef-spy-challenge.test.mjs)
+(17/17: section figures re-read + re-baked, independent Vigenère/columnar/
+Playfair cross-checks), honest skip cards (image glyphs, Navajo table,
+acrostic extractor, English shorthand), and the `playfair` decrypt-mode fix
+found while distilling. No contest solutions claimed; no full ciphertext
+quoted.
 
 ### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *done (T12.1)*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;

@@ -382,7 +382,7 @@
     {
       "id": "S11",
       "title": "Wallets, mnemonics, classified name generator, cold-war spy book challenges",
-      "status": "partial",
+      "status": "done",
       "tasks": [
         "T11.1"
       ],
@@ -397,7 +397,8 @@
       "next_actions": [
         "Wallet crypto-card + mnemonic investigations feed the existing bip39-haiku workbench",
         "Classified random name generator: link the First Name Almanac (NAMES.EXE) lineage as historical context per F2 constraints",
-        "Locate the cold-war spy book's 18 end-of-book challenges and derive CyberChef/cipher recipes"
+        "Locate the cold-war spy book's 18 end-of-book challenges and derive CyberChef/cipher recipes",
+        "Closed round 53 (2026-10-25): source book located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021); the printed challenge has 16 items; methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs 17/17 (docs/backlog-execution-round-53-2026-10-25.md)."
       ]
     },
     {
@@ -648,7 +649,7 @@
       "stream": "S10",
       "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
       "status": "partial",
-      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail."
+      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail. Cookbook recipes tail advanced 2026-10-25 (round 53): spy-manual challenge section 24 shipped as part of the T11.1 close-out; Ghidra DTSearch runner remains the only open strand."
     },
     {
       "id": "T10.3",
@@ -663,8 +664,8 @@
       "line": 5,
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
-      "status": "partial",
-      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book."
+      "status": "done",
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book. Round 53 (2026-10-25): spy-book strand CLOSED — the source book was located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021, ISBN 978-1-910860-02-1); its printed challenge has 16 items (not 18). Methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs (17/17), honest skip cards for image/Navajo/shorthand/acrostic items, and the playfair decrypt-mode fix (docs/backlog-execution-round-53-2026-10-25.md). No contest solutions claimed."
     },
     {
       "id": "T12.1",

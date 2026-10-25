@@ -1930,6 +1930,95 @@
   </div>
 
   <hr class="hr">
+
+  <h2 id="spy-manual-challenges"><span class="n">24.</span>Cold War Spy Manual &mdash; code &amp; cipher challenge recipes</h2>
+  <p class="tagline" style="margin-top:-8px;">T11.1 distillation: the16-item end-of-book challenge mapped onto live kitchen operations, with measured vectors, honest gaps, and no contest solutions claimed.</p>
+
+  <div class="card">
+    <div class="cat">Source &middot; method distillation</div>
+    <h3>The challenge source</h3>
+    <p>Philip Parker, <i>The Cold War Spy Pocket Manual: The official field-manuals for spycraft, espionage and counter-intelligence</i> (The Pocket Manual Series), Casemate,2021 &mdash; ISBN 978-1-910860-02-1. Its end-of-book &ldquo;Code and Cipher-Breaking Challenge&rdquo; lists <b>16</b> codes (the round-12 backlog note said18; the printed book says16), devised by Micheal Colao for the Pool of London Press contest that closed31 March2016. This section distills <i>methods</i>: each card names the kitchen route and a measured vector, using own practice strings or public-domain structure. No book ciphertext is quoted in full and no contest solution is claimed.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; every figure below is re-baked against the live page by <span class="kbd">tests/cyberchef-spy-challenge.test.mjs</span>. Distilling the Playfair card exposed a missing <span class="kbd">mode</span> branch in <span class="kbd">playfair</span> (decrypt silently re-encrypted); the decrypt path landed with this section.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge1 &middot; warm-up shift</div>
+    <h3>Caesar / ROT13 (<span class="kbd">rot13</span>, <span class="kbd">caesar</span>)</h3>
+    <p>The opening item is a straightforward Caesar shift in the book&rsquo;s own wording of the classic family. <span class="kbd">rot13</span> maps <span class="kbd">Uryyb, fcl jbeyq!</span> &rarr; <span class="kbd">Hello, spy world!</span>; <span class="kbd">caesar</span> with shift3 and mode decrypt maps <span class="kbd">FDHVDU</span> &rarr; <span class="kbd">CAESAR</span>. Both directions are symmetric (encrypt undoes decrypt), so any Caesar-family item can be bracketed with the two modes.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; vectors re-baked from the section text.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge2 &middot; famous historical cipher</div>
+    <h3>Book / Beale / Ottendorf coordinates (<span class="kbd">gcwBookCipher</span>)</h3>
+    <p>Item2 is the symbol-and-digit stream in the lineage of the19th-century Beale papers &mdash; public-domain treasure-cipher territory. The kitchen route is the GCWizard-derived <span class="kbd">gcwBookCipher</span>: input = the reference text (the op ships a three-line reference), <span class="kbd">tuples</span> = coordinates in <span class="kbd">line-word-letter</span> or <span class="kbd">word-letter</span> mode. Its default coordinates <span class="kbd">3-1-1, 2-1-2, 2-1-1, 1-6-1</span> over the built-in reference extract <span class="kbd">GOLD</span>, one character per tuple.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; extraction detail lines count the3-line /28-word reference and echo each coordinate.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge3 &middot; constructed substitution</div>
+    <h3>Keyed substitution (<span class="kbd">keyedSubstitution</span>)</h3>
+    <p>The unbroken running-letter item is the substitution family the book warns about next. With key <span class="kbd">ZEBRAS</span> the kitchen maps <span class="kbd">MEETING AT NOON</span> &rarr; <span class="kbd">JAAQFKC ZQ KLLK</span> and decrypts back exactly &mdash; the keyed alphabet is the key word with deduplicated remainder appended (<span class="kbd">ZEBRASCDFGHIJKLMNOPQTUVWXY</span>). <span class="kbd">keywordCipher</span> and the frequency-oriented relatives cover the same family when only the key word is suspected.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; encrypt/decrypt round trip re-baked.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge10 &middot; polyalphabetic with six-letter key hint</div>
+    <h3>Vigen&egrave;re (<span class="kbd">vigenere</span>)</h3>
+    <p>The book hands you its own hint &mdash; &ldquo;the key is6 letters long&rdquo; &mdash; which is exactly what invites a Kasiski or index-of-coincidence attack before the kitchen&rsquo;s keyed decrypt. Measured vector: ciphertext <span class="kbd">UXNTEEWIAZ</span> with key <span class="kbd">CIPHER</span> in decrypt mode &rarr; <span class="kbd">SPYMANUALS</span>; the ciphertext itself was computed independently (A&ndash;Z only, standard Vigen&egrave;re) and the kitchen agrees letter for letter. <span class="kbd">vigenereAutokey</span>, <span class="kbd">beaufortAutokey</span> and <span class="kbd">gcwVigenereAutokey</span> handle the autokey/Beaufort variants the book&rsquo;s &ldquo;evolution of cryptography&rdquo; framing also points at.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; independent computation inside the test file, not the page, produces the ciphertext.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenges11&ndash;13,15 &middot; jigsaw and transposition block</div>
+    <h3>Columnar, double columnar, zigzag (<span class="kbd">coltrans</span>, <span class="kbd">doubleTransposition</span>, <span class="kbd">zigzagTransposition</span>)</h3>
+    <p>Four of the five-letter-block items are transposition-family (the &ldquo;jigsaw ciphers&rdquo; of Churchhouse, <i>Codes and Ciphers</i>, CUP2004, ch.4). Measured vectors: <span class="kbd">coltrans</span> key ZEBRAS maps <span class="kbd">WEAREDISCOVEREDFLEEATONCE</span> &rarr; <span class="kbd">EVLN_ACDT_ESEA_ROFO_DEEC_WIREE</span> (<span class="kbd">_</span> is the pad) and decrypts back; <span class="kbd">doubleTransposition</span> keys ZEBRAS/CIPHER maps <span class="kbd">MEETINGATNOONUNDERTHECLOCKTOWER</span> &rarr; <span class="kbd">IEETNMWTKOECLEHCOTOTANOGENUDRN_____R</span> and back; <span class="kbd">zigzagTransposition</span> (War Office1914) length8 maps <span class="kbd">MEETINGATNOON</span> &rarr; <span class="kbd">MXEXEXTNIONOGNAT</span> and decrypts back with the <span class="kbd">X</span> pad intact. Column order follows the key alphabet; a six-letter hint like item10&rsquo;s would pin the key width immediately.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; all three round trips re-baked; the columnar cipher is also cross-checked by an independent decrypt inside the test.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge14 &middot; digraph cipher</div>
+    <h3>Playfair (<span class="kbd">playfair</span>, <span class="kbd">gcwPlayfair</span>)</h3>
+    <p>Item14&rsquo;s two-letter groups are the Playfair family (Churchhouse ch.5). This build&rsquo;s <span class="kbd">playfair</span> uses the textbook5&times;5 square (key word first, then A&ndash;Z skipping J; I/J merged): <span class="kbd">ATTACKATDAWN</span> &rarr; <span class="kbd">RSSRDERSBRNY</span>, and decrypt returns <span class="kbd">ATTACKATDAWN</span>. Until2026-10-25 the <span class="kbd">mode</span> argument was decorative &mdash; both settings encrypted &mdash; so older material baked through this op should be re-checked. The GCWizard sibling is a second route: <span class="kbd">gcwPlayfair</span> with keyword MONARCHY encodes <span class="kbd">SPYMEETSATTHREE</span> to <span class="kbd">TQ CN IU KL XB SZ PD MK IU</span>, whose decode returns the pair-structured plaintext <span class="kbd">SP YM EX ET SA TX TH RE EX</span> (the encrypt-side X-padding survives as pairs, as expected for a raw inverse).</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; round trips in both operations plus an independent textbook Playfair implementation in the test agree on both directions.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge6 &middot; clock-face entries</div>
+    <h3>Clock plate tables (<span class="kbd">gcwFicCicero</span> clocks, <span class="kbd">gcwPruinfClkToki</span> clk2)</h3>
+    <p>Item6 lists bare clock times (<span class="kbd">11:52</span>, <span class="kbd">22:37</span>, &hellip;). The kitchen ships the <i>plate</i> form of the clock family: <span class="kbd">gcwFicCicero</span> with table <span class="kbd">clocks</span> maps <span class="kbd">SPY</span> &rarr; <span class="kbd">CLOCK-S CLOCK-P CLOCK-Y</span> (decode back to <span class="kbd">SPY</span>), and <span class="kbd">gcwPruinfClkToki</span> table <span class="kbd">clk2</span> maps <span class="kbd">SPY</span> &rarr; <span class="kbd">CLK2-S CLK2-P CLK2-Y</span> (decode back to <span class="kbd">SPY</span>). The challenge&rsquo;s <i>minute-resolution times</i> need a dial-to-letter step (hand angles on a published alphabet dial) that this kitchen does not ship; that gap is recorded here instead of an invented solver.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> for the plate tables &mdash; round trips re-baked. <span class="badge b-ref">Reference</span> &mdash; time-entry dial decoding remains an open gap.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Book intro hints &middot; named toolset</div>
+    <h3>Morse, fractionated Morse, Braille, semaphore, NATO (<span class="kbd">morse</span>, <span class="kbd">fractionatedMorse</span>, <span class="kbd">gcwBraille</span>, <span class="kbd">gcwSemaphore</span>, <span class="kbd">gcwSymbolMore</span>)</h3>
+    <p>The challenge preface names the systems you &ldquo;may (or may not) encounter&rdquo;; each has a live route. Morse: <span class="kbd">... --- ...</span> decodes to <span class="kbd">S O S</span> and <span class="kbd">SOS</span> encodes to <span class="kbd">... --- ...</span>. Fractionated Morse (key ROUNDTABLE): <span class="kbd">MEETING</span> &rarr; <span class="kbd">IAXUFG</span> &rarr; back. Braille: <span class="kbd">CODE</span> &rarr; <span class="kbd">&#2857; &#2869; &#2873; &#2865;</span> &rarr; back. Flag semaphore: <span class="kbd">HI</span> &rarr; <span class="kbd">W/SW&nbsp; |&nbsp; NW/SW</span> &rarr; back. NATO phonetic: <span class="kbd">SPY</span> &rarr; <span class="kbd">Sierra Papa Yankee</span> &rarr; back.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; all five round trips re-baked through the GCWizard-backed operations.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge9 &middot; flag fact matrix</div>
+    <h3>Boolean facts to bits (<span class="kbd">toBinary</span>, <span class="kbd">fromBinary</span>)</h3>
+    <p>Item9 asks six yes/no facts per flag over twenty-two listed entities &mdash; an analysis puzzle, not a classical cipher: gather each row as bits, then turn groups of bits into letters. The kitchen&rsquo;s binary pair is the plumbing: <span class="kbd">AB</span> &rarr; <span class="kbd">01000001 01000010</span> (8-bit, space-separated) and back. Bit order, row order and grouping width are part of the puzzle&rsquo;s design, so this card fixes the plumbing only; the contest answer was never published and is not claimed here.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> for the binary round trip &mdash; <span class="badge b-ref">Reference</span> for the contest-specific grouping, which stays unsolved by design.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenge16 &middot; symbol-alphabet computer codes</div>
+    <h3>Printable-ASCII shift probe (<span class="kbd">rot47</span>)</h3>
+    <p>The last item mixes letters with <span class="kbd">@ ^ _ [ ] { } ;</span>-style glyphs &mdash; the &ldquo;computer codes&rdquo; hint of the preface. The obvious printable-ASCII shift was measured: <span class="kbd">8:94@4?85:::9D</span> &rarr; <span class="kbd">gihcocngdiiihs</span>, which is not plaintext, so the block behaves as a substitution over a symbol alphabet (attack with <span class="kbd">keyedSubstitution</span> once the alphabet is guessed) rather than a uniform shift. Recorded as method + negative result; no solved claim.</p>
+    <p class="status">Status: <span class="badge b-ref">Reference</span> &mdash; measured probe above; the item&rsquo;s symbol alphabet is not shipped as a table.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Challenges4,5,7,8 &middot; documented skips</div>
+    <h3>Image glyphs, Navajo words, word list, shorthand</h3>
+    <p><b>4</b> &mdash; an image of an unidentified blocky glyph alphabet; the Moon/Nyctography families (<span class="kbd">gcwMoon9Braille</span>, <span class="kbd">gcwNyctography</span>) are only candidates and no match is claimed. <b>5</b> &mdash; Navajo code-talker words: the kitchen ships no Navajo table and inventing word values would fabricate a real wartime system, so it is skipped outright. <b>7</b> &mdash; the37-word list: acrostic/first-letter extraction has no dedicated op in this kitchen (only the <span class="kbd">stegoAcro</span> encoder), so the attack stays manual. <b>8</b> &mdash; an English shorthand image (Gregg/Pitman lineage); the nearest shipped table is German stenography inside <span class="kbd">gcwBrailfxChrexSteno</span>, and transcribing the image by hand is out of scope.</p>
+    <p class="status">Status: <span class="badge b-ref">Reference</span> &mdash; skip reasons recorded, nothing fabricated.</p>
+  </div>
+
+  <hr class="hr">
   <div class="foot">
     Crypto Cookbook · pairs with the CyberChef kitchen (cyberchef.html) where these recipes are live operations.
     Verified statuses are backed by published test vectors. Educational/reference items are for learning, not production.
