@@ -1,0 +1,5927 @@
+{
+ "tool": "tools/playwright164/disassemble.mjs",
+ "package": {
+  "name": "playwright-core",
+  "version": "1.64.1",
+  "license": "Apache-2.0",
+  "engines": {
+   "node": ">=20"
+  },
+  "repository": "git+https://github.com/microsoft/playwright.git",
+  "exports": {
+   ".": {
+    "types": "./index.d.ts",
+    "import": "./index.mjs",
+    "require": "./index.js",
+    "default": "./index.js"
+   },
+   "./package.json": "./package.json",
+   "./lib/bootstrap": "./lib/bootstrap.js",
+   "./lib/coreBundle": "./lib/coreBundle.js",
+   "./lib/utilsBundle": "./lib/utilsBundle.js",
+   "./lib/tools/cli-client/program": "./lib/tools/cli-client/program.js"
+  },
+  "bin": {
+   "playwright-core": "cli.js"
+  },
+  "types": "types/types.d.ts"
+ },
+ "entryChain": [
+  "index.js -> require(./lib/bootstrap) [Node >= 20 gate, optional PW_PROFILE_DIR profiling]",
+  "index.js -> module.exports = require(./lib/coreBundle).inprocess.playwright",
+  "index.mjs -> ESM re-export of the same in-process driver"
+ ],
+ "browsers": [
+  {
+   "name": "chromium",
+   "revision": "1248",
+   "installByDefault": true,
+   "browserVersion": "156.0.8078.4",
+   "title": "Chrome for Testing"
+  },
+  {
+   "name": "chromium-headless-shell",
+   "revision": "1248",
+   "installByDefault": true,
+   "browserVersion": "156.0.8078.4",
+   "title": "Chrome Headless Shell"
+  },
+  {
+   "name": "firefox",
+   "revision": "1555",
+   "installByDefault": true,
+   "browserVersion": "157.0",
+   "title": "Firefox"
+  },
+  {
+   "name": "webkit",
+   "revision": "2370",
+   "installByDefault": true,
+   "revisionOverrides": {
+    "mac14": "2251",
+    "mac14-arm64": "2251"
+   },
+   "browserVersion": "27.2",
+   "title": "WebKit"
+  },
+  {
+   "name": "ffmpeg",
+   "revision": "1013",
+   "installByDefault": true
+  },
+  {
+   "name": "winldd",
+   "revision": "1007",
+   "installByDefault": false
+  },
+  {
+   "name": "android",
+   "revision": "1001",
+   "installByDefault": false
+  }
+ ],
+ "files": {
+  "index.js": {
+   "bytes": 697,
+   "sha256": "a58fb2cec4293e7dcf73c58a179898a4f3986666451a19da4e731fa3af63265b"
+  },
+  "index.mjs": {
+   "bytes": 1063,
+   "sha256": "3d36e2132d3c8b62397d23f0bb4177336aaee503203ae2a2c90fbeb5bf3317dd"
+  },
+  "cli.js": {
+   "bytes": 867,
+   "sha256": "7c46f799363eee3e0bb7a7d7c870a92316a1601bf6fda780b656df4209542aa9"
+  },
+  "lib/bootstrap.js": {
+   "bytes": 5739,
+   "sha256": "39dd64cc9472275d1b25c170fefa2a98353bcca598b741788faac2e6e15fc737"
+  },
+  "lib/coreBundle.js": {
+   "bytes": 3585406,
+   "sha256": "829521b67ed7be90c7d6d6098ff39f2241562d47e4ad7ccab13710924a56001d"
+  },
+  "lib/utilsBundle.js": {
+   "bytes": 3085095,
+   "sha256": "75f1431ea7ee00b2b291a0a72d4fa1c07ae04d999f21a00cd03b8f454a5840fc"
+  },
+  "lib/serverRegistry.js": {
+   "bytes": 57039,
+   "sha256": "38025f08f335705b099b9f188bf45b5908a56a722825fe895b1e90f56d5595b6"
+  },
+  "types/protocol.d.ts": {
+   "bytes": 819286,
+   "sha256": "ccd722dea5eca655cf111348ec27a38a376d467407c4cc763d31514550d04d5d"
+  },
+  "types/types.d.ts": {
+   "bytes": 1150893,
+   "sha256": "c458c9da21dde7732dd440f4f2f861ec66ef89813955a591157ec30e4a90186e"
+  }
+ },
+ "coreBundle": {
+  "file": "lib/coreBundle.js",
+  "bytes": 3585406,
+  "totalLines": 78042,
+  "moduleCount": 414,
+  "areas": {
+   "packages/playwright-core": {
+    "modules": 322,
+    "lines": 57418
+   },
+   "packages/isomorphic": {
+    "modules": 50,
+    "lines": 11857
+   },
+   "packages/utils": {
+    "modules": 32,
+    "lines": 4109
+   },
+   "packages/protocol": {
+    "modules": 3,
+    "lines": 3552
+   },
+   "packages/injected": {
+    "modules": 7,
+    "lines": 1017
+   }
+  },
+  "playwrightSrcAreas": {
+   "server": {
+    "modules": 154,
+    "lines": 35926
+   },
+   "tools": {
+    "modules": 87,
+    "lines": 12250
+   },
+   "client": {
+    "modules": 51,
+    "lines": 7109
+   },
+   "cli": {
+    "modules": 5,
+    "lines": 744
+   },
+   "remote": {
+    "modules": 5,
+    "lines": 648
+   },
+   "generated": {
+    "modules": 13,
+    "lines": 219
+   },
+   "serverRegistry.ts": {
+    "modules": 1,
+    "lines": 205
+   },
+   "browserServerImpl.ts": {
+    "modules": 1,
+    "lines": 91
+   },
+   "coreBundle.ts": {
+    "modules": 1,
+    "lines": 63
+   },
+   "outofprocess.ts": {
+    "modules": 1,
+    "lines": 53
+   },
+   "inprocess.ts": {
+    "modules": 1,
+    "lines": 49
+   },
+   "androidServerImpl.ts": {
+    "modules": 1,
+    "lines": 46
+   },
+   "package.ts": {
+    "modules": 1,
+    "lines": 15
+   }
+  },
+  "largest": [
+   {
+    "path": "packages/protocol/src/validator.ts",
+    "lines": 3228
+   },
+   {
+    "path": "packages/isomorphic/deviceDescriptorsSource.json",
+    "lines": 2746
+   },
+   {
+    "path": "packages/playwright-core/src/server/frames.ts",
+    "lines": 1571
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/commands.ts",
+    "lines": 1290
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/index.ts",
+    "lines": 1235
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkPage.ts",
+    "lines": 1164
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvPage.ts",
+    "lines": 1133
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crPage.ts",
+    "lines": 1044
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/nativeDeps.ts",
+    "lines": 1040
+   },
+   {
+    "path": "packages/isomorphic/cssTokenizer.ts",
+    "lines": 964
+   },
+   {
+    "path": "packages/playwright-core/src/server/dom.ts",
+    "lines": 936
+   },
+   {
+    "path": "packages/playwright-core/src/server/page.ts",
+    "lines": 876
+   },
+   {
+    "path": "packages/playwright-core/src/client/page.ts",
+    "lines": 787
+   },
+   {
+    "path": "packages/playwright-core/src/server/trace/recorder/tracing.ts",
+    "lines": 767
+   },
+   {
+    "path": "packages/playwright-core/src/client/network.ts",
+    "lines": 741
+   }
+  ],
+  "modules": [
+   {
+    "path": "packages/isomorphic/ariaSnapshot.ts",
+    "startLine": 90,
+    "lines": 415
+   },
+   {
+    "path": "packages/isomorphic/stringUtils.ts",
+    "startLine": 505,
+    "lines": 164
+   },
+   {
+    "path": "packages/isomorphic/yaml.ts",
+    "startLine": 669,
+    "lines": 62
+   },
+   {
+    "path": "packages/isomorphic/ariaSnapshotRenderer.ts",
+    "startLine": 731,
+    "lines": 151
+   },
+   {
+    "path": "packages/isomorphic/assert.ts",
+    "startLine": 882,
+    "lines": 11
+   },
+   {
+    "path": "packages/isomorphic/base64.ts",
+    "startLine": 893,
+    "lines": 13
+   },
+   {
+    "path": "packages/isomorphic/colors.ts",
+    "startLine": 906,
+    "lines": 51
+   },
+   {
+    "path": "packages/isomorphic/headers.ts",
+    "startLine": 957,
+    "lines": 43
+   },
+   {
+    "path": "packages/isomorphic/imageUtils.ts",
+    "startLine": 1000,
+    "lines": 132
+   },
+   {
+    "path": "packages/isomorphic/istanbulCoverage.ts",
+    "startLine": 1132,
+    "lines": 67
+   },
+   {
+    "path": "packages/isomorphic/jsonSchema.ts",
+    "startLine": 1199,
+    "lines": 70
+   },
+   {
+    "path": "packages/isomorphic/cssTokenizer.ts",
+    "startLine": 1269,
+    "lines": 964
+   },
+   {
+    "path": "packages/isomorphic/cssParser.ts",
+    "startLine": 2233,
+    "lines": 210
+   },
+   {
+    "path": "packages/isomorphic/selectorParser.ts",
+    "startLine": 2443,
+    "lines": 376
+   },
+   {
+    "path": "packages/isomorphic/locatorGenerators.ts",
+    "startLine": 2819,
+    "lines": 708
+   },
+   {
+    "path": "packages/isomorphic/manualPromise.ts",
+    "startLine": 3527,
+    "lines": 104
+   },
+   {
+    "path": "packages/isomorphic/mimeType.ts",
+    "startLine": 3631,
+    "lines": 452
+   },
+   {
+    "path": "packages/isomorphic/multimap.ts",
+    "startLine": 4083,
+    "lines": 61
+   },
+   {
+    "path": "packages/isomorphic/protocolMetainfo.ts",
+    "startLine": 4144,
+    "lines": 346
+   },
+   {
+    "path": "packages/isomorphic/protocolFormatter.ts",
+    "startLine": 4490,
+    "lines": 124
+   },
+   {
+    "path": "packages/isomorphic/rtti.ts",
+    "startLine": 4614,
+    "lines": 25
+   },
+   {
+    "path": "packages/isomorphic/semaphore.ts",
+    "startLine": 4639,
+    "lines": 35
+   },
+   {
+    "path": "packages/isomorphic/formatUtils.ts",
+    "startLine": 4674,
+    "lines": 42
+   },
+   {
+    "path": "packages/isomorphic/time.ts",
+    "startLine": 4716,
+    "lines": 22
+   },
+   {
+    "path": "packages/isomorphic/timeoutRunner.ts",
+    "startLine": 4738,
+    "lines": 44
+   },
+   {
+    "path": "packages/isomorphic/trace/snapshotServer.ts",
+    "startLine": 4782,
+    "lines": 107
+   },
+   {
+    "path": "packages/isomorphic/urlMatch.ts",
+    "startLine": 4889,
+    "lines": 224
+   },
+   {
+    "path": "packages/isomorphic/locatorUtils.ts",
+    "startLine": 5113,
+    "lines": 54
+   },
+   {
+    "path": "packages/isomorphic/locatorParser.ts",
+    "startLine": 5167,
+    "lines": 632
+   },
+   {
+    "path": "packages/isomorphic/trace/snapshotRenderer.ts",
+    "startLine": 5799,
+    "lines": 498
+   },
+   {
+    "path": "packages/isomorphic/lruCache.ts",
+    "startLine": 6297,
+    "lines": 32
+   },
+   {
+    "path": "packages/isomorphic/trace/snapshotStorage.ts",
+    "startLine": 6329,
+    "lines": 67
+   },
+   {
+    "path": "packages/isomorphic/trace/traceUtils.ts",
+    "startLine": 6396,
+    "lines": 48
+   },
+   {
+    "path": "packages/isomorphic/trace/traceModernizer.ts",
+    "startLine": 6444,
+    "lines": 488
+   },
+   {
+    "path": "packages/isomorphic/trace/traceLoader.ts",
+    "startLine": 6932,
+    "lines": 113
+   },
+   {
+    "path": "packages/isomorphic/trace/traceModel.ts",
+    "startLine": 7045,
+    "lines": 325
+   },
+   {
+    "path": "packages/isomorphic/index.ts",
+    "startLine": 7370,
+    "lines": 170
+   },
+   {
+    "path": "packages/utils/ascii.ts",
+    "startLine": 7540,
+    "lines": 22
+   },
+   {
+    "path": "packages/utils/chromiumChannels.ts",
+    "startLine": 7562,
+    "lines": 58
+   },
+   {
+    "path": "packages/utils/third_party/pixelmatch.js",
+    "startLine": 7620,
+    "lines": 176
+   },
+   {
+    "path": "packages/utils/image_tools/colorUtils.ts",
+    "startLine": 7796,
+    "lines": 62
+   },
+   {
+    "path": "packages/utils/image_tools/imageChannel.ts",
+    "startLine": 7858,
+    "lines": 59
+   },
+   {
+    "path": "packages/utils/image_tools/stats.ts",
+    "startLine": 7917,
+    "lines": 81
+   },
+   {
+    "path": "packages/utils/image_tools/compare.ts",
+    "startLine": 7998,
+    "lines": 92
+   },
+   {
+    "path": "packages/utils/webp/webp_codec.js",
+    "startLine": 8090,
+    "lines": 340
+   },
+   {
+    "path": "packages/utils/webp/webp.ts",
+    "startLine": 8430,
+    "lines": 75
+   },
+   {
+    "path": "packages/utils/comparators.ts",
+    "startLine": 8505,
+    "lines": 122
+   },
+   {
+    "path": "packages/utils/crypto.ts",
+    "startLine": 8627,
+    "lines": 207
+   },
+   {
+    "path": "packages/utils/env.ts",
+    "startLine": 8834,
+    "lines": 53
+   },
+   {
+    "path": "packages/utils/debug.ts",
+    "startLine": 8887,
+    "lines": 21
+   },
+   {
+    "path": "packages/utils/debugLogger.ts",
+    "startLine": 8908,
+    "lines": 91
+   },
+   {
+    "path": "packages/utils/eventsHelper.ts",
+    "startLine": 8999,
+    "lines": 22
+   },
+   {
+    "path": "packages/utils/fileUtils.ts",
+    "startLine": 9021,
+    "lines": 120
+   },
+   {
+    "path": "packages/utils/linuxUtils.ts",
+    "startLine": 9141,
+    "lines": 41
+   },
+   {
+    "path": "packages/utils/hostPlatform.ts",
+    "startLine": 9182,
+    "lines": 96
+   },
+   {
+    "path": "packages/utils/stackTrace.ts",
+    "startLine": 9278,
+    "lines": 171
+   },
+   {
+    "path": "packages/utils/network.ts",
+    "startLine": 9449,
+    "lines": 239
+   },
+   {
+    "path": "packages/utils/httpServer.ts",
+    "startLine": 9688,
+    "lines": 282
+   },
+   {
+    "path": "packages/utils/processLauncher.ts",
+    "startLine": 9970,
+    "lines": 234
+   },
+   {
+    "path": "packages/utils/serializedFS.ts",
+    "startLine": 10204,
+    "lines": 126
+   },
+   {
+    "path": "packages/utils/socksProxy.ts",
+    "startLine": 10330,
+    "lines": 450
+   },
+   {
+    "path": "packages/utils/stringWidth.ts",
+    "startLine": 10780,
+    "lines": 53
+   },
+   {
+    "path": "packages/utils/wsServer.ts",
+    "startLine": 10833,
+    "lines": 137
+   },
+   {
+    "path": "packages/utils/zipFile.ts",
+    "startLine": 10970,
+    "lines": 55
+   },
+   {
+    "path": "packages/utils/zones.ts",
+    "startLine": 11025,
+    "lines": 34
+   },
+   {
+    "path": "packages/utils/third_party/extractZip.ts",
+    "startLine": 11059,
+    "lines": 133
+   },
+   {
+    "path": "packages/utils/third_party/lockfile.ts",
+    "startLine": 11192,
+    "lines": 252
+   },
+   {
+    "path": "packages/utils/index.ts",
+    "startLine": 11444,
+    "lines": 142
+   },
+   {
+    "path": "packages/playwright-core/src/client/eventEmitter.ts",
+    "startLine": 11586,
+    "lines": 296
+   },
+   {
+    "path": "packages/playwright-core/src/package.ts",
+    "startLine": 11882,
+    "lines": 15
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceParser.ts",
+    "startLine": 11897,
+    "lines": 80
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceUtils.ts",
+    "startLine": 11977,
+    "lines": 123
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceOpen.ts",
+    "startLine": 12100,
+    "lines": 49
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceActions.ts",
+    "startLine": 12149,
+    "lines": 111
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceRequests.ts",
+    "startLine": 12260,
+    "lines": 154
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceConsole.ts",
+    "startLine": 12414,
+    "lines": 82
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceErrors.ts",
+    "startLine": 12496,
+    "lines": 35
+   },
+   {
+    "path": "packages/isomorphic/disposable.ts",
+    "startLine": 12531,
+    "lines": 12
+   },
+   {
+    "path": "packages/playwright-core/src/server/userAgent.ts",
+    "startLine": 12543,
+    "lines": 65
+   },
+   {
+    "path": "packages/playwright-core/src/generated/clockSource.ts",
+    "startLine": 12608,
+    "lines": 9
+   },
+   {
+    "path": "packages/protocol/src/serializers.ts",
+    "startLine": 12617,
+    "lines": 186
+   },
+   {
+    "path": "packages/playwright-core/src/server/protocolError.ts",
+    "startLine": 12803,
+    "lines": 29
+   },
+   {
+    "path": "packages/playwright-core/src/server/errors.ts",
+    "startLine": 12832,
+    "lines": 66
+   },
+   {
+    "path": "packages/playwright-core/src/server/progress.ts",
+    "startLine": 12898,
+    "lines": 162
+   },
+   {
+    "path": "packages/playwright-core/src/server/clock.ts",
+    "startLine": 13060,
+    "lines": 119
+   },
+   {
+    "path": "packages/playwright-core/src/generated/webAuthnSource.ts",
+    "startLine": 13179,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/webAuthn.ts",
+    "startLine": 13205,
+    "lines": 172
+   },
+   {
+    "path": "packages/playwright-core/src/server/credentials.ts",
+    "startLine": 13377,
+    "lines": 247
+   },
+   {
+    "path": "packages/playwright-core/src/server/instrumentation.ts",
+    "startLine": 13624,
+    "lines": 70
+   },
+   {
+    "path": "packages/playwright-core/src/server/debugger.ts",
+    "startLine": 13694,
+    "lines": 203
+   },
+   {
+    "path": "packages/playwright-core/src/server/dialog.ts",
+    "startLine": 13897,
+    "lines": 129
+   },
+   {
+    "path": "packages/playwright-core/src/server/network.ts",
+    "startLine": 14026,
+    "lines": 697
+   },
+   {
+    "path": "packages/playwright-core/src/server/cookieStore.ts",
+    "startLine": 14723,
+    "lines": 186
+   },
+   {
+    "path": "packages/playwright-core/src/server/formData.ts",
+    "startLine": 14909,
+    "lines": 128
+   },
+   {
+    "path": "packages/playwright-core/src/server/socksClientCertificatesInterceptor.ts",
+    "startLine": 15037,
+    "lines": 355
+   },
+   {
+    "path": "packages/playwright-core/src/server/trace/recorder/snapshotterInjected.ts",
+    "startLine": 15392,
+    "lines": 558
+   },
+   {
+    "path": "packages/playwright-core/src/server/trace/recorder/snapshotter.ts",
+    "startLine": 15950,
+    "lines": 129
+   },
+   {
+    "path": "packages/playwright-core/src/server/artifact.ts",
+    "startLine": 16079,
+    "lines": 107
+   },
+   {
+    "path": "packages/playwright-core/src/generated/coverageScriptSource.ts",
+    "startLine": 16186,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/coverageScript.ts",
+    "startLine": 16212,
+    "lines": 8
+   },
+   {
+    "path": "packages/isomorphic/istanbulCoverage.ts",
+    "startLine": 16220,
+    "lines": 30
+   },
+   {
+    "path": "packages/injected/src/coverageScript.ts",
+    "startLine": 16250,
+    "lines": 104
+   },
+   {
+    "path": "packages/playwright-core/src/server/coverageRecorder.ts",
+    "startLine": 16354,
+    "lines": 115
+   },
+   {
+    "path": "packages/protocol/src/validatorPrimitives.ts",
+    "startLine": 16469,
+    "lines": 138
+   },
+   {
+    "path": "packages/protocol/src/validator.ts",
+    "startLine": 16607,
+    "lines": 3228
+   },
+   {
+    "path": "packages/playwright-core/src/server/callLog.ts",
+    "startLine": 19835,
+    "lines": 61
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/dispatcher.ts",
+    "startLine": 19896,
+    "lines": 376
+   },
+   {
+    "path": "packages/isomorphic/utilityScriptSerializers.ts",
+    "startLine": 20272,
+    "lines": 307
+   },
+   {
+    "path": "packages/playwright-core/src/generated/utilityScriptSource.ts",
+    "startLine": 20579,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/javascript.ts",
+    "startLine": 20588,
+    "lines": 296
+   },
+   {
+    "path": "packages/playwright-core/src/server/fileUploadUtils.ts",
+    "startLine": 20884,
+    "lines": 55
+   },
+   {
+    "path": "packages/playwright-core/src/generated/injectedScriptSource.ts",
+    "startLine": 20939,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/dom.ts",
+    "startLine": 20948,
+    "lines": 936
+   },
+   {
+    "path": "packages/playwright-core/src/server/frameSelectors.ts",
+    "startLine": 21884,
+    "lines": 261
+   },
+   {
+    "path": "packages/playwright-core/src/server/helper.ts",
+    "startLine": 22145,
+    "lines": 77
+   },
+   {
+    "path": "packages/playwright-core/src/server/disposable.ts",
+    "startLine": 22222,
+    "lines": 20
+   },
+   {
+    "path": "packages/playwright-core/src/server/console.ts",
+    "startLine": 22242,
+    "lines": 42
+   },
+   {
+    "path": "packages/playwright-core/src/server/fileChooser.ts",
+    "startLine": 22284,
+    "lines": 20
+   },
+   {
+    "path": "packages/playwright-core/src/server/usKeyboardLayout.ts",
+    "startLine": 22304,
+    "lines": 131
+   },
+   {
+    "path": "packages/playwright-core/src/server/input.ts",
+    "startLine": 22435,
+    "lines": 283
+   },
+   {
+    "path": "packages/playwright-core/src/server/screenshotter.ts",
+    "startLine": 22718,
+    "lines": 304
+   },
+   {
+    "path": "packages/playwright-core/src/server/highlightController.ts",
+    "startLine": 23022,
+    "lines": 95
+   },
+   {
+    "path": "packages/playwright-core/src/generated/bindingsControllerSource.ts",
+    "startLine": 23117,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/overlay.ts",
+    "startLine": 23126,
+    "lines": 121
+   },
+   {
+    "path": "packages/playwright-core/src/server/screencast.ts",
+    "startLine": 23247,
+    "lines": 162
+   },
+   {
+    "path": "packages/playwright-core/src/server/page.ts",
+    "startLine": 23409,
+    "lines": 876
+   },
+   {
+    "path": "packages/playwright-core/src/server/types.ts",
+    "startLine": 24285,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/generated/webMCPSource.ts",
+    "startLine": 24294,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/webmcp.ts",
+    "startLine": 24303,
+    "lines": 64
+   },
+   {
+    "path": "packages/playwright-core/src/server/frames.ts",
+    "startLine": 24367,
+    "lines": 1571
+   },
+   {
+    "path": "packages/playwright-core/src/server/har/harTracer.ts",
+    "startLine": 25938,
+    "lines": 689
+   },
+   {
+    "path": "packages/playwright-core/src/server/har/harRecorder.ts",
+    "startLine": 26627,
+    "lines": 134
+   },
+   {
+    "path": "packages/playwright-core/src/server/trace/recorder/tracing.ts",
+    "startLine": 26761,
+    "lines": 767
+   },
+   {
+    "path": "packages/playwright-core/src/server/fetch.ts",
+    "startLine": 27528,
+    "lines": 728
+   },
+   {
+    "path": "packages/isomorphic/codegen/language.ts",
+    "startLine": 28256,
+    "lines": 96
+   },
+   {
+    "path": "packages/isomorphic/deviceDescriptorsSource.json",
+    "startLine": 28352,
+    "lines": 2746
+   },
+   {
+    "path": "packages/isomorphic/deviceDescriptors.ts",
+    "startLine": 31098,
+    "lines": 10
+   },
+   {
+    "path": "packages/isomorphic/codegen/csharp.ts",
+    "startLine": 31108,
+    "lines": 326
+   },
+   {
+    "path": "packages/isomorphic/codegen/javascript.ts",
+    "startLine": 31434,
+    "lines": 234
+   },
+   {
+    "path": "packages/isomorphic/codegen/java.ts",
+    "startLine": 31668,
+    "lines": 270
+   },
+   {
+    "path": "packages/isomorphic/codegen/jsonl.ts",
+    "startLine": 31938,
+    "lines": 41
+   },
+   {
+    "path": "packages/isomorphic/codegen/python.ts",
+    "startLine": 31979,
+    "lines": 275
+   },
+   {
+    "path": "packages/isomorphic/codegen/languages.ts",
+    "startLine": 32254,
+    "lines": 49
+   },
+   {
+    "path": "packages/playwright-core/src/server/utils.ts",
+    "startLine": 32303,
+    "lines": 31
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/nativeDeps.ts",
+    "startLine": 32334,
+    "lines": 1040
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/dependencies.ts",
+    "startLine": 33374,
+    "lines": 348
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/browserFetcher.ts",
+    "startLine": 33722,
+    "lines": 148
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/oopDownloadBrowserMain.ts",
+    "startLine": 33870,
+    "lines": 114
+   },
+   {
+    "path": "packages/playwright-core/src/server/registry/index.ts",
+    "startLine": 33984,
+    "lines": 1235
+   },
+   {
+    "path": "packages/playwright-core/src/server/launchApp.ts",
+    "startLine": 35219,
+    "lines": 100
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder/throttledFile.ts",
+    "startLine": 35319,
+    "lines": 28
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder/recorderUtils.ts",
+    "startLine": 35347,
+    "lines": 114
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder/recorderSignalProcessor.ts",
+    "startLine": 35461,
+    "lines": 119
+   },
+   {
+    "path": "packages/playwright-core/src/generated/pollingRecorderSource.ts",
+    "startLine": 35580,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder/recorderRunner.ts",
+    "startLine": 35589,
+    "lines": 25
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder.ts",
+    "startLine": 35614,
+    "lines": 489
+   },
+   {
+    "path": "packages/utils/pipeTransport.ts",
+    "startLine": 36103,
+    "lines": 63
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/chromiumSwitches.ts",
+    "startLine": 36166,
+    "lines": 97
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crConnection.ts",
+    "startLine": 36263,
+    "lines": 185
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crCoverage.ts",
+    "startLine": 36448,
+    "lines": 216
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crProtocolHelper.ts",
+    "startLine": 36664,
+    "lines": 106
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crDragDrop.ts",
+    "startLine": 36770,
+    "lines": 112
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crExecutionContext.ts",
+    "startLine": 36882,
+    "lines": 120
+   },
+   {
+    "path": "packages/playwright-core/src/server/macEditingCommands.ts",
+    "startLine": 37002,
+    "lines": 124
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crInput.ts",
+    "startLine": 37126,
+    "lines": 155
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crNetworkManager.ts",
+    "startLine": 37281,
+    "lines": 724
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crPdf.ts",
+    "startLine": 38005,
+    "lines": 102
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/defaultFontFamilies.ts",
+    "startLine": 38107,
+    "lines": 143
+   },
+   {
+    "path": "packages/playwright-core/src/server/ebml.ts",
+    "startLine": 38250,
+    "lines": 116
+   },
+   {
+    "path": "packages/playwright-core/src/server/videoRecorder.ts",
+    "startLine": 38366,
+    "lines": 181
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crPage.ts",
+    "startLine": 38547,
+    "lines": 1044
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crServiceWorker.ts",
+    "startLine": 39591,
+    "lines": 119
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crBrowser.ts",
+    "startLine": 39710,
+    "lines": 503
+   },
+   {
+    "path": "packages/playwright-core/src/server/android/android.ts",
+    "startLine": 40213,
+    "lines": 451
+   },
+   {
+    "path": "packages/playwright-core/src/server/android/backendAdb.ts",
+    "startLine": 40664,
+    "lines": 148
+   },
+   {
+    "path": "packages/playwright-core/src/server/pipeTransport.ts",
+    "startLine": 40812,
+    "lines": 68
+   },
+   {
+    "path": "packages/playwright-core/src/server/transport.ts",
+    "startLine": 40880,
+    "lines": 160
+   },
+   {
+    "path": "packages/playwright-core/src/server/browserType.ts",
+    "startLine": 41040,
+    "lines": 315
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiConnection.ts",
+    "startLine": 41355,
+    "lines": 195
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/bidiProtocolCore.ts",
+    "startLine": 41550,
+    "lines": 108
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/bidiProtocolPermissions.ts",
+    "startLine": 41658,
+    "lines": 16
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/bidiProtocol.ts",
+    "startLine": 41674,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiNetworkManager.ts",
+    "startLine": 41683,
+    "lines": 382
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/bidiSerializer.ts",
+    "startLine": 42065,
+    "lines": 117
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiDeserializer.ts",
+    "startLine": 42182,
+    "lines": 98
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiExecutionContext.ts",
+    "startLine": 42280,
+    "lines": 244
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/bidiKeyboard.ts",
+    "startLine": 42524,
+    "lines": 233
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiInput.ts",
+    "startLine": 42757,
+    "lines": 118
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiPdf.ts",
+    "startLine": 42875,
+    "lines": 87
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiPage.ts",
+    "startLine": 42962,
+    "lines": 660
+   },
+   {
+    "path": "packages/playwright-core/src/generated/bidiInsertTextSource.ts",
+    "startLine": 43622,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/bidiInsertText.ts",
+    "startLine": 43648,
+    "lines": 63
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiBrowser.ts",
+    "startLine": 43711,
+    "lines": 545
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/crDevTools.ts",
+    "startLine": 44256,
+    "lines": 82
+   },
+   {
+    "path": "packages/playwright-core/src/server/chromium/chromium.ts",
+    "startLine": 44338,
+    "lines": 464
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiOverCdp.ts",
+    "startLine": 44802,
+    "lines": 77
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiChromium.ts",
+    "startLine": 44879,
+    "lines": 132
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/third_party/firefoxPrefs.ts",
+    "startLine": 45011,
+    "lines": 229
+   },
+   {
+    "path": "packages/playwright-core/src/server/bidi/bidiFirefox.ts",
+    "startLine": 45240,
+    "lines": 99
+   },
+   {
+    "path": "packages/playwright-core/src/server/debugController.ts",
+    "startLine": 45339,
+    "lines": 184
+   },
+   {
+    "path": "packages/playwright-core/src/server/electron/electron.ts",
+    "startLine": 45523,
+    "lines": 268
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffConnection.ts",
+    "startLine": 45791,
+    "lines": 126
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffExecutionContext.ts",
+    "startLine": 45917,
+    "lines": 122
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffInput.ts",
+    "startLine": 46039,
+    "lines": 152
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffNetworkManager.ts",
+    "startLine": 46191,
+    "lines": 232
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffPage.ts",
+    "startLine": 46423,
+    "lines": 512
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/ffBrowser.ts",
+    "startLine": 46935,
+    "lines": 364
+   },
+   {
+    "path": "packages/playwright-core/src/server/firefox/firefox.ts",
+    "startLine": 47299,
+    "lines": 85
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkConnection.ts",
+    "startLine": 47384,
+    "lines": 119
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkExecutionContext.ts",
+    "startLine": 47503,
+    "lines": 126
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkInput.ts",
+    "startLine": 47629,
+    "lines": 148
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkInterceptableRequest.ts",
+    "startLine": 47777,
+    "lines": 168
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkProvisionalPage.ts",
+    "startLine": 47945,
+    "lines": 64
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkWorkers.ts",
+    "startLine": 48009,
+    "lines": 87
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkPage.ts",
+    "startLine": 48096,
+    "lines": 1164
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/wkBrowser.ts",
+    "startLine": 49260,
+    "lines": 301
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/syncServer.ts",
+    "startLine": 49561,
+    "lines": 91
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvConnection.ts",
+    "startLine": 49652,
+    "lines": 110
+   },
+   {
+    "path": "packages/playwright-core/src/generated/webViewInputSource.ts",
+    "startLine": 49762,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/webview/webViewInput.ts",
+    "startLine": 49788,
+    "lines": 317
+   },
+   {
+    "path": "packages/playwright-core/src/generated/webViewDialogSource.ts",
+    "startLine": 50105,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/webview/webViewDialog.ts",
+    "startLine": 50131,
+    "lines": 61
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvExecutionContext.ts",
+    "startLine": 50192,
+    "lines": 126
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvInput.ts",
+    "startLine": 50318,
+    "lines": 130
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvWorkers.ts",
+    "startLine": 50448,
+    "lines": 88
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvInterceptableRequest.ts",
+    "startLine": 50536,
+    "lines": 169
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvProvisionalPage.ts",
+    "startLine": 50705,
+    "lines": 45
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvPage.ts",
+    "startLine": 50750,
+    "lines": 1133
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webview/wvBrowser.ts",
+    "startLine": 51883,
+    "lines": 336
+   },
+   {
+    "path": "packages/playwright-core/src/server/webkit/webkit.ts",
+    "startLine": 52219,
+    "lines": 126
+   },
+   {
+    "path": "packages/playwright-core/src/server/playwright.ts",
+    "startLine": 52345,
+    "lines": 53
+   },
+   {
+    "path": "packages/playwright-core/src/server/recorder/recorderApp.ts",
+    "startLine": 52398,
+    "lines": 375
+   },
+   {
+    "path": "packages/playwright-core/src/server/selectors.ts",
+    "startLine": 52773,
+    "lines": 94
+   },
+   {
+    "path": "packages/playwright-core/src/generated/storageScriptSource.ts",
+    "startLine": 52867,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/server/browserContext.ts",
+    "startLine": 52876,
+    "lines": 674
+   },
+   {
+    "path": "packages/playwright-core/src/server/download.ts",
+    "startLine": 53550,
+    "lines": 43
+   },
+   {
+    "path": "packages/playwright-core/src/remote/serverTransport.ts",
+    "startLine": 53593,
+    "lines": 75
+   },
+   {
+    "path": "packages/playwright-core/src/remote/playwrightPipeServer.ts",
+    "startLine": 53668,
+    "lines": 72
+   },
+   {
+    "path": "packages/playwright-core/src/remote/playwrightWebSocketServer.ts",
+    "startLine": 53740,
+    "lines": 56
+   },
+   {
+    "path": "packages/playwright-core/src/serverRegistry.ts",
+    "startLine": 53796,
+    "lines": 205
+   },
+   {
+    "path": "packages/playwright-core/src/server/browser.ts",
+    "startLine": 54001,
+    "lines": 188
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/cdpSessionDispatcher.ts",
+    "startLine": 54189,
+    "lines": 27
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/debuggerDispatcher.ts",
+    "startLine": 54216,
+    "lines": 57
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/streamDispatcher.ts",
+    "startLine": 54273,
+    "lines": 53
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/artifactDispatcher.ts",
+    "startLine": 54326,
+    "lines": 88
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/jsHandleDispatcher.ts",
+    "startLine": 54414,
+    "lines": 56
+   },
+   {
+    "path": "packages/playwright-core/src/generated/webSocketMockSource.ts",
+    "startLine": 54470,
+    "lines": 26
+   },
+   {
+    "path": "packages/injected/src/webSocketMock.ts",
+    "startLine": 54496,
+    "lines": 292
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/webSocketRouteDispatcher.ts",
+    "startLine": 54788,
+    "lines": 137
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/disposableDispatcher.ts",
+    "startLine": 54925,
+    "lines": 19
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/pageDispatcher.ts",
+    "startLine": 54944,
+    "lines": 493
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/dialogDispatcher.ts",
+    "startLine": 55437,
+    "lines": 28
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/tracingDispatcher.ts",
+    "startLine": 55465,
+    "lines": 60
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/writableStreamDispatcher.ts",
+    "startLine": 55525,
+    "lines": 54
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/browserContextDispatcher.ts",
+    "startLine": 55579,
+    "lines": 373
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/elementHandlerDispatcher.ts",
+    "startLine": 55952,
+    "lines": 162
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/frameDispatcher.ts",
+    "startLine": 56114,
+    "lines": 230
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/networkDispatchers.ts",
+    "startLine": 56344,
+    "lines": 195
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/androidDispatcher.ts",
+    "startLine": 56539,
+    "lines": 304
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/browserDispatcher.ts",
+    "startLine": 56843,
+    "lines": 104
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/browserTypeDispatcher.ts",
+    "startLine": 56947,
+    "lines": 52
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/electronDispatcher.ts",
+    "startLine": 56999,
+    "lines": 69
+   },
+   {
+    "path": "packages/playwright-core/src/server/harBackend.ts",
+    "startLine": 57068,
+    "lines": 133
+   },
+   {
+    "path": "packages/playwright-core/src/server/localUtils.ts",
+    "startLine": 57201,
+    "lines": 190
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/jsonPipeDispatcher.ts",
+    "startLine": 57391,
+    "lines": 39
+   },
+   {
+    "path": "packages/playwright-core/src/server/socksInterceptor.ts",
+    "startLine": 57430,
+    "lines": 66
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/localUtilsDispatcher.ts",
+    "startLine": 57496,
+    "lines": 161
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/playwrightDispatcher.ts",
+    "startLine": 57657,
+    "lines": 92
+   },
+   {
+    "path": "packages/playwright-core/src/server/trace/viewer/traceViewer.ts",
+    "startLine": 57749,
+    "lines": 256
+   },
+   {
+    "path": "packages/playwright-core/src/server/index.ts",
+    "startLine": 58005,
+    "lines": 48
+   },
+   {
+    "path": "packages/playwright-core/src/server/dispatchers/debugControllerDispatcher.ts",
+    "startLine": 58053,
+    "lines": 59
+   },
+   {
+    "path": "packages/playwright-core/src/remote/playwrightConnection.ts",
+    "startLine": 58112,
+    "lines": 117
+   },
+   {
+    "path": "packages/playwright-core/src/remote/playwrightServer.ts",
+    "startLine": 58229,
+    "lines": 328
+   },
+   {
+    "path": "packages/playwright-core/src/androidServerImpl.ts",
+    "startLine": 58557,
+    "lines": 46
+   },
+   {
+    "path": "packages/playwright-core/src/browserServerImpl.ts",
+    "startLine": 58603,
+    "lines": 91
+   },
+   {
+    "path": "packages/playwright-core/src/client/clientStackTrace.ts",
+    "startLine": 58694,
+    "lines": 45
+   },
+   {
+    "path": "packages/playwright-core/src/client/channelOwner.ts",
+    "startLine": 58739,
+    "lines": 191
+   },
+   {
+    "path": "packages/playwright-core/src/client/timeoutSettings.ts",
+    "startLine": 58930,
+    "lines": 70
+   },
+   {
+    "path": "packages/playwright-core/src/client/cdpSession.ts",
+    "startLine": 59000,
+    "lines": 37
+   },
+   {
+    "path": "packages/playwright-core/src/client/clientHelper.ts",
+    "startLine": 59037,
+    "lines": 57
+   },
+   {
+    "path": "packages/playwright-core/src/client/clock.ts",
+    "startLine": 59094,
+    "lines": 50
+   },
+   {
+    "path": "packages/playwright-core/src/client/errors.ts",
+    "startLine": 59144,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/client/jsHandle.ts",
+    "startLine": 59206,
+    "lines": 107
+   },
+   {
+    "path": "packages/playwright-core/src/client/consoleMessage.ts",
+    "startLine": 59313,
+    "lines": 44
+   },
+   {
+    "path": "packages/playwright-core/src/client/credentials.ts",
+    "startLine": 59357,
+    "lines": 28
+   },
+   {
+    "path": "packages/playwright-core/src/client/events.ts",
+    "startLine": 59385,
+    "lines": 94
+   },
+   {
+    "path": "packages/playwright-core/src/client/debugger.ts",
+    "startLine": 59479,
+    "lines": 45
+   },
+   {
+    "path": "packages/isomorphic/abortSignal.ts",
+    "startLine": 59524,
+    "lines": 11
+   },
+   {
+    "path": "packages/playwright-core/src/client/stream.ts",
+    "startLine": 59535,
+    "lines": 39
+   },
+   {
+    "path": "packages/playwright-core/src/client/fileUtils.ts",
+    "startLine": 59574,
+    "lines": 15
+   },
+   {
+    "path": "packages/playwright-core/src/client/artifact.ts",
+    "startLine": 59589,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/client/coverage.ts",
+    "startLine": 59651,
+    "lines": 26
+   },
+   {
+    "path": "packages/playwright-core/src/client/disposable.ts",
+    "startLine": 59677,
+    "lines": 49
+   },
+   {
+    "path": "packages/playwright-core/src/client/download.ts",
+    "startLine": 59726,
+    "lines": 43
+   },
+   {
+    "path": "packages/playwright-core/src/client/locator.ts",
+    "startLine": 59769,
+    "lines": 390
+   },
+   {
+    "path": "packages/playwright-core/src/client/waiter.ts",
+    "startLine": 60159,
+    "lines": 149
+   },
+   {
+    "path": "packages/playwright-core/src/client/worker.ts",
+    "startLine": 60308,
+    "lines": 85
+   },
+   {
+    "path": "packages/playwright-core/src/client/tracing.ts",
+    "startLine": 60393,
+    "lines": 215
+   },
+   {
+    "path": "packages/playwright-core/src/client/fetch.ts",
+    "startLine": 60608,
+    "lines": 382
+   },
+   {
+    "path": "packages/playwright-core/src/client/network.ts",
+    "startLine": 60990,
+    "lines": 741
+   },
+   {
+    "path": "packages/playwright-core/src/client/types.ts",
+    "startLine": 61731,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/client/webmcp.ts",
+    "startLine": 61740,
+    "lines": 22
+   },
+   {
+    "path": "packages/playwright-core/src/client/frame.ts",
+    "startLine": 61762,
+    "lines": 432
+   },
+   {
+    "path": "packages/playwright-core/src/client/writableStream.ts",
+    "startLine": 62194,
+    "lines": 36
+   },
+   {
+    "path": "packages/playwright-core/src/client/elementHandle.ts",
+    "startLine": 62230,
+    "lines": 262
+   },
+   {
+    "path": "packages/playwright-core/src/client/fileChooser.ts",
+    "startLine": 62492,
+    "lines": 27
+   },
+   {
+    "path": "packages/playwright-core/src/client/harRouter.ts",
+    "startLine": 62519,
+    "lines": 81
+   },
+   {
+    "path": "packages/playwright-core/src/client/input.ts",
+    "startLine": 62600,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/client/webStorage.ts",
+    "startLine": 62662,
+    "lines": 32
+   },
+   {
+    "path": "packages/playwright-core/src/client/video.ts",
+    "startLine": 62694,
+    "lines": 33
+   },
+   {
+    "path": "packages/playwright-core/src/client/screencast.ts",
+    "startLine": 62727,
+    "lines": 76
+   },
+   {
+    "path": "packages/playwright-core/src/client/page.ts",
+    "startLine": 62803,
+    "lines": 787
+   },
+   {
+    "path": "packages/playwright-core/src/client/dialog.ts",
+    "startLine": 63590,
+    "lines": 45
+   },
+   {
+    "path": "packages/playwright-core/src/client/webError.ts",
+    "startLine": 63635,
+    "lines": 24
+   },
+   {
+    "path": "packages/playwright-core/src/client/browserContext.ts",
+    "startLine": 63659,
+    "lines": 514
+   },
+   {
+    "path": "packages/playwright-core/src/client/browser.ts",
+    "startLine": 64173,
+    "lines": 154
+   },
+   {
+    "path": "packages/playwright-core/src/client/connect.ts",
+    "startLine": 64327,
+    "lines": 122
+   },
+   {
+    "path": "packages/playwright-core/src/client/android.ts",
+    "startLine": 64449,
+    "lines": 335
+   },
+   {
+    "path": "packages/playwright-core/src/client/browserType.ts",
+    "startLine": 64784,
+    "lines": 150
+   },
+   {
+    "path": "packages/playwright-core/src/client/clientInstrumentation.ts",
+    "startLine": 64934,
+    "lines": 35
+   },
+   {
+    "path": "packages/playwright-core/src/client/electron.ts",
+    "startLine": 64969,
+    "lines": 118
+   },
+   {
+    "path": "packages/playwright-core/src/client/jsonPipe.ts",
+    "startLine": 65087,
+    "lines": 20
+   },
+   {
+    "path": "packages/playwright-core/src/client/localUtils.ts",
+    "startLine": 65107,
+    "lines": 42
+   },
+   {
+    "path": "packages/playwright-core/src/client/selectors.ts",
+    "startLine": 65149,
+    "lines": 38
+   },
+   {
+    "path": "packages/playwright-core/src/client/playwright.ts",
+    "startLine": 65187,
+    "lines": 52
+   },
+   {
+    "path": "packages/playwright-core/src/client/connection.ts",
+    "startLine": 65239,
+    "lines": 279
+   },
+   {
+    "path": "packages/playwright-core/src/inprocess.ts",
+    "startLine": 65518,
+    "lines": 49
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/codegen.ts",
+    "startLine": 65567,
+    "lines": 87
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/utils.ts",
+    "startLine": 65654,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/logFile.ts",
+    "startLine": 65716,
+    "lines": 66
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/tool.ts",
+    "startLine": 65782,
+    "lines": 25
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/dialogs.ts",
+    "startLine": 65807,
+    "lines": 39
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/snapshot.ts",
+    "startLine": 65846,
+    "lines": 195
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/files.ts",
+    "startLine": 66041,
+    "lines": 77
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/webmcp.ts",
+    "startLine": 66118,
+    "lines": 198
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/tab.ts",
+    "startLine": 66316,
+    "lines": 503
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/context.ts",
+    "startLine": 66819,
+    "lines": 407
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/response.ts",
+    "startLine": 67226,
+    "lines": 371
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/sessionLog.ts",
+    "startLine": 67597,
+    "lines": 46
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/browserBackend.ts",
+    "startLine": 67643,
+    "lines": 113
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/common.ts",
+    "startLine": 67756,
+    "lines": 50
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/config.ts",
+    "startLine": 67806,
+    "lines": 26
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/console.ts",
+    "startLine": 67832,
+    "lines": 51
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/cookies.ts",
+    "startLine": 67883,
+    "lines": 138
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/devtools.ts",
+    "startLine": 68021,
+    "lines": 163
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/emulation.ts",
+    "startLine": 68184,
+    "lines": 38
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/evaluate.ts",
+    "startLine": 68222,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/find.ts",
+    "startLine": 68284,
+    "lines": 135
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/form.ts",
+    "startLine": 68419,
+    "lines": 46
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/keyboard.ts",
+    "startLine": 68465,
+    "lines": 141
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/mouse.ts",
+    "startLine": 68606,
+    "lines": 153
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/navigate.ts",
+    "startLine": 68759,
+    "lines": 81
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/network.ts",
+    "startLine": 68840,
+    "lines": 246
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/pdf.ts",
+    "startLine": 69086,
+    "lines": 33
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/recorder.ts",
+    "startLine": 69119,
+    "lines": 57
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/route.ts",
+    "startLine": 69176,
+    "lines": 134
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/runCode.ts",
+    "startLine": 69310,
+    "lines": 89
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/screenshot.ts",
+    "startLine": 69399,
+    "lines": 70
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/storage.ts",
+    "startLine": 69469,
+    "lines": 54
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/tabs.ts",
+    "startLine": 69523,
+    "lines": 59
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/tracing.ts",
+    "startLine": 69582,
+    "lines": 55
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/verify.ts",
+    "startLine": 69637,
+    "lines": 131
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/video.ts",
+    "startLine": 69768,
+    "lines": 133
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/wait.ts",
+    "startLine": 69901,
+    "lines": 62
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/webstorage.ts",
+    "startLine": 69963,
+    "lines": 193
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/tools.ts",
+    "startLine": 70156,
+    "lines": 79
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/command.ts",
+    "startLine": 70235,
+    "lines": 73
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/minimist.ts",
+    "startLine": 70308,
+    "lines": 108
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/commands.ts",
+    "startLine": 70416,
+    "lines": 1290
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceSnapshot.ts",
+    "startLine": 71706,
+    "lines": 161
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceScreenshot.ts",
+    "startLine": 71867,
+    "lines": 41
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceAttachments.ts",
+    "startLine": 71908,
+    "lines": 47
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/installSkills.ts",
+    "startLine": 71955,
+    "lines": 25
+   },
+   {
+    "path": "packages/playwright-core/src/tools/trace/traceCli.ts",
+    "startLine": 71980,
+    "lines": 67
+   },
+   {
+    "path": "packages/playwright-core/src/cli/driver.ts",
+    "startLine": 72047,
+    "lines": 61
+   },
+   {
+    "path": "packages/playwright-core/src/cli/installActions.ts",
+    "startLine": 72108,
+    "lines": 136
+   },
+   {
+    "path": "packages/playwright-core/src/cli/browserActions.ts",
+    "startLine": 72244,
+    "lines": 282
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/extension.ts",
+    "startLine": 72526,
+    "lines": 75
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/channelSessions.ts",
+    "startLine": 72601,
+    "lines": 110
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/output.ts",
+    "startLine": 72711,
+    "lines": 321
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/registry.ts",
+    "startLine": 73032,
+    "lines": 140
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/socketConnection.ts",
+    "startLine": 73172,
+    "lines": 87
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/session.ts",
+    "startLine": 73259,
+    "lines": 232
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-client/program.ts",
+    "startLine": 73491,
+    "lines": 385
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/mcp/http.ts",
+    "startLine": 73876,
+    "lines": 123
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/mcp/tool.ts",
+    "startLine": 73999,
+    "lines": 23
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/mcp/server.ts",
+    "startLine": 74022,
+    "lines": 192
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/configIni.ts",
+    "startLine": 74214,
+    "lines": 151
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/config.ts",
+    "startLine": 74365,
+    "lines": 465
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/log.ts",
+    "startLine": 74830,
+    "lines": 14
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/watchdog.ts",
+    "startLine": 74844,
+    "lines": 26
+   },
+   {
+    "path": "packages/playwright-core/src/tools/backend/idleTimer.ts",
+    "startLine": 74870,
+    "lines": 23
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/browserModel.ts",
+    "startLine": 74893,
+    "lines": 166
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/cdpRelayV2.ts",
+    "startLine": 75059,
+    "lines": 87
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/protocol.ts",
+    "startLine": 75146,
+    "lines": 9
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/cdpRelay.ts",
+    "startLine": 75155,
+    "lines": 300
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/extensionContextFactory.ts",
+    "startLine": 75455,
+    "lines": 34
+   },
+   {
+    "path": "packages/playwright-core/src/tools/utils/connect.ts",
+    "startLine": 75489,
+    "lines": 15
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/browserFactory.ts",
+    "startLine": 75504,
+    "lines": 220
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/program.ts",
+    "startLine": 75724,
+    "lines": 118
+   },
+   {
+    "path": "packages/playwright-core/src/cli/program.ts",
+    "startLine": 75842,
+    "lines": 206
+   },
+   {
+    "path": "packages/playwright-core/src/cli/programWithTestStub.ts",
+    "startLine": 76048,
+    "lines": 59
+   },
+   {
+    "path": "packages/playwright-core/src/outofprocess.ts",
+    "startLine": 76107,
+    "lines": 53
+   },
+   {
+    "path": "packages/playwright-core/src/tools/mcp/index.ts",
+    "startLine": 76160,
+    "lines": 41
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/helpGenerator.ts",
+    "startLine": 76201,
+    "lines": 173
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/daemon.ts",
+    "startLine": 76374,
+    "lines": 149
+   },
+   {
+    "path": "packages/playwright-core/src/tools/cli-daemon/program.ts",
+    "startLine": 76523,
+    "lines": 135
+   },
+   {
+    "path": "packages/playwright-core/src/tools/dashboard/sessionProvider.ts",
+    "startLine": 76658,
+    "lines": 14
+   },
+   {
+    "path": "packages/playwright-core/src/tools/dashboard/dashboardController.ts",
+    "startLine": 76672,
+    "lines": 629
+   },
+   {
+    "path": "packages/playwright-core/src/tools/dashboard/registrySessionProvider.ts",
+    "startLine": 77301,
+    "lines": 184
+   },
+   {
+    "path": "packages/playwright-core/src/tools/dashboard/identitySessionProvider.ts",
+    "startLine": 77485,
+    "lines": 96
+   },
+   {
+    "path": "packages/playwright-core/src/tools/dashboard/dashboardApp.ts",
+    "startLine": 77581,
+    "lines": 342
+   },
+   {
+    "path": "packages/playwright-core/src/tools/index.ts",
+    "startLine": 77923,
+    "lines": 57
+   },
+   {
+    "path": "packages/playwright-core/src/coreBundle.ts",
+    "startLine": 77980,
+    "lines": 63
+   }
+  ]
+ },
+ "utilsBundle": {
+  "file": "lib/utilsBundle.js",
+  "bytes": 3085095,
+  "totalLines": 86079,
+  "moduleCount": 627,
+  "areas": {
+   "node_modules/zod": {
+    "modules": 89,
+    "lines": 18638
+   },
+   "node_modules/@modelcontextprotocol": {
+    "modules": 90,
+    "lines": 12187
+   },
+   "node_modules/yaml": {
+    "modules": 72,
+    "lines": 7327
+   },
+   "node_modules/ajv-formats": {
+    "modules": 67,
+    "lines": 6012
+   },
+   "node_modules/enquirer": {
+    "modules": 42,
+    "lines": 4293
+   },
+   "node_modules/ws": {
+    "modules": 14,
+    "lines": 3690
+   },
+   "node_modules/commander": {
+    "modules": 8,
+    "lines": 3368
+   },
+   "node_modules/ip-address": {
+    "modules": 9,
+    "lines": 2330
+   },
+   "node_modules/jpeg-js": {
+    "modules": 3,
+    "lines": 2151
+   },
+   "node_modules/pngjs": {
+    "modules": 22,
+    "lines": 2088
+   },
+   "node_modules/source-map": {
+    "modules": 11,
+    "lines": 1747
+   },
+   "node_modules/diff": {
+    "modules": 19,
+    "lines": 1655
+   },
+   "node_modules/minimatch": {
+    "modules": 6,
+    "lines": 1589
+   },
+   "node_modules/chokidar": {
+    "modules": 3,
+    "lines": 1472
+   },
+   "node_modules/yauzl": {
+    "modules": 3,
+    "lines": 1288
+   },
+   "node_modules/zod-to-json-schema": {
+    "modules": 37,
+    "lines": 1284
+   },
+   "node_modules/smart-buffer": {
+    "modules": 2,
+    "lines": 1227
+   },
+   "node_modules/mime": {
+    "modules": 4,
+    "lines": 1180
+   },
+   "node_modules/fast-uri": {
+    "modules": 3,
+    "lines": 1118
+   },
+   "node_modules/json5": {
+    "modules": 5,
+    "lines": 1112
+   },
+   "node_modules/socks": {
+    "modules": 6,
+    "lines": 999
+   },
+   "node_modules/graceful-fs": {
+    "modules": 4,
+    "lines": 777
+   },
+   "node_modules/colors": {
+    "modules": 11,
+    "lines": 661
+   },
+   "node_modules/yazl": {
+    "modules": 1,
+    "lines": 640
+   },
+   "node_modules/@hono": {
+    "modules": 1,
+    "lines": 621
+   },
+   "node_modules/debug": {
+    "modules": 4,
+    "lines": 532
+   },
+   "node_modules/source-map-support": {
+    "modules": 1,
+    "lines": 470
+   },
+   "node_modules/dotenv": {
+    "modules": 1,
+    "lines": 319
+   },
+   "node_modules/buffer-crc32": {
+    "modules": 1,
+    "lines": 308
+   },
+   "node_modules/eventsource": {
+    "modules": 1,
+    "lines": 297
+   },
+   "node_modules/open": {
+    "modules": 2,
+    "lines": 290
+   },
+   "node_modules/https-proxy-agent": {
+    "modules": 4,
+    "lines": 266
+   },
+   "node_modules/signal-exit": {
+    "modules": 2,
+    "lines": 251
+   },
+   "node_modules/ansi-colors": {
+    "modules": 2,
+    "lines": 231
+   },
+   "node_modules/cross-spawn": {
+    "modules": 6,
+    "lines": 228
+   },
+   "node_modules/retry": {
+    "modules": 3,
+    "lines": 228
+   },
+   "node_modules/readdirp": {
+    "modules": 1,
+    "lines": 219
+   },
+   "node_modules/ini": {
+    "modules": 1,
+    "lines": 212
+   },
+   "node_modules/eventsource-parser": {
+    "modules": 2,
+    "lines": 201
+   },
+   "packages/playwright-core": {
+    "modules": 8,
+    "lines": 189
+   },
+   "node_modules/get-stream": {
+    "modules": 6,
+    "lines": 187
+   },
+   "node_modules/brace-expansion": {
+    "modules": 1,
+    "lines": 164
+   },
+   "node_modules/socks-proxy-agent": {
+    "modules": 1,
+    "lines": 156
+   },
+   "node_modules/get-east-asian-width": {
+    "modules": 5,
+    "lines": 133
+   },
+   "node_modules/isexe": {
+    "modules": 3,
+    "lines": 128
+   },
+   "node_modules/progress": {
+    "modules": 2,
+    "lines": 118
+   },
+   "node_modules/agent-base": {
+    "modules": 1,
+    "lines": 117
+   },
+   "node_modules/ms": {
+    "modules": 1,
+    "lines": 116
+   },
+   "node_modules/content-type": {
+    "modules": 1,
+    "lines": 104
+   },
+   "node_modules/supports-color": {
+    "modules": 1,
+    "lines": 102
+   },
+   "node_modules/which": {
+    "modules": 1,
+    "lines": 96
+   },
+   "node_modules/bytes": {
+    "modules": 1,
+    "lines": 89
+   },
+   "node_modules/@sec-ant": {
+    "modules": 1,
+    "lines": 88
+   },
+   "node_modules/wsl-utils": {
+    "modules": 3,
+    "lines": 84
+   },
+   "node_modules/default-browser": {
+    "modules": 3,
+    "lines": 71
+   },
+   "node_modules/proxy-from-env": {
+    "modules": 1,
+    "lines": 67
+   },
+   "node_modules/pend": {
+    "modules": 1,
+    "lines": 55
+   },
+   "node_modules/balanced-match": {
+    "modules": 1,
+    "lines": 53
+   },
+   "node_modules/buffer-from": {
+    "modules": 1,
+    "lines": 49
+   },
+   "node_modules/pkce-challenge": {
+    "modules": 1,
+    "lines": 43
+   },
+   "node_modules/fast-deep-equal": {
+    "modules": 1,
+    "lines": 35
+   },
+   "node_modules/powershell-utils": {
+    "modules": 1,
+    "lines": 35
+   },
+   "node_modules/proxy-agent-negotiate": {
+    "modules": 1,
+    "lines": 30
+   },
+   "node_modules/is-wsl": {
+    "modules": 2,
+    "lines": 29
+   },
+   "node_modules/is-docker": {
+    "modules": 1,
+    "lines": 25
+   },
+   "node_modules/is-inside-container": {
+    "modules": 2,
+    "lines": 20
+   },
+   "node_modules/shebang-command": {
+    "modules": 1,
+    "lines": 20
+   },
+   "node_modules/default-browser-id": {
+    "modules": 1,
+    "lines": 18
+   },
+   "node_modules/define-lazy-prop": {
+    "modules": 1,
+    "lines": 18
+   },
+   "node_modules/run-applescript": {
+    "modules": 1,
+    "lines": 18
+   },
+   "node_modules/path-key": {
+    "modules": 1,
+    "lines": 17
+   },
+   "node_modules/ansi-regex": {
+    "modules": 1,
+    "lines": 14
+   },
+   "node_modules/has-flag": {
+    "modules": 1,
+    "lines": 13
+   },
+   "node_modules/strip-ansi": {
+    "modules": 1,
+    "lines": 9
+   },
+   "node_modules/is-stream": {
+    "modules": 1,
+    "lines": 8
+   },
+   "node_modules/shebang-regex": {
+    "modules": 1,
+    "lines": 8
+   },
+   "node_modules/bundle-name": {
+    "modules": 1,
+    "lines": 6
+   },
+   "node_modules/is-in-ssh": {
+    "modules": 1,
+    "lines": 5
+   }
+  },
+  "playwrightSrcAreas": {
+   "utilsBundle.ts": {
+    "modules": 8,
+    "lines": 189
+   }
+  },
+  "largest": [
+   {
+    "path": "node_modules/zod/v3/types.js",
+    "lines": 3403
+   },
+   {
+    "path": "node_modules/commander/lib/command.js",
+    "lines": 2234
+   },
+   {
+    "path": "node_modules/zod/v4/core/schemas.js",
+    "lines": 2093
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/types.js",
+    "lines": 1522
+   },
+   {
+    "path": "node_modules/ip-address/dist/ipv6.js",
+    "lines": 1333
+   },
+   {
+    "path": "node_modules/zod/v4/classic/schemas.js",
+    "lines": 1290
+   },
+   {
+    "path": "node_modules/smart-buffer/build/smartbuffer.js",
+    "lines": 1158
+   },
+   {
+    "path": "node_modules/jpeg-js/lib/encoder.js",
+    "lines": 1077
+   },
+   {
+    "path": "node_modules/jpeg-js/lib/decoder.js",
+    "lines": 1062
+   },
+   {
+    "path": "node_modules/zod/v4/core/api.js",
+    "lines": 1039
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js",
+    "lines": 954
+   },
+   {
+    "path": "node_modules/ws/lib/websocket.js",
+    "lines": 896
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/parser.js",
+    "lines": 874
+   },
+   {
+    "path": "node_modules/yauzl/index.js",
+    "lines": 859
+   },
+   {
+    "path": "node_modules/json5/lib/parse.js",
+    "lines": 847
+   }
+  ],
+  "modules": [
+   {
+    "path": "node_modules/colors/lib/styles.js",
+    "startLine": 37,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/colors/lib/system/has-flag.js",
+    "startLine": 104,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/colors/lib/system/supports-colors.js",
+    "startLine": 118,
+    "lines": 96
+   },
+   {
+    "path": "node_modules/colors/lib/custom/trap.js",
+    "startLine": 214,
+    "lines": 69
+   },
+   {
+    "path": "node_modules/colors/lib/custom/zalgo.js",
+    "startLine": 283,
+    "lines": 187
+   },
+   {
+    "path": "node_modules/colors/lib/maps/america.js",
+    "startLine": 470,
+    "lines": 19
+   },
+   {
+    "path": "node_modules/colors/lib/maps/zebra.js",
+    "startLine": 489,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/colors/lib/maps/rainbow.js",
+    "startLine": 500,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/colors/lib/maps/random.js",
+    "startLine": 516,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/colors/lib/colors.js",
+    "startLine": 546,
+    "lines": 144
+   },
+   {
+    "path": "node_modules/colors/safe.js",
+    "startLine": 690,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/ms/index.js",
+    "startLine": 698,
+    "lines": 116
+   },
+   {
+    "path": "node_modules/debug/src/common.js",
+    "startLine": 814,
+    "lines": 177
+   },
+   {
+    "path": "node_modules/debug/src/browser.js",
+    "startLine": 991,
+    "lines": 170
+   },
+   {
+    "path": "node_modules/has-flag/index.js",
+    "startLine": 1161,
+    "lines": 13
+   },
+   {
+    "path": "node_modules/supports-color/index.js",
+    "startLine": 1174,
+    "lines": 102
+   },
+   {
+    "path": "node_modules/debug/src/node.js",
+    "startLine": 1276,
+    "lines": 174
+   },
+   {
+    "path": "node_modules/debug/src/index.js",
+    "startLine": 1450,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/ini/lib/ini.js",
+    "startLine": 1461,
+    "lines": 212
+   },
+   {
+    "path": "node_modules/dotenv/lib/main.js",
+    "startLine": 1673,
+    "lines": 319
+   },
+   {
+    "path": "node_modules/jpeg-js/lib/encoder.js",
+    "startLine": 1992,
+    "lines": 1077
+   },
+   {
+    "path": "node_modules/jpeg-js/lib/decoder.js",
+    "startLine": 3069,
+    "lines": 1062
+   },
+   {
+    "path": "node_modules/jpeg-js/index.js",
+    "startLine": 4131,
+    "lines": 12
+   },
+   {
+    "path": "node_modules/pngjs/lib/chunkstream.js",
+    "startLine": 4143,
+    "lines": 138
+   },
+   {
+    "path": "node_modules/pngjs/lib/interlace.js",
+    "startLine": 4281,
+    "lines": 83
+   },
+   {
+    "path": "node_modules/pngjs/lib/paeth-predictor.js",
+    "startLine": 4364,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/pngjs/lib/filter-parse.js",
+    "startLine": 4384,
+    "lines": 141
+   },
+   {
+    "path": "node_modules/pngjs/lib/filter-parse-async.js",
+    "startLine": 4525,
+    "lines": 26
+   },
+   {
+    "path": "node_modules/pngjs/lib/constants.js",
+    "startLine": 4551,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/pngjs/lib/crc.js",
+    "startLine": 4586,
+    "lines": 40
+   },
+   {
+    "path": "node_modules/pngjs/lib/parser.js",
+    "startLine": 4626,
+    "lines": 221
+   },
+   {
+    "path": "node_modules/pngjs/lib/bitmapper.js",
+    "startLine": 4847,
+    "lines": 248
+   },
+   {
+    "path": "node_modules/pngjs/lib/format-normaliser.js",
+    "startLine": 5095,
+    "lines": 81
+   },
+   {
+    "path": "node_modules/pngjs/lib/parser-async.js",
+    "startLine": 5176,
+    "lines": 130
+   },
+   {
+    "path": "node_modules/pngjs/lib/bitpacker.js",
+    "startLine": 5306,
+    "lines": 150
+   },
+   {
+    "path": "node_modules/pngjs/lib/filter-pack.js",
+    "startLine": 5456,
+    "lines": 142
+   },
+   {
+    "path": "node_modules/pngjs/lib/packer.js",
+    "startLine": 5598,
+    "lines": 100
+   },
+   {
+    "path": "node_modules/pngjs/lib/packer-async.js",
+    "startLine": 5698,
+    "lines": 42
+   },
+   {
+    "path": "node_modules/pngjs/lib/sync-inflate.js",
+    "startLine": 5740,
+    "lines": 137
+   },
+   {
+    "path": "node_modules/pngjs/lib/sync-reader.js",
+    "startLine": 5877,
+    "lines": 38
+   },
+   {
+    "path": "node_modules/pngjs/lib/filter-parse-sync.js",
+    "startLine": 5915,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/pngjs/lib/parser-sync.js",
+    "startLine": 5939,
+    "lines": 95
+   },
+   {
+    "path": "node_modules/pngjs/lib/packer-sync.js",
+    "startLine": 6034,
+    "lines": 45
+   },
+   {
+    "path": "node_modules/pngjs/lib/png-sync.js",
+    "startLine": 6079,
+    "lines": 15
+   },
+   {
+    "path": "node_modules/pngjs/lib/png.js",
+    "startLine": 6094,
+    "lines": 137
+   },
+   {
+    "path": "node_modules/progress/lib/node-progress.js",
+    "startLine": 6231,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/progress/index.js",
+    "startLine": 6342,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/smart-buffer/build/utils.js",
+    "startLine": 6349,
+    "lines": 69
+   },
+   {
+    "path": "node_modules/smart-buffer/build/smartbuffer.js",
+    "startLine": 6418,
+    "lines": 1158
+   },
+   {
+    "path": "node_modules/socks/build/common/constants.js",
+    "startLine": 7576,
+    "lines": 117
+   },
+   {
+    "path": "node_modules/socks/build/common/util.js",
+    "startLine": 7693,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/ip-address/dist/address-error.js",
+    "startLine": 7716,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/ip-address/dist/common.js",
+    "startLine": 7733,
+    "lines": 103
+   },
+   {
+    "path": "node_modules/ip-address/dist/v4/constants.js",
+    "startLine": 7836,
+    "lines": 41
+   },
+   {
+    "path": "node_modules/ip-address/dist/ipv4.js",
+    "startLine": 7877,
+    "lines": 565
+   },
+   {
+    "path": "node_modules/ip-address/dist/v6/constants.js",
+    "startLine": 8442,
+    "lines": 90
+   },
+   {
+    "path": "node_modules/ip-address/dist/v6/helpers.js",
+    "startLine": 8532,
+    "lines": 39
+   },
+   {
+    "path": "node_modules/ip-address/dist/v6/regular-expressions.js",
+    "startLine": 8571,
+    "lines": 92
+   },
+   {
+    "path": "node_modules/ip-address/dist/ipv6.js",
+    "startLine": 8663,
+    "lines": 1333
+   },
+   {
+    "path": "node_modules/ip-address/dist/ip-address.js",
+    "startLine": 9996,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/socks/build/common/helpers.js",
+    "startLine": 10046,
+    "lines": 107
+   },
+   {
+    "path": "node_modules/socks/build/common/receivebuffer.js",
+    "startLine": 10153,
+    "lines": 48
+   },
+   {
+    "path": "node_modules/socks/build/client/socksclient.js",
+    "startLine": 10201,
+    "lines": 679
+   },
+   {
+    "path": "node_modules/socks/build/index.js",
+    "startLine": 10880,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/ws/lib/constants.js",
+    "startLine": 10905,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/ws/lib/buffer-util.js",
+    "startLine": 10928,
+    "lines": 75
+   },
+   {
+    "path": "node_modules/ws/lib/limiter.js",
+    "startLine": 11003,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/ws/lib/permessage-deflate.js",
+    "startLine": 11053,
+    "lines": 383
+   },
+   {
+    "path": "node_modules/ws/lib/validation.js",
+    "startLine": 11436,
+    "lines": 201
+   },
+   {
+    "path": "node_modules/ws/lib/receiver.js",
+    "startLine": 11637,
+    "lines": 632
+   },
+   {
+    "path": "node_modules/ws/lib/sender.js",
+    "startLine": 12269,
+    "lines": 493
+   },
+   {
+    "path": "node_modules/ws/lib/event-target.js",
+    "startLine": 12762,
+    "lines": 229
+   },
+   {
+    "path": "node_modules/ws/lib/extension.js",
+    "startLine": 12991,
+    "lines": 153
+   },
+   {
+    "path": "node_modules/ws/lib/websocket.js",
+    "startLine": 13144,
+    "lines": 896
+   },
+   {
+    "path": "node_modules/ws/lib/stream.js",
+    "startLine": 14040,
+    "lines": 98
+   },
+   {
+    "path": "node_modules/ws/lib/subprotocol.js",
+    "startLine": 14138,
+    "lines": 45
+   },
+   {
+    "path": "node_modules/ws/lib/websocket-server.js",
+    "startLine": 14183,
+    "lines": 401
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/identity.js",
+    "startLine": 14584,
+    "lines": 57
+   },
+   {
+    "path": "node_modules/yaml/dist/visit.js",
+    "startLine": 14641,
+    "lines": 158
+   },
+   {
+    "path": "node_modules/yaml/dist/doc/directives.js",
+    "startLine": 14799,
+    "lines": 171
+   },
+   {
+    "path": "node_modules/yaml/dist/doc/anchors.js",
+    "startLine": 14970,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/yaml/dist/doc/applyReviver.js",
+    "startLine": 15040,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/toJS.js",
+    "startLine": 15090,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/Node.js",
+    "startLine": 15120,
+    "lines": 41
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/Alias.js",
+    "startLine": 15161,
+    "lines": 116
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/Scalar.js",
+    "startLine": 15277,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/yaml/dist/doc/createNode.js",
+    "startLine": 15307,
+    "lines": 75
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/Collection.js",
+    "startLine": 15382,
+    "lines": 143
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyComment.js",
+    "startLine": 15525,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/foldFlowLines.js",
+    "startLine": 15542,
+    "lines": 136
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyString.js",
+    "startLine": 15678,
+    "lines": 283
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringify.js",
+    "startLine": 15961,
+    "lines": 124
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyPair.js",
+    "startLine": 16085,
+    "lines": 133
+   },
+   {
+    "path": "node_modules/yaml/dist/log.js",
+    "startLine": 16218,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/merge.js",
+    "startLine": 16240,
+    "lines": 60
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/addPairToJSMap.js",
+    "startLine": 16300,
+    "lines": 64
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/Pair.js",
+    "startLine": 16364,
+    "lines": 40
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyCollection.js",
+    "startLine": 16404,
+    "lines": 151
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/YAMLMap.js",
+    "startLine": 16555,
+    "lines": 144
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/common/map.js",
+    "startLine": 16699,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/yaml/dist/nodes/YAMLSeq.js",
+    "startLine": 16721,
+    "lines": 116
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/common/seq.js",
+    "startLine": 16837,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/common/string.js",
+    "startLine": 16859,
+    "lines": 19
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/common/null.js",
+    "startLine": 16878,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/core/bool.js",
+    "startLine": 16896,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyNumber.js",
+    "startLine": 16920,
+    "lines": 27
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/core/float.js",
+    "startLine": 16947,
+    "lines": 46
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/core/int.js",
+    "startLine": 16993,
+    "lines": 45
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/core/schema.js",
+    "startLine": 17038,
+    "lines": 28
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/json/schema.js",
+    "startLine": 17066,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/binary.js",
+    "startLine": 17133,
+    "lines": 66
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/pairs.js",
+    "startLine": 17199,
+    "lines": 78
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/omap.js",
+    "startLine": 17277,
+    "lines": 78
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/bool.js",
+    "startLine": 17355,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/float.js",
+    "startLine": 17387,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/int.js",
+    "startLine": 17436,
+    "lines": 79
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/set.js",
+    "startLine": 17515,
+    "lines": 89
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/timestamp.js",
+    "startLine": 17604,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/yaml-1.1/schema.js",
+    "startLine": 17692,
+    "lines": 44
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/tags.js",
+    "startLine": 17736,
+    "lines": 94
+   },
+   {
+    "path": "node_modules/yaml/dist/schema/Schema.js",
+    "startLine": 17830,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/yaml/dist/stringify/stringifyDocument.js",
+    "startLine": 17862,
+    "lines": 80
+   },
+   {
+    "path": "node_modules/yaml/dist/doc/Document.js",
+    "startLine": 17942,
+    "lines": 309
+   },
+   {
+    "path": "node_modules/yaml/dist/errors.js",
+    "startLine": 18251,
+    "lines": 65
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-props.js",
+    "startLine": 18316,
+    "lines": 134
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/util-contains-newline.js",
+    "startLine": 18450,
+    "lines": 42
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/util-flow-indent-check.js",
+    "startLine": 18492,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/util-map-includes.js",
+    "startLine": 18510,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-block-map.js",
+    "startLine": 18526,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-block-seq.js",
+    "startLine": 18634,
+    "lines": 51
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-end.js",
+    "startLine": 18685,
+    "lines": 43
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-flow-collection.js",
+    "startLine": 18728,
+    "lines": 194
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/compose-collection.js",
+    "startLine": 18922,
+    "lines": 65
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-block-scalar.js",
+    "startLine": 18987,
+    "lines": 183
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/resolve-flow-scalar.js",
+    "startLine": 19170,
+    "lines": 220
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/compose-scalar.js",
+    "startLine": 19390,
+    "lines": 81
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/util-empty-scalar-position.js",
+    "startLine": 19471,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/compose-node.js",
+    "startLine": 19501,
+    "lines": 106
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/compose-doc.js",
+    "startLine": 19607,
+    "lines": 43
+   },
+   {
+    "path": "node_modules/yaml/dist/compose/composer.js",
+    "startLine": 19650,
+    "lines": 208
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/cst-scalar.js",
+    "startLine": 19858,
+    "lines": 185
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/cst-stringify.js",
+    "startLine": 20043,
+    "lines": 61
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/cst-visit.js",
+    "startLine": 20104,
+    "lines": 62
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/cst.js",
+    "startLine": 20166,
+    "lines": 102
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/lexer.js",
+    "startLine": 20268,
+    "lines": 589
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/line-counter.js",
+    "startLine": 20857,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/yaml/dist/parse/parser.js",
+    "startLine": 20888,
+    "lines": 874
+   },
+   {
+    "path": "node_modules/yaml/dist/public-api.js",
+    "startLine": 21762,
+    "lines": 97
+   },
+   {
+    "path": "node_modules/yaml/dist/index.js",
+    "startLine": 21859,
+    "lines": 52
+   },
+   {
+    "path": "node_modules/json5/lib/unicode.js",
+    "startLine": 21911,
+    "lines": 9
+   },
+   {
+    "path": "node_modules/json5/lib/util.js",
+    "startLine": 21920,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/json5/lib/parse.js",
+    "startLine": 21944,
+    "lines": 847
+   },
+   {
+    "path": "node_modules/json5/lib/stringify.js",
+    "startLine": 22791,
+    "lines": 219
+   },
+   {
+    "path": "node_modules/json5/lib/index.js",
+    "startLine": 23010,
+    "lines": 13
+   },
+   {
+    "path": "node_modules/source-map/lib/base64.js",
+    "startLine": 23023,
+    "lines": 41
+   },
+   {
+    "path": "node_modules/source-map/lib/base64-vlq.js",
+    "startLine": 23064,
+    "lines": 54
+   },
+   {
+    "path": "node_modules/source-map/lib/util.js",
+    "startLine": 23118,
+    "lines": 301
+   },
+   {
+    "path": "node_modules/source-map/lib/array-set.js",
+    "startLine": 23419,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/source-map/lib/mapping-list.js",
+    "startLine": 23489,
+    "lines": 39
+   },
+   {
+    "path": "node_modules/source-map/lib/source-map-generator.js",
+    "startLine": 23528,
+    "lines": 276
+   },
+   {
+    "path": "node_modules/source-map/lib/binary-search.js",
+    "startLine": 23804,
+    "lines": 56
+   },
+   {
+    "path": "node_modules/source-map/lib/quick-sort.js",
+    "startLine": 23860,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/source-map/lib/source-map-consumer.js",
+    "startLine": 23895,
+    "lines": 601
+   },
+   {
+    "path": "node_modules/source-map/lib/source-node.js",
+    "startLine": 24496,
+    "lines": 265
+   },
+   {
+    "path": "node_modules/source-map/source-map.js",
+    "startLine": 24761,
+    "lines": 9
+   },
+   {
+    "path": "node_modules/buffer-from/index.js",
+    "startLine": 24770,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/source-map-support/source-map-support.js",
+    "startLine": 24819,
+    "lines": 470
+   },
+   {
+    "path": "node_modules/ansi-colors/symbols.js",
+    "startLine": 25289,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/ansi-colors/index.js",
+    "startLine": 25359,
+    "lines": 161
+   },
+   {
+    "path": "node_modules/enquirer/lib/utils.js",
+    "startLine": 25520,
+    "lines": 235
+   },
+   {
+    "path": "node_modules/ansi-regex/index.js",
+    "startLine": 25755,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/strip-ansi/index.js",
+    "startLine": 25769,
+    "lines": 9
+   },
+   {
+    "path": "node_modules/enquirer/lib/combos.js",
+    "startLine": 25778,
+    "lines": 74
+   },
+   {
+    "path": "node_modules/enquirer/lib/queue.js",
+    "startLine": 25852,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/enquirer/lib/keypress.js",
+    "startLine": 25884,
+    "lines": 209
+   },
+   {
+    "path": "node_modules/enquirer/lib/timer.js",
+    "startLine": 26093,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/enquirer/lib/state.js",
+    "startLine": 26130,
+    "lines": 68
+   },
+   {
+    "path": "node_modules/enquirer/lib/styles.js",
+    "startLine": 26198,
+    "lines": 125
+   },
+   {
+    "path": "node_modules/enquirer/lib/symbols.js",
+    "startLine": 26323,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/enquirer/lib/theme.js",
+    "startLine": 26390,
+    "lines": 15
+   },
+   {
+    "path": "node_modules/enquirer/lib/ansi.js",
+    "startLine": 26405,
+    "lines": 118
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompt.js",
+    "startLine": 26523,
+    "lines": 419
+   },
+   {
+    "path": "node_modules/enquirer/lib/roles.js",
+    "startLine": 26942,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/array.js",
+    "startLine": 26992,
+    "lines": 558
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/select.js",
+    "startLine": 27550,
+    "lines": 116
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/autocomplete.js",
+    "startLine": 27666,
+    "lines": 101
+   },
+   {
+    "path": "node_modules/enquirer/lib/placeholder.js",
+    "startLine": 27767,
+    "lines": 44
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/form.js",
+    "startLine": 27811,
+    "lines": 164
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/auth.js",
+    "startLine": 27975,
+    "lines": 27
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/basicauth.js",
+    "startLine": 28002,
+    "lines": 40
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/boolean.js",
+    "startLine": 28042,
+    "lines": 76
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/confirm.js",
+    "startLine": 28118,
+    "lines": 15
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/editable.js",
+    "startLine": 28133,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/string.js",
+    "startLine": 28242,
+    "lines": 176
+   },
+   {
+    "path": "node_modules/enquirer/lib/completer.js",
+    "startLine": 28418,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/input.js",
+    "startLine": 28467,
+    "lines": 52
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/invisible.js",
+    "startLine": 28519,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/list.js",
+    "startLine": 28533,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/multiselect.js",
+    "startLine": 28568,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/number.js",
+    "startLine": 28582,
+    "lines": 78
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/numeral.js",
+    "startLine": 28660,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/password.js",
+    "startLine": 28667,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/scale.js",
+    "startLine": 28687,
+    "lines": 203
+   },
+   {
+    "path": "node_modules/enquirer/lib/interpolate.js",
+    "startLine": 28890,
+    "lines": 216
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/snippet.js",
+    "startLine": 29106,
+    "lines": 160
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/sort.js",
+    "startLine": 29266,
+    "lines": 36
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/survey.js",
+    "startLine": 29302,
+    "lines": 140
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/text.js",
+    "startLine": 29442,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/toggle.js",
+    "startLine": 29449,
+    "lines": 99
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/quiz.js",
+    "startLine": 29548,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/enquirer/lib/prompts/index.js",
+    "startLine": 29585,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/enquirer/lib/types/index.js",
+    "startLine": 29616,
+    "lines": 13
+   },
+   {
+    "path": "node_modules/enquirer/index.js",
+    "startLine": 29629,
+    "lines": 207
+   },
+   {
+    "path": "node_modules/buffer-crc32/dist/index.cjs",
+    "startLine": 29836,
+    "lines": 308
+   },
+   {
+    "path": "node_modules/yazl/index.js",
+    "startLine": 30144,
+    "lines": 640
+   },
+   {
+    "path": "node_modules/pend/index.js",
+    "startLine": 30784,
+    "lines": 55
+   },
+   {
+    "path": "node_modules/yauzl/fd-slicer.js",
+    "startLine": 30839,
+    "lines": 157
+   },
+   {
+    "path": "node_modules/yauzl/crc32.js",
+    "startLine": 30996,
+    "lines": 272
+   },
+   {
+    "path": "node_modules/yauzl/index.js",
+    "startLine": 31268,
+    "lines": 859
+   },
+   {
+    "path": "node_modules/graceful-fs/polyfills.js",
+    "startLine": 32127,
+    "lines": 288
+   },
+   {
+    "path": "node_modules/graceful-fs/legacy-streams.js",
+    "startLine": 32415,
+    "lines": 96
+   },
+   {
+    "path": "node_modules/graceful-fs/clone.js",
+    "startLine": 32511,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/graceful-fs/graceful-fs.js",
+    "startLine": 32534,
+    "lines": 370
+   },
+   {
+    "path": "node_modules/retry/lib/retry_operation.js",
+    "startLine": 32904,
+    "lines": 135
+   },
+   {
+    "path": "node_modules/retry/lib/retry.js",
+    "startLine": 33039,
+    "lines": 86
+   },
+   {
+    "path": "node_modules/retry/index.js",
+    "startLine": 33125,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/codegen/code.js",
+    "startLine": 33132,
+    "lines": 154
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/codegen/scope.js",
+    "startLine": 33286,
+    "lines": 145
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/codegen/index.js",
+    "startLine": 33431,
+    "lines": 720
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/util.js",
+    "startLine": 34151,
+    "lines": 167
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/names.js",
+    "startLine": 34318,
+    "lines": 39
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/errors.js",
+    "startLine": 34357,
+    "lines": 122
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/boolSchema.js",
+    "startLine": 34479,
+    "lines": 51
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/rules.js",
+    "startLine": 34530,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/applicability.js",
+    "startLine": 34561,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/dataType.js",
+    "startLine": 34584,
+    "lines": 184
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/defaults.js",
+    "startLine": 34768,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/code.js",
+    "startLine": 34805,
+    "lines": 133
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/keyword.js",
+    "startLine": 34938,
+    "lines": 118
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/subschema.js",
+    "startLine": 35056,
+    "lines": 83
+   },
+   {
+    "path": "node_modules/fast-deep-equal/index.js",
+    "startLine": 35139,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/json-schema-traverse/index.js",
+    "startLine": 35174,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/resolve.js",
+    "startLine": 35262,
+    "lines": 156
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/validate/index.js",
+    "startLine": 35418,
+    "lines": 508
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/runtime/validation_error.js",
+    "startLine": 35926,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/ref_error.js",
+    "startLine": 35942,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/compile/index.js",
+    "startLine": 35959,
+    "lines": 224
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/refs/data.json",
+    "startLine": 36183,
+    "lines": 19
+   },
+   {
+    "path": "node_modules/fast-uri/lib/utils.js",
+    "startLine": 36202,
+    "lines": 502
+   },
+   {
+    "path": "node_modules/fast-uri/lib/schemes.js",
+    "startLine": 36704,
+    "lines": 211
+   },
+   {
+    "path": "node_modules/fast-uri/index.js",
+    "startLine": 36915,
+    "lines": 405
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/runtime/uri.js",
+    "startLine": 37320,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/core.js",
+    "startLine": 37331,
+    "lines": 611
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/core/id.js",
+    "startLine": 37942,
+    "lines": 15
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/core/ref.js",
+    "startLine": 37957,
+    "lines": 122
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/core/index.js",
+    "startLine": 38079,
+    "lines": 21
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/limitNumber.js",
+    "startLine": 38100,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/multipleOf.js",
+    "startLine": 38132,
+    "lines": 28
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/runtime/ucs2length.js",
+    "startLine": 38160,
+    "lines": 26
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/limitLength.js",
+    "startLine": 38186,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/pattern.js",
+    "startLine": 38218,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/limitProperties.js",
+    "startLine": 38255,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/required.js",
+    "startLine": 38284,
+    "lines": 82
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/limitItems.js",
+    "startLine": 38366,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/runtime/equal.js",
+    "startLine": 38395,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/uniqueItems.js",
+    "startLine": 38406,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/const.js",
+    "startLine": 38473,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/enum.js",
+    "startLine": 38502,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/validation/index.js",
+    "startLine": 38551,
+    "lines": 38
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/additionalItems.js",
+    "startLine": 38589,
+    "lines": 53
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/items.js",
+    "startLine": 38642,
+    "lines": 57
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/prefixItems.js",
+    "startLine": 38699,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/items2020.js",
+    "startLine": 38716,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/contains.js",
+    "startLine": 38751,
+    "lines": 94
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/dependencies.js",
+    "startLine": 38845,
+    "lines": 94
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/propertyNames.js",
+    "startLine": 38939,
+    "lines": 43
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js",
+    "startLine": 38982,
+    "lines": 106
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/properties.js",
+    "startLine": 39088,
+    "lines": 58
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/patternProperties.js",
+    "startLine": 39146,
+    "lines": 74
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/not.js",
+    "startLine": 39220,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/anyOf.js",
+    "startLine": 39251,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/oneOf.js",
+    "startLine": 39268,
+    "lines": 58
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/allOf.js",
+    "startLine": 39326,
+    "lines": 27
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/if.js",
+    "startLine": 39353,
+    "lines": 69
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/thenElse.js",
+    "startLine": 39422,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/applicator/index.js",
+    "startLine": 39440,
+    "lines": 48
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/format/format.js",
+    "startLine": 39488,
+    "lines": 90
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/format/index.js",
+    "startLine": 39578,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/metadata.js",
+    "startLine": 39589,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/draft7.js",
+    "startLine": 39612,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/discriminator/types.js",
+    "startLine": 39634,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/vocabularies/discriminator/index.js",
+    "startLine": 39648,
+    "lines": 105
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/refs/json-schema-draft-07.json",
+    "startLine": 39753,
+    "lines": 157
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/node_modules/ajv/dist/ajv.js",
+    "startLine": 39910,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/ajv-formats/dist/formats.js",
+    "startLine": 39980,
+    "lines": 203
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/codegen/code.js",
+    "startLine": 40183,
+    "lines": 154
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/codegen/scope.js",
+    "startLine": 40337,
+    "lines": 145
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/codegen/index.js",
+    "startLine": 40482,
+    "lines": 720
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/util.js",
+    "startLine": 41202,
+    "lines": 167
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/names.js",
+    "startLine": 41369,
+    "lines": 39
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/errors.js",
+    "startLine": 41408,
+    "lines": 122
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/boolSchema.js",
+    "startLine": 41530,
+    "lines": 51
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/rules.js",
+    "startLine": 41581,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/applicability.js",
+    "startLine": 41612,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/dataType.js",
+    "startLine": 41635,
+    "lines": 184
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/defaults.js",
+    "startLine": 41819,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/code.js",
+    "startLine": 41856,
+    "lines": 133
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/keyword.js",
+    "startLine": 41989,
+    "lines": 118
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/subschema.js",
+    "startLine": 42107,
+    "lines": 83
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/json-schema-traverse/index.js",
+    "startLine": 42190,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/resolve.js",
+    "startLine": 42278,
+    "lines": 156
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/validate/index.js",
+    "startLine": 42434,
+    "lines": 508
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/runtime/validation_error.js",
+    "startLine": 42942,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/ref_error.js",
+    "startLine": 42958,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/compile/index.js",
+    "startLine": 42975,
+    "lines": 224
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/refs/data.json",
+    "startLine": 43199,
+    "lines": 19
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/runtime/uri.js",
+    "startLine": 43218,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/core.js",
+    "startLine": 43229,
+    "lines": 611
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/core/id.js",
+    "startLine": 43840,
+    "lines": 15
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/core/ref.js",
+    "startLine": 43855,
+    "lines": 122
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/core/index.js",
+    "startLine": 43977,
+    "lines": 21
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/limitNumber.js",
+    "startLine": 43998,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/multipleOf.js",
+    "startLine": 44030,
+    "lines": 28
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/runtime/ucs2length.js",
+    "startLine": 44058,
+    "lines": 26
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/limitLength.js",
+    "startLine": 44084,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/pattern.js",
+    "startLine": 44116,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/limitProperties.js",
+    "startLine": 44153,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/required.js",
+    "startLine": 44182,
+    "lines": 82
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/limitItems.js",
+    "startLine": 44264,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/runtime/equal.js",
+    "startLine": 44293,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/uniqueItems.js",
+    "startLine": 44304,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/const.js",
+    "startLine": 44371,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/enum.js",
+    "startLine": 44400,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/validation/index.js",
+    "startLine": 44449,
+    "lines": 38
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/additionalItems.js",
+    "startLine": 44487,
+    "lines": 53
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/items.js",
+    "startLine": 44540,
+    "lines": 57
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/prefixItems.js",
+    "startLine": 44597,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/items2020.js",
+    "startLine": 44614,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/contains.js",
+    "startLine": 44649,
+    "lines": 94
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/dependencies.js",
+    "startLine": 44743,
+    "lines": 94
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/propertyNames.js",
+    "startLine": 44837,
+    "lines": 43
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js",
+    "startLine": 44880,
+    "lines": 106
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/properties.js",
+    "startLine": 44986,
+    "lines": 58
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/patternProperties.js",
+    "startLine": 45044,
+    "lines": 74
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/not.js",
+    "startLine": 45118,
+    "lines": 31
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/anyOf.js",
+    "startLine": 45149,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/oneOf.js",
+    "startLine": 45166,
+    "lines": 58
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/allOf.js",
+    "startLine": 45224,
+    "lines": 27
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/if.js",
+    "startLine": 45251,
+    "lines": 69
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/thenElse.js",
+    "startLine": 45320,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/applicator/index.js",
+    "startLine": 45338,
+    "lines": 48
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/format/format.js",
+    "startLine": 45386,
+    "lines": 90
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/format/index.js",
+    "startLine": 45476,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/metadata.js",
+    "startLine": 45487,
+    "lines": 23
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/draft7.js",
+    "startLine": 45510,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/discriminator/types.js",
+    "startLine": 45532,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/vocabularies/discriminator/index.js",
+    "startLine": 45546,
+    "lines": 105
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/refs/json-schema-draft-07.json",
+    "startLine": 45651,
+    "lines": 157
+   },
+   {
+    "path": "node_modules/ajv-formats/node_modules/ajv/dist/ajv.js",
+    "startLine": 45808,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/ajv-formats/dist/limit.js",
+    "startLine": 45878,
+    "lines": 72
+   },
+   {
+    "path": "node_modules/ajv-formats/dist/index.js",
+    "startLine": 45950,
+    "lines": 42
+   },
+   {
+    "path": "node_modules/bytes/index.js",
+    "startLine": 45992,
+    "lines": 89
+   },
+   {
+    "path": "node_modules/content-type/index.js",
+    "startLine": 46081,
+    "lines": 104
+   },
+   {
+    "path": "node_modules/isexe/windows.js",
+    "startLine": 46185,
+    "lines": 40
+   },
+   {
+    "path": "node_modules/isexe/mode.js",
+    "startLine": 46225,
+    "lines": 33
+   },
+   {
+    "path": "node_modules/isexe/index.js",
+    "startLine": 46258,
+    "lines": 55
+   },
+   {
+    "path": "node_modules/which/which.js",
+    "startLine": 46313,
+    "lines": 96
+   },
+   {
+    "path": "node_modules/path-key/index.js",
+    "startLine": 46409,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/cross-spawn/lib/util/resolveCommand.js",
+    "startLine": 46426,
+    "lines": 42
+   },
+   {
+    "path": "node_modules/cross-spawn/lib/util/escape.js",
+    "startLine": 46468,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/shebang-regex/index.js",
+    "startLine": 46493,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/shebang-command/index.js",
+    "startLine": 46501,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/cross-spawn/lib/util/readShebang.js",
+    "startLine": 46521,
+    "lines": 22
+   },
+   {
+    "path": "node_modules/cross-spawn/lib/parse.js",
+    "startLine": 46543,
+    "lines": 62
+   },
+   {
+    "path": "node_modules/cross-spawn/lib/enoent.js",
+    "startLine": 46605,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/cross-spawn/index.js",
+    "startLine": 46655,
+    "lines": 27
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 46682,
+    "lines": 58
+   },
+   {
+    "path": "node_modules/diff/libesm/index.js",
+    "startLine": 46740,
+    "lines": 37
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/base.js",
+    "startLine": 46777,
+    "lines": 202
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/character.js",
+    "startLine": 46979,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/diff/libesm/util/string.js",
+    "startLine": 46987,
+    "lines": 134
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/word.js",
+    "startLine": 47121,
+    "lines": 143
+   },
+   {
+    "path": "node_modules/diff/libesm/util/params.js",
+    "startLine": 47264,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/line.js",
+    "startLine": 47278,
+    "lines": 52
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/sentence.js",
+    "startLine": 47330,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/css.js",
+    "startLine": 47362,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/json.js",
+    "startLine": 47373,
+    "lines": 72
+   },
+   {
+    "path": "node_modules/diff/libesm/diff/array.js",
+    "startLine": 47445,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/diff/libesm/patch/line-endings.js",
+    "startLine": 47462,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/diff/libesm/patch/parse.js",
+    "startLine": 47494,
+    "lines": 336
+   },
+   {
+    "path": "node_modules/diff/libesm/util/distance-iterator.js",
+    "startLine": 47830,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/diff/libesm/patch/apply.js",
+    "startLine": 47859,
+    "lines": 172
+   },
+   {
+    "path": "node_modules/diff/libesm/patch/reverse.js",
+    "startLine": 48031,
+    "lines": 46
+   },
+   {
+    "path": "node_modules/diff/libesm/patch/create.js",
+    "startLine": 48077,
+    "lines": 272
+   },
+   {
+    "path": "node_modules/diff/libesm/convert/dmp.js",
+    "startLine": 48349,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/diff/libesm/convert/xml.js",
+    "startLine": 48367,
+    "lines": 28
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 48395,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/proxy-from-env/index.js",
+    "startLine": 48398,
+    "lines": 67
+   },
+   {
+    "path": "node_modules/https-proxy-agent/dist/index.js",
+    "startLine": 48465,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/agent-base/dist/index.js",
+    "startLine": 48471,
+    "lines": 117
+   },
+   {
+    "path": "node_modules/https-proxy-agent/dist/index.js",
+    "startLine": 48588,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/https-proxy-agent/dist/parse-proxy-response.js",
+    "startLine": 48591,
+    "lines": 85
+   },
+   {
+    "path": "node_modules/proxy-agent-negotiate/dist/index.js",
+    "startLine": 48676,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/https-proxy-agent/dist/index.js",
+    "startLine": 48706,
+    "lines": 172
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 48878,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/mime/dist/types/other.js",
+    "startLine": 48881,
+    "lines": 721
+   },
+   {
+    "path": "node_modules/mime/dist/types/standard.js",
+    "startLine": 49602,
+    "lines": 368
+   },
+   {
+    "path": "node_modules/mime/dist/src/Mime.js",
+    "startLine": 49970,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/mime/dist/src/index.js",
+    "startLine": 50058,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/balanced-match/dist/esm/index.js",
+    "startLine": 50061,
+    "lines": 53
+   },
+   {
+    "path": "node_modules/brace-expansion/dist/esm/index.js",
+    "startLine": 50114,
+    "lines": 164
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/assert-valid-pattern.js",
+    "startLine": 50278,
+    "lines": 11
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/brace-expressions.js",
+    "startLine": 50289,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/unescape.js",
+    "startLine": 50398,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/ast.js",
+    "startLine": 50406,
+    "lines": 644
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/escape.js",
+    "startLine": 51050,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/minimatch/dist/esm/index.js",
+    "startLine": 51058,
+    "lines": 809
+   },
+   {
+    "path": "node_modules/open/index.js",
+    "startLine": 51867,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/wsl-utils/index.js",
+    "startLine": 51874,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/is-wsl/index.js",
+    "startLine": 51879,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/is-inside-container/index.js",
+    "startLine": 51884,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/is-docker/index.js",
+    "startLine": 51887,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/is-inside-container/index.js",
+    "startLine": 51912,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/is-wsl/index.js",
+    "startLine": 51929,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/powershell-utils/index.js",
+    "startLine": 51953,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/wsl-utils/utilities.js",
+    "startLine": 51988,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/wsl-utils/index.js",
+    "startLine": 52002,
+    "lines": 65
+   },
+   {
+    "path": "node_modules/define-lazy-prop/index.js",
+    "startLine": 52067,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/default-browser/index.js",
+    "startLine": 52085,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/default-browser-id/index.js",
+    "startLine": 52090,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/run-applescript/index.js",
+    "startLine": 52108,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/bundle-name/index.js",
+    "startLine": 52126,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/default-browser/windows.js",
+    "startLine": 52132,
+    "lines": 45
+   },
+   {
+    "path": "node_modules/default-browser/index.js",
+    "startLine": 52177,
+    "lines": 21
+   },
+   {
+    "path": "node_modules/is-in-ssh/index.js",
+    "startLine": 52198,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/open/index.js",
+    "startLine": 52203,
+    "lines": 283
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 52486,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/commander/lib/error.js",
+    "startLine": 52489,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/commander/lib/argument.js",
+    "startLine": 52518,
+    "lines": 121
+   },
+   {
+    "path": "node_modules/commander/lib/command.js",
+    "startLine": 52639,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/commander/lib/help.js",
+    "startLine": 52647,
+    "lines": 592
+   },
+   {
+    "path": "node_modules/commander/lib/option.js",
+    "startLine": 53239,
+    "lines": 306
+   },
+   {
+    "path": "node_modules/commander/lib/suggestSimilar.js",
+    "startLine": 53545,
+    "lines": 75
+   },
+   {
+    "path": "node_modules/commander/lib/command.js",
+    "startLine": 53620,
+    "lines": 2234
+   },
+   {
+    "path": "node_modules/commander/index.js",
+    "startLine": 55854,
+    "lines": 3
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 55857,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/socks-proxy-agent/dist/index.js",
+    "startLine": 55860,
+    "lines": 156
+   },
+   {
+    "path": "node_modules/ws/wrapper.mjs",
+    "startLine": 56016,
+    "lines": 11
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 56027,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/chokidar/esm/index.js",
+    "startLine": 56033,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/readdirp/esm/index.js",
+    "startLine": 56039,
+    "lines": 219
+   },
+   {
+    "path": "node_modules/chokidar/esm/handler.js",
+    "startLine": 56258,
+    "lines": 756
+   },
+   {
+    "path": "node_modules/chokidar/esm/index.js",
+    "startLine": 57014,
+    "lines": 710
+   },
+   {
+    "path": "node_modules/get-east-asian-width/index.js",
+    "startLine": 57724,
+    "lines": 9
+   },
+   {
+    "path": "node_modules/get-east-asian-width/lookup-data.js",
+    "startLine": 57733,
+    "lines": 17
+   },
+   {
+    "path": "node_modules/get-east-asian-width/utilities.js",
+    "startLine": 57750,
+    "lines": 18
+   },
+   {
+    "path": "node_modules/get-east-asian-width/lookup.js",
+    "startLine": 57768,
+    "lines": 71
+   },
+   {
+    "path": "node_modules/get-east-asian-width/index.js",
+    "startLine": 57839,
+    "lines": 18
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 57857,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/signal-exit/dist/mjs/signals.js",
+    "startLine": 57863,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/signal-exit/dist/mjs/index.js",
+    "startLine": 57887,
+    "lines": 227
+   },
+   {
+    "path": "node_modules/get-stream/source/index.js",
+    "startLine": 58114,
+    "lines": 4
+   },
+   {
+    "path": "node_modules/is-stream/index.js",
+    "startLine": 58118,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/@sec-ant/readable-stream/dist/ponyfill/asyncIterator.js",
+    "startLine": 58126,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/get-stream/source/stream.js",
+    "startLine": 58214,
+    "lines": 48
+   },
+   {
+    "path": "node_modules/get-stream/source/contents.js",
+    "startLine": 58262,
+    "lines": 95
+   },
+   {
+    "path": "node_modules/get-stream/source/utils.js",
+    "startLine": 58357,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/get-stream/source/string.js",
+    "startLine": 58365,
+    "lines": 29
+   },
+   {
+    "path": "node_modules/get-stream/source/index.js",
+    "startLine": 58394,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/zod/index.js",
+    "startLine": 58397,
+    "lines": 245
+   },
+   {
+    "path": "node_modules/zod/v4/classic/external.js",
+    "startLine": 58642,
+    "lines": 243
+   },
+   {
+    "path": "node_modules/zod/v4/core/index.js",
+    "startLine": 58885,
+    "lines": 279
+   },
+   {
+    "path": "node_modules/zod/v4/core/core.js",
+    "startLine": 59164,
+    "lines": 77
+   },
+   {
+    "path": "node_modules/zod/v4/core/util.js",
+    "startLine": 59241,
+    "lines": 696
+   },
+   {
+    "path": "node_modules/zod/v4/core/errors.js",
+    "startLine": 59937,
+    "lines": 139
+   },
+   {
+    "path": "node_modules/zod/v4/core/parse.js",
+    "startLine": 60076,
+    "lines": 88
+   },
+   {
+    "path": "node_modules/zod/v4/core/regexes.js",
+    "startLine": 60164,
+    "lines": 159
+   },
+   {
+    "path": "node_modules/zod/v4/core/checks.js",
+    "startLine": 60323,
+    "lines": 548
+   },
+   {
+    "path": "node_modules/zod/v4/core/doc.js",
+    "startLine": 60871,
+    "lines": 36
+   },
+   {
+    "path": "node_modules/zod/v4/core/versions.js",
+    "startLine": 60907,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/zod/v4/core/schemas.js",
+    "startLine": 60914,
+    "lines": 2093
+   },
+   {
+    "path": "node_modules/zod/v4/locales/index.js",
+    "startLine": 63007,
+    "lines": 57
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ar.js",
+    "startLine": 63064,
+    "lines": 107
+   },
+   {
+    "path": "node_modules/zod/v4/locales/az.js",
+    "startLine": 63171,
+    "lines": 106
+   },
+   {
+    "path": "node_modules/zod/v4/locales/be.js",
+    "startLine": 63277,
+    "lines": 157
+   },
+   {
+    "path": "node_modules/zod/v4/locales/bg.js",
+    "startLine": 63434,
+    "lines": 121
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ca.js",
+    "startLine": 63555,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/cs.js",
+    "startLine": 63664,
+    "lines": 112
+   },
+   {
+    "path": "node_modules/zod/v4/locales/da.js",
+    "startLine": 63776,
+    "lines": 116
+   },
+   {
+    "path": "node_modules/zod/v4/locales/de.js",
+    "startLine": 63892,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/el.js",
+    "startLine": 64001,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/en.js",
+    "startLine": 64111,
+    "lines": 113
+   },
+   {
+    "path": "node_modules/zod/v4/locales/eo.js",
+    "startLine": 64224,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/es.js",
+    "startLine": 64334,
+    "lines": 133
+   },
+   {
+    "path": "node_modules/zod/v4/locales/fa.js",
+    "startLine": 64467,
+    "lines": 115
+   },
+   {
+    "path": "node_modules/zod/v4/locales/fi.js",
+    "startLine": 64582,
+    "lines": 113
+   },
+   {
+    "path": "node_modules/zod/v4/locales/fr.js",
+    "startLine": 64695,
+    "lines": 126
+   },
+   {
+    "path": "node_modules/zod/v4/locales/fr-CA.js",
+    "startLine": 64821,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/zod/v4/locales/he.js",
+    "startLine": 64929,
+    "lines": 195
+   },
+   {
+    "path": "node_modules/zod/v4/locales/hr.js",
+    "startLine": 65124,
+    "lines": 123
+   },
+   {
+    "path": "node_modules/zod/v4/locales/hu.js",
+    "startLine": 65247,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/hy.js",
+    "startLine": 65356,
+    "lines": 148
+   },
+   {
+    "path": "node_modules/zod/v4/locales/id.js",
+    "startLine": 65504,
+    "lines": 107
+   },
+   {
+    "path": "node_modules/zod/v4/locales/is.js",
+    "startLine": 65611,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/it.js",
+    "startLine": 65721,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ja.js",
+    "startLine": 65830,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ka.js",
+    "startLine": 65938,
+    "lines": 113
+   },
+   {
+    "path": "node_modules/zod/v4/locales/km.js",
+    "startLine": 66051,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/kh.js",
+    "startLine": 66162,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ko.js",
+    "startLine": 66167,
+    "lines": 112
+   },
+   {
+    "path": "node_modules/zod/v4/locales/lt.js",
+    "startLine": 66279,
+    "lines": 204
+   },
+   {
+    "path": "node_modules/zod/v4/locales/mk.js",
+    "startLine": 66483,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ms.js",
+    "startLine": 66593,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/zod/v4/locales/nl.js",
+    "startLine": 66701,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/no.js",
+    "startLine": 66812,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ota.js",
+    "startLine": 66921,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ps.js",
+    "startLine": 67031,
+    "lines": 115
+   },
+   {
+    "path": "node_modules/zod/v4/locales/pl.js",
+    "startLine": 67146,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/pt.js",
+    "startLine": 67256,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ro.js",
+    "startLine": 67365,
+    "lines": 120
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ru.js",
+    "startLine": 67485,
+    "lines": 157
+   },
+   {
+    "path": "node_modules/zod/v4/locales/sl.js",
+    "startLine": 67642,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/sv.js",
+    "startLine": 67752,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ta.js",
+    "startLine": 67863,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/th.js",
+    "startLine": 67974,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/tr.js",
+    "startLine": 68085,
+    "lines": 106
+   },
+   {
+    "path": "node_modules/zod/v4/locales/uk.js",
+    "startLine": 68191,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ua.js",
+    "startLine": 68300,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod/v4/locales/ur.js",
+    "startLine": 68305,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/uz.js",
+    "startLine": 68416,
+    "lines": 111
+   },
+   {
+    "path": "node_modules/zod/v4/locales/vi.js",
+    "startLine": 68527,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v4/locales/zh-CN.js",
+    "startLine": 68636,
+    "lines": 110
+   },
+   {
+    "path": "node_modules/zod/v4/locales/zh-TW.js",
+    "startLine": 68746,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/zod/v4/locales/yo.js",
+    "startLine": 68854,
+    "lines": 108
+   },
+   {
+    "path": "node_modules/zod/v4/core/registries.js",
+    "startLine": 68962,
+    "lines": 50
+   },
+   {
+    "path": "node_modules/zod/v4/core/api.js",
+    "startLine": 69012,
+    "lines": 1039
+   },
+   {
+    "path": "node_modules/zod/v4/core/to-json-schema.js",
+    "startLine": 70051,
+    "lines": 359
+   },
+   {
+    "path": "node_modules/zod/v4/core/json-schema-processors.js",
+    "startLine": 70410,
+    "lines": 544
+   },
+   {
+    "path": "node_modules/zod/v4/core/json-schema-generator.js",
+    "startLine": 70954,
+    "lines": 75
+   },
+   {
+    "path": "node_modules/zod/v4/core/json-schema.js",
+    "startLine": 71029,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/zod/v4/classic/schemas.js",
+    "startLine": 71032,
+    "lines": 171
+   },
+   {
+    "path": "node_modules/zod/v4/classic/checks.js",
+    "startLine": 71203,
+    "lines": 34
+   },
+   {
+    "path": "node_modules/zod/v4/classic/iso.js",
+    "startLine": 71237,
+    "lines": 41
+   },
+   {
+    "path": "node_modules/zod/v4/classic/errors.js",
+    "startLine": 71278,
+    "lines": 40
+   },
+   {
+    "path": "node_modules/zod/v4/classic/parse.js",
+    "startLine": 71318,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/zod/v4/classic/schemas.js",
+    "startLine": 71332,
+    "lines": 1290
+   },
+   {
+    "path": "node_modules/zod/v4/classic/compat.js",
+    "startLine": 72622,
+    "lines": 26
+   },
+   {
+    "path": "node_modules/zod/v4/classic/from-json-schema.js",
+    "startLine": 72648,
+    "lines": 480
+   },
+   {
+    "path": "node_modules/zod/v4/classic/coerce.js",
+    "startLine": 73128,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/zod/v4/classic/external.js",
+    "startLine": 73153,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/zod/index.js",
+    "startLine": 73156,
+    "lines": 3
+   },
+   {
+    "path": "node_modules/zod/v3/helpers/util.js",
+    "startLine": 73159,
+    "lines": 134
+   },
+   {
+    "path": "node_modules/zod/v3/ZodError.js",
+    "startLine": 73293,
+    "lines": 114
+   },
+   {
+    "path": "node_modules/zod/v3/locales/en.js",
+    "startLine": 73407,
+    "lines": 103
+   },
+   {
+    "path": "node_modules/zod/v3/errors.js",
+    "startLine": 73510,
+    "lines": 6
+   },
+   {
+    "path": "node_modules/zod/v3/helpers/parseUtil.js",
+    "startLine": 73516,
+    "lines": 109
+   },
+   {
+    "path": "node_modules/zod/v3/helpers/errorUtil.js",
+    "startLine": 73625,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/zod/v3/types.js",
+    "startLine": 73632,
+    "lines": 3403
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-compat.js",
+    "startLine": 77035,
+    "lines": 63
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/types.js",
+    "startLine": 77098,
+    "lines": 1522
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js",
+    "startLine": 78620,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/Options.js",
+    "startLine": 78625,
+    "lines": 34
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/Refs.js",
+    "startLine": 78659,
+    "lines": 21
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/errorMessages.js",
+    "startLine": 78680,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/getRelativePath.js",
+    "startLine": 78696,
+    "lines": 10
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/any.js",
+    "startLine": 78706,
+    "lines": 16
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/array.js",
+    "startLine": 78722,
+    "lines": 24
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/bigint.js",
+    "startLine": 78746,
+    "lines": 46
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/boolean.js",
+    "startLine": 78792,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/branded.js",
+    "startLine": 78799,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/catch.js",
+    "startLine": 78804,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/date.js",
+    "startLine": 78809,
+    "lines": 59
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/default.js",
+    "startLine": 78868,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/effects.js",
+    "startLine": 78876,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/enum.js",
+    "startLine": 78881,
+    "lines": 8
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/intersection.js",
+    "startLine": 78889,
+    "lines": 42
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/literal.js",
+    "startLine": 78931,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/string.js",
+    "startLine": 78951,
+    "lines": 325
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/record.js",
+    "startLine": 79276,
+    "lines": 52
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/map.js",
+    "startLine": 79328,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/nativeEnum.js",
+    "startLine": 79353,
+    "lines": 14
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/never.js",
+    "startLine": 79367,
+    "lines": 10
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/null.js",
+    "startLine": 79377,
+    "lines": 10
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/union.js",
+    "startLine": 79387,
+    "lines": 68
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/nullable.js",
+    "startLine": 79455,
+    "lines": 32
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/number.js",
+    "startLine": 79487,
+    "lines": 49
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/object.js",
+    "startLine": 79536,
+    "lines": 70
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/optional.js",
+    "startLine": 79606,
+    "lines": 19
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/pipeline.js",
+    "startLine": 79625,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/promise.js",
+    "startLine": 79645,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/set.js",
+    "startLine": 79650,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/tuple.js",
+    "startLine": 79670,
+    "lines": 28
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/undefined.js",
+    "startLine": 79698,
+    "lines": 7
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/unknown.js",
+    "startLine": 79705,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parsers/readonly.js",
+    "startLine": 79710,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/selectParser.js",
+    "startLine": 79715,
+    "lines": 76
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/parseDef.js",
+    "startLine": 79791,
+    "lines": 56
+   },
+   {
+    "path": "node_modules/zod-to-json-schema/dist/esm/zodToJsonSchema.js",
+    "startLine": 79847,
+    "lines": 62
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-json-schema-compat.js",
+    "startLine": 79909,
+    "lines": 21
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js",
+    "startLine": 79930,
+    "lines": 954
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/validation/ajv-provider.js",
+    "startLine": 80884,
+    "lines": 68
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/client.js",
+    "startLine": 80952,
+    "lines": 154
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/helpers.js",
+    "startLine": 81106,
+    "lines": 35
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/index.js",
+    "startLine": 81141,
+    "lines": 520
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/server.js",
+    "startLine": 81661,
+    "lines": 213
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js",
+    "startLine": 81874,
+    "lines": 380
+   },
+   {
+    "path": "node_modules/eventsource-parser/dist/index.js",
+    "startLine": 82254,
+    "lines": 176
+   },
+   {
+    "path": "node_modules/eventsource/dist/index.js",
+    "startLine": 82430,
+    "lines": 297
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/transport.js",
+    "startLine": 82727,
+    "lines": 27
+   },
+   {
+    "path": "node_modules/pkce-challenge/dist/index.node.js",
+    "startLine": 82754,
+    "lines": 43
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/auth.js",
+    "startLine": 82797,
+    "lines": 144
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/auth-utils.js",
+    "startLine": 82941,
+    "lines": 20
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/auth/errors.js",
+    "startLine": 82961,
+    "lines": 95
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/auth.js",
+    "startLine": 83056,
+    "lines": 541
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/sse.js",
+    "startLine": 83597,
+    "lines": 191
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/sse.js",
+    "startLine": 83788,
+    "lines": 30
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/sse.js",
+    "startLine": 83818,
+    "lines": 149
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/stdio.js",
+    "startLine": 83967,
+    "lines": 5
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js",
+    "startLine": 83972,
+    "lines": 28
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/stdio.js",
+    "startLine": 84000,
+    "lines": 165
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js",
+    "startLine": 84165,
+    "lines": 62
+   },
+   {
+    "path": "node_modules/@hono/node-server/dist/index.mjs",
+    "startLine": 84227,
+    "lines": 621
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/webStandardStreamableHttp.js",
+    "startLine": 84848,
+    "lines": 602
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/server/streamableHttp.js",
+    "startLine": 85450,
+    "lines": 102
+   },
+   {
+    "path": "node_modules/eventsource-parser/dist/stream.js",
+    "startLine": 85552,
+    "lines": 25
+   },
+   {
+    "path": "node_modules/@modelcontextprotocol/sdk/dist/esm/client/streamableHttp.js",
+    "startLine": 85577,
+    "lines": 396
+   },
+   {
+    "path": "packages/playwright-core/src/utilsBundle.ts",
+    "startLine": 85973,
+    "lines": 107
+   }
+  ]
+ },
+ "protocol": {
+  "file": "types/protocol.d.ts",
+  "generatedFrom": "utils/protocol-types-generator (header comment in the file)",
+  "domains": [
+   "Accessibility",
+   "Ads",
+   "Animation",
+   "Audits",
+   "Autofill",
+   "BackgroundService",
+   "BluetoothEmulation",
+   "Browser",
+   "CSS",
+   "CacheStorage",
+   "Cast",
+   "Console",
+   "CrashReportContext",
+   "DOM",
+   "DOMDebugger",
+   "DOMSnapshot",
+   "DOMStorage",
+   "Debugger",
+   "DeviceAccess",
+   "DeviceOrientation",
+   "DigitalCredentials",
+   "Emulation",
+   "EventBreakpoints",
+   "Extensions",
+   "FedCm",
+   "Fetch",
+   "FileSystem",
+   "FindInPage",
+   "HeadlessExperimental",
+   "HeapProfiler",
+   "IO",
+   "IndexedDB",
+   "Input",
+   "Inspector",
+   "LayerTree",
+   "Log",
+   "Media",
+   "Memory",
+   "Network",
+   "Overlay",
+   "PWA",
+   "Page",
+   "Performance",
+   "PerformanceTimeline",
+   "Preload",
+   "Profiler",
+   "Runtime",
+   "Schema",
+   "Security",
+   "ServiceWorker",
+   "SmartCardEmulation",
+   "Storage",
+   "SystemInfo",
+   "Target",
+   "Tethering",
+   "Tracing",
+   "WebAudio",
+   "WebAuthn",
+   "WebMCP"
+  ]
+ }
+}
