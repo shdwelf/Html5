@@ -36,7 +36,7 @@ versa), and each `Chat AB` tab is where the conversation is read.
 |---|---|---|---|
 | 1 | `IMPORTRANGE(" … ", "Send!A:A")` (first formula) | `1bERn8PAUgIyhZc3TXBTc27nz-SXiE3-LB2XzP04QBmQ` | 4 variants, all 404 |
 | 2 | `IMPORTRANGE(" … ", "Send!A:A")` (second formula) | `1jW9wRA-1uN9Te9ODDY0rnfkoJVkd5kX0ex5AwMzcoSc` | 2 variants, all 404 |
-| 3 | bare ID under the filled template at the foot of the note | raw read is **45 glyphs** — see below | 2 deletion candidates, both 404 |
+| 3 | bare ID under the filled template at the foot of the note | insertion-mark reading — see below | 4 insertion candidates, all 404 (2 earlier deletion candidates also 404) |
 
 Transcription notes and residual ambiguities (kept honest):
 
@@ -49,16 +49,23 @@ Transcription notes and residual ambiguities (kept honest):
   as deleted by the writer; without it the count is exactly 44). The
   writer's zero is slashed (`Ø`), which pins `Y0` and `X0` as digit 0.
   `RA-1u` (digit-1 vs capital-I) is the residual confusable; both
-  readings probed.
-- **ID 3** — the raw glyph string reads
-  `1ivT2F7BMYzYOhOMx[blot]1IsDmpdStP2g5HaZ1KZ1_2VJzMEY`, which is one
-  glyph too many for a 44-char ID even with the writer's blotted-out
-  correction (annotated by the writer with a small bracketed mark)
-  treated as deleted. One visible glyph is therefore a misread or a
-  writer duplication. The two most likely 44-char candidates drop one
-  of the `Mx[1]Is` pair:
+  readings probed, plus the `RA-Zu` and leading-`I` re-reads (§4).
+- **ID 3** — first pass read the raw glyph string as
+  `1ivT2F7BMYzYOhOMx[blot]1IsDmpdStP2g5HaZ1KZ1_2VJzMEY` (45 glyphs)
+  and dropped one of the `Mx[1]Is` pair to reach 44 chars:
   - P1: `1ivT2F7BMYzYOhOMx1sDmpdStP2g5HaZ1KZ1_2VJzMEY`
   - P2: `1ivT2F7BMYzYOhOMxIsDmpdStP2g5HaZ1KZ1_2VJzMEY`
+  On the user's correction — the little ∧-shaped marks are **insertion
+  carets** (the bracketed glyphs above the line are inserted at the
+  caret point, not baseline text) and a crossed O is **0** — ID 3
+  re-reads as the writer's own pattern
+  `1ivT2F7BMYzYOhOMx[l,1]SDmpdStP2g5Ha2lK2l_2VJzMeY`, i.e. one inserted
+  glyph (`l` or `1`) after `Mx`, then baseline `S`, and the tail
+  bracket insertions turn `Z1KZ1` into `2lK2l`. Both bracket choices
+  are exactly 44 chars:
+  - N1: `1ivT2F7BMYzYOhOMxlSDmpdStP2g5Ha2lK2l_2VJzMeY`
+  - N2: `1ivT2F7BMYzYOhOMx1SDmpdStP2g5Ha2lK2l_2VJzMeY`
+  (Final-`MEY` capital-E variants of N1/N2 were also probed.)
 
 ## 3. Complete URLs (template filled)
 
@@ -67,12 +74,16 @@ Filled into the note's own template
 
 1. `https://docs.google.com/spreadsheets/d/1bERn8PAUgIyhZc3TXBTc27nz-SXiE3-LB2XzP04QBmQ/edit?usp=drive_link`
 2. `https://docs.google.com/spreadsheets/d/1jW9wRA-1uN9Te9ODDY0rnfkoJVkd5kX0ex5AwMzcoSc/edit?usp=drive_link`
-3. `https://docs.google.com/spreadsheets/d/1ivT2F7BMYzYOhOMx1sDmpdStP2g5HaZ1KZ1_2VJzMEY/edit?usp=drive_link` (candidate P1)
-   `https://docs.google.com/spreadsheets/d/1ivT2F7BMYzYOhOMxIsDmpdStP2g5HaZ1KZ1_2VJzMEY/edit?usp=drive_link` (candidate P2)
+3. `https://docs.google.com/spreadsheets/d/1ivT2F7BMYzYOhOMxlSDmpdStP2g5Ha2lK2l_2VJzMeY/edit?usp=drive_link` (candidate N1, inserted `l`)
+   `https://docs.google.com/spreadsheets/d/1ivT2F7BMYzYOhOMx1SDmpdStP2g5Ha2lK2l_2VJzMeY/edit?usp=drive_link` (candidate N2, inserted `1`)
+   (Earlier deletion candidates P1/P2:
+   `…/d/1ivT2F7BMYzYOhOMx1sDmpdStP2g5HaZ1KZ1_2VJzMEY/edit?usp=drive_link`
+   and `…/d/1ivT2F7BMYzYOhOMxIsDmpdStP2g5HaZ1KZ1_2VJzMEY/edit?usp=drive_link`.)
 
-**Status: unverified.** All four URLs returned Drive API 404 from the
-connected account (§4). They are the correct fill-ins of the note's
-template from a careful OCR, but they are NOT confirmed-live links.
+**Status: unverified.** Every URL above returned Drive API 404 from
+the connected account (§4). They are the correct fill-ins of the
+note's template from a careful OCR, but they are NOT confirmed-live
+links.
 
 ## 4. Drive investigation (connected `google_drive` account)
 
@@ -88,9 +99,14 @@ What was actually checked, in order:
    - `Agents of F.I.E.L.D.` — `1wblw6aHEL91QScBoOuL6qWPrPACO86uXbzqIF5xfp3s`, created 2018-11-24, modified 2023-07-22.
    Neither name nor ID matches anything on the note (excluded on
    metadata alone; their contents were not opened — out of scope).
-4. `files.get` probes (8): ID-1 primary + `I→l`, `I→1`, `B→8`
-   variants; ID-2 primary + `1→I` variant; ID-3 candidates P1, P2 —
+4. `files.get` probes: ID-1 primary + `I→l`, `I→1`, `B→8` variants;
+   ID-2 primary + `1→I` variant; ID-3 candidates P1, P2 —
    **every probe returned Google Drive API 404 "File not found"**.
+5. Second pass (user's insertion-mark correction): ID-3 N1, N2 and
+   their final-`MEY` variants; ID-2 `RA-Zu…` and leading-`I` re-reads
+   — **all 404 again**. The spreadsheet census re-run on the second
+   pass still returns exactly the same 2 files, so the account's
+   accessible set has not changed.
 
 ## 5. Interpretation
 
@@ -124,7 +140,7 @@ bagit.txt  bag-info.txt  manifest-sha256.txt  tagmanifest-sha256.txt
 data/source-image-1.jpeg        (copy of the user's uploaded photo)
 data/ocr-transcription.md       (full note transcription + glyph notes)
 data/sheet-ids.json             (IDs, variants, URLs, probe status)
-data/drive-investigation.json   (census + all 8 probe results)
+data/drive-investigation.json   (census + all probe results)
 data/complete-urls.txt          (the §3 URLs, one per line)
 ```
 
