@@ -63,6 +63,15 @@ work remains blocked on a sandbox JVM.
 the Elcomsoft/John/rainbow-table/HIBP survey delivered as notes-only per F4
 (HIBP k-anonymity + NIST SP 800-63B-4 as the defensive distillation); the
 ARJ/SFX password-recipe strand closed by F4 with identification notes on file.
+*2026-10-25 round (round 55):* the BagIt next-action is **closed** — the
+Google Doc `1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I` ("API Script",
+the Changelly stage-1 loader of S14) was fetched through the authorized
+Drive connector and preserved inert in a validated BagIt bag
+(`dist/api-script-loader-bag/`, gitignored; text export 725 B sha256
+`d1fc0982…`, PDF export 36,221 B sha256 `1e3412db…`). No Drive-native PDF
+companion exists under that name, so the PDF is a labelled fresh export.
+Record: [`backlog-execution-round-55-2026-10-25.md`](backlog-execution-round-55-2026-10-25.md).
+S1 remains *partial* only for the JVM-blocked Ghidra decompressor strand.
 
 ### S2 · Sneakers press kit: Ghidra, js-dos xdc, wiki — *partial*
 FindCrypt/native-Ghidra work is done ([`sneakers-original-ghidra-wasm-2026-10-18.md`](sneakers-original-ghidra-wasm-2026-10-18.md),
