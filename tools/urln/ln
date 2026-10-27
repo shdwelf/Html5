@@ -1,0 +1,332 @@
+#!/usr/bin/env node
+'use strict';
+
+/*
+ * urln/ln -- an `ln` rewrite for URL symbolic-link targets.
+ *
+ * Stock `ln -s https://example.com/file link` creates a symlink whose
+ * target is the literal text "https://example.com/file"; it never
+ * downloads anything.  This rewrite keeps normal local `ln` behaviour,
+ * but when a symbolic-link target is a URL it downloads the file once
+ * (curl first; netcat fallback for plain http:// only), stores it in a
+ * cache directory, and creates the symlink pointing at the local file.
+ */
+
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const VERSION = 'urln-ln 1.0.0';
+
+function usage() {
+  return `Usage: ln [-s] [-f] [-n] [-r] [-v] [--refresh] [--cache-dir DIR] TARGET LINK_NAME
+       ln [-s] [-f] [-n] [-r] [-v] -t DIRECTORY TARGET...
+       ln [-s] [-f] [-n] [-r] [-v] TARGET... DIRECTORY
+
+Create hard links (default) or symbolic links (-s) like ln(1), with one
+extension: a symbolic-link TARGET that is an http://, https://, ftp://
+or file:// URL is downloaded once and the link points at the local copy.
+
+Options:
+  -s, --symbolic          create symbolic links (required for URL targets)
+  -f, --force             remove existing destination links/files first
+  -n, --no-dereference    replace a destination symlink itself, even if it
+                          points at a directory
+  -r, --relative          create links relative to the link's directory
+  -v, --verbose           print each link as it is made
+  -t, --target-directory  put links for all TARGETs in DIRECTORY
+      --cache-dir DIR     where URL downloads are stored
+                          (default: $URLN_CACHE or ~/.cache/urln)
+      --refresh           download URL targets again even if cached
+      --dry-run           print what would happen; do not write anything
+  -h, --help              show this help
+      --version           show version
+`;
+}
+
+function fail(message) {
+  console.error(`ln: ${message}`);
+  process.exit(1);
+}
+
+function isUrl(value) {
+  return /^(https?|ftp):\/\//i.test(value) || /^file:\/\//i.test(value);
+}
+
+function commandNameForError(target, dest) {
+  return `failed to create link '${dest}' -> '${target}'`;
+}
+
+function lstatOrNull(file) {
+  try { return fs.lstatSync(file); } catch { return null; }
+}
+
+function lexists(file) {
+  return lstatOrNull(file) !== null;
+}
+
+function isDirectory(file) {
+  try { return fs.statSync(file).isDirectory(); } catch { return false; }
+}
+
+function cleanBasename(name) {
+  let out = String(name || '').split(/[?#]/)[0];
+  try { out = decodeURIComponent(out); } catch { /* keep raw name */ }
+  out = path.basename(out.replace(/\\/g, '/')).replace(/\0/g, '');
+  if (!out || out === '.' || out === '..') out = 'download';
+  return out;
+}
+
+function basenameForTarget(target) {
+  if (isUrl(target)) {
+    try { return cleanBasename(new URL(target).pathname); }
+    catch { return 'download'; }
+  }
+  const noSlash = target.replace(/\/+$/, '');
+  return path.basename(noSlash) || noSlash || target;
+}
+
+function removeDestination(dest) {
+  const st = lstatOrNull(dest);
+  if (!st) return;
+  if (st.isDirectory() && !st.isSymbolicLink()) {
+    try { fs.rmdirSync(dest); }
+    catch (e) { fail(`cannot remove directory '${dest}': ${e.message}`); }
+  } else {
+    fs.unlinkSync(dest);
+  }
+}
+
+function sha256(text) {
+  return crypto.createHash('sha256').update(text).digest('hex');
+}
+
+function downloadWithNetcat(urlString, tmpFile) {
+  const u = new URL(urlString);
+  if (u.protocol !== 'http:') {
+    throw new Error('nc fallback only supports http:// URLs (install curl for https/ftp)');
+  }
+  const host = u.hostname;
+  const port = u.port || '80';
+  const requestPath = `${u.pathname || '/'}${u.search || ''}`;
+  const request =
+    `GET ${requestPath} HTTP/1.0\r\n` +
+    `Host: ${host}\r\n` +
+    'User-Agent: urln-ln/1.0\r\n' +
+    'Connection: close\r\n\r\n';
+  const res = spawnSync('nc', ['-w', '30', host, String(port)], {
+    input: request,
+    maxBuffer: 1024 * 1024 * 1024,
+  });
+  if (res.error) throw res.error;
+  if (res.status !== 0) throw new Error(`nc exited with status ${res.status}`);
+  const body = Buffer.isBuffer(res.stdout) ? res.stdout : Buffer.from(res.stdout || '');
+  const split = body.indexOf('\r\n\r\n');
+  const headerEnd = split >= 0 ? split + 4 : 0;
+  const header = body.slice(0, split >= 0 ? split : 0).toString('latin1');
+  const match = header.match(/^HTTP\/\d\.\d\s+(\d+)/);
+  const status = match ? Number(match[1]) : 0;
+  if (status !== 200) throw new Error(`nc HTTP fallback received status ${status || 'unknown'}`);
+  fs.writeFileSync(tmpFile, body.slice(headerEnd));
+}
+
+function download(urlString, storedFile) {
+  fs.mkdirSync(path.dirname(storedFile), { recursive: true });
+  const tmpFile = `${storedFile}.part-${process.pid}`;
+  try {
+    const res = spawnSync('curl', [
+      '-fL', '--retry', '3', '--retry-delay', '1',
+      '--connect-timeout', '30', '-o', tmpFile, urlString,
+    ], { stdio: 'inherit' });
+
+    if (!res.error && res.status === 0) {
+      fs.renameSync(tmpFile, storedFile);
+      return;
+    }
+    if (res.error && res.error.code !== 'ENOENT') throw res.error;
+    if (!res.error && res.status !== 0) throw new Error(`curl exited with status ${res.status}`);
+
+    // curl is unavailable: file:// can be copied locally; plain http://
+    // can be fetched with netcat.  Anything else really needs curl.
+    if (/^file:\/\//i.test(urlString)) {
+      fs.copyFileSync(fileURLToPath(urlString), tmpFile);
+    } else {
+      downloadWithNetcat(urlString, tmpFile);
+    }
+    fs.renameSync(tmpFile, storedFile);
+  } finally {
+    try { fs.unlinkSync(tmpFile); } catch { /* already moved or never made */ }
+  }
+}
+
+function storedPathFor(urlString, cacheDir) {
+  const base = basenameForTarget(urlString);
+  return path.join(cacheDir, `${sha256(urlString).slice(0, 20)}-${base}`);
+}
+
+function linkPayloadFor(dest, target, opts) {
+  if (!opts.relative) return target;
+  const destDir = path.dirname(path.resolve(dest));
+  const targetAbs = path.resolve(target);
+  return path.relative(destDir, targetAbs) || '.';
+}
+
+function localSymlinkPayload(dest, target, opts) {
+  if (!opts.relative) return target;
+  const destDir = path.dirname(path.resolve(dest));
+  const targetAbs = path.resolve(target);
+  return path.relative(destDir, targetAbs) || '.';
+}
+
+function createOne(target, dest, opts) {
+  if (lexists(dest) && isDirectory(dest) && !opts.noDeref && !opts.symbolicTargetDirectory) {
+    dest = path.join(dest, basenameForTarget(target));
+  }
+
+  if (opts.dryRun) {
+    console.log(`would link '${dest}' -> '${target}'`);
+    return;
+  }
+
+  if (lexists(dest)) {
+    if (!opts.force) fail(`${commandNameForError(target, dest)}: File exists`);
+    removeDestination(dest);
+  }
+
+  if (isUrl(target)) {
+    if (!opts.symbolic) {
+      fail('URL targets require -s: a hard link cannot point at a network resource');
+    }
+    const stored = storedPathFor(target, opts.cacheDir);
+    if (opts.refresh || !lexists(stored)) download(target, stored);
+    const payload = linkPayloadFor(dest, stored, opts);
+    fs.symlinkSync(payload, dest);
+    if (opts.verbose) console.log(`'${dest}' -> '${payload}' (downloaded from ${target})`);
+    return;
+  }
+
+  if (opts.symbolic) {
+    const payload = localSymlinkPayload(dest, target, opts);
+    fs.symlinkSync(payload, dest);
+    if (opts.verbose) console.log(`'${dest}' -> '${payload}'`);
+  } else {
+    fs.linkSync(target, dest);
+    if (opts.verbose) console.log(`'${dest}' => '${target}'`);
+  }
+}
+
+function parseArgs(argv) {
+  const opts = {
+    symbolic: false,
+    force: false,
+    noDeref: false,
+    relative: false,
+    verbose: false,
+    refresh: false,
+    dryRun: false,
+    targetDirectory: null,
+    symbolicTargetDirectory: false,
+    cacheDir: process.env.URLN_CACHE || path.join(os.homedir(), '.cache', 'urln'),
+  };
+  const operands = [];
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--') { operands.push(...argv.slice(i + 1)); break; }
+    if (arg === '--help' || arg === '-h') { console.log(usage()); process.exit(0); }
+    if (arg === '--version') { console.log(VERSION); process.exit(0); }
+    if (arg === '--symbolic') { opts.symbolic = true; continue; }
+    if (arg === '--force') { opts.force = true; continue; }
+    if (arg === '--no-dereference') { opts.noDeref = true; continue; }
+    if (arg === '--relative') { opts.relative = true; continue; }
+    if (arg === '--verbose') { opts.verbose = true; continue; }
+    if (arg === '--refresh') { opts.refresh = true; continue; }
+    if (arg === '--dry-run') { opts.dryRun = true; continue; }
+    if (arg.startsWith('--target-directory=')) { opts.targetDirectory = arg.slice('--target-directory='.length); continue; }
+    if (arg === '--target-directory' || arg === '-t') {
+      if (i + 1 >= argv.length) fail(`option requires an argument -- '${arg}'`);
+      opts.targetDirectory = argv[++i];
+      continue;
+    }
+    if (arg.startsWith('--cache-dir=')) { opts.cacheDir = arg.slice('--cache-dir='.length); continue; }
+    if (arg === '--cache-dir' || arg === '--store') {
+      if (i + 1 >= argv.length) fail(`option requires an argument -- '${arg}'`);
+      opts.cacheDir = argv[++i];
+      continue;
+    }
+    if (arg.startsWith('--')) fail(`unrecognized option '${arg}'`);
+    if (arg.startsWith('-') && arg !== '-') {
+      const chars = arg.slice(1);
+      for (let j = 0; j < chars.length; j++) {
+        const ch = chars[j];
+        if (ch === 's') opts.symbolic = true;
+        else if (ch === 'f') opts.force = true;
+        else if (ch === 'n') opts.noDeref = true;
+        else if (ch === 'r') opts.relative = true;
+        else if (ch === 'v') opts.verbose = true;
+        else if (ch === 't') {
+          const attached = chars.slice(j + 1);
+          if (attached) opts.targetDirectory = attached;
+          else if (i + 1 < argv.length) opts.targetDirectory = argv[++i];
+          else fail("option requires an argument -- 't'");
+          break;
+        } else {
+          fail(`invalid option -- '${ch}'`);
+        }
+      }
+      continue;
+    }
+    operands.push(arg);
+  }
+
+  return { opts, operands };
+}
+
+function main() {
+  const { opts, operands } = parseArgs(process.argv.slice(2));
+
+  let targets;
+  let destDir = null;
+  let singleDest = null;
+
+  if (opts.targetDirectory) {
+    targets = operands;
+    destDir = opts.targetDirectory;
+    opts.symbolicTargetDirectory = true;
+  } else if (operands.length >= 2) {
+    const last = operands[operands.length - 1];
+    if (operands.length > 2 || isDirectory(last)) {
+      targets = operands.slice(0, -1);
+      destDir = last;
+      opts.symbolicTargetDirectory = true;
+    } else {
+      targets = [operands[0]];
+      singleDest = last;
+    }
+  } else if (operands.length === 1) {
+    targets = operands;
+    singleDest = basenameForTarget(operands[0]);
+  } else {
+    fail('missing file operand');
+  }
+
+  if (targets.length === 0) fail('missing file operand');
+  if (destDir && !isDirectory(destDir)) fail(`target directory '${destDir}': No such directory`);
+
+  for (const target of targets) {
+    const dest = destDir ? path.join(destDir, basenameForTarget(target)) : singleDest;
+    try {
+      createOne(target, dest, opts);
+    } catch (e) {
+      if (e && e.code === 'ENOENT' && !isUrl(target)) {
+        fail(`${commandNameForError(target, dest)}: No such file or directory`);
+      }
+      fail(e.message || String(e));
+    }
+  }
+}
+
+main();
