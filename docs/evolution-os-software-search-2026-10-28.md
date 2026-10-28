@@ -153,9 +153,20 @@ of them waits on the same `.romz` step. Follow-up searches for a public
 pages only confirm the container is compressed and that the one-time bridge
 to 4.x was `.rom.gz`, suggesting — not proving — a gzip-family container for
 the earliest images. The next experiment is therefore concrete and cheap:
-on the runner, stage candidate 6.0.0.1R2, read the `.romz` magic bytes
-(the workflow now prints them), and test gzip/zlib/raw-deflate inflation
-before invoking Ghidra.
+on the runner, stage candidate 6.0.0.1R2, read the `.romz` magic bytes,
+and test gzip/zlib/raw-deflate inflation before invoking Ghidra.
+
+**Update (probe built):** `tools/evolution-os/romz_probe.py` now does
+exactly that — it records the container's size/SHA-256/magic, tries gzip,
+zlib, raw DEFLATE, bzip2 and LZMA at offset 0 plus embedded-stream scans
+behind a short header, scores any output for firmware plausibility
+(Evolution/Lantronix/XPort keyword hits), and writes a JSON report either
+way (`tests/romz-probe.test.mjs`: gzip/zlib/raw-deflate/header-offset
+recovery plus an honest refusal on noise). `evolution-os-ghidra.yml` runs
+it after staging: Ghidra is invoked **only** on a plausibly inflated
+payload, and the probe report is committed to `docs/ghidra/evolution-os/`
+whether or not inflation succeeds — so the first real run answers the
+`.romz` question with evidence instead of another assumption.
 
 **To run the real disassembly after `.romz` inflation is solved:** dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit

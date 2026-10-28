@@ -27,6 +27,7 @@ on:
       - '.github/workflows/evolution-os-ghidra.yml'
       - '.arena-relay/evolution-os-ghidra.txt'
       - 'tools/evolution-os/evolution-os.mjs'
+      - 'tools/evolution-os/romz_probe.py'
       - 'tools/urln/ln'
       - 'tools/ghidra_scripts/GenericProgramReport.java'
   workflow_dispatch:
@@ -133,8 +134,28 @@ jobs:
           stat -c 'staged bytes=%s' "$image"
           sha256sum "$image" | tee "$root/input/firmware.sha256"
 
-      - name: Install pinned official Ghidra release
+      - name: Probe the .romz container for its compression
+        id: probe
         if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          root="$RUNNER_TEMP/evolution-os"
+          # Exit 2 from the probe means "no plausible inflation" - that is
+          # evidence to commit, not a job failure, so handle it explicitly.
+          if python3 tools/evolution-os/romz_probe.py "$IMAGE" \
+              --out "$root/input/payload.bin" \
+              --report "$root/romz-probe.json"; then
+            echo 'inflated=true' >> "$GITHUB_OUTPUT"
+            echo "IMAGE=$root/input/payload.bin" >> "$GITHUB_ENV"
+            echo 'Container inflated; Ghidra will analyse the payload.'
+          else
+            echo 'inflated=false' >> "$GITHUB_OUTPUT"
+            echo 'Container NOT inflated by any standard method; Ghidra step skipped, probe report still committed.'
+          fi
+          cat "$root/romz-probe.json"
+
+      - name: Install pinned official Ghidra release
+        if: steps.probe.outputs.inflated == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -146,7 +167,7 @@ jobs:
           test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
 
       - name: Disassemble the Evolution OS image (static only)
-        if: steps.stage.outputs.staged == 'true'
+        if: steps.probe.outputs.inflated == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -182,6 +203,9 @@ jobs:
             [ -e "$f" ] || continue
             cp "$f" docs/ghidra/evolution-os/
           done
+          # The container-probe report is evidence whether or not the
+          # payload inflated and Ghidra ran.
+          [ -e "$root/romz-probe.json" ] && cp "$root/romz-probe.json" docs/ghidra/evolution-os/
           for f in docs/ghidra/evolution-os/*.strings.txt; do
             [ -e "$f" ] || continue
             if [ "$(stat -c%s "$f")" -gt 900000 ]; then

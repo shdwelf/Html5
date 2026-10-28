@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:33:53.339Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:42:48.279Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: pipeline ready — no Evolution OS image staged, no disassembly yet.**
 No `.rom`/`.romz` Evolution OS firmware exists in this repo, and this sandbox has no JVM,

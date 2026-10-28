@@ -279,7 +279,7 @@ function mdCell(value) {
 /** Assemble the Markdown record. With no reports the record says so, in the
  *  status line, and gives the exact staging + runner path instead of
  *  inventing a disassembly. */
-export function buildAssembly({ reports = [], generatedAt = new Date().toISOString() } = {}) {
+export function buildAssembly({ reports = [], probe = null, generatedAt = new Date().toISOString() } = {}) {
   const rows = reports.map((r) => (r && r.program !== undefined && r.language !== undefined && !r.source ? summarizeReport(r) : r));
   const lines = [];
   lines.push('# Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem');
@@ -371,6 +371,24 @@ export function buildAssembly({ reports = [], generatedAt = new Date().toISOStri
   lines.push('tools/urln/ln -s ' + FIRMWARE_CANDIDATES[0].download + ' ./xport-pro-6.0.0.1R2.zip');
   lines.push('```');
   lines.push('');
+  if (probe) {
+    lines.push('## Container probe (.romz)');
+    lines.push('');
+    lines.push(`\`${mdCell(probe.file)}\` — ${probe.bytes} bytes, SHA-256 \`${mdCell(String(probe.sha256).slice(0, 16))}…\`, magic \`${mdCell(probe.magicHex)}\` (probe: \`tools/evolution-os/romz_probe.py\`).`);
+    lines.push('');
+    lines.push('| Method | Offset | Result | Output bytes |');
+    lines.push('| --- | ---: | --- | ---: |');
+    for (const a of probe.attempts || []) {
+      lines.push(`| ${mdCell(a.method)} | ${a.offset} | ${a.ok ? (a.plausible ? 'inflated, plausible' : 'inflated, implausible') : 'failed'} | ${a.outBytes || 0} |`);
+    }
+    lines.push('');
+    if (probe.inflated) {
+      lines.push(`**Inflated:** \`${mdCell(probe.inflated.method)}\` → ${probe.inflated.outBytes} bytes, SHA-256 \`${mdCell(String(probe.inflated.sha256).slice(0, 16))}…\`, keyword hits ${mdCell(JSON.stringify(probe.inflated.keywordHits || {}))}. This payload — not the container — is what Ghidra analysed.`);
+    } else {
+      lines.push('**Not inflated:** no standard method (gzip / zlib / raw DEFLATE / bzip2 / LZMA, offset 0 or behind a short header) produced a plausible payload, so Ghidra was not run on the container. The attempts above are the evidence; the container format is the open question.');
+    }
+    lines.push('');
+  }
   lines.push('## Assembled with');
   lines.push('');
   lines.push('| Module | Artefact | Role in this assembly |');
@@ -430,7 +448,12 @@ async function main() {
   }
   const reportPaths = args.reports.length ? args.reports : ['docs/ghidra/evolution-os'];
   const reports = collectReports(reportPaths);
-  const markdown = buildAssembly({ reports });
+  let probe = null;
+  for (const p of reportPaths) {
+    const candidate = p.endsWith('.json') ? null : join(p, 'romz-probe.json');
+    if (candidate && existsSync(candidate)) { probe = JSON.parse(readFileSync(candidate, 'utf8')); break; }
+  }
+  const markdown = buildAssembly({ reports, probe });
   if (args.out) {
     writeFileSync(args.out, markdown);
     process.stdout.write(`reports=${reports.length} out=${args.out}\n`);
