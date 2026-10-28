@@ -164,6 +164,9 @@ export const FIRMWARE_CANDIDATES = [
     zipMd5: '136c8005c1aacd8734ed0f621ec73383',
     zipSha1: '9fac545077eb1a95f50cbeb23c40ba381931d60c',
     officialFtp: 'https://ts.lantronix.com/ftp/XPort-Pro/6.0.0.1R2/',
+    payloadName: 'xport_pro_6_0_0_1_R2.romz',
+    payloadBytes: 623002,
+    payloadMd5: '7c996f6ea2d07625012a98e748cad759',
     status: 'staged-candidate — unzip, inflate .romz, then Ghidra',
   },
   {

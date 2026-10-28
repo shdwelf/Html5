@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:33:37.011Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:33:53.339Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: pipeline ready — no Evolution OS image staged, no disassembly yet.**
 No `.rom`/`.romz` Evolution OS firmware exists in this repo, and this sandbox has no JVM,
@@ -70,7 +70,7 @@ mirrors the official Lantronix FTP as one ZIP per release. Record:
 
 | Target | Version | Source | ZIP SHA-1 | Payload (.romz, vendor MD5) | Status |
 | --- | --- | --- | --- | --- | --- |
-| xport-pro-evolution | 6.0.0.1R2 | archive.org `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `9fac545077eb1a95…` | — | staged-candidate — unzip, inflate .romz, then Ghidra |
+| xport-pro-evolution | 6.0.0.1R2 | archive.org `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `9fac545077eb1a95…` | xport_pro_6_0_0_1_R2.romz (623002 B, MD5 `7c996f6e…`) | staged-candidate — unzip, inflate .romz, then Ghidra |
 | xport-pro-evolution | 7.0.0.0R2 | archive.org `Lantronix_XPort-Pro_7.0.0.0R2_7769a` | `b6f25081807f1957…` | xport_pro_7_0_0_0_R2.romz (623434 B, MD5 `c0e1fbdc…`) | staged-candidate — unzip, inflate .romz, then Ghidra |
 | xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | — | catalogued — same .romz caveat |
 | matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | — | catalogued — same .romz caveat |
