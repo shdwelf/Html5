@@ -113,6 +113,22 @@ jobs:
             '${{ steps.stage.outputs.url }}' "$root/input/firmware.bin"
           image=$(readlink -f "$root/input/firmware.bin")
           test -s "$image"
+          # archive.org candidates are ZIPs (firmware .romz + release notes +
+          # md5sum.txt); unpack and select the firmware payload. See
+          # docs/evolution-os-software-search-2026-10-28.md.
+          if python3 -c "import zipfile,sys; sys.exit(0 if zipfile.is_zipfile(sys.argv[1]) else 1)" "$image"; then
+            mkdir -p "$root/input/extracted"
+            unzip -o -q "$image" -d "$root/input/extracted"
+            image=$(find "$root/input/extracted" -type f \( -iname '*.rom' -o -iname '*.romz' -o -iname '*.bin' \) -printf '%s %p\n' | sort -rn | head -1 | cut -d' ' -f2-)
+            test -n "$image"
+            echo "Unpacked ZIP; firmware payload: $image"
+            echo 'NOTE: a .romz payload is compressed (Rom Compressed: True) and must be inflated before Ghidra; importing the container as-is yields garbage counts.' 
+          fi
+          python3 - "$image" <<'PY'
+          import sys
+          data = open(sys.argv[1], 'rb').read(16)
+          print('payload magic:', data.hex(' '), repr(data))
+          PY
           echo "IMAGE=$image" >> "$GITHUB_ENV"
           stat -c 'staged bytes=%s' "$image"
           sha256sum "$image" | tee "$root/input/firmware.sha256"

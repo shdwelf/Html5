@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { EVOLUTION_TARGETS, ASSEMBLY_MODULES, buildAssembly, summarizeReport, headlessCommand, collectReports } from '../tools/evolution-os/evolution-os.mjs';
+import { EVOLUTION_TARGETS, ASSEMBLY_MODULES, FIRMWARE_CANDIDATES, buildAssembly, summarizeReport, headlessCommand, collectReports } from '../tools/evolution-os/evolution-os.mjs';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -47,6 +47,22 @@ test('summarizeReport counts a GenericProgramReport JSON and rejects junk', () =
   assert.equal(row.decompileAttempted, 2);
   assert.throws(() => summarizeReport(null), TypeError);
   assert.throws(() => summarizeReport([1, 2]), TypeError);
+});
+
+test('firmware candidates point at the hash-recorded archive.org mirrors', () => {
+  const first = FIRMWARE_CANDIDATES[0];
+  assert.equal(first.target, 'xport-pro-evolution');
+  assert.equal(first.version, '6.0.0.1R2');
+  assert.equal(first.archiveOrg, 'Lantronix_XPort-Pro_6.0.0.1R2_136c8');
+  assert.equal(first.zipMd5, '136c8005c1aacd8734ed0f621ec73383');
+  assert.match(first.download, /^https:\/\/archive\.org\/download\//);
+  for (const c of FIRMWARE_CANDIDATES) {
+    assert.ok(EVOLUTION_TARGETS.some((t) => t.id === c.target), `unknown target ${c.target}`);
+    assert.match(c.status, /romz/);
+  }
+  const md = buildAssembly({ reports: [], generatedAt: '2026-10-28T00:00:00.000Z' });
+  assert.match(md, /Lantronix_XPort-Pro_6\.0\.0\.1R2_136c8/);
+  assert.match(md, /evolution-os-software-search-2026-10-28\.md/);
 });
 
 test('assembly with no reports states the gap instead of inventing a listing', () => {

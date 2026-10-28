@@ -139,6 +139,83 @@ export const ASSEMBLY_MODULES = [
   },
 ];
 
+/** Firmware candidates found 2026-10-28 by searching GitHub and archive.org
+ *  for the software behind https://www.lantronix.com/products/evolution-os/ .
+ *  Full record: docs/evolution-os-software-search-2026-10-28.md.
+ *
+ *  GitHub yielded no Evolution OS firmware or SDK mirror (code search for
+ *  Evolution OS returns this repo; the Lantronix org publishes newer-product
+ *  code only; morkai/walkner-tools targets the XPort Pro *Linux* SDK).
+ *  archive.org's firmwarelibrary collection mirrors the official Lantronix
+ *  FTP (ts.lantronix.com/ftp/) as one ZIP per release, and PCN-728 proves
+ *  the XPort Pro 6.x line belongs to the Evolution OS part numbers
+ *  XPP1002000-02R / XPP100200S-02R. The payload inside each ZIP is a
+ *  compressed .romz ("Rom Compressed: True" in DeviceInstaller logs), so a
+ *  candidate is *staged* here, not yet importable: the .romz container must
+ *  be inflated before Ghidra sees ColdFire code. */
+export const FIRMWARE_CANDIDATES = [
+  {
+    target: 'xport-pro-evolution',
+    version: '6.0.0.1R2',
+    why: 'PCN-728 (2021-06-29) lists this release for XPP1002000-02R / XPP100200S-02R — the Evolution OS part numbers.',
+    archiveOrg: 'Lantronix_XPort-Pro_6.0.0.1R2_136c8',
+    download: 'https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip',
+    zipBytes: 637761,
+    zipMd5: '136c8005c1aacd8734ed0f621ec73383',
+    zipSha1: '9fac545077eb1a95f50cbeb23c40ba381931d60c',
+    officialFtp: 'https://ts.lantronix.com/ftp/XPort-Pro/6.0.0.1R2/',
+    status: 'staged-candidate — unzip, inflate .romz, then Ghidra',
+  },
+  {
+    target: 'xport-pro-evolution',
+    version: '7.0.0.0R2',
+    why: 'Newest XPort Pro Evolution release mirrored on archive.org; Lantronix support names v7.1.0.0R1 as current on the official FTP (not yet mirrored).',
+    archiveOrg: 'Lantronix_XPort-Pro_7.0.0.0R2_7769a',
+    download: 'https://archive.org/download/Lantronix_XPort-Pro_7.0.0.0R2_7769a/7769a2f3359905a3fccb15e2f5b4216f.zip',
+    zipBytes: 638418,
+    zipMd5: '7769a2f3359905a3fccb15e2f5b4216f',
+    zipSha1: 'b6f25081807f1957fab9ca78bff31045e8bac73b',
+    officialFtp: 'https://ts.lantronix.com/ftp/XPort-Pro/7.0.0.0R2/',
+    status: 'staged-candidate — unzip, inflate .romz, then Ghidra',
+  },
+  {
+    target: 'xport-pro-evolution',
+    version: '5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1',
+    why: 'Earlier Evolution releases in the same mirror (identifiers Lantronix_XPort-Pro_5.5.0.2R5_8eb4f, _6.0.0.0R5_51e0f, _6.0.0.3R1_726b1); the 6.0.0.0R5 FTP directory names the payload xport_pro_6_0_0_0_R5.romz (622,761 bytes) beside md5sum.txt.',
+    archiveOrg: 'Lantronix_XPort-Pro_6.0.0.0R5_51e0f',
+    download: 'https://archive.org/details/Lantronix_XPort-Pro_6.0.0.0R5_51e0f',
+    zipBytes: 0,
+    zipMd5: '',
+    zipSha1: '',
+    officialFtp: 'https://ts.lantronix.com/ftp/XPort-Pro/',
+    status: 'catalogued — same .romz caveat',
+  },
+  {
+    target: 'matchport-ar-evolution',
+    version: '6.0.0.1R2',
+    why: 'MatchPort AR user guide rev F (July 2021) is the 6.0.0.1R2 update; the mirror carries Lantronix_matchport-ar_6.0.0.1R2_7737b. Dual-OS part — Evolution image, not the µClinux SDK build.',
+    archiveOrg: 'Lantronix_matchport-ar_6.0.0.1R2_7737b',
+    download: 'https://archive.org/details/Lantronix_matchport-ar_6.0.0.1R2_7737b',
+    zipBytes: 0,
+    zipMd5: '',
+    zipSha1: '',
+    officialFtp: 'https://ts.lantronix.com/ftp/MatchPort-AR/',
+    status: 'catalogued — same .romz caveat',
+  },
+  {
+    target: 'eds-evolution',
+    version: '6.0.0.0R1',
+    why: 'Lantronix_eds1100_2100_6.0.0.0R1 in the same mirror; EDS Evolution firmware files are named eds*.romz with a separate *boot.romz bootloader (Lantronix upgrade notes for V4.1.0.2).',
+    archiveOrg: 'Lantronix_eds1100_2100_6.0.0.0R1_ca0f3',
+    download: 'https://archive.org/details/Lantronix_eds1100_2100_6.0.0.0R1_ca0f3',
+    zipBytes: 0,
+    zipMd5: '',
+    zipSha1: '',
+    officialFtp: 'https://ts.lantronix.com/ftp/EDS1100_2100/',
+    status: 'catalogued — same .romz caveat',
+  },
+];
+
 const PINNED_GHIDRA = {
   version: '12.1.4',
   date: '20260921',
@@ -265,6 +342,28 @@ export function buildAssembly({ reports = [], generatedAt = new Date().toISOStri
     }
   }
   lines.push('');
+  lines.push('## Firmware candidates (GitHub + archive.org search, 2026-10-28)');
+  lines.push('');
+  lines.push('GitHub has no Evolution OS firmware or SDK mirror — code search returns this repo, the');
+  lines.push('Lantronix org publishes newer-product code, and the one XPort Pro toolset found');
+  lines.push('(morkai/walkner-tools) targets the *Linux* SDK. archive.org\'s firmwarelibrary collection');
+  lines.push('mirrors the official Lantronix FTP as one ZIP per release. Record:');
+  lines.push('`docs/evolution-os-software-search-2026-10-28.md`.');
+  lines.push('');
+  lines.push('| Target | Version | Source | ZIP SHA-1 | Status |');
+  lines.push('| --- | --- | --- | --- | --- |');
+  for (const c of FIRMWARE_CANDIDATES) {
+    lines.push(`| ${mdCell(c.target)} | ${mdCell(c.version)} | archive.org \`${mdCell(c.archiveOrg)}\` | \`${mdCell(c.zipSha1 ? c.zipSha1.slice(0, 16) + '…' : '—')}\` | ${mdCell(c.status)} |`);
+  }
+  lines.push('');
+  lines.push('Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),');
+  lines.push('so the remaining step before a real disassembly is `.romz` inflation — Ghidra must see the');
+  lines.push('ColdFire payload, not the compressed container. Stage with:');
+  lines.push('');
+  lines.push('```sh');
+  lines.push('tools/urln/ln -s ' + FIRMWARE_CANDIDATES[0].download + ' ./xport-pro-6.0.0.1R2.zip');
+  lines.push('```');
+  lines.push('');
   lines.push('## Assembled with');
   lines.push('');
   lines.push('| Module | Artefact | Role in this assembly |');
@@ -319,7 +418,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) { process.stdout.write(HELP + '\n'); return; }
   if (args.json) {
-    process.stdout.write(JSON.stringify({ targets: EVOLUTION_TARGETS, modules: ASSEMBLY_MODULES, ghidra: PINNED_GHIDRA }, null, 2) + '\n');
+    process.stdout.write(JSON.stringify({ targets: EVOLUTION_TARGETS, modules: ASSEMBLY_MODULES, firmwareCandidates: FIRMWARE_CANDIDATES, ghidra: PINNED_GHIDRA }, null, 2) + '\n');
     return;
   }
   const reportPaths = args.reports.length ? args.reports : ['docs/ghidra/evolution-os'];

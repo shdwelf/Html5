@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-27T18:15:02.006Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:05:22.664Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: pipeline ready — no Evolution OS image staged, no disassembly yet.**
 No `.rom`/`.romz` Evolution OS firmware exists in this repo, and this sandbox has no JVM,
@@ -59,6 +59,30 @@ analyzeHeadless "$RUNNER_TEMP/ghidra-projects" EVO_XPORT_PRO_EVOLUTION \
 None yet. When the runner completes, one row per analysed image lands here with the
 language Ghidra actually loaded, the image hash, and the function / instruction / string
 counts — the checkable fingerprint of a real run.
+
+## Firmware candidates (GitHub + archive.org search, 2026-10-28)
+
+GitHub has no Evolution OS firmware or SDK mirror — code search returns this repo, the
+Lantronix org publishes newer-product code, and the one XPort Pro toolset found
+(morkai/walkner-tools) targets the *Linux* SDK. archive.org's firmwarelibrary collection
+mirrors the official Lantronix FTP as one ZIP per release. Record:
+`docs/evolution-os-software-search-2026-10-28.md`.
+
+| Target | Version | Source | ZIP SHA-1 | Status |
+| --- | --- | --- | --- | --- |
+| xport-pro-evolution | 6.0.0.1R2 | archive.org `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `9fac545077eb1a95…` | staged-candidate — unzip, inflate .romz, then Ghidra |
+| xport-pro-evolution | 7.0.0.0R2 | archive.org `Lantronix_XPort-Pro_7.0.0.0R2_7769a` | `b6f25081807f1957…` | staged-candidate — unzip, inflate .romz, then Ghidra |
+| xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | catalogued — same .romz caveat |
+| matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | catalogued — same .romz caveat |
+| eds-evolution | 6.0.0.0R1 | archive.org `Lantronix_eds1100_2100_6.0.0.0R1_ca0f3` | `—` | catalogued — same .romz caveat |
+
+Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),
+so the remaining step before a real disassembly is `.romz` inflation — Ghidra must see the
+ColdFire payload, not the compressed container. Stage with:
+
+```sh
+tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip ./xport-pro-6.0.0.1R2.zip
+```
 
 ## Assembled with
 
