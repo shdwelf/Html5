@@ -29,6 +29,7 @@ test('probe inflates a gzip .romz and recovers the payload byte-for-byte', () =>
   const { res, out, report } = runProbe(gzipSync(PAYLOAD), 'fw.romz');
   assert.equal(res.status, 0, res.stdout + res.stderr);
   assert.equal(report.inflated.method, 'gzip');
+  assert.equal(report.verdict, 'inflated');
   assert.deepEqual(readFileSync(out), PAYLOAD);
   assert.ok(report.attempts.some((a) => a.method === 'zlib'));
 });
@@ -48,6 +49,15 @@ test('probe finds a gzip stream behind a short vendor header', () => {
   assert.equal(res.status, 0, res.stdout + res.stderr);
   assert.equal(report.inflated.offset, 8);
   assert.deepEqual(readFileSync(out), PAYLOAD);
+});
+
+test('probe accepts an uncompressed .rom as raw plausible firmware (exit 3)', () => {
+  const { res, out, report } = runProbe(PAYLOAD, 'xpico_7003.rom');
+  assert.equal(res.status, 3, res.stdout + res.stderr);
+  assert.equal(report.verdict, 'raw');
+  assert.equal(report.inflated, null);
+  assert.equal(existsSync(out), false);
+  assert.ok(report.vectorTable);
 });
 
 test('probe refuses random bytes and still writes an honest report', () => {

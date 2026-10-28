@@ -220,6 +220,36 @@ export const FIRMWARE_CANDIDATES = [
     officialFtp: 'https://ts.lantronix.com/ftp/EDS1100_2100/',
     status: 'catalogued — same .romz caveat',
   },
+  {
+    target: 'xpico',
+    version: '7.0.0.3',
+    why: 'Classic xPico Evolution release in the same mirror. Unlike the ColdFire line it ships an UNcompressed .rom (131,072 B = the raw 128 KB flash image) beside the xpico_webm .cob web manager, so the probe verdict is "raw" and Ghidra loads x86 real mode directly.',
+    archiveOrg: 'Lantronix_xpico_7.0.0.3_6d83d',
+    download: 'https://archive.org/download/Lantronix_xpico_7.0.0.3_6d83d/6d83dc7ac5a8e911aa8d67894dd81af6.zip',
+    zipBytes: 391627,
+    zipMd5: '6d83dc7ac5a8e911aa8d67894dd81af6',
+    zipSha1: '386e471e13585b3447e122273a22bf8572bcc3ab',
+    officialFtp: 'https://ts.lantronix.com/ftp/xpico/7.0.0.3/',
+    payloadName: 'xpico_7003.rom',
+    payloadBytes: 131072,
+    payloadMd5: '71e078c3ee61fef06c67cd916dd9f767',
+    status: 'staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode',
+  },
+  {
+    target: 'xport-classic',
+    version: '7.0.0.4 (XPort-05)',
+    why: 'Newest classic-XPort Evolution release in the mirror; same shape as xPico: uncompressed xpt05_7004.rom (131,072 B) plus gen_xpt_webm .cob files.',
+    archiveOrg: 'Lantronix_XPort-05_7.0.0.4_1c3f8',
+    download: 'https://archive.org/download/Lantronix_XPort-05_7.0.0.4_1c3f8/1c3f8e1a90053738831ef9d324fa756a.zip',
+    zipBytes: 617057,
+    zipMd5: '1c3f8e1a90053738831ef9d324fa756a',
+    zipSha1: '6d0193f36cb39802d4bb0657dbba1692ae19b2dd',
+    officialFtp: 'https://ts.lantronix.com/ftp/XPort-05/7.0.0.4/',
+    payloadName: 'xpt05_7004.rom',
+    payloadBytes: 131072,
+    payloadMd5: '34159ce8243f8c6cf77579d9a8378a61',
+    status: 'staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode',
+  },
 ];
 
 const PINNED_GHIDRA = {
@@ -279,7 +309,7 @@ function mdCell(value) {
 /** Assemble the Markdown record. With no reports the record says so, in the
  *  status line, and gives the exact staging + runner path instead of
  *  inventing a disassembly. */
-export function buildAssembly({ reports = [], probe = null, generatedAt = new Date().toISOString() } = {}) {
+export function buildAssembly({ reports = [], probes = [], generatedAt = new Date().toISOString() } = {}) {
   const rows = reports.map((r) => (r && r.program !== undefined && r.language !== undefined && !r.source ? summarizeReport(r) : r));
   const lines = [];
   lines.push('# Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem');
@@ -371,10 +401,10 @@ export function buildAssembly({ reports = [], probe = null, generatedAt = new Da
   lines.push('tools/urln/ln -s ' + FIRMWARE_CANDIDATES[0].download + ' ./xport-pro-6.0.0.1R2.zip');
   lines.push('```');
   lines.push('');
-  if (probe) {
-    lines.push('## Container probe (.romz)');
+  for (const probe of probes) {
+    lines.push(`## Container probe — ${mdCell(probe.file)}`);
     lines.push('');
-    lines.push(`\`${mdCell(probe.file)}\` — ${probe.bytes} bytes, SHA-256 \`${mdCell(String(probe.sha256).slice(0, 16))}…\`, magic \`${mdCell(probe.magicHex)}\` (probe: \`tools/evolution-os/romz_probe.py\`).`);
+    lines.push(`${probe.bytes} bytes, SHA-256 \`${mdCell(String(probe.sha256).slice(0, 16))}…\`, magic \`${mdCell(probe.magicHex)}\` (probe: \`tools/evolution-os/romz_probe.py\`).`);
     lines.push('');
     lines.push('| Method | Offset | Result | Output bytes |');
     lines.push('| --- | ---: | --- | ---: |');
@@ -383,9 +413,14 @@ export function buildAssembly({ reports = [], probe = null, generatedAt = new Da
     }
     lines.push('');
     if (probe.inflated) {
-      lines.push(`**Inflated:** \`${mdCell(probe.inflated.method)}\` → ${probe.inflated.outBytes} bytes, SHA-256 \`${mdCell(String(probe.inflated.sha256).slice(0, 16))}…\`, keyword hits ${mdCell(JSON.stringify(probe.inflated.keywordHits || {}))}. This payload — not the container — is what Ghidra analysed.`);
+      lines.push(`**Verdict: inflated** (\`${mdCell(probe.inflated.method)}\` → ${probe.inflated.outBytes} bytes, SHA-256 \`${mdCell(String(probe.inflated.sha256).slice(0, 16))}…\`, keyword hits ${mdCell(JSON.stringify(probe.inflated.keywordHits || {}))}). This payload — not the container — is what Ghidra analysed.`);
+    } else if (probe.verdict === 'raw') {
+      lines.push('**Verdict: raw.** The container is not compressed and the bytes themselves score as plausible firmware, so Ghidra analysed the file as-is.');
     } else {
-      lines.push('**Not inflated:** no standard method (gzip / zlib / raw DEFLATE / bzip2 / LZMA, offset 0 or behind a short header) produced a plausible payload, so Ghidra was not run on the container. The attempts above are the evidence; the container format is the open question.');
+      lines.push('**Verdict: unknown.** No standard method produced a plausible payload and the raw bytes do not score as firmware, so Ghidra was not run. The attempts above are the evidence.');
+    }
+    if (probe.vectorTable) {
+      lines.push(`Vector table (big-endian): initial SP \`${mdCell(probe.vectorTable.initialStackPointer)}\`, reset entry \`${mdCell(probe.vectorTable.resetEntry)}\` (within image: ${probe.vectorTable.resetEntryWithinImage}).`);
     }
     lines.push('');
   }
@@ -448,12 +483,16 @@ async function main() {
   }
   const reportPaths = args.reports.length ? args.reports : ['docs/ghidra/evolution-os'];
   const reports = collectReports(reportPaths);
-  let probe = null;
+  const probes = [];
   for (const p of reportPaths) {
-    const candidate = p.endsWith('.json') ? null : join(p, 'romz-probe.json');
-    if (candidate && existsSync(candidate)) { probe = JSON.parse(readFileSync(candidate, 'utf8')); break; }
+    if (p.endsWith('.json') || !existsSync(p)) continue;
+    for (const name of readdirSync(p).sort()) {
+      if (name === 'romz-probe.json' || name.endsWith('.romz-probe.json')) {
+        probes.push(JSON.parse(readFileSync(join(p, name), 'utf8')));
+      }
+    }
   }
-  const markdown = buildAssembly({ reports, probe });
+  const markdown = buildAssembly({ reports, probes });
   if (args.out) {
     writeFileSync(args.out, markdown);
     process.stdout.write(`reports=${reports.length} out=${args.out}\n`);

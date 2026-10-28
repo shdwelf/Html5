@@ -15,8 +15,14 @@ in its string regions, and carrying Evolution-era keywords (Evolution,
 Lantronix, XPort, HTTP/SSH/Telnet...). Static analysis only - the input is
 never executed.
 
-Exit codes: 0 = plausible inflation written to --out; 2 = no method
-produced a plausible payload (report still written); 1 = usage/IO error.
+The classic 16-bit targets ship an UNcompressed .rom instead, so the probe
+has a second positive verdict: if no inflation works but the raw bytes
+themselves score as plausible firmware, the verdict is "raw" (exit 3) and
+the caller should hand the original file to Ghidra unchanged.
+
+Exit codes: 0 = plausible inflation written to --out; 3 = raw plausible
+firmware, analyse as-is; 2 = neither (report still written);
+1 = usage/IO error.
 
   python3 tools/evolution-os/romz_probe.py xport_pro_6_0_0_1_R2.romz \
       --out payload.bin --report romz-probe.json
@@ -102,6 +108,18 @@ def inflate_candidates(data):
         yield attempt, out
 
 
+def vector_table(data):
+    """ColdFire images open with the vector table: initial SP, reset PC
+    (big-endian). Whether the reset PC lands inside the image is the first
+    clue to the load base Ghidra should use on a later, refined pass."""
+    if len(data) < 8:
+        return None
+    sp = int.from_bytes(data[0:4], "big")
+    pc = int.from_bytes(data[4:8], "big")
+    return {"initialStackPointer": f"0x{sp:08x}", "resetEntry": f"0x{pc:08x}",
+            "resetEntryWithinImage": pc < len(data)}
+
+
 def probe(path):
     data = open(path, "rb").read()
     report = {
@@ -111,6 +129,8 @@ def probe(path):
         "magicHex": data[:16].hex(" "),
         "attempts": [],
         "inflated": None,
+        "verdict": "unknown",
+        "vectorTable": None,
     }
     best = None
     for attempt, out in inflate_candidates(data):
@@ -122,6 +142,8 @@ def probe(path):
                 best = (attempt, out)
     if best is not None:
         attempt, out = best
+        report["verdict"] = "inflated"
+        report["vectorTable"] = vector_table(out)
         report["inflated"] = {
             "method": attempt["method"], "offset": attempt["offset"],
             "outBytes": len(out), "sha256": sha256(out),
@@ -129,6 +151,12 @@ def probe(path):
             "sampleStrings": strings_sample(out),
         }
         return report, out
+    raw = score(data)
+    report["rawScore"] = raw
+    if raw["plausible"]:
+        report["verdict"] = "raw"
+        report["vectorTable"] = vector_table(data)
+        return report, "RAW"
     return report, None
 
 
@@ -157,17 +185,20 @@ def main(argv):
     for a in report["attempts"]:
         status = f"ok out={a['outBytes']} plausible={a['plausible']}" if a["ok"] else f"fail {a['error'][:60]}"
         print(f"  {a['method']:<16} {status}")
-    if payload is not None and out_path:
+    if isinstance(payload, bytes) and out_path:
         with open(out_path, "wb") as fh:
             fh.write(payload)
     if report_path:
         with open(report_path, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)
             fh.write("\n")
-    if payload is not None:
+    if isinstance(payload, bytes):
         inf = report["inflated"]
         print(f"INFLATED method={inf['method']} out={inf['outBytes']} sha256={inf['sha256']}")
         return 0
+    if payload == "RAW":
+        print(f"RAW plausible firmware ({report['bytes']} bytes); analyse the file as-is")
+        return 3
     print("NOT INFLATED: no standard method produced a plausible payload; see report")
     return 2
 
