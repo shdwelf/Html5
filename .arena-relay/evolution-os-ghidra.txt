@@ -1,0 +1,2 @@
+https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip
+68000:BE:32:Coldfire
