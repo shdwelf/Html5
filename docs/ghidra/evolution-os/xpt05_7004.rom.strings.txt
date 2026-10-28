@@ -1,0 +1,300 @@
+0000:12ac	Copyright 2004,
+0000:12bc	Lantronix Inc. 
+0000:1b55	\r  Channel
+0000:1b60	Domain name
+0000:1b6c	Recipient 1
+0000:1b78	Recipient 2
+0000:1b84	Unit name
+0000:1b8e	77FEh Access Mode (0=Read & Write, 1=Read Only): 
+0000:1bc0	Enable Telnet Authentication
+0000:1bdd	Automatic Host MAC Detection
+0000:1bfa	Wired Host MAC 
+0000:1c0a	  Broadcast Address: 
+0000:1c20	\n*** basic parameters \n\rHardware: 
+0000:1c43	Channel 2: disabled
+0000:1c57	MTU Size: 
+0000:1c63	\n\rChange Setup:\n\r  0 Server
+0000:1c7f	  9 Save and exit            Your choice ? 
+0000:1cab	  3 E-mail
+0000:1cbf	  5 Expert
+0000:1cca	  6 Security
+0000:1cd7	  7 Defaults\n\r  8 Exit without save
+0000:1cfb	  1 Channel 1
+0000:1d09	  2 Channel 2
+0000:1d17	SNMP Community Name:       
+0000:1d33	  Device Address info: 
+0000:1d4b	Disable Web Setup
+0000:1d5d	Datagram Type 
+0000:1d6c	Disable ECHO ports
+0000:1d7f	Disable TFTP Firmware Update
+0000:1d9c	Disable Port 77F0h
+0000:1daf	disabled
+0000:1db8	<disabled>
+0000:1dc3	DNS Server
+0000:1dce	Disable Port 77FEh
+0000:1de1	Datagram Type
+0000:1def	Disable SNMP
+0000:1dfc	Disable Telnet Setup
+0000:1e11	Enter Password : 
+0000:1e23	Enable Enhanced Password
+0000:1e3c	Disable Web Server
+0000:1e4f	Change the Password
+0000:1e63	Enable Encryption
+0000:1e75	Enter Key: 
+0000:1e81	Change Key
+0000:1e8c	Ethernet Interface AUI
+0000:1ea3	Enable alternate MAC
+0000:1eb8	enabled
+0000:1ec0	--- none ---
+0000:1ecd	Terminal name: 
+0000:1edd	Password: 
+0000:1ee8	Remote IP Adr: 
+0000:1ef8	, Port 
+0000:1f00	Connect Mode : 
+0000:1f10	Disconn Mode : 
+0000:1f20	  Disconn Time: 
+0000:1f31	Flush   Mode : 
+0000:1f41	Pack Cntrl   : 
+0000:1f51	SendChars    : 
+0000:1f61	Ethernet connection type: 
+0000:1f7c	TCP Keepalive    : 
+0000:1f90	These parameters are for experts only 
+0000:1fb7	which definitely know the consequences of the changes.\n\r
+0000:1ff0	CPU performance (0=Regular, 1=Low, 2=High): 
+0000:201d	RS485 tx enable  : 
+0000:2031	*** Expert
+0000:203c	Requires CPU high performance!
+0000:205b	 (Firmware Code:
+0000:206c	 **APS KEY IS DAMAGED** 
+0000:208c	Model: Device Server 
+0000:20a2	Set Gateway IP Address
+0000:20b9	Gateway 
+0000:20c2	\n\rHostlist :
+0000:20cf	\n\rNo Entry !
+0000:20dc	\n\rChange Hostlist ?
+0000:20f0	Hostlist Retrycounter 
+0000:2107	Hostlist Retrytimeout 
+0000:211e	HTTP Port Number : 
+0000:2132	Invalid Baudrate !!!
+0000:2147	IP Address : 
+0000:2155	IP addr 
+0000:2163	Show IP addr after 'RING' 
+0000:217e	Send '+++' in Modem Mode 
+0000:2198	Master Mode Config: 
+0000:21ad	,netmask 
+0000:21b7	Disable Monitor Mode @ bootup
+0000:21d5	Monitor Mode @ bootup : 
+0000:21ee	Pack Cntrl:   
+0000:21fd	exiting without save !\n\r
+0000:2216	Parameters stored ...\n\r
+0000:222e	Telnet config password set
+0000:2249	Enter new Password: 
+0000:225e	Read & Write      
+0000:2271	Read Only      
+0000:2281	TCP Re-transmission timeout: 
+0000:229f	TCP Re-transmission Timeout (500 - 4000) (ms): 
+0000:22cf	Baudrate (
+0000:22da	*** Security
+0000:22e7	Port 77F0h is              
+0000:2303	Web Setup is               
+0000:231f	Alternate MAC: 
+0000:232f	\r77FEh Access Mode is       
+0000:234c	Telnet Authentication is   
+0000:2368	Telnet Setup is            
+0000:2384	TFTP Download is           
+0000:23a0	Encryption is              
+0000:23bc	Enhanced Password is       
+0000:23d8	Port 77FEh is              
+0000:23f4	Web Server is              
+0000:2410	SNMP is                    
+0000:242c	ECHO is                    
+0000:244d	*** Channel 
+0000:245a	SMTP Port Number : 
+0000:246e	Change Telnet/Web Manager password
+0000:2491	 ring address 
+0000:24a0	Remote IP Address : 
+0000:24b5	Remote Port 
+0000:24c2	Send as Broadcast
+0000:24d4	DisConnMode
+0000:24e0	 (Telnet Com Port Cntrl Enabled)
+0000:2501	FlushMode  
+0000:250d	DisConnTime (
+0000:251b	SendChar 1 
+0000:2527	SendChar 2 
+0000:2533	Password (
+0000:253e	Terminal name (
+0000:254e	Pack Cntrl 
+0000:255a	Enter address as 6 hex pairs: 
+0000:2579	Use Tokenring administered address
+0000:259c	 - Invalid address - using physical 
+0000:25c1	Token Ring 
+0000:25cd	Change address table (max .16, 00=disable) 
+0000:25f9	Master Config:
+0000:2608	Netmask: Number of Bits for Host Part (0=default) (
+0000:263c	WARNING: Hardware Flow Control not supported!
+0000:266a	I/F Mode
+0000:2678	Port No
+0000:2680	ConnectMode
+0000:268c	 Start Char: 
+0000:269a	WARNING: RS-422/485 I/F Modes not supported!\n\r
+0000:26c9	Auto increment source port 
+0000:35ab	LAN-DSTni 5.1 12/01
+1000:0000	11111111111111(111111111111111
+1000:6816	May  1 2024
+1000:6839	ACOLA CoBox   Snr  xxx-xxx Vy.yy
+1000:6874	Setup
+1000:6893	secure/setuprec.xml
+1000:68a7	secure/unitinfo.xml
+1000:68c0	secure/setup.cgi
+1000:6902	\r\nNO CARRIER\r\n
+1000:6914	\r\nCONNECT\r\n
+1000:692d	RING %A\r\nCONNECT\r\n
+1000:6948	RING \r\nCONNECT\r\n
+1000:6966	\n\rPassword ? 
+1000:69dc	auto-negotiate
+1000:6a5b	%2u. IP address : 
+1000:6a6e	     Port : 
+1000:6a8a	\n\rBaudrate %s, I/F Mode %2x, Flow %2x\n\rPort %5u
+1000:6abe	\n\rSendChars %2x %2x 
+1000:6adc	\n\rHostlist Retrycounter  : %u\n\rHostlist Retrytimeout  : %u
+1000:6b1f	\n\rSNMP Community Name (%s): 
+1000:6b3c	\r\nKey length in bits (%d): 
+1000:6b59	Only 128, 192 or 256 bits are allowed
+1000:6b7f	\n\rTCP Keepalive time in s (1s - 65s; 0s=disable): 
+1000:6bb2	\n\rARP Cache timeout in s (0s - 600s) : 
+1000:6bda	RS485 tx enable active level (0=low; 1=high): 
+1000:6c09	MTU Size (512 - 1400): 
+1000:6c25	disabled
+1000:6c2e	\n\rARP cache timeout: %us
+1000:6c47	\r\nCPU performance: %s
+1000:6c66	Regular
+1000:6c6e	active high
+1000:6c7a	active low
+1000:6c8b	public
+1000:6c92	\n\r%2u. IP : %3A  Port : %5u
+1000:6cae	%s: %d=%s
+1000:6cb8	, %d=%s
+1000:6cc0	\r\n%s: %s%s
+1000:6ccb	  Only %d - %d allowed!\n\r
+1000:6ced	AES library version %s\n\r
+1000:6d0b	Change DHCP device name (%s) ?
+1000:6d2a	not set
+1000:6d32	Enter new DHCP device Name : 
+1000:6d50	Enable DHCP FQDN option : 
+1000:6d6b	Ethernet 
+1000:6d75	Autodetect 
+1000:6d8d	, gateway 
+1000:6d98	, no gateway set
+1000:6da9	DHCP device name : %s\n\r
+1000:6dc1	DHCP FQDN option: %s\n\r
+1000:6dd8	Enabled
+1000:6de0	Disabled
+1000:6dea	Monitor not supported\n\r
+1000:6e02	\n\n\rMail server (%A) ? 
+1000:6e19	\r\n- Trigger %d \r\nEnable serial trigger input
+1000:6e46	  No. of bytes
+1000:6e55	\r\n  Match (%2x
+1000:6e6d	Trigger input%d [A/I/X] (%c) ? 
+1000:6ea3	Message
+1000:6eab	\rPriority (%c) ? 
+1000:6ece	\r\nMin. notification interval (%d s) ? 
+1000:6ef5	\r\nRe-notification interval (%d s) ? 
+1000:6f1d	\n\r*** E-mail
+1000:6f2a	\n\rMail server: %A
+1000:6f3c	\n\rUnit       : %s
+1000:6f4e	\n\rDomain     : %s
+1000:6f60	\n\rRecipient 1: %s
+1000:6f72	\n\rRecipient 2: %s\n
+1000:6f85	\r\n- Trigger %d 
+1000:6f95	\r\nSerial trigger input: 
+1000:6fae	\r\n  Channel: %d
+1000:6fbe	\r\n  Match: %2x
+1000:6fd2	\r\nTrigger input%d: %c
+1000:6fe8	\r\nMessage : %s
+1000:6ff7	\n\rPriority: %c
+1000:7006	\r\nMin. notification interval: %d s
+1000:7029	\r\nRe-notification interval  : %d s\r\n
+1000:704e	Notification: %s
+1000:705f	Re-Notification: %s
+1000:7073	HELO %s
+1000:707b	MAIL From: <%s@%s>
+1000:708e	RCPT To: <%s>
+1000:70a1	From: %s@%s
+1000:70ad	To: %s
+1000:70b4	Subject: %s
+1000:70c0	X-Priority: %d
+1000:7139	<DEVID>%s</DEVID>\n\r
+1000:714d	No Device ID
+1000:71be	<LINE>%1H</LINE>\n\r
+1000:71d1	</UNITINFO>\n\r
+1000:71df	<RECORD>\r\n
+1000:7201	</DATA>\r\n</RECORD>\r\n
+1000:721c	</SCR>\r\n</SETUPREC>\r\n
+1000:7232	Content-Length: 
+1000:7266	Not supported!\n\r
+1000:7277	IP-SETUP
+1000:7280	*** NodeSet 2.0 ***\n\r0
+1000:7297	Type set\n\r
+1000:72b4	Firmware Version: %s\r\n
+1000:72cb	IP %3A GW %3A Mask %3A NS %3A\n\r
+1000:72eb	unreachable\n\r
+1000:72f9	Seq %3u time %ums\r\n
+1000:730d	Timeout\r\n
+1000:7317	*** Interface %d Status ***\n\rType: %s
+1000:733d	Ethernet\r\n
+1000:734f	IP: %3A, GW: %3A, Mask: %3A
+1000:736b	\r\nLink (0x%x):
+1000:737a	up, %d Mbps %s duplex\r\n
+1000:73a3	Interface down\r\n
+1000:73b4	Chan  Size    HWM   CurSP   TOS   BOS   Name\n\r
+1000:73e3	%d     %4u   %4u   %4x    %4x    %4x    %s\n\r
+1000:7410	Sector :%u, Flash Write Count :%u\r\n
+1000:7460	HTTP/1.1 %u ERROR\r\n\r\n
+1000:7496	Network
+1000:749e	Tokenring
+1000:755c	Clear Pending TCP Bad Com %d\r\n
+1000:757b	\r\nRxErr_%d,SameRx[St_%4x:F_%d,P_%d,%d]
+1000:75a2	\r\nRxErr_%d,Old_%x,NewRx[St_%4x,F_%d,P_%d,%d]
+1000:75cf	\r\nTxErr_%2d,TxSt:%4x,[RxS:F,P,O]=4x:%d,%d,%d
+1000:7625	\r\nNoErr_%d,TxS_%4x,RxS[F,P,O]=%4x:[%d,%d,%d]
+1000:767a	 %A/%5u r%5u t%5u rtry %u
+1000:76dd	\r\n[s_%d,%d C%d]
+1000:76ef	,dLantronix
+1000:7789	{FATAL ERROR 
+1000:7797	/Setup memory: Contact tech support\n\r
+1000:77bd	**  Error:Rec7[%d]=%2x not Active @Rec7[%d] **
+1000:782e	--- not set ---
+1000:785f	\r\nMAC address %H
+1000:7870	\r\nNo Device ID
+1000:787f	\r\nDevice ID: %s
+1000:788f	\n\rSoftware version %1V %s\r\n
+1000:78af	Press Enter for Setup Mode \n\r
+1000:78dc	HTTP/1.1 401 %s\r\n%s\r\n\r\n401 %s
+1000:78fa	WWW-Authenticate: Basic
+1000:7912	Unauthorized
+1000:791f	Another User Logged In
+1000:7936	Authorization: Basic 
+1000:794c	secure/
+1000:795f	index.html
+1000:7976	HTTP/1.1 200 OK\r\n
+1000:7988	Content-type: %s\r\n
+1000:799b	Connection: close\r\n
+1000:79af	CONTENT-LENGTH: %u\r\n
+1000:79c4	ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=
+1000:7a0d	FATAL ERROR 
+1000:7a1a	/Setup memory: Contact tech support\n\r
+1000:7a40	\n\rPress Enter for Setup mode\n\r
+1000:7a62	ERROR: IP address conflict with 
+1000:7aa4	File not found.
+1000:7ab8	Wrong destination file, valid is : %2s, or WEB1 - WEB%d
+1000:7af0	Wrong destination file, valid is : %2s, no WEB
+1000:7b1f	octet
+1000:7b25	binary
+1000:7b2c	Wrong Filetype.
+1000:7b3c	Incorrect block sequence
+1000:7b55	Wrong Sourcefile, valid is : %2s
+1000:7b76	File too long
+1000:7b84	FW upload checksum failure
+1000:7ba0	Password  :
+1000:7bac	User Name :
+1000:7bd0	Ethernet

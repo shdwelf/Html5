@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "program": "xpt05_7004.rom",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Raw Binary",
+  "executablePath": "/home/runner/work/_temp/evolution-os/input/extracted/ftp/XPort-05/7.0.0.4/xpt05_7004.rom",
+  "md5": "34159ce8243f8c6cf77579d9a8378a61",
+  "sha256": "6546fa1807b5878ea7d85e286415ac07ee0e33509fb74b553ba667c1ec5da48e",
+  "language": "x86:LE:16:Real Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "0000:0000",
+  "maxAddress": "1000:ffff",
+  "memoryBlocks": [
+    {
+      "name": "ram",
+      "start": "0000:0000",
+      "end": "1000:ffff",
+      "bytes": 131072,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    }
+  ],
+  "imports": [],
+  "definedStrings": 300,
+  "instructions": 26806,
+  "functions": 492,
+  "decompilations": [
+    {
+      "name": "FUN_0000_003d",
+      "address": "0000:003d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_0064",
+      "address": "0000:0064",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_008b",
+      "address": "0000:008b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_00b2",
+      "address": "0000:00b2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_0175",
+      "address": "0000:0175",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_01c3",
+      "address": "0000:01c3",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_01ea",
+      "address": "0000:01ea",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_0238",
+      "address": "0000:0238",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_03be",
+      "address": "0000:03be",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_13c6",
+      "address": "0000:13c6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_13e6",
+      "address": "0000:13e6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_13eb",
+      "address": "0000:13eb",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_13f3",
+      "address": "0000:13f3",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_13ff",
+      "address": "0000:13ff",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_142a",
+      "address": "0000:142a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_181e",
+      "address": "0000:181e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_1a0d",
+      "address": "0000:1a0d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_1b4b",
+      "address": "0000:1b4b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_1b50",
+      "address": "0000:1b50",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_26e5",
+      "address": "0000:26e5",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_26ea",
+      "address": "0000:26ea",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_271f",
+      "address": "0000:271f",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_272b",
+      "address": "0000:272b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_2737",
+      "address": "0000:2737",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_279b",
+      "address": "0000:279b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_27b6",
+      "address": "0000:27b6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_2814",
+      "address": "0000:2814",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_2d5b",
+      "address": "0000:2d5b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_2dac",
+      "address": "0000:2dac",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_2e1f",
+      "address": "0000:2e1f",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_300f",
+      "address": "0000:300f",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3054",
+      "address": "0000:3054",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_321e",
+      "address": "0000:321e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3270",
+      "address": "0000:3270",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_32d4",
+      "address": "0000:32d4",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_337d",
+      "address": "0000:337d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_339d",
+      "address": "0000:339d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_34f9",
+      "address": "0000:34f9",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3509",
+      "address": "0000:3509",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_355a",
+      "address": "0000:355a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3594",
+      "address": "0000:3594",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3689",
+      "address": "0000:3689",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_391e",
+      "address": "0000:391e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_399c",
+      "address": "0000:399c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_39ac",
+      "address": "0000:39ac",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3af8",
+      "address": "0000:3af8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3b53",
+      "address": "0000:3b53",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000_3fb8",
+      "address": "0000:3fb8",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}

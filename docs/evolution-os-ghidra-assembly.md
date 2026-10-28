@@ -1,8 +1,8 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:49:39.778Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:51:10.057Z by `tools/evolution-os/evolution-os.mjs`.
 
-**Status: 2 Ghidra report(s) assembled.** Static analysis only — no input was executed.
+**Status: 3 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
 ## Targets — the language is pinned per part number
 
@@ -56,6 +56,7 @@ analyzeHeadless "$RUNNER_TEMP/ghidra-projects" EVO_XPORT_PRO_EVOLUTION \
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 4102 | 200000 | 4446 | 0 | 48/48 |
 | xpico_7003.rom | Raw Binary | `x86:LE:16:Real Mode` | `42fc267a918e8a72…` | 460 | 24947 | 259 | 0 | 48/48 |
+| xpt05_7004.rom | Raw Binary | `x86:LE:16:Real Mode` | `6546fa1807b5878e…` | 492 | 26806 | 300 | 0 | 48/48 |
 
 ## Firmware candidates (GitHub + archive.org search, 2026-10-28)
 
@@ -112,6 +113,21 @@ tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c
 
 **Verdict: raw.** The container is not compressed and the bytes themselves score as plausible firmware, so Ghidra analysed the file as-is.
 Vector table (big-endian): initial SP `0x00200007`, reset entry `0x58366d11` (within image: false).
+
+## Container probe — xpt05_7004.rom
+
+131072 bytes, SHA-256 `6546fa1807b5878e…`, magic `00 20 00 07 58 39 cc 12 7f 16 00 00 62 a7 7b 1e` (probe: `tools/evolution-os/romz_probe.py`).
+
+| Method | Offset | Result | Output bytes |
+| --- | ---: | --- | ---: |
+| gzip | 0 | failed | 0 |
+| zlib | 0 | failed | 0 |
+| raw-deflate | 0 | failed | 0 |
+| bzip2 | 0 | failed | 0 |
+| lzma-xz | 0 | failed | 0 |
+
+**Verdict: raw.** The container is not compressed and the bytes themselves score as plausible firmware, so Ghidra analysed the file as-is.
+Vector table (big-endian): initial SP `0x00200007`, reset entry `0x5839cc12` (within image: false).
 
 ## Assembled with
 
