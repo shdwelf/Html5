@@ -51,13 +51,28 @@ test('probe finds a gzip stream behind a short vendor header', () => {
   assert.deepEqual(readFileSync(out), PAYLOAD);
 });
 
+test('probe pointer-band scan finds the link base from absolute pointers', () => {
+  const pointed = Buffer.concat([
+    Buffer.from('HDR!'),
+    ...Array.from({ length: 64 }, (_, i) => { const b = Buffer.alloc(4); b.writeUInt32BE(0x40000100 + i * 16); return b; }),
+    PAYLOAD,
+  ]);
+  const { res, report } = runProbe(gzipSync(pointed), 'fw.romz');
+  assert.equal(res.status, 0, res.stdout + res.stderr);
+  assert.equal(report.pointerBands[0].base, '0x40000000');
+  assert.ok(report.pointerBands[0].pointers >= 64);
+  assert.equal(report.suggestedBase, '0x40000000');
+  assert.match(report.headerHex, /^48 44 52 21/);
+});
+
 test('probe accepts an uncompressed .rom as raw plausible firmware (exit 3)', () => {
   const { res, out, report } = runProbe(PAYLOAD, 'xpico_7003.rom');
   assert.equal(res.status, 3, res.stdout + res.stderr);
   assert.equal(report.verdict, 'raw');
   assert.equal(report.inflated, null);
   assert.equal(existsSync(out), false);
-  assert.ok(report.vectorTable);
+  // PAYLOAD opens with ASCII text, so the ColdFire vector read is suppressed.
+  assert.equal(report.vectorTable, null);
 });
 
 test('probe refuses random bytes and still writes an honest report', () => {

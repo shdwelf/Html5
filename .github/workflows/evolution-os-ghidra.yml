@@ -30,6 +30,8 @@ on:
       - 'tools/evolution-os/romz_probe.py'
       - 'tools/urln/ln'
       - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/ghidra_scripts/SetImageBase.java'
+      - 'tools/evolution-os/romz_probe.py'
   workflow_dispatch:
     inputs:
       firmware_url:
@@ -46,6 +48,10 @@ on:
           - 'x86:LE:16:Real Mode'
       target_name:
         description: 'Label for the report row (defaults to the file name)'
+        required: false
+        type: string
+      base_address:
+        description: 'Optional image base for a raw image (e.g. 0x00000000); empty = loader default. Evidence: the probe vector table.'
         required: false
         type: string
 
@@ -70,11 +76,14 @@ jobs:
           set -euo pipefail
           url='${{ inputs.firmware_url }}'
           language='${{ inputs.language }}'
+          base='${{ inputs.base_address }}'
           trigger='.arena-relay/evolution-os-ghidra.txt'
           if [ -z "$url" ] && [ -f "$trigger" ]; then
             url=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '1p' | tr -d '\r' || true)
             lang2=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '2p' | tr -d '\r' || true)
             [ -n "$lang2" ] && language="$lang2"
+            base3=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '3p' | tr -d '\r' || true)
+            [ -n "$base3" ] && base="$base3"
           fi
           if [ -z "$url" ]; then
             echo 'staged=false' >> "$GITHUB_OUTPUT"
@@ -88,6 +97,7 @@ jobs:
           echo 'staged=true' >> "$GITHUB_OUTPUT"
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "language=$language" >> "$GITHUB_OUTPUT"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "Evolution OS image staged: $url (language $language)"
 
       - uses: actions/setup-java@v5
@@ -188,11 +198,17 @@ jobs:
           # inflated and a raw .rom needs its loader/base set before import;
           # this step assumes the staged URL already names an importable
           # image or raw payload for the chosen language.
+          base_args=()
+          if [ -n '${{ steps.stage.outputs.base }}' ]; then
+            base_args=(-preScript SetImageBase.java '${{ steps.stage.outputs.base }}')
+            echo "Relocating image base to ${{ steps.stage.outputs.base }} (SetImageBase.java)"
+          fi
           timeout 30m "$headless" "$projects" EVO_OS \
             -import "$IMAGE" \
             -processor '${{ steps.stage.outputs.language }}' \
             -analysisTimeoutPerFile 900 \
             -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            "${base_args[@]}" \
             -postScript GenericProgramReport.java "$reports" \
             -deleteProject
           find "$reports" -maxdepth 1 -type f -printf '%f %s bytes\n'

@@ -108,6 +108,38 @@ def inflate_candidates(data):
         yield attempt, out
 
 
+BAND_BASES = [0x00000000, 0x10000000, 0x20000000, 0x30000000, 0x40000000,
+              0x80000000, 0xE0000000, 0xF0000000, 0xFF000000]
+
+
+def pointer_bands(data, size):
+    """Count aligned big-endian u32s that point into [base, base+size) for
+    each candidate link base. Real firmware is dense with absolute pointers
+    to itself; the band with an order-of-magnitude lead is the link base
+    the image was built for - the base Ghidra should load it at."""
+    counts = {base: 0 for base in BAND_BASES}
+    usable = len(data) - (len(data) % 4)
+    for off in range(0, usable, 4):
+        v = int.from_bytes(data[off:off + 4], "big")
+        for base in BAND_BASES:
+            if base <= v < base + size:
+                counts[base] += 1
+                break
+    ranked = sorted((c, b) for b, c in counts.items() if c > 0)
+    bands = [{"base": f"0x{b:08x}", "pointers": c} for c, b in reversed(ranked)]
+    # Band 0 also catches every small immediate/offset in the image, so it
+    # cannot win the suggestion: the leading NON-ZERO band is the link base
+    # (its hits are unambiguous absolute addresses into the image window).
+    nonzero = [b for b in bands if b["base"] != "0x00000000" and b["pointers"] >= 16]
+    if nonzero:
+        suggested = nonzero[0]["base"]
+    elif bands and bands[0]["pointers"] >= 16:
+        suggested = "0x00000000"
+    else:
+        suggested = None
+    return bands, suggested
+
+
 def vector_table(data):
     """ColdFire images open with the vector table: initial SP, reset PC
     (big-endian). Whether the reset PC lands inside the image is the first
@@ -143,7 +175,13 @@ def probe(path):
     if best is not None:
         attempt, out = best
         report["verdict"] = "inflated"
-        report["vectorTable"] = vector_table(out)
+        report["headerHex"] = out[:64].hex(" ")
+        bands, suggested = pointer_bands(out, len(out))
+        report["pointerBands"] = bands
+        report["suggestedBase"] = suggested
+        # A vector-table read only means something when the image does not
+        # open with an ASCII container header (the EVOL-1 case reads 'EVOL').
+        report["vectorTable"] = None if out[:4].isalpha() else vector_table(out)
         report["inflated"] = {
             "method": attempt["method"], "offset": attempt["offset"],
             "outBytes": len(out), "sha256": sha256(out),
@@ -155,7 +193,11 @@ def probe(path):
     report["rawScore"] = raw
     if raw["plausible"]:
         report["verdict"] = "raw"
-        report["vectorTable"] = vector_table(data)
+        report["headerHex"] = data[:64].hex(" ")
+        bands, suggested = pointer_bands(data, len(data))
+        report["pointerBands"] = bands
+        report["suggestedBase"] = suggested
+        report["vectorTable"] = None if data[:4].isalpha() else vector_table(data)
         return report, "RAW"
     return report, None
 
