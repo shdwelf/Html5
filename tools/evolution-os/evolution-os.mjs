@@ -167,7 +167,7 @@ export const FIRMWARE_CANDIDATES = [
     payloadName: 'xport_pro_6_0_0_1_R2.romz',
     payloadBytes: 623002,
     payloadMd5: '7c996f6ea2d07625012a98e748cad759',
-    status: 'ANALYSED 2026-10-28 — .romz is gzip; payload 1,725,386 B disassembled (4,102 functions)',
+    status: 'ANALYSED 2026-10-28 — .romz is gzip; payload 1,725,386 B at base 0x40000000 (5,504 functions)',
   },
   {
     target: 'xport-pro-evolution',

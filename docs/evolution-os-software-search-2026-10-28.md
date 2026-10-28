@@ -229,6 +229,40 @@ now records the ColdFire vector table (initial SP / reset entry) from
 each analysed image, the evidence the still-open base-address reload
 needs.
 
+## 9. Base-address reload (2026-10-28): the EVOL-1 header and 0x40000000
+
+Re-running XPort Pro 6.0.0.1R2 under the current probe answered the
+base-address question the flat first pass left open. The inflated payload
+does **not** open with a ColdFire vector table; it opens with a Lantronix
+header (first 64 bytes recorded in the probe report):
+
+```
+45 56 4f 4c 2d 31 00 00  "EVOL-1\0\0"  ...  33 2e 30 2e 30 2e 30 00  "3.0.0.0\0"
+00 1a 52 be 00 1a 52 be  (payload size 0x1A52BE, twice)  40 05 48 dc 7d 47 b1 b4 (checksums)
+```
+
+With no vector table to read, the probe's new pointer-band scan counted
+aligned big-endian u32s pointing into each candidate link window:
+**0x40000000×20,371** into the 1.7 MB window (band 0 leads on raw count
+but also catches every small immediate, so the suggestion rule takes the
+leading non-zero band) — corroborated independently by a
+`func_0x400837a8` reference in the first-pass decompilation. Reloading
+with the new `SetImageBase.java` pre-script at **0x40000000** (trigger
+line 3 / `base_address` input; run 40684247384):
+
+| Pass | Image base | Functions | Strings | Notes |
+| --- | --- | ---: | ---: | --- |
+| flat (2026-10-28) | 0x00000000 | 4,102 | 4,446 | absolute refs unresolved (`func_0x400837a8` dangling) |
+| relocated | **0x40000000** | **5,504** | 4,212 | refs resolve in-image (`FUN_4007ee04`, `s_<h2>HTTP_Configuration…`) |
+
++34% functions from one evidence-based relocation, which is the
+difference between a pile of bytes and a navigable program database.
+The superseded flat-pass files (`payload.bin.*`, legacy
+`romz-probe.json`) are removed from the evidence directory; git history
+keeps them. Remaining refinement, if ever needed: name the flash/RAM
+blocks properly (the loader still calls the single block `ram`) and
+raise the reporter's 200k instruction cap for a full listing count.
+
 The earlier staging instruction, now proven: dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit
 `.arena-relay/evolution-os-ghidra.txt`), and the assembly record's Reports
