@@ -1,8 +1,8 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:48:43.937Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:49:39.778Z by `tools/evolution-os/evolution-os.mjs`.
 
-**Status: 1 Ghidra report(s) assembled.** Static analysis only — no input was executed.
+**Status: 2 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
 ## Targets — the language is pinned per part number
 
@@ -55,6 +55,7 @@ analyzeHeadless "$RUNNER_TEMP/ghidra-projects" EVO_XPORT_PRO_EVOLUTION \
 | Program | Format | Language | SHA-256 | Functions | Instructions | Strings | Imports | Decompiled |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 4102 | 200000 | 4446 | 0 | 48/48 |
+| xpico_7003.rom | Raw Binary | `x86:LE:16:Real Mode` | `42fc267a918e8a72…` | 460 | 24947 | 259 | 0 | 48/48 |
 
 ## Firmware candidates (GitHub + archive.org search, 2026-10-28)
 
@@ -96,6 +97,21 @@ tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c
 | zlib@7076 | 7076 | failed | 0 |
 
 **Verdict: inflated** (`gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}). This payload — not the container — is what Ghidra analysed.
+
+## Container probe — xpico_7003.rom
+
+131072 bytes, SHA-256 `42fc267a918e8a72…`, magic `00 20 00 07 58 36 6d 11 44 16 00 00 62 a7 bb 52` (probe: `tools/evolution-os/romz_probe.py`).
+
+| Method | Offset | Result | Output bytes |
+| --- | ---: | --- | ---: |
+| gzip | 0 | failed | 0 |
+| zlib | 0 | failed | 0 |
+| raw-deflate | 0 | failed | 0 |
+| bzip2 | 0 | failed | 0 |
+| lzma-xz | 0 | failed | 0 |
+
+**Verdict: raw.** The container is not compressed and the bytes themselves score as plausible firmware, so Ghidra analysed the file as-is.
+Vector table (big-endian): initial SP `0x00200007`, reset entry `0x58366d11` (within image: false).
 
 ## Assembled with
 
