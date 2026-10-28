@@ -130,6 +130,66 @@ family.
      he and Louise served as its resident managers for many years,
      corroborated by Louise’s 2005 obituary.
 
+## 5. Addendum (same day) — Hometown sweep closed; Sam's aircraft and crew identified
+
+### 5.1 AOL Hometown: negative
+
+Wayback CDX prefix probes on `hometown.aol.com/<name>` for `fhewitt`,
+`fredhewitt`, `mfhewitt`, `mauricehewitt`, `hewittf`, `hewitt`, `l7070`,
+and `eiselein` all returned `[]`. (A domain-wide sanity query was too
+heavy for the CDX endpoint and timed out, so this is recorded as
+username-complete, not host-complete.) With `members.aol.com` already
+empty (previous sessions), the AOL space is closed under every plausible
+username.
+
+### 5.2 Sam's aircraft: B-17G **42-31701**, MACR **6353** — radio operator confirmed
+
+The 32nd Bomb Squadron loss list (32ndbombsquadron.org, from Werrel's
+301st BG history *Who Fears*) records two 301st losses over Vienna on
+26 Jun 1944: 42-31482 (5 killed, 5 POW) and **42-31701 (all POW)**. The
+B-17 Flying Fortress database (b17flyingfortress.de, airframe 42-31701,
+MACR 6353, lost by flak, 54 missions) gives the crew:
+
+| Position | Name |
+|---|---|
+| Pilot | Norman L Gourley |
+| Co-pilot | Hughes |
+| Navigator | Reeves |
+| Bombardier | Williams |
+| Flight engineer / top turret | Jones |
+| **Radio operator** | **Hewitt** |
+| Ball turret | Turney |
+| Waist gunner | Ingold |
+| Waist gunner | Seger |
+| Tail gunner | Whaley |
+
+All ten became POWs; the aircraft crashed at “Ugarn” (Ungarn = Hungary
+in the German-language loss records; the aircraft came down in the
+Vienna–Hungary border area). This **confirms from an independent,
+airframe-level source that Sam Hewitt flew as his crew's radio
+operator**, settling the family “radio operator” story in his favour
+(cf. session-14 §3, where it was only the cleanest reading).
+
+**Squadron nuance, recorded honestly:** the airframe was assigned to the
+32nd BS, while Hewitt (and ball-turret gunner Turney, per his own awards
+page) were carried on the **352nd BS** roster at 301bg.com —
+cross-squadron crewing was routine in the 15th Air Force; MACR 6353
+itself (below) is the authoritative document.
+
+**Crew-photo hunt:** pilot Norman L Gourley's 301bg.com page
+(`gourley-norman-g3687-301bg.cfm`) carries no awards table and no photo;
+no crew photograph for 42-31701 was found in web search, and the airframe
+database likewise holds no photo of this aircraft. The young-Sam portrait
+therefore remains unlocated online.
+
+**MACR 6353 access:** held by NARA (RG 92, Entry A1 2109-B; digitized in
+the NARA Catalog / Fold3). NARA’s reference desk
+(`archives2reference@nara.gov`) will locate a report given the three keys
+we now have: **date of loss 26 Jun 1944, tail 42-31701, crewman
+Hewitt, Sam M, ASN 19179305**. The MACR will give every crewman’s serial
+number, position, and next-of-kin — the last being directly useful for
+reaching crew families who may hold the crew photograph.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
