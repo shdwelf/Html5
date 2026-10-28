@@ -153,11 +153,83 @@ of them waits on the same `.romz` step. Follow-up searches for a public
 pages only confirm the container is compressed and that the one-time bridge
 to 4.x was `.rom.gz`, suggesting — not proving — a gzip-family container for
 the earliest images. The next experiment is therefore concrete and cheap:
-on the runner, stage candidate 6.0.0.1R2, read the `.romz` magic bytes
-(the workflow now prints them), and test gzip/zlib/raw-deflate inflation
-before invoking Ghidra.
+on the runner, stage candidate 6.0.0.1R2, read the `.romz` magic bytes,
+and test gzip/zlib/raw-deflate inflation before invoking Ghidra.
 
-**To run the real disassembly after `.romz` inflation is solved:** dispatch
+**Update (probe built):** `tools/evolution-os/romz_probe.py` now does
+exactly that — it records the container's size/SHA-256/magic, tries gzip,
+zlib, raw DEFLATE, bzip2 and LZMA at offset 0 plus embedded-stream scans
+behind a short header, scores any output for firmware plausibility
+(Evolution/Lantronix/XPort keyword hits), and writes a JSON report either
+way (`tests/romz-probe.test.mjs`: gzip/zlib/raw-deflate/header-offset
+recovery plus an honest refusal on noise). `evolution-os-ghidra.yml` runs
+it after staging: Ghidra is invoked **only** on a plausibly inflated
+payload, and the probe report is committed to `docs/ghidra/evolution-os/`
+whether or not inflation succeeds — so the first real run answers the
+`.romz` question with evidence instead of another assumption.
+
+## 7. Result (2026-10-28): .romz is gzip — and the disassembly is real
+
+The probe's first run on candidate 6.0.0.1R2 (GitHub Actions run
+40682104267, committed back to the branch) settled the container question
+in its first bytes: magic `1f 8b 08 08 c8 7e c0 60 00 03` followed by the
+embedded original filename `xport_...` — **a Lantronix `.romz` is a plain
+gzip member**. Inflation: 623,002 → **1,725,386 bytes**, SHA-256
+`6e67282af187acd8ed13ec5dac4ee62ff556a383c7577a03ee2151e87c54ca81`,
+keyword hits Evolution×6, Lantronix×8, XPort×112, ColdFire×1, SSH×435,
+Telnet×132, SNMP×102. The strings leave no doubt about what the payload
+is: `<generator>Evolution OS</generator>`, `SSH-2.0-Evolution`,
+`Lantronix XPort Family`, and the source path
+`../../hyperion/supplicant/os_evolution.c` — **Hyperion** is the internal
+codename that also names the Evolution SDK forum board.
+
+Ghidra 12.1.4 then analysed the payload as `68000:BE:32:Coldfire` raw
+binary (image base 0): **4,102 functions, 4,446 defined strings, 48/48
+sampled decompilations completed**, reports committed under
+`docs/ghidra/evolution-os/` (`payload.bin.ghidra.json`, `.c`,
+`.strings.txt`, plus `romz-probe.json`). One honest caveat: the
+instruction count reads 200,000 because `GenericProgramReport.java` caps
+its listing there — it is a floor, not a total. Refining the load image
+(real base address / memory map from the Lantronix Lab flash map instead
+of a flat `ram` block at 0) is the follow-up that turns this first pass
+into a navigable program database.
+
+So the chain the earlier records built — Lantronix page → GitHub (empty)
+→ archive.org firmwarelibrary → urln/ln staging → .romz gzip probe →
+Ghidra ColdFire disassembly → assembly with the BBS viewer, Wiki in a Jar
+and the xPort V.92 fax-modem card — is now closed end to end with real
+artefacts, not a pipeline diagram.
+
+## 8. Follow-through (2026-10-28): the 16-bit x86 targets, same pipeline
+
+The classic line ships differently from the ColdFire line, and the archive
+listings showed it before any download: `xpico_7003.rom` and
+`xpt05_7004.rom` are **uncompressed 131,072-byte .rom files** (the raw
+128 KB flash image) beside their `.cob` web-manager files, with vendor
+MD5s `71e078c3ee61fef06c67cd916dd9f767` and
+`34159ce8243f8c6cf77579d9a8378a61`. The probe therefore gained a second
+positive verdict — **"raw"** (exit 3: no inflation applies, but the bytes
+score as plausible firmware) — and the workflow now names payloads per
+target and *accumulates* reports instead of wiping
+`docs/ghidra/evolution-os/` per run. Two more runner passes
+(40682842097, 40682993105) completed the set:
+
+| Image | Ghidra language | Functions | Instructions | Strings | Decompiled |
+| --- | --- | ---: | ---: | ---: | ---: |
+| XPort Pro Evolution 6.0.0.1R2 (.romz→gzip payload) | `68000:BE:32:Coldfire` | 4,102 | 200,000 (cap) | 4,446 | 48/48 |
+| xPico 7.0.0.3 (.rom, raw) | `x86:LE:16:Real Mode` | 460 | 24,947 | 259 | 48/48 |
+| XPort-05 7.0.0.4 (.rom, raw) | `x86:LE:16:Real Mode` | 492 | 26,806 | 300 | 48/48 |
+
+Both ISAs of Evolution OS are now disassembled and assembled in one
+record. Two operational notes worth keeping: the committed trigger file
+means any later push touching the workflow or tools re-runs the *last
+staged* target (harmless — same-stem reports overwrite — but visible in
+the history as runner "Assemble Ghidra analysis" commits), and the probe
+now records the ColdFire vector table (initial SP / reset entry) from
+each analysed image, the evidence the still-open base-address reload
+needs.
+
+The earlier staging instruction, now proven: dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit
 `.arena-relay/evolution-os-ghidra.txt`), and the assembly record's Reports
 table replaces "None yet" with the image's real fingerprint.

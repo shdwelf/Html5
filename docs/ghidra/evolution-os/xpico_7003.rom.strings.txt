@@ -1,0 +1,259 @@
+0000:114d	Copyright 2004,
+0000:115d	Lantronix Inc. 
+0000:18d4	77FEh Access Mode (0=Read & Write, 1=Read Only): 
+0000:1906	Enable Telnet Authentication
+0000:1923	Automatic Host MAC Detection
+0000:1940	Wired Host MAC 
+0000:1950	  Broadcast Address: 
+0000:1966	\n*** basic parameters \n\rHardware: 
+0000:1989	Channel 2: disabled
+0000:199d	MTU Size: 
+0000:19a9	\n\rChange Setup:\n\r  0 Server
+0000:19c5	  9 Save and exit            Your choice ? 
+0000:19f1	  3 E-mail
+0000:1a05	  5 Expert
+0000:1a10	  6 Security
+0000:1a1d	  7 Defaults\n\r  8 Exit without save
+0000:1a41	  1 Channel 1
+0000:1a4f	  2 Channel 2
+0000:1a5d	SNMP Community Name:       
+0000:1a79	  Device Address info: 
+0000:1a91	Disable Web Setup
+0000:1aa3	Datagram Type 
+0000:1ab2	Disable ECHO ports
+0000:1ac5	Disable TFTP Firmware Update
+0000:1ae2	Disable Port 77F0h
+0000:1af5	disabled
+0000:1afe	<disabled>
+0000:1b09	DNS Server
+0000:1b14	Disable Port 77FEh
+0000:1b27	Datagram Type
+0000:1b35	Disable SNMP
+0000:1b42	Disable Telnet Setup
+0000:1b57	Enter Password : 
+0000:1b69	Enable Enhanced Password
+0000:1b82	Disable Web Server
+0000:1b95	Change the Password
+0000:1ba9	Enable Encryption
+0000:1bbb	Enter Key: 
+0000:1bc7	Change Key
+0000:1bd2	Ethernet Interface AUI
+0000:1be9	Enable alternate MAC
+0000:1bfe	enabled
+0000:1c06	--- none ---
+0000:1c13	Terminal name: 
+0000:1c23	Password: 
+0000:1c2e	Remote IP Adr: 
+0000:1c3e	, Port 
+0000:1c46	Connect Mode : 
+0000:1c56	Disconn Mode : 
+0000:1c66	  Disconn Time: 
+0000:1c77	Flush   Mode : 
+0000:1c87	Pack Cntrl   : 
+0000:1c97	SendChars    : 
+0000:1ca7	Ethernet connection type: 
+0000:1cc2	TCP Keepalive    : 
+0000:1cd6	These parameters are for experts only 
+0000:1cfd	which definitely know the consequences of the changes.\n\r
+0000:1d36	CPU performance (0=Regular, 1=Low, 2=High): 
+0000:1d63	RS485 tx enable  : 
+0000:1d77	*** Expert
+0000:1d82	Requires CPU high performance!
+0000:1da1	 (Firmware Code:
+0000:1db2	 **APS KEY IS DAMAGED** 
+0000:1dd2	Model: Device Server 
+0000:1de8	Set Gateway IP Address
+0000:1dff	Gateway 
+0000:1e08	\n\rHostlist :
+0000:1e15	\n\rNo Entry !
+0000:1e22	\n\rChange Hostlist ?
+0000:1e36	Hostlist Retrycounter 
+0000:1e4d	Hostlist Retrytimeout 
+0000:1e64	HTTP Port Number : 
+0000:1e78	Invalid Baudrate !!!
+0000:1e8d	IP Address : 
+0000:1e9b	IP addr 
+0000:1ea9	Show IP addr after 'RING' 
+0000:1ec4	Send '+++' in Modem Mode 
+0000:1ede	Master Mode Config: 
+0000:1ef3	,netmask 
+0000:1efd	Disable Monitor Mode @ bootup
+0000:1f1b	Monitor Mode @ bootup : 
+0000:1f34	Pack Cntrl:   
+0000:1f43	exiting without save !\n\r
+0000:1f5c	Parameters stored ...\n\r
+0000:1f74	Telnet config password set
+0000:1f8f	Enter new Password: 
+0000:1fa4	Read & Write      
+0000:1fb7	Read Only      
+0000:1fc7	TCP Re-transmission timeout: 
+0000:1fe5	TCP Re-transmission Timeout (500 - 4000) (ms): 
+0000:2015	Baudrate (
+0000:2020	*** Security
+0000:202d	Port 77F0h is              
+0000:2049	Web Setup is               
+0000:2065	Alternate MAC: 
+0000:2075	\r77FEh Access Mode is       
+0000:2092	Telnet Authentication is   
+0000:20ae	Telnet Setup is            
+0000:20ca	TFTP Download is           
+0000:20e6	Encryption is              
+0000:2102	Enhanced Password is       
+0000:211e	Port 77FEh is              
+0000:213a	Web Server is              
+0000:2156	SNMP is                    
+0000:2172	ECHO is                    
+0000:2193	*** Channel 
+0000:21a0	SMTP Port Number : 
+0000:21b4	Change Telnet/Web Manager password
+0000:21d7	 ring address 
+0000:21e6	Remote IP Address : 
+0000:21fb	Remote Port 
+0000:2208	Send as Broadcast
+0000:221a	DisConnMode
+0000:2226	 (Telnet Com Port Cntrl Enabled)
+0000:2247	FlushMode  
+0000:2253	DisConnTime (
+0000:2261	SendChar 1 
+0000:226d	SendChar 2 
+0000:2279	Password (
+0000:2284	Terminal name (
+0000:2294	Pack Cntrl 
+0000:22a0	Enter address as 6 hex pairs: 
+0000:22bf	Use Tokenring administered address
+0000:22e2	 - Invalid address - using physical 
+0000:2307	Token Ring 
+0000:2313	Change address table (max .16, 00=disable) 
+0000:233f	Master Config:
+0000:234e	Netmask: Number of Bits for Host Part (0=default) (
+0000:2382	WARNING: Hardware Flow Control not supported!
+0000:23b0	I/F Mode
+0000:23be	Port No
+0000:23c6	ConnectMode
+0000:23d2	 Start Char: 
+0000:23e0	WARNING: RS-422/485 I/F Modes not supported!\n\r
+0000:240f	Auto increment source port 
+0000:27bf	LAN-DSTni 5.1 12/01
+1000:0010	11111111111111
+1000:64bf	'auto-negotiate
+1000:64f1	Setup
+1000:6510	secure/setuprec.xml
+1000:6524	secure/unitinfo.xml
+1000:653d	secure/setup.cgi
+1000:655d	XPICO-SMT
+1000:658c	auto-negotiate
+1000:65bd	\r\nNO CARRIER\r\n
+1000:65cf	\r\nCONNECT\r\n
+1000:65e8	RING %A\r\nCONNECT\r\n
+1000:6603	RING \r\nCONNECT\r\n
+1000:6621	\n\rPassword ? 
+1000:6696	auto-negotiate
+1000:6715	%2u. IP address : 
+1000:6728	     Port : 
+1000:6744	\n\rBaudrate %s, I/F Mode %2x, Flow %2x\n\rPort %5u
+1000:6778	\n\rSendChars %2x %2x 
+1000:6796	\n\rHostlist Retrycounter  : %u\n\rHostlist Retrytimeout  : %u
+1000:67d9	\n\rSNMP Community Name (%s): 
+1000:67f6	\r\nKey length in bits (%d): 
+1000:6813	Only 128, 192 or 256 bits are allowed
+1000:6839	\n\rTCP Keepalive time in s (1s - 65s; 0s=disable): 
+1000:686c	\n\rARP Cache timeout in s (0s - 600s) : 
+1000:6894	MTU Size (512 - 1400): 
+1000:68b0	disabled
+1000:68b9	\n\rARP cache timeout: %us
+1000:68d2	\r\nCPU performance: %s
+1000:68f1	Regular
+1000:68ff	public
+1000:6906	\n\r%2u. IP : %3A  Port : %5u
+1000:6922	%s: %d=%s
+1000:692c	, %d=%s
+1000:6934	\r\n%s: %s%s
+1000:693f	  Only %d - %d allowed!\n\r
+1000:6961	AES library version %s\n\r
+1000:697f	Change DHCP device name (%s) ?
+1000:699e	not set
+1000:69a6	Enter new DHCP device Name : 
+1000:69c4	Enable DHCP FQDN option : 
+1000:69df	Ethernet 
+1000:69e9	Autodetect 
+1000:6a01	, gateway 
+1000:6a0c	, no gateway set
+1000:6a1d	DHCP device name : %s\n\r
+1000:6a35	DHCP FQDN option: %s\n\r
+1000:6a4c	Enabled
+1000:6a54	Disabled
+1000:6a5e	Monitor not supported\n\r
+1000:6a88	auto-negotiate
+1000:6aee	auto-negotiate
+1000:6bb8	<LINE>%1H</LINE>\n\r
+1000:6bcb	<LINE2>%1H</LINE2>\n\r
+1000:6be0	</UNITINFO>\n\r
+1000:6bee	<RECORD>\r\n
+1000:6c10	</DATA>\r\n</RECORD>\r\n
+1000:6c2b	</SCR>\r\n</SETUPREC>\r\n
+1000:6c41	Content-Length: 
+1000:6c74	Not supported!\n\r
+1000:6c85	IP-SETUP
+1000:6c8e	*** NodeSet 2.0 ***\n\r0
+1000:6ca5	Type set\n\r
+1000:6cc2	Firmware Version: %s\r\n
+1000:6cd9	IP %3A GW %3A Mask %3A NS %3A\n\r
+1000:6cf9	unreachable\n\r
+1000:6d07	Seq %3u time %ums\r\n
+1000:6d1b	Timeout\r\n
+1000:6d25	*** Interface %d Status ***\n\rType: %s
+1000:6d4b	Ethernet\r\n
+1000:6d5d	IP: %3A, GW: %3A, Mask: %3A
+1000:6d79	\r\nLink (0x%x):
+1000:6d88	up, %d Mbps %s duplex\r\n
+1000:6db1	Interface down\r\n
+1000:6dc2	Chan  Size    HWM   CurSP   TOS   BOS   Name\n\r
+1000:6df1	%d     %4u   %4u   %4x    %4x    %4x    %s\n\r
+1000:6e1e	Sector :%u, Flash Write Count :%u\r\n
+1000:6e6e	HTTP/1.1 %u ERROR\r\n\r\n
+1000:6ea4	Network
+1000:6eac	Tokenring
+1000:6f70	auto-negotiate
+1000:6fa9	Clear Pending TCP Bad Com %d\r\n
+1000:6fc8	\r\nRxErr_%d,SameRx[St_%4x:F_%d,P_%d,%d]
+1000:6fef	\r\nRxErr_%d,Old_%x,NewRx[St_%4x,F_%d,P_%d,%d]
+1000:701c	\r\nTxErr_%2d,TxSt:%4x,[RxS:F,P,O]=4x:%d,%d,%d
+1000:7072	\r\nNoErr_%d,TxS_%4x,RxS[F,P,O]=%4x:[%d,%d,%d]
+1000:70c7	 %A/%5u r%5u t%5u rtry %u
+1000:712a	\r\n[s_%d,%d C%d]
+1000:713c	,dLantronix
+1000:71eb	\rauto-negotiate
+1000:721d	FATAL ERROR 
+1000:722a	/Setup memory: Contact tech support\n\r
+1000:7292	--- not set ---
+1000:72c3	\r\nMAC address %H
+1000:72d4	\n\rSoftware version %1V %s\r\n
+1000:72f3	Press Enter for Setup Mode \n\r
+1000:7320	HTTP/1.1 401 %s\r\n%s\r\n\r\n401 %s
+1000:733e	WWW-Authenticate: Basic
+1000:7356	Unauthorized
+1000:7363	Another User Logged In
+1000:737a	Authorization: Basic 
+1000:7390	admin
+1000:7396	secure/
+1000:739e	index.html
+1000:73b5	HTTP/1.1 200 OK\r\n
+1000:73c7	Content-type: %s\r\n
+1000:73da	Connection: close\r\n
+1000:73ee	CONTENT-LENGTH: %u\r\n
+1000:7404	ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=
+1000:7452	auto-negotiate
+1000:7488	FATAL ERROR 
+1000:7495	/Setup memory: Contact tech support\n\r
+1000:74bb	\n\rPress Enter for Setup mode\n\r
+1000:74dd	ERROR: IP address conflict with 
+1000:7520	File not found.
+1000:7534	Wrong destination file, valid is : %2s, or WEB1 - WEB%d
+1000:756c	Wrong destination file, valid is : %2s, no WEB
+1000:759b	octet
+1000:75a1	binary
+1000:75a8	Wrong Filetype.
+1000:75b8	Incorrect block sequence
+1000:75d1	Wrong Sourcefile, valid is : %2s
+1000:75f2	File too long
+1000:7600	FW upload checksum failure

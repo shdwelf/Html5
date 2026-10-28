@@ -1,0 +1,2 @@
+https://archive.org/download/Lantronix_XPort-05_7.0.0.4_1c3f8/1c3f8e1a90053738831ef9d324fa756a.zip
+x86:LE:16:Real Mode

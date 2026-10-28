@@ -27,6 +27,7 @@ on:
       - '.github/workflows/evolution-os-ghidra.yml'
       - '.arena-relay/evolution-os-ghidra.txt'
       - 'tools/evolution-os/evolution-os.mjs'
+      - 'tools/evolution-os/romz_probe.py'
       - 'tools/urln/ln'
       - 'tools/ghidra_scripts/GenericProgramReport.java'
   workflow_dispatch:
@@ -133,8 +134,36 @@ jobs:
           stat -c 'staged bytes=%s' "$image"
           sha256sum "$image" | tee "$root/input/firmware.sha256"
 
-      - name: Install pinned official Ghidra release
+      - name: Probe the .romz container for its compression
+        id: probe
         if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          root="$RUNNER_TEMP/evolution-os"
+          stem=$(basename "$IMAGE"); stem="${stem%.*}"
+          # Probe exit codes: 0 = inflated payload, 3 = raw plausible
+          # firmware (the classic .rom targets), 2 = unrecognised. None is
+          # a job failure by itself - the report is evidence either way.
+          if python3 tools/evolution-os/romz_probe.py "$IMAGE" \
+              --out "$root/input/$stem.payload.bin" \
+              --report "$root/$stem.romz-probe.json"; then
+            echo 'action=payload' >> "$GITHUB_OUTPUT"
+            echo "IMAGE=$root/input/$stem.payload.bin" >> "$GITHUB_ENV"
+            echo 'Container inflated; Ghidra will analyse the payload.'
+          else
+            code=$?
+            if [ "$code" -eq 3 ]; then
+              echo 'action=raw' >> "$GITHUB_OUTPUT"
+              echo 'Raw .rom firmware; Ghidra analyses the staged file as-is.'
+            else
+              echo 'action=skip' >> "$GITHUB_OUTPUT"
+              echo 'Container unrecognised; Ghidra skipped, probe report still committed.'
+            fi
+          fi
+          cat "$root/$stem.romz-probe.json"
+
+      - name: Install pinned official Ghidra release
+        if: steps.stage.outputs.staged == 'true' && steps.probe.outputs.action != 'skip'
         shell: bash
         run: |
           set -euo pipefail
@@ -146,7 +175,7 @@ jobs:
           test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
 
       - name: Disassemble the Evolution OS image (static only)
-        if: steps.stage.outputs.staged == 'true'
+        if: steps.probe.outputs.action != 'skip'
         shell: bash
         run: |
           set -euo pipefail
@@ -177,8 +206,14 @@ jobs:
           root="$RUNNER_TEMP/evolution-os"
           mkdir -p docs/ghidra/evolution-os
           # Derived static-analysis artefacts only — never the input image.
-          rm -f docs/ghidra/evolution-os/*
+          # No rm: each target's reports accumulate (<stem>.* per image).
           for f in "$root"/reports/*.ghidra.json "$root"/reports/*.strings.txt "$root"/reports/*.c; do
+            [ -e "$f" ] || continue
+            cp "$f" docs/ghidra/evolution-os/
+          done
+          # The container-probe report is evidence whether or not the
+          # payload inflated and Ghidra ran.
+          for f in "$root"/*.romz-probe.json; do
             [ -e "$f" ] || continue
             cp "$f" docs/ghidra/evolution-os/
           done
