@@ -233,7 +233,7 @@ export const FIRMWARE_CANDIDATES = [
     payloadName: 'xpico_7003.rom',
     payloadBytes: 131072,
     payloadMd5: '71e078c3ee61fef06c67cd916dd9f767',
-    status: 'staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode',
+    status: 'ANALYSED 2026-10-28 — raw .rom, x86 real mode: 460 functions, 24,947 instructions',
   },
   {
     target: 'xport-classic',
@@ -248,7 +248,7 @@ export const FIRMWARE_CANDIDATES = [
     payloadName: 'xpt05_7004.rom',
     payloadBytes: 131072,
     payloadMd5: '34159ce8243f8c6cf77579d9a8378a61',
-    status: 'staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode',
+    status: 'ANALYSED 2026-10-28 — raw .rom, x86 real mode: 492 functions, 26,806 instructions',
   },
 ];
 

@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:51:10.057Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:51:33.276Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: 3 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
@@ -73,8 +73,8 @@ mirrors the official Lantronix FTP as one ZIP per release. Record:
 | xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | — | catalogued — same .romz caveat |
 | matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | — | catalogued — same .romz caveat |
 | eds-evolution | 6.0.0.0R1 | archive.org `Lantronix_eds1100_2100_6.0.0.0R1_ca0f3` | `—` | — | catalogued — same .romz caveat |
-| xpico | 7.0.0.3 | archive.org `Lantronix_xpico_7.0.0.3_6d83d` | `386e471e13585b34…` | xpico_7003.rom (131072 B, MD5 `71e078c3…`) | staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode |
-| xport-classic | 7.0.0.4 (XPort-05) | archive.org `Lantronix_XPort-05_7.0.0.4_1c3f8` | `6d0193f36cb39802…` | xpt05_7004.rom (131072 B, MD5 `34159ce8…`) | staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode |
+| xpico | 7.0.0.3 | archive.org `Lantronix_xpico_7.0.0.3_6d83d` | `386e471e13585b34…` | xpico_7003.rom (131072 B, MD5 `71e078c3…`) | ANALYSED 2026-10-28 — raw .rom, x86 real mode: 460 functions, 24,947 instructions |
+| xport-classic | 7.0.0.4 (XPort-05) | archive.org `Lantronix_XPort-05_7.0.0.4_1c3f8` | `6d0193f36cb39802…` | xpt05_7004.rom (131072 B, MD5 `34159ce8…`) | ANALYSED 2026-10-28 — raw .rom, x86 real mode: 492 functions, 26,806 instructions |
 
 Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),
 so the remaining step before a real disassembly is `.romz` inflation — Ghidra must see the

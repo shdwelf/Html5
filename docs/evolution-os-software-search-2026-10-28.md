@@ -200,6 +200,35 @@ Ghidra ColdFire disassembly → assembly with the BBS viewer, Wiki in a Jar
 and the xPort V.92 fax-modem card — is now closed end to end with real
 artefacts, not a pipeline diagram.
 
+## 8. Follow-through (2026-10-28): the 16-bit x86 targets, same pipeline
+
+The classic line ships differently from the ColdFire line, and the archive
+listings showed it before any download: `xpico_7003.rom` and
+`xpt05_7004.rom` are **uncompressed 131,072-byte .rom files** (the raw
+128 KB flash image) beside their `.cob` web-manager files, with vendor
+MD5s `71e078c3ee61fef06c67cd916dd9f767` and
+`34159ce8243f8c6cf77579d9a8378a61`. The probe therefore gained a second
+positive verdict — **"raw"** (exit 3: no inflation applies, but the bytes
+score as plausible firmware) — and the workflow now names payloads per
+target and *accumulates* reports instead of wiping
+`docs/ghidra/evolution-os/` per run. Two more runner passes
+(40682842097, 40682993105) completed the set:
+
+| Image | Ghidra language | Functions | Instructions | Strings | Decompiled |
+| --- | --- | ---: | ---: | ---: | ---: |
+| XPort Pro Evolution 6.0.0.1R2 (.romz→gzip payload) | `68000:BE:32:Coldfire` | 4,102 | 200,000 (cap) | 4,446 | 48/48 |
+| xPico 7.0.0.3 (.rom, raw) | `x86:LE:16:Real Mode` | 460 | 24,947 | 259 | 48/48 |
+| XPort-05 7.0.0.4 (.rom, raw) | `x86:LE:16:Real Mode` | 492 | 26,806 | 300 | 48/48 |
+
+Both ISAs of Evolution OS are now disassembled and assembled in one
+record. Two operational notes worth keeping: the committed trigger file
+means any later push touching the workflow or tools re-runs the *last
+staged* target (harmless — same-stem reports overwrite — but visible in
+the history as runner "Assemble Ghidra analysis" commits), and the probe
+now records the ColdFire vector table (initial SP / reset entry) from
+each analysed image, the evidence the still-open base-address reload
+needs.
+
 The earlier staging instruction, now proven: dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit
 `.arena-relay/evolution-os-ghidra.txt`), and the assembly record's Reports
