@@ -119,6 +119,44 @@ static-analysis reports — that boundary stays.
   candidate and selects the firmware payload before the Ghidra step.
 - This record, carried into Wiki in a Jar like the rest.
 
+## 6. Continued 2026-10-28: inside the archive.org ZIPs
+
+The mirror can be inspected **without downloading the binary**: archive.org's
+view-archive endpoint lists ZIP contents, and the small text members can be
+read individually. Doing that for the two lead candidates settles what the
+runner will actually receive:
+
+| Item | Member (FTP path preserved) | Size | Vendor MD5 (`md5sum.txt`) |
+| --- | --- | ---: | --- |
+| `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `ftp/XPort-Pro/6.0.0.1R2/xport_pro_6_0_0_1_R2.romz` | 623,002 B | `7c996f6ea2d07625012a98e748cad759` |
+| same | `…/xport_pro_6_0_0_1_R2_User_Release_Notes.txt` | 14,147 B | — |
+| `Lantronix_XPort-Pro_7.0.0.0R2_7769a` | `ftp/XPort-Pro/7.0.0.0R2/xport_pro_7_0_0_0_R2.romz` | 623,434 B | `c0e1fbdc9011783e3a9644bdcf5aa9ae` |
+| same | `…/xport_pro_7_0_0_0_R2_User_Release_Notes.txt` | 14,372 B | — |
+
+The 6.0.0.1R2 release notes close the provenance loop in the vendor's own
+words: the document is titled **"Lantronix Evolution Device Server Software —
+Software Release Notes"** (2021-06-09) and lists `xport_pro_6_0_0_1_R2.romz`
+as the released firmware file, with the same bug-fix set PCN-728 announces
+(`+++AT` modem-mode handling, SSL handshake leak, SNMP off by default). The
+CLI reference (`xport_pro_cli_6_0_0_1_R2.html`) is named in the notes but is
+not a ZIP member — only the `.romz`, notes and `md5sum.txt` ship in the
+mirror, matching the official FTP directory listing for 6.0.0.0R5.
+
+**Census, widened.** `collection:firmwarelibrary AND creator:Lantronix`
+holds **195 items**; the XPort / xPico / MatchPort / EDS subset alone is
+**83 items** (5.5.0.2R5 → 7.0.0.0R2 for XPort Pro; MatchPort AR 5.1.0.0 and
+6.0.0.1R2; eds1100_2100 6.0.0.0R1/R5 and 6.0.0.1R2; EDSxPR/EDSxPS and EDS4100
+lines; XPort-01/03/04/05, XPort485, xpico/xpico110 for the 16-bit x86
+targets). There is no shortage of Evolution OS images to analyse — every one
+of them waits on the same `.romz` step. Follow-up searches for a public
+`.romz` unpacker (GitHub code search, web) again found none; Lantronix's own
+pages only confirm the container is compressed and that the one-time bridge
+to 4.x was `.rom.gz`, suggesting — not proving — a gzip-family container for
+the earliest images. The next experiment is therefore concrete and cheap:
+on the runner, stage candidate 6.0.0.1R2, read the `.romz` magic bytes
+(the workflow now prints them), and test gzip/zlib/raw-deflate inflation
+before invoking Ghidra.
+
 **To run the real disassembly after `.romz` inflation is solved:** dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit
 `.arena-relay/evolution-os-ghidra.txt`), and the assembly record's Reports

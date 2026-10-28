@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:05:22.664Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:33:37.011Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: pipeline ready — no Evolution OS image staged, no disassembly yet.**
 No `.rom`/`.romz` Evolution OS firmware exists in this repo, and this sandbox has no JVM,
@@ -68,13 +68,13 @@ Lantronix org publishes newer-product code, and the one XPort Pro toolset found
 mirrors the official Lantronix FTP as one ZIP per release. Record:
 `docs/evolution-os-software-search-2026-10-28.md`.
 
-| Target | Version | Source | ZIP SHA-1 | Status |
-| --- | --- | --- | --- | --- |
-| xport-pro-evolution | 6.0.0.1R2 | archive.org `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `9fac545077eb1a95…` | staged-candidate — unzip, inflate .romz, then Ghidra |
-| xport-pro-evolution | 7.0.0.0R2 | archive.org `Lantronix_XPort-Pro_7.0.0.0R2_7769a` | `b6f25081807f1957…` | staged-candidate — unzip, inflate .romz, then Ghidra |
-| xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | catalogued — same .romz caveat |
-| matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | catalogued — same .romz caveat |
-| eds-evolution | 6.0.0.0R1 | archive.org `Lantronix_eds1100_2100_6.0.0.0R1_ca0f3` | `—` | catalogued — same .romz caveat |
+| Target | Version | Source | ZIP SHA-1 | Payload (.romz, vendor MD5) | Status |
+| --- | --- | --- | --- | --- | --- |
+| xport-pro-evolution | 6.0.0.1R2 | archive.org `Lantronix_XPort-Pro_6.0.0.1R2_136c8` | `9fac545077eb1a95…` | — | staged-candidate — unzip, inflate .romz, then Ghidra |
+| xport-pro-evolution | 7.0.0.0R2 | archive.org `Lantronix_XPort-Pro_7.0.0.0R2_7769a` | `b6f25081807f1957…` | xport_pro_7_0_0_0_R2.romz (623434 B, MD5 `c0e1fbdc…`) | staged-candidate — unzip, inflate .romz, then Ghidra |
+| xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | — | catalogued — same .romz caveat |
+| matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | — | catalogued — same .romz caveat |
+| eds-evolution | 6.0.0.0R1 | archive.org `Lantronix_eds1100_2100_6.0.0.0R1_ca0f3` | `—` | — | catalogued — same .romz caveat |
 
 Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),
 so the remaining step before a real disassembly is `.romz` inflation — Ghidra must see the

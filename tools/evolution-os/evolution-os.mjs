@@ -176,6 +176,9 @@ export const FIRMWARE_CANDIDATES = [
     zipMd5: '7769a2f3359905a3fccb15e2f5b4216f',
     zipSha1: 'b6f25081807f1957fab9ca78bff31045e8bac73b',
     officialFtp: 'https://ts.lantronix.com/ftp/XPort-Pro/7.0.0.0R2/',
+    payloadName: 'xport_pro_7_0_0_0_R2.romz',
+    payloadBytes: 623434,
+    payloadMd5: 'c0e1fbdc9011783e3a9644bdcf5aa9ae',
     status: 'staged-candidate — unzip, inflate .romz, then Ghidra',
   },
   {
@@ -350,10 +353,11 @@ export function buildAssembly({ reports = [], generatedAt = new Date().toISOStri
   lines.push('mirrors the official Lantronix FTP as one ZIP per release. Record:');
   lines.push('`docs/evolution-os-software-search-2026-10-28.md`.');
   lines.push('');
-  lines.push('| Target | Version | Source | ZIP SHA-1 | Status |');
-  lines.push('| --- | --- | --- | --- | --- |');
+  lines.push('| Target | Version | Source | ZIP SHA-1 | Payload (.romz, vendor MD5) | Status |');
+  lines.push('| --- | --- | --- | --- | --- | --- |');
   for (const c of FIRMWARE_CANDIDATES) {
-    lines.push(`| ${mdCell(c.target)} | ${mdCell(c.version)} | archive.org \`${mdCell(c.archiveOrg)}\` | \`${mdCell(c.zipSha1 ? c.zipSha1.slice(0, 16) + '…' : '—')}\` | ${mdCell(c.status)} |`);
+    const payload = c.payloadName ? `${c.payloadName} (${c.payloadBytes} B, MD5 \`${String(c.payloadMd5).slice(0, 8)}…\`)` : '—';
+    lines.push(`| ${mdCell(c.target)} | ${mdCell(c.version)} | archive.org \`${mdCell(c.archiveOrg)}\` | \`${mdCell(c.zipSha1 ? c.zipSha1.slice(0, 16) + '…' : '—')}\` | ${mdCell(payload)} | ${mdCell(c.status)} |`);
   }
   lines.push('');
   lines.push('Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),');

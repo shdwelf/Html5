@@ -55,6 +55,13 @@ test('firmware candidates point at the hash-recorded archive.org mirrors', () =>
   assert.equal(first.version, '6.0.0.1R2');
   assert.equal(first.archiveOrg, 'Lantronix_XPort-Pro_6.0.0.1R2_136c8');
   assert.equal(first.zipMd5, '136c8005c1aacd8734ed0f621ec73383');
+  // Payload facts read out of the archive.org ZIP listing + its md5sum.txt.
+  assert.equal(first.payloadName, 'xport_pro_6_0_0_1_R2.romz');
+  assert.equal(first.payloadBytes, 623002);
+  assert.equal(first.payloadMd5, '7c996f6ea2d07625012a98e748cad759');
+  const second = FIRMWARE_CANDIDATES[1];
+  assert.equal(second.payloadName, 'xport_pro_7_0_0_0_R2.romz');
+  assert.equal(second.payloadMd5, 'c0e1fbdc9011783e3a9644bdcf5aa9ae');
   assert.match(first.download, /^https:\/\/archive\.org\/download\//);
   for (const c of FIRMWARE_CANDIDATES) {
     assert.ok(EVOLUTION_TARGETS.some((t) => t.id === c.target), `unknown target ${c.target}`);
@@ -62,6 +69,7 @@ test('firmware candidates point at the hash-recorded archive.org mirrors', () =>
   }
   const md = buildAssembly({ reports: [], generatedAt: '2026-10-28T00:00:00.000Z' });
   assert.match(md, /Lantronix_XPort-Pro_6\.0\.0\.1R2_136c8/);
+  assert.match(md, /xport_pro_6_0_0_1_R2\.romz/);
   assert.match(md, /evolution-os-software-search-2026-10-28\.md/);
 });
 
