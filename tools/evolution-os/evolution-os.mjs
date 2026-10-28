@@ -422,6 +422,13 @@ export function buildAssembly({ reports = [], probes = [], generatedAt = new Dat
     if (probe.vectorTable) {
       lines.push(`Vector table (big-endian): initial SP \`${mdCell(probe.vectorTable.initialStackPointer)}\`, reset entry \`${mdCell(probe.vectorTable.resetEntry)}\` (within image: ${probe.vectorTable.resetEntryWithinImage}).`);
     }
+    if (probe.headerHex) {
+      lines.push(`Header (first 64 bytes): \`${mdCell(probe.headerHex)}\``);
+    }
+    if (Array.isArray(probe.pointerBands) && probe.pointerBands.length) {
+      const bands = probe.pointerBands.map((b) => `${b.base}×${b.pointers}`).join(' · ');
+      lines.push(`Absolute-pointer bands (BE u32 → [base, base+size)): ${mdCell(bands)}. Suggested link base: \`${mdCell(probe.suggestedBase || '—')}\` (leading non-zero band; band 0 also catches small immediates).`);
+    }
     lines.push('');
   }
   lines.push('## Assembled with');
