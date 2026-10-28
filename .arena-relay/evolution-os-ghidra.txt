@@ -1,2 +1,2 @@
-https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip
-68000:BE:32:Coldfire
+https://archive.org/download/Lantronix_xpico_7.0.0.3_6d83d/6d83dc7ac5a8e911aa8d67894dd81af6.zip
+x86:LE:16:Real Mode
