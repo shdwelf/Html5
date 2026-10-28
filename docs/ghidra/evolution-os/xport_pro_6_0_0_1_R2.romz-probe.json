@@ -177,5 +177,5 @@
       "pointers": 9
     }
   ],
-  "suggestedBase": "0x00000000"
+  "suggestedBase": "0x40000000"
 }

@@ -8,14 +8,14 @@
   "sha256": "6e67282af187acd8ed13ec5dac4ee62ff556a383c7577a03ee2151e87c54ca81",
   "language": "68000:BE:32:Coldfire",
   "compiler": "default",
-  "imageBase": "00000000",
-  "minAddress": "00000000",
-  "maxAddress": "001a53c9",
+  "imageBase": "40000000",
+  "minAddress": "40000000",
+  "maxAddress": "401a53c9",
   "memoryBlocks": [
     {
       "name": "ram",
-      "start": "00000000",
-      "end": "001a53c9",
+      "start": "40000000",
+      "end": "401a53c9",
       "bytes": 1725386,
       "read": true,
       "write": true,
@@ -24,295 +24,295 @@
     }
   ],
   "imports": [],
-  "definedStrings": 4446,
+  "definedStrings": 4212,
   "instructions": 200000,
-  "functions": 4102,
+  "functions": 5504,
   "decompilations": [
     {
-      "name": "FUN_00000566",
-      "address": "00000566",
+      "name": "FUN_40000566",
+      "address": "40000566",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000644",
-      "address": "00000644",
+      "name": "FUN_40000644",
+      "address": "40000644",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000694",
-      "address": "00000694",
+      "name": "FUN_40000694",
+      "address": "40000694",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000006ee",
-      "address": "000006ee",
+      "name": "FUN_400006ee",
+      "address": "400006ee",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000008ac",
-      "address": "000008ac",
+      "name": "FUN_400008ac",
+      "address": "400008ac",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000008d4",
-      "address": "000008d4",
+      "name": "FUN_400008d4",
+      "address": "400008d4",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000924",
-      "address": "00000924",
+      "name": "FUN_40000924",
+      "address": "40000924",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000009d6",
-      "address": "000009d6",
+      "name": "FUN_400009d6",
+      "address": "400009d6",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000a88",
-      "address": "00000a88",
+      "name": "FUN_40000a88",
+      "address": "40000a88",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000d7a",
-      "address": "00000d7a",
+      "name": "FUN_40000d7a",
+      "address": "40000d7a",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000dca",
-      "address": "00000dca",
+      "name": "FUN_40000dca",
+      "address": "40000dca",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00000ec0",
-      "address": "00000ec0",
+      "name": "FUN_40000ec0",
+      "address": "40000ec0",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001034",
-      "address": "00001034",
+      "name": "FUN_40001034",
+      "address": "40001034",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000120c",
-      "address": "0000120c",
+      "name": "FUN_4000120c",
+      "address": "4000120c",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001216",
-      "address": "00001216",
+      "name": "FUN_40001216",
+      "address": "40001216",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001222",
-      "address": "00001222",
+      "name": "FUN_40001222",
+      "address": "40001222",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001236",
-      "address": "00001236",
+      "name": "FUN_40001236",
+      "address": "40001236",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001242",
-      "address": "00001242",
+      "name": "FUN_40001242",
+      "address": "40001242",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001256",
-      "address": "00001256",
+      "name": "FUN_40001256",
+      "address": "40001256",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000125e",
-      "address": "0000125e",
+      "name": "FUN_4000125e",
+      "address": "4000125e",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000126c",
-      "address": "0000126c",
+      "name": "FUN_4000126c",
+      "address": "4000126c",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001296",
-      "address": "00001296",
+      "name": "FUN_40001296",
+      "address": "40001296",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000012ac",
-      "address": "000012ac",
+      "name": "FUN_400012ac",
+      "address": "400012ac",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000012c2",
-      "address": "000012c2",
+      "name": "FUN_400012c2",
+      "address": "400012c2",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000012d6",
-      "address": "000012d6",
+      "name": "FUN_400012d6",
+      "address": "400012d6",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001306",
-      "address": "00001306",
+      "name": "FUN_40001306",
+      "address": "40001306",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001324",
-      "address": "00001324",
+      "name": "FUN_40001324",
+      "address": "40001324",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001332",
-      "address": "00001332",
+      "name": "FUN_40001332",
+      "address": "40001332",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000013ba",
-      "address": "000013ba",
+      "name": "FUN_400013ba",
+      "address": "400013ba",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000149e",
-      "address": "0000149e",
+      "name": "FUN_4000149e",
+      "address": "4000149e",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000014f2",
-      "address": "000014f2",
+      "name": "FUN_400014f2",
+      "address": "400014f2",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001516",
-      "address": "00001516",
+      "name": "FUN_40001516",
+      "address": "40001516",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000153a",
-      "address": "0000153a",
+      "name": "FUN_4000153a",
+      "address": "4000153a",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000156a",
-      "address": "0000156a",
+      "name": "FUN_4000156a",
+      "address": "4000156a",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000015a0",
-      "address": "000015a0",
+      "name": "FUN_400015a0",
+      "address": "400015a0",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000015c8",
-      "address": "000015c8",
+      "name": "FUN_400015c8",
+      "address": "400015c8",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_000015f6",
-      "address": "000015f6",
+      "name": "FUN_400015f6",
+      "address": "400015f6",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_0000161e",
-      "address": "0000161e",
+      "name": "FUN_4000161e",
+      "address": "4000161e",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001750",
-      "address": "00001750",
+      "name": "FUN_40001750",
+      "address": "40001750",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001898",
-      "address": "00001898",
+      "name": "FUN_40001898",
+      "address": "40001898",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001942",
-      "address": "00001942",
+      "name": "FUN_40001942",
+      "address": "40001942",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001b3a",
-      "address": "00001b3a",
+      "name": "FUN_40001b3a",
+      "address": "40001b3a",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001c1e",
-      "address": "00001c1e",
+      "name": "FUN_40001c1e",
+      "address": "40001c1e",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001c4a",
-      "address": "00001c4a",
+      "name": "FUN_40001c4a",
+      "address": "40001c4a",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001c92",
-      "address": "00001c92",
+      "name": "FUN_40001c92",
+      "address": "40001c92",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001db4",
-      "address": "00001db4",
+      "name": "FUN_40001db4",
+      "address": "40001db4",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001e08",
-      "address": "00001e08",
+      "name": "FUN_40001e08",
+      "address": "40001e08",
       "completed": true,
       "message": ""
     },
     {
-      "name": "FUN_00001e38",
-      "address": "00001e38",
+      "name": "FUN_40001e38",
+      "address": "40001e38",
       "completed": true,
       "message": ""
     }

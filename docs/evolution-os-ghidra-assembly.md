@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:59:30.478Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T12:01:21.239Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: 4 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
@@ -56,7 +56,7 @@ analyzeHeadless "$RUNNER_TEMP/ghidra-projects" EVO_XPORT_PRO_EVOLUTION \
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 4102 | 200000 | 4446 | 0 | 48/48 |
 | xpico_7003.rom | Raw Binary | `x86:LE:16:Real Mode` | `42fc267a918e8a72…` | 460 | 24947 | 259 | 0 | 48/48 |
-| xport_pro_6_0_0_1_R2.payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 4102 | 200000 | 4446 | 0 | 48/48 |
+| xport_pro_6_0_0_1_R2.payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 5504 | 200000 | 4212 | 0 | 48/48 |
 | xpt05_7004.rom | Raw Binary | `x86:LE:16:Real Mode` | `6546fa1807b5878e…` | 492 | 26806 | 300 | 0 | 48/48 |
 
 ## Firmware candidates (GitHub + archive.org search, 2026-10-28)
@@ -129,6 +129,8 @@ Vector table (big-endian): initial SP `0x00200007`, reset entry `0x58366d11` (wi
 | zlib@7076 | 7076 | failed | 0 |
 
 **Verdict: inflated** (`gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}). This payload — not the container — is what Ghidra analysed.
+Header (first 64 bytes): `45 56 4f 4c 2d 31 00 00 00 00 00 00 00 00 01 0c ef 46 ff 65 00 00 00 00 00 00 00 02 00 00 00 00 33 2e 30 2e 30 2e 30 00 00 1a 52 be 00 1a 52 be 40 05 48 dc 7d 47 b1 b4 00 00 00 00 00 00 00 00`
+Absolute-pointer bands (BE u32 → [base, base+size)): 0x00000000×31150 · 0x40000000×20371 · 0x20000000×2692 · 0x10000000×974 · 0xff000000×903 · 0x30000000×412 · 0x80000000×88 · 0xf0000000×47 · 0xe0000000×9. Suggested link base: `0x40000000` (leading non-zero band; band 0 also catches small immediates).
 
 ## Container probe — xpt05_7004.rom
 
