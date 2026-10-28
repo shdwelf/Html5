@@ -1,0 +1,204 @@
+name: Evolution OS — Ghidra static analysis (Lantronix)
+
+# Why a workflow and not a local run: the development sandbox has no JVM and
+# no Ghidra, and no Evolution OS firmware image exists in this repo. A runner
+# has both a JVM and egress. Same pattern as drsolomon-ghidra.yml and
+# jcreator-ghidra.yml: pinned, SHA-gated Ghidra; static analysis only.
+#
+# How to stage an image (either way):
+#   * workflow_dispatch with firmware_url (and the matching language), or
+#   * commit .arena-relay/evolution-os-ghidra.txt whose first non-comment
+#     line is the firmware URL; an optional second line is the Ghidra
+#     language (default 68000:BE:32:Coldfire, the xPort Pro / DSTni-FX one).
+# With no URL staged the run is a no-op that says so in the step summary —
+# pushing this workflow never fabricates a disassembly.
+#
+# The image is staged through tools/urln/ln (curl download -> cache ->
+# symlink), triaged per lantronix-lab.html, disassembled with
+# GenericProgramReport.java, and assembled by tools/evolution-os/ into
+# docs/evolution-os-ghidra-assembly.md alongside the BBS viewer, Wiki in a
+# Jar and the xPort V.92 fax-modem card. Never flash the analysed image to a
+# device from this workflow; Evolution and Linux part numbers are not
+# interchangeable and mixing images bricks the unit.
+
+on:
+  push:
+    paths:
+      - '.github/workflows/evolution-os-ghidra.yml'
+      - '.arena-relay/evolution-os-ghidra.txt'
+      - 'tools/evolution-os/evolution-os.mjs'
+      - 'tools/urln/ln'
+      - 'tools/ghidra_scripts/GenericProgramReport.java'
+  workflow_dispatch:
+    inputs:
+      firmware_url:
+        description: 'URL of an Evolution OS firmware image (.rom/.romz or unpacked payload)'
+        required: false
+        type: string
+      language:
+        description: 'Ghidra language for the image'
+        required: true
+        default: '68000:BE:32:Coldfire'
+        type: choice
+        options:
+          - '68000:BE:32:Coldfire'
+          - 'x86:LE:16:Real Mode'
+      target_name:
+        description: 'Label for the report row (defaults to the file name)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Resolve the staged image (if any)
+        id: stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='${{ inputs.firmware_url }}'
+          language='${{ inputs.language }}'
+          trigger='.arena-relay/evolution-os-ghidra.txt'
+          if [ -z "$url" ] && [ -f "$trigger" ]; then
+            url=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '1p' | tr -d '\r' || true)
+            lang2=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '2p' | tr -d '\r' || true)
+            [ -n "$lang2" ] && language="$lang2"
+          fi
+          if [ -z "$url" ]; then
+            echo 'staged=false' >> "$GITHUB_OUTPUT"
+            {
+              echo '## Evolution OS — no image staged'
+              echo 'No firmware URL was supplied, so Ghidra did not run and nothing was fabricated.'
+              echo 'Stage one via workflow_dispatch `firmware_url` or `.arena-relay/evolution-os-ghidra.txt`.'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo 'staged=true' >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "language=$language" >> "$GITHUB_OUTPUT"
+          echo "Evolution OS image staged: $url (language $language)"
+
+      - uses: actions/setup-java@v5
+        if: steps.stage.outputs.staged == 'true'
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: actions/setup-node@v4
+        if: steps.stage.outputs.staged == 'true'
+        with:
+          node-version: '20'
+
+      - name: Stage the firmware through urln/ln and hash it
+        if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/evolution-os"
+          mkdir -p "$root/input"
+          # The URL becomes a local file exactly the way a user would stage
+          # it: ln downloads via curl into a cache and links the name.
+          node tools/urln/ln --cache-dir "$root/cache" -sfn \
+            '${{ steps.stage.outputs.url }}' "$root/input/firmware.bin"
+          image=$(readlink -f "$root/input/firmware.bin")
+          test -s "$image"
+          # archive.org candidates are ZIPs (firmware .romz + release notes +
+          # md5sum.txt); unpack and select the firmware payload. See
+          # docs/evolution-os-software-search-2026-10-28.md.
+          if python3 -c "import zipfile,sys; sys.exit(0 if zipfile.is_zipfile(sys.argv[1]) else 1)" "$image"; then
+            mkdir -p "$root/input/extracted"
+            unzip -o -q "$image" -d "$root/input/extracted"
+            image=$(find "$root/input/extracted" -type f \( -iname '*.rom' -o -iname '*.romz' -o -iname '*.bin' \) -printf '%s %p\n' | sort -rn | head -1 | cut -d' ' -f2-)
+            test -n "$image"
+            echo "Unpacked ZIP; firmware payload: $image"
+            echo 'NOTE: a .romz payload is compressed (Rom Compressed: True) and must be inflated before Ghidra; importing the container as-is yields garbage counts.' 
+          fi
+          python3 - "$image" <<'PY'
+          import sys
+          data = open(sys.argv[1], 'rb').read(16)
+          print('payload magic:', data.hex(' '), repr(data))
+          PY
+          echo "IMAGE=$image" >> "$GITHUB_ENV"
+          stat -c 'staged bytes=%s' "$image"
+          sha256sum "$image" | tee "$root/input/firmware.sha256"
+
+      - name: Install pinned official Ghidra release
+        if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+
+      - name: Disassemble the Evolution OS image (static only)
+        if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/evolution-os"
+          reports="$root/reports"
+          projects="$RUNNER_TEMP/ghidra-projects"
+          headless="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+          mkdir -p "$reports" "$projects"
+          # Triage note (lantronix-lab.html GHIDRA MATCH): a .romz must be
+          # inflated and a raw .rom needs its loader/base set before import;
+          # this step assumes the staged URL already names an importable
+          # image or raw payload for the chosen language.
+          timeout 30m "$headless" "$projects" EVO_OS \
+            -import "$IMAGE" \
+            -processor '${{ steps.stage.outputs.language }}' \
+            -analysisTimeoutPerFile 900 \
+            -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            -postScript GenericProgramReport.java "$reports" \
+            -deleteProject
+          find "$reports" -maxdepth 1 -type f -printf '%f %s bytes\n'
+          test -n "$(find "$reports" -maxdepth 1 -name '*.ghidra.json' -print -quit)"
+
+      - name: Assemble the record (BBS / wiki / fax modem) and commit evidence
+        if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/evolution-os"
+          mkdir -p docs/ghidra/evolution-os
+          # Derived static-analysis artefacts only — never the input image.
+          rm -f docs/ghidra/evolution-os/*
+          for f in "$root"/reports/*.ghidra.json "$root"/reports/*.strings.txt "$root"/reports/*.c; do
+            [ -e "$f" ] || continue
+            cp "$f" docs/ghidra/evolution-os/
+          done
+          for f in docs/ghidra/evolution-os/*.strings.txt; do
+            [ -e "$f" ] || continue
+            if [ "$(stat -c%s "$f")" -gt 900000 ]; then
+              head -c 900000 "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+              echo "(truncated at 900 kB by evolution-os-ghidra.yml)" >> "$f"
+            fi
+          done
+          node tools/evolution-os/evolution-os.mjs \
+            --reports docs/ghidra/evolution-os \
+            --out docs/evolution-os-ghidra-assembly.md
+          node scripts/build-wikiinajar-xdc.mjs
+          sed -n '1,120p' docs/evolution-os-ghidra-assembly.md >> "$GITHUB_STEP_SUMMARY"
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/evolution-os-ghidra-assembly.md docs/ghidra/evolution-os/ wikiinajar.xdc public/apps/wikiinajar/docs.json
+          git commit -m "Assemble Ghidra analysis of Evolution OS firmware" || exit 0
+          for i in 1 2 3 4 5; do
+            git push origin "HEAD:${GITHUB_REF_NAME}" && break || {
+              git pull --rebase -X ours origin "${GITHUB_REF_NAME}"; sleep 3; }
+          done
