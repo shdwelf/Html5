@@ -168,7 +168,39 @@ payload, and the probe report is committed to `docs/ghidra/evolution-os/`
 whether or not inflation succeeds — so the first real run answers the
 `.romz` question with evidence instead of another assumption.
 
-**To run the real disassembly after `.romz` inflation is solved:** dispatch
+## 7. Result (2026-10-28): .romz is gzip — and the disassembly is real
+
+The probe's first run on candidate 6.0.0.1R2 (GitHub Actions run
+40682104267, committed back to the branch) settled the container question
+in its first bytes: magic `1f 8b 08 08 c8 7e c0 60 00 03` followed by the
+embedded original filename `xport_...` — **a Lantronix `.romz` is a plain
+gzip member**. Inflation: 623,002 → **1,725,386 bytes**, SHA-256
+`6e67282af187acd8ed13ec5dac4ee62ff556a383c7577a03ee2151e87c54ca81`,
+keyword hits Evolution×6, Lantronix×8, XPort×112, ColdFire×1, SSH×435,
+Telnet×132, SNMP×102. The strings leave no doubt about what the payload
+is: `<generator>Evolution OS</generator>`, `SSH-2.0-Evolution`,
+`Lantronix XPort Family`, and the source path
+`../../hyperion/supplicant/os_evolution.c` — **Hyperion** is the internal
+codename that also names the Evolution SDK forum board.
+
+Ghidra 12.1.4 then analysed the payload as `68000:BE:32:Coldfire` raw
+binary (image base 0): **4,102 functions, 4,446 defined strings, 48/48
+sampled decompilations completed**, reports committed under
+`docs/ghidra/evolution-os/` (`payload.bin.ghidra.json`, `.c`,
+`.strings.txt`, plus `romz-probe.json`). One honest caveat: the
+instruction count reads 200,000 because `GenericProgramReport.java` caps
+its listing there — it is a floor, not a total. Refining the load image
+(real base address / memory map from the Lantronix Lab flash map instead
+of a flat `ram` block at 0) is the follow-up that turns this first pass
+into a navigable program database.
+
+So the chain the earlier records built — Lantronix page → GitHub (empty)
+→ archive.org firmwarelibrary → urln/ln staging → .romz gzip probe →
+Ghidra ColdFire disassembly → assembly with the BBS viewer, Wiki in a Jar
+and the xPort V.92 fax-modem card — is now closed end to end with real
+artefacts, not a pipeline diagram.
+
+The earlier staging instruction, now proven: dispatch
 `evolution-os-ghidra.yml` with the candidate URL (or commit
 `.arena-relay/evolution-os-ghidra.txt`), and the assembly record's Reports
 table replaces "None yet" with the image's real fingerprint.
