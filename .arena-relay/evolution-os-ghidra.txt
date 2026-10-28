@@ -1,2 +1,2 @@
-https://archive.org/download/Lantronix_xpico_7.0.0.3_6d83d/6d83dc7ac5a8e911aa8d67894dd81af6.zip
+https://archive.org/download/Lantronix_XPort-05_7.0.0.4_1c3f8/1c3f8e1a90053738831ef9d324fa756a.zip
 x86:LE:16:Real Mode
