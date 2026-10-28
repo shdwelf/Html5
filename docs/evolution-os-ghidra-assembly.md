@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:46:02.904Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:48:43.937Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: 1 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
@@ -71,6 +71,8 @@ mirrors the official Lantronix FTP as one ZIP per release. Record:
 | xport-pro-evolution | 5.5.0.2R5 / 6.0.0.0R5 / 6.0.0.3R1 | archive.org `Lantronix_XPort-Pro_6.0.0.0R5_51e0f` | `—` | — | catalogued — same .romz caveat |
 | matchport-ar-evolution | 6.0.0.1R2 | archive.org `Lantronix_matchport-ar_6.0.0.1R2_7737b` | `—` | — | catalogued — same .romz caveat |
 | eds-evolution | 6.0.0.0R1 | archive.org `Lantronix_eds1100_2100_6.0.0.0R1_ca0f3` | `—` | — | catalogued — same .romz caveat |
+| xpico | 7.0.0.3 | archive.org `Lantronix_xpico_7.0.0.3_6d83d` | `386e471e13585b34…` | xpico_7003.rom (131072 B, MD5 `71e078c3…`) | staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode |
+| xport-classic | 7.0.0.4 (XPort-05) | archive.org `Lantronix_XPort-05_7.0.0.4_1c3f8` | `6d0193f36cb39802…` | xpt05_7004.rom (131072 B, MD5 `34159ce8…`) | staged-candidate — raw .rom, Ghidra x86:LE:16:Real Mode |
 
 Each ZIP wraps a compressed `.romz` payload (plus release notes and `md5sum.txt` on the FTP),
 so the remaining step before a real disassembly is `.romz` inflation — Ghidra must see the
@@ -80,9 +82,9 @@ ColdFire payload, not the compressed container. Stage with:
 tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip ./xport-pro-6.0.0.1R2.zip
 ```
 
-## Container probe (.romz)
+## Container probe — xport_pro_6_0_0_1_R2.romz
 
-`xport_pro_6_0_0_1_R2.romz` — 623002 bytes, SHA-256 `59b73b3659e9bf12…`, magic `1f 8b 08 08 c8 7e c0 60 00 03 78 70 6f 72 74 5f` (probe: `tools/evolution-os/romz_probe.py`).
+623002 bytes, SHA-256 `59b73b3659e9bf12…`, magic `1f 8b 08 08 c8 7e c0 60 00 03 78 70 6f 72 74 5f` (probe: `tools/evolution-os/romz_probe.py`).
 
 | Method | Offset | Result | Output bytes |
 | --- | ---: | --- | ---: |
@@ -93,7 +95,7 @@ tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c
 | lzma-xz | 0 | failed | 0 |
 | zlib@7076 | 7076 | failed | 0 |
 
-**Inflated:** `gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}. This payload — not the container — is what Ghidra analysed.
+**Verdict: inflated** (`gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}). This payload — not the container — is what Ghidra analysed.
 
 ## Assembled with
 
