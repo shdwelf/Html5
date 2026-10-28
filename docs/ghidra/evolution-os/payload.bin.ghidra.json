@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "program": "payload.bin",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Raw Binary",
+  "executablePath": "/home/runner/work/_temp/evolution-os/input/payload.bin",
+  "md5": "b518a50d0bb908f0caab5eb68312bc96",
+  "sha256": "6e67282af187acd8ed13ec5dac4ee62ff556a383c7577a03ee2151e87c54ca81",
+  "language": "68000:BE:32:Coldfire",
+  "compiler": "default",
+  "imageBase": "00000000",
+  "minAddress": "00000000",
+  "maxAddress": "001a53c9",
+  "memoryBlocks": [
+    {
+      "name": "ram",
+      "start": "00000000",
+      "end": "001a53c9",
+      "bytes": 1725386,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    }
+  ],
+  "imports": [],
+  "definedStrings": 4446,
+  "instructions": 200000,
+  "functions": 4102,
+  "decompilations": [
+    {
+      "name": "FUN_00000566",
+      "address": "00000566",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000644",
+      "address": "00000644",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000694",
+      "address": "00000694",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000006ee",
+      "address": "000006ee",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000008ac",
+      "address": "000008ac",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000008d4",
+      "address": "000008d4",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000924",
+      "address": "00000924",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000009d6",
+      "address": "000009d6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000a88",
+      "address": "00000a88",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000d7a",
+      "address": "00000d7a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000dca",
+      "address": "00000dca",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00000ec0",
+      "address": "00000ec0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001034",
+      "address": "00001034",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000120c",
+      "address": "0000120c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001216",
+      "address": "00001216",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001222",
+      "address": "00001222",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001236",
+      "address": "00001236",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001242",
+      "address": "00001242",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001256",
+      "address": "00001256",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000125e",
+      "address": "0000125e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000126c",
+      "address": "0000126c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001296",
+      "address": "00001296",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000012ac",
+      "address": "000012ac",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000012c2",
+      "address": "000012c2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000012d6",
+      "address": "000012d6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001306",
+      "address": "00001306",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001324",
+      "address": "00001324",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001332",
+      "address": "00001332",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000013ba",
+      "address": "000013ba",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000149e",
+      "address": "0000149e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000014f2",
+      "address": "000014f2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001516",
+      "address": "00001516",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000153a",
+      "address": "0000153a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000156a",
+      "address": "0000156a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000015a0",
+      "address": "000015a0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000015c8",
+      "address": "000015c8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_000015f6",
+      "address": "000015f6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0000161e",
+      "address": "0000161e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001750",
+      "address": "00001750",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001898",
+      "address": "00001898",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001942",
+      "address": "00001942",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001b3a",
+      "address": "00001b3a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001c1e",
+      "address": "00001c1e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001c4a",
+      "address": "00001c4a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001c92",
+      "address": "00001c92",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001db4",
+      "address": "00001db4",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001e08",
+      "address": "00001e08",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00001e38",
+      "address": "00001e38",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}

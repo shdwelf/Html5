@@ -1,12 +1,8 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:42:48.279Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:44:27.237Z by `tools/evolution-os/evolution-os.mjs`.
 
-**Status: pipeline ready — no Evolution OS image staged, no disassembly yet.**
-No `.rom`/`.romz` Evolution OS firmware exists in this repo, and this sandbox has no JVM,
-so Ghidra has not run on Evolution OS here. What exists is the complete, pinned path below;
-the GitHub runner (`.github/workflows/evolution-os-ghidra.yml`) executes it when an image URL
-is supplied. Nothing in this record is a fabricated listing.
+**Status: 1 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
 ## Targets — the language is pinned per part number
 
@@ -56,9 +52,9 @@ analyzeHeadless "$RUNNER_TEMP/ghidra-projects" EVO_XPORT_PRO_EVOLUTION \
 
 ## Reports
 
-None yet. When the runner completes, one row per analysed image lands here with the
-language Ghidra actually loaded, the image hash, and the function / instruction / string
-counts — the checkable fingerprint of a real run.
+| Program | Format | Language | SHA-256 | Functions | Instructions | Strings | Imports | Decompiled |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| payload.bin | Raw Binary | `68000:BE:32:Coldfire` | `6e67282af187acd8…` | 4102 | 200000 | 4446 | 0 | 48/48 |
 
 ## Firmware candidates (GitHub + archive.org search, 2026-10-28)
 
@@ -83,6 +79,21 @@ ColdFire payload, not the compressed container. Stage with:
 ```sh
 tools/urln/ln -s https://archive.org/download/Lantronix_XPort-Pro_6.0.0.1R2_136c8/136c8005c1aacd8734ed0f621ec73383.zip ./xport-pro-6.0.0.1R2.zip
 ```
+
+## Container probe (.romz)
+
+`xport_pro_6_0_0_1_R2.romz` — 623002 bytes, SHA-256 `59b73b3659e9bf12…`, magic `1f 8b 08 08 c8 7e c0 60 00 03 78 70 6f 72 74 5f` (probe: `tools/evolution-os/romz_probe.py`).
+
+| Method | Offset | Result | Output bytes |
+| --- | ---: | --- | ---: |
+| gzip | 0 | inflated, plausible | 1725386 |
+| zlib | 0 | failed | 0 |
+| raw-deflate | 0 | failed | 0 |
+| bzip2 | 0 | failed | 0 |
+| lzma-xz | 0 | failed | 0 |
+| zlib@7076 | 7076 | failed | 0 |
+
+**Inflated:** `gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}. This payload — not the container — is what Ghidra analysed.
 
 ## Assembled with
 
