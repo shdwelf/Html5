@@ -137,9 +137,45 @@
     ]
   },
   "verdict": "inflated",
-  "vectorTable": {
-    "initialStackPointer": "0x45564f4c",
-    "resetEntry": "0x2d310000",
-    "resetEntryWithinImage": false
-  }
+  "vectorTable": null,
+  "headerHex": "45 56 4f 4c 2d 31 00 00 00 00 00 00 00 00 01 0c ef 46 ff 65 00 00 00 00 00 00 00 02 00 00 00 00 33 2e 30 2e 30 2e 30 00 00 1a 52 be 00 1a 52 be 40 05 48 dc 7d 47 b1 b4 00 00 00 00 00 00 00 00",
+  "pointerBands": [
+    {
+      "base": "0x00000000",
+      "pointers": 31150
+    },
+    {
+      "base": "0x40000000",
+      "pointers": 20371
+    },
+    {
+      "base": "0x20000000",
+      "pointers": 2692
+    },
+    {
+      "base": "0x10000000",
+      "pointers": 974
+    },
+    {
+      "base": "0xff000000",
+      "pointers": 903
+    },
+    {
+      "base": "0x30000000",
+      "pointers": 412
+    },
+    {
+      "base": "0x80000000",
+      "pointers": 88
+    },
+    {
+      "base": "0xf0000000",
+      "pointers": 47
+    },
+    {
+      "base": "0xe0000000",
+      "pointers": 9
+    }
+  ],
+  "suggestedBase": "0x00000000"
 }

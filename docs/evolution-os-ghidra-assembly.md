@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T11:57:38.292Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-10-28T11:59:30.478Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: 4 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
@@ -129,7 +129,6 @@ Vector table (big-endian): initial SP `0x00200007`, reset entry `0x58366d11` (wi
 | zlib@7076 | 7076 | failed | 0 |
 
 **Verdict: inflated** (`gzip` → 1725386 bytes, SHA-256 `6e67282af187acd8…`, keyword hits {"evolution":6,"lantronix":8,"xport":112,"coldfire":1,"copyright":1,"http":304,"ssh":435,"telnet":132,"snmp":102,"firmware":40}). This payload — not the container — is what Ghidra analysed.
-Vector table (big-endian): initial SP `0x45564f4c`, reset entry `0x2d310000` (within image: false).
 
 ## Container probe — xpt05_7004.rom
 
