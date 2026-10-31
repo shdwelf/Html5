@@ -216,6 +216,38 @@ guessed yet, or (b) paper records (MACR 6353; NPRC OMPFs). Any recalled
 fragment of the site's address, title, or screen name would reopen (a)
 immediately.
 
+## 7. Addendum 3 — KG6ZD residuals closed; family testimony (31 Oct 2026)
+
+- **EarthLink/Tripod under the callsign:** Wayback CDX `[]` for
+  `home.earthlink.net/~kg6zd`, `kg6zd.tripod.com` (domain), and
+  `members.tripod.com/kg6zd/index.htm` (exact); the `members.tripod.com/
+  kg6zd` *prefix* query repeatedly errored on the CDX endpoint and is
+  recorded as near-closed rather than proven. Combined with §5/§6:
+  AOL (both grammars), EarthLink, GeoCities, QSL.net (no captures),
+  hometown, Tripod — the callsign has **no archived home page anywhere
+  probed**.
+- **QRZ.com via proxy (Jina reader):** “The search for KG6ZD produced
+  no results” — QRZ drops long-expired callsigns (his cancelled
+  27 Jul 2007) from public search; no QRZ biography survives. HamCall
+  holds the call in its archive database but walls it behind login.
+- **ARRL QST “Silent Keys” 2007 — not openly checkable:** archive.org's
+  `sim_qst` run ends at the 2001 volume/index; 2007 QST is in ARRL's
+  members-only periodicals archive. The 2007 QST index confirms the
+  Silent Keys column ran monthly (Jan p.92, Feb p.96, Mar p.85, Apr
+  p.92 … Sep p.86); a Maurice listing, if reported, would sit in an
+  Apr–Jun 2007 issue (he died 28 Feb 2007). Family-side check via any
+  ARRL member remains open.
+- **Family testimony (user, 31 Oct 2026 — uncorroborated, recorded as
+  recollection):** Maurice “loved *Nuts and Volts* [the electronics
+  hobbyist magazine], always went to RadioShack, and ate Chicken
+  Littles from KFC.” Consistent with, and humanising, the documented
+  record: carpenter (1942 enlistment card), wartime-Air-Corps
+  generation of radio men, FCC amateur license **KG6ZD** granted in
+  his eighties (1995), Camp Hidden Valley builder/manager, and Duarte
+  food-service volunteer (session-17). These details belong in the
+  book's portrait of him exactly as family memory; no print source has
+  been claimed for them.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
