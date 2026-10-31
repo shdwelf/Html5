@@ -90,6 +90,104 @@ POW movement record (Stalag Luft IV → Wöbbelin/Usedom evacuations),
 awards (Air Medal + 3 OLC per 301bg.com General Orders), and any
 post-liberation medical/debrief papers.
 
+
+## Letter 4 — Duarte Historical Society / Duarte Museum (email)
+
+**To:** famheller@msn.com (Claudia Heller, Duarte Historical Museum —
+address as published in the DuarteRock comments); copy the Duarte
+Historical Society & Museum through its Rancho de Duarte site if a
+general inbox is listed.
+**Subject:** Hewitt family — Duarte Community Service Council, Duarte Unified, Camp Hidden Valley
+
+> Dear Ms. [Name],
+>
+> I am writing a family history of my grandparents, **Fred (Maurice
+> Frederick) and Louise (Carey) Hewitt** of 1602 Brycedale Ave,
+> Duarte. Louise's 2005 *San Gabriel Valley Tribune* obituary says she
+> was a nurse's aide in the Duarte Unified School District, a PTA
+> president, and **President of the Duarte Community Service
+> Council**; Foothill Unity Center gave her its first Heart in Hand
+> Humanitarian Award in 1998. Family memory adds that Fred proctored
+> the school blacktop while Louise worked at the nursing station, and
+> that both were resident managers of the Girl Scouts' Camp Hidden
+> Valley in the Angeles National Forest.
+>
+> Does the Museum hold any of the following: DCSC photographs, minute
+> books, or food-basket/Holiday of Promise clippings naming Fred or
+> Louise; *Duarte View* or school/PTA newsletter mentions of either of
+> them; Mayor's Prayer Breakfast / Chamber Community Service
+> Recognition honoree lists from before 2005; or Hidden Valley / Girl
+> Scout council photographs? I can visit in person, pay copying fees,
+> and will credit the Museum in the book.
+>
+> [Full name, address, phone, email]
+
+## Letter 5 — Angeles National Forest Fire Lookout Association (ANFFLA)
+
+**Route:** ANFFLA contact form/historian via anffla.org.
+**Subject:** Vetter Mountain — Ramona Merwin-era visitor “Order of the Squirrels” cards; Girl Scout Camp Hidden Valley visits
+
+> Dear ANFFLA historians,
+>
+> I am writing about **Camp Hidden Valley** (Arcadia/Santa Anita Girl
+> Scout Council, Santa Clara Divide Road near Chilao), whose resident
+> managers for many years were my grandparents **Fred and Louise
+> Hewitt**. Family memory connects Louise with the **Ancient and
+> Honorable Order of the Squirrels** — the lookout visitor card
+> tradition — and Vetter Mountain was the staffed lookout over the
+> Chilao/Charlton country in those years (Ramona Merwin, 1955–1981).
+>
+> Do ANFFLA or Forest Service files hold Vetter lookout logbooks,
+> visitor registers, squirrel-card examples or issue records from
+> Ramona's seasons, photographs of scout groups at the cab, or any
+> record of Hidden Valley/Singing Pines patrols hiking to Vetter? Any
+> lead to Ramona's family (Joyce/Jerry lines) or to Susan Merwin,
+> who commented on the summit marker, would also be welcome, passed
+> only with their permission.
+>
+> [Full name, address, phone, email]
+
+## Letter 6 — Girl Scouts of Greater Los Angeles (council archives)
+
+**Route:** Girl Scouts of Greater Los Angeles — council historian /
+archives contact via girlscoutsla.org.
+**Subject:** Santa Anita Council records — Camp Hidden Valley managers (Fred & Louise Hewitt); Singing Pines outpost
+
+> Dear Council Archivist,
+>
+> I am documenting my grandparents **Fred and Louise Hewitt of
+> Duarte**, described in Angeles Adventures' Camp Hidden Valley
+> history as resident managers for many years; Fred “played a key role
+> in building a craft shelter.” Hidden Valley later served as a
+> Singing Pines outpost unit (1958).
+>
+> Do council archives hold Santa Anita/Arcadia council camp
+> directories, manager or caretaker rosters, camp committee minutes,
+> Hidden Valley/Singing Pines photographs, or camper alumnae files
+> that date the Hewitts' seasons? I am also interested in any record
+> of patrol hikes from camp to the Vetter Mountain fire lookout.
+>
+> [Full name, address, phone, email]
+
+## Request 7 — John David Greeran (family vital record; not a cold letter)
+
+**Status:** family testimony only (session-17 §3e.2): the user's baby
+brother **John David Greeran** died of SIDS. No open-web record is
+expected. Before anything is sent, fill from family papers/Bible/
+funeral card: full name at birth/death; date and county of birth;
+date and county of death; parents' full names (including mother's
+maiden name); cemetery/funeral home if known.
+
+**Route once those fields exist:** certified or informational death
+certificate from the county registrar-recorder/clerk of the county of
+death (in Los Angeles County, the Registrar-Recorder/County Clerk) or
+the California Department of Public Health — California Vital Records.
+Immediate family should ask which copy type they are eligible for
+(“authorized” vs “informational”) and what ID/kinship statement is
+required; do not put a Social Security number in email. A cemetery
+or funeral-home register entry and a church baptism/burial register
+are the usual parallel records for an infant of this era.
+
 ## Side quests for any ARRL member in the family
 
 - **QST Silent Keys, Apr–Jun 2007** (ARRL Periodicals Archive,
@@ -111,3 +209,13 @@ post-liberation medical/debrief papers.
    page, 352nd BS (sessions 15–16).
 4. FCC ULS via city-data — KG6ZD, Maurice F. Hewitt, 1602 Brycedale
    Ave, Duarte, CA 91010 (session-16 §7).
+5. Session-17 §3e — Louise Hewitt full obituary/guest book (Legacy /
+   SGV Tribune); Vetter Mountain marker (HMdb m=201274), ANFFLA tower
+   page, NPR/South Dakota Archives squirrel-card record, *LA Times*
+   Vetter/Merwin coverage; John David Merwin namesake check
+   (U.S. Virgin Islands governor, 1921–2013) vs. Ramona/Arthur/Joyce/
+   Jerry Merwin family.
+6. Duarte Historical Museum contact as published in DuarteRock
+   comments (Claudia Heller, famheller@msn.com); Girl Scouts of
+   Greater Los Angeles successor to the Santa Anita/Arcadia councils;
+   ANFFLA (anffla.org) successor volunteer keeper of Vetter Mountain.

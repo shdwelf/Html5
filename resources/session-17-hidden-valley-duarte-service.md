@@ -223,6 +223,130 @@ and in the user's Drive folder “Hewitt — Camp Hidden Valley backup”
 (Drive ID `1sFRlZH5V6ZCGAN8UGXbl_7hEcS0jR6Je`, 6 files incl. manifest,
 verified 31 Oct 2026).
 
+
+## 3e. Addendum 4 — Merwin/Greeran name check, Louise in full, and the Order of the Squirrels (31 Oct 2026)
+
+Ordered by the user in this pass: (1) check the **Merwin** name that
+surfaced at Vetter Mountain against the family name **Greeran**;
+(2) record the baby-brother loss; (3) investigate the **Ancient and
+Honorable Order of the Squirrels**. Findings, in that order:
+
+### 1. John David Merwin ≠ Ramona Merwin's documented family — name collision only, on current evidence
+
+- The exact public identity **“John David Merwin”** is the St.
+  Croix-born U.S. Virgin Islands politician (26 Sep 1921 – 17 Mar
+  2013, Ohio): territorial legislator, government secretary, then
+  first native-born Governor of the U.S. Virgin Islands (1958–1961);
+  wife Marjorie, son John David Merwin II. No Duarte, Angeles National
+  Forest, Girl Scout, or Hewitt/Greeran link appears in his obituary
+  or biographical record.
+- The Vetter Mountain lookout keeper is a different Merwin family:
+  **Ramona Merwin's** husband was **Arthur (“Art”) Merwin**, a Forest
+  Service firefighter who died in 1952; she then staffed Vetter
+  Mountain (marker/LA Times: **1955–1981**; some secondary pages say
+  1953) and raised **daughter Joyce and son Jerry** at the lookout,
+  with seven grandchildren summering there. A marker contributor,
+  Susan Merwin of McGill, Nevada, identifies Ramona as her
+  mother-in-law.
+- **Conclusion:** the shared surname + the shared given names
+  “John David” are a coincidence trail, not a documented kinship. Do
+  not merge the governor, Ramona's family, and the Greerans in the
+  book unless a maiden-name/marriage bridge is supplied from family
+  papers.
+
+### 2. John David Greeran — family testimony recorded; no open-web public record found
+
+- **Family testimony (user, 31 Oct 2026):** the user's baby brother
+  **John David Greeran** died of **SIDS (sudden infant death
+  syndrome)**. Recorded here exactly as given; no birth/death dates,
+  place, cemetery, or parents' full names were supplied in-session,
+  and none are invented.
+- Open-web searches on the exact name and variants (`"John David
+  Greeran"`, `"John Greeran"`, `"John D. Greeran"`, Greeran + Duarte/
+  California/infant, Find a Grave and FamilySearch/Ancestry snippets)
+  return only unrelated Greer/Greear/Gerard namesakes. That negative
+  is expected rather than suspicious: infant deaths of this era are
+  normally visible only through **vital records** (county
+  registrar-recorder / California Department of Public Health
+  certified or informational death certificate), cemetery/funeral-home
+  books, church registers, or a paid newspaper notice — not through
+  indexed web obituaries. The family-side route is set out in
+  `session-18` (Request 7). For the book, cite him as family testimony
+  unless/until a certificate or marker is in hand; SIDS itself should
+  be described with current care (a diagnosis of exclusion after
+  autopsy/scene/history review), not with period blame language.
+
+### 3. Louise Hewitt — the full obituary upgrades her record; guest book corroborates the family scenes
+
+The full *San Gabriel Valley Tribune* obituary (Legacy mirror, fetched
+this pass) states in print what the earlier summary had truncated:
+
+> “She was a long time **nurse's aide in the Duarte Unified School
+> District** and served as **PTA President for many years**. Mrs.
+> Hewitt was also very active in volunteer work and **served as
+> President of Duarte Community Service Council** and spent many years
+> donating her time to those in need and less fortunate. She has been
+> accorded many awards for her compassion and dedication and was
+> recognized by Foothill Unity Center with the **Heart in Hand
+> Humanitarian Award in 1998**.”
+
+So §2 should be read with Louise as **DCSC president**, not only as a
+food-basket volunteer. The 14-entry Legacy guest book adds first-person
+family colour that can be quoted with attribution: Jerry & Jeanie
+Greeran (30 Oct 2005) — *“She feed most of 2 communities of Monrovia
+and Duarte and cared about us all. We, Jerry, Steven and Jeanie worked
+side by side with mom and our dad. I remember when Andy Mulhall my
+great boss let me go to the day mom received her award in Monrovia”*;
+Gary & Terry Milwood (15 Sep 2005) — *“All the years at Hidden Valley
+together… falling down in the stream 'cause you had water jugs in both
+hands hiking out of the canyon.”*
+
+- **Family testimony (user, 31 Oct 2026):** “Fred would proctor the
+  blacktop while Louise would be nurse … at the nursing station.”
+  This pairs directly with the printed nurse's-aide record. Whether
+  Fred's blacktop duty was paid, volunteer, or informal is **not**
+  established by any open-web school record; in the book, keep it
+  labelled as family recollection. Duarte Unified/PTA newsletters and
+  Duarte Historical Society clippings are the paper route (session-18,
+  Letter 4).
+
+### 4. The Ancient and Honorable Order of the Squirrels — solved: a Forest Service lookout-card tradition; Vetter Mountain still inducts
+
+- The Order is real and national: NPR describes the **Ancient and
+  Honorable Order of Squirrels** as a fire-tower club **founded in
+  1927 by an Itasca State Park Ranger** to teach fire prevention;
+  climbers of a lookout tower were “officially” made members. The
+  South Dakota State Archives hold dated **membership cards (2 Sep
+  1946, Harney Peak Lookout)**; the surviving card pledge runs, in
+  part: *“The hardest nut the U.S. Forest Service and the State
+  Conservation Departments have to crack is the problem of man-caused
+  forest fires. As a member of the Squirrel Club I volunteer to help
+  crack this nut…”*
+- The local tower is **Vetter Mountain Lookout** above the
+  Chilao–Charlton Recreation Area — the same Chilao Flat country as
+  Camp Hidden Valley. The summit marker (USFS/Southern California
+  Edison, 2020) dates the lookout 1937–1981 and names Ramona Merwin
+  as the last Forest Service lookout (1955–1981); ANFFLA dates the
+  structure built 1935/rebuilt 2019 and lists the 2020 reopening.
+  (Two small date wobbles to keep out of the book's main text:
+  1935 vs 1937 construction, and 1953 vs 1955 for Ramona's start.)
+- The tradition is **alive at Vetter today**: a 2024 Vetter hike
+  account closes, *“we even 'earned' our admission to the Ancient and
+  Honorable Order of Squirrels. We shall carry our cards proudly,”*
+  and the *Los Angeles Times* (5 Jun 2025) tells Chilao campers they
+  can hike to Vetter “where you can be inducted into the Ancient and
+  Honorable Order of the Squirrels.”
+- **Book-safe claim:** in the Hewitts' Hidden Valley years, the
+  staffed lookout overlooking their camp country was Vetter Mountain,
+  and the squirrel-card induction was the standard Forest Service
+  visitor ritual at staffed towers. That makes a Hidden Valley patrol
+  hike-to-Vetter scene highly plausible. **Not yet proven:** a
+  Hewitt-named card, roster, photograph, or Ramona-era Vetter logbook
+  entry; and Louise's exact role (member, hike leader, card keeper)
+  remains the user's unfinished sentence — “because Louise was…” —
+  held as testimony until family papers or the ANFFLA historian
+  (session-18, Letter 5) supply the predicate.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -238,6 +362,19 @@ verified 31 Oct 2026).
 4. **Santa Anita Girl Scout Council records** (Girl Scouts of Greater
    Los Angeles archives) — camp-manager rosters would date the Hewitts'
    Hidden Valley seasons precisely.
+5. **ANFFLA / Vetter Mountain historian** — Ramona-era visitor or
+   squirrel-card records, lookout logbooks, and any Hidden Valley /
+   Singing Pines patrol visits (session-18, Letter 5). A Hewitt-named
+   card/roster is the only item that can promote the squirrel scene
+   from “highly plausible” to documented.
+6. **Duarte Unified / PTA paper** — school newsletters or Duarte
+   Historical Society clippings that might name Fred's blacktop-proctor
+   duty and Louise's nursing-station years in print (session-18,
+   Letter 4).
+7. **John David Greeran vital record** — family-only route via county
+   registrar / CDPH once birth/death dates and parents' names are
+   supplied from family papers (session-18, Request 7). No open-web
+   record is expected or required for the book's testimony paragraph.
 
 ## Sources
 
@@ -266,3 +403,38 @@ verified 31 Oct 2026).
    Promise (6th annual), DCSC + Foothill Unity Center Christmas
    baskets, collection sites/dates; Duarte Chamber directory listing
    for DCSC (member since 1990).
+10. Louise Hewitt obituary, full text — *San Gabriel Valley Tribune*
+    via Legacy (legacy.com/us/obituaries/sgvtribune/name/
+    louise-hewitt-obituary?id=26395403) and SGV Tribune obituary page:
+    Duarte Unified nurse's aide; PTA President; **President, Duarte
+    Community Service Council**; Heart in Hand 1998; guest book
+    (14 entries) incl. Jerry & Jeanie Greeran and Gary & Terry Milwood,
+    2005.
+11. Vetter Mountain Fire Lookout marker — Historical Marker Database
+    m=201274 (USFS/SCE marker, 2020): lookout 1937–1981; Ramona
+    Merwin 1955–1981; husband Art; children raised at lookout; Susan
+    Merwin commentary (mother-in-law), 8 Jul 2022. ANFFLA tower page
+    (anffla.org/towers/vetter-mountain/): built 1935, reopened 1998,
+    Station Fire 2009, rebuilt/reopened 2020.
+12. *Los Angeles Times* — “A Lookout Looks Back…” (24 Oct 1985):
+    Ramona Merwin, 67, widow; two children/seven grandchildren at
+    Vetter from 1955; last of the forest's 30 lookouts. *LA Times*,
+    “Their old flame: lookout towers” (14 Dec 2006) and *The Wild*
+    Vetter hike newsletter (6 Mar 2025): husband Art, dogs Cricket
+    and Tiny, 1998 volunteer reopening.
+13. Order of the Squirrels — NPR, *The Picture Show* (28 Nov 2021):
+    founded 1927 by an Itasca Park Ranger; South Dakota State
+    Archives, “Ancient and Honorable Order of Squirrels—Membership
+    Cards, 1946” (Harney Peak); Postcard Hangout #18 (Reddish Knob
+    card text/pledge). Modern Vetter induction: The Cranky Camper,
+    “Hiking the Angeles: Vetter Mountain Lookout” (16 Oct 2024);
+    *LA Times*, “3 campgrounds near L.A.…” (5 Jun 2025).
+14. John David Merwin (namesake check) — Wikipedia/obituary and
+    St. Croix Source (20 Mar 2013): U.S. Virgin Islands governor
+    1958–1961, b. St. Croix 1921, d. Ohio 2013; no California-forest
+    link. Ramona/Art/Joyce/Jerry family: SummitPost Vetter Mountain
+    page and Angeles Adventures, Warm Springs Lookout page.
+15. John David Greeran — user family testimony (31 Oct 2026), baby
+    brother, SIDS; exact/variant open-web searches negative
+    (2026-10-31). No public record cited; vital-records route in
+    session-18, Request 7.
