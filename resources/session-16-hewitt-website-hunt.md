@@ -248,6 +248,53 @@ immediately.
   book's portrait of him exactly as family memory; no print source has
   been claimed for them.
 
+## 8. Addendum 4 — ham-community sweep and the Tripod close (31 Oct 2026)
+
+In the order queued at the close of addendum 3:
+
+1. **Pasadena Radio Club (W6KA) / SGV clubs:** no `Hewitt`/`KG6ZD`
+   hit. W6KA's online library is Field Day *video* back to the early
+   1990s (Bruce Nolte, N1BN) — not text-searchable, and no roster
+   surfaced; the San Gabriel Valley Radio Club (W6QFK, ARRL-affiliated
+   since 1957, ~12 members today) has no public newsletter archive.
+   **Reading of the silence:** Maurice's footprint (no club roster, no
+   Field Day log, no QRZ page, no ham home page) fits a *listener/
+   builder* ham — the *Nuts and Volts*/RadioShack workbench profile of
+   the family testimony — rather than a club-and-contest operator.
+2. **eHam / silent-key memorial indexes:** no KG6ZD entry found.
+3. **Tripod, final retry:** `members.tripod.com/kg6zd` prefix now
+   returns `[]` — **Tripod is formally closed**; the kg6zd web
+   footprint is exhausted on every host probed.
+4. **Family paper requests:** drafted as `session-18` (MACR 6353 via
+   NARA; NPRC OMPFs for 19067302 and 19179305; ARRL-member side quest
+   for QST Silent Keys, Apr–Jun 2007).
+
+
+## 9. Addendum 5 — the TogetherWeServed shadow-box lead; VHP negative (31 Oct 2026)
+
+- The remembered artefact — **ribbons, a young uniform photograph, a
+  “shadow box,” built by Maurice himself** — matches the house format
+  of **TogetherWeServed (TWS)**, whose veteran profiles are presented
+  literally as shadow boxes (service photo, badges/ribbons, units,
+  timeline). TWS's public U.S. Air Force index lists **“Hewitt,
+  Sam M., TSgt (1942–1945)”** among Aerial Gunnery School classmates —
+  brother Sam has, or is indexed by, a TWS profile of the kind TWS
+  volunteers create as Roll of Honor pages for deceased veterans.
+- Maurice is **not** findable through search-engine-indexed TWS
+  pages, and TWS's own people search sits behind member login. The
+  one untested door is therefore human and free: register on TWS,
+  search both the Army and Air Force sites for **Maurice F. Hewitt /
+  ASN 19067302**, and open Sam's profile — its creator/“served with”
+  credits may name whoever built the family pages, or be family.
+- **Library of Congress Veterans History Project:** catalogue search
+  returns other Hewitts (William Myers, Richard A., Harold Austin)
+  — **no Maurice collection**. Negative recorded.
+- **Status unchanged: the website is still NOT LOCATED.** Every
+  free-host, mirror, registry and index avenue remains exhausted;
+  the TWS member search joins the ARRL QST check (session-18) as a
+  family-side click, and paper (MACR 6353, NPRC OMPFs) remains the
+  load-bearing route.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
