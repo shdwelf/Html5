@@ -248,6 +248,27 @@ immediately.
   book's portrait of him exactly as family memory; no print source has
   been claimed for them.
 
+## 8. Addendum 4 — ham-community sweep and the Tripod close (31 Oct 2026)
+
+In the order queued at the close of addendum 3:
+
+1. **Pasadena Radio Club (W6KA) / SGV clubs:** no `Hewitt`/`KG6ZD`
+   hit. W6KA's online library is Field Day *video* back to the early
+   1990s (Bruce Nolte, N1BN) — not text-searchable, and no roster
+   surfaced; the San Gabriel Valley Radio Club (W6QFK, ARRL-affiliated
+   since 1957, ~12 members today) has no public newsletter archive.
+   **Reading of the silence:** Maurice's footprint (no club roster, no
+   Field Day log, no QRZ page, no ham home page) fits a *listener/
+   builder* ham — the *Nuts and Volts*/RadioShack workbench profile of
+   the family testimony — rather than a club-and-contest operator.
+2. **eHam / silent-key memorial indexes:** no KG6ZD entry found.
+3. **Tripod, final retry:** `members.tripod.com/kg6zd` prefix now
+   returns `[]` — **Tripod is formally closed**; the kg6zd web
+   footprint is exhausted on every host probed.
+4. **Family paper requests:** drafted as `session-18` (MACR 6353 via
+   NARA; NPRC OMPFs for 19067302 and 19179305; ARRL-member side quest
+   for QST Silent Keys, Apr–Jun 2007).
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
