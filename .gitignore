@@ -37,3 +37,7 @@ tools/java-compiler/.rt/
 # and ~3.9 MB of it is a copy of wasm/ghidra, which is already tracked at the
 # root. Only the packed casefiles.xdc is committed.
 public/apps/casefiles/
+
+# Local-only research photo backups (user direction: store locally, not remotely)
+/research-assets/
+/image-search/
