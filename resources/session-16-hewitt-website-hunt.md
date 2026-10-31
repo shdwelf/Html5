@@ -190,6 +190,32 @@ Hewitt, Sam M, ASN 19179305**. The MACR will give every crewman’s serial
 number, position, and next-of-kin — the last being directly useful for
 reaching crew families who may hold the crew photograph.
 
+## 6. Addendum 2 — family-surname usernames, memorial sites, legacy hosts
+
+Executed after the §5 addendum, same day. All negative or ruled out:
+
+- **Family-surname usernames:** Wayback CDX `[]` for
+  `freepages.rootsweb.com/~eiselein`, `~greeran`, `~hewittcarey`, and
+  `geocities.com/careyhewitt` (Louise's maiden name Carey, and the
+  children's married names Eiselein / Greeran, produce no sites).
+- **Legacy hosts:** CDX prefix `[]` for
+  `ourworld.compuserve.com/homepages/hewitt` and
+  `pages.prodigy.net/hewitt`. One hit elsewhere:
+  **`groups.msn.com/HewittFamily`** (captures Nov 2003–Jun 2004, message
+  board + photo shoebox) — inspected via the 28 Nov 2003 capture; members
+  (“bobo”, “Dotty”, “Bill”, “Tammie”) and content (PC-crash chatter,
+  Christmas 2002 photos) match **no one** in the Duarte family. Ruled out.
+- **Find a Grave:** no memorial exists for Maurice Hewitt (1913–2007);
+  exact name/date search returns no matches.
+- **WWII Memorial Registry (ABMC):** no indexed honoree page for Maurice.
+
+**Status after two sessions:** every free-host, mirror, memorial,
+registry, and unit-association avenue under every plausible name has
+been searched. The remaining doors are (a) a screen name nobody has
+guessed yet, or (b) paper records (MACR 6353; NPRC OMPFs). Any recalled
+fragment of the site's address, title, or screen name would reopen (a)
+immediately.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
