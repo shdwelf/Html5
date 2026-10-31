@@ -134,6 +134,44 @@ Any family packing/camp-supply memory tying the Hewitts to a pack
 station is most plausibly anchored at Chantry Flat day-use, while
 their documented camp work is Hidden Valley's.
 
+## 3b. Addendum — Singing Pines outpost (1958) and the “Holiday of Promise” food drive
+
+**Hidden Valley's second life (Angeles Adventures, Camp Singing Pines
+page):** “The nearby Hidden Valley Camp became an **outpost unit of
+Singing Pines for older girls, entering seventh grade and above
+(1958)**.” Singing Pines itself (Pasadena Council, first session 1941
+at the old Squaw Camp — renamed **Hukaht Canyon** in 2022) ran until
+1993, then passed to UCLA UniCamp and later Angeles Crest Christian
+Camp, which is actively renovating it and **seeking former Girl Scout
+volunteers**. Photo sourcing for the book increasingly lives in the
+**Facebook group “Girl Scout Camp Singing Pines”** (Flickr albums
+`flic.kr/s/aHBqjBYTqL` for Singing Pines; `flic.kr/s/aHBqjBYYEm` for
+Hidden Valley) — an incorporates-by-reference archive the fetch tool
+cannot read (HTTP 403), flagged for a human browser session.
+
+**The canned-food drive, documented (Duarte View, Nov–Dec 2007):** the
+Mayor's Thanksgiving Prayer Breakfast “will also officially launch the
+**6th annual Holiday of Promise**” (⇒ first held ~2002). It is “a joint
+project of Duarte's Promise – The Alliance for Youth, the Duarte Church
+and Clergy Association and numerous area businesses [that] collects
+food, personal items and gift donations,” while “**Duarte Community
+Service Council and Foothill Unity Center … provide baskets for needy
+families the week before Christmas**.” Public collection ran
+25 Nov–9 Dec 2007 at Duarte City Hall, Duarte Public Safety, the
+Chamber of Commerce, and participating businesses. The Duarte Chamber
+directory lists the DCSC continuously (member since 1990, P.O. Box 75,
+Duarte 91009, 626-359-9487; contact Dorothy Smith).
+
+**Honesty note:** Holiday of Promise began ~2002, when Fred was ~89
+and Louise ~79; and Louise's documented award is FUC's 1998 Heart in
+Hand. The record therefore supports “the Hewitts' generation of DCSC/
+FUC food volunteers built the machine that Holiday of Promise
+inherited” — not the stronger claim that Fred and Louise personally
+ran the Holiday of Promise drives. Gerard's testimony (“Louise gave
+her heart and soul along with Fred Hewitt to Duarte community
+services”) plus the 1998 award plus the obituary's DCSC donation line
+remain the load-bearing evidence of their roles.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -170,3 +208,10 @@ their documented camp work is Hidden Valley's.
    history/); Arcadia Historical Society, *Arcadia Bulletin* Mid-Winter
    2025 (marker #7 narrative); *Whittier Daily News*, 22 Apr 2010;
    GoFundMe “Keeping the Adams Pack Station alive” (Oct 2020).
+8. Angeles Adventures — Camp Singing Pines (angelesadventures.com/
+   campsingingpines/): Hidden Valley as 1958 outpost unit; Hukaht
+   Canyon renaming; FB group “Girl Scout Camp Singing Pines.”
+9. *Duarte View*, Nov–Dec 2007, p. “Hats Off to Duarte!” — Holiday of
+   Promise (6th annual), DCSC + Foothill Unity Center Christmas
+   baskets, collection sites/dates; Duarte Chamber directory listing
+   for DCSC (member since 1990).
