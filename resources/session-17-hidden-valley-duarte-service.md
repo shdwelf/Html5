@@ -172,6 +172,27 @@ her heart and soul along with Fred Hewitt to Duarte community
 services”) plus the 1998 award plus the obituary's DCSC donation line
 remain the load-bearing evidence of their roles.
 
+## 3c. Addendum 2 — album reached via proxy; pictures backed up LOCALLY
+
+The Flickr wall was bypassed with the **Jina reader proxy**
+(`r.jina.ai/<url>`): AllOrigins (500/502), Codetabs (522), corsproxy.io
+(needs paid key), and cors.lol (rate-limit) all failed first. The album
+resolves to **MissyAdventures** (Angeles Adventures), set
+`72177720323344448` — https://www.flickr.com/photos/missyadventures/sets/72177720323344448/
+— 8 photos: “Camp Hidden Valley, unknown date” (54292822783); structure
+2006; camp 2011; camp 2013; map; camp 2012; 2018 YouTube stills; recent
+photos. The undated frame shows the **screened A-frame shelter and stone
+fire ring with scouts and packs** — the camp in its working years.
+
+**Local backup (user direction: store locally, NOT remotely):** five
+web-resolution copies now sit in `research-assets/hidden-valley/` in
+this workspace with a `README-MANIFEST.md` (provenance + rights note).
+That directory is **gitignored** (`/research-assets/` in `.gitignore`),
+as is the `image-search/` staging folder; nothing photographic was
+committed or pushed. Full-resolution originals remain on Flickr under
+the photographer's copyright — the local copies are private research
+reference for the family book only.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
