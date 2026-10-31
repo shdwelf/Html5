@@ -193,6 +193,36 @@ committed or pushed. Full-resolution originals remain on Flickr under
 the photographer's copyright — the local copies are private research
 reference for the family book only.
 
+## 3d. Addendum 3 — Flickr photo pages and the Singing Pines album (31 Oct 2026)
+
+**Step 1 — photo-page deep dive (Jina proxy):** the undated Hidden
+Valley frame (54292822783; “Camp Hidden Valley, unknown date,” uploaded
+28 Jan 2025, 65 views, 0 comments/faves) carries **no description and
+no comments**; EXIF shows only a 300-dpi JFIF scan (a film photograph,
+photographer uncredited beyond the album owner). The “Hidden Valley
+Map” frame is a 2025 Canva graphic (EXIF Author: Melissa Tovar). Tags
+on the undated frame: San Gabriel Mountains / Los Angeles / Angeles
+National Forest / California / Camp Hidden Valley. **No builder or
+manager credit exists anywhere in the album metadata** — the pictures
+illustrate the book's camp chapter but cannot authenticate who built
+what.
+
+**Step 2 — Singing Pines album** (MissyAdventures set
+`72177720323326840`, 28 photos, 119 views): patches and signs through
+the years; a camp postcard; Roberts' 1918 trapper cabin; “One of the
+staff cabins circa 1981”; **“1964 at SP Camp”**; lodge porch ca 1964;
+Pooh Hill cook area 1960s; main campfire ring 1985; John Dee Lake
+(+2024 view); lodge interior; the Long House; 1940 Rock Creek topo;
+**CIT (counselor-in-training) group, 1946**; Roberts Camp structures
+in Big Santa Anita Canyon. Rich era context for the sister camp, but
+**no frame is identified as the Hidden Valley outpost** (post-1958),
+and no Hewitt appears by name. Album remains the property of
+MissyAdventures; local research copies of the five Hidden Valley
+frames are backed up in `research-assets/hidden-valley/` (gitignored)
+and in the user's Drive folder “Hewitt — Camp Hidden Valley backup”
+(Drive ID `1sFRlZH5V6ZCGAN8UGXbl_7hEcS0jR6Je`, 6 files incl. manifest,
+verified 31 Oct 2026).
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
