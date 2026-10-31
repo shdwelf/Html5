@@ -269,6 +269,32 @@ In the order queued at the close of addendum 3:
    NARA; NPRC OMPFs for 19067302 and 19179305; ARRL-member side quest
    for QST Silent Keys, Apr–Jun 2007).
 
+
+## 9. Addendum 5 — the TogetherWeServed shadow-box lead; VHP negative (31 Oct 2026)
+
+- The remembered artefact — **ribbons, a young uniform photograph, a
+  “shadow box,” built by Maurice himself** — matches the house format
+  of **TogetherWeServed (TWS)**, whose veteran profiles are presented
+  literally as shadow boxes (service photo, badges/ribbons, units,
+  timeline). TWS's public U.S. Air Force index lists **“Hewitt,
+  Sam M., TSgt (1942–1945)”** among Aerial Gunnery School classmates —
+  brother Sam has, or is indexed by, a TWS profile of the kind TWS
+  volunteers create as Roll of Honor pages for deceased veterans.
+- Maurice is **not** findable through search-engine-indexed TWS
+  pages, and TWS's own people search sits behind member login. The
+  one untested door is therefore human and free: register on TWS,
+  search both the Army and Air Force sites for **Maurice F. Hewitt /
+  ASN 19067302**, and open Sam's profile — its creator/“served with”
+  credits may name whoever built the family pages, or be family.
+- **Library of Congress Veterans History Project:** catalogue search
+  returns other Hewitts (William Myers, Richard A., Harold Austin)
+  — **no Maurice collection**. Negative recorded.
+- **Status unchanged: the website is still NOT LOCATED.** Every
+  free-host, mirror, registry and index avenue remains exhausted;
+  the TWS member search joins the ARRL QST check (session-18) as a
+  family-side click, and paper (MACR 6353, NPRC OMPFs) remains the
+  load-bearing route.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated

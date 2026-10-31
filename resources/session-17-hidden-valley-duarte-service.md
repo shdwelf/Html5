@@ -434,6 +434,113 @@ Service lookout tower and a mountain radio net. The squirrels were
 never a joke order — they are the visitor ritual of the lookout
 world this family keeps staffing.
 
+
+## 3g. Addendum 6 — deep dive: Robert in his own words, the Duarte antecedent, the archive doors (31 Oct 2026)
+
+### 1. Robert Hewitt — hometown print now carries the identification on its own
+
+Two further *Idyllwild Town Crier* items and Robert's own byline were
+fetched in full this pass:
+
+- **“Meet Robert Hewitt, the new CSA 38 member” (22 Feb 2012):**
+  “Chief Hewitt was born and raised in Southern California. **Within
+  two weeks of his graduation from Duarte High School** … Hewitt was
+  on the Oak Grove Hot Shots team.” The profile dates his vocation to
+  age 5 or 6; at **12 he wrote the Los Angeles County Fire Chief**
+  asking why civilians could ride along with Sheriff's deputies but
+  not in fire engines; by **13 he was in a firefighters Explorer
+  group**. From the Forest Service he joined the LACoFD **flight team**
+  (the county's helitack equivalent) and rose over ~30 years to
+  **Battalion Chief in the San Gabriel Valley**. He met Janice in
+  **Temple City**: she had called about community service for local
+  high-school students, and he recommended the Explorer program.
+- **Oak Grove Hotshots blog (crew alumni site), Robert's own comment,
+  8 Dec 2010:** “*I was hired by Steve Arney in 1976 and was part of
+  the crew that season. Looking forward to the reunion!*” Crew-mate
+  **Mike Dunn (9 Dec 2017)** independently remembers “Robert Hewitt
+  and Paul Hogan with the 1976 Oak Grove Hot Shots.”
+- The 2016 profile (§3f, Source 16) adds the texture: weekend house in
+  Pine Cove from 2001, full-time from 2010; traditional archery from
+  1995 and a teaching school from 2014 (400+ students); “a proud Scots
+  descendant.”
+
+**Net effect:** the §3f identification of Louise's son no longer rests
+only on obituary cross-reference (her “Robert David Hewitt” ↔ Charles's
+“Robert and Janice Hewitt of Idyllwild”). The Duarte High School
+graduation (~1976) places Robert in the same Duarte school world as
+**Gerard Greeran ( Duarte High School class of 1975)**, who married Robert's sister
+Jean — book colour, not a separate claim.
+
+### 2. Temple City — what print will and will not carry (gate refined, not lifted)
+
+- Print supports: Battalion Chief **in the San Gabriel Valley**
+  (2012); meeting Janice in Temple City; the 1960s Temple City
+  Women's Club first-aid classes (§3f.4, Source 17).
+- **No located print source assigns Robert a Temple City battalion
+  headquarters or names his retirement station.** The user's
+  “after retirement from Temple City as a Battalion Chief” therefore
+  remains **family testimony for the interview**, not a documented
+  posting. Book wording until then: “retired in 2013 as an LACoFD
+  Battalion Chief in the San Gabriel Valley.”
+- **Bagpiper wording, reconciled:** the department's own spotlight and
+  the band's history date the formal **LACoFD Pipes and Drums to
+  2011, founded by then-Captain Billy Monahan**. The *Town Crier*'s
+  “first bagpiper for LA County Fire Department” (2016) is thus best
+  read as **first/early solo piper before a formal band existed**.
+  Write it attributed (“the *Town Crier* calls him the department's
+  first bagpiper”), or ask Robert; do not write that he founded the
+  Pipes and Drums.
+
+### 3. Squirrel cards — gate holds; the Tahquitz file thickens
+
+- First-person, twice over: ham/SOTA writer **KG6MZS** records being
+  issued “Squirrel Cards” at **Tahquitz Peak in August 1972** and a
+  second card ~2023 from the lookout on duty (“Ranger B. May”), who
+  “dutifully issued us entrance into ‘The Ancient and Honorable Order
+  of the Squirrel’” — adults included, though “usually only handed
+  … to kids.” A 2025 SOTA Reflector thread tells the same Tahquitz
+  story independently. The 2017 NHLR visit report (§3f) and a 2025
+  hiking guide (“you can ask for a squirrel card … collect a
+  different squirrel card at each one” of the San Bernardino towers)
+  agree the ritual is alive at Tahquitz.
+- **Still zero Black Mountain-specific issuance evidence.** The
+  hiking-guide sentence is a general claim about the towers, not a
+  Black Mountain record. Whether Robert's Black Mountain duties
+  include handing out cards remains exactly one interview question
+  (Open Thread 8). Do not promote it to print.
+
+### 4. Duarte antecedent resolved — the DCSC founder was Lucille Morrison
+
+The Duarte Historical Society's *Branding Iron* (Jul–Sep 2018),
+in its tribute to historian **Lucille Morrison**, states she “was
+**the founder and first president of the Duarte Community Service
+Council** and responsible for the city's first libraries.” Louise
+was therefore a **later DCSC president** (her obituary), standing in
+a line that began with Morrison — the book must not call Louise the
+founder. The same issue notes the museum library holds **~25 volumes
+of Lucille Morrison's cut-and-pasted newspaper scrapbooks**, filed by
+subject (“Tragedies in Duarte, School Events, Sports,” etc.). Those
+volumes — not the open web — are the most likely paper home of DCSC
+and Duarte Unified/PTA mentions of Fred and Louise; Letter 4
+(session-18) is amended to ask for them by name. (Site-indexed
+search of the museum's online *Branding Iron* archive surfaced no
+Hewitt mention; negative recorded, scrapbooks untested.)
+
+### 5. The archive doors, addressed
+
+- **Girl Scouts:** the GSGLA Heritage Committee archive sits at
+  **313 Foothill Blvd Upland, CA 91786**; contacts **Christina Rice &
+  Patti Brundige, (818) 970-4320, gsgla.heritage@gmail.com** (L.A. as
+  Subject directory). The collection runs ~**562 linear feet** with
+  **265 scrapbooks**; a CSUN-partnered digitisation (“Hometown
+  Heroes”) exists. The directory lists the archive as not open to
+  outside researchers — email first. Session-18 Letter 6 route
+  amended with these specifics.
+- **Duarte Museum:** general contacts **info@RanchoDeDuarte.org,
+  (626) 357-9419, P.O. Box 263, Duarte, CA 91009-0263** (777 Encanto
+  Parkway); Claudia Heller is museum president. Session-18 Letter 4
+  amended likewise.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -469,7 +576,12 @@ world this family keeps staffing.
    with his mother; bagpiper years; MDP radio net. Route: family
    contact first; public fallback via FSVA (fsva.org, Idyllwild) or
    the *Idyllwild Town Crier*. Ask before quoting him by name beyond
-   the published profiles.
+   the published profiles. **Refined by Addendum 6:** confirm the
+   exact Temple City battalion/station and years (print says only
+   “San Gabriel Valley”); “first bagpiper” versus the formal Pipes
+   and Drums founded 2011; whether Black Mountain issues squirrel
+   cards (Tahquitz documented 1972–2025, Black Mountain not);
+   Duarte High School class year (~1976).
 
 ## Sources
 
@@ -550,3 +662,30 @@ world this family keeps staffing.
     2013); National Historic Lookout Register, Tahquitz Peak visit
     report (8 Oct 2017). Robert as MDP Director of Radio
     Communications: *Idyllwild Town Crier* (13 Nov 2024; 5 Mar 2025).
+18. Robert Hewitt, hometown print — *Idyllwild Town Crier*, “Meet
+    Robert Hewitt, the new CSA 38 member” (22 Feb 2012): Duarte
+    High School graduation → Oak Grove Hot Shots within two weeks;
+    age-12 letter to the LA County Fire Chief; Explorer at 13;
+    LACoFD flight team; Battalion Chief, San Gabriel Valley; met
+    Janice in Temple City. Oak Grove Hotshots alumni blog
+    (oakgrovehotshots.wordpress.com/about): Robert Hewitt comment,
+    8 Dec 2010 (“hired by Steve Arney in 1976”); Mike Dunn, 9 Dec
+    2017; Paul D. Hogan thread.
+19. Bagpiper reconciliation — LACoFD, “Los Angeles County Fire
+    Fighters Pipes and Drums Spotlight” (fire.lacounty.gov) and
+    band About page (lacoffpipesanddrums.com): formal band formed
+    2011 by Capt. Billy Monahan. Tahquitz squirrel cards,
+    first-person: KG6MZS, “Tahquitz Peak” (kg6mzs.com,
+    3 Oct 2023; cards in 1972 and ~2023); SOTA Reflector, “Ancient
+    and Honorable Order of Squirrels” (Jan 2025); Elemental Quests,
+    Tahquitz Peak hiking guide (2025).
+20. Duarte antecedent and archive doors — *The Branding Iron*
+    (Duarte Historical Society & Museum), Jul–Sep 2018: Lucille
+    Morrison tribute (DCSC founder and first president; first
+    libraries; ~25 newspaper-scrapbook volumes in the museum
+    library); museum contacts via ranchodeduarte.org. GSGLA
+    Heritage Committee — L.A. as Subject directory profile (313
+    Foothill Blvd Upland, CA 91786; Christina Rice & Patti Brundige;
+    (818) 970-4320; gsgla.heritage@gmail.com) and “Girl Scout
+    Summer: Touring the Archives of the GSGLA” (13 Jun 2024;
+    ~562 linear feet, 265 scrapbooks).

@@ -94,9 +94,10 @@ post-liberation medical/debrief papers.
 ## Letter 4 — Duarte Historical Society / Duarte Museum (email)
 
 **To:** famheller@msn.com (Claudia Heller, Duarte Historical Museum —
-address as published in the DuarteRock comments); copy the Duarte
-Historical Society & Museum through its Rancho de Duarte site if a
-general inbox is listed.
+address as published in the DuarteRock comments; she is also listed
+as Museum president); copy the Duarte Historical Society & Museum
+general inbox **info@RanchoDeDuarte.org**, (626) 357-9419, P.O. Box
+263, Duarte, CA 91009-0263 (777 Encanto Parkway).
 **Subject:** Hewitt family — Duarte Community Service Council, Duarte Unified, Camp Hidden Valley
 
 > Dear Ms. [Name],
@@ -112,7 +113,9 @@ general inbox is listed.
 > that both were resident managers of the Girl Scouts' Camp Hidden
 > Valley in the Angeles National Forest.
 >
-> Does the Museum hold any of the following: DCSC photographs, minute
+> Does the Museum hold any of the following: the **Lucille Morrison
+> newspaper-scrapbook volumes** (some 25 subject volumes, e.g. School
+> Events), searched for “Hewitt”; DCSC photographs, minute
 > books, or food-basket/Holiday of Promise clippings naming Fred or
 > Louise; *Duarte View* or school/PTA newsletter mentions of either of
 > them; Mayor's Prayer Breakfast / Chamber Community Service
@@ -149,8 +152,12 @@ general inbox is listed.
 
 ## Letter 6 — Girl Scouts of Greater Los Angeles (council archives)
 
-**Route:** Girl Scouts of Greater Los Angeles — council historian /
-archives contact via girlscoutsla.org.
+**Route:** Girl Scouts of Greater Los Angeles **Heritage Committee**
+archive, 313 Foothill Blvd Upland, CA 91786 — Christina Rice & Patti Brundige,
+**(818) 970-4320, gsgla.heritage@gmail.com** (L.A. as Subject
+directory; ~562 linear ft, 265 scrapbooks). The directory lists the
+archive as not open to outside researchers, so email first and offer
+to visit by appointment.
 **Subject:** Santa Anita Council records — Camp Hidden Valley managers (Fred & Louise Hewitt); Singing Pines outpost
 
 > Dear Council Archivist,
