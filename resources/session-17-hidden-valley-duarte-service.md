@@ -301,14 +301,18 @@ Gary & Terry Milwood (15 Sep 2005) — *“All the years at Hidden Valley
 together… falling down in the stream 'cause you had water jugs in both
 hands hiking out of the canyon.”*
 
-- **Family testimony (user, 31 Oct 2026):** “Fred would proctor the
-  blacktop while Louise would be nurse … at the nursing station.”
-  This pairs directly with the printed nurse's-aide record. Whether
-  Fred's blacktop duty was paid, volunteer, or informal is **not**
-  established by any open-web school record; in the book, keep it
-  labelled as family recollection. Duarte Unified/PTA newsletters and
-  Duarte Historical Society clippings are the paper route (session-18,
-  Letter 4).
+- **Family testimony (user, 31 Oct 2026, sentence completed in two
+  later messages):** “Fred would proctor the blacktop while Louise
+  would be nurse … **because Louise was at the nursing station**.”
+  This pairs directly with the printed nurse's-aide record and places
+  Louise's remembered post at the **school nursing station** — not,
+  on this evidence, at a lookout cab. Whether Fred's blacktop duty
+  was paid, volunteer, or informal is **not** established by any
+  open-web school record; targeted Duarte Unified searches return
+  only modern district pages. In the book, keep the blacktop/nursing-
+  station pairing labelled as family recollection. Duarte Unified/PTA
+  newsletters and Duarte Historical Society clippings are the paper
+  route (session-18, Letter 4).
 
 ### 4. The Ancient and Honorable Order of the Squirrels — solved: a Forest Service lookout-card tradition; Vetter Mountain still inducts
 
@@ -342,10 +346,12 @@ hands hiking out of the canyon.”*
   visitor ritual at staffed towers. That makes a Hidden Valley patrol
   hike-to-Vetter scene highly plausible. **Not yet proven:** a
   Hewitt-named card, roster, photograph, or Ramona-era Vetter logbook
-  entry; and Louise's exact role (member, hike leader, card keeper)
-  remains the user's unfinished sentence — “because Louise was…” —
-  held as testimony until family papers or the ANFFLA historian
-  (session-18, Letter 5) supply the predicate.
+  entry. Louise's completed sentence (above) anchors *her* at the
+  school nursing station; it does not make her a lookout inductee or
+  card-keeper, and any route by which the Order reached her — camp
+  hikes, school fire-prevention material, or family cards brought
+  home — is undocumented until family papers or the ANFFLA historian
+  (session-18, Letter 5) supply a named artefact.
 
 ## 4. Open threads
 
