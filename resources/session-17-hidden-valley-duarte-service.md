@@ -353,6 +353,87 @@ hands hiking out of the canyon.”*
   home — is undocumented until family papers or the ANFFLA historian
   (session-18, Letter 5) supply a named artefact.
 
+
+## 3f. Addendum 5 — Louise's son Robert: the lookout generation (31 Oct 2026)
+
+The user's next fragment — “**Robert Hewitt** after retirement from
+Temple City as a Battalion Chief for LACoFD volunteers [at] one of
+the fire lookouts; investigate Louise's son” — closes the squirrel
+question from the family side. The identification chain:
+
+1. **Louise's son.** Louise's 2005 obituary lists five children,
+   including **Robert David Hewitt**. Charles Frederick Hewitt's
+   2021 obituary (Powell Tribune) names among his survivors
+   “**Robert and Janice Hewitt of Idyllwild, California**.”
+2. **The Idyllwild profile.** *Idyllwild Town Crier* (9 Sep 2016),
+   “Robert Hewitt aims to serve the community”: Robert Hewitt,
+   full-time Pine Cove resident since 2010 with wife **Janice
+   Murasko**; firefighting career began **1976** with the U.S.
+   Forest Service, Angeles National Forest **Oak Grove Hotshots**;
+   joined **Los Angeles County Fire in 1978**; **retired as
+   battalion chief in 2013**; served as the department's **first
+   bagpiper**; president of the Pine Cove Water District Board;
+   Animal Rescue Friends (ARF) search-and-rescue director; 2016
+   Ernie Maxwell Community Spirit Award with Janice.
+3. **The lookout.** The Forest Service Volunteer Association
+   (FSVA, Idyllwild) board page lists **Robert Hewitt — Black
+   Mountain Tower Manager**: “I have spent my life in service to
+   others, beginning as a Forest Service Hotshot, until I proudly
+   became a firefighter/paramedic with the Los Angeles County Fire
+   Department. I retired from LACOFD as a Battalion Chief… I joined
+   FSVA in 2021 and was trained as a Wilderness Ranger and a Forest
+   Fire Lookout.” The career fingerprints (Hotshot start, LACoFD,
+   Battalion Chief, Idyllwild) match the Town Crier profile
+   point-for-point — this is Louise's son. The FSVA runs the
+   **Tahquitz Peak** and **Black Mountain** lookouts (San Bernardino
+   National Forest, San Jacinto Ranger District); Black Mountain
+   (7,772 ft) is staffed by volunteers through fire season, and
+   **Squirrel Cards are a documented Tahquitz tradition** (“For kids
+   who make the hike, they are presented a ‘Squirrel Card’” —
+   Idyllwild, 2013; a 2017 National Historic Lookout Register visit
+   report likewise records being given one). So the Ancient and
+   Honorable Order of the Squirrels is not only camp-country history
+   from Louise's lifetime: **her son now manages a tower in the same
+   volunteer lookout system that inducts visitors into it.** Whether
+   Robert's own duties include handing out cards at Black Mountain
+   is a one-question interview item for him (he is living family —
+   see Open threads), not a print claim yet.
+4. **Temple City, from print.** The user's “after retirement from
+   Temple City” is their testimony for his last battalion posting;
+   print corroborates the Temple City thread from childhood instead:
+   the LACoFD *County Digest* special memorial edition (Sep 2009)
+   records that “**Fire Captain Bob Hewitt** was introduced to Ted
+   [Hall] by his father, Ray Hall, in the 1960s. **Hewitt's mother
+   was taking first aid classes taught at the Temple City Women's
+   Club by then-Fire Captain Ray Hall, and would allow her son to
+   tag along.**” If Bob is Robert — the department, rank track, and
+   era leave little room for another — then the boy at the Temple
+   City Women's Club was tagging along with **Louise**, and those
+   first-aid classes are the visible headwaters of the nurse's-aide
+   career the family remembers at the school nursing station. Ted
+   Hall, the friend made there, died with Fire Fighter Specialist
+   Arnaldo Quinones on 30 Aug 2009 in the **Station Fire** —
+   the same fire that destroyed the original Vetter Mountain
+   lookout.
+5. **Radio, third generation of the thread.** The *Town Crier*
+   (Nov 2024; Mar–Apr 2025 Mountain Disaster Preparedness series)
+   names **Robert Hewitt, Director of Radio Communications** for
+   Idyllwild's Mountain Disaster Preparedness: an FCC-licensed
+   radio network, 34 radio-operating members, two repeaters in
+   upper Pine Cove, weekly call-ins. The book may note the rhyme —
+   Fred (KG6ZD) at his workbench, Robert keeping a mountain radio
+   net — but must not upgrade it: MDP's network is an organisational
+   licence, and no amateur callsign for Robert has been evidenced.
+
+**Generational shape for the book:** Fred builds and manages at
+Hidden Valley and proctors the blacktop; Louise nurses at the
+school station, presides over the DCSC, and takes first-aid classes
+at the Temple City Women's Club; their son turns the fire thread
+into a 35-year LACoFD career and, in retirement, manages a Forest
+Service lookout tower and a mountain radio net. The squirrels were
+never a joke order — they are the visitor ritual of the lookout
+world this family keeps staffing.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -381,6 +462,14 @@ hands hiking out of the canyon.”*
    registrar / CDPH once birth/death dates and parents' names are
    supplied from family papers (session-18, Request 7). No open-web
    record is expected or required for the book's testimony paragraph.
+8. **Interview Robert Hewitt (living family, Idyllwild)** — now the
+   single richest living source: Black Mountain tower seasons and
+   whether squirrel cards are issued there; his Temple City
+   battalion years; the Temple City Women's Club first-aid classes
+   with his mother; bagpiper years; MDP radio net. Route: family
+   contact first; public fallback via FSVA (fsva.org, Idyllwild) or
+   the *Idyllwild Town Crier*. Ask before quoting him by name beyond
+   the published profiles.
 
 ## Sources
 
@@ -444,3 +533,20 @@ hands hiking out of the canyon.”*
     brother, SIDS; exact/variant open-web searches negative
     (2026-10-31). No public record cited; vital-records route in
     session-18, Request 7.
+16. Robert Hewitt (Louise's son) — *Idyllwild Town Crier*,
+    “Robert Hewitt aims to serve the community” (9 Sep 2016):
+    Oak Grove Hotshots 1976; LACoFD 1978; Battalion Chief, retired
+    2013; first LACoFD bagpiper; Pine Cove Water District; ARF.
+    Forest Service Volunteer Association board page (fsva.org/
+    about): Robert Hewitt, Black Mountain Tower Manager, FSVA from
+    2021, Wilderness Ranger and Forest Fire Lookout. Charles
+    Frederick Hewitt obituary (Powell Tribune, 2021): “Robert and
+    Janice Hewitt of Idyllwild.”
+17. LACoFD *County Digest* Vol. 41 No. 9, Special Memorial Edition
+    (Sep 2009; scvhistory.com): Captain Bob Hewitt; mother’s
+    Temple City Women’s Club first-aid classes under Capt. Ray Hall
+    (1960s); Hall/Quinones Station Fire deaths at Camp 16.
+    Squirrel Cards at Tahquitz: *Postcards from Idyllwild* (28 May
+    2013); National Historic Lookout Register, Tahquitz Peak visit
+    report (8 Oct 2017). Robert as MDP Director of Radio
+    Communications: *Idyllwild Town Crier* (13 Nov 2024; 5 Mar 2025).
