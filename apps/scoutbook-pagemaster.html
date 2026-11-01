@@ -179,6 +179,25 @@
     }
     .footer a { text-decoration: none; border-bottom: 1px dotted rgba(181,194,154,.45); }
     .footer a:hover { color: var(--gold); }
+    .reference-shelf {
+      margin-top: 18px; padding: 19px; border: 1px solid rgba(225,222,192,.17); border-radius: 10px;
+      background: rgba(7,14,10,.6); box-shadow: 0 16px 42px rgba(0,0,0,.2);
+    }
+    .reference-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 13px; }
+    .reference-head h2 { margin: 6px 0 0; color: #f0e6cb; font: 400 24px var(--serif); }
+    .reference-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .reference-card {
+      min-width: 0; padding: 14px; border: 1px solid rgba(225,222,192,.12); border-radius: 7px;
+      background: rgba(255,255,255,.025);
+    }
+    .reference-card .specimen-kicker { color: var(--gold); }
+    .reference-card h3 { margin: 0; color: var(--paper); font: 400 17px/1.25 var(--serif); }
+    .reference-card p { margin: 9px 0 12px; color: #aeb9a8; font-size: 9px; line-height: 1.7; }
+    .reference-links { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+    .reference-links a { color: var(--moss-light); font-size: 8px; line-height: 1.5; text-decoration: none; border-bottom: 1px dotted rgba(181,194,154,.45); }
+    .reference-links a:hover { color: var(--gold); }
+    .reference-rule { margin: 13px 0 0; padding: 11px 12px; border-left: 2px solid rgba(224,185,104,.55); background: rgba(224,185,104,.035); color: #c3b795; font-size: 9px; line-height: 1.65; }
+    .reference-rule strong { color: #f0d18b; font-weight: 500; }
     @media (max-width: 1120px) {
       .workspace { grid-template-columns: 245px minmax(360px, 1fr); }
       .right-rail { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 0 26px; }
@@ -203,6 +222,9 @@
       .stage-controls .icon-button { min-width: 31px; }
       .stage-bottom { font-size: 7px; }
       .footer { align-items: flex-start; flex-direction: column; }
+      .reference-shelf { padding: 14px; }
+      .reference-head { align-items: flex-start; flex-direction: column; }
+      .reference-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 420px) {
       .specimen-list { grid-template-columns: 1fr; }
@@ -315,6 +337,45 @@
         </section>
       </aside>
     </main>
+
+    <section class="reference-shelf" aria-labelledby="reference-title">
+      <div class="reference-head">
+        <div>
+          <div class="eyebrow">Historical cross-checks</div>
+          <h2 id="reference-title">Earlier handbook editions</h2>
+        </div>
+        <span class="small-count">Comparators · not 1990 sources</span>
+      </div>
+      <div class="reference-grid">
+        <article class="reference-card">
+          <span class="specimen-kicker">1911 · first edition · U.S. public domain</span>
+          <h3>Project Gutenberg #29558</h3>
+          <p>Its contents map early Scoutcraft, Woodcraft, Campcraft, tracking, first aid, games, and citizenship topics. Useful for history—not evidence for 1990 page numbers.</p>
+          <div class="reference-links">
+            <a href="https://www.gutenberg.org/ebooks/29558" target="_blank" rel="noopener noreferrer">Open the eBook ↗</a>
+            <a href="https://www.gutenberg.org/cache/epub/29558/pg29558-images.html" target="_blank" rel="noopener noreferrer">Illustrated HTML ↗</a>
+          </div>
+        </article>
+        <article class="reference-card">
+          <span class="specimen-kicker">1967 · seventh edition</span>
+          <h3>The Official Boy Scout Handbook</h3>
+          <p>An Internet Archive catalog confirms the 1967 seventh edition. The supplied PDF link did not load for inspection; no scan or copied page art is bundled here.</p>
+          <div class="reference-links">
+            <a href="https://archive.org/details/officialboyscout71967boys" target="_blank" rel="noopener noreferrer">IA catalog ↗</a>
+            <a href="https://scouting4boysorg.wordpress.com/wp-content/uploads/2017/12/boy-scout-handbook-1967-processed.pdf" target="_blank" rel="noopener noreferrer">Provided PDF ↗</a>
+          </div>
+        </article>
+        <article class="reference-card">
+          <span class="specimen-kicker">1979 · ninth edition · borrow access</span>
+          <h3>Official Boy Scout Handbook</h3>
+          <p>The 586-page Internet Archive record is access-restricted. It is a closer pre-1990 comparison point, but cannot verify the selected edition’s illustrations or pagination.</p>
+          <div class="reference-links">
+            <a href="https://archive.org/details/officialboyscout00hill/mode/1up" target="_blank" rel="noopener noreferrer">IA catalog ↗</a>
+          </div>
+        </article>
+      </div>
+      <p class="reference-rule"><strong>Source rule:</strong> Only the selected 1990 tenth edition can verify the requested inventory. These earlier editions remain separate historical references; no entry is inferred from them.</p>
+    </section>
 
     <footer class="footer">
       <span>Source status: no scan included · 4 unverified demo models · 0 handbook entries indexed</span>
