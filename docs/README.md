@@ -115,6 +115,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [bbs-abandonware-coldfire-port.md](bbs-abandonware-coldfire-port.md) — bbs abandonware coldfire port
 - [bbs-viewer-and-netcat-capture.md](bbs-viewer-and-netcat-capture.md) — bbs viewer and netcat capture
 - [dss-casefiles-riddle-warrick.md](dss-casefiles-riddle-warrick.md) — dss casefiles riddle warrick
+- [fravia-searchlores-deep-dive-2026-11-01.md](fravia-searchlores-deep-dive-2026-11-01.md) — fravia searchlores deep dive 2026 11 01
 - [fna102b-xena-preservation.md](fna102b-xena-preservation.md) — fna102b xena preservation
 - [java-bbs-coldfire-survey.md](java-bbs-coldfire-survey.md) — java bbs coldfire survey
 - [sanborn-kryptos-webxdc.md](sanborn-kryptos-webxdc.md) — sanborn kryptos webxdc
@@ -262,6 +263,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [territorial-classification-deep-dive-2026-10-06.md](territorial-classification-deep-dive-2026-10-06.md) — territorial classification deep dive 2026 10 06
 - [ucsb-2001-first-quarter-research.md](ucsb-2001-first-quarter-research.md) — ucsb 2001 first quarter research
 - [vincennes-4dwm-deep-dive.md](vincennes-4dwm-deep-dive.md) — vincennes 4dwm deep dive
+- [openrce-iso-kr0me-riddle-vcl-2026-11-01.md](openrce-iso-kr0me-riddle-vcl-2026-11-01.md) — openrce iso kr0me riddle virtual intelligence lecture hall update
 - [virtual-intelligence-lecture-hall-update-2026-10-05.md](virtual-intelligence-lecture-hall-update-2026-10-05.md) — virtual intelligence lecture hall update 2026 10 05
 - [virus-encyclopedia-xena-preservation.md](virus-encyclopedia-xena-preservation.md) — virus encyclopedia xena preservation
 - [virus-encyclopedia.md](virus-encyclopedia.md) — virus encyclopedia
