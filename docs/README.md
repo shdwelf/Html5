@@ -117,6 +117,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [dss-casefiles-riddle-warrick.md](dss-casefiles-riddle-warrick.md) — dss casefiles riddle warrick
 - [fravia-searchlores-deep-dive-2026-11-01.md](fravia-searchlores-deep-dive-2026-11-01.md) — fravia searchlores deep dive 2026 11 01
 - [fna102b-xena-preservation.md](fna102b-xena-preservation.md) — fna102b xena preservation
+- [goddard-moka-exchange-research-2026-11-01.md](goddard-moka-exchange-research-2026-11-01.md) — Goddard–Moka exchange research status, 2026-11-01
 - [java-bbs-coldfire-survey.md](java-bbs-coldfire-survey.md) — java bbs coldfire survey
 - [sanborn-kryptos-webxdc.md](sanborn-kryptos-webxdc.md) — sanborn kryptos webxdc
 - [xport-bbs-deployment.md](xport-bbs-deployment.md) — xport bbs deployment
