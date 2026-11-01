@@ -1320,6 +1320,14 @@ remains as permission to enter the former test site (Sources 60–61).
     active at the time, but no model-specific Morris Dam launch record
     was located. See Addendum 11 and Sources 52–68; no person or agency
     was contacted.
+12. **Huell Howser's *California's Gold* / Rubel Farms, Mike Rubel,
+    and the Stanley-Miller Mine** — the user clarified that “California
+    Gold” means the television series and pointed to an episode about
+    Rubel Farms and Mike Rubel. Verify the episode, transcript/video, and
+    what it actually says about the Stanley-Miller Mine before treating
+    the connection as established. Add the documented findings in
+    Addendum 12; this thread records the user's lead, not an independent
+    confirmation.
 
 ## Sources
 
