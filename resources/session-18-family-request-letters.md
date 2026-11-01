@@ -123,8 +123,12 @@ general inbox **info@RanchoDeDuarte.org**, (626) 357-9419, P.O. Box
 > Louise; *Duarte View* or school/PTA newsletter mentions of either of
 > them; Mayor's Prayer Breakfast / Chamber Community Service
 > Recognition honoree lists from before 2005; or Hidden Valley / Girl
-> Scout council photographs? I can visit in person, pay copying fees,
-> and will credit the Museum in the book.
+> Scout council photographs? I also found an OCR search hit in a 1968
+> PTA cookbook for “Mrs. Maurice Hewitt, Pres. Andres Duarte PTA /
+> Duarte, California” (reported at p. 346; likely Louise, but not yet
+> confirmed from the scanned page). Can the Museum or a school archive
+> verify this attribution or locate the cookbook? I can visit in person,
+> pay copying fees, and will credit the Museum in the book.
 >
 > [Full name, address, phone, email]
 
@@ -174,7 +178,11 @@ to visit by appointment.
 > describes the earlier Arcadia and Santa Anita council years; the
 > relationship between Santa Anita and Spanish Trails is not yet
 > established in my sources, so I do not want to assume a succession
-> or custody path.
+> or custody path. I understand the Heritage Committee's stated archive
+> mission includes preserving predecessor-council history, and its
+> history page names Spanish Trails among the councils active by 2008;
+> that supports asking you, but does not prove a Santa Anita-to-Spanish
+> Trails transition.
 >
 > Could you confirm whether the Heritage Committee holds, or can point
 > me to the holder of, **Spanish Trails Girl Scout Council records**
@@ -214,8 +222,11 @@ confirm the candidate dates, parents' full names (including mother's
 maiden name), and the name used at home/baptism/burial.
 
 **First route:** the official finder results are linked in session-17
-Source 27; candidate dates and their limits are in Source 11 below. Ask
-the family to confirm the name/date form. Forest Lawn's Covina Hills
+Source 27; candidate dates and their limits are in Source 11 below.
+Forest Lawn's official Maps site has a Covina Hills park-map drilldown
+and section-name lookup (session-17 Source 32); the March 2024 park
+index PDF is a general map, not a plot-to-plot distance measurement.
+Ask the family to confirm the name/date form. Forest Lawn's Covina Hills
 page lists **21300 Via Verde Drive, Covina, CA 91724** and
 **1-888-204-3131** (U.S. toll-free) / **+1 (323) 254-3131**
 (international). Ask the cemetery for the entry's official date fields
@@ -295,3 +306,19 @@ baptism/burial register is a parallel record if available.
     Ancestry says “eight trees,” including “Greeran Family Tree”; contents
     are user-submitted/sign-in limited. They suggest 13 Aug–22 Nov 1985;
     verify with family/county/cemetery.
+12. *The PTA cookbook: meats, including seafood and poultry; 2000 favorite
+    recipes from PTA members* (1968), Internet Archive item
+    https://archive.org/details/ptacookbookmeats00mont; Open Library
+    Search Inside OCR result for “Mrs. Maurice Hewitt” / “Duarte,”
+    page 346. The item is access-restricted; identity is not visually
+    confirmed.
+13. GSGLA Heritage Committee, “Who We Are” and “Girl Scouts Collection”
+    (https://girlscouthistorygreaterlosangeles.org/?page_id=42;
+    https://girlscouthistorygreaterlosangeles.org/?page_id=48), plus
+    KHTS Radio, “Girl Scout Councils Merge, Name New CEO” (10 Jul 2008),
+    https://www.hometownstation.com/santa-clarita-news/girl-scout-councils-merge-name-new-ceo-13379.
+14. Forest Lawn Memorial-Park Association, official Maps site
+    (https://apps.forestlawn.com/maps/Home.html), Covina Hills section
+    selector (https://apps.forestlawn.com/maps/Covina2011_puller.html),
+    and Covina Hills index PDF (Mar 2024)
+    (https://apps.forestlawn.com/maps/Covina/Covina_Index.pdf).

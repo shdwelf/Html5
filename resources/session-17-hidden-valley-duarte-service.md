@@ -757,13 +757,66 @@ register:
    baby they call John David, then ask Forest Lawn for the record's
    date fields and a park map to test the reported “not far” proximity.
    Its Covina Hills page lists **1-888-204-3131** (U.S. toll-free) and
-   **+1 (323) 254-3131** (international).
+   **+1 (323) 254-3131** (international). Forest Lawn's official Maps
+   app has a Covina Hills drilldown and section-name lookup (Source 32);
+   ask the information office for plot-specific directions rather than
+   estimating distance from the two map numbers.
 2. **Duarte Community Service Council:** current directory contact Dorothy Smith, 626-359-9487 / P.O. Box 75, Duarte, CA 91009; ask about Louise's presidency, holiday baskets, food-drive records and photos.
 3. **Duarte High class-of-1964 family network:** if the family has an appropriate route, ask **Lila Crandell Hewitt** about Chuck's school/family photographs or records and whether the alumni leads connect to memories of Fred and Louise. The public alumni profile is a lead, not an invitation to expose private contact details or to cold-contact without judgment.
-4. **Girl Scouts of Greater Los Angeles Heritage Committee:** use revised Letter 6 to ask for the Spanish Trails Council records/custodian and the unresolved Santa Anita → Spanish Trails link.
+4. **Girl Scouts of Greater Los Angeles Heritage Committee:** its own archive mission includes predecessor-council records, and its history page names Spanish Trails among councils active by 2008 (Source 30); KHTS documents the 2008 merger into GSGLA (Source 31). Use revised Letter 6 to ask for Spanish Trails records/custody and the still-unresolved Santa Anita → Spanish Trails link.
 5. **Duarte / Monrovia city directories:** identify the electronics firm where Fred worked; “long-time electronics technician” is a career, not yet an employer.
 6. **NPRC:** obtain Maurice's OMPF for Army Air Forces unit and MOS; session-18, Letter 2.
 7. **Family-side website checks:** TWS member search and ARRL QST Silent Keys for 2007 remain untested. The website remains unfound.
+
+## 3i. Addendum 8 — PTA cookbook, GSGLA archive mandate, and Forest Lawn map route (1 Nov 2026)
+
+### 1. A promising 1968 PTA cookbook trace for Louise — not yet attributed
+
+Open Library's Search Inside index for the Internet Archive item returns
+an OCR hit on **page 346** of *The PTA cookbook: meats, including
+seafood and poultry; 2000 favorite recipes from PTA members* (1968):
+
+> “Mrs. Maurice Hewitt, Pres. Andres Duarte PTA / Duarte, California”
+
+The snippet places the credit adjacent to a recipe entry. This is a
+strong lead for Louise: Maurice's wife was Louise, the Hewitts lived in
+Duarte, and her 2005 obituary says she served as **PTA President for
+many years**. But the OCR gives no first name, and I could not inspect
+the scanned page: Internet Archive marks the item access-restricted.
+The identity is therefore **likely, not established**. Do not yet
+attribute this recipe to Louise or quote its details in the book. Ask
+the Duarte Museum / school-paper archive whether it can verify the
+page or identify the contributor; Request 4 in session-18 now includes
+this lead.
+
+### 2. Spanish Trails' 2008 successor and archive are better grounded; the 1959 bridge is not
+
+The GSGLA Heritage Committee's own “Who We Are” page states that its
+archival mission includes preserving records of predecessor councils,
+that the committee was established in 2011, and that **Spanish Trails**
+was among the councils active by 2008. A contemporaneous KHTS article
+(10 July 2008) names Spanish Trails among the councils merging to form
+Girl Scouts of Greater Los Angeles, which began operating 1 December
+2008. The KHTS notice counts six participating legacy entities,
+including the southeastern portion of Joshua Tree Council; the Heritage
+Committee page lists five active councils and omits Joshua Tree. The
+reason for that counting difference is not established, but both identify
+Spanish Trails as part of the GSGLA predecessor history. This validates GSGLA Heritage as a
+relevant archive door; **it still does not establish a Santa Anita →
+Spanish Trails succession in 1959**. Letter 6 keeps that question open
+and now cites the Committee's archive remit.
+
+### 3. Official Forest Lawn map tools — a route, not a distance finding
+
+Forest Lawn's official Maps site offers a Covina Hills park-map
+drilldown and section-name map lookup; its park index PDF is dated
+March 2024. The official grave-finder separately tells visitors to
+take the map/lot/space details to the information office for a park map
+and directions. I have not converted the Honor / Map 4 and Serenity /
+Map 55 entries into a scale measurement or walking distance. **Same
+park remains verified; “not far” remains unverified.** Request 7 in
+session-18 now links the official map route and directs the family to
+ask the information office for plot-specific directions.
 
 ## 4. Open threads
 
@@ -792,10 +845,13 @@ register:
    Singing Pines patrol visits (session-18, Letter 5). A Hewitt-named
    card/roster is the only item that can promote the squirrel scene
    from “highly plausible” to documented.
-6. **Duarte Unified / PTA paper** — school newsletters or Duarte
-   Historical Society clippings that might name Fred's blacktop-proctor
-   duty and Louise's nursing-station years in print (session-18,
-   Letter 4).
+6. **Duarte Unified / PTA paper** — a 1968 PTA cookbook OCR hit names
+   “Mrs. Maurice Hewitt, Pres. Andres Duarte PTA / Duarte, California”
+   (Source 29); Louise is a plausible match to the obituary's PTA
+   president, but the scanned page was not visually checked. Ask the
+   Museum/school archive to verify it alongside newsletters or clippings
+   about Fred's blacktop-proctor duty and Louise's nursing-station years
+   (session-18, Letter 4).
 7. **John David Greeran cemetery/vital record** — Forest Lawn's
    official finder returns a likely match as **Jondavid Frederick
    Greeran**, Covina Hills, Serenity, Map 55/Lot 8325/Space 4; Maurice
@@ -989,3 +1045,26 @@ register:
     Tree” (user-submitted/sign-in limited; tree contents not reviewed).
     Treat the dates as leads until a family paper, index, or vital record
     confirms them.
+29. *The PTA cookbook: meats, including seafood and poultry; 2000 favorite
+    recipes from PTA members* (1968), Internet Archive item
+    https://archive.org/details/ptacookbookmeats00mont; Open Library
+    Search Inside result for “Mrs. Maurice Hewitt” and “Duarte”
+    (https://openlibrary.org/search/inside.json?q=%22Mrs.+Maurice+Hewitt%22+Duarte&limit=10),
+    page 346. Internet Archive labels the scan access-restricted; the
+    text evidence here is an OCR search snippet, not a visual page check.
+30. Girl Scouts of Greater Los Angeles Heritage Committee, “Who We Are”
+    (https://girlscouthistorygreaterlosangeles.org/?page_id=42) and
+    “Girl Scouts Collection”
+    (https://girlscouthistorygreaterlosangeles.org/?page_id=48): archive
+    mission/remit, establishment in 2011, and predecessor-council history.
+31. KHTS Radio, “Girl Scout Councils Merge, Name New CEO,” 10 July 2008,
+    https://www.hometownstation.com/santa-clarita-news/girl-scout-councils-merge-name-new-ceo-13379:
+    Spanish Trails is named among the legacy councils merging into GSGLA;
+    the new council was to begin operating 1 Dec 2008.
+32. Forest Lawn Memorial-Park Association, official Maps site
+    (https://apps.forestlawn.com/maps/Home.html), Covina Hills section
+    selector (https://apps.forestlawn.com/maps/Covina2011_puller.html),
+    and Covina Hills park index PDF, March 2024
+    (https://apps.forestlawn.com/maps/Covina/Covina_Index.pdf). These
+    provide an official map route but do not establish the physical
+    distance between the two grave locations without plot directions.
