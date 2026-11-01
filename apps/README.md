@@ -165,6 +165,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `sanborn-codex (3).html` | Sanborn Codex · The Encrypted Art of Jim Sanborn | 1.49 MB |  |
 | `sanborn-codex-the-encrypted-art-of-jim-sanborn` | Sanborn Codex · The Encrypted Art of Jim Sanborn | 0 KB | _(from `index (39).html`)_ |
 | `scanned_wallets.html` | Banano Scanned Wallets Report | 158 KB |  |
+| `scoutbook-pagemaster.html` | The Fieldbook — Scoutcraft in 3D | 19 KB | Original Three.js/VRML prototype; no handbook scan |
 | `scraper.html` | Standalone Page Scraper | 14 KB |  |
 | `scraperv2.html` | Standalone Page Scraper | 14 KB |  |
 | `scrapetogether.html` | HTML5 Standalone Web Scraper | 8 KB |  |

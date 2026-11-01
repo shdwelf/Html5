@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1711">
+  <meta name="description" content="An original Three.js fieldbook viewer prototype for exploring Scoutcraft objects in 3D. The demonstration models are not yet verified against the 1990 handbook.">
+  <title>The Fieldbook — Scoutcraft in 3D</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #09130e;
+      --forest: #10251a;
+      --forest-2: #183626;
+      --moss: #81946a;
+      --moss-light: #b5c29a;
+      --paper: #e8ddbf;
+      --paper-deep: #c9bc99;
+      --ink: #18221a;
+      --muted: #a8b29e;
+      --gold: #e0b968;
+      --orange: #e48747;
+      --line: rgba(225, 222, 192, .16);
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: var(--night); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--paper);
+      font-family: var(--mono);
+      background:
+        radial-gradient(ellipse at 50% -14%, rgba(80, 111, 68, .25), transparent 47rem),
+        linear-gradient(140deg, #0b1711 0%, #101b14 52%, #10150f 100%);
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--moss-light); }
+    .app-shell { max-width: 1680px; margin: 0 auto; padding: 0 28px 30px; }
+    .masthead {
+      height: 66px; display: flex; align-items: center; justify-content: space-between;
+      gap: 18px; border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 30px; height: 30px; border: 1px solid rgba(224,185,104,.76); border-radius: 50%;
+      display: grid; place-items: center; color: var(--gold); font-size: 15px;
+      box-shadow: 0 0 24px rgba(224,185,104,.12); flex: 0 0 auto;
+    }
+    .brand-name { font-family: var(--serif); font-size: 17px; letter-spacing: .07em; white-space: nowrap; }
+    .brand-caption { color: var(--muted); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; margin-top: 3px; }
+    .masthead-right { display: flex; align-items: center; gap: 9px; }
+    .pill {
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 11px;
+      color: var(--moss-light); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+      white-space: nowrap; background: rgba(10, 20, 13, .42);
+    }
+    .pill.warn { color: #f1c77a; border-color: rgba(224,185,104,.35); }
+    .intro {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 430px); gap: 30px;
+      align-items: end; padding: 37px 2px 28px;
+    }
+    .eyebrow { color: var(--gold); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; }
+    h1 { margin: 8px 0 0; font: 400 clamp(32px, 4vw, 55px)/.98 var(--serif); letter-spacing: -.025em; color: #f0e6cb; }
+    h1 span { display: block; margin-top: 8px; color: var(--moss-light); font-size: .52em; font-style: italic; letter-spacing: 0; }
+    .intro-copy {
+      border-left: 1px solid rgba(224,185,104,.5); padding: 2px 0 2px 17px;
+      color: #c4c9b9; font-size: 11px; line-height: 1.75;
+    }
+    .intro-copy strong { color: #f0d18b; font-weight: 500; }
+    .workspace {
+      display: grid; grid-template-columns: minmax(230px, 285px) minmax(400px, 1fr) minmax(245px, 315px);
+      min-height: 640px; border: 1px solid rgba(225,222,192,.17); border-radius: 12px;
+      overflow: hidden; background: rgba(7, 14, 10, .72); box-shadow: 0 28px 80px rgba(0,0,0,.35);
+    }
+    .rail { min-width: 0; background: rgba(13, 25, 17, .92); }
+    .left-rail { padding: 20px 17px 18px; border-right: 1px solid var(--line); }
+    .right-rail { padding: 21px 19px; border-left: 1px solid var(--line); background: rgba(16, 28, 20, .96); }
+    .rail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .rail-head h2 { margin: 0; color: var(--paper); font: 400 20px var(--serif); }
+    .small-count { color: var(--moss); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+    .search-wrap { position: relative; margin-bottom: 12px; }
+    .search-wrap::before { content: "⌕"; position: absolute; left: 11px; top: 8px; color: var(--moss-light); font-size: 17px; }
+    #catalog-search {
+      width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 11px 10px 11px 32px;
+      color: var(--paper); background: rgba(0,0,0,.19); outline: none; font-size: 10px;
+    }
+    #catalog-search:focus { border-color: rgba(224,185,104,.62); box-shadow: 0 0 0 2px rgba(224,185,104,.08); }
+    #catalog-search::placeholder { color: #7e8c7b; }
+    .specimen-list { display: grid; gap: 8px; }
+    .specimen-card {
+      display: block; width: 100%; text-align: left; cursor: pointer; border: 1px solid rgba(225,222,192,.1);
+      border-radius: 7px; padding: 12px 11px; background: rgba(255,255,255,.025); transition: .18s ease;
+    }
+    .specimen-card:hover { transform: translateY(-1px); border-color: rgba(224,185,104,.38); background: rgba(224,185,104,.055); }
+    .specimen-card[aria-pressed="true"] { border-color: rgba(224,185,104,.72); background: linear-gradient(110deg, rgba(224,185,104,.13), rgba(224,185,104,.035)); box-shadow: inset 2px 0 var(--gold); }
+    .specimen-kicker { display: block; color: var(--moss-light); font-size: 8px; text-transform: uppercase; letter-spacing: .13em; margin-bottom: 5px; }
+    .specimen-name { display: block; font: 400 16px var(--serif); color: var(--paper); }
+    .specimen-hint { display: block; color: #94a08e; font-size: 9px; line-height: 1.5; margin-top: 5px; }
+    .inventory-note {
+      margin-top: 16px; padding: 13px 12px; border: 1px dashed rgba(224,185,104,.35); border-radius: 7px;
+      background: rgba(224,185,104,.035); color: #c3b795; font-size: 9px; line-height: 1.65;
+    }
+    .inventory-note strong { color: #f0d18b; font-weight: 500; }
+    .inventory-note .stamp { display: block; margin-bottom: 6px; color: var(--gold); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; }
+    .stage {
+      position: relative; min-width: 0; min-height: 640px; overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 45%, rgba(63, 88, 55, .28), transparent 46%),
+        linear-gradient(180deg, rgba(8,16,11,.1), rgba(8,15,10,.26));
+    }
+    .stage::before, .stage::after { content: ""; position: absolute; pointer-events: none; z-index: 2; }
+    .stage::before { inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(4,9,6,.62) 100%); }
+    .stage::after { inset: 0; opacity: .14; background-image: radial-gradient(rgba(242,226,183,.4) .45px, transparent .6px); background-size: 5px 5px; mix-blend-mode: soft-light; }
+    .stage-top {
+      position: absolute; z-index: 4; top: 17px; left: 17px; right: 17px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px; pointer-events: none;
+    }
+    .stage-top > * { pointer-events: auto; }
+    .entry-number { border: 1px solid rgba(225,222,192,.2); border-radius: 4px; padding: 8px 10px; color: var(--moss-light); background: rgba(7,15,10,.58); font-size: 8px; letter-spacing: .16em; }
+    .stage-controls { display: flex; gap: 5px; }
+    .icon-button {
+      min-width: 34px; min-height: 33px; border: 1px solid rgba(225,222,192,.2); border-radius: 5px;
+      background: rgba(7,15,10,.69); color: var(--paper); cursor: pointer; font-size: 10px; transition: .15s ease;
+    }
+    .icon-button:hover, .icon-button[aria-pressed="true"] { color: var(--gold); border-color: rgba(224,185,104,.57); background: rgba(224,185,104,.08); }
+    #world { position: absolute; inset: 0; z-index: 1; min-height: 100%; touch-action: none; }
+    #world canvas { display: block; width: 100%; height: 100%; cursor: grab; outline: none; }
+    #world canvas:active { cursor: grabbing; }
+    #webgl-fallback {
+      position: absolute; z-index: 7; left: 18px; right: 18px; bottom: 66px; padding: 12px;
+      border: 1px solid rgba(224,185,104,.4); border-radius: 6px; background: rgba(11,20,13,.94);
+      color: #f1d794; font-size: 10px; line-height: 1.5;
+    }
+    [hidden] { display: none !important; }
+    .scene-stamp {
+      position: absolute; z-index: 4; left: 17px; bottom: 62px; padding: 6px 8px; border-radius: 3px;
+      background: rgba(8,15,10,.62); color: #e7c16f; font-size: 8px; letter-spacing: .16em; text-transform: uppercase;
+    }
+    .stage-bottom {
+      position: absolute; z-index: 4; left: 17px; right: 17px; bottom: 16px; display: flex;
+      align-items: center; justify-content: space-between; gap: 12px; color: #a6b19b; font-size: 8px;
+      letter-spacing: .11em; text-transform: uppercase; pointer-events: none;
+    }
+    .stage-bottom span { background: rgba(7,15,10,.58); padding: 6px 8px; border-radius: 3px; }
+    .specimen-block { padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .specimen-status { color: var(--gold); text-transform: uppercase; letter-spacing: .17em; font-size: 8px; }
+    #specimen-title { margin: 9px 0 7px; font: 400 27px/1.1 var(--serif); color: #f1e6c9; }
+    #specimen-category { color: var(--moss-light); font-size: 8px; letter-spacing: .13em; text-transform: uppercase; }
+    #specimen-teaser { margin: 11px 0 0; color: #bac3b0; font: italic 14px/1.5 var(--serif); }
+    .detail-section { padding: 17px 0; border-bottom: 1px solid var(--line); }
+    .detail-label { color: var(--moss-light); font-size: 8px; letter-spacing: .17em; text-transform: uppercase; margin-bottom: 7px; }
+    #specimen-description { color: #aeb9a8; font-size: 10px; line-height: 1.75; }
+    .source-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; font-size: 9px; line-height: 1.6; }
+    .source-row + .source-row { margin-top: 8px; }
+    .source-row span:first-child { color: #7f8e7c; text-transform: uppercase; letter-spacing: .08em; }
+    .source-row span:last-child { color: #e1d5b5; }
+    .proof-card { margin-top: 16px; padding: 12px; border: 1px solid rgba(224,185,104,.28); border-radius: 6px; background: rgba(224,185,104,.04); }
+    .proof-card h3 { margin: 0 0 7px; color: #e4c477; font: 400 13px var(--serif); }
+    .proof-card p { margin: 0; color: #aab49f; font-size: 9px; line-height: 1.65; }
+    .export-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 11px; }
+    #vrml-filename { color: #7f8e7c; font-size: 8px; }
+    .primary-button, .secondary-button {
+      border-radius: 5px; padding: 10px 11px; cursor: pointer; font-size: 8px; letter-spacing: .13em;
+      text-transform: uppercase; transition: .15s ease;
+    }
+    .primary-button { border: 1px solid rgba(224,185,104,.66); color: #f0d18b; background: rgba(224,185,104,.1); }
+    .primary-button:hover { background: rgba(224,185,104,.2); }
+    .secondary-button { border: 1px solid var(--line); color: #b5c19f; background: rgba(255,255,255,.025); }
+    .secondary-button:hover { border-color: rgba(225,222,192,.36); color: var(--paper); }
+    .nav-row { display: flex; gap: 7px; margin-top: 14px; }
+    .nav-row button { flex: 1; }
+    .footnote { color: #738071; font-size: 8px; line-height: 1.6; margin-top: 12px; }
+    .footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 4px 0;
+      color: #7f8c78; font-size: 8px; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .footer a { text-decoration: none; border-bottom: 1px dotted rgba(181,194,154,.45); }
+    .footer a:hover { color: var(--gold); }
+    .reference-shelf {
+      margin-top: 18px; padding: 19px; border: 1px solid rgba(225,222,192,.17); border-radius: 10px;
+      background: rgba(7,14,10,.6); box-shadow: 0 16px 42px rgba(0,0,0,.2);
+    }
+    .reference-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 13px; }
+    .reference-head h2 { margin: 6px 0 0; color: #f0e6cb; font: 400 24px var(--serif); }
+    .reference-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .reference-card {
+      min-width: 0; padding: 14px; border: 1px solid rgba(225,222,192,.12); border-radius: 7px;
+      background: rgba(255,255,255,.025);
+    }
+    .reference-card .specimen-kicker { color: var(--gold); }
+    .reference-card h3 { margin: 0; color: var(--paper); font: 400 17px/1.25 var(--serif); }
+    .reference-card p { margin: 9px 0 12px; color: #aeb9a8; font-size: 9px; line-height: 1.7; }
+    .reference-links { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+    .reference-links a { color: var(--moss-light); font-size: 8px; line-height: 1.5; text-decoration: none; border-bottom: 1px dotted rgba(181,194,154,.45); }
+    .reference-links a:hover { color: var(--gold); }
+    .reference-rule { margin: 13px 0 0; padding: 11px 12px; border-left: 2px solid rgba(224,185,104,.55); background: rgba(224,185,104,.035); color: #c3b795; font-size: 9px; line-height: 1.65; }
+    .reference-rule strong { color: #f0d18b; font-weight: 500; }
+    @media (max-width: 1120px) {
+      .workspace { grid-template-columns: 245px minmax(360px, 1fr); }
+      .right-rail { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 0 26px; }
+      .right-rail > .specimen-block, .right-rail > .detail-section { grid-column: auto; }
+      .stage { min-height: 600px; }
+    }
+    @media (max-width: 720px) {
+      .app-shell { padding: 0 12px 22px; }
+      .masthead { height: 58px; }
+      .brand-caption { display: none; }
+      .brand-name { font-size: 14px; }
+      .pill { padding: 7px 8px; font-size: 7px; }
+      .masthead-right .pill:first-child { display: none; }
+      .intro { grid-template-columns: 1fr; gap: 16px; padding: 26px 2px 20px; }
+      .intro-copy { max-width: 580px; }
+      .workspace { grid-template-columns: 1fr; }
+      .left-rail { border-right: 0; border-bottom: 1px solid var(--line); }
+      .specimen-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .specimen-card { min-height: 116px; }
+      .stage { grid-row: 2; min-height: 57vh; }
+      .right-rail { grid-column: auto; grid-template-columns: 1fr; }
+      .stage-controls .icon-button { min-width: 31px; }
+      .stage-bottom { font-size: 7px; }
+      .footer { align-items: flex-start; flex-direction: column; }
+      .reference-shelf { padding: 14px; }
+      .reference-head { align-items: flex-start; flex-direction: column; }
+      .reference-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .specimen-list { grid-template-columns: 1fr; }
+      .specimen-card { min-height: 0; }
+      .stage { min-height: 420px; }
+      .stage-top { left: 10px; right: 10px; top: 10px; }
+      .stage-bottom { left: 10px; right: 10px; bottom: 10px; }
+      .scene-stamp { left: 10px; bottom: 53px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <div class="brand" aria-label="The Fieldbook">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div>
+          <div class="brand-name">The Fieldbook</div>
+          <div class="brand-caption">An illustrated field opens into a world</div>
+        </div>
+      </div>
+      <div class="masthead-right">
+        <span class="pill">BSA · tenth edition · 1990</span>
+        <span class="pill warn">Source copy pending</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow">Scoutcraft cabinet · 3D prototype</div>
+        <h1 id="page-title">Open the field book<span>Step inside the diagram.</span></h1>
+      </div>
+      <div class="intro-copy">
+        <strong>The chosen reference is the 1990 Boy Scout Handbook, 10th edition.</strong>
+        The book itself has not been ingested. The four scenes below are original demonstration models—not a complete list, and not yet verified as objects or projects in that edition.
+      </div>
+    </section>
+
+    <main class="workspace">
+      <aside class="rail left-rail" aria-label="Prototype gallery index">
+        <div class="rail-head">
+          <h2>Field index</h2>
+          <span class="small-count">0 verified</span>
+        </div>
+        <label class="search-wrap">
+          <span class="sr-only" style="position:absolute;left:-9999px">Filter demo models</span>
+          <input id="catalog-search" type="search" placeholder="Find a demo model…" autocomplete="off">
+        </label>
+        <div id="specimen-list" class="specimen-list" aria-live="polite"></div>
+        <div class="inventory-note">
+          <span class="stamp">Evidence gate · not complete</span>
+          <strong id="specimen-count">4 demo specimens · 0 verified entries</strong><br>
+          Once the owned copy is supplied, I can build the page-by-page index and mark only source-checked models as verified.
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="Interactive Three.js specimen stage">
+        <div class="stage-top">
+          <span id="entry-number" class="entry-number">DEMO 01 / 04</span>
+          <div class="stage-controls" aria-label="3D controls">
+            <button id="previous-specimen" class="icon-button" type="button" aria-label="Previous demo specimen" title="Previous specimen">‹</button>
+            <button id="spin-toggle" class="icon-button" type="button" aria-pressed="true">Pause orbit</button>
+            <button id="reset-view" class="icon-button" type="button" aria-label="Reset camera" title="Reset view">Reset</button>
+            <button id="next-specimen" class="icon-button" type="button" aria-label="Next demo specimen" title="Next specimen">›</button>
+          </div>
+        </div>
+        <div id="world"></div>
+        <div id="webgl-fallback" hidden role="status"></div>
+        <div class="scene-stamp">Demo geometry · source unverified</div>
+        <div class="stage-bottom" aria-hidden="true">
+          <span>Drag to orbit · wheel to zoom</span>
+          <span>← → change specimen · R reset</span>
+        </div>
+      </section>
+
+      <aside class="rail right-rail" aria-label="Specimen notes and source status">
+        <section class="specimen-block">
+          <div class="specimen-status">Original model · page not checked</div>
+          <h2 id="specimen-title">Tripod lashing</h2>
+          <div id="specimen-category">Pioneering · demo</div>
+          <p id="specimen-teaser">Three poles meet at a lashing; a hanging pot gives the silhouette scale.</p>
+        </section>
+        <section class="detail-section">
+          <div class="detail-label">Model note</div>
+          <div id="specimen-description">A procedural geometry demo. No handbook page has been checked yet.</div>
+        </section>
+        <section class="detail-section">
+          <div class="detail-label">Source record</div>
+          <div class="source-row"><span>Edition</span><span>Boy Scout Handbook · 10th · 1990</span></div>
+          <div class="source-row"><span>Page</span><span id="specimen-page">Not checked — book copy pending</span></div>
+          <div class="source-row"><span>Assets</span><span>No book scan or copied illustration</span></div>
+        </section>
+        <section class="proof-card">
+          <h3>Take the model with you</h3>
+          <p>Export this original demo as a small VRML 2.0 file. The export carries the same “source unverified” note.</p>
+          <div class="export-row">
+            <span id="vrml-filename">tripod-lashing.wrl</span>
+            <button id="download-vrml" class="primary-button" type="button">Export VRML</button>
+          </div>
+        </section>
+        <section class="detail-section">
+          <div class="detail-label">Next step</div>
+          <div class="footnote">Upload your legally owned handbook copy or selected pages in the conversation. I can then extract the illustrated-project inventory, cite page numbers, and replace these demos with a source-checked catalog. This app makes no network upload.</div>
+          <div class="nav-row">
+            <button id="next-specimen-footer" class="secondary-button" type="button" aria-label="Show next demo specimen">Next demo →</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <section class="reference-shelf" aria-labelledby="reference-title">
+      <div class="reference-head">
+        <div>
+          <div class="eyebrow">Historical cross-checks</div>
+          <h2 id="reference-title">Earlier handbook editions</h2>
+        </div>
+        <span class="small-count">Comparators · not 1990 sources</span>
+      </div>
+      <div class="reference-grid">
+        <article class="reference-card">
+          <span class="specimen-kicker">1911 · first edition · U.S. public domain</span>
+          <h3>Project Gutenberg #29558</h3>
+          <p>Its contents map early Scoutcraft, Woodcraft, Campcraft, tracking, first aid, games, and citizenship topics. Useful for history—not evidence for 1990 page numbers.</p>
+          <div class="reference-links">
+            <a href="https://www.gutenberg.org/ebooks/29558" target="_blank" rel="noopener noreferrer">Open the eBook ↗</a>
+            <a href="https://www.gutenberg.org/cache/epub/29558/pg29558-images.html" target="_blank" rel="noopener noreferrer">Illustrated HTML ↗</a>
+          </div>
+        </article>
+        <article class="reference-card">
+          <span class="specimen-kicker">1967 · seventh edition</span>
+          <h3>The Official Boy Scout Handbook</h3>
+          <p>An Internet Archive catalog confirms the 1967 seventh edition. The supplied PDF link did not load for inspection; no scan or copied page art is bundled here.</p>
+          <div class="reference-links">
+            <a href="https://archive.org/details/officialboyscout71967boys" target="_blank" rel="noopener noreferrer">IA catalog ↗</a>
+            <a href="https://scouting4boysorg.wordpress.com/wp-content/uploads/2017/12/boy-scout-handbook-1967-processed.pdf" target="_blank" rel="noopener noreferrer">Provided PDF ↗</a>
+          </div>
+        </article>
+        <article class="reference-card">
+          <span class="specimen-kicker">1979 · ninth edition · borrow access</span>
+          <h3>Official Boy Scout Handbook</h3>
+          <p>The 586-page Internet Archive record is access-restricted. It is a closer pre-1990 comparison point, but cannot verify the selected edition’s illustrations or pagination.</p>
+          <div class="reference-links">
+            <a href="https://archive.org/details/officialboyscout00hill/mode/1up" target="_blank" rel="noopener noreferrer">IA catalog ↗</a>
+          </div>
+        </article>
+      </div>
+      <p class="reference-rule"><strong>Source rule:</strong> Only the selected 1990 tenth edition can verify the requested inventory. These earlier editions remain separate historical references; no entry is inferred from them.</p>
+    </section>
+
+    <footer class="footer">
+      <span>Source status: no scan included · 4 unverified demo models · 0 handbook entries indexed</span>
+      <span>Built with local Three.js · <a href="../docs/scouting-field-trip-research-2026-11-01.md">research note</a></span>
+    </footer>
+  </div>
+  <noscript><p style="padding:1rem;color:#f1d794">Enable JavaScript to explore the interactive 3D models. The source-status notes remain valid: this is a prototype, not a verified handbook index.</p></noscript>
+  <script type="module" src="../js/scoutbook-pagemaster.js"></script>
+</body>
+</html>
