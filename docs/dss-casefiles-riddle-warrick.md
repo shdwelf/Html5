@@ -22,13 +22,16 @@ says:
 >
 > — Kv QW n df
 
-The dossier renders it verbatim with our reading: the veiled lady in white is
-the albedo, the King is gold (79), the red Servant the red man/sulphur,
-"dying and recreated" the lunar/silver phase, and the Camelion is *mercurius* —
+The dossier renders it verbatim with the order-corrected reading: the veiled
+lady in white is the albedo, the King is gold (79), the red Servant is Mars / the
+red man (iron, 26; sulphur is the older competing identification), "dying and
+recreated" is the lunar/silver phase (47), and the Camelion is *mercurius* —
 whom the alchemists literally called the chameleon, "more sublime than the
-King... but fugitive", punning on Maier's *Atalanta Fugiens*. The strongest
-numeric reading is atomic numbers: **26 (or 97 = 79 reversed) . 47 . 79 . 80**.
-Nobody has publicly confirmed the answer; the lab files it OPEN.
+King... but fugitive", with a possible Maier *Atalanta Fugiens* echo. Respecting
+the riddle's explicit order yields the atomic-number candidate **47 . 26 . 47 . 80**.
+The older first-pass **26 . 47 . 79 . 80** is superseded: it includes the King,
+who is only a comparison figure, and puts the figures out of the stated order.
+The new candidate remains unconfirmed; the lab files the case OPEN.
 
 The trail: the riddle's pointer `kr0mecorp.home.ml.org` was a Monolith
 redirect — Monolith shut down **Dec 15 1998**, and the Wayback's captures of

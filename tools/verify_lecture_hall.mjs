@@ -771,6 +771,47 @@ if (!existsSync(SUITE)) {
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
   check(Array.isArray(records) && records.length === 34, `lecture hall holds ${records.length} records`);
+  const hallKr0me = records.find((entry) => entry.id === "kr0mecorp");
+  const hallKr0meText = hallKr0me ? JSON.stringify(hallKr0me) : "";
+  check(
+    hallKr0meText.includes("MMOS2TQI5722PUSYVTROIMSZEYIJH5G4") &&
+      hallKr0meText.includes("47·26·47·80") &&
+      /never confirmed|not confirmed/i.test(hallKr0meText) &&
+      /open/i.test(hallKr0meText),
+    "Intelligence Lecture Hall keeps the digest-pinned Kr0me riddle, corrected unconfirmed reading, and open verdict",
+  );
+  check(
+    hallKr0meText.includes("ReverseCodeEngineeringRceCdsandman2000.iso") &&
+      hallKr0meText.includes("b12b847879f5ac22d830be9085f1a98ffe08b99c") &&
+      /not named openrce\.iso/i.test(hallKr0meText) &&
+      /contents have not been inspected/i.test(hallKr0meText),
+    "Lecture Hall distinguishes the hash-pinned +sandman RCE CD lead from OpenRCE.org and from the riddle evidence",
+  );
+
+  // The archive-history monograph is a separate pane in the suite, but it is
+  // the visible research bridge between Kr0meCorp and the lecture hall. Keep
+  // its old "no riddle transcript" claim from silently returning.
+  const monographsLiteral = literalAt(src, "Wc=[");
+  const monographs = monographsLiteral
+    ? vm.runInNewContext(`(${monographsLiteral.text})`, Object.create(null), { timeout: 2000 })
+    : [];
+  const kr0meMonograph = monographs.find((entry) => entry.id === "art-reverse-lore");
+  const kr0meText = kr0meMonograph?.content || "";
+  check(
+    kr0meText.includes("MMOS2TQI5722PUSYVTROIMSZEYIJH5G4") &&
+      kr0meText.includes("47.26.47.80") &&
+      /case remains OPEN/.test(kr0meText) &&
+      /Follow the path of the one who hath her face covered/.test(kr0meText) &&
+      !/no primary Kr0meCorp page.*riddle transcript has surfaced/i.test(kr0meText),
+    "Kr0meCorp monograph carries the digest-pinned riddle, corrected candidate, and open verdict — not the obsolete missing-transcript claim",
+  );
+  check(
+    kr0meText.includes("ReverseCodeEngineeringRceCdsandman2000.iso") &&
+      kr0meText.includes("b12b847879f5ac22d830be9085f1a98ffe08b99c") &&
+      /not an OpenRCE.org ISO/.test(kr0meText) &&
+      /contents have not been inspected/i.test(kr0meText),
+    "related RCE CD lead is hash-pinned and explicitly distinguished from OpenRCE.org and uninspected riddle evidence",
+  );
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
