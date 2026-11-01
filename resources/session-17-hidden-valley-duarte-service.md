@@ -1081,6 +1081,154 @@ Historian* Robinson issue; Caltech's auxiliary-station inventory; and
 the Dalton Hotshots' original 1953 roster. No agency, library, or
 individual was contacted in this pass.
 
+## 3l. Addendum 11 — San Gabriel gold, Fairplex beekeeping and fire lookout, Morris Dam and Aerojet (1 Nov 2026)
+
+### 1. California gold in the area — regional history is not a Big Dalton mine record
+
+Gold is a documented San Gabriel Mountains subject, but the best-known
+regional accounts concern **Placerita Canyon, San Gabriel Canyon / the
+East Fork, and the broader San Gabriel mining district**, not a proven
+commercial mine in Big Dalton Canyon. The Forest Service calls the 1842
+Placerita Canyon discovery California's first authenticated gold
+discovery; its Angeles cultural-history page says miners later opened
+placer and lode workings across the San Gabriels, with many ventures
+inactive by 1896 and the last serious regional mining flurries largely
+over by the late 1930s (Sources 53–54).
+
+Azusa's official history places a separate gold discovery in **San
+Gabriel Canyon in 1854** and describes **El Doradoville** at the East
+Fork as a mining settlement serving roughly 2,000 claim-filers; it repeats
+an estimate of $12 million mined and shipped over the following 20 years
+(Source 52). The Forest Service describes the town's 1861 peak as more
+than 500 miners (Source 53). Those numbers may describe different things
+(claimants across the canyon versus town population), and the City's
+$12-million figure is a local-history estimate, not a verified
+production ledger; keep it distinct from district-wide figures.
+
+A U.S. Geological Survey summary of the **San Gabriel district** says
+placer mining along the San Gabriel River was intermittent from 1848;
+it reports historical estimates of more than $2 million (about 100,000
+ounces) of placer gold before 1874, about 20,000 ounces after 1880, and
+about 50,000 ounces from lodes, for roughly 165,000 ounces total. These
+figures summarize a broad district, not the Big Dalton watershed, and
+should be cited as historical estimates (Source 56). The 1954 Gay and
+Hoffman Los Angeles County mineral survey is a useful underlying
+reference, but its full text was not retrieved (Source 68).
+
+One named USGS record of possible regional relevance is the **Baker and
+Austin Placer** (Mineral Resources Data System record 10285184). It lists
+gold and placer type in the Angeles National Forest, within the San
+Gabriel hydrologic unit, on the Glendora quadrangle, at approximately
+34.24142° N, 117.85029° W. Crucially, USGS classifies it as a **site /
+occurrence**, marks it “not significant,” supplies no workings or
+production history, and gives its point a **1,000-meter location
+accuracy**; its cited source is a 1937 California mines map (Source 55).
+It is a real map/database lead in the broader Glendora-quadrangle / San
+Gabriel area, **not proof of a productive mine or that the point lies in
+Big Dalton Canyon itself**.
+
+For present-day legality, the Forest Service says there is no active
+mining currently authorized on public lands within the San Gabriel
+Mountains National Monument expansion; much of the monument was already
+withdrawn from mineral entry under the 1928 Los Angeles Watershed
+Withdrawal Act, and the 2014/2024 monument designations withdraw their
+expansion areas (Source 53). Do not infer that an old occurrence record
+is open to prospecting; exact land and claim status would have to be
+checked with the Forest Service.
+
+### 2. Fairplex has both a bee-education booth and the relocated Johnstone lookout
+
+The best named match for “the beekeeper at the Los Angeles County
+Fairgrounds” is **Kevin Heydman**, identified by the Los Angeles County
+Beekeepers Association (LACBA) as its 2026 representative-at-large. The
+Association describes him as a commercial beekeeper with more than 20
+years of experience and says he spends a week in charge of the Fair's
+**Bee Booth**, supervising volunteers and educating the public (Source
+59). LACBA also lists **Cynthia Caldera** as the Bee Booth committee
+chair and says other members volunteer there. The Fair booth is a
+seasonal educational display—bee observation hive, honey table, and
+local-honey sales—not evidence of a permanent apiary or a resident
+Fairplex beekeeper (Sources 59–60).
+
+One dating caveat: Heydman's LACBA biography says “September,” but
+Fairplex's official announcements place the 2024 and 2025 County Fairs
+in **May**; LACBA's own 2025 calendar also lists a Fair event in May.
+The profile may describe an older schedule, so a current 2026 shift/date
+was not independently confirmed (Sources 59–60). A 2019 LACBA photo is
+captioned **“Beekeeper Bob”** without a surname or other identification;
+there is no basis to equate that captioned figure/person with Heydman
+(Source 59).
+
+The Fairplex also displays the historic **Johnstone Peak Lookout**,
+formerly the San Dimas Peak Lookout. Its original mountain site sits
+between San Dimas and **Big Dalton Canyons**, above the two watersheds.
+The local lookout history dates the first San Dimas tower to 1917, says
+a 1919 fire destroyed it, and describes a 1923 replacement followed by
+a steel tower in the 1930s. In June 1924, lookout guard **J. A. Ball**
+reportedly spotted a fire burning up Big Dalton and moving toward the
+tower—an unusually direct connection to the canyon investigation
+(Source 57). The lookout was renamed for conservationist William A.
+Johnstone in 1940. The exact construction date of the later steel tower
+is inconsistent across sources: the local history says “1930s,” while
+the Fairplex register entry says **1939** and a marker summary says
+**1934**. Treat the precise year as unresolved (Sources 57–58).
+
+The original tower was taken off the mountain and reconstructed at
+Fairplex in **1992**, with its cab reduced; the register lists it as an
+interpretive site, administered by Fairplex and operated during the
+County Fair by volunteers from the Angeles National Forest Fire Lookout
+Association and Southern California Mountains Foundation Fire Lookout
+Program (Source 58). It is therefore the **same fairground venue**, but
+the beekeeper booth and lookout are separate displays run by different
+organizations; no source links their staff or identifies a person who
+served both roles. The original Johnstone Peak site is within the San
+Dimas Experimental Forest, not the Fairplex site (Sources 57–58).
+
+### 3. Morris Dam, torpedo tests, and the Aerojet connection
+
+Morris Dam was completed in **1934** as a Pasadena water project
+(Source 66). In 1943 the Department of the Navy built a 20-acre
+research and development facility on the reservoir peninsula and used
+the reservoir as a test range. The Navy says Caltech operated the facility from 1943 to 1950 as
+an annex of the Naval Ordnance Test Station (NOTS) at China Lake; the
+NOTS Pasadena group created the Morris Dam Propulsion Laboratory for
+hydro-propulsion research. From about 1945 until operations ended in
+**June 1993**, the site was used primarily for torpedo-system testing.
+Tests launched torpedoes into the reservoir to study water entry and
+performance; a 1949 U.S. Naval Institute article already describes
+Morris Dam as a NOTS adjunct for underwater ordnance and water-entry
+studies. The surviving HAER documentation records the fixed- and
+variable-angle launcher complex, camera stations, and camera track
+(Sources 60–62, 67).
+
+A separate Caltech/JPL thread should not be conflated with Aerojet:
+NASA's Jet Propulsion Laboratory recounts 1943 field tests at Morris
+Dam of **underwater solid-rocket motors** under an Army Air Corps
+contract. Those were rocket-motor experiments, not proof that Aerojet
+ran the Morris Dam torpedo range (Source 63).
+
+There is nevertheless a strong **institutional and chronological**
+Aerojet link. E. W. Jolie's 1978 U.S. Navy torpedo history says the
+**Mark 46** was developed in 1960 by **NOTS Pasadena and Aerojet General
+in Azusa**, and that Aerojet production began in 1963 (Source 64).
+Morris Dam's Navy test facility remained active until 1993, overlapping
+the Mark 46 development and production years (Source 61). But the
+sources reviewed do **not** name a Mark 46 prototype or production
+torpedo as having been launched at Morris Dam, nor do they establish
+that Aerojet personnel operated at the peninsula. The defensible result
+is **two separately documented facts**—a NOTS Pasadena/Aerojet Mark 46
+development and a contemporaneous Navy torpedo-test range at Morris
+Dam—not a confirmed model-specific Morris Dam test. The 1964 NOTS report titled
+*Morris Dam Propulsion Laboratory* is a promising primary-record lead;
+DTIC metadata identifies its authoring station, but the full report was
+not available during this pass (Source 65).
+
+The Navy's restoration pages also describe former torpedo-propellant,
+fuel, solvent, and metal-handling areas and later site cleanup; HAER's
+historical survey documents the launch facilities rather than making
+the former test peninsula a public attraction. Do not treat historic
+remains as permission to enter the former test site (Sources 60–61).
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -1158,6 +1306,20 @@ individual was contacted in this pass.
     Company distinct from the crew organized as Dalton Hotshots in 1953.
     See Addendum 10 and Sources 37–49, 51; no agency or person was
     contacted.
+11. **San Gabriel gold / Fairplex Bee Booth and Johnstone lookout /
+    Morris Dam–Aerojet** — the Baker and Austin Placer is an imprecise
+    USGS occurrence record, not proof of a productive Big Dalton mine.
+    The 1954 Gay and Hoffman Los Angeles County mineral survey and its
+    source 1937 map remain to be obtained. The best named Bee Booth lead
+    is Kevin Heydman, but the LACBA profile's September schedule conflicts
+    with the Fair's move to May and his current-year shift has not been
+    confirmed; “Beekeeper Bob” is unidentified. Johnstone Peak's 1924
+    Big Dalton fire-detection story and exact 1930s tower date still need
+    a contemporary Forest Service or newspaper record. NOTS/Pasadena and
+    Aerojet jointly developed Mark 46, and the Morris Dam test range was
+    active at the time, but no model-specific Morris Dam launch record
+    was located. See Addendum 11 and Sources 52–68; no person or agency
+    was contacted.
 
 ## Sources
 
@@ -1504,3 +1666,112 @@ individual was contacted in this pass.
     twenty SDEF facilities and contrasts its priority project with the
     primarily routine work of all-African-American Company 2924-C / Camp
     Castaic.
+52. City of Azusa, “Azusa History”
+    (https://www.azusaca.gov/569/Azusa-History): the City's history page
+    dates the San Gabriel Canyon gold discovery to 1854 and gives the
+    El Doradoville / 2,000 claim-filers / $12-million estimate; the page
+    text is dynamically loaded, so the figures were checked in its
+    search-indexed text and are retained as the City's estimate.
+53. USDA Forest Service, “San Gabriel Mountains National Monument”
+    (https://www.fs.usda.gov/visit/national-monuments/san-gabriel-mountains-national-monument):
+    calls Placerita Canyon the 1842 first authenticated California gold
+    discovery, describes El Doradoville's 1861 peak (>500 miners), and
+    summarizes mineral-withdrawal rules for the monument.
+54. USDA Forest Service, Angeles National Forest, “Archaeology and
+    Cultural Resources”
+    (https://www.fs.usda.gov/r05/angeles/natural-resources/arch-cultural):
+    summarizes San Gabriel Mountains placer/lode mining, many workings
+    inactive by 1896, and the last serious regional mining flurries by
+    the late 1930s.
+55. U.S. Geological Survey, Mineral Resources Data System, “Baker and
+    Austin Placer” (MRDS 10285184)
+    (https://mrdata.usgs.gov/mrds/show-mrds.php?dep_id=10285184): gold
+    placer occurrence, coordinates, 1,000-meter location accuracy,
+    Angeles National Forest / San Gabriel hydrologic unit, and cited
+    1937 mines-map reference; no production or workings are recorded.
+56. A. H. Koschmann and M. H. Bergendahl, *Principal Gold-Producing
+    Districts of the United States*, USGS Professional Paper 610 (1968;
+    https://doi.org/10.3133/pp610; Alaska DGGS bibliographic record
+    https://dggs.alaska.gov/pubs/id/3928), San Gabriel district passage
+    transcribed at Western Mining History
+    (https://westernmininghistory.com/library/38/page1/). The USGS PDF
+    did not parse in this pass; use the reproduced passage as a
+    transcription of historic district estimates, not a new assay.
+57. Angeles Adventures, “San Dimas/Johnstone Peak Lookout”
+    (https://angelesadventures.com/san-dimas-johnstone-peak/), a local
+    secondary history for the 1917/1919/1923 sequence, tower location
+    between San Dimas and Dalton canyons, J. A. Ball's reported 1924
+    Big Dalton fire detection, 1940 renaming, later observer leads, and
+    relocation; exact later tower year is not supplied consistently.
+58. National Historic Lookout Register, “Johnstone Peak Lookout (Los
+    Angeles County Fairplex)” (US 1379 / CA 202; registered 2 Nov 2019)
+    (http://nhlr.org/lookouts/us/ca/johnstone-peak-lookout-los-angeles-county-fairplex/),
+    for its 1992 Fairplex move, interpretive use, Fair volunteers,
+    and original coordinates; compare the Historical Marker Database
+    “Johnstone Peak Fire Lookout” (m=272352;
+    https://www.hmdb.org/m.asp?m=272352), which gives 1934 rather than
+    the Register's 1939 construction date.
+59. Los Angeles County Beekeepers Association, “Officers & Committees”
+    (https://www.losangelescountybeekeepers.com/about-officers), 2026
+    roster and Kevin Heydman's Bee Booth role; “LA County Fair Bee
+    Booth” (https://www.losangelescountybeekeepers.com/bee-booth-la-county-fair),
+    2017 booth details; and “LA County Fair Bee Booth Set Up” (24 Aug
+    2019;
+    https://www.losangelescountybeekeepers.com/blog/2019/8/24/la-county-fair-bee-booth-set-up),
+    including the unidentified “Beekeeper Bob” caption.
+60. Fairplex, “Announcing LA County Fair Theme and Dates for 2024”
+    (15 Nov 2023;
+    https://blogs.fairplex.com/blog/fairblog/2023/11/15/announcing-la-county-fair-theme-and-dates-for-2024/)
+    and “Announcing LA County Fair 2025: Art Unleashed Theme, Dates”
+    (9 Sep 2024;
+    https://blogs.fairplex.com/blog/fairblog/2024/09/09/announcing-la-county-fair-2025-art-unleashed-theme-dates/),
+    official May dates for both years; LACBA calendar, “LA County Fair”
+    (https://www.losangelescountybeekeepers.com/calendar/2023/5/4/la-county-fair-n2c6f-h2yh9-pk9hn-hftkj-mmeng-prg6g-5rcd4),
+    lists a May 2025 association event. This contrasts with “September”
+    in Heydman's profile and does not confirm his 2026 shift.
+61. Naval Facilities Engineering Systems Command (NAVFAC Southwest),
+    “Former Naval Command, Control, and Ocean Surveillance Center Morris
+    Dam” history
+    (https://www.navfac.navy.mil/Divisions/Environmental/Products-and-Services/Environmental-Restoration/Southwest/Morris-Dam-NCCOSC/)
+    and “Site Descriptions”
+    (https://www.navfac.navy.mil/Divisions/Environmental/Products-and-Services/Environmental-Restoration/Southwest/Morris-Dam-NCCOSC/Site-Descriptions/):
+    1943 construction, Caltech/NOTS operation, torpedo test mission,
+    1993 closure, propellant/chemical use and cleanup.
+62. Library of Congress, Historic American Engineering Record, HAER
+    CA-169, *Variable Angle Launcher Complex*
+    (https://www.loc.gov/item/ca2094/) and linked photo/data records
+    (https://www.loc.gov/resource/hhh.ca2094.photos): Navy-sponsored
+    survey and photographs of the Morris Dam launch, camera, and control
+    facilities.
+63. NASA Jet Propulsion Laboratory, “Morris Dam Test Facility — 1943”
+    (1 Dec 2015;
+    https://www.jpl.nasa.gov/blog/2015/12/morris-dam-test-facility-1943):
+    JPL's account of 1943 underwater solid-rocket-motor field tests
+    under Army Air Corps contract.
+64. E. W. Jolie, *A Brief History of U.S. Navy Torpedo Development*
+    (Naval Underwater Systems Center, 1978), Part 2
+    (https://legacy.maritime.org/doc/jolie/part2.php) and references,
+    Part 3 (https://legacy.maritime.org/doc/jolie/part3.php): identifies
+    the Mk 46 as a 1960 joint NOTS Pasadena / Aerojet General (Azusa)
+    development and dates Aerojet production to 1963.
+65. Defense Technical Information Center (DTIC), “Morris Dam Propulsion
+    Laboratory” (AD0609819, report date 1 Nov 1964;
+    https://apps.dtic.mil/sti/citations/AD0609819): catalog metadata
+    identifies NOTS China Lake as corporate author; the full-text page
+    was under maintenance and the report has not been reviewed.
+66. American Society of Civil Engineers, “Morris Dam” historic landmark
+    profile (https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/morris-dam),
+    for completion in 1934, Pasadena Water Department construction,
+    current County ownership, and the dam's documented history as an
+    underwater ordnance test site.
+67. U.S. Naval Institute, “By the Rocket's Red Glare: Inyokern,”
+    *Proceedings*, Nov 1949
+    (https://www.usni.org/magazines/proceedings/1949/november/rockets-red-glare-inyokern):
+    contemporary description of Morris Dam as a NOTS adjunct range for
+    underwater ordnance and water-entry ballistics.
+68. T. E. Gay, Jr., and S. R. Hoffman, “Mines and Mineral Deposits of
+    Los Angeles County, California,” *California Journal of Mines and
+    Geology* 50, nos. 3–4 (July–October 1954), pp. 467–709; bibliographic
+    entry in “California Printed Sources — M” (Quarries & Beyond,
+    https://quarriesandbeyond.org/states/ca/sources/ca-sources_m.html).
+    The county survey's full text was not retrieved.
