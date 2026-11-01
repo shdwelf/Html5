@@ -818,6 +818,269 @@ park remains verified; “not far” remains unverified.** Request 7 in
 session-18 now links the official map route and directs the family to
 ask the information office for plot-specific directions.
 
+## 3j. Addendum 9 — Sellers Elementary cookbook and Glendora archive lead (1 Nov 2026)
+
+### 1. School identity confirmed; cookbook still unidentified
+
+On **1 November 2026**, the user confirmed that the intended school is
+**Margaret R. Sellers Elementary in Glendora**. The school's official
+history places it at 500 North Loraine Avenue, says it opened on 18 March
+1957, and says it was named for Margaret R. Sellers, a longtime district
+teacher and principal (Source 33). EdData lists **“Date Opened
+07/01/1980”** for the current Glendora Unified school code (Source 36).
+The pages do not explain this discrepancy; neither date should be used
+to date the cookbook until reconciled. The school identity is settled by
+the user's confirmation, but the cookbook's title, edition, cover,
+publication year, digitized status, and any Hewitt contribution remain
+unverified.
+
+The 1968 *PTA cookbook* OCR hit remains separate evidence: it credits
+“Mrs. Maurice Hewitt, Pres. Andres Duarte PTA / Duarte, California.”
+Louise is a plausible match because her obituary independently says she
+was PTA president for many years, but the scanned entry has not been
+visually checked. The family belief that the recipe is hers is not a
+verified attribution and does not establish a link to the Sellers
+cookbook.
+
+### 2. Digitized-version search — no copy identified
+
+The Glendora Community Archive's public title list includes **Cookbooks
+(1976–2015), 2,405 pages** (Source 34). The Library's 7 May 2025
+“Preserving Glendora's History through Recipes” notice solicits local
+school, church, and community cookbooks and says many will be digitized
+into the Community Archive (Source 35). The archive home page exposes
+the collection entry, but opening its Cookbooks search route triggered a
+Cloudflare human-verification screen. That prevented item-level
+searching here; it is **not** evidence the Sellers book is absent.
+
+A separate **Community Cookbooks Archive** catalogs nearly 400 Los
+Angeles-area community cookbooks. Its search page says full-text search
+of scans is still in progress, and the public title/browse pages did not
+surface a Sellers title (Source 50). This is a bounded search negative,
+not proof of absence: the title may be unindexed, hidden behind a dynamic
+“load more” list, or held only as a physical copy. Targeted public-web
+and Internet Archive metadata searches for “Sellers Elementary” plus
+“cookbook” likewise surfaced no edition or scan.
+**No digitized Sellers cookbook has been found.**
+
+### 3. Next step and contact boundary
+
+Letter 8 in session-18 is now a **draft inquiry** to Glendora Public
+Library staff asking them to check both physical holdings and the digital
+archive for Margaret R. Sellers Elementary cookbook(s), and to provide
+title/year, creator or name indexing, consultation options, and any
+online-copy or scan route. It no longer asks which Sellers school the
+family means. The family can still provide the cover/title page,
+approximate year, or a contributor/recipe-page photo to narrow the
+search. **No library or school has been contacted; do not send the draft
+without the user's authorization.** Any research photo copies remain
+local and must not be re-hosted.
+
+## 3k. Addendum 10 — Big Dalton, San Dimas Experimental Forest, and the people/instrument leads (1 Nov 2026)
+
+The requested names and topics touch the same landscape but not one
+single organization or chain of employment. The records support real
+connections among the **Big Dalton watershed, the County dam, the San
+Dimas Experimental Forest (SDEF), Tanbark Flats, and the later Dalton
+Hotshots**; they do **not** establish a Hewitt-family link to the canyon,
+a Big Dalton bee ranch, or a regular weekend dam-keeper schedule.
+
+### 1. Names and the “weekend dam keeper” question
+
+The strongest named caretaker/keeper sequence found in the local Glendora
+Natural History compilation is **Paul Keiser (1945), Dick Strahan
+(1995–96), and Kevin Sweeney (2011)**. This is a local compiled-record
+sequence, **not** an official County personnel roster or a complete
+chronology (Source 37). Exact searches for **“Dick Sweeney”** and **“Richard
+Stram”** did not establish either as a Big Dalton dam keeper. The closest
+written forms are potentially easy to blend in recollection—**Dick
+Swinney**, compiler and co-author of Glendora park/natural-history
+records; **Kevin Sweeney**, listed in a 2011 local record as a Big Dalton
+Dam caretaker; and **Dick Strahan**, the 1995–96 local caretaker lead.
+They remain distinct names; no record shows that any two are the same
+person. “Richard Stram” may resemble Strahan, but that is only a search
+lead, not an identification. **Paul Keiser is not assumed to be related
+to Lahla M. Keiser**, the author of *Glendora’s Backyard Big Dalton
+Canyon*.
+
+The 1977 park report's “busy every weekend” wording describes park
+facilities/recreational use, not the dam's staffing. The 1978 and 1989
+park reports refer to **Camp Miller/YMCA and a separate caretaker
+house** (removed by the City in 1987), not to a Flood Control District
+dam shift. The 1977 report also identifies **George Hills** as a
+maintenance man/caretaker/naturalist for **Monrovia Wilderness Park**,
+a different park. Those are not evidence of a Big Dalton weekend rota (Sources 37–38).
+
+Historic American Engineering Record material documents a **dam-tender
+office/control-house function** and a separate **Shelter House** at the
+dam, including a 1941 Shelter House plan and storm-time quarters, but
+names no tender and gives no recurring weekend duty schedule. The
+physical facilities show that staff could work or shelter there; they do
+not identify a resident or establish continuous/weekly coverage.
+
+### 2. Keep the agencies and geographies separate
+
+- **Big Dalton Dam** was built in 1927–29 by the Los Angeles County
+  Flood Control District for flood control and water conservation; it is
+  now operated/maintained through County Public Works. The 1977 park
+  report places the dam at the northeast boundary of the City park and
+  calls it a County facility.
+- **San Dimas Experimental Forest** is a USDA Forest Service Pacific
+  Southwest Research Station field laboratory inside the Angeles
+  National Forest. Its research area encompasses the upper Big Dalton
+  and San Dimas watersheds, and the County dams sit inside that federal
+  research landscape while remaining County facilities.
+- **Big Dalton Canyon Wilderness Park** is the City of Glendora's
+  recreation area below/near the dam. The County dam tender, Forest
+  Service technician/research staff, Camp Miller caretaker, and City
+  park caretaker are not interchangeable jobs.
+
+The County's gage record identifies **F120B-R, Big Dalton Creek below
+Big Dalton Dam**, as a continuous water-stage recorder about 400 feet
+below the dam; its records span reservoir outflow from 1929 and recorder
+records from 1940 onward (Source 40). That is a hydrology station, not a
+seismograph and not a dam-keeper roster.
+
+### 3. Four instrument systems that should not be conflated
+
+1. **Caltech seismic network (1951):** Caltech's *Engineering and
+   Science* article “Earthquakes—Recorded on Tape” lists **Big Dalton**
+   among 13 auxiliary Southern California seismic stations. It says the
+   auxiliary stations automatically recorded earthquake data on
+   photographic sheets, which were sent to Pasadena once a week, with
+   outside-agency assistance. The article does **not** identify the
+   Big Dalton operator or specify that station's exact instrument. The
+   article's experimental seismic **tape recorder was at Caltech's
+   Pasadena laboratory**, not identified as equipment installed at Big
+   Dalton. So the remote Caltech station is documented, but the tape
+   machine should not be moved to the dam in the story (Source 41).
+2. **California strong-motion instrumentation (1976):** the CESMD/CGS
+   record for **Station 23247, Glendora—Big Dalton Dam**, lists nine
+   accelerometers at three locations on the dam crest, installed in
+   1976. This is a separate dam-monitoring program. Continuity with the
+   earlier Caltech auxiliary station is **unproven** (Source 42).
+3. **County stream/water-stage gage:** F120B-R below the dam continuously
+   records water stage/outflow. This is a separate hydrologic record,
+   not earthquake motion (Source 40).
+4. **SDEF precipitation gauges:** a Cal Poly Pomona hydrology thesis
+   describes a Forest Service weighing-bucket rain gauge whose rotating
+   chart drum and pen “resembles a seismometer.” It measures rainfall,
+   not ground motion; the thesis describes six standard Forest Service
+   rain gauges in the San Dimas watershed and two in the Big Dalton
+   watershed. This is a plausible explanation for a seismograph-like
+   device remembered at Tanbark or in the watershed, but it is **not
+   Caltech seismic equipment**. The thesis PDF link currently returns
+   “File Not Found”; the detailed passage survives in the search-indexed
+   excerpt (Source 45).
+
+### 4. SDEF and Tanbark Flats — dates, origins, and the Robinson article
+
+The SDEF's dates refer to different milestones: research operations
+began in **January 1933** when J. Donald Sinclair arrived; the Forest
+was formally established on **28 March 1934**; and it was dedicated on
+**15 June 1935**. Forest Service histories variously summarize the
+start or dedication as “established” in 1933/1935; the dated milestones
+explain most of the apparent difference (Sources 43–44).
+
+The SDEF contains the upper Big Dalton watershed, but Big Dalton Dam is
+a County structure within the research landscape. Tanbark Flats is the
+Forest Service field headquarters, with research/laboratory buildings,
+residences, barracks, a mess hall, historic lysimeters, weather and
+rainfall monitoring, stream gauges, and other hydrologic equipment. The
+County Forester **Spence Turner** had established an experimental tree
+nursery at Tanbark Flats by **1926**, and Los Angeles County built a
+road up the San Dimas West Fork to the site in **1928–29**. Thus the
+place name was in use by 1926; **no local source located in this pass
+explains why the site was called “Tanbark.”** The name's etymology
+remains open; do not infer a tannery or bark-stripping operation from
+the word alone.
+
+A legacy SDEF history page cites John W. Robinson's “The San Dimas
+Experimental Forest” and “History of the Dalton and San Dimas
+Watershed,” originally published in *Mt. San Antonio Historian*, vol.
+16, no. 3. The article(s) are not yet located in a digitized copy, so
+this is a concrete library/archive lead, not a reviewed primary source.
+CCC and WPA crews built the Tanbark research facilities; separate
+Conscientious Objector crews also contributed in the 1940s. PBS SoCal
+reports that the 1930s **Dalton Company, one of the white CCC camps, was
+assigned to construct twenty facilities for the SDEF**; the article
+contrasts this priority assignment with the all-African-American Company
+2924-C / Camp Castaic's primarily routine forest projects. This is a
+concrete **Dalton Company–SDEF** link and evidence of racially segregated
+work allocation, but the 1930s CCC company is not the **Dalton Hotshots**
+(organized in 1953) and is not evidence of a family connection (Source
+51).
+
+### 5. Dalton Hotshots — a documented Tanbark connection, contested first foreman
+
+The Forest Service's crew history says the **Dalton Hot Shot Crew** was
+organized in September 1953 under foreman **Charles “Chuck” Culver**;
+it places the crew at Tanbark Flats in **1959** and again in **1965–69**,
+with a return to the Dalton CCC camp in between and a new barracks in
+1970 (Source 46). This is a direct, documented SDEF–Hotshots connection
+through shared Tanbark facilities.
+
+A 2025 *La Verne Magazine* feature instead calls **Charles “Chuck”
+Hartley** the original 1953 foreman, but also says he joined the Forest
+Service in 1956 and later became Dalton's superintendent. The two
+accounts conflict; no original 1953 roster was located. Use the Forest
+Service's Culver account as the best available official chronology, but
+keep the discrepancy visible. Do not conflate **Culver**, **Hartley**,
+SDEF author **Charles G. Colver**, or family member **Charles Frederick
+“Chuck” Hewitt** (born 1946; seven years old when the crew formed).
+No link between Hewitt and the Dalton Hotshots has been found.
+
+### 6. Bee history — Henry Dalton points to Azusa, not Big Dalton Canyon
+
+The Forest Service says Dalton Canyon was named for **Henry Dalton**.
+Azusa's municipal history credits Henry Dalton and Captain J. R. Gordon
+with importing 15 stands of Italian honey bees in 1874. But the
+Los Angeles County Beekeepers Association's transcription of the 1880
+county history dates O. W. Childs's first local hive to 1854 and quotes
+John Gordon as bringing 15 Italian hives in 1855; PBS SoCal likewise
+places Childs's first Southland hive in 1854 and notes earlier
+California bee imports. These accounts disagree on dates/attribution,
+so the “first U.S. honey bees” claim should not be repeated as settled
+fact (Source 47).
+
+A separate, secondary Dalton-family-history page says Captain John T.
+Gordon later occupied the **Dalton Adobe in Azusa** as a bee ranch.
+That points to an Azusa/Rancho Azusa bee history, not a hive yard in
+Big Dalton Canyon. No source found in this pass places an apiary or a
+named beekeeper at Big Dalton Dam, Tanbark Flats, or in Big Dalton
+Canyon.
+
+### 7. Charles Frederick “Chuck” Hewitt and Mt. SAC horticulture
+
+Charles Frederick Hewitt's obituary confirms a professional path from
+the Los Angeles County Arboretum into horticulture/forestry teaching at
+Mt. San Antonio College, followed by service as a professor and Dean of
+Agriculture. It gives no Mt. SAC start/end dates and no Big Dalton,
+SDEF, bee-keeping, or Hotshots connection (Source 48).
+
+Mt. SAC Digital History searches for **“Hewitt”** and **“Charles
+Hewitt”** returned zero catalog items; the broader “horticulture” search
+returned ten, none identifying him. The June 1955 “Ornamental
+horticulture” image is an **unnamed student**; Hewitt, born in 1946,
+was eight or nine, so it is not evidence of him taking that class. The
+obituary supports him as a later horticulture educator, not as the
+student in that photo.
+
+### 8. What remains a paper-record question
+
+No official weekend dam-keeper roster, shift calendar, or personnel
+record has been located. A useful **unreviewed archival lead** is the
+UCR Water Resources Collections & Archives finding-aid entry for John
+Debo Galloway's papers: **1925 correspondence about the proposed Big
+Santa Anita and Big Dalton dams, Box 18, Item 93**. It may illuminate
+dam planning, but is not yet evidence about later staffing (Source 49).
+The most promising records for closing the remaining gaps are County
+Flood Control/Dam Safety inspection and operations logs; City Parks and
+Recreation/Camp Miller files; SDEF field logs and the *Mt. San Antonio
+Historian* Robinson issue; Caltech's auxiliary-station inventory; and
+the Dalton Hotshots' original 1953 roster. No agency, library, or
+individual was contacted in this pass.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -873,6 +1136,28 @@ ask the information office for plot-specific directions.
    and Drums founded 2011; whether Black Mountain issues squirrel
    cards (Tahquitz documented 1972–2025, Black Mountain not);
    Duarte High School class year (~1976).
+
+9. **Sellers Elementary cookbook** — the user confirmed on 1 Nov 2026
+   that the intended school is Margaret R. Sellers Elementary in
+   Glendora. The title, edition/year, digitized status, and any Hewitt
+   contributor remain unconfirmed; no public scan surfaced. Glendora's
+   Community Archive has a Cookbooks collection, but item-level search
+   is Cloudflare-blocked. Revised session-18 Letter 8 asks about both
+   physical and digital holdings without re-asking which school; send
+   only with user authorization. Keep the 1968 Duarte PTA cookbook lead
+   separate.
+10. **Big Dalton / SDEF / Tanbark / dam staffing / Hotshots** — local
+    records give the closest caretaker-name leads (Paul Keiser, Dick
+    Strahan, Kevin Sweeney) but no official roster or weekend schedule;
+    “Dick Sweeney” and “Richard Stram” remain unidentified. Caltech's
+    1951 auxiliary seismic station, the 1976 CSMIP accelerometers, the
+    County water-stage recorder, and SDEF rain gauges are separate
+    systems. SDEF–Tanbark–Hotshots links are documented; the local
+    Tanbark name origin, Robinson article, original 1953 Hotshots roster,
+    and any Big Dalton apiary remain open. Keep the 1930s Dalton CCC
+    Company distinct from the crew organized as Dalton Hotshots in 1953.
+    See Addendum 10 and Sources 37–49, 51; no agency or person was
+    contacted.
 
 ## Sources
 
@@ -1068,3 +1353,154 @@ ask the information office for plot-specific directions.
     (https://apps.forestlawn.com/maps/Covina/Covina_Index.pdf). These
     provide an official map route but do not establish the physical
     distance between the two grave locations without plot directions.
+33. Sellers Elementary School, official “History” page
+    (https://www.sellersvikings.org/apps/pages/index.jsp?uREC_ID=516752&type=d&pREC_ID=991713):
+    says the school is at 500 North Loraine Avenue in Glendora, opened
+    18 Mar 1957, and was named for Margaret R. Sellers, a longtime
+    district teacher and principal. The user confirmed this is the
+    intended school on 1 Nov 2026; that does not establish a particular
+    cookbook, digitized copy, or Hewitt family connection.
+34. Glendora Public Library Community Archive home
+    (https://glendora.historyarchives.online/) and City of Glendora,
+    “Community Archive & History”
+    (https://www.cityofglendora.gov/Explore/Public-Library/Community-Archive-History):
+    public title list shows “Cookbooks,” 1976–2015, 2,405 pages; the
+    direct collection-search route triggered Cloudflare human
+    verification during this research, so no item-level search was
+    completed.
+35. Glendora History Q&A, “Preserving Glendora's History through
+    Recipes,” 7 May 2025
+    (https://www.engageglendora.com/glendorahistoryqanda/news_feed/preserving-glendora-s-history-through-recipes):
+    the Library seeks local school, church, and community cookbooks and
+    says many items will be digitized into its Community Archive. City
+    of Glendora Public Library contact page
+    (https://www.cityofglendora.gov/Explore/Public-Library) lists
+    library@cityofglendora.gov; no contact has been made.
+36. EdData, “Sellers Elementary” profile
+    (https://www.ed-data.org/school/Los-Angeles/Glendora-Unified/Sellers-Elementary):
+    current Glendora Unified code 19-64576-6013908 lists “Date Opened
+    07/01/1980,” whereas the school's own history page says the school
+    opened 18 Mar 1957. The discrepancy is unresolved; no cookbook date
+    is inferred from either field.
+37. Glendora Natural History — Dick Swinney and Jeff Mann, *Big Dalton
+    Wilderness Park Final Report* (Nov 1977),
+    http://www.glendoranaturalhistory.com/BDWP_FnlRpt77.html; selected
+    items from the 1978 report,
+    http://www.glendoranaturalhistory.com/BDWP_FnlRpt78_Selected%20Items.html;
+    *Glendora Wilderness Park Report* (Jan 1989),
+    http://www.glendoranaturalhistory.com/GWP_Rpt89.html; and Swinney's
+    *Mammals of Glendora* / *Selected Bird Sightings* pages. These are
+    local compiled records and park reports, not an official County dam
+    personnel roster.
+38. City of Glendora, “Trails”
+    (https://www.cityofglendora.gov/Explore/Recreation/Trails), for the
+    City-operated Big Dalton Canyon Wilderness Area; Los Angeles County
+    Services Locator, “Big Dalton Wilderness Park”
+    (https://locator.lacounty.gov/lac/Location/3185559/big-dalton-wilderness-park),
+    likewise labels the park a City-operated facility.
+39. Library of Congress, HAER CA-227, *Big Dalton Dam*
+    (https://www.loc.gov/item/ca2546/), photo/caption record
+    (https://www.loc.gov/resource/hhh.ca2546.photos?st=gallery), and
+    HAER CA-227-A, *Big Dalton Dam, Shelter House*
+    (https://www.loc.gov/item/ca2547/). The records document the
+    control-house/shelter structures and the 14 Apr 1941 Shelter House
+    plan; they name no keeper or weekend schedule.
+40. Los Angeles County Public Works, “Big Dalton Creek below Big Dalton
+    Dam — Station F120B-R”
+    (http://ladpw.org/wrd/runoff/GeneralInfo.cfm?facinit=F120B-R), for
+    continuous water-stage recording and period of record; County
+    Sediment Strategic Plan, §9 “Big Dalton Reservoir”
+    (https://dpw.lacounty.gov/lacfcd/sediment/dcon/422.pdf), for County
+    Flood Control District construction in 1929 and current flood-risk/
+    water-conservation operations.
+41. Caltech, “Earthquakes—Recorded on Tape,” *Engineering and Science*,
+    vol. XV (Nov 1951)
+    (https://calteches.library.caltech.edu/1232/1/Earthquakes.pdf):
+    lists Big Dalton in a 13-station auxiliary network; describes
+    photographic records sent weekly to Pasadena and distinguishes the
+    Pasadena Lab tape recorder from the remote stations.
+42. Center for Engineering Strong Motion Data / CGS- CSMIP, station
+    23247, “Glendora — Big Dalton Dam [Abandoned]”
+    (https://www.strongmotioncenter.org/cgi-bin/CESMD/stationhtml.pl?stationID=CE23247&network=CGS):
+    lists nine accelerometers at three crest locations installed in 1976.
+43. USDA Forest Service Research and Development, “San Dimas
+    Experimental Forest”
+    (https://research.fs.usda.gov/psw/forestsandranges/locations/sandimas),
+    and PSW General Technical Report 119, “San Dimas Experimental Forest”
+    (https://www.fs.usda.gov/psw/publications/documents/psw_gtr119/psw_gtr119.pdf):
+    current research/monitoring description, watershed boundaries, and
+    the research-start/formal-establishment dates. Direct PDF fetch of
+    GTR-119 was unavailable in this pass; the Forest Service search-indexed
+    text supplied the dated passage.
+44. Forest Service-hosted legacy SDEF history and facilities pages
+    (https://www.fireimaging.com/sdef/history/;
+    https://www.fireimaging.com/sdef/facilities/index.html), for the
+    1926 Tanbark nursery, 1928–29 road, CCC/WPA and Conscientious Objector
+    work, dedication date, and facility history; PSW-GTR-233, ch. 6
+    (https://www.fs.usda.gov/psw/publications/documents/psw_gtr233/psw_gtr233_257.pdf),
+    and *The San Dimas Experimental Forest: 50 Years of Research*
+    (PSW-GTR-104, 1988;
+    https://www.fs.usda.gov/psw/publications/4403/TheSanDimas.pdf),
+    for later chronology and Tanbark research history. The legacy history
+    cites John W. Robinson's articles in *Mt. San Antonio Historian*,
+    vol. 16, no. 3; the cited issue/article scan was not located.
+45. Cal Poly Pomona Geological Sciences thesis archive,
+    `VathanasinThesis.pdf`
+    (https://www.cpp.edu/sci/geological-sciences/docs/thesis-archive/VathanasinThesis.pdf):
+    search-indexed excerpt describes a Forest Service weighing-bucket
+    rain gauge with a rotating chart drum/pen “resembling a seismometer”
+    and six San Dimas / two Big Dalton watershed gauges. The direct PDF
+    link returned “File Not Found” during this pass; treat the detailed
+    text as a search-indexed lead.
+46. USDA Forest Service, “Hotshots” Dalton Crew history
+    (https://www.fs.usda.gov/r05/fire/resources/hotshots), for the 1953
+    Culver foreman attribution and Tanbark/Dalton camp chronology; Erika
+    Oceguera, *La Verne Magazine*, “Dalton Hotshots: A Legacy Forged in
+    Fire” (1 Jul 2025;
+    https://lavernemagazine.org/2025/07/dalton-hotshots-a-legacy-forged-in-fire/),
+    for the conflicting Hartley attribution and the article's internal
+    1956 start-date/later-superintendent details.
+47. Bee-history comparison: City of Azusa, “Azusa History”
+    (https://www.ci.azusa.ca.us/569/Azusa-History); PBS SoCal, “How Bees
+    Came Buzzing to Los Angeles”
+    (https://www.pbssocal.org/history-society/how-bees-came-buzzing-to-los-angeles);
+    Los Angeles County Beekeepers Association, “History of Beekeeping in
+    LA County” (1880 Thompson & West text,
+    https://www.losangelescountybeekeepers.com/history-of-beekeeping-lacounty);
+    and the secondary, unsourced Dalton family compilation “Henry Dalton
+    — A California Pioneer”
+    (https://www.daltondatabank.org/Chronicles/Henry_Dalton-California.htm),
+    which locates Captain John T. Gordon's bee-ranch claim at the Dalton
+    Adobe in Azusa, not Big Dalton Canyon.
+48. Charles Frederick “Chuck” Hewitt, obituary
+    (https://www.powelltribune.com/stories/charles-frederick-hewitt,36663),
+    for his Arboretum-to-Mt.-SAC horticulture/forestry career and later
+    deanship; Mt. SAC Digital History search for “Hewitt”
+    (https://mtsacdigitalhistory.omeka.net/items/browse?search=Hewitt),
+    “Charles Hewitt”
+    (https://mtsacdigitalhistory.omeka.net/items/browse?search=Charles%20Hewitt),
+    and “horticulture”
+    (https://mtsacdigitalhistory.omeka.net/items/browse?search=horticulture);
+    June 1955 “Ornamental horticulture” photo
+    (https://mtsacdigitalhistory.omeka.net/items/show/160), which names
+    no student.
+49. UCR Water Resources Collections & Archives, John Debo Galloway
+    Papers, “Big Santa Anita Dam and Big Dalton Dam: correspondence
+    concerning these proposed dams,” 1925, Box 18, Item 93
+    (https://public.ucrlib.aspace.cdlib.org/repositories/5/archival_objects/187502).
+    The finding-aid entry was located but the item has not been reviewed;
+    it is a dam-planning lead, not evidence of later staffing.
+50. Community Cookbooks Archive, Los Angeles-based cookbook index
+    (https://www.communitycookbookarchive.org/browse), search page
+    (https://www.communitycookbookarchive.org/search), and decade pages.
+    The site reports nearly 400 titles and says full-text search of scans
+    is still in progress; returned browse/search results did not identify
+    a Sellers title and are not a complete searchable negative.
+51. PBS SoCal, Daniel Medina, “Civilian Conservation Corps, Racial
+    Segregation, and the Building of the Angeles National Forest”
+    (10 Feb 2014)
+    (https://www.pbssocal.org/shows/departures/civilian-conservation-corps-racial-segregation-and-the-building-of-the-angeles-national-forest):
+    identifies Dalton Company as one of the white CCC camps assigned
+    twenty SDEF facilities and contrasts its priority project with the
+    primarily routine work of all-African-American Company 2924-C / Camp
+    Castaic.

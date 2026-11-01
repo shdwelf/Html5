@@ -1,14 +1,14 @@
 # Session 18 — Family Request Letters: MACR 6353 and the NPRC Files (31 October–1 November 2026)
 
-> **Purpose.** Everything findable on the open web about Maurice
-> Frederick “Fred” Hewitt (ASN 19067302, KG6ZD) and his brother Melvin
-> Samuel “Sam” Hewitt (ASN 19179305, 301st BG, Stalag Luft IV) is now
-> gathered in sessions 14–17. What remains sits in two federal paper
-> trails that **only family (next-of-kin) can pull**. This session
-> drafts the three requests, ready to send. Bracketed fields are for
-> the family to complete. Do not fabricate signatures, relationships,
-> or SSNs; NPRC will ask for proof of kinship for a deceased veteran's
-> full file (a death certificate copy is the usual companion document).
+> **Purpose.** This file keeps draft requests for the unresolved military,
+> local-history, family-paper, and cookbook leads in the Hewitt research.
+> The Missing Air Crew Report is a NARA reference request; NPRC personnel
+> files require the appropriate family/next-of-kin route and proof of
+> kinship. Bracketed fields are for the family to complete. Do not
+> fabricate signatures, relationships, or SSNs; NPRC may require a death
+> certificate copy as supporting documentation. Local museum, council,
+> school, and library inquiries are drafts only and must not be sent
+> without family authorization.
 
 ---
 
@@ -242,6 +242,50 @@ Immediate family should ask which copy type they are eligible for
 required; do not put a Social Security number in email. A church
 baptism/burial register is a parallel record if available.
 
+## Letter 8 — Glendora Public Library (Sellers cookbook; draft only)
+
+**Status:** The user confirmed on 1 November 2026 that the intended
+school is **Margaret R. Sellers Elementary in Glendora**. Not sent;
+obtain the user's authorization before contacting the Library.
+**To:** library@cityofglendora.gov
+**Subject:** Local school cookbook inquiry — Margaret R. Sellers Elementary
+
+> Dear Glendora Public Library Local History staff,
+>
+> My family remembers a **Sellers Elementary School** community
+> cookbook, and has confirmed that the school they mean is **Margaret R.
+> Sellers Elementary in Glendora**. We do not yet know the cookbook's
+> title, publication year/edition, or whether it was issued by the
+> school, PTA, or another group.
+>
+> The Glendora Community Archive's public title list includes a
+> “Cookbooks” collection dated 1976–2015, and the Library's May 2025
+> notice invited local school and community cookbooks for its historical
+> collection. Could you check the Library's physical holdings, online
+> Community Archive, and any available catalog or donation/processing
+> records for cookbook(s) associated with Margaret R. Sellers
+> Elementary School or its PTA? If you find a likely item, I would be
+> grateful for its title, year/edition, publisher or sponsoring group,
+> any creator/contributor or name indexing, and the appropriate way to
+> consult it. If a digitized version is available, could you please
+> share its stable public link? If it is not online, please let me know
+> whether a physical copy can be consulted and what reproduction or
+> copyright permissions apply.
+>
+> A separate family lead is an OCR hit in a 1968 national PTA cookbook:
+> “Mrs. Maurice Hewitt, Pres. Andres Duarte PTA / Duarte, California.”
+> That page is access-restricted and has not been visually verified, so
+> my family treats the attribution to my grandmother, Louise Hewitt, as
+> a belief rather than a confirmed identification. I mention it only as
+> a distinct name/context clue; I do not assume it connects to the
+> Glendora Sellers cookbook.
+>
+> I can provide any available cover/title-page image, approximate date,
+> or other context if useful. Thank you for helping preserve Glendora's
+> local cookbook history.
+>
+> [Full name and preferred contact information]
+
 ## Side quests for any ARRL member in the family
 
 - **QST Silent Keys, Apr–Jun 2007** (ARRL Periodicals Archive,
@@ -322,3 +366,32 @@ baptism/burial register is a parallel record if available.
     selector (https://apps.forestlawn.com/maps/Covina2011_puller.html),
     and Covina Hills index PDF (Mar 2024)
     (https://apps.forestlawn.com/maps/Covina/Covina_Index.pdf).
+15. Sellers Elementary School, official “History” page
+    (https://www.sellersvikings.org/apps/pages/index.jsp?uREC_ID=516752&type=d&pREC_ID=991713):
+    located at 500 North Loraine Avenue in Glendora and named for Margaret
+    R. Sellers; its page says it opened 18 Mar 1957. The user confirmed on
+    1 Nov 2026 that this is the intended school. EdData's current Glendora
+    Unified school-code profile
+    (https://www.ed-data.org/school/Los-Angeles/Glendora-Unified/Sellers-Elementary)
+    lists “Date Opened 07/01/1980”; discrepancy unresolved. The school
+    identity is confirmed, but this does not establish a particular
+    cookbook, digitized copy, or Hewitt connection.
+16. Glendora Public Library Community Archive
+    (https://glendora.historyarchives.online/) lists a Cookbooks title
+    collection (1976–2015; 2,405 pages). The City of Glendora's 7 May 2025
+    “Preserving Glendora's History through Recipes” notice
+    (https://www.engageglendora.com/glendorahistoryqanda/news_feed/preserving-glendora-s-history-through-recipes)
+    seeks local school/community cookbooks and says many will be digitized
+    into the archive; the City Library contact page
+    (https://www.cityofglendora.gov/Explore/Public-Library) lists
+    library@cityofglendora.gov. Direct item search triggered Cloudflare
+    human verification; no Sellers item has been confirmed. Targeted public
+    web and Internet Archive metadata searches surfaced no edition or scan.
+    No contact has been made.
+17. Community Cookbooks Archive, Los Angeles-area cookbook browse/search
+    pages (https://www.communitycookbookarchive.org/browse;
+    https://www.communitycookbookarchive.org/search): nearly 400 titles;
+    its search page says full-text search of scans is still in progress.
+    Returned browse/search results did not identify a Sellers title, but
+    the dynamic lists and incomplete full-text index do not establish
+    absence of an item.
