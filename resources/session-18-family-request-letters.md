@@ -1,4 +1,4 @@
-# Session 18 — Family Request Letters: MACR 6353 and the NPRC Files (31 October 2026)
+# Session 18 — Family Request Letters: MACR 6353 and the NPRC Files (31 October–1 November 2026)
 
 > **Purpose.** Everything findable on the open web about Maurice
 > Frederick “Fred” Hewitt (ASN 19067302, KG6ZD) and his brother Melvin
@@ -62,10 +62,13 @@ include a copy of the death certificate (28 Feb 2007, Duarte, CA).
 - Requester: [full name] — relationship: [grandson] — [address, phone,
   email, signature, date]
 
-**What it should settle:** Maurice's unit(s) and Army job — the last
-open military question (enlistment card shows only “carpenter,” Air
-Corps; the family “radio operator” tradition is proven for Sam, not
-yet for Maurice).
+**What it should settle:** Maurice's still-unknown **Army Air Forces
+unit/squadron/group, assignment dates, and military occupational
+specialty or technical duty**. The enlistment card records his
+*pre-service civilian occupation* as “carpenter”; the obituary says
+only that he was an Army Air Corps veteran. Do not infer a wartime
+radio-operator assignment from KG6ZD, his electronics career, or Sam's
+proven crew billet.
 
 ## Letter 3 — NPRC, Melvin Samuel “Sam” Hewitt (personnel file)
 
@@ -150,50 +153,83 @@ general inbox **info@RanchoDeDuarte.org**, (626) 357-9419, P.O. Box
 >
 > [Full name, address, phone, email]
 
-## Letter 6 — Girl Scouts of Greater Los Angeles (council archives)
+## Letter 6 — GSGLA Heritage Committee (Spanish Trails / Hidden Valley records)
 
 **Route:** Girl Scouts of Greater Los Angeles **Heritage Committee**
-archive, 313 Foothill Blvd Upland, CA 91786 — Christina Rice & Patti Brundige,
-**(818) 970-4320, gsgla.heritage@gmail.com** (L.A. as Subject
+archive, 313 Foothill Blvd, Upland, CA 91786 — Christina Rice & Patti
+Brundige, **(818) 970-4320, gsgla.heritage@gmail.com** (L.A. as Subject
 directory; ~562 linear ft, 265 scrapbooks). The directory lists the
 archive as not open to outside researchers, so email first and offer
 to visit by appointment.
-**Subject:** Santa Anita Council records — Camp Hidden Valley managers (Fred & Louise Hewitt); Singing Pines outpost
+**Subject:** Spanish Trails Girl Scout Council (Covina) — Hidden Valley craft shelter and Fred & Louise Hewitt records
 
-> Dear Council Archivist,
+> Dear Heritage Committee,
 >
 > I am documenting my grandparents **Fred and Louise Hewitt of
-> Duarte**, described in Angeles Adventures' Camp Hidden Valley
-> history as resident managers for many years; Fred “played a key role
-> in building a craft shelter.” Hidden Valley later served as a
-> Singing Pines outpost unit (1958).
+> Duarte**. Their local obituary in the *San Gabriel Valley Tribune*
+> says Fred donated much of his time to the **Spanish Trails Girl Scout
+> Council** by building a craft shelter at Hidden Valley Girl Scout
+> Camp, and that Fred and Louise maintained the camp as resident
+> managers for many years. The Angeles Adventures camp history
+> describes the earlier Arcadia and Santa Anita council years; the
+> relationship between Santa Anita and Spanish Trails is not yet
+> established in my sources, so I do not want to assume a succession
+> or custody path.
 >
-> Do council archives hold Santa Anita/Arcadia council camp
-> directories, manager or caretaker rosters, camp committee minutes,
-> Hidden Valley/Singing Pines photographs, or camper alumnae files
-> that date the Hewitts' seasons? I am also interested in any record
-> of patrol hikes from camp to the Vetter Mountain fire lookout.
+> Could you confirm whether the Heritage Committee holds, or can point
+> me to the holder of, **Spanish Trails Girl Scout Council records**
+> (Covina)—including camp directories, manager/caretaker rosters,
+> committee minutes, Hidden Valley photographs, and camper alumnae
+> files that might date the Hewitts' seasons? I would also welcome any
+> transfer inventory or council-history source that clarifies the
+> relationship among Arcadia, Santa Anita, and Spanish Trails, and any
+> record of Singing Pines patrols using Hidden Valley or hiking to the
+> Vetter Mountain fire lookout. If Spanish Trails materials are held
+> elsewhere, could you please identify the correct archive or successor
+> custodian?
 >
 > [Full name, address, phone, email]
 
 ## Request 7 — John David Greeran (family vital record; not a cold letter)
 
 **Status:** family testimony only (session-17 §3e.2): the user's baby
-brother **John David Greeran** died of SIDS. No open-web record is
-expected. Before anything is sent, fill from family papers/Bible/
-funeral card: full name at birth/death; date and county of birth;
-date and county of death; parents' full names (including mother's
-maiden name); cemetery/funeral home if known.
+brother **John David Greeran** died of SIDS. On 1 November 2026 the
+user added that John was buried at **Forest Lawn Memorial, “not far
+from Maurice.”** The official Forest Lawn grave finder returns a likely
+corresponding entry as **Jondavid Frederick Greeran**, Covina Hills,
+Section **Serenity**, Map **55**, Lot **8325**, Space **4**. A
+third-party PeopleLegacy page reports **13 August–22 November 1985**
+(age under one) and repeats that plot; a public relatives PDF lists
+13 August 1985 for the exact name (the PDF's relationship to this
+family is not established). An Ancestry public-tree index says the
+name is in eight trees, including one “Greeran Family Tree.” These are corroborating leads,
+not primary vital records; Forest Lawn's own result omits dates. A
+separate official Forest Lawn result lists **Maurice Frederick
+Hewitt** in the same park, Section **Honor**, Map **4**, Lot **508**,
+Space **1**. The same-park claim is corroborated; confirm with family
+that “Jondavid Frederick” is the same baby known as “John David,” and
+obtain a park map before describing the exact “not far” distance. SIDS
+remains family testimony. From family papers/Bible/funeral card,
+confirm the candidate dates, parents' full names (including mother's
+maiden name), and the name used at home/baptism/burial.
 
-**Route once those fields exist:** certified or informational death
-certificate from the county registrar-recorder/clerk of the county of
-death (in Los Angeles County, the Registrar-Recorder/County Clerk) or
-the California Department of Public Health — California Vital Records.
+**First route:** the official finder results are linked in session-17
+Source 27; candidate dates and their limits are in Source 11 below. Ask
+the family to confirm the name/date form. Forest Lawn's Covina Hills
+page lists **21300 Via Verde Drive, Covina, CA 91724** and
+**1-888-204-3131** (U.S. toll-free) / **+1 (323) 254-3131**
+(international). Ask the cemetery for the entry's official date fields
+and a map/directions that establish proximity; the page says visitors
+may bring the section/map/lot/space to the information office. If the
+family's papers and cemetery records do not settle the dates, request
+John's certified or informational death certificate from the county
+registrar-recorder/clerk of the county of death (in Los Angeles County,
+the Registrar-Recorder/County Clerk) or the California Department of
+Public Health — California Vital Records.
 Immediate family should ask which copy type they are eligible for
 (“authorized” vs “informational”) and what ID/kinship statement is
-required; do not put a Social Security number in email. A cemetery
-or funeral-home register entry and a church baptism/burial register
-are the usual parallel records for an infant of this era.
+required; do not put a Social Security number in email. A church
+baptism/burial register is a parallel record if available.
 
 ## Side quests for any ARRL member in the family
 
@@ -224,5 +260,38 @@ are the usual parallel records for an infant of this era.
    Jerry Merwin family.
 6. Duarte Historical Museum contact as published in DuarteRock
    comments (Claudia Heller, famheller@msn.com); Girl Scouts of
-   Greater Los Angeles successor to the Santa Anita/Arcadia councils;
-   ANFFLA (anffla.org) successor volunteer keeper of Vetter Mountain.
+   Greater Los Angeles Heritage Committee archive contact; Spanish
+   Trails record custody and the Santa Anita/Arcadia-to-Spanish Trails
+   link remain unverified. ANFFLA (anffla.org) is the successor
+   volunteer keeper of Vetter Mountain.
+7. *San Gabriel Valley Tribune*, “Maurice Frederick Hewitt” obituary
+   (3–5 Mar 2007), https://www.sgvtribune.com/obituaries/maurice-frederick-hewitt-ca/;
+   Legacy reprint and guestbook,
+   https://www.legacy.com/us/obituaries/sgvtribune/name/maurice-hewitt-obituary?id=25113187.
+8. Family testimony (user, 1 Nov 2026) that John David Greeran was
+   buried at Forest Lawn “not far from Maurice”; Forest Lawn's official
+   finder now returns a likely corresponding record under “Jondavid
+   Frederick Greeran” (see source 10). Family confirmation of the name
+   form and an official map are still needed to close identity/proximity.
+9. Angeles Adventures, “Camp Hidden Valley”
+   (https://angelesadventures.com/camp-hidden-valley/), for the earlier
+   Arcadia/Santa Anita council chronology; the Santa Anita-to-Spanish
+   Trails link remains a question for the archive, not an assumed fact.
+10. Forest Lawn Memorial-Park Association, official Covina Hills page
+    (https://forestlawn.com/parks/covina-hills/) and “Find a Service or
+    Grave” searches: Greeran surname
+    (https://sgo.forestlawn.com/?fname=&search=1&slast=greeran&sradio=grave)
+    and Maurice Frederick Hewitt
+    (https://sgo.forestlawn.com/?fname=maurice+frederick&search=1&slast=hewitt&sradio=grave),
+    accessed 1 Nov 2026; official park locations/plots corroborated,
+    Greeran personal-name variant still to confirm with family.
+11. Candidate dates/name variant for Jondavid Frederick Greeran (not
+    official vital records): PeopleLegacy/TruthFinder-backed aggregator
+    (https://peoplelegacy.com/jondavid_frederick_greeran-20540J), public
+    Vaughan relatives PDF
+    (http://www.vaughan.org/tree/RoseyVaughanRelatives.pdf; relationship
+    to this family unestablished), and Ancestry public-tree search index
+    (https://www.ancestry.com/search/collections/1030?name=_Geraron&pg=2&pcat=42&geo-lang=nb).
+    Ancestry says “eight trees,” including “Greeran Family Tree”; contents
+    are user-submitted/sign-in limited. They suggest 13 Aug–22 Nov 1985;
+    verify with family/county/cemetery.

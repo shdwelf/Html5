@@ -54,8 +54,9 @@ records, states:
   (1858–1944) — FS IDs LCZB-PSR / LCFM-W5B.
 - He married **Leslie May McFarland** (1891–1979) on 28 August 1904 in
   Marin County, California.
-- Children include **Maurice Frederick Hewitt (1914–2007)** — FS ID
-  G7M1-4PH — plus Clifford Maxwell Hewett (1911–1987), Frederick Hewitt
+- Children include **Maurice Frederick Hewitt (1914–2007, as reported by
+  FamilySearch)** — FS ID G7M1-4PH — plus Clifford Maxwell Hewett
+  (1911–1987), Frederick Hewitt
   (1913–1976), Stella May Hewitt (1915–1994), James Robert Hewitt Sr.
   (1918–1995), Harry Leslie Hewitt (1920–1999), Melvin Samuel Hewitt
   (1924–2004), and Leland Hewitt (1905–).
@@ -64,6 +65,12 @@ records, states:
 
 An SSDI-derived index independently lists Maurice F. Hewitt, b. 27 Mar 1913
 (record year varies 1913/1914 between sources), d. 28 Feb 2007, Duarte.
+
+**Birth-date correction (1 Nov 2026; session-17 §3h):** two entries in
+Maurice's Legacy obituary guestbook, dated 27 March 2007, wish him a happy
+94th birthday. This resolves the exact birth date to **27 March 1913** and
+makes FamilySearch's 1914 year a one-year error; the full guestbook source
+and the family posters are documented in session-17 §3h.
 
 > **Verdict on contested slot Q9/Q10:** the workbench's "**William Hewitt
 > (~1858, Down/England) × Sarah Jane Taylor**" (src-45) is **refuted**.
