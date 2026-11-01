@@ -205,8 +205,11 @@ Executed after the §5 addendum, same day. All negative or ruled out:
   board + photo shoebox) — inspected via the 28 Nov 2003 capture; members
   (“bobo”, “Dotty”, “Bill”, “Tammie”) and content (PC-crash chatter,
   Christmas 2002 photos) match **no one** in the Duarte family. Ruled out.
-- **Find a Grave:** no memorial exists for Maurice Hewitt (1913–2007);
-  exact name/date search returns no matches.
+- **Find a Grave:** no matching memorial for the Duarte Maurice F.
+  Hewitt (1913–2007) was found. A memorial with the exact full name,
+  ID **14702273**, is a different man: an RAF Flight Sergeant who died
+  **14 May 1943** at El Alamein, Egypt. Do not merge the two men; see
+  §10 and session-17 §3h.
 - **WWII Memorial Registry (ABMC):** no indexed honoree page for Maurice.
 
 **Status after two sessions:** every free-host, mirror, memorial,
@@ -295,6 +298,34 @@ In the order queued at the close of addendum 3:
   family-side click, and paper (MACR 6353, NPRC OMPFs) remains the
   load-bearing route.
 
+## 10. Addendum 6 — obituary found; the website remains unlocated (1 Nov 2026)
+
+**Correction:** an earlier working conclusion that no standalone 2007
+Maurice obituary had been located was wrong. The *San Gabriel Valley
+Tribune* published a full obituary for **Maurice Frederick Hewitt** on
+3–5 March 2007; Legacy carries the same notice and an eight-entry
+family guestbook. The source and full transcription are in
+session-17 §3h.
+
+The newly recovered notice explicitly identifies Fred as a long-time
+electronics technician and, in his younger years, a carpenter; names
+the **Spanish Trails Girl Scout Council** as the council for which he
+built Hidden Valley's craft shelter; says he and Louise were resident
+managers; and announces a private graveside service at Forest Lawn
+Memorial Park, Covina Hills, on 6 March 2007. Family guestbook birthday
+posts on 27 March 2007 resolve his birth date to **27 March 1913**.
+Forest Lawn's official grave finder now confirms Maurice's interment
+location at Covina Hills, Section Honor, Map 4, Lot 508, Space 1; it
+also returns a likely match for the family's John David as “Jondavid
+Frederick Greeran” in the same park. The name form and the reported
+physical proximity remain gated in session-17 §3e.2; the service notice
+alone did not provide those plot details.
+
+**This corrects obituary status only:** Maurice's self-built military
+website / shadow-box page is still **NOT LOCATED**. The new career and
+council facts do not establish his wartime unit or MOS; NPRC remains the
+paper route.
+
 ## Sources
 
 1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
@@ -307,3 +338,12 @@ In the order queued at the close of addendum 3:
    genealogy/index.html` (Heath Martin Hewitt; Stonington line).
 5. Prior sessions: `resources/session-14-hewitt-military-pow.md`,
    `resources/session-15-301bg-vienna-stalag-luft-iv.md`.
+6. *San Gabriel Valley Tribune*, “Maurice Frederick Hewitt” obituary
+   (published 3–5 Mar 2007), https://www.sgvtribune.com/obituaries/maurice-frederick-hewitt-ca/;
+   Legacy reprint and eight-entry guestbook,
+   https://www.legacy.com/us/obituaries/sgvtribune/name/maurice-hewitt-obituary?id=25113187
+   (full text, birthday posts, and Terry & Gary Milwood's 13 Mar 2007 memory).
+7. Forest Lawn Memorial-Park Association, official “Find a Service or
+   Grave” results — Maurice Frederick Hewitt and the likely Greeran
+   record; details and name-form gate in session-17 §§3e.2, 3h.3.
+   Direct result URLs and Covina Hills contact are in session-17 Source 27.

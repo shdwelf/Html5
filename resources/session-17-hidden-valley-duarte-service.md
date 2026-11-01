@@ -254,27 +254,50 @@ Honorable Order of the Squirrels**. Findings, in that order:
   book unless a maiden-name/marriage bridge is supplied from family
   papers.
 
-### 2. John David Greeran — family testimony recorded; no open-web public record found
+### 2. John David Greeran — family testimony and a likely official grave match
 
 - **Family testimony (user, 31 Oct 2026):** the user's baby brother
   **John David Greeran** died of **SIDS (sudden infant death
-  syndrome)**. Recorded here exactly as given; no birth/death dates,
-  place, cemetery, or parents' full names were supplied in-session,
-  and none are invented.
-- Open-web searches on the exact name and variants (`"John David
-  Greeran"`, `"John Greeran"`, `"John D. Greeran"`, Greeran + Duarte/
-  California/infant, Find a Grave and FamilySearch/Ancestry snippets)
-  return only unrelated Greer/Greear/Gerard namesakes. That negative
-  is expected rather than suspicious: infant deaths of this era are
-  normally visible only through **vital records** (county
-  registrar-recorder / California Department of Public Health
-  certified or informational death certificate), cemetery/funeral-home
-  books, church registers, or a paid newspaper notice — not through
-  indexed web obituaries. The family-side route is set out in
-  `session-18` (Request 7). For the book, cite him as family testimony
-  unless/until a certificate or marker is in hand; SIDS itself should
-  be described with current care (a diagnosis of exclusion after
-  autopsy/scene/history review), not with period blame language.
+  syndrome)**. No dates or parents' full names were supplied in that
+  message.
+- **Update (user, 1 Nov 2026):** John David was buried at **Forest Lawn
+  Memorial, “not far from Maurice.”** The official Forest Lawn
+  “Find a Service or Grave” search returns one record for the surname
+  **Greeran** at Covina Hills: **Jondavid Frederick Greeran**, Section
+  **Serenity**, Map **55**, Lot **8325**, Space **4**. The returned
+  official result has no birth/death years. A separate official search
+  returns **Maurice Frederick Hewitt** at the same park, Section
+  **Honor**, Map **4**, Lot **508**, Space **1**.
+- **Name form and secondary date leads:** the Forest Lawn result spells the
+  given name **“Jondavid”** (one word) and includes **Frederick**,
+  versus the family's “John David.” A third-party PeopleLegacy
+  cemetery aggregator reports **13 August 1985–22 November 1985**
+  (age under one) for Jondavid Frederick and repeats the same plot; a
+  public Vaughan-relatives PDF lists **13 August 1985** for that exact
+  name, although its connection to this Duarte Greeran family is not
+  established. An Ancestry public-tree search index says the person is
+  in eight trees, including one labelled “Greeran Family Tree”; tree
+  contents are user-submitted and sign-in limited.
+  These are useful corroborating leads, **not primary vital records**;
+  Forest Lawn's own result does not display dates. The user should
+  confirm whether “Jondavid Frederick” is the same baby brother known
+  as John David before we collapse the name forms.
+- The same Covina Hills park is confirmed; the exact “not far” distance
+  is not. The finder gives different section/map/lot locations, and no
+  site map was available in the result. Forest Lawn instructs visitors
+  to take the location to its information office for a park map.
+- Earlier general web searches (`"John David Greeran"`, `"John
+  Greeran"`, `"John D. Greeran"`, Greeran + Duarte/California/infant)
+  returned no useful hit; searching the official cemetery database by
+  surname surfaced the record. The family-side route in `session-18`
+  (Request 7) is now to confirm the name and candidate dates, then ask
+  for a map; county/CDPH records remain the authoritative route if the
+  family's papers do not settle them. For the book, cite SIDS as family
+  testimony and the burial as supported by Forest Lawn's official
+  index, while keeping the name/date gate until family or vital records
+  confirm it. SIDS itself should be described with current care (a
+  diagnosis of exclusion after autopsy/scene/history review), not with
+  period blame language.
 
 ### 3. Louise Hewitt — the full obituary upgrades her record; guest book corroborates the family scenes
 
@@ -541,6 +564,207 @@ Hewitt mention; negative recorded, scrapbooks untested.)
   Parkway); Claudia Heller is museum president. Session-18 Letter 4
   amended likewise.
 
+## 3h. Addendum 7 — Maurice's obituary, Duarte records, and the SearXNG sweep (1 Nov 2026)
+
+This addendum records the requested `libresearch.space` / mirror check
+and the new Duarte-area material it surfaced. The obituary and obituary
+guestbook are the evidence for family claims below; SearXNG snippets
+are discovery aids only.
+
+### 1. Search route — `libresearch.space` and its mirrors
+
+- `libresearch.space` presented as a public SearXNG instance during the
+  check, but fresh queries intermittently **302-redirected to its home
+  page**; cached queries rendered. The uptime bot had also logged
+  outages/403s on 22 September and 3 October 2026 (Source 25).
+- **`baresearch.org` was the useful mirror** for this pass: exact quoted
+  phrases were retained, and the results included Google CSE,
+  DuckDuckGo, and Brave. `searxng.site` and `search.inetol.net` behaved
+  as Bing-only and dropped quotation marks in these tests; that made
+  their apparent “matches” unsafe for exact-name work. `searx.tiekoetter.com`
+  redirected to a proof-of-work page; `searx.space` was an instance
+  directory, not a search endpoint.
+- Searching the exact name led to the *San Gabriel Valley Tribune*
+  obituary below. I opened the Tribune page and the Legacy mirror to
+  verify the text and the eight guestbook entries directly. Mirror
+  behavior can change; record it as an observation from this pass, not
+  a permanent ranking of search engines.
+
+### 2. The full Maurice Frederick Hewitt obituary — **FOUND**
+
+The *San Gabriel Valley Tribune* obituary was published **3–5 March
+2007**; Legacy carries the same notice. Full text (normalized only for
+line wrapping):
+
+> HEWITT-Maurice Frederick Hewitt, Long time Duarte resident Maurice
+> Frederick Hewitt passed away at his home Wednesday, February 28th
+> after a long battle with heart disease and two strokes. Maurice was
+> ninety-three years old and widowed. Fred, along with his wife Louise,
+> was very active in the Duarte Community Service Council and spent
+> much of his golden years helping those less fortunate and in need.
+> He was a World War II Army Air Corp veteran and a long time
+> electronics technician. In his younger years he was also a carpenter
+> and donated much of his time to the Spanish Trails Girl Scout Council
+> by building a craft shelter at Hidden Valley Girl Scout Camp in the
+> Angeles National Forest. Fred and Louise also maintained this camp
+> for many years as resident managers. Mr. Hewitt is survived by his
+> five children, Terry Milwood, Charles Hewitt, Linda Eiselein, Jean
+> Greeran, and Robert Hewitt, nine grandchildren and thirteen great
+> grandchildren. A private graveside burial service will be at Forest
+> Lawn Memorial Park, Covina Hills, Tuesday March 6, 2007 at 9:00 am.
+> In lieu of flowers, donations to the Duarte Community Service Council
+> P.O. Box 75, Duarte, CA 91010, in his name, are gratefully accepted.
+
+**Source:** [*San Gabriel Valley Tribune*, “Maurice Frederick Hewitt”](https://www.sgvtribune.com/obituaries/maurice-frederick-hewitt-ca/);
+[Legacy reprint and guestbook](https://www.legacy.com/us/obituaries/sgvtribune/name/maurice-hewitt-obituary?id=25113187).
+
+### 3. What the obituary resolves — and what it does not
+
+- **Career:** “a long time electronics technician” is now print-backed;
+  the obituary separately calls him a carpenter “in his younger years.”
+  The latter aligns with the NARA enlistment card's civilian
+  occupation, **carpenter** (session-14). The notice does not name an
+  electronics employer, dates of employment, or his Army technical
+  specialty.
+- **Military:** it says “World War II Army Air Corp veteran,” but gives
+  no unit, squadron, rank, station, or military occupational specialty.
+  The **AAF unit/MOS question remains open** for NPRC (session-18,
+  Letter 2); do not infer “radio operator” from his later ham license
+  or from brother Sam's documented aircrew billet.
+- **Girl Scouts:** the notice specifically names the **Spanish Trails
+  Girl Scout Council** as the council for which Fred built Hidden
+  Valley's craft shelter. The earlier camp history documents Arcadia
+  and Santa Anita; the step from Santa Anita to Spanish Trails is still
+  unsourced. Keep both facts, but do not invent the organizational
+  bridge. Letter 6 has been re-aimed at Spanish Trails records and asks
+  GSGLA to identify the custodian/lineage.
+- **Service and family:** it names both Hewitts as long-time resident
+  managers; lists five children; and states **nine grandchildren and
+  thirteen great-grandchildren**.
+- **Burial:** the notice announces a private graveside service at
+  **Forest Lawn Memorial Park, Covina Hills, Tuesday 6 March 2007 at
+  9:00 a.m.** Forest Lawn's official grave finder returns Maurice
+  Frederick Hewitt at Covina Hills, **Section Honor, Map 4, Lot 508,
+  Space 1**. Its Greeran surname search returns the likely family match
+  **Jondavid Frederick Greeran** at the same park, **Section Serenity,
+  Map 55, Lot 8325, Space 4**. The official result omits dates; a
+  third-party aggregator and a family-relatives PDF give candidate
+  dates in 1985, not yet a vital-record confirmation. The same-park
+  claim is supported; confirm the name form with family and do not
+  infer physical distance from the section/map numbers. See §3e.2 and
+  Sources 27–28 for the evidence gate and result URLs.
+
+### 4. Eight-entry guestbook — family voice and the birth-date cross-check
+
+The Legacy guestbook contains **eight entries**. Two 27 March 2007
+birthday posts—one from **Terry & Gary Milwood** (“Happy 94th Birthday
+Daddy…”) and another from **Linda Eiselein** (“Happy Birthday Daddy!”)—
+settle Fred's birthday as **27 March 1913**. This fits the obituary's
+statement that he was 93 when he died on 28 February 2007. The exact
+birth date is no longer dependent on the secondary AncientFaces
+transcription alone.
+
+The most vivid family passage is Terry & Gary Milwood's 13 March 2007
+entry:
+
+> “I remember your last words to me: ‘Don't be sad, I'm ready to go,
+> it's what I want’ … I also remember our hikes together and when I
+> would get tired you would remind me to step where you stepped and
+> just keep going… That's what I will do for now until I join you and
+> Momma in heaven…”
+
+Use it only as **Terry's attributed guestbook recollection**, not as
+omniscient narration. Linda's 9 April 2007 entry asks Fred to wish
+“Momma” a happy birthday; the same guestbook also has posts from
+Kristen Eiselein and Kristen Berryhill. These entries tie the online
+memorial back to the named family rather than to a same-name veteran.
+
+### 5. Duarte Community Service Council — the food-drive institution
+
+The institutional record sharpens the book's community-service frame:
+
+- The Duarte Community Service Council (DCSC) says it has served the
+  community **since 1947**, runs a food pantry at **The Church of the
+  Foothills**, and is staffed entirely by unpaid volunteers. Listed
+  help includes emergency non-perishable food, food vouchers, baby
+  supplies, and occasional clothing.
+- The Duarte Chamber directory names **Dorothy Smith** as contact and
+  lists **P.O. Box 75, Duarte, CA 91009; 626-359-9487**. Its program
+  description also includes needy-student school supplies, student
+  health/optometry needs, community-assistance referrals, support to
+  local service groups, and scholarships for Duarte High School
+  seniors. It reports that the DCSC supplied Christmas baskets to
+  **more than 225 needy Duarte families in 2008**; for FY 2008–09 it
+  served 75 families/individuals with more than 176 children and
+  reports more than 250 requests in a prior year.
+- **Institutional boundary:** the directory says families beyond DCSC's
+  scope are referred to **Foothill Unity Center**, Infoline, and El
+  Monte Mission for the Homeless. Foothill Unity is a separate agency,
+  not another name for DCSC. Louise's obituary identifies her as a
+  later DCSC president; the *Branding Iron* identifies **Lucille
+  Morrison** as the founder and first president. Louise's presidency
+  dates, and any named Hewitt Christmas-basket photograph or canned-food
+  drive record, remain to be found.
+- **Address caution:** the 2007 Maurice obituary prints the donation
+  address ZIP as **91010**; the current SGVC and Chamber listings give
+  **91009**. Verify before mailing. Dorothy Smith is the directory's
+  listed contact, not a confirmation that the same person still holds
+  the role today.
+
+**Human follow-up:** ask the DCSC for Louise's presidency years, annual
+Christmas-basket/food-drive photos or lists, and any records that name
+Fred. The contact is in the Duarte Chamber profile; the Duarte Museum
+letter (session-18, Letter 4) separately asks for Lucille Morrison's
+newspaper-scrapbook volumes.
+
+### 6. Duarte High School alumni directory — useful leads, not school records
+
+The public alumni pages are Classmates.com-powered and should be treated
+as self-reported leads, not as an official transcript or complete
+register:
+
+- **Chuck Hewitt** is listed in the **Class of 1964** page, with
+  football as an activity. **Lila Crandell Hewitt**, also listed as
+  Class of 1964, posted a memorial on 26 August 2025 giving Chuck's
+  dates as 19 June 1946–12 October 2021, identifying herself as his
+  widow, and listing two children, eight grandchildren, and fourteen
+  great-grandchildren. This is consistent with the Charles Frederick
+  Hewitt obituary and strengthens the local-school-family link.
+- **Terry Hewitt** appears on the all-alumni H list as **Class of
+  1962**. This is a likely match for Terry Lee Milwood, Fred and
+  Louise's daughter, but the directory alone does not prove that
+  identification.
+- **Robert Hewitt** is not registered on the inspected public alumni
+  pages. That is not evidence he did not attend: the site is voluntary
+  and incomplete. His approximate 1976 graduation remains a lead from
+  the 2012 *Idyllwild Town Crier* profile, not a verified school record.
+
+### 7. Same-name traps, search negatives, and what remains open
+
+| Trap or negative | Guardrail |
+|---|---|
+| Find a Grave memorial [14702273](https://www.findagrave.com/memorial/14702273/maurice-frederick-hewitt): **Flight Sergeant Maurice Frederick Hewitt**, died 14 May 1943, Alamein Memorial, Egypt. | A different, wartime RAF airman; our Maurice was the Duarte resident who died in 2007. Do not merge. |
+| The *Los Angeles Times*' 1 Aug 1991 report quotes **Sharon Hewitt**, spokeswoman for the Spanish Trails Council, on the Palm Springs bus-crash outing. | Same surname and council only. No link to Fred or Louise has been found; this is not a family source. Treat any use of the tragedy with care. |
+| Bare quoted `"KG6ZD"` and exact-name searches for `"Maurice F. Hewitt"` did not find Maurice's military website. | **The website / shadow-box is still NOT LOCATED.** No new hit changes the session-16 conclusion. |
+| The California Digital Newspaper Collection has no Duarte paper in its current collection; Duarte/Hewitt hits were unrelated. The March–April 2007 *Duarte View* issue has no In Memoriam item. | These are bounded collection/issue negatives, not proof that no local notice, private scrapbook, or cemetery record exists. |
+
+### 8. Next human doors — not yet contacted
+
+1. **Forest Lawn, Covina Hills:** the official finder now gives Maurice's
+   and a likely Greeran grave location (Source 27); third-party sources
+   suggest Jondavid's dates were 13 Aug–22 Nov 1985 (Source 28). Ask
+   the family to confirm whether **Jondavid Frederick Greeran** is the
+   baby they call John David, then ask Forest Lawn for the record's
+   date fields and a park map to test the reported “not far” proximity.
+   Its Covina Hills page lists **1-888-204-3131** (U.S. toll-free) and
+   **+1 (323) 254-3131** (international).
+2. **Duarte Community Service Council:** current directory contact Dorothy Smith, 626-359-9487 / P.O. Box 75, Duarte, CA 91009; ask about Louise's presidency, holiday baskets, food-drive records and photos.
+3. **Duarte High class-of-1964 family network:** if the family has an appropriate route, ask **Lila Crandell Hewitt** about Chuck's school/family photographs or records and whether the alumni leads connect to memories of Fred and Louise. The public alumni profile is a lead, not an invitation to expose private contact details or to cold-contact without judgment.
+4. **Girl Scouts of Greater Los Angeles Heritage Committee:** use revised Letter 6 to ask for the Spanish Trails Council records/custodian and the unresolved Santa Anita → Spanish Trails link.
+5. **Duarte / Monrovia city directories:** identify the electronics firm where Fred worked; “long-time electronics technician” is a career, not yet an employer.
+6. **NPRC:** obtain Maurice's OMPF for Army Air Forces unit and MOS; session-18, Letter 2.
+7. **Family-side website checks:** TWS member search and ARRL QST Silent Keys for 2007 remain untested. The website remains unfound.
+
 ## 4. Open threads
 
 1. **The Clyde Pippin Flickr album** of Camp Hidden Valley
@@ -550,12 +774,19 @@ Hewitt mention; negative recorded, scrapbooks untested.)
    archive — likely holders of DCSC food-drive photographs and any
    “Senior Citizens of the Year”-style Hewitt honours; Claudia Heller
    (Duarte Historical Museum) appears in the DuarteRock comments as a
-   reachable contact (`famheller@msn.com`).
+   reachable contact (`famheller@msn.com`). DCSC's profile lists
+   Dorothy Smith (626-359-9487); ask for Louise's presidency years and
+   Holiday-basket/canned-food-drive records. The ZIP differs between
+   the 2007 obituary (91010) and the current directory (91009).
 3. **Foothill Unity Center** may hold a 1998 Golden Plate programme or
    photograph for Louise's award.
-4. **Santa Anita Girl Scout Council records** (Girl Scouts of Greater
-   Los Angeles archives) — camp-manager rosters would date the Hewitts'
-   Hidden Valley seasons precisely.
+4. **Spanish Trails Girl Scout Council (Covina) records / custody** —
+   the newly found Maurice obituary names Spanish Trails as the council
+   for which Fred built Hidden Valley's craft shelter; the camp history
+   names Arcadia and the 1959 Santa Anita council. The Santa Anita →
+   Spanish Trails link is still **unsourced**. Session-18 Letter 6 now
+   asks GSGLA to identify Spanish Trails holdings (or the proper
+   custodian) and resolve the council lineage before we imply a merger.
 5. **ANFFLA / Vetter Mountain historian** — Ramona-era visitor or
    squirrel-card records, lookout logbooks, and any Hidden Valley /
    Singing Pines patrol visits (session-18, Letter 5). A Hewitt-named
@@ -565,10 +796,14 @@ Hewitt mention; negative recorded, scrapbooks untested.)
    Historical Society clippings that might name Fred's blacktop-proctor
    duty and Louise's nursing-station years in print (session-18,
    Letter 4).
-7. **John David Greeran vital record** — family-only route via county
-   registrar / CDPH once birth/death dates and parents' names are
-   supplied from family papers (session-18, Request 7). No open-web
-   record is expected or required for the book's testimony paragraph.
+7. **John David Greeran cemetery/vital record** — Forest Lawn's
+   official finder returns a likely match as **Jondavid Frederick
+   Greeran**, Covina Hills, Serenity, Map 55/Lot 8325/Space 4; Maurice
+   is listed in the same park at Honor, Map 4/Lot 508/Space 1. A
+   third-party aggregator/PDF suggest dates of 13 Aug–22 Nov 1985.
+   Ask the family to reconcile the name and dates, then request a park
+   map; exact proximity is not proven by the index (session-18,
+   Request 7).
 8. **Interview Robert Hewitt (living family, Idyllwild)** — now the
    single richest living source: Black Mountain tower seasons and
    whether squirrel cards are issued there; his Temple City
@@ -641,10 +876,13 @@ Hewitt mention; negative recorded, scrapbooks untested.)
     1958–1961, b. St. Croix 1921, d. Ohio 2013; no California-forest
     link. Ramona/Art/Joyce/Jerry family: SummitPost Vetter Mountain
     page and Angeles Adventures, Warm Springs Lookout page.
-15. John David Greeran — user family testimony (31 Oct 2026), baby
-    brother, SIDS; exact/variant open-web searches negative
-    (2026-10-31). No public record cited; vital-records route in
-    session-18, Request 7.
+15. John David Greeran — user family testimony (31 Oct 2026: baby
+    brother, SIDS; 1 Nov 2026: buried at Forest Lawn Memorial, “not far
+    from Maurice”); Forest Lawn's official finder returns a likely
+    corresponding record as “Jondavid Frederick Greeran.” PeopleLegacy
+    and a public relatives PDF suggest 1985 birth/death dates (Source
+    28); name form, dates and exact proximity remain gated. SIDS remains
+    family testimony.
 16. Robert Hewitt (Louise's son) — *Idyllwild Town Crier*,
     “Robert Hewitt aims to serve the community” (9 Sep 2016):
     Oak Grove Hotshots 1976; LACoFD 1978; Battalion Chief, retired
@@ -689,3 +927,65 @@ Hewitt mention; negative recorded, scrapbooks untested.)
     (818) 970-4320; gsgla.heritage@gmail.com) and “Girl Scout
     Summer: Touring the Archives of the GSGLA” (13 Jun 2024;
     ~562 linear feet, 265 scrapbooks).
+21. *San Gabriel Valley Tribune*, “Maurice Frederick Hewitt” obituary
+    (published 3–5 Mar 2007),
+    https://www.sgvtribune.com/obituaries/maurice-frederick-hewitt-ca/;
+    Legacy reprint and eight-entry guestbook,
+    https://www.legacy.com/us/obituaries/sgvtribune/name/maurice-hewitt-obituary?id=25113187
+    (birthday posts and Terry Milwood's 13 Mar 2007 memory), accessed
+    1 Nov 2026.
+22. Duarte Community Service Council — SGVC profile
+    (https://sgvc.org/places/duarte-community-service-council/) and
+    Duarte Chamber member profile
+    (https://mms.duartechamber.com/duartechamber/mem_dcsc): 1947 start,
+    pantry/programs, Dorothy Smith contact, 2008 baskets and FY 2008–09
+    service data; accessed 1 Nov 2026.
+23. Duarte High alumni directory (Classmates.com-powered): Chuck Hewitt
+    profile (https://duartehighschool.org/alumni/1474081/chuck-hewitt.html),
+    Lila Crandell Hewitt profile/post
+    (https://duartehighschool.org/alumni/14839752/lila-hewitt.html), H
+    alumni list (https://duartehighschool.org/alumni-list-h.html), and
+    Class of 1964 (https://duartehighschool.org/class-of-1964.html);
+    self-reported directory, not official school records; accessed
+    1 Nov 2026.
+24. Namesake checks: Find a Grave memorial 14702273
+    (https://www.findagrave.com/memorial/14702273/maurice-frederick-hewitt),
+    Flight Sergeant who died 14 May 1943; *Los Angeles Times*, “7 Die,
+    53 Hurt as Girl Scout Bus Overturns” (1 Aug 1991),
+    https://www.latimes.com/archives/la-xpm-1991-08-01-mn-185-story.html
+    (Spanish Trails spokeswoman Sharon Hewitt).
+25. SearXNG-instance checks (observed 31 Oct 2026):
+    [libresearch.space](https://libresearch.space/),
+    [BareSearch](https://baresearch.org/),
+    [searx.space instance directory](https://searx.space/), and uptime
+    bot reports [#13148](https://github.com/searxng/searx-instances-uptime/issues/13148)
+    and [#13202](https://github.com/searxng/searx-instances-uptime/issues/13202).
+    Mirror semantics are time-sensitive; observations are logged in
+    §3h.1.
+26. *Duarte View*, March–April 2007 issue PDF,
+    https://chamberorganizer.com/duartechamber/docs/View_Pgs-3-07_for_pdf.pdf;
+    inspected for a death notice/In Memoriam, none found. California
+    Digital Newspaper Collection search interface,
+    https://cdnc.ucr.edu/; no Duarte newspaper in the current collection.
+27. Forest Lawn Memorial-Park Association, official “Find a Service or
+    Grave” results (accessed 1 Nov 2026): Greeran surname search,
+    https://sgo.forestlawn.com/?fname=&search=1&slast=greeran&sradio=grave
+    (Jondavid Frederick Greeran, Covina Hills, Serenity, Map 55/Lot
+    8325/Space 4); Maurice search,
+    https://sgo.forestlawn.com/?fname=maurice+frederick&search=1&slast=hewitt&sradio=grave
+    (Maurice Frederick Hewitt, Covina Hills, Honor, Map 4/Lot 508/Space
+    1). Covina Hills address and current contact from
+    https://forestlawn.com/parks/covina-hills/.
+28. Candidate dates/name corroboration for Jondavid Frederick Greeran
+    (not official vital records): PeopleLegacy/TruthFinder-backed
+    aggregator profile
+    (https://peoplelegacy.com/jondavid_frederick_greeran-20540J) reports
+    13 Aug–22 Nov 1985 and the same Forest Lawn plot; a public Vaughan
+    relatives PDF (http://www.vaughan.org/tree/RoseyVaughanRelatives.pdf)
+    lists the exact name and 13 Aug 1985, but its link to this Duarte
+    Greeran family is unestablished; Ancestry public-tree search
+    (https://www.ancestry.com/search/collections/1030?name=_Geraron&pg=2&pcat=42&geo-lang=nb)
+    says the name appears in eight trees, including a “Greeran Family
+    Tree” (user-submitted/sign-in limited; tree contents not reviewed).
+    Treat the dates as leads until a family paper, index, or vital record
+    confirms them.
