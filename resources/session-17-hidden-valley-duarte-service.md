@@ -1239,7 +1239,7 @@ work about **Rubel Farms and Mike Rubel**, and pointed out that the
 the mine's own history instead of treating them as one site or one
 person's operation.
 
-### 1. The Rubel program: catalogued as *Visiting*, with a 1990 Videolog inside it
+### 1. The Rubel programs: a 1990 appearance and a 2011 *Visiting* update
 
 The official PBS listing I could verify is **“Glendora Castle,”** a
 28-minute, 39-second episode of *Visiting with Huell Howser*, released
@@ -1251,16 +1251,24 @@ itself says the first visit took place in 1990; it places the castle on
 the old Dalton Reservoir site and describes the former farm's orange
 packinghouse (Source 69).
 
-That explains a possible title mix-up: the transcript's closing speaker
-calls the castle a “true example of California's Gold,” and Huell
-compares an escape tunnel to an old gold-mine shaft. But the accessible
-catalog entry is for *Visiting with Huell Howser*, not an episode listed
-under the *California's Gold* series, and the shaft line is about the
-castle's escape tunnel—not a named mine (Sources 69–71). I did not find
-the name **Stanley-Miller** or **Mike Rubel** connected to that mine in
-the official transcript. The original 1990 Videolog is referenced by
-the archive, but its full recording is not posted there due to the
-archive's stated intellectual-property limits (Source 70).
+The title/series evidence is mixed rather than one-way. The transcript's
+closing speaker calls the castle a “true example of California's Gold,”
+and Huell compares an escape tunnel to an old gold-mine shaft. More
+importantly, the Rubel Castle Historic District National Register
+registration form cites a 1990 Huell program, “Glendora Castle,” as
+*California's Gold*, Episode #1817, and separately cites the 2011
+*Visiting with Huell Howser* program (Source 76). This supports the
+user's California's Gold lead as a documented 1990 reference. However,
+the accessible full-length #1817 episode is catalogued by PBS and
+Chapman as *Visiting*, while Chapman describes the earlier Michael
+Rubel segment as the old Videolog “Rubel's Castle” (Sources 69–71).
+Without the original 1990 production file or master, I cannot reconcile
+those series labels; the National Register citation is not itself the
+1990 broadcast or its transcript. The escape-tunnel line in the 2011
+transcript refers to the castle, not a named mine. I did not find
+**Stanley-Miller** or a connection between **Mike Rubel** and that mine
+in the official transcript. Chapman's archive says Videolog recordings
+are not posted under its rights agreements (Source 70).
 
 ### 2. Stanley-Miller: a separate East Fork gold mine
 
@@ -1392,18 +1400,19 @@ unverified. No person or archive was contacted.
     active at the time, but no model-specific Morris Dam launch record
     was located. See Addendum 11 and Sources 52–68; no person or agency
     was contacted.
-12. **Huell Howser / Rubel Farms / Stanley-Miller Mine** — the public
-    archive record located is the 2011 *Visiting with Huell Howser*
-    episode “Glendora Castle,” which revisits the 1990 Videolog “Rubel's
-    Castle”; its transcript calls the castle an example of “California's
-    Gold” but does not name Stanley-Miller. The separate East Fork mine
-    history is documented in Addendum 12, but the 1913/1915 start-date
-    discrepancy, production total, and any direct Rubel/mine connection
-    remain unresolved. Consult John W. Robinson's *Mines of the East
-    Fork*, claim records, and the original 1928 aerial-photo catalog; if
-    the user meant a different Huell episode, its title or timecode would
-    distinguish it. No person or archive was contacted. See Addendum 12
-    and Sources 69–75.
+12. **Huell Howser / Rubel Farms / Stanley-Miller Mine** — the 2011
+    full-length “Glendora Castle” program is catalogued as *Visiting*
+    and revisits the 1990 Videolog “Rubel's Castle.” A National Register
+    form separately cites a 1990 *California's Gold* “Glendora Castle,”
+    Episode #1817; the primary 1990 program record/master is needed to
+    resolve the conflicting series labels. Neither the 2011 transcript
+    nor the reviewed material links the named Stanley-Miller Mine to
+    Rubel. The separate East Fork mine history is documented in
+    Addendum 12, but the 1913/1915 start-date discrepancy, production
+    total, and any direct Rubel/mine connection remain unresolved.
+    Consult John W. Robinson's *Mines of the East Fork*, claim records,
+    and the original 1928 aerial-photo catalog. No person or archive was
+    contacted. See Addendum 12 and Sources 69–76.
 
 ## Sources
 
@@ -1893,3 +1902,10 @@ unverified. No person or archive was contacted.
     (https://www.laconservancy.org/learn/historic-places/rubel-castle-historic-district/),
     for Michael Clarke Rubel's identity and the property's farm / castle
     history; it is not evidence of a Stanley-Miller mine connection.
+76. Glendora Historical Society, Rubel Castle Historic District,
+    National Register of Historic Places registration form (NPS Form
+    10-900; https://glendorahistoricalsociety.org/rubel_castle_historic_district.pdf).
+    Its bibliography separately cites a 1990 “Glendora Castle,”
+    *California's Gold*, Episode #1817, and a 2011 “Glendora Castle,”
+    *Visiting with Huell Howser*; this is a secondary citation, not the
+    original broadcast or its transcript.
