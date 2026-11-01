@@ -249,6 +249,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [sanborn-suite-deep-dive.md](sanborn-suite-deep-dive.md) — sanborn suite deep dive
 - [satellite-constellations.md](satellite-constellations.md) — satellite constellations
 - [satellite-launch-windows-research-2026-10-04.md](satellite-launch-windows-research-2026-10-04.md) — satellite launch windows research 2026 10 04
+- [scouting-field-trip-research-2026-11-01.md](scouting-field-trip-research-2026-11-01.md) — Scout, school field-trip, yearbook, book-access, and lodge research status
 - [sgreeran-resume-chronology.md](sgreeran-resume-chronology.md) — sgreeran resume chronology
 - [sierra-shadow-president-sweep-2026-10-21.md](sierra-shadow-president-sweep-2026-10-21.md) — sierra shadow president sweep 2026 10 21
 - [simgirls-disassembly-research.md](simgirls-disassembly-research.md) — simgirls disassembly research
