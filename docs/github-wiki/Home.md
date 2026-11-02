@@ -16,6 +16,8 @@ This wiki is a guide to the `shdwelf/Html5` source repository, its research note
 
 The Greeran Book separates official records, self-published claims, context, and private memory. The current open research queue is in [`docs/greeran-book-ideas-backlog.md`](https://github.com/shdwelf/Html5/blob/main/docs/greeran-book-ideas-backlog.md). The latest commencement-date pass did not find a contemporaneous 2001 date, so none was inferred or added to the timeline: [`greeran-commencement-research-2026-10-16.md`](https://github.com/shdwelf/Html5/blob/main/docs/greeran-commencement-research-2026-10-16.md).
 
+The [Indiana Jones diary page-gap audit](https://github.com/shdwelf/Html5/blob/main/docs/indiana-jones-grail-diary-page-gaps-2026-11-02.md) separates the 1989 film prop, the 2008 *Lost Journal*, later reproductions, and fan reconstructions; its [topic bibliography](https://github.com/shdwelf/Html5/blob/main/docs/indiana-jones-diary-bibliography-2026-11-02.md) grades the supporting sources. The separate [Hardy Boys/Nancy Drew CyberChef source screen](https://github.com/shdwelf/Html5/blob/main/docs/cyberchef-mystery-book-source-audit-2026-11-02.md) records Drive search limits and why no new cipher operation was inferred.
+
 ## Source and artifact boundaries
 
 The repository's single-file HTML and Webxdc builds are generated from checked-in source. The native TiddlyWiki HTML/XDC is a catalog with bounded previews; the larger More Wiki JAR contains the exact content-addressed source files. Do not treat a preview as a complete binary backup or execute archived samples during restoration.

@@ -146,6 +146,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [cyberchef-gb-rom-2026-10-21.md](cyberchef-gb-rom-2026-10-21.md) — cyberchef gb rom 2026 10 21
 - [cyberchef-matrix-deep-dive.md](cyberchef-matrix-deep-dive.md) — cyberchef matrix deep dive
 - [cyberchef-modern-cryptography-research-2026-09-29.md](cyberchef-modern-cryptography-research-2026-09-29.md) — cyberchef modern cryptography research 2026 09 29
+- [cyberchef-mystery-book-source-audit-2026-11-02.md](cyberchef-mystery-book-source-audit-2026-11-02.md) — Hardy Boys and Nancy Drew cipher-source screen for CyberChef Kitchen
 - [cyberchef-recipe-comparison-2026-10-21.md](cyberchef-recipe-comparison-2026-10-21.md) — cyberchef recipe comparison 2026 10 21
 - [cyberchef-sfx-coverage-audit-2026-10-09.md](cyberchef-sfx-coverage-audit-2026-10-09.md) — cyberchef sfx coverage audit 2026 10 09
 - [cyberchef-sfx-coverage-audit-2026-10-13.md](cyberchef-sfx-coverage-audit-2026-10-13.md) — cyberchef sfx coverage audit 2026 10 13
@@ -214,6 +215,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [historical-network-viewer-scope-2026-10-22.md](historical-network-viewer-scope-2026-10-22.md) — historical network viewer scope 2026 10 22
 - [hp-aio-xport-modem-adapter-feasibility.md](hp-aio-xport-modem-adapter-feasibility.md) — hp aio xport modem adapter feasibility
 - [iacr-research-watch-2026-09-28.md](iacr-research-watch-2026-09-28.md) — iacr research watch 2026 09 28
+- [indiana-jones-diary-bibliography-2026-11-02.md](indiana-jones-diary-bibliography-2026-11-02.md) — Indiana Jones and Langdon diary source bibliography
+- [indiana-jones-grail-diary-page-gaps-2026-11-02.md](indiana-jones-grail-diary-page-gaps-2026-11-02.md) — Grail Diary and Lost Journal missing-page provenance audit
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
 - [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
