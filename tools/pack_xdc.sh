@@ -35,6 +35,7 @@ glendora-high-4dwm.html
 greeran-family-4dwm.html
 greeran-subsurface.html
 planet-viewer-4dwm.html
+country-viewer.html
 red-october-4dwm.html
 sanborn-restaurant-4dwm.html
 socal-calc.html
@@ -68,11 +69,14 @@ orientation = "landscape"
 source_code_url = "https://github.com/shdwelf/Html5"
 TOML
 
-# These are the complete local dependency trees for the shell and pages above.
-# In particular, Project Y needs its site data, six VRML exports, photos, and
-# the local three.js modules; omitting any one of them leaves a tab blank in a
-# network-restricted webxdc host.
+# These are the local dependency trees for the shell and pages above. In
+# particular, Project Y needs its site data, six VRML exports, photos, and the
+# local three.js modules; the viewers need their offline Gazetteer and terrain
+# modules. Omitting any of these leaves tabs blank in a network-restricted host.
 cp -R css js wasm vendor img src docs assets data models "$tmp/"
+# Planet Viewer's shared orthographic projection lives with the Red October app.
+mkdir -p "$tmp/apps/red-october-command-viewer"
+cp apps/red-october-command-viewer/core.js "$tmp/apps/red-october-command-viewer/core.js"
 
 rm -f "$out" "$dist"
 mkdir -p "$root/dist"

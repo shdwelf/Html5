@@ -63,6 +63,33 @@ test("SITE-K shell exposes the 4DWM directory and all directory targets ship", (
   }
 });
 
+test("SITE-K app dock publishes both viewers and their offline dependencies", () => {
+  const index = text("index.html");
+  const catalog = text("js/sitek-catalog.js");
+  const packer = text("tools/pack_xdc.sh");
+  const worker = text("sw.js");
+  for (const [id, label, page] of [
+    ["planet-viewer", "PLANET VIEWER", "planet-viewer-4dwm.html"],
+    ["country-viewer", "COUNTRY VIEWER", "country-viewer.html"],
+  ]) {
+    assert.ok(index.includes(`href="./${page}">${label}`), `${label} appears in the app dock`);
+    assert.ok(catalog.includes(`id: "${id}", label: "${label}", route: "./${page}"`), `${id} is in the app catalog`);
+    assert.ok(packer.includes(`${page}\n`), `${page} ships inside the SITE-K XDC`);
+    assert.ok(worker.includes(`"./${page}"`), `${page} is cached for offline launch`);
+    assert.doesNotThrow(() => readFileSync(new URL(`../${page}`, import.meta.url)));
+  }
+  for (const module of [
+    "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js",
+    "js/city-gazetteer.js", "js/city-gazetteer-data-atlanta.js",
+    "js/city-gazetteer-data-buffalo.js", "js/city-gazetteer-data-kansascity.js",
+    "js/city-gazetteer-data-lawrence.js", "js/city-gazetteer-data-toronto.js",
+    "apps/red-october-command-viewer/core.js", "vendor/world/countries.geo.json",
+  ]) {
+    assert.ok(worker.includes(`"./${module}"`), `${module} is precached for offline search`);
+  }
+});
+
 test("all standalone app modes share one shell visibility rule", () => {
   const app = text("js/app.js");
   const appCss = text("css/app.css");
@@ -73,5 +100,5 @@ test("all standalone app modes share one shell visibility rule", () => {
   assert.match(wmCss, /body\[data-shell-view="frame"\] \.wm-desk/);
   assert.match(app, /syncSitekDockLink\(a, mode\)/);
   assert.match(worker, /"\.\/wasm\/ghidra\/ghidra_decompiler\.wasm"/);
-  assert.match(worker, /CACHE_PREFIX\}v39/);
+  assert.match(worker, /CACHE_PREFIX\}v40/);
 });

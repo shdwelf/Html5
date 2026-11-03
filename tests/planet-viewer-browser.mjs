@@ -54,12 +54,18 @@ try {
     const info = await page.evaluate(() => {
       const c = document.getElementById("stage");
       const gl = c.getContext("webgl2") || c.getContext("webgl");
-      return { hasGl: Boolean(gl), width: c.width, height: c.height, status: document.getElementById("status").textContent };
+      return {
+        hasGl: Boolean(gl), width: c.width, height: c.height,
+        drawCalls: Number(c.dataset.drawCalls), triangles: Number(c.dataset.triangles),
+        activePlate: c.dataset.activePlate,
+        status: document.getElementById("status").textContent,
+      };
     });
     assert.ok(info.hasGl);
     assert.ok(info.width > 100 && info.height > 100);
-    const shot = await page.screenshot({ encoding: "base64", clip: { x: 400, y: 250, width: 800, height: 500 } });
-    assert.ok(shot.length > 2000, "screenshot suspiciously small");
+    assert.equal(info.activePlate, "chey");
+    assert.ok(info.drawCalls > 0, "Three.js must submit a draw call");
+    assert.ok(info.triangles > 0, "Three.js must draw terrain triangles");
   });
 
   await test("every plate loads and every mode renders without a page error", async () => {
@@ -101,24 +107,85 @@ try {
     assert.ok(panel.cards >= 5);
   });
 
-  await test("switching plates really changes the terrain on screen", async () => {
-    const sig = async (plate) => {
+  await test("switching plates updates the active relief grid and terrain draw counts", async () => {
+    await page.click('.mode-switch [data-mode="relief"]');
+    const meshState = async (plate) => {
       await page.click(`[data-plate="${plate}"]`);
-      await new Promise((r) => setTimeout(r, 500));
-      return page.screenshot({ encoding: "base64", clip: { x: 400, y: 250, width: 800, height: 500 } });
+      await page.waitForFunction((id) => document.getElementById("stage")?.dataset.activePlate === id, {}, plate);
+      return page.evaluate(() => ({
+        plate: document.getElementById("stage").dataset.activePlate,
+        triangles: Number(document.getElementById("stage").dataset.triangles),
+        grid: document.querySelector('[data-layer="surface"] .lval')?.textContent,
+      }));
     };
-    const a = await sig("chey");
-    const b = await sig("lawrence");
-    assert.notEqual(a, b);
+    const cheyenne = await meshState("chey");
+    const lawrence = await meshState("lawrence");
+    assert.equal(cheyenne.plate, "chey");
+    assert.equal(lawrence.plate, "lawrence");
+    assert.ok(cheyenne.triangles > 0 && lawrence.triangles > 0);
+    assert.notEqual(cheyenne.triangles, lawrence.triangles, "different terrain meshes are actually submitted to WebGL");
+    assert.notEqual(cheyenne.grid, lawrence.grid, "the surface dimensions follow the selected plate");
   });
 
-  await test("the gazetteer finds Lawrence on the Lawrence plate", async () => {
+  await test("Gazetteer search jumps from a mountain plate to the matching terrain plate", async () => {
+    await page.click('[data-plate="chey"]');
+    await page.$eval("#searchBox", (input) => {
+      input.value = "Lawrence";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForSelector("#searchResults .res");
+    await page.click("#searchResults .res");
+    await page.waitForFunction(() => document.getElementById("statPlate")?.textContent === "plate: lawrence");
+    assert.match(await page.evaluate(() => document.getElementById("status").textContent), /Lawrence.*terrain plate/);
+    assert.equal(await page.$eval('[data-plate="lawrence"]', (b) => b.getAttribute("aria-pressed")), "true");
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "active");
+
+    await page.click('[data-plate="chey"]');
+    await page.waitForFunction(() => document.getElementById("stage")?.dataset.activePlate === "chey");
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "none",
+      "a selected point outside the active plate must not leave a stale marker");
     await page.click('[data-plate="lawrence"]');
-    await new Promise((r) => setTimeout(r, 400));
-    await page.type("#searchBox", "Lawrence");
-    await new Promise((r) => setTimeout(r, 400));
-    const results = await page.evaluate(() => document.querySelectorAll("#searchResults .res").length);
-    assert.ok(results >= 1, "search should find Lawrence");
+    await page.waitForFunction(() => document.getElementById("stage")?.dataset.activePlate === "lawrence");
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "active",
+      "the selected marker returns when its terrain plate becomes active again");
+  });
+
+  await test("Gazetteer results without a terrain plate are highlighted on the globe", async () => {
+    await page.$eval("#searchBox", (input) => {
+      input.value = "Atlanta";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForSelector("#searchResults .res");
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "none",
+      "editing a search clears the previously selected terrain marker");
+    await page.click("#searchResults .res");
+    await page.waitForFunction(() => document.getElementById("statPlate")?.textContent === "plate: globe");
+    const state = await page.evaluate(() => ({
+      globeVisible: !document.getElementById("globeStage").hidden,
+      selected: document.getElementById("infoTitle").textContent,
+      status: document.getElementById("status").textContent,
+      marker: document.getElementById("stage").dataset.gazetteerMarker,
+    }));
+    assert.equal(state.globeVisible, true);
+    assert.equal(state.selected, "Atlanta");
+    assert.equal(state.marker, "none", "globe mode must remove the terrain-only Three.js marker");
+    assert.match(state.status, /no terrain plate.*centered globe/);
+  });
+
+  await test("GNIS search remains usable from the PC Globe index overlay", async () => {
+    await page.click('[data-plate="pcg"]');
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "none",
+      "the index-only plate must not retain a terrain marker");
+    await page.$eval("#searchBox", (input) => {
+      input.value = "Lawrence";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForSelector("#searchResults .res");
+    await page.click("#searchResults .res");
+    await page.waitForFunction(() => document.getElementById("statPlate")?.textContent === "plate: lawrence");
+    assert.equal(await page.$eval("#pcgPanel", (panel) => panel.hidden), true);
+    assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "active",
+      "leaving the PC Globe overlay restores the selected point marker on terrain");
   });
 
   await test("the VRML export produces a real download", async () => {

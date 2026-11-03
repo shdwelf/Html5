@@ -25,8 +25,18 @@
     #detail td { padding: 4px 0; }
     .loc { color: #a9c8e2; } .byline { color: #8fb4d4; font-size: 12px; }
     .note, footer { color: #6f96b5; font-size: 11px; }
+    label.note { display: block; margin: 8px 0 4px; }
+    .gaz-box { margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid #1d3a52; }
+    .gaz-box h2 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.06em; }
+    .gaz-box p { margin: 4px 0 8px; line-height: 1.45; }
+    #gazSearch { width: 100%; box-sizing: border-box; padding: 8px; background: #0e2033; color: inherit; border: 1px solid #2a4b6b; }
+    #gazResults { display: grid; gap: 4px; margin-top: 6px; }
+    #gazResults button { text-align: left; padding: 6px; color: inherit; background: #0e2033; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 11px; }
+    #gazResults button:hover, #gazResults button:focus-visible { border-color: #ffd75e; background: #183149; }
+    #gazResults small { display: block; color: #8fb4d4; margin-top: 2px; }
+    #gazDetail { margin-top: 6px; color: #a9c8e2; font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
     footer { padding: 10px 16px; border-top: 1px solid #1d3a52; }
-    @media (max-width: 760px) { main { grid-template-columns: 1fr; } aside { max-height: 40vh; } }
+    @media (max-width: 760px) { main { grid-template-columns: 1fr; } aside { max-height: 48vh; } }
   </style>
 </head>
 <body>
@@ -36,7 +46,16 @@
   </header>
   <main>
     <aside>
+      <label for="search" class="note">Countries</label>
       <input id="search" type="search" placeholder="Search country or capital…" aria-label="Search countries" />
+      <section class="gaz-box" aria-labelledby="gazHeading">
+        <h2 id="gazHeading">OFFLINE GAZETTEER POINTS</h2>
+        <p class="note">Five-city feature subset. Only rows marked GNIS carry an official GNIS ID; this is not a complete or live lookup.</p>
+        <label for="gazSearch" class="note">Search place names</label>
+        <input id="gazSearch" type="search" placeholder="Search Gazetteer names (2+ letters)…" autocomplete="off" aria-label="Search offline Gazetteer points" />
+        <div id="gazResults" aria-live="polite"></div>
+        <div id="gazDetail" aria-live="polite">Choose a result to highlight it on the world map.</div>
+      </section>
       <ul id="countries"></ul>
     </aside>
     <section>

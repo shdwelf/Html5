@@ -2,6 +2,16 @@
 // World Factbook register. Pure helpers are exported for tests; the DOM
 // bootstrap only runs in a browser.
 import { COUNTRIES, COUNTRY_DATA_META } from "./country-data.js";
+import { makeGazetteerIndex, searchName } from "./city-gazetteer.js";
+import { GAZ_ROWS as atlantaRows } from "./city-gazetteer-data-atlanta.js";
+import { GAZ_ROWS as buffaloRows } from "./city-gazetteer-data-buffalo.js";
+import { GAZ_ROWS as kansasCityRows } from "./city-gazetteer-data-kansascity.js";
+import { GAZ_ROWS as lawrenceRows } from "./city-gazetteer-data-lawrence.js";
+import { GAZ_ROWS as torontoRows } from "./city-gazetteer-data-toronto.js";
+
+const GAZETTEER_INDEX = makeGazetteerIndex([
+  ...atlantaRows, ...buffaloRows, ...kansasCityRows, ...lawrenceRows, ...torontoRows,
+]);
 
 export function filterCountries(list, query) {
   const q = (query || "").trim().toLowerCase();
@@ -10,6 +20,12 @@ export function filterCountries(list, query) {
     c.name.toLowerCase().includes(q) ||
     c.capital.name.toLowerCase().includes(q) ||
     c.code.toLowerCase() === q);
+}
+
+export function searchGazetteerPoints(query, limit = 8) {
+  const q = String(query ?? "").trim();
+  if (q.length < 2) return [];
+  return searchName(GAZETTEER_INDEX, q, { limit });
 }
 
 export function formatInt(n) {
@@ -26,7 +42,7 @@ export function sortByName(list) {
   return [...list].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function drawMap(canvas, selected) {
+function drawMap(canvas, selected, selectedGazetteer = null) {
   const ctx = canvas.getContext("2d");
   const w = canvas.width, h = canvas.height;
   ctx.fillStyle = "#0b1622";
@@ -50,9 +66,37 @@ function drawMap(canvas, selected) {
     ctx.fillStyle = "#ff8a5e";
     ctx.fillRect(x - 3, y - 3, 6, 6);
   }
+  if (selectedGazetteer && Number.isFinite(selectedGazetteer.lat) && Number.isFinite(selectedGazetteer.lon)) {
+    const [x, y] = project(selectedGazetteer.lon, selectedGazetteer.lat, w, h);
+    ctx.beginPath();
+    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff5c78";
+    ctx.fill();
+  }
 }
 
 function el(id) { return document.getElementById(id); }
+function esc(s) {
+  return String(s ?? "").replace(/[&<>\"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '\"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function renderGazetteerDetail(point) {
+  const host = el("gazDetail");
+  if (!point) {
+    host.textContent = "Choose a result to highlight it on the world map.";
+    return;
+  }
+  const identity = point.verified && point.gnis
+    ? `USGS GNIS ${esc(point.gnis)}`
+    : "local reference point · no GNIS id claimed";
+  host.innerHTML = `<b>${esc(point.name)}</b><br>${esc(point.fclass)} · ${esc(point.county || "county not recorded")}<br>` +
+    `${point.lat.toFixed(5)}, ${point.lon.toFixed(5)}<br>${identity}<br><span class="note">${esc(point.note || "")}</span>`;
+}
 
 export function capitalText(c) {
   const hasCoords = Number.isFinite(c.capital.lat) && Number.isFinite(c.capital.lon);
@@ -86,23 +130,55 @@ function renderDetail(c) {
 function main() {
   const listEl = el("countries");
   const searchEl = el("search");
+  const gazSearchEl = el("gazSearch");
+  const gazResultsEl = el("gazResults");
   const canvas = el("world");
   let selected = null;
+  let selectedGazetteer = null;
+
   function renderList() {
     const items = sortByName(filterCountries(COUNTRIES, searchEl.value));
     listEl.innerHTML = items.map((c) =>
       `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.capital.name ? `${c.name} — ${c.capital.name}` : c.name}</button></li>`).join("");
     listEl.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
       selected = COUNTRIES.find((c) => c.code === b.dataset.code) || null;
-      renderList(); renderDetail(selected); drawMap(canvas, selected);
+      renderList(); renderDetail(selected); drawMap(canvas, selected, selectedGazetteer);
     }));
   }
+
+  function renderGazetteerSearch() {
+    selectedGazetteer = null;
+    renderGazetteerDetail(null);
+    const q = gazSearchEl.value.trim();
+    if (q.length < 2) {
+      gazResultsEl.innerHTML = q ? '<p class="note">Enter at least two characters.</p>' : "";
+      drawMap(canvas, selected, null);
+      return;
+    }
+    const hits = searchGazetteerPoints(q);
+    gazResultsEl.innerHTML = hits.length
+      ? hits.map((point, i) => {
+        const provenance = point.verified && point.gnis ? `GNIS ${esc(point.gnis)}` : "reference point";
+        return `<button type="button" data-point="${i}" aria-label="${esc(point.name)}, ${esc(provenance)}">` +
+          `${esc(point.name)}<small>${esc(point.fclass)} · ${esc(point.county || "county unknown")} · ${esc(provenance)}</small></button>`;
+      }).join("")
+      : '<p class="note">No match in the five-city offline Gazetteer subset.</p>';
+    gazResultsEl.querySelectorAll("button[data-point]").forEach((button) => button.addEventListener("click", () => {
+      selectedGazetteer = hits[Number(button.dataset.point)] || null;
+      renderGazetteerDetail(selectedGazetteer);
+      drawMap(canvas, selected, selectedGazetteer);
+    }));
+    drawMap(canvas, selected, null);
+  }
+
   searchEl.addEventListener("input", renderList);
+  gazSearchEl.addEventListener("input", renderGazetteerSearch);
   el("sourcepin").textContent =
     `${COUNTRY_DATA_META.source} · upstream ${COUNTRY_DATA_META.upstreamCommit.slice(0, 12)} · ` +
     `${COUNTRY_DATA_META.count} seeded countries · register: ${COUNTRY_DATA_META.register}`;
   renderList();
-  drawMap(canvas, null);
+  renderGazetteerSearch();
+  drawMap(canvas, null, null);
 }
 
 if (typeof document !== "undefined") {

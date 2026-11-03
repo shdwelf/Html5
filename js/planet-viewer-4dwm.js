@@ -12,7 +12,8 @@ import { demToVrml, downloadText } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
 import { COUNTRIES } from "./country-data.js";
-import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments } from "./planet-globe.js";
+import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments, projectOrthographic } from "./planet-globe.js";
+import { locateGazetteerPoint } from "./planet-viewer-search.js";
 import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
 
 /* =========================================================================
@@ -50,6 +51,8 @@ let pcgOn = false; // PC Globe index plate (index-only; nothing plotted)
 let globeCentre = { lat: 20, lon: 10 };
 let globeData = null; // { markers, skipped } from js/planet-globe.js
 let globeRings = null; // coastline rings from vendor/world/countries.geo.json
+let selectedGazetteer = null; // the most recently focused offline place
+let gazetteerMarker = null; // selected terrain point, separate from the DEM mesh
 let fpsAcc = { n: 0, t0: 0, fps: 0 };
 
 const COL = { sky: 0x0a1016, contour: 0x5cd6ff, marker: 0xffb020 };
@@ -254,14 +257,35 @@ function drawGlobe() {
       }
     }
   }
+
+  if (selectedGazetteer) {
+    const p = projectOrthographic(selectedGazetteer.lat, selectedGazetteer.lon, cLat, cLon);
+    if (p.visible) {
+      const [x, y] = toPx(p);
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff5c78";
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+      if (labelsOn) {
+        ctx.font = "bold 10px " + getComputedStyle(document.body).getPropertyValue("--mono");
+        ctx.fillStyle = "#ffd7df";
+        ctx.fillText(`${selectedGazetteer.name} · Gazetteer`, x + 8, y - 6);
+      }
+    }
+  }
 }
 
 function setGlobe(on) {
   globeOn = on;
+  syncGazetteerMarker();
   const cv = $("globeStage");
   if (cv) cv.hidden = !on;
   if (terrainGroup) terrainGroup.visible = !on;
   if (on) {
+    setActivePlate("globe");
     const sh = $("statPlate");
     if (sh) sh.textContent = "plate: globe";
     renderChecks();
@@ -303,10 +327,12 @@ function renderPcGlobe(filter) {
 
 function setPcGlobe(on) {
   pcgOn = on;
+  syncGazetteerMarker();
   const panel = $("pcgPanel");
   if (panel) panel.hidden = !on;
   if (terrainGroup) terrainGroup.visible = !on && !globeOn;
   if (on) {
+    setActivePlate("pcg");
     const meta = $("pcgMeta");
     if (meta) {
       meta.textContent =
@@ -321,7 +347,16 @@ function setPcGlobe(on) {
   }
 }
 
+function setActivePlate(id) {
+  for (const button of document.querySelectorAll(".plate-switch [data-plate]")) {
+    const active = button.dataset.plate === id;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  }
+}
+
 function selectPlate(id) {
+  setActivePlate(id);
   if (id === "pcg") {
     if (globeOn) setGlobe(false);
     setPcGlobe(true);
@@ -349,6 +384,7 @@ function selectPlate(id) {
   }
   terrainGroup = buildTerrain(plate);
   scene.add(terrainGroup);
+  syncGazetteerMarker();
   frame();
   applyMode();
   renderChecks();
@@ -469,28 +505,103 @@ function syncLabels() {
 
 /* ------------------------------------------------------------- search */
 
+function publishGazetteerMarkerState() {
+  if (renderer?.domElement) {
+    renderer.domElement.dataset.gazetteerMarker = gazetteerMarker ? "active" : "none";
+  }
+}
+
+function clearGazetteerMarker() {
+  if (gazetteerMarker) {
+    scene?.remove(gazetteerMarker);
+    gazetteerMarker.geometry?.dispose();
+    gazetteerMarker.material?.dispose();
+    gazetteerMarker = null;
+  }
+  publishGazetteerMarkerState();
+}
+
+function syncGazetteerMarker() {
+  clearGazetteerMarker();
+  if (!scene || !plate || !selectedGazetteer || globeOn || pcgOn) return;
+  const destination = locateGazetteerPoint(plates, PLATE_ORDER, selectedGazetteer);
+  if (destination?.kind !== "terrain" || destination.plateId !== plate.id) return;
+
+  const [west, south, east, north] = plate.grid.bbox;
+  const { w, d } = plate.world;
+  const x = ((selectedGazetteer.lon - west) / (east - west) - 0.5) * w;
+  const z = ((selectedGazetteer.lat - south) / (north - south) - 0.5) * d;
+  const y = (sampleDem(plate.grid, selectedGazetteer.lon, selectedGazetteer.lat) - plate.grid.min) * (exag / 1000);
+  const radius = Math.max(0.1, Math.min(w, d) * 0.004);
+  gazetteerMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 16, 12),
+    new THREE.MeshBasicMaterial({ color: 0xff5c78, depthTest: false }),
+  );
+  gazetteerMarker.position.set(x, y + radius * 1.5, z);
+  gazetteerMarker.renderOrder = 10;
+  gazetteerMarker.name = "gazetteer-marker";
+  scene.add(gazetteerMarker);
+  publishGazetteerMarkerState();
+}
+
+function focusGazetteerPoint(point) {
+  const destination = locateGazetteerPoint(plates, PLATE_ORDER, point);
+  if (!destination) {
+    announce("This Gazetteer result has no valid coordinates.");
+    return;
+  }
+  selectedGazetteer = point;
+  const identity = point.verified && point.gnis ? `USGS GNIS ${point.gnis}` : "reference point; no GNIS id claimed";
+  $("infoTitle").textContent = point.name;
+  $("infoBody").innerHTML =
+    `<div class="tiny dim">${esc(point.fclass)} · ${esc(point.county || "county not recorded")}</div>` +
+    `<p class="small">${point.lat.toFixed(5)}, ${point.lon.toFixed(5)} · ${esc(identity)}</p>`;
+
+  if (destination.kind === "terrain") {
+    if (globeOn || pcgOn || plate.id !== destination.plateId) selectPlate(destination.plateId);
+    syncGazetteerMarker();
+    const [west, south, east, north] = plate.grid.bbox;
+    const { w, d } = plate.world;
+    const x = ((point.lon - west) / (east - west) - 0.5) * w;
+    const z = ((point.lat - south) / (north - south) - 0.5) * d;
+    const y = (sampleDem(plate.grid, point.lon, point.lat) - plate.grid.min) * (exag / 1000);
+    controls.target.set(x, y, z);
+    const range = Math.max(8, Math.min(w, d) * 0.24);
+    camera.position.set(x + range, y + range * 1.2, z + range * 1.6);
+    controls.update();
+    announce(`${identity} · ${point.name} · ${plate.name} terrain plate · ${point.lat.toFixed(4)}, ${point.lon.toFixed(4)}`);
+    return;
+  }
+
+  setPcGlobe(false);
+  globeCentre = { lat: point.lat, lon: point.lon };
+  setGlobe(true);
+  drawGlobe();
+  announce(`Gazetteer · ${point.name} · no terrain plate in the offline set; centered globe · ${point.lat.toFixed(4)}, ${point.lon.toFixed(4)}`);
+}
+
 function doSearch(q) {
   const host = $("searchResults");
+  selectedGazetteer = null;
+  clearGazetteerMarker();
+  if (globeOn) drawGlobe();
   if (!q || q.length < 2) {
-    host.innerHTML = "";
+    host.innerHTML = q ? `<div class="tiny dim">Enter at least two characters.</div>` : "";
     return;
   }
   const hits = searchName(gazIndex, q, { limit: 8 });
   host.innerHTML = hits.length
-    ? hits.map((r) => `<button type="button" class="res" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${esc(r.name)}">${esc(r.name)} <span>${esc(r.fclass)}</span></button>`).join("")
-    : `<div class="tiny dim">no packed GNIS match — the offline subset covers five cities</div>`;
-  host.querySelectorAll(".res").forEach((b) =>
-    b.addEventListener("click", () => {
-      const lat = Number(b.dataset.lat);
-      const lon = Number(b.dataset.lon);
-      const [bw, bs, be, bn] = plate.grid.bbox;
-      if (lat >= bs && lat <= bn && lon >= bw && lon <= be) {
-        const { w, d } = plate.world;
-        controls.target.set(((lon - bw) / (be - bw) - 0.5) * w, 0, ((lat - bs) / (bn - bs) - 0.5) * d);
-      }
-      announce(`→ ${b.dataset.name}`);
-    }),
-  );
+    ? hits.map((r, i) => {
+      const destination = locateGazetteerPoint(plates, PLATE_ORDER, r);
+      const place = destination?.kind === "terrain" ? `${plates[destination.plateId].name} plate` : "globe";
+      const identity = r.verified && r.gnis ? `GNIS ${r.gnis}` : "reference point";
+      return `<button type="button" class="res" data-result="${i}" aria-label="${esc(r.name)}, ${esc(r.fclass)}, ${esc(identity)}, ${esc(place)}">` +
+        `<b>${esc(r.name)}</b><span>${esc(r.fclass)} · ${esc(identity)} · ${esc(place)}</span></button>`;
+    }).join("")
+    : `<div class="tiny dim">No match in the five-city offline Gazetteer subset.</div>`;
+  host.querySelectorAll(".res").forEach((button) => {
+    button.addEventListener("click", () => focusGazetteerPoint(hits[Number(button.dataset.result)]));
+  });
 }
 
 /* ------------------------------------------------------------- 4Dwm */
@@ -562,11 +673,8 @@ function bind() {
     gc.addEventListener("pointercancel", () => (drag = null));
   }
 
-  document.querySelectorAll("[data-plate]").forEach((b) =>
-    b.addEventListener("click", () => {
-      document.querySelectorAll("[data-plate]").forEach((x) => x.classList.toggle("active", x === b));
-      selectPlate(b.dataset.plate);
-    }),
+  document.querySelectorAll(".plate-switch [data-plate]").forEach((b) =>
+    b.addEventListener("click", () => selectPlate(b.dataset.plate)),
   );
   document.querySelectorAll(".mode-switch [data-mode]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -578,7 +686,8 @@ function bind() {
     labelsOn = !labelsOn;
     $("btnLabels").classList.toggle("active", labelsOn);
     $("btnLabels").setAttribute("aria-pressed", String(labelsOn));
-    syncLabels();
+    if (globeOn) drawGlobe();
+    else syncLabels();
   });
   $("btnReset")?.addEventListener("click", frame);
   $("btnVrml")?.addEventListener("click", exportVrml);
@@ -648,6 +757,11 @@ function init() {
   renderer.setAnimationLoop(() => {
     controls.update();
     renderer.render(scene, camera);
+    // Expose the active plate and actual Three.js draw counts on the canvas
+    // for diagnostics and deterministic browser smoke tests.
+    renderer.domElement.dataset.activePlate = globeOn ? "globe" : pcgOn ? "pcg" : plate.id;
+    renderer.domElement.dataset.drawCalls = String(renderer.info.render.calls);
+    renderer.domElement.dataset.triangles = String(renderer.info.render.triangles);
     syncLabels();
     fpsAcc.n++;
     const now = performance.now();

@@ -1,7 +1,7 @@
 /* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
    visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v39`;
+const CACHE = `${CACHE_PREFIX}v40`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ const PRECACHE = [
   "./greeran-family-4dwm.html",
   "./greeran-subsurface.html",
   "./planet-viewer-4dwm.html",
+  "./country-viewer.html",
   "./red-october-4dwm.html",
   "./sanborn-restaurant-4dwm.html",
   "./socal-subsurface.html",
@@ -76,6 +77,28 @@ const PRECACHE = [
   "./js/app.js",
   "./js/sitek-catalog.js",
   "./js/sitek-modes.js",
+  // Country Viewer and Planet Viewer: keep their standalone pages and every
+  // local Gazetteer/terrain module available to a fresh offline install.
+  "./css/planet-viewer-4dwm.css",
+  "./js/country-viewer.js",
+  "./js/country-data.js",
+  "./js/planet-viewer-4dwm.js",
+  "./js/planet-viewer-data.js",
+  "./js/planet-viewer-checks.js",
+  "./js/planet-viewer-search.js",
+  "./js/planet-globe.js",
+  "./js/cheyenne-dem.js",
+  "./js/city-dem-grid-lawrence.js",
+  "./js/city-gazetteer.js",
+  "./js/city-gazetteer-data.js",
+  "./js/city-gazetteer-data-atlanta.js",
+  "./js/city-gazetteer-data-buffalo.js",
+  "./js/city-gazetteer-data-kansascity.js",
+  "./js/city-gazetteer-data-lawrence.js",
+  "./js/city-gazetteer-data-toronto.js",
+  "./js/pcglobe-index-data.js",
+  "./apps/red-october-command-viewer/core.js",
+  "./vendor/world/countries.geo.json",
   "./js/adl-studio.js",
   "./js/adl-map.js",
   "./js/adl-data.js",
