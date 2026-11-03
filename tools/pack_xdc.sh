@@ -36,6 +36,7 @@ greeran-family-4dwm.html
 greeran-subsurface.html
 planet-viewer-4dwm.html
 country-viewer.html
+contacts.html
 red-october-4dwm.html
 sanborn-restaurant-4dwm.html
 socal-calc.html

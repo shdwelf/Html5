@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { unzipSync } from "fflate";
 import { normalizeSitekMode, framePageForMode, isSitekFrameMode, syncSitekDockLink } from "../js/sitek-modes.js";
 
 const root = new URL("../", import.meta.url);
@@ -90,6 +91,30 @@ test("SITE-K app dock publishes both viewers and their offline dependencies", ()
   }
 });
 
+test("Local Directory Desk is listed, packaged, and cached as an offline app", () => {
+  const index = text("index.html");
+  const page = text("contacts.html");
+  const catalog = text("js/sitek-catalog.js");
+  const app = text("js/local-contacts-app.js");
+  const core = text("js/local-contacts-core.js");
+  const packer = text("tools/pack_xdc.sh");
+  const worker = text("sw.js");
+
+  assert.ok(index.includes('href="./contacts.html">LOCAL CONTACTS'), "the SITE-K dock links to Local Contacts");
+  assert.ok(catalog.includes('id: "local-contacts", label: "LOCAL CONTACTS", route: "./contacts.html"'), "the offline app is in the SITE-K catalog");
+  assert.match(packer, /\ncontacts\.html\n/, "the contacts page is packaged in SITE-K XDC");
+  assert.ok(packer.includes("cp -R css js"), "local contacts modules are included in the SITE-K module tree");
+  const offlineAssets = ["contacts.html", "css/local-contacts.css", "js/local-contacts-core.js", "js/local-contacts-app.js", "docs/historical-contact-directory-source-review-2026-11-03.md"];
+  for (const asset of offlineAssets) assert.ok(worker.includes(`"./${asset}"`), `${asset} is precached for offline use`);
+  const archive = unzipSync(readFileSync(new URL("../sitek.xdc", import.meta.url)));
+  for (const asset of offlineAssets) assert.ok(archive[asset], `${asset} is present in the built SITE-K XDC`);
+  assert.equal(Buffer.from(archive["contacts.html"]).toString("utf8"), page, "the packaged page matches the current source");
+  assert.match(app, /indexedDB\.open\(DB_NAME, DB_VERSION\)/, "contact records use a browser-local database");
+  assert.match(core, /ZIP\/postal codes deliberately remain text/, "postal codes are preserved, not presented as validated");
+  assert.match(page, /NO CONTACTS ARE SHIPPED WITH THIS APP/);
+  assert.doesNotMatch(app, /fetch\s*\(/, "the local app does not call remote data APIs");
+});
+
 test("all standalone app modes share one shell visibility rule", () => {
   const app = text("js/app.js");
   const appCss = text("css/app.css");
@@ -100,5 +125,5 @@ test("all standalone app modes share one shell visibility rule", () => {
   assert.match(wmCss, /body\[data-shell-view="frame"\] \.wm-desk/);
   assert.match(app, /syncSitekDockLink\(a, mode\)/);
   assert.match(worker, /"\.\/wasm\/ghidra\/ghidra_decompiler\.wasm"/);
-  assert.match(worker, /CACHE_PREFIX\}v40/);
+  assert.match(worker, /CACHE_PREFIX\}v41/);
 });

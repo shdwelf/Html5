@@ -5,6 +5,7 @@ export const SITEK_APPS = Object.freeze([
   { id: "four-dwm", label: "4DWM PORTS", route: "./4dwm-ports.html", preserved: true },
   { id: "planet-viewer", label: "PLANET VIEWER", route: "./planet-viewer-4dwm.html", offline: true },
   { id: "country-viewer", label: "COUNTRY VIEWER", route: "./country-viewer.html", offline: true },
+  { id: "local-contacts", label: "LOCAL CONTACTS", route: "./contacts.html", offline: true },
   { id: "enso", label: "ENSŌ GENERATOR", route: "./index.html#enso", entry: "./art-studio.html", offline: true },
 ]);
 
