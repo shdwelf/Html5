@@ -699,7 +699,14 @@ addOp('morse','Morse Code','Classical','Encode/decode International Morse.',
         return map[c]!==undefined?map[c]:c;
       }).join(' ');
     }else{
-      return text.trim().split(/\s*\/\s*|\s+/).map(tok=>rev[tok]!==undefined?rev[tok]:(tok==='/'?' ':tok)).join(' ');
+      const raw=String(text||'').trim();
+      if(raw.includes('/')){
+        return raw.split(/\s*\/\s*/).map(word=>{
+          const tokens=word.trim()?word.trim().split(/\s+/):[];
+          return tokens.map(tok=>rev[tok]!==undefined?rev[tok]:tok).join('');
+        }).join(' ');
+      }
+      return raw.split(/\s+/).map(tok=>rev[tok]!==undefined?rev[tok]:(tok==='/'?' ':tok)).join(' ');
     }
   });
 
@@ -3230,6 +3237,8 @@ const RECIPE_PACKS={
  'Fam Secret BIP44 / BIP39 Wallet Recovery':[['bip44Recovery',{}],['bip44',{}],['bip84',{}]],
  'GCWizard Geocaching Mystery & Coordinate Pack':[['gcwCoords',{}],['gcwBacon',{}],['gcwKenny',{}],['gcwRoman',{}]],
  'Fam Secret GCWizard Mystery Pack':[['gcwTomTom',{}],['gcwTemplar',{}],['gcwBookCipher',{}],['gcwDancingMen',{}]],
+ 'Sherlock Holmes — Dancing Men (word-end flags)':[['gcwDancingMen',{op:'encode',wordEnds:'flags'}]],
+ 'Nancy Drew 16 — Tapping Heels (Morse decoder)':[['morse',{mode:'decode'}]],
  'Fam Secret Symbol Tables & Unicode Pack':[['gcwSymbolTables',{}],['unicodeInspect',{}],['unicodeStyles',{}],['gcwMorse',{}]],
  'Magnet URI & Torrent Metainfo Pack':[['magnetParse',{}],['torrentBencode',{}]],
  'Fam Secret Larger Game of Life & Text Input':[['textInput',{}],['lifeXL',{}]],
@@ -7566,30 +7575,40 @@ addOp('gcwTomTom','TomTom / Tap Code Cipher','GCWizard',
 );
 
 addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
-  'Sherlock Holmes Dancing Men symbol cipher (from GitHub GCWizard/GCWizard & Sir Arthur Conan Doyle). Encodes letters into visual ASCII/Unicode stick-figure Dancing Men representations (A="o/|\\\\", B="\\\\o/|", C="o<|>") and decodes back to text.',
+  'Dancing Men monoalphabetic symbol cipher. Uses the existing GCWizard-style 26-letter ASCII stand-in table (not a transcription of every original drawing). Optional word-end mode appends ⚑ to the last symbol of each word and restores spaces while decoding, following the small flags in Doyle’s story.',
   [
-    {key:'op',label:'Operation',type:'select',default:'encode',options:[['encode','Encode Text to Dancing Men'],['decode','Decode Dancing Men back to Text']]}
+    {key:'op',label:'Operation',type:'select',default:'encode',options:[['encode','Encode Text to Dancing Men'],['decode','Decode Dancing Men back to Text']]},
+    {key:'wordEnds',label:'Word boundaries',type:'select',default:'none',options:[['none','No word-end flags (legacy)'],['flags','Use ⚑ marker to preserve words']]}
   ],
   function(t,a){
+    const FLAG='⚑';
+    const BS=String.fromCharCode(92);
     const dmen = {
-      'A': 'o/|\\', 'B': '\\o/|', 'C': 'o<|>', 'D': '<o>|', 'E': 'o|/\\',
-      'F': '\\o|/', 'G': 'o/|>', 'H': '<|o\\', 'I': 'o|',   'J': '/o\\|',
-      'K': 'o/|',  'L': '\\o/',  'M': '|o|',  'N': 'o/\\',  'O': 'o<>',
-      'P': '<o>',  'Q': 'o\\/',  'R': '/o/',  'S': '\\o\\', 'T': 'o-|',
-      'U': '|-o',  'V': 'o|-',  'W': 'o/\\|', 'X': '|\\o/', 'Y': '/|o\\', 'Z': '\\o|-'
+      'A': 'o/|'+BS, 'B': BS+'o/|', 'C': 'o<|>', 'D': '<o>|', 'E': 'o|/'+BS,
+      'F': BS+'o|/', 'G': 'o/|>', 'H': '<|o'+BS, 'I': 'o|',   'J': '/o'+BS+'|',
+      'K': 'o/|',  'L': BS+'o/',  'M': '|o|',  'N': 'o/'+BS,  'O': 'o<>',
+      'P': '<o>',  'Q': 'o'+BS+'/',  'R': '/o/',  'S': BS+'o'+BS, 'T': 'o-|',
+      'U': '|-o',  'V': 'o|-',  'W': 'o/'+BS+'|', 'X': '|'+BS+'o/', 'Y': '/|o'+BS, 'Z': BS+'o|-'
     };
     const dec = {};
     for(const k in dmen) dec[dmen[k]] = k;
+    const useFlags=a.wordEnds==='flags';
     if(a.op === 'encode'){
-      const text = (t || 'GEOCACHE').toUpperCase().replace(/[^A-Z]/g, '');
-      const out = Array.from(text).map(c => dmen[c] || '').join(' ');
+      const words=String(t||'GEOCACHE').toUpperCase().match(/[A-Z]+/g)||[];
+      if(!words.length)throw new Error('Enter A–Z text to encode');
+      const text=words.join(' ');
+      const out=words.map(word=>Array.from(word).map((c,i)=>{
+        const symbol=dmen[c]||'?';
+        return symbol+(useFlags&&i===word.length-1?FLAG:'');
+      }).join(' ')).join(' ');
       const ascii = [
         '════ GCWIZARD SHERLOCK HOLMES DANCING MEN CIPHER ════',
         'Input Text     : ' + text,
+        'Word Ends      : ' + (useFlags?'flag markers preserve spaces':'not encoded'),
         '─────────────────────────────────────────────────────',
         'Dancing Men Out: ' + out,
         '',
-        '(Verified against GitHub GCWizard/GCWizard Dancing Men specifications)'
+        '(⚑ is a textual stand-in for a flag on the last figure; the 26-letter table is a modern reconstruction.)'
       ].join('\n');
       const html = '<div style="font-family:sans-serif;background:#1a1d24;color:#eee;border:1px solid #334;border-radius:8px;padding:16px;max-width:620px;">' +
         '<div style="font-size:16px;font-weight:bold;color:#61afef;margin-bottom:10px;">Dancing Men Cipher <span style="font-size:13px;color:#98c379;">(Sherlock Holmes · GCWizard)</span></div>' +
@@ -7597,14 +7616,24 @@ addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
         '</div>';
       return {__visual:true, __html:html, __text:ascii};
     }else{
-      const raw = (t || 'o/|> o|/\\ o<> o<|> o/|\\ o<|> <|o\\ o|/\\').trim().split(/\s+/);
-      const out = raw.map(c => dec[c] || '?').join('');
+      const sample='o/|> o|/\\ o<> o<|> o/|\\ o<|> <|o\\ o|/\\';
+      const raw=String(t||sample).trim().split(/\s+/).filter(Boolean);
+      let out='',sawFlag=false;
+      for(const token of raw){
+        if(token===FLAG){if(useFlags&&out&&!out.endsWith(' '))out+=' ';sawFlag=true;continue;}
+        const flagged=token.endsWith(FLAG);
+        const symbol=flagged?token.slice(0,-FLAG.length):token;
+        out+=dec[symbol]||'?';
+        if(flagged){sawFlag=true;if(useFlags)out+=' ';}
+      }
+      if(useFlags&&sawFlag)out=out.trimEnd();
       const ascii = [
         '════ GCWIZARD DANCING MEN DECODER ════',
         'Input Symbols : ' + raw.join(' '),
+        'Word Ends     : ' + (useFlags?'spaces restored from ⚑ markers':'not restored'),
         'Decoded Text  : ' + out,
         '',
-        '(Verified against GitHub GCWizard/GCWizard Dancing Men specifications)'
+        '(⚑ is a textual stand-in for a flag on the last figure; the 26-letter table is a modern reconstruction.)'
       ].join('\n');
       const html = '<div style="font-family:sans-serif;background:#1a1d24;color:#eee;border:1px solid #334;border-radius:8px;padding:16px;max-width:580px;">' +
         '<div style="font-size:16px;font-weight:bold;color:#61afef;margin-bottom:10px;">Dancing Men Decoder</div>' +
@@ -7614,7 +7643,6 @@ addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
     }
   }
 );
-
 addOp('gcwTemplar','Knights Templar / Pigpen Cipher','GCWizard',
   'Knights Templar / Pigpen / Freemason\'s geometric symbol cipher (from GitHub GCWizard/GCWizard). Encodes letters into grid fragments and dots representing the Masonic grid coordinates, and decodes symbols back to plaintext.',
   [
