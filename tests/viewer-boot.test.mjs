@@ -199,14 +199,48 @@ test("country viewer renders its register and answers search + selection", opts,
   HongKongButtons[0].click();
   assert.match(document.getElementById("detail").textContent,
     /none published \(source profile lists no capital\)/);
+
+  const gazSearch = document.getElementById("gazSearch");
+  gazSearch.value = "Lawrence";
+  gazSearch.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const gazButton = document.querySelector("#gazResults button");
+  assert.ok(gazButton, "Gazetteer search returns a point from another city");
+  gazButton.click();
+  assert.match(document.getElementById("gazDetail").textContent, /GNIS 479145/);
   assert.deepEqual(errors, []);
 });
 
-test("planet viewer boots and finishes loading its plates", opts, async () => {
-  const { document, errors } = await bootPage("planet-viewer-4dwm.html", 900);
+test("planet viewer boots and routes Gazetteer selections across its available plates", opts, async () => {
+  const { window, document, errors } = await bootPage("planet-viewer-4dwm.html", 900);
   const status = document.getElementById("status").textContent;
   assert.notEqual(status, "boot…");
   assert.match(status, /plates|plate/i);
+
+  const search = document.getElementById("searchBox");
+  search.value = "Lawrence";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const lawrence = document.querySelector("#searchResults .res");
+  assert.ok(lawrence, "the five-city Gazetteer returns the Lawrence GNIS point");
+  lawrence.click();
+  assert.equal(document.getElementById("statPlate").textContent, "plate: lawrence");
+  assert.match(document.getElementById("status").textContent, /Lawrence.*terrain plate/);
+  assert.equal(document.querySelector('[data-plate="lawrence"]').getAttribute("aria-pressed"), "true");
+
+  search.value = "Atlanta";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const atlanta = document.querySelector("#searchResults .res");
+  assert.ok(atlanta, "the non-GNIS reference point is searchable too");
+  atlanta.click();
+  assert.equal(document.getElementById("statPlate").textContent, "plate: globe");
+  assert.equal(document.getElementById("infoTitle").textContent, "Atlanta");
+  assert.match(document.getElementById("status").textContent, /no terrain plate.*centered globe/);
+
+  document.querySelector('[data-plate="pcg"]').click();
+  search.value = "Lawrence";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  document.querySelector("#searchResults .res").click();
+  assert.equal(document.getElementById("statPlate").textContent, "plate: lawrence");
+  assert.equal(document.getElementById("pcgPanel").hidden, true);
   assert.deepEqual(errors, []);
 });
 

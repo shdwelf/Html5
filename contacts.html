@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#091511" />
+  <meta name="description" content="A local-first, offline contact index for historical directories." />
+  <title>Local Directory Desk · SITE-K</title>
+  <link rel="stylesheet" href="./css/local-contacts.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="./index.html#grid" aria-label="Return to SITE-K">← SITE-K</a>
+    <div class="brandline"><span class="brand-mark" aria-hidden="true">LD</span><span>LOCAL DIRECTORY DESK</span></div>
+    <div class="local-indicator"><span class="pulse" aria-hidden="true"></span><span>DEVICE-LOCAL</span></div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="hero-copy">
+        <p class="eyebrow">HISTORICAL CONTACT INDEX / OFFLINE FIRST</p>
+        <h1 id="pageTitle">Directories, <em>at hand.</em></h1>
+        <p class="hero-text">Import a directory you are authorized to use, then search its people, businesses, places, editions, and page references on this device. No contact feed or map service is called by this app.</p>
+      </div>
+      <div class="hero-stats" aria-live="polite">
+        <div><strong id="recordCount">0</strong><span>LOCAL RECORDS</span></div>
+        <div><strong id="sourceCount">0</strong><span>DIRECTORY SOURCES</span></div>
+        <div class="status-chip" id="saveStatus">OPENING LOCAL INDEX…</div>
+      </div>
+    </section>
+
+    <div class="toolbar-row">
+      <p class="privacy-note"><strong>Local by design:</strong> records stay in this site's browser storage and are not encrypted or synced. Export a backup.</p>
+      <a class="quiet-link" href="./docs/historical-contact-directory-source-review-2026-11-03.md">SOURCE &amp; UPDATE NOTES ↗</a>
+    </div>
+
+    <section class="workspace" aria-label="Contacts workspace">
+      <article class="panel search-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">01 / FIND</p><h2>Directory search</h2></div>
+          <span class="panel-index">INDEX</span>
+        </div>
+        <label class="field-label" for="searchInput">Search name, organization, address, phone, source, or note</label>
+        <input class="search-input" id="searchInput" type="search" placeholder="Try a name, city, or page…" autocomplete="off" />
+        <div class="filter-row">
+          <label><span>EDITION YEAR</span><select id="yearFilter"><option value="">All years</option></select></label>
+          <label><span>DIRECTORY</span><select id="sourceFilter"><option value="">All sources</option></select></label>
+        </div>
+        <div class="results-heading"><span id="searchCount" aria-live="polite">0 matches</span><span>UP TO 100 SHOWN</span></div>
+        <div class="results-list" id="contactResults" role="list" aria-label="Search results">
+          <p class="empty-state">No directory entries yet. Import a file below to build your local index.</p>
+        </div>
+        <button class="button button-quiet new-button" id="newContactButton" type="button">＋ ADD A RECORD</button>
+      </article>
+
+      <article class="panel editor-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">02 / RECORD</p><h2 id="editorTitle">New contact card</h2></div>
+          <span class="panel-index">CARD</span>
+        </div>
+        <form id="contactForm" autocomplete="off">
+          <input id="contactId" name="id" type="hidden" />
+          <div class="form-grid">
+            <label class="field span-2"><span>NAME OR LISTING LABEL <b>*</b></span><input name="name" required maxlength="240" placeholder="Person, business, or listing" /></label>
+            <label class="field"><span>RECORD TYPE</span><select name="kind"><option value="person">Person</option><option value="business">Business</option><option value="organization">Organization</option><option value="institution">Institution</option><option value="other">Other</option></select></label>
+            <label class="field"><span>ORGANIZATION</span><input name="organization" maxlength="240" /></label>
+            <label class="field span-2"><span>ADDRESS LINE 1</span><input name="address1" maxlength="240" /></label>
+            <label class="field span-2"><span>ADDRESS LINE 2</span><input name="address2" maxlength="240" /></label>
+            <label class="field"><span>CITY / LOCALITY</span><input name="city" maxlength="160" /></label>
+            <label class="field"><span>STATE / REGION</span><input name="region" maxlength="120" /></label>
+            <label class="field"><span>POSTAL CODE <small>stored as text</small></span><input name="postalCode" maxlength="40" /></label>
+            <label class="field"><span>COUNTRY CODE <small>not ISO-validated</small></span><input name="countryCode" maxlength="12" placeholder="e.g. US, FR" /></label>
+            <label class="field"><span>PHONE</span><input name="phone" maxlength="80" /></label>
+            <label class="field"><span>EMAIL <small>verbatim transcription</small></span><input name="email" type="text" inputmode="email" maxlength="240" /></label>
+          </div>
+
+          <div class="section-divider"><span>DIRECTORY PROVENANCE</span><span>KEEP THE EDITION WITH THE ENTRY</span></div>
+          <div class="form-grid">
+            <label class="field span-2"><span>SOURCE / DIRECTORY TITLE</span><input name="sourceTitle" maxlength="240" placeholder="e.g. City telephone directory" /></label>
+            <label class="field"><span>EDITION</span><input name="sourceEdition" maxlength="120" placeholder="Spring / volume / issue" /></label>
+            <label class="field"><span>YEAR AS PRINTED</span><input name="sourceYear" maxlength="32" inputmode="text" placeholder="e.g. 1958" /></label>
+            <label class="field"><span>PAGE / ENTRY REFERENCE</span><input name="page" maxlength="80" /></label>
+            <label class="field span-2"><span>SOURCE CATALOG URL OR ID</span><input name="sourceUrl" maxlength="500" placeholder="Optional; kept as text" /></label>
+            <label class="field span-2"><span>RIGHTS / LICENSE NOTE</span><input name="sourceRights" maxlength="500" placeholder="Record the source's reuse terms" /></label>
+            <label class="field"><span>LATITUDE <small>optional, text</small></span><input name="latitude" inputmode="decimal" maxlength="48" /></label>
+            <label class="field"><span>LONGITUDE <small>optional, text</small></span><input name="longitude" inputmode="decimal" maxlength="48" /></label>
+            <label class="field span-2"><span>LOCAL NOTES</span><textarea name="notes" rows="3" maxlength="3000" placeholder="Transcription caveats, alternate spelling, directory section…"></textarea></label>
+          </div>
+          <div class="form-actions">
+            <p id="editorMessage" class="inline-message" role="status"></p>
+            <button class="button button-danger" id="deleteContactButton" type="button" hidden>DELETE</button>
+            <button class="button button-primary" type="submit">SAVE RECORD</button>
+          </div>
+        </form>
+      </article>
+    </section>
+
+    <section class="lower-grid" aria-label="Import and export tools">
+      <article class="panel import-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">03 / BRING IN</p><h2>Import a directory</h2></div>
+          <span class="panel-index">CSV / JSON</span>
+        </div>
+        <p class="panel-intro">CSV and this app's JSON backup format are read locally in your browser. Scanned PDFs need OCR/export to a table first; direct PDF import is not included yet. ZIP/postal codes stay as text; the app does not confirm deliverability.</p>
+        <div class="import-grid">
+          <label class="field span-2"><span>FILE <small>CSV or JSON · max 50 MB</small></span><input id="importFile" type="file" accept=".csv,.json,text/csv,application/json" /></label>
+          <label class="field span-2"><span>SOURCE / DIRECTORY TITLE <b>*</b></span><input id="importSourceTitle" maxlength="240" placeholder="Name the directory or saved collection" /></label>
+          <label class="field"><span>EDITION</span><input id="importSourceEdition" maxlength="120" /></label>
+          <label class="field"><span>YEAR</span><input id="importSourceYear" maxlength="32" placeholder="e.g. 1958" /></label>
+          <label class="field span-2"><span>SOURCE URL OR CATALOG ID</span><input id="importSourceUrl" maxlength="500" placeholder="Optional" /></label>
+          <label class="field span-2"><span>RIGHTS / LICENSE <b>*</b></span><input id="importSourceRights" maxlength="500" placeholder="Required for your own provenance notes" /></label>
+        </div>
+        <div class="import-footer">
+          <label class="permission-check"><input id="importPermission" type="checkbox" /><span>I have a lawful basis to store and use this source in this local collection.</span></label>
+          <label class="mode-field"><span>IMPORT MODE</span><select id="importMode"><option value="append">Append (keep existing records)</option><option value="replace">Replace the whole collection</option></select></label>
+        </div>
+        <div class="import-actions">
+          <button class="button button-quiet" id="templateButton" type="button">GET CSV TEMPLATE</button>
+          <button class="button button-primary" id="importButton" type="button" disabled>IMPORT FILE</button>
+        </div>
+        <p class="inline-message" id="importStatus" role="status" aria-live="polite">Choose a file to preview its rows.</p>
+        <div class="import-preview" id="importPreview" hidden></div>
+      </article>
+
+      <article class="panel export-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">04 / TAKE OUT</p><h2>Backup &amp; portability</h2></div>
+          <span class="panel-index">LOCAL</span>
+        </div>
+        <p class="panel-intro">Keep an export somewhere safe before clearing browser data or moving to another device. JSON is the lossless backup; CSV escapes formula-like cells for spreadsheets. Neither export is encrypted.</p>
+        <div class="export-actions">
+          <button class="button button-primary" id="exportJsonButton" type="button">EXPORT JSON BACKUP</button>
+          <button class="button button-quiet" id="exportCsvButton" type="button">EXPORT CSV</button>
+        </div>
+        <div class="storage-card">
+          <span class="storage-light" aria-hidden="true"></span>
+          <div><strong id="storageLabel">Browser database ready</strong><p id="storageDetail">Only this browser profile can see this collection.</p></div>
+        </div>
+        <button class="text-button" id="clearAllButton" type="button">Clear this local collection…</button>
+      </article>
+    </section>
+
+    <details class="source-notes">
+      <summary>Postal, ISO, NIH, and Stamps.com data notes</summary>
+      <div class="source-notes-grid">
+        <div><h3>USPS ZIP data</h3><p>No USPS reference list is bundled. This app preserves postal codes exactly as imported or typed and does not validate them. USPS has monthly official products and an online, authenticated address API; their data terms are not an open-data grant. Use only an authorized file or service for your intended use.</p></div>
+        <div><h3>ISO country codes</h3><p>The country-code field is optional text, not an ISO validator. ISO's Online Browsing Platform is the live reference; its integrated Country Codes Collection includes current and formerly used codes. Import a snapshot only if its terms permit your use.</p></div>
+        <div><h3>NIH sources</h3><p>There is no general NIH historical contact feed in this app. NIH RePORTER is for funded projects and organizations; NIH facility-address pages cover campuses; NLM's NPI search reflects CMS/NPPES provider data. Choose the exact source before importing.</p></div>
+        <div><h3>Stamps.com</h3><p>Stamps.com provides an online shipping/address-validation API, not a standalone ZIP directory. It is not connected here: a live validation request would leave this device and can require an account and credentials.</p></div>
+      </div>
+      <p class="source-note-link"><a href="./docs/historical-contact-directory-source-review-2026-11-03.md">Read the source review, update cadence, and references →</a></p>
+    </details>
+
+    <footer class="page-footer"><span>SITE-K / LOCAL DIRECTORY DESK</span><span>NO CONTACTS ARE SHIPPED WITH THIS APP</span></footer>
+  </main>
+
+  <script type="module" src="./js/local-contacts-app.js"></script>
+</body>
+</html>

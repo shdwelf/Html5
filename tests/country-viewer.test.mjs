@@ -75,7 +75,7 @@ test("country viewer dataset reproduces the pinned full-coverage Factbook regist
 });
 
 test("country viewer helpers and page wiring", async () => {
-  const { filterCountries, project, formatInt, sortByName, capitalText } = await import("../js/country-viewer.js");
+  const { filterCountries, searchGazetteerPoints, project, formatInt, sortByName, capitalText } = await import("../js/country-viewer.js");
   const { COUNTRIES } = await import("../js/country-data.js");
 
   // Capital-less profiles (batch C3) render honest labels, never placeholders.
@@ -87,6 +87,11 @@ test("country viewer helpers and page wiring", async () => {
   assert.equal(filterCountries(COUNTRIES, "").length, COUNTRIES.length);
   assert.equal(filterCountries(COUNTRIES, "ottawa")[0].code, "ca");
   assert.ok(filterCountries(COUNTRIES, "US").some((c) => c.code === "us"), "code search must find the US entry");
+  assert.deepEqual(searchGazetteerPoints(""), []);
+  const lawrence = searchGazetteerPoints("Lawrence").find((p) => p.name === "Lawrence");
+  assert.ok(lawrence?.verified && lawrence.gnis, "official GNIS result is searchable and keeps its ID");
+  const atlanta = searchGazetteerPoints("Atlanta").find((p) => p.name === "Atlanta");
+  assert.ok(atlanta && !atlanta.verified && !atlanta.gnis, "reference rows are not mislabeled as GNIS IDs");
   assert.deepEqual(project(-180, 90, 960, 480), [0, 0]);
   assert.deepEqual(project(180, -90, 960, 480), [960, 480]);
   assert.deepEqual(project(0, 0, 960, 480), [480, 240]);
@@ -98,6 +103,10 @@ test("country viewer helpers and page wiring", async () => {
   assert.match(html, /js\/country-viewer\.js/, "page must load the viewer module");
   assert.match(html, /PC-Globe style/i, "page must identify the PC-Globe idiom");
   assert.match(html, /id="world"/, "page must carry the map canvas");
+  assert.match(html, /id="gazSearch"/, "the country viewer exposes Gazetteer search");
+  assert.match(html, /id="gazResults"/, "Gazetteer search results are present");
+  assert.match(html, /id="gazDetail"/, "a selected Gazetteer point has an inspector");
+  assert.match(html, /Only rows marked GNIS/, "non-GNIS reference coordinates stay clearly labeled");
   assert.match(html, /id="sourcepin"/, "page must surface the source pin");
 });
 
@@ -105,7 +114,20 @@ test("country viewer Webxdc bundle carries the offline app", () => {
   assert.ok(existsSync("country-viewer.xdc"), "country-viewer.xdc must be built (npm run build:country-viewer)");
   const entries = unzipSync(new Uint8Array(readFileSync("country-viewer.xdc")));
   const names = Object.keys(entries).sort();
-  assert.deepEqual(names, ["index.html", "js/country-data.js", "js/country-viewer.js", "manifest.toml", "webxdc.js"]);
+  assert.deepEqual(names, [
+    "index.html",
+    "js/city-gazetteer-data-atlanta.js",
+    "js/city-gazetteer-data-buffalo.js",
+    "js/city-gazetteer-data-kansascity.js",
+    "js/city-gazetteer-data-lawrence.js",
+    "js/city-gazetteer-data-toronto.js",
+    "js/city-gazetteer-data.js",
+    "js/city-gazetteer.js",
+    "js/country-data.js",
+    "js/country-viewer.js",
+    "manifest.toml",
+    "webxdc.js",
+  ].sort());
   const manifest = new TextDecoder().decode(entries["manifest.toml"]);
   assert.match(manifest, /Country Viewer/, "manifest must name the app");
   const index = new TextDecoder().decode(entries["index.html"]);

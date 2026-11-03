@@ -146,7 +146,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [cyberchef-gb-rom-2026-10-21.md](cyberchef-gb-rom-2026-10-21.md) — cyberchef gb rom 2026 10 21
 - [cyberchef-matrix-deep-dive.md](cyberchef-matrix-deep-dive.md) — cyberchef matrix deep dive
 - [cyberchef-modern-cryptography-research-2026-09-29.md](cyberchef-modern-cryptography-research-2026-09-29.md) — cyberchef modern cryptography research 2026 09 29
-- [cyberchef-mystery-book-source-audit-2026-11-02.md](cyberchef-mystery-book-source-audit-2026-11-02.md) — Hardy Boys and Nancy Drew cipher-source screen for CyberChef Kitchen
+- [cyberchef-mystery-book-source-audit-2026-11-02.md](cyberchef-mystery-book-source-audit-2026-11-02.md) — initial Hardy Boys and Nancy Drew cipher-source screen for CyberChef Kitchen
+- [cyberchef-mystery-recipes-follow-up-2026-11-03.md](cyberchef-mystery-recipes-follow-up-2026-11-03.md) — expanded Drive review and source-informed Sherlock Holmes/Nancy Drew recipe presets
 - [cyberchef-recipe-comparison-2026-10-21.md](cyberchef-recipe-comparison-2026-10-21.md) — cyberchef recipe comparison 2026 10 21
 - [cyberchef-sfx-coverage-audit-2026-10-09.md](cyberchef-sfx-coverage-audit-2026-10-09.md) — cyberchef sfx coverage audit 2026 10 09
 - [cyberchef-sfx-coverage-audit-2026-10-13.md](cyberchef-sfx-coverage-audit-2026-10-13.md) — cyberchef sfx coverage audit 2026 10 13

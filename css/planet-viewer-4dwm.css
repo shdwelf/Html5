@@ -101,9 +101,10 @@ button.active { color: #05080b; background: var(--accent); border-color: var(--a
   border: 1px solid var(--panel-edge); color: var(--ink); font-family: var(--mono); font-size: 11px;
 }
 #searchResults { display: flex; flex-direction: column; gap: 1px; margin-top: 4px; }
-#searchResults .res { text-align: left; border: 0; background: transparent; padding: 4px 6px; font-size: 11px; letter-spacing: 0; }
-#searchResults .res:hover { background: rgba(255, 255, 255, 0.05); }
-#searchResults .res span { color: var(--muted); font-size: 9px; margin-left: 6px; }
+#searchResults .res { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; border: 0; background: transparent; padding: 6px 7px; font-size: 11px; letter-spacing: 0; }
+#searchResults .res:hover, #searchResults .res:focus-visible { background: rgba(255, 255, 255, 0.08); }
+#searchResults .res b { color: var(--ink); font-weight: 500; }
+#searchResults .res span { color: var(--muted); font-size: 9px; margin-left: 0; }
 
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
 .legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 4px 5px; border-left: 2px solid var(--panel-edge); color: var(--dim); }

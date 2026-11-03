@@ -2,9 +2,9 @@
  * Package the PC-Globe-style country viewer as a Webxdc bundle.
  *
  * A .xdc is a deflated ZIP rooted at index.html + manifest.toml. This stages
- * the root-level authoring sources (country-viewer.html, js/country-*.js)
- * into public/apps/country-viewer/ as a flat offline bundle, then zips it
- * deterministically — same flow as build-cheyenne-xdc.mjs.
+ * the Country Viewer plus its five-city offline Gazetteer engine/data into
+ * public/apps/country-viewer/ as a flat bundle, then zips it deterministically
+ * — same flow as build-cheyenne-xdc.mjs.
  *
  *   node scripts/build-country-viewer-xdc.mjs
  */
@@ -34,7 +34,12 @@ html = html.replace(
   '<script src="./webxdc.js"></script>\n  <script type="module" src="./js/country-viewer.js"></script>',
 );
 await writeFile(path.join(appDir, "index.html"), html);
-for (const f of ["country-viewer.js", "country-data.js"]) {
+for (const f of [
+  "country-viewer.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
+  "city-gazetteer-data-atlanta.js", "city-gazetteer-data-buffalo.js",
+  "city-gazetteer-data-kansascity.js", "city-gazetteer-data-lawrence.js",
+  "city-gazetteer-data-toronto.js",
+]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
 }
 

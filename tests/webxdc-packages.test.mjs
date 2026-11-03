@@ -34,10 +34,17 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
     "index.html", "manifest.toml", "los-alamos.html", "4dwm-ports.html",
     "bluetops-gso-4dwm.html", "dalton-race-4dwm.html", "esgvrop-4dwm.html",
     "glendora-high-4dwm.html", "greeran-family-4dwm.html", "greeran-subsurface.html",
-    "planet-viewer-4dwm.html", "red-october-4dwm.html", "sanborn-restaurant-4dwm.html",
+    "planet-viewer-4dwm.html", "country-viewer.html", "red-october-4dwm.html", "sanborn-restaurant-4dwm.html",
     "socal-subsurface.html", "vincennes-4dwm.html", "wasm/ghidra/ghidra_decompiler.wasm",
     "css/app.css", "css/wm.css", "css/project-y-sites.css", "css/project-y-4dwm.css",
-    "js/sitek-modes.js", "js/flash-coordinates.js",
+    "css/planet-viewer-4dwm.css", "js/sitek-modes.js", "js/flash-coordinates.js",
+    "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js",
+    "js/country-data.js", "js/city-gazetteer.js", "js/city-gazetteer-data.js",
+    "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
+    "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
+    "js/city-gazetteer-data-toronto.js", "apps/red-october-command-viewer/core.js",
+    "vendor/world/countries.geo.json",
     "js/project-y-sites-data.js", "js/project-y-sites.js", "js/project-y-4dwm.js",
     "vendor/three.module.min.js", "vendor/OrbitControls.js",
   ]) text(files, file);
@@ -50,6 +57,14 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   assert.equal(text(files, "js/project-y-sites-data.js"), source("js/project-y-sites-data.js"));
   const worker = text(files, "sw.js");
   assert.equal(worker, source("sw.js"));
+  for (const file of [
+    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js",
+    "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/city-gazetteer.js",
+    "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
+    "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
+    "js/city-gazetteer-data-toronto.js",
+  ]) assert.equal(text(files, file), source(file), `${file} is stale in SITE-K XDC`);
   const portTargets = [...text(files, "4dwm-ports.html").matchAll(/href="\.\/([^"#?]+\.html)"/g)].map((match) => match[1]);
   for (const target of portTargets) {
     assert.ok(files[target], `${target} is missing from SITE-K XDC`);

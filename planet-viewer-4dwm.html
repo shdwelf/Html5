@@ -31,11 +31,11 @@
     </div>
     <div class="top-actions">
       <div class="plate-switch" role="group" aria-label="Plate">
-        <button type="button" data-plate="chey" class="active">CHEYENNE</button>
-        <button type="button" data-plate="ange">SAN GABRIEL</button>
-        <button type="button" data-plate="lawrence">LAWRENCE</button>
-        <button type="button" data-plate="globe">GLOBE</button>
-        <button type="button" data-plate="pcg">PC GLOBE INDEX</button>
+        <button type="button" data-plate="chey" class="active" aria-pressed="true">CHEYENNE</button>
+        <button type="button" data-plate="ange" aria-pressed="false">SAN GABRIEL</button>
+        <button type="button" data-plate="lawrence" aria-pressed="false">LAWRENCE</button>
+        <button type="button" data-plate="globe" aria-pressed="false">GLOBE</button>
+        <button type="button" data-plate="pcg" aria-pressed="false">PC GLOBE INDEX</button>
       </div>
       <div class="mode-switch" role="group" aria-label="View mode">
         <button type="button" data-mode="relief" class="active">RELIEF</button>
@@ -50,12 +50,12 @@
 
   <aside class="panel panel-left">
     <section class="card">
-      <h2>Gazetteer · GNIS</h2>
+      <h2>Offline Gazetteer · five cities</h2>
       <form class="search-row" role="search" onsubmit="return false">
-        <input type="search" id="searchBox" placeholder="find GNIS name (fuzzy trigram)…" autocomplete="off" />
+        <input type="search" id="searchBox" aria-label="Search the offline five-city Gazetteer" placeholder="Search Gazetteer names (2+ letters)…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
-      <p class="tiny">Offline USGS GNIS subset (five packed cities). Mountain plates legitimately have no points; the box-search check says so.</p>
+      <p class="tiny">Search spans the five-city offline subset. Select a result to jump to its terrain plate, or the globe when no DEM plate is packed. Only records labeled GNIS are official GNIS points; this is not address lookup.</p>
       <div class="slider-row">
         <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
         <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
