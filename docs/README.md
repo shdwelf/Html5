@@ -79,10 +79,12 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-53-2026-10-25.md](backlog-execution-round-53-2026-10-25.md) — backlog execution round 53 2026 10 25 (Drive recipe investigation · spy-manual challenge cookbook · Playfair decrypt fix)
 - [backlog-execution-round-56-2026-11-04.md](backlog-execution-round-56-2026-11-04.md) — backlog execution round 56 2026 11 04 (MLS metasearch · tax-lien/e-file software review · remaining gates)
 - [backlog-execution-round-57-2026-11-04.md](backlog-execution-round-57-2026-11-04.md) — backlog execution round 57 2026 11 04 (Zangi sources · EFF review · ACE Huffman experiment)
+- [backlog-execution-round-58-2026-11-04.md](backlog-execution-round-58-2026-11-04.md) — backlog execution round 58 2026 11 04 (XAPK transfer attempt · cellular-automata cipher triage · merge gate)
 
 ## Research deep dives (the “ghirdra” line)
 
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
+- [cellular-automata-cipher-triage-2026-11-04.md](cellular-automata-cipher-triage-2026-11-04.md) — cellular-automata cipher triage 2026 11 04
 - [eff-secure-messaging-source-check-2026-11-04.md](eff-secure-messaging-source-check-2026-11-04.md) — EFF secure-messaging source check 2026 11 04
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
