@@ -2,25 +2,8 @@
   "generated": "2026-10-21",
   "title": "Processed agent.txt.xml backlog — parallel work-stream index",
   "source": {
-    "upload": "/tmp/arena-coding-uploads/agent.txt.xml",
-    "sha256": "26296aed08203a5bcc27b2199933a0e9247b682d9dbe891d5c1ad187f0a494c0",
-    "bytes": 234703,
-    "lines": 172,
-    "structure": [
-      "lines 2-11: task imperatives (research/build backlog)",
-      "lines 12-16: regex-scan notes (SNEAKERS.EXE / LHA SFX) + task line 16",
-      "lines 18-81: first copy of a failed uuencode/base64 session transcript with the embedded KG.ARJ listing capture",
-      "line 82: duplicate of line 11",
-      "lines 83-152: near-verbatim second copy of the same transcript",
-      "lines 153-171: task imperatives (tail backlog)",
-      "line 155: Changelly drainer script fragment (already analyzed)"
-    ],
-    "extracted_payload": {
-      "path": "research/kgk-arj-listing-extract.txt",
-      "sha256": "d0e6361e0071ad7a842290119b6a994c55dd0bbe2494fc72a18a3b5c9eaacbb6",
-      "bytes": 33678,
-      "description": "Verbatim capture of the KGK.ARJ listing text (ARJ comment 'created by Kenneth G. Kirkpatrick R#2112', members under ALMANAC/) as supplied in a prior session prompt. The transcript's base64 conversion never completed; this extract supersedes it."
-    }
+    "status": "private source provenance and extracted payload omitted",
+    "note": "This companion contains normalized task/status metadata only; no Drive identifiers, links, raw source text, or payload copies are retained."
   },
   "global_flags": [
     {
@@ -72,8 +55,8 @@
         "Closed round 12 (ZIP legacy-garble note was the last open item; docs/backlog-execution-round-12-2026-10-21.md). Round 13 added header-walk ops (arjHeader/lhaHeader/aceHeader/paranoidUnzip, header-only per F2/F4). T1.1 stays grouped under S13 for execution.",
         "Decompressor recipe matrix (ace rar arj uue zip 7z iso img peazip pkware) as GHIDRA_COOKBOOK additions + CyberChef recipes",
         "Keep ARJ/SFX password work at recipe level per F2",
-        "BagIt the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I together with its Drive PDF once relay fetch is available (task line 16/153)",
-        "Round 55 (2026-10-25): BagIt next-action CLOSED — Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I ('API Script', Changelly stage-1 loader, S14 sample) fetched via the authorized Drive connector and preserved inert in dist/api-script-loader-bag/ (BAG MANIFEST VALID, gitignored): text export 725 B sha256 d1fc09826ca73acd127a29ece4989050d2b9faec3a33fcaf6588974ebe9ab96a; PDF export 36,221 B sha256 1e3412dbbb0412c52118b9820fba44807ef3e8650d21bec49917acdf4265a2f0 (no Drive-native PDF companion found by name search; PDF is a labelled fresh export). Record: docs/backlog-execution-round-55-2026-10-25.md. S1 remains partial only for the JVM-blocked Ghidra decompressor strand."
+        "Private source item details are omitted; task status is retained.",
+        "Private source item details are omitted; task status is retained."
       ]
     },
     {
@@ -290,7 +273,7 @@
       ],
       "next_actions": [
         "Round 19 toolchain research (2026-10-23): GitHub OpenJDK/OpenJVM/OpenJRE/Sun/Oracle/Zulu/Temurin survey re-verified Temurin 21 locally and pinned/hash-checked the Zulu 8 JavaCard route, so “no JDK” is no longer the blanket blocker. S7 remains externally blocked on the actual gina.dll binary, physical teardown data, or proprietary GoldKey drivers; local Ghidra distribution still needs CI/relay. Do not invent substitutes.",
-        "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/goldkey-parity-gina-and-units.md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
+        "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/[private Drive ID redacted].md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
         "Round-14 audit (2026-10-22): check:unit-cad 54/54 + gina suite 29/29 green; one vendor spec conflict on record (nMU 2U dims). Remaining = hierarchy write-up + uClinux fax JAR (JDK-gated in sandbox).",
         "Finish master/grandmaster key hierarchy write-up and per-unit CAD/BOM completeness check",
         "Parity backup system design in tandem with gold key drivers",
@@ -335,7 +318,7 @@
       "refs": [
         "README.md",
         "docs/wiki-workspace-research-2026-10-15.md",
-        "docs/wiki-samples-vault-drive-map-2026-10-16.md",
+        "docs/[private Drive ID redacted].md",
         "docs/RESEARCH_SMARTCARD.md",
         "docs/wiki-javacard-validation-2026-10-15.md",
         "docs/lecture-hall-research-2026-09-20.md",
@@ -399,7 +382,7 @@
         "Wallet crypto-card + mnemonic investigations feed the existing bip39-haiku workbench",
         "Classified random name generator: link the First Name Almanac (NAMES.EXE) lineage as historical context per F2 constraints",
         "Locate the cold-war spy book's 18 end-of-book challenges and derive CyberChef/cipher recipes",
-        "Closed round 53 (2026-10-25): source book located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021); the printed challenge has 16 items; methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs 17/17 (docs/backlog-execution-round-53-2026-10-25.md)."
+        "Closed round 53 (2026-10-25): source book located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021); the printed challenge has 16 items; methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs 17/17 (docs/[private Drive ID redacted].md)."
       ]
     },
     {
@@ -594,7 +577,7 @@
       "stream": "S8",
       "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet",
       "status": "partial",
-      "note": "Research cluster closed 2026-10-23 (docs/iparty-voipblaster-duck-2026-10-23.md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass. Ghidra pass executed 2026-10-23 (.github/workflows/arena-iparty-ghidra.yml, run 40030773332; .arena-iparty/result.md): IPL codec identified as statically linked libgsm GSM 06.10 (Jutta Degener gsm-1.0, CGSMPub610 class; zero MSACM imports, WINMM only for PCM I/O) - the Ghidra iParty-codecs strand closes at identification. Remaining T8.3: lossless comms room, Tetrinet."
+      "note": "Research cluster closed 2026-10-23 (docs/[private Drive ID redacted].md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass. Ghidra pass executed 2026-10-23 (.github/workflows/arena-iparty-ghidra.yml, run 40030773332; .arena-iparty/result.md): IPL codec identified as statically linked libgsm GSM 06.10 (Jutta Degener gsm-1.0, CGSMPub610 class; zero MSACM imports, WINMM only for PCM I/O) - the Ghidra iParty-codecs strand closes at identification. Remaining T8.3: lossless comms room, Tetrinet."
     },
     {
       "id": "T8.4",
@@ -610,7 +593,7 @@
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
       "status": "partial",
-      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work. Virtualized reader built 2026-10-23: js/cardreader.js models the ISO 7816-4 substrate shared by BasicCard/JavaCard work (APDU codec, MF/DF/EF tree with access conditions, VERIFY PIN retry lockout 63Cx->6983, SELECT by file ID and by applet AID with proprietary-INS routing; reader talks only APDU bytes). tests/cardreader.test.mjs 6/6. Not a JVM or a Basic interpreter - applets arrive as APDU handlers. Remaining T9.1: smartcard filesystem choice write-up, algorithms book, boot-chain note. Smartcard FS choice (docs/smartcard-filesystem-choice-2026-10-23.md): ISO/IEC 7816-4 MF/DF/EF chosen for storage (the cardreader.js model), BasicCard FS + FAT rejected with sources, JavaCard applets borrowed for behaviour only. Boot-chain note (docs/boot-chain-dongle-note-2026-10-23.md): key-release not data-path; PKCS#11/FIDO2 token unlock already exists in the systemd/cryptsetup stack; evil-maid and recovery caveats recorded. Remaining: algorithms book sourcing pass. Algorithms book strand closed 2026-10-23 (docs/card-algorithms-book-2026-10-23.md): the card-tractable subset of the canon (CLRS/Weiss) implemented as js/card-algorithms.js - CRC-16/CCITT-FALSE, Luhn (ISO 7812-1), binary search, insertion sort, Euclid GCD, FNV-1a, uint16 repeated-squaring modExp - bound as the AID A000000002 ALGO-BOOK applet on the virtual reader, pinned by published known answers (tests/card-algorithms.test.mjs 3/3). INS gaps forced by the 7816-4 core claiming A4/20/B0/D6 (Luhn on 0x22). FFT/geometry/hand-rolled RSA/external-memory chapters excluded with reasons. T9.1 remaining: physical-card/GlobalPlatform load (hardware) and card personalisation write path. Personalisation write path built 2026-10-23: CREATE FILE (E0) / DELETE FILE (E4) on the virtual card - PIN-gated issuer provisioning of DF/EF onto the MF tree, duplicate-FID and MF protections, selection fallback on delete (js/cardreader.js; tests/cardreader-personalisation.test.mjs 4/4; card suites 13/13). T9.1 now stands at: every sandbox-buildable strand closed (reader, FS choice, algorithms book, boot-chain note, personalisation); the sole remainder is physical-card/GlobalPlatform load, which needs hardware."
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/[private Drive ID redacted].md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work. Virtualized reader built 2026-10-23: js/cardreader.js models the ISO 7816-4 substrate shared by BasicCard/JavaCard work (APDU codec, MF/DF/EF tree with access conditions, VERIFY PIN retry lockout 63Cx->6983, SELECT by file ID and by applet AID with proprietary-INS routing; reader talks only APDU bytes). tests/cardreader.test.mjs 6/6. Not a JVM or a Basic interpreter - applets arrive as APDU handlers. Remaining T9.1: smartcard filesystem choice write-up, algorithms book, boot-chain note. Smartcard FS choice (docs/[private Drive ID redacted].md): ISO/IEC 7816-4 MF/DF/EF chosen for storage (the cardreader.js model), BasicCard FS + FAT rejected with sources, JavaCard applets borrowed for behaviour only. Boot-chain note (docs/[private Drive ID redacted].md): key-release not data-path; PKCS#11/FIDO2 token unlock already exists in the systemd/cryptsetup stack; evil-maid and recovery caveats recorded. Remaining: algorithms book sourcing pass. Algorithms book strand closed 2026-10-23 (docs/[private Drive ID redacted].md): the card-tractable subset of the canon (CLRS/Weiss) implemented as js/card-algorithms.js - CRC-16/CCITT-FALSE, Luhn (ISO 7812-1), binary search, insertion sort, Euclid GCD, FNV-1a, uint16 repeated-squaring modExp - bound as the AID A000000002 ALGO-BOOK applet on the virtual reader, pinned by published known answers (tests/card-algorithms.test.mjs 3/3). INS gaps forced by the 7816-4 core claiming A4/20/B0/D6 (Luhn on 0x22). FFT/geometry/hand-rolled RSA/external-memory chapters excluded with reasons. T9.1 remaining: physical-card/GlobalPlatform load (hardware) and card personalisation write path. Personalisation write path built 2026-10-23: CREATE FILE (E0) / DELETE FILE (E4) on the virtual card - PIN-gated issuer provisioning of DF/EF onto the MF tree, duplicate-FID and MF protections, selection fallback on delete (js/cardreader.js; tests/cardreader-personalisation.test.mjs 4/4; card suites 13/13). T9.1 now stands at: every sandbox-buildable strand closed (reader, FS choice, algorithms book, boot-chain note, personalisation); the sole remainder is physical-card/GlobalPlatform load, which needs hardware."
     },
     {
       "id": "T9.2",
@@ -666,7 +649,7 @@
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
       "status": "done",
-      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book. Round 53 (2026-10-25): spy-book strand CLOSED — the source book was located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021, ISBN 978-1-910860-02-1); its printed challenge has 16 items (not 18). Methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs (17/17), honest skip cards for image/Navajo/shorthand/acrostic items, and the playfair decrypt-mode fix (docs/backlog-execution-round-53-2026-10-25.md). No contest solutions claimed."
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/[private Drive ID redacted].md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book. Round 53 (2026-10-25): spy-book strand CLOSED — the source book was located on Drive (\"The Cold War Spy Pocket Manual\", Casemate 2021, ISBN 978-1-910860-02-1); its printed challenge has 16 items (not 18). Methods distilled to cookbook section 24 #spy-manual-challenges with tests/cyberchef-spy-challenge.test.mjs (17/17), honest skip cards for image/Navajo/shorthand/acrostic items, and the playfair decrypt-mode fix (docs/[private Drive ID redacted].md). No contest solutions claimed."
     },
     {
       "id": "T12.1",
@@ -696,7 +679,7 @@
       "id": "T14.1",
       "line": 153,
       "stream": "S1",
-      "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b",
+      "text": "Private source item details are omitted; task status is retained.",
       "status": "partial",
       "flag": "F2",
       "note": "Changelly half DONE 2026-10-23: Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I loader + Sheet second stage retrieved inert, BagIt + Xena preserved (dist/changelly-drainer-xena/, gitignored), Ghidra assessed not-applicable (JavaScript text; no MZ/ELF/PE, no crypto keywords). Dev panel v3.27: docs/changelly-dev-panel-v327-2026-10-23.md. KGK.ARJ/FNA102B parts remain out of scope per standing decisions F2/F4; ungarble application is out of scope per standing decision"

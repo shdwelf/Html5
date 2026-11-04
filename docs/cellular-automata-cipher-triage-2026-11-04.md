@@ -1,0 +1,96 @@
+# Cellular-automata cipher triage — 2026-11-04
+
+## Scope and disposition
+
+The requested “Holy Grail” target is not identified by a source URL, repository,
+program name/version, binary, ciphertext, or known-plaintext vector. The local
+repository contains CA visualizers, but no program or decryption implementation
+matching that description. A general web search for the phrase “Holy Grail” did
+not resolve it to a unique CA cipher; for example, David Wu’s [Fully Homomorphic
+Encryption: Cryptography’s Holy Grail](https://www.cs.utexas.edu/~dwu4/papers/XRDSFHE.pdf)
+uses the phrase for FHE, which is unrelated to a known-plaintext CA attack.
+
+**Disposition:** literature triage is complete; target-specific disassembly,
+decryption, CyberChef operation, and cookbook card are blocked on the target and
+an independently checkable vector. No cipher or recipe was inferred from a
+title or visual resemblance.
+
+## What the literature establishes
+
+- Luca Mariot’s 2024 review, [Insights Gained after a Decade of
+  Cellular Automata-based Cryptography](https://arxiv.org/html/2405.02875v1),
+  describes a specific known-plaintext attack against Wolfram’s Rule 30
+  pseudorandom generator. The attack depends on Rule 30’s Boolean/algebraic
+  properties and the exact generator model; it does not imply that arbitrary
+  Life-like patterns reveal an arbitrary cipher. The review also cautions that
+  passing statistical or chaos tests is not evidence of cryptographic security.
+- The same review notes that reversibility is a central requirement for block
+  ciphers built by iterating a CA: decryption must know the inverse transition
+  and reverse the steps. An irreversible or information-losing update generally
+  has multiple predecessors, so matching one output pattern is not, by itself,
+  a decryption method.
+- A 2018 [Life-like cellular-automata image
+  cipher](https://doi.org/10.1016/j.sigpro.2018.04.018) combines a
+  two-dimensional permutation map with second-order Life-like substitution and
+  plaintext-dependent histogram handling. Its abstract describes one particular
+  construction and its authors’ security claims; it is not a generic recipe or
+  evidence about the unspecified target.
+- The 2024 [Reversible Cellular Automata Based
+  Cryptosystem](https://doi.org/10.3390/electronics13132515) is another
+  scheme-specific design. It uses a reversible rule and reverse iteration. Its
+  implementation details cannot be transplanted to a different program without
+  observing that program’s actual rule, state encoding, key handling, and output
+  transformation.
+
+## Required model before attempting a match or decryption
+
+A cellular-automaton match must be defined as an exact byte/state comparison,
+not a visual resemblance. For the target program, establish from source or
+controlled binary observations:
+
+1. **Automaton model:** one- or two-dimensional; alphabet/state width;
+   neighborhood and radius; exact local rule (Wolfram code or B/S notation);
+   synchronous or asynchronous updates; boundary condition; number of steps;
+   and cell-to-byte/bit ordering.
+2. **Cryptographic wrapper:** whether the CA state is plaintext, a keystream,
+   an intermediate state, or ciphertext; any XOR/addition/permutation,
+   feedback, IV/nonce, key schedule, compression, checksums, or framing around
+   the CA; and the exact decryption/inverse path.
+3. **Known pair and oracle:** an exact plaintext/ciphertext pair or a known
+   initial-state/evolution-output pair from the target, plus an independent
+   expected-output vector. A known-plaintext attack normally needs a
+   plaintext–ciphertext relationship; knowing a generic Game-of-Life pattern
+   alone does not establish that relationship.
+4. **Duplicate and scope check:** determine whether the kitchen already has the
+   same transformation under another name, and confirm the supplied program is
+   an authorized analysis target.
+
+For a stream-cipher construction that XORs plaintext with a CA-derived
+keystream, a known pair yields the corresponding keystream bits (`P XOR C`),
+but that does not automatically recover the CA rule, state, or key. If the
+program uses a different construction, even that relation may not apply.
+
+## Repository status
+
+The CyberChef Kitchen already has **Rule 110**, **Game of Life**, and **Larger
+Game of Life** visualizers. The cookbook’s existing “Larger Game of Life” entry
+is categorized as educational/reference material, not as a decryption algorithm.
+No CA decryption recipe was added: there is no target-specific observed
+mechanism or independent known-answer vector to test. Once supplied, the
+implementation should first reproduce the vector in a small independent
+reference, then add a unique operation, tests, recipe pack/card, cookbook entry,
+registry/count updates, and rebuilt `cyberchef.xdc`.
+
+## Needed to resume
+
+Please provide one of:
+
+- the exact program(s) as a workspace attachment, or a public repository URL
+  and commit/version; and
+- a ciphertext plus known plaintext / CA state pair, or the source test vector
+  that the program is expected to reproduce.
+
+If the rule is already known, include the CA dimension, local rule, boundary,
+update order, generation count, and serialization. If it is not known, the
+program itself is needed so those mechanics can be observed. No private Drive
+identifier or link is needed in the repository.

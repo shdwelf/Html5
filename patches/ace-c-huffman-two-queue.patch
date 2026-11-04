@@ -1,0 +1,320 @@
+diff --git a/src/huffman.c b/src/huffman.c
+index 31ed7a8..9a4da30 100644
+--- a/src/huffman.c
++++ b/src/huffman.c
+@@ -293,7 +293,8 @@ int ace_huff_from_widths(const uint8_t *widths, unsigned nwidths, unsigned max_w
+ 
+ typedef struct {
+     uint32_t w;
+-    int dad;
++    int left;
++    int right;
+ } ace_hn_t;
+ 
+ static void huff_limit_widths(uint8_t *len, unsigned n, unsigned max_width)
+@@ -359,41 +360,102 @@ static void huff_limit_widths(uint8_t *len, unsigned n, unsigned max_width)
+     }
+ }
+ 
+-static void quicksort_subrange_u32(uint32_t *keys, uint16_t *values, int left, int right)
++typedef struct {
++    unsigned node;
++    unsigned depth;
++} ace_huff_depth_t;
++
++/* Stable O(n log n) merge sort: frequency ascending, symbol order on ties. */
++static int sort_freqs_ascending(const uint32_t *freq, unsigned n,
++                                uint32_t *sorted_freq, uint16_t *sorted_sym)
+ {
+-    int new_left = left;
+-    int new_right = right;
+-    uint32_t m = keys[right];
+-    while (1) {
+-        while (keys[new_left] > m)
+-            new_left++;
+-        while (keys[new_right] < m)
+-            new_right--;
+-        if (new_left <= new_right) {
+-            uint32_t tk = keys[new_left]; keys[new_left] = keys[new_right]; keys[new_right] = tk;
+-            uint16_t tv = values[new_left]; values[new_left] = values[new_right]; values[new_right] = tv;
+-            new_left++;
+-            new_right--;
+-        }
+-        if (new_left >= new_right)
+-            break;
++    uint32_t *tmp_freq;
++    uint16_t *tmp_sym;
++    uint32_t *src_freq = sorted_freq;
++    uint16_t *src_sym = sorted_sym;
++    uint32_t *dst_freq;
++    uint16_t *dst_sym;
++    size_t width;
++    unsigned i;
++
++    tmp_freq = (uint32_t *)malloc((size_t)n * sizeof(*tmp_freq));
++    tmp_sym = (uint16_t *)malloc((size_t)n * sizeof(*tmp_sym));
++    if (!tmp_freq || !tmp_sym) {
++        free(tmp_freq);
++        free(tmp_sym);
++        return ACE_ERR_NOMEM;
+     }
+-    if (left < new_right) {
+-        if (left < new_right - 1)
+-            quicksort_subrange_u32(keys, values, left, new_right);
+-        else if (keys[left] < keys[new_right]) {
+-            uint32_t tk = keys[left]; keys[left] = keys[new_right]; keys[new_right] = tk;
+-            uint16_t tv = values[left]; values[left] = values[new_right]; values[new_right] = tv;
+-        }
++
++    for (i = 0; i < n; i++) {
++        sorted_freq[i] = freq[i];
++        sorted_sym[i] = (uint16_t)i;
+     }
+-    if (right > new_left) {
+-        if (new_left < right - 1)
+-            quicksort_subrange_u32(keys, values, new_left, right);
+-        else if (keys[new_left] < keys[right]) {
+-            uint32_t tk = keys[new_left]; keys[new_left] = keys[right]; keys[right] = tk;
+-            uint16_t tv = values[new_left]; values[new_left] = values[right]; values[right] = tv;
++    dst_freq = tmp_freq;
++    dst_sym = tmp_sym;
++
++    for (width = 1; width < n; width *= 2) {
++        size_t base;
++        for (base = 0; base < n; base += 2 * width) {
++            size_t mid = base + width;
++            size_t end = base + 2 * width;
++            size_t a = base;
++            size_t b;
++            size_t out = base;
++            if (mid > n)
++                mid = n;
++            if (end > n)
++                end = n;
++            b = mid;
++            while (a < mid && b < end) {
++                if (src_freq[a] <= src_freq[b]) {
++                    dst_freq[out] = src_freq[a];
++                    dst_sym[out++] = src_sym[a++];
++                } else {
++                    dst_freq[out] = src_freq[b];
++                    dst_sym[out++] = src_sym[b++];
++                }
++            }
++            while (a < mid) {
++                dst_freq[out] = src_freq[a];
++                dst_sym[out++] = src_sym[a++];
++            }
++            while (b < end) {
++                dst_freq[out] = src_freq[b];
++                dst_sym[out++] = src_sym[b++];
++            }
++        }
++        {
++            uint32_t *tf = src_freq;
++            uint16_t *ts = src_sym;
++            src_freq = dst_freq;
++            src_sym = dst_sym;
++            dst_freq = tf;
++            dst_sym = ts;
+         }
++        if (width > (size_t)n / 2)
++            break;
++    }
++
++    if (src_freq != sorted_freq) {
++        memcpy(sorted_freq, src_freq, (size_t)n * sizeof(*sorted_freq));
++        memcpy(sorted_sym, src_sym, (size_t)n * sizeof(*sorted_sym));
+     }
++    free(tmp_freq);
++    free(tmp_sym);
++    return ACE_OK;
++}
++
++/* Pop one item from the merge of two nondecreasing queues. Leaves win ties. */
++static unsigned huff_pop_min(const ace_hn_t *node,
++                             unsigned leaves, unsigned *leaf_head,
++                             const unsigned *internal, unsigned internal_count,
++                             unsigned *internal_head)
++{
++    if (*leaf_head < leaves &&
++        (*internal_head >= internal_count ||
++         node[*leaf_head].w <= node[internal[*internal_head]].w))
++        return (*leaf_head)++;
++    return internal[(*internal_head)++];
+ }
+ 
+ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned max_width)
+@@ -401,30 +463,35 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
+     ace_hn_t *node;
+     uint32_t *sorted_freq;
+     uint16_t *sorted_sym;
+-    int *active;
+-    unsigned i, used = 0, nnodes, next, alive;
+-    unsigned leaves;
++    unsigned *internal;
++    ace_huff_depth_t *stack;
++    unsigned i, first = 0, used, nnodes, next, alive;
++    unsigned leaf_head = 0, internal_head = 0, internal_count = 0;
++    unsigned stack_n = 0;
+ 
+     memset(len, 0, n);
+     if (n == 0)
+         return ACE_ERR_PARAM;
+ 
+-    sorted_freq = (uint32_t *)malloc(n * sizeof(uint32_t));
+-    sorted_sym = (uint16_t *)malloc(n * sizeof(uint16_t));
++    sorted_freq = (uint32_t *)malloc((size_t)n * sizeof(uint32_t));
++    sorted_sym = (uint16_t *)malloc((size_t)n * sizeof(uint16_t));
+     if (!sorted_freq || !sorted_sym) {
+         free(sorted_freq);
+         free(sorted_sym);
+         return ACE_ERR_NOMEM;
+     }
+-    memcpy(sorted_freq, freq, n * sizeof(uint32_t));
+-    for (i = 0; i < n; i++)
+-        sorted_sym[i] = (uint16_t)i;
+-
+-    if (n > 1)
+-        quicksort_subrange_u32(sorted_freq, sorted_sym, 0, (int)n - 1);
++    {
++        int rc = sort_freqs_ascending(freq, n, sorted_freq, sorted_sym);
++        if (rc != ACE_OK) {
++            free(sorted_freq);
++            free(sorted_sym);
++            return rc;
++        }
++    }
+ 
+-    while (used < n && sorted_freq[used] > 0)
+-        used++;
++    while (first < n && sorted_freq[first] == 0)
++        first++;
++    used = n - first;
+ 
+     if (used == 0) {
+         len[0] = 1;
+@@ -435,8 +502,9 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
+         return ACE_OK;
+     }
+     if (used == 1) {
+-        unsigned other = (sorted_sym[0] == 0 && n > 1) ? 1 : 0;
+-        len[sorted_sym[0]] = 1;
++        unsigned sym = sorted_sym[first];
++        unsigned other = (sym == 0 && n > 1) ? 1 : 0;
++        len[sym] = 1;
+         if (n > 1)
+             len[other] = 1;
+         free(sorted_freq);
+@@ -444,70 +512,62 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
+         return ACE_OK;
+     }
+ 
+-    leaves = used;
+-    nnodes = 2 * leaves - 1;
+-    node = (ace_hn_t *)malloc(nnodes * sizeof(*node));
+-    active = (int *)malloc(leaves * sizeof(int));
+-    if (!node || !active) {
++    nnodes = 2 * used - 1;
++    node = (ace_hn_t *)malloc((size_t)nnodes * sizeof(*node));
++    internal = (unsigned *)malloc((size_t)(used - 1) * sizeof(*internal));
++    stack = (ace_huff_depth_t *)malloc((size_t)nnodes * sizeof(*stack));
++    if (!node || !internal || !stack) {
+         free(sorted_freq);
+         free(sorted_sym);
+         free(node);
+-        free(active);
++        free(internal);
++        free(stack);
+         return ACE_ERR_NOMEM;
+     }
+ 
+-    for (i = 0; i < leaves; i++) {
+-        node[i].w = sorted_freq[i];
+-        node[i].dad = -1;
+-        active[i] = (int)i;
++    for (i = 0; i < used; i++) {
++        node[i].w = sorted_freq[first + i];
++        node[i].left = -1;
++        node[i].right = -1;
+     }
+ 
+-    next = leaves;
+-    alive = leaves;
++    next = used;
++    alive = used;
+     while (alive > 1) {
+-        int b = active[alive - 1];
+-        int a = active[alive - 2];
+-        int insert_pos;
+-        int idx;
+-
++        unsigned a = huff_pop_min(node, used, &leaf_head,
++                                  internal, internal_count, &internal_head);
++        unsigned b = huff_pop_min(node, used, &leaf_head,
++                                  internal, internal_count, &internal_head);
+         node[next].w = node[a].w + node[b].w;
+-        node[next].dad = -1;
+-        node[a].dad = (int)next;
+-        node[b].dad = (int)next;
+-        alive -= 2;
+-
+-        insert_pos = 0;
+-        for (idx = (int)alive - 1; idx >= 0; idx--) {
+-            if (node[next].w < node[active[idx]].w) {
+-                insert_pos = idx + 1;
+-                break;
+-            }
+-        }
+-        for (idx = (int)alive; idx > insert_pos; idx--)
+-            active[idx] = active[idx - 1];
+-        active[insert_pos] = (int)next;
+-        alive++;
++        node[next].left = (int)a;
++        node[next].right = (int)b;
++        internal[internal_count++] = next;
+         next++;
+-    }
+-
+-    for (i = 0; i < leaves; i++) {
+-        unsigned d = 0;
+-        int p = node[i].dad;
+-        while (p >= 0) {
+-            d++;
+-            p = node[p].dad;
+-            if (d > 64)
+-                break;
++        alive--;
++    }
++
++    stack[stack_n].node = next - 1;
++    stack[stack_n++].depth = 0;
++    while (stack_n) {
++        ace_huff_depth_t cur = stack[--stack_n];
++        if (cur.node < used) {
++            unsigned depth = cur.depth ? cur.depth : 1;
++            if (depth > 255)
++                depth = 255;
++            len[sorted_sym[first + cur.node]] = (uint8_t)depth;
++        } else {
++            unsigned left = (unsigned)node[cur.node].left;
++            unsigned right = (unsigned)node[cur.node].right;
++            stack[stack_n].node = right;
++            stack[stack_n++].depth = cur.depth + 1;
++            stack[stack_n].node = left;
++            stack[stack_n++].depth = cur.depth + 1;
+         }
+-        if (d < 1)
+-            d = 1;
+-        if (d > 255)
+-            d = 255;
+-        len[sorted_sym[i]] = (uint8_t)d;
+     }
+ 
+     free(node);
+-    free(active);
++    free(internal);
++    free(stack);
+     free(sorted_freq);
+     free(sorted_sym);
+     huff_limit_widths(len, n, max_width);
