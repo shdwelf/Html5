@@ -1,7 +1,7 @@
 /* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
    visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v41`;
+const CACHE = `${CACHE_PREFIX}v42`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -16,6 +16,7 @@ const PRECACHE = [
   "./country-viewer.html",
   "./contacts.html",
   "./docs/historical-contact-directory-source-review-2026-11-03.md",
+  "./docs/convention-suppliers-transit-2017-2020.md",
   "./red-october-4dwm.html",
   "./sanborn-restaurant-4dwm.html",
   "./socal-subsurface.html",

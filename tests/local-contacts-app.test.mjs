@@ -62,15 +62,19 @@ test("Local Directory Desk boots, saves a contact locally, and filters it", asyn
       configurable: true,
       value: [{
         name: "directory.csv",
-        size: 72,
-        text: async () => "Name,City,ZIP\nGrace Hopper,Boston,02108\n",
+        size: 256,
+        text: async () => [
+          "Name,City,ZIP,Record Type,Company,Event,Booth Number,Product Category,Badge Scan Date",
+          "Grace Hopper,Boston,02108,Person,,General directory,,,",
+          "Acme Instruments,,,Business,Acme Instruments,MD&M West,0174,Precision sensors,2020-02-11 10:42",
+        ].join("\n"),
       }],
     });
     fileInput.dispatchEvent(new window.Event("change", { bubbles: true }));
     await waitFor(() => !window.document.querySelector("#importButton").disabled);
-    assert.match(window.document.querySelector("#importPreview").textContent, /READY: 1/);
+    assert.match(window.document.querySelector("#importPreview").textContent, /READY: 2/);
     window.document.querySelector("#importButton").click();
-    await waitFor(() => window.document.querySelector("#recordCount").textContent === "2");
+    await waitFor(() => window.document.querySelector("#recordCount").textContent === "3");
 
     const search = window.document.querySelector("#searchInput");
     search.value = "grace boston";
@@ -83,6 +87,18 @@ test("Local Directory Desk boots, saves a contact locally, and filters it", asyn
     assert.equal(form.elements.namedItem("postalCode").value, "02108");
     assert.equal(form.elements.namedItem("sourceYear").value, "1930");
     assert.equal(form.elements.namedItem("sourceTitle").value, "Imported directory fixture");
+
+    search.value = "precision";
+    search.dispatchEvent(new window.Event("input", { bubbles: true }));
+    window.document.querySelector("#kindFilter").value = "business";
+    window.document.querySelector("#kindFilter").dispatchEvent(new window.Event("change", { bubbles: true }));
+    window.document.querySelector("#eventFilter").value = "MD&M West";
+    window.document.querySelector("#eventFilter").dispatchEvent(new window.Event("change", { bubbles: true }));
+    assert.match(window.document.querySelector("#searchCount").textContent, /1 match/);
+    window.document.querySelector(".result-card").click();
+    assert.equal(form.elements.namedItem("booth").value, "0174");
+    assert.equal(form.elements.namedItem("productCategory").value, "Precision sensors");
+    assert.equal(form.elements.namedItem("scanDate").value, "2020-02-11 10:42");
   } finally {
     dom.window.close();
     delete globalThis.window;

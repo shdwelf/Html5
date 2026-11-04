@@ -1,6 +1,6 @@
 # Historical contact directory: source and update review
 
-**Reviewed:** 2026-11-03
+**Original review:** 2026-11-03 · **Updated:** 2026-11-04 (event-supplier fields and badge-data boundaries)
 
 **Purpose:** choose lawful, maintainable reference data for a local-first historical directory/contact index.
 
@@ -45,7 +45,8 @@ Choose one of these scopes before import. None is fetched by this app.
 - CSV and the app's JSON backup format import in the browser; scanned PDFs need OCR/export to a table first (direct PDF/OCR import is not implemented). Contacts are stored in IndexedDB for the current browser profile. The app makes no background network requests.
 - Data is not encrypted by the app. Browser-local storage is not a substitute for device security; JSON/CSV exports are plain text.
 - Source, edition/year, page, catalog URL/ID, and a rights note travel with each record. Duplicate listings are preserved; the app does not automatically merge people with similar names.
-- No historical directory files, NIH records, USPS postal file, or ISO table were selected or downloaded for the app. No records are preloaded.
+- Optional event-supplier fields store event name, booth/stand, product or service category, and a scan date/time when included in an authorized user export. Public exhibitor records are not badge-scan evidence. No organizer API or contact feed is connected.
+- No historical directory files, NIH records, USPS postal file, ISO table, event directory, or badge-scan records were selected or downloaded for the app. No records are preloaded.
 
 ## References checked
 

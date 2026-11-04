@@ -88,6 +88,40 @@ test("app JSON backup round-trips camel-case fields and retains ids and source n
   assert.equal(restored.contacts[0].sourceRights, "Personal archival copy");
 });
 
+test("business and supplier imports preserve event, booth, category, scan time, and local provenance", () => {
+  const csv = [
+    "Record Type,Company,Event,Booth Number,Product Category,Badge Scan Date",
+    "Business,Acme Instruments,MD&M West,0174,Precision sensors,2020-02-11 10:42",
+  ].join("\n");
+  const result = parseDirectoryText(csv, {
+    defaults: {
+      sourceTitle: "User-authorized event lead export",
+      sourceYear: "2020",
+      sourceRights: "User-authorized private export; keep local",
+    },
+  });
+  assert.equal(result.contacts.length, 1);
+  const contact = result.contacts[0];
+  assert.equal(contact.kind, "business");
+  assert.equal(contact.organization, "Acme Instruments");
+  assert.equal(contact.eventName, "MD&M West");
+  assert.equal(contact.booth, "0174", "booth identifiers remain text, including leading zeroes");
+  assert.equal(contact.productCategory, "Precision sensors");
+  assert.equal(contact.scanDate, "2020-02-11 10:42");
+  assert.equal(contact.sourceYear, "2020");
+  assert.equal(contact.sourceRights, "User-authorized private export; keep local");
+  assert.deepEqual(searchContacts([contact], "precision sensors", { kind: "business", event: "MD&M West", year: "2020" }).map((item) => item.name), ["Acme Instruments"]);
+
+  const restored = parseDirectoryText(contactsToCsv([contact])).contacts[0];
+  assert.equal(restored.eventName, contact.eventName);
+  assert.equal(restored.booth, contact.booth);
+  assert.equal(restored.productCategory, contact.productCategory);
+  assert.equal(restored.scanDate, contact.scanDate);
+
+  const genericLeadDate = parseDirectoryText("Company,Lead Date\nAcme Instruments,2020-02-11\n").contacts[0];
+  assert.equal(genericLeadDate.scanDate, "", "a generic lead date is not automatically mislabeled as a badge-scan time");
+});
+
 test("CSV import preserves historical text and only skips rows without a listing name", () => {
   const result = parseDirectoryText("Name,Email,Latitude\nA Person,not-an-email,uncertain\n,person@example.test,42\nValid Person,valid@example.test,48.2\n");
   assert.equal(result.contacts.length, 2);

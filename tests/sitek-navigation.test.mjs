@@ -104,7 +104,7 @@ test("Local Directory Desk is listed, packaged, and cached as an offline app", (
   assert.ok(catalog.includes('id: "local-contacts", label: "LOCAL CONTACTS", route: "./contacts.html"'), "the offline app is in the SITE-K catalog");
   assert.match(packer, /\ncontacts\.html\n/, "the contacts page is packaged in SITE-K XDC");
   assert.ok(packer.includes("cp -R css js"), "local contacts modules are included in the SITE-K module tree");
-  const offlineAssets = ["contacts.html", "css/local-contacts.css", "js/local-contacts-core.js", "js/local-contacts-app.js", "docs/historical-contact-directory-source-review-2026-11-03.md"];
+  const offlineAssets = ["contacts.html", "css/local-contacts.css", "js/local-contacts-core.js", "js/local-contacts-app.js", "docs/historical-contact-directory-source-review-2026-11-03.md", "docs/convention-suppliers-transit-2017-2020.md"];
   for (const asset of offlineAssets) assert.ok(worker.includes(`"./${asset}"`), `${asset} is precached for offline use`);
   const archive = unzipSync(readFileSync(new URL("../sitek.xdc", import.meta.url)));
   for (const asset of offlineAssets) assert.ok(archive[asset], `${asset} is present in the built SITE-K XDC`);
@@ -125,5 +125,5 @@ test("all standalone app modes share one shell visibility rule", () => {
   assert.match(wmCss, /body\[data-shell-view="frame"\] \.wm-desk/);
   assert.match(app, /syncSitekDockLink\(a, mode\)/);
   assert.match(worker, /"\.\/wasm\/ghidra\/ghidra_decompiler\.wasm"/);
-  assert.match(worker, /CACHE_PREFIX\}v41/);
+  assert.match(worker, /CACHE_PREFIX\}v42/);
 });

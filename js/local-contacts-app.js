@@ -26,6 +26,8 @@ const ui = {
   searchInput: $("#searchInput"),
   yearFilter: $("#yearFilter"),
   sourceFilter: $("#sourceFilter"),
+  kindFilter: $("#kindFilter"),
+  eventFilter: $("#eventFilter"),
   searchCount: $("#searchCount"),
   contactResults: $("#contactResults"),
   newContactButton: $("#newContactButton"),
@@ -155,12 +157,22 @@ function makeResultCard(contact) {
 
   const detail = document.createElement("span");
   detail.className = "result-detail";
-  detail.textContent = contact.organization || formatLocation(contact) || contact.phone || "No location detail";
+  const businessParts = [
+    contact.organization,
+    contact.eventName,
+    contact.booth ? `Booth ${contact.booth}` : "",
+    contact.productCategory,
+  ].filter(Boolean);
+  detail.textContent = businessParts.join(" · ") || formatLocation(contact) || contact.phone || "No location detail";
   button.append(detail);
 
   const meta = document.createElement("span");
   meta.className = "result-meta";
-  const metaParts = [sourceLabel(contact), contact.page ? `PAGE ${contact.page}` : ""].filter(Boolean);
+  const metaParts = [
+    sourceLabel(contact),
+    contact.scanDate ? `SCAN ${contact.scanDate}` : "",
+    contact.page ? `PAGE ${contact.page}` : "",
+  ].filter(Boolean);
   meta.textContent = metaParts.join(" / ");
   button.append(meta);
   button.addEventListener("click", () => showContact(contact));
@@ -171,23 +183,43 @@ function getFilteredContacts() {
   return searchContacts(contacts, ui.searchInput.value, {
     year: ui.yearFilter.value,
     source: ui.sourceFilter.value,
+    kind: ui.kindFilter.value,
+    event: ui.eventFilter.value,
   });
 }
 
 function renderFilters() {
   const previousYear = ui.yearFilter.value;
   const previousSource = ui.sourceFilter.value;
+  const previousKind = ui.kindFilter.value;
+  const previousEvent = ui.eventFilter.value;
   const years = [...new Set(contacts.map((contact) => contact.sourceYear).filter(Boolean))]
     .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
   const sources = sourceSummary(contacts);
+  const events = [...new Set(contacts.map((contact) => String(contact.eventName ?? "").trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
   ui.yearFilter.replaceChildren(new Option("All years", ""));
   for (const year of years) ui.yearFilter.add(new Option(year, year));
   ui.sourceFilter.replaceChildren(new Option("All sources", ""));
   for (const source of sources) ui.sourceFilter.add(new Option(source.label, source.key));
+  ui.kindFilter.replaceChildren(new Option("All record types", ""));
+  const kindLabels = {
+    business: "Businesses / suppliers",
+    person: "People",
+    organization: "Organizations",
+    institution: "Institutions",
+    other: "Other",
+  };
+  for (const kind of ["business", "person", "organization", "institution", "other"])
+    if (contacts.some((contact) => contact.kind === kind)) ui.kindFilter.add(new Option(kindLabels[kind], kind));
+  ui.eventFilter.replaceChildren(new Option("All events", ""));
+  for (const event of events) ui.eventFilter.add(new Option(event, event));
 
   if (years.includes(previousYear)) ui.yearFilter.value = previousYear;
   if (sources.some((source) => source.key === previousSource)) ui.sourceFilter.value = previousSource;
+  if ([...ui.kindFilter.options].some((option) => option.value === previousKind)) ui.kindFilter.value = previousKind;
+  if (events.includes(previousEvent)) ui.eventFilter.value = previousEvent;
 }
 
 function renderResults() {
@@ -298,6 +330,8 @@ ui.deleteContactButton.addEventListener("click", async () => {
 ui.searchInput.addEventListener("input", renderResults);
 ui.yearFilter.addEventListener("change", renderResults);
 ui.sourceFilter.addEventListener("change", renderResults);
+ui.kindFilter.addEventListener("change", renderResults);
+ui.eventFilter.addEventListener("change", renderResults);
 
 function getImportDefaults() {
   return {
