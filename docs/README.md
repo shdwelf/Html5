@@ -80,6 +80,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-56-2026-11-04.md](backlog-execution-round-56-2026-11-04.md) — backlog execution round 56 2026 11 04 (MLS metasearch · tax-lien/e-file software review · remaining gates)
 - [backlog-execution-round-57-2026-11-04.md](backlog-execution-round-57-2026-11-04.md) — backlog execution round 57 2026 11 04 (Zangi sources · EFF review · ACE Huffman experiment)
 - [backlog-execution-round-58-2026-11-04.md](backlog-execution-round-58-2026-11-04.md) — backlog execution round 58 2026 11 04 (XAPK transfer attempt · cellular-automata cipher triage · merge gate)
+- [backlog-execution-round-59-2026-11-04.md](backlog-execution-round-59-2026-11-04.md) — backlog execution round 59 2026 11 04 (Zangi package static check · CA target gate)
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -97,6 +98,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
 - [zangi-public-source-review-2026-11-04.md](zangi-public-source-review-2026-11-04.md) — Zangi public-source review 2026 11 04
+- [zangi-xapk-static-inspection-2026-11-04.md](zangi-xapk-static-inspection-2026-11-04.md) — Zangi XAPK static inspection 2026 11 04
 
 ## Software protection & disassembly
 

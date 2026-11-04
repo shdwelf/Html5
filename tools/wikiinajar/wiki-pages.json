@@ -3,11 +3,39 @@
   "rule": "newest 9 dated notes in docs/",
   "pages": [
     {
+      "page": "ace-huffman-two-queue-experiment-2026-11-04",
+      "source": "docs/ace-huffman-two-queue-experiment-2026-11-04.md",
+      "date": "2026-11-04",
+      "bytes": 7434,
+      "sha256": "ba1691adee83405453ccfac445ed759f8119e7c1a653d65fcf574e1c63861424"
+    },
+    {
       "page": "backlog-execution-round-56-2026-11-04",
       "source": "docs/backlog-execution-round-56-2026-11-04.md",
       "date": "2026-11-04",
       "bytes": 5070,
       "sha256": "e3f3fa483b21e9bf9982e0bda68531c4822ae4268e04b2f1388f4a5c75848584"
+    },
+    {
+      "page": "backlog-execution-round-57-2026-11-04",
+      "source": "docs/backlog-execution-round-57-2026-11-04.md",
+      "date": "2026-11-04",
+      "bytes": 3421,
+      "sha256": "990f4f3f1ea5f64f76969754cd100f2fc1db5fb4b12a1eee19a7b52072a4df0d"
+    },
+    {
+      "page": "backlog-execution-round-58-2026-11-04",
+      "source": "docs/backlog-execution-round-58-2026-11-04.md",
+      "date": "2026-11-04",
+      "bytes": 3183,
+      "sha256": "618e45db0930ac09ac5d30d39afb7e862d0f27384840ccfb0a228c3dac04a518"
+    },
+    {
+      "page": "backlog-execution-round-59-2026-11-04",
+      "source": "docs/backlog-execution-round-59-2026-11-04.md",
+      "date": "2026-11-04",
+      "bytes": 2392,
+      "sha256": "896bdb0724845b63821e05cf69efd3edc20d0a2df574a48e937771345114bfad"
     },
     {
       "page": "camera-control-and-handheld-serial-bridge-research-2026-11-04",
@@ -17,6 +45,13 @@
       "sha256": "a4351651f18766343c829acb136771a0457734453d44125a2ddd273345569b8f"
     },
     {
+      "page": "cellular-automata-cipher-triage-2026-11-04",
+      "source": "docs/cellular-automata-cipher-triage-2026-11-04.md",
+      "date": "2026-11-04",
+      "bytes": 5601,
+      "sha256": "56f811603a596c9e8ab6634479ea8230e42d015f8b9665430bec076e7e3ac2cb"
+    },
+    {
       "page": "conferenceparties-and-ces-first-timer-guide-2026-11-04",
       "source": "docs/conferenceparties-and-ces-first-timer-guide-2026-11-04.md",
       "date": "2026-11-04",
@@ -24,46 +59,11 @@
       "sha256": "25e821408e02e8ebcb2c7c6b2a1a1d9a302708f7d57c7931b2ec696ff358d78e"
     },
     {
-      "page": "github-tax-lien-and-efile-software-review-2026-11-04",
-      "source": "docs/github-tax-lien-and-efile-software-review-2026-11-04.md",
+      "page": "eff-secure-messaging-source-check-2026-11-04",
+      "source": "docs/eff-secure-messaging-source-check-2026-11-04.md",
       "date": "2026-11-04",
-      "bytes": 8526,
-      "sha256": "f2ed5a54fe01c1fe23e0b5a7e3d05c39eba44b6c2bf38c93099a91392b598559"
-    },
-    {
-      "page": "mls-metasearch-and-reso-access-review-2026-11-04",
-      "source": "docs/mls-metasearch-and-reso-access-review-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 11721,
-      "sha256": "bc4017efd592a2f4beb159f59387a6f8810c6db34c4da48085f91907ad53f0d6"
-    },
-    {
-      "page": "public-repository-privacy-audit-2026-11-04",
-      "source": "docs/public-repository-privacy-audit-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 3494,
-      "sha256": "29953c66f98c93408500303c08fce038b0f3c549824ee7d309f4a1583e2ebb21"
-    },
-    {
-      "page": "simple-notes-sync-review-and-html5-contract-2026-11-04",
-      "source": "docs/simple-notes-sync-review-and-html5-contract-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 10377,
-      "sha256": "31e1f6f8d518e8d028eec9c6728cbb1d3aa9c2e7189cd831bde3e492a4ef2939"
-    },
-    {
-      "page": "tax-lien-seminar-flyer-research-2026-11-04",
-      "source": "docs/tax-lien-seminar-flyer-research-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 8628,
-      "sha256": "91aefb9a303cea3f9dd6a5ca1e0da7364827f86063340d835904a30fbb3fa2cc"
-    },
-    {
-      "page": "cyberchef-mystery-recipes-follow-up-2026-11-03",
-      "source": "docs/cyberchef-mystery-recipes-follow-up-2026-11-03.md",
-      "date": "2026-11-03",
-      "bytes": 8229,
-      "sha256": "be7cf4f360c059ac62940b7ed1af93ff6d9b9ba66f15f25211591d6a6585aeca"
+      "bytes": 4333,
+      "sha256": "5ff795b8b64460df0a48c766d2232f0765e6869bd30ea886298c3a4073337e3e"
     }
   ]
 }
