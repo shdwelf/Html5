@@ -396,7 +396,7 @@ function stage2Iocs(stage2) {
   return JSON.stringify({
     schema: "changelly-drainer-second-stage-iocs/1",
     retrieved: true,
-    retrievedAs: "Google Drive CSV export of spreadsheet 15ZXXqVaJrRoojcBDbApNfHP_n6z5sLlFLNhdLNJd5PM (sheet 'API')",
+    retrievedAs: "Google Drive CSV export of a redacted spreadsheet (sheet \'API\')",
     executed: false,
     csv: stage2.csv,
     cells: { node: stage2.node, path: stage2.path },
@@ -490,16 +490,7 @@ function ioc(decoded, stage2 = null) {
     },
     coverDocument: {
       reproduced: false,
-      reason: "redistributing the social-engineering lure helps the attacker",
-      name: "Changelly Exploit.pdf",
-      googleDriveId: "1UrK4jHA9kNLogV0He2Uq0rgk2Q5bVy_d",
-      bytes: 490147,
-      textExtractable: true,
-      claimsUnpatchedRateBug: true,
-      claimedDevPassword: "admin",
-      claimedAffectedSendAssets: ["BTC", "LTC", "ETH", "XMR", "SOL"],
-      claimedMinimumUsd: 200,
-      linkedPayloadDoc: "docs.google.com/document/d/1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I",
+      details: "Private source-document identifiers, copies, and derived passages are omitted from the public record.",
     },
     detection: [
       "fetch() of docs.google.com/spreadsheets/*/gviz/tq from an exchange origin",
@@ -862,7 +853,7 @@ function preservationEvent(decoded, stage2 = null) {
     tool: TOOL,
     timestamp: NOW,
     outcome: "success",
-    source: "Google Drive 1UrK4jHA9kNLogV0He2Uq0rgk2Q5bVy_d (Changelly Exploit.pdf)",
+    source: "Private source details withheld from public copy",
     description:
       "Read the cover PDF's extracted text and the first-stage loader it "
       + "distributes, decoded the loader's base64 payload locator locally, and "

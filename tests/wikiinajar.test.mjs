@@ -32,6 +32,7 @@ const CTX = {
   contactHref: () => "#/contacts",
   mediaHref: (n) => (n === "ok.png" ? "data:image/png;base64,AA==" : null),
 };
+const PRIVATE_GOOGLE_ITEM_LINK = /https?:\/\/(?:docs|drive|sheets|forms)\.google\.com\/[^\s)<>"']*(?:\/d\/|\/folders\/|[?&]id=)[A-Za-z0-9_-]{20,}/i;
 
 test("app is a single offline file with the webxdc hook", () => {
   assert.match(html, /<script src="\.\/webxdc\.js"><\/script>/);
@@ -54,9 +55,9 @@ test("seed jar ships the documentation page and its neighbours", () => {
   assert.ok(pages["SideBar"].includes("[[Sample Files and Vault]]"), "sidebar links the sample/vault map");
   assert.ok(pages["Image Support Demo"].includes("[[djvu:djvu-smoke.djvu|"), "demo page embeds the smoke DjVu");
   const sampleMap = pages["Sample Files and Vault"];
-  assert.ok(sampleMap.includes("wiki-editions-supplement.zip"), "sample map identifies the nested TiddlyWiki XDC");
-  assert.ok(sampleMap.includes("more.wiki.in.a.jar.part-00"), "sample map identifies the shared vault payload");
-  assert.ok(sampleMap.includes("/vault/<sha256>"), "sample map distinguishes exact source files from previews");
+  assert.ok(sampleMap.includes("Private Drive links"), "sample map explains that private backup links are omitted");
+  assert.ok(sampleMap.includes("authorized local archive"), "sample map directs private recovery to an authorized local archive");
+  assert.doesNotMatch(sampleMap, PRIVATE_GOOGLE_ITEM_LINK);
 });
 
 test("renderer: headings, emphasis, lists, rules, pre", () => {
@@ -315,8 +316,14 @@ test("Java edition ships the same documentation as a .wiki page", () => {
   assert.ok(wiki.includes("no authentication"), "Java doc page keeps the safety warning");
   assert.ok(wiki.includes("[[Sample Files and Vault]]"), "Java doc page links the sample/vault map");
   const sampleMap = readFileSync(path.join(root, "tools", "wikiinajar", "public", "docs", "wiki", "Sample Files and Vault.wiki"), "utf8");
-  assert.ok(sampleMap.includes("wiki-editions-supplement.zip"), "classic wiki identifies the nested XDC file");
-  assert.ok(sampleMap.includes("more.wiki.in.a.jar.part-00"), "classic wiki identifies split JAR payload");
+  assert.ok(sampleMap.includes("Private Drive links"), "classic wiki omits private backup links and inventories");
+  assert.ok(sampleMap.includes("authorized local archive"), "classic wiki directs private recovery to an authorized local archive");
+  assert.doesNotMatch(sampleMap, PRIVATE_GOOGLE_ITEM_LINK);
+  const wikiSourceDir = path.join(root, "tools", "wikiinajar", "public", "docs", "wiki");
+  for (const name of readdirSync(wikiSourceDir).filter((file) => file.endsWith(".wiki"))) {
+    const source = readFileSync(path.join(wikiSourceDir, name), "utf8");
+    assert.doesNotMatch(source, PRIVATE_GOOGLE_ITEM_LINK, `${name} must not contain private Google item links`);
+  }
   const build = readFileSync(path.join(root, "tools", "wikiinajar", "build-image-support.sh"), "utf8");
   assert.ok(build.includes('public/docs/wiki/*.wiki'), "Java build ships every wiki page, including the documentation page");
 });
@@ -363,6 +370,8 @@ test("bundled documentation: one converted page per root/docs *.md", () => {
   assert.equal(staged.format, "wikiinajar-docs");
   assert.equal(staged.count, rootMd + docsMd, "one page per .md file");
   assert.equal(staged.pages.length, staged.count);
+  const bundledDocs = JSON.stringify(staged.pages);
+  assert.doesNotMatch(bundledDocs, PRIVATE_GOOGLE_ITEM_LINK, "private Google Drive item links must not be copied into bundled documentation");
   const titles = new Set(staged.pages.map((p) => p.title.toLowerCase()));
   assert.equal(titles.size, staged.pages.length, "page titles are unique");
   for (const page of staged.pages) {
@@ -380,6 +389,7 @@ test("bundled documentation: one converted page per root/docs *.md", () => {
   const inBundle = JSON.parse(new TextDecoder().decode(bundle["docs.json"]));
   assert.equal(inBundle.count, staged.count, "bundled docs.json matches staged docs.json");
   assert.ok(html.includes("./docs.json") && html.includes('#/docs'), "app loads docs.json and routes the Docs view");
+  assert.doesNotMatch(html, PRIVATE_GOOGLE_ITEM_LINK, "private Google Drive item links must not be embedded in the public app");
   assert.ok(seeds()["Documentation"], "fresh jars seed a Documentation guide page");
 });
 

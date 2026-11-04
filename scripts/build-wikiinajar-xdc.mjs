@@ -37,13 +37,8 @@ const manifest = `name = "Wiki in a Jar"
 source_code_url = "https://github.com/shdwelf/Html5"
 `;
 
-await rm(appDir, { recursive: true, force: true });
-await mkdir(path.join(appDir, "media"), { recursive: true });
-
-// Inline authoring source -> bundle index.html (unchanged: fully self-contained).
-await copyFile(path.join(root, "wikiinajar.html"), path.join(appDir, "index.html"));
-
 // Documentation corpus: every root *.md + docs/*.md, one wiki page each.
+// Complete the privacy and corpus checks before clearing or replacing any output.
 const { buildDocs } = await import("../tools/wikiinajar/md2wiki.mjs");
 async function mdFiles(dir, prefix) {
   const names = (await readdir(path.join(root, dir), { withFileTypes: true }))
@@ -54,11 +49,32 @@ async function mdFiles(dir, prefix) {
     markdown: await readFile(path.join(root, dir, name), "utf8"),
   })));
 }
+const appHtml = await readFile(path.join(root, "wikiinajar.html"), "utf8");
 const corpus = [...await mdFiles(".", ""), ...await mdFiles("docs", "docs/")];
+const privateGoogleLink = /https?:\/\/(?:docs|drive|sheets|forms)\.google\.com\/[^\s)<>"']*(?:\/d\/|\/folders\/|[?&]id=)[A-Za-z0-9_-]{20,}/i;
+const googleDriveIdContext = /(?:google\s+(?:drive|docs?|sheets?|forms?)|drive\s+(?:search|file|folder|item|copy|backup|link|document)|spreadsheet|(?:document|file|folder)\s*(?:id|identifier))/i;
+const privacyInputs = [...corpus, { source: "wikiinajar.html", markdown: appHtml }];
+const unsafeDocs = privacyInputs.filter(({ markdown }) => {
+  if (privateGoogleLink.test(markdown)) return true;
+  return markdown.split(/\r?\n/).some((line) => {
+    if (!googleDriveIdContext.test(line)) return false;
+    const tokens = line.match(/(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{28,44}(?![A-Za-z0-9_-])/g) ?? [];
+    return tokens.some((token) =>
+      !/^[0-9a-f]{28,44}$/i.test(token) && !/^[a-z0-9]+(?:-[a-z0-9]+)+$/i.test(token),
+    );
+  });
+}).map(({ source }) => source);
+if (unsafeDocs.length) {
+  throw new Error(`refusing to bundle possible private Google Drive identifiers/links from: ${unsafeDocs.join(", ")}`);
+}
 const docPages = buildDocs(corpus);
 if (new Set(docPages.map((p) => p.title.toLowerCase())).size !== docPages.length) {
   throw new Error("documentation page titles are not unique");
 }
+
+await rm(appDir, { recursive: true, force: true });
+await mkdir(path.join(appDir, "media"), { recursive: true });
+await writeFile(path.join(appDir, "index.html"), appHtml);
 await writeFile(path.join(appDir, "docs.json"), JSON.stringify({
   format: "wikiinajar-docs",
   version: 1,

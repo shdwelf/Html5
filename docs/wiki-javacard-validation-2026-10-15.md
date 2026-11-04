@@ -5,17 +5,14 @@ and [JavaCard protocol contract](../tools/wiki-workspace/javacard/README.md).
 **It is not a CAP build, vendor-SDK certification, physical-card test or secure
 filesystem implementation.**
 
-## Backup first
+## Backup and privacy boundary
 
-Before editing, commit `7e5a1c35cb01971879373b48ca72950d0ee21d76` was confirmed as
-both the local and open PR #116 head. The existing
-[Drive backup](https://drive.google.com/drive/folders/1yZhxIeQDNTgO5UXdhttAsiID2On_Eqgr)
-already covered it. The continuation Git bundle, overlay and TSV were downloaded
-again; their SHA-256 values, advertised Git ref/prerequisite and all 18 changed
-paths matched the committed source. The large objects remained present with the
-recorded sizes/MD5 values; they were not downloaded or uploaded again. A fresh
-`CHECKPOINT-7e5a1c3-20261015.json` was saved before this continuation. No merge or
-sharing-permission change was made.
+Private backup links, item identifiers, inventory details, checksums, restoration
+receipts, and source-derived passages are intentionally omitted from this public
+report. It is not backup evidence and makes no claim about the integrity or
+availability of an external copy. Use the owner's authorized local export and
+private verification records for any recovery. No remote Drive operation or
+sharing-permission change was performed as part of this validation report.
 
 ## Dependency decision and provenance
 

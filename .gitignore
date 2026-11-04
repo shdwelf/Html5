@@ -12,10 +12,16 @@ build/
 .arena-relay/run*
 
 # Drive sync payload: 33-96 MB snapshot tarballs fetched by a runner.
-# Only the manifests, diff reports and recovered files are committed.
+# Only sanitized, non-identifying reports may be committed.
 .arena-drive/payload/
 google_drive/
 extracted_sg7/
+
+# User-specific Drive request lists, overrides, and fetch logs stay local.
+/.arena-drive/fetch.log
+/.arena-drive/requests.txt
+/.arena-drive/url-overrides.json
+/research/kgk-arj-listing-extract.txt
 
 # RTL simulation outputs (regenerable: python3 tools/verify_rtl.py)
 sim/*.cc

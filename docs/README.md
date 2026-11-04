@@ -77,6 +77,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-51-2026-10-25.md](backlog-execution-round-51-2026-10-25.md) — backlog execution round 51 2026 10 25 (KeyViewer · PR #159)
 - [backlog-execution-round-54-2026-10-25.md](backlog-execution-round-54-2026-10-25.md) — backlog execution round 54 2026 10 25 (subsurface fleet proof · S4 closed · Georgia repair · renumbered from 52 after PR #162 claimed the slot)
 - [backlog-execution-round-53-2026-10-25.md](backlog-execution-round-53-2026-10-25.md) — backlog execution round 53 2026 10 25 (Drive recipe investigation · spy-manual challenge cookbook · Playfair decrypt fix)
+- [backlog-execution-round-56-2026-11-04.md](backlog-execution-round-56-2026-11-04.md) — backlog execution round 56 2026 11 04 (MLS metasearch · tax-lien/e-file software review · remaining gates)
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -85,7 +86,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
 - [john-ghidra-diablo-research.md](john-ghidra-diablo-research.md) — john ghidra diablo research
 - [mime-types-deep-dive-2026-10-21.md](mime-types-deep-dive-2026-10-21.md) — mime types deep dive 2026 10 21
+- [mls-metasearch-and-reso-access-review-2026-11-04.md](mls-metasearch-and-reso-access-review-2026-11-04.md) — real-estate MLS metasearch and authorized RESO access review
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
+- [public-repository-privacy-audit-2026-11-04.md](public-repository-privacy-audit-2026-11-04.md) — public-safe Drive-reference and Wiki-bundle privacy audit
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
@@ -202,6 +205,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [geomate-sg7-firmware-analysis.md](geomate-sg7-firmware-analysis.md) — geomate sg7 firmware analysis
 - [geomate-viewermade-source-check-2026-10-07.md](geomate-viewermade-source-check-2026-10-07.md) — geomate viewermade source check 2026 10 07
 - [github-jdk-runtime-research-2026-10-23.md](github-jdk-runtime-research-2026-10-23.md) — github jdk runtime research 2026 10 23
+- [github-tax-lien-and-efile-software-review-2026-11-04.md](github-tax-lien-and-efile-software-review-2026-11-04.md) — GitHub review of tax-lien and e-file software
 - [goldkey-parity-gina-and-units.md](goldkey-parity-gina-and-units.md) — goldkey parity gina and units
 - [greeran-book-ideas-backlog.md](greeran-book-ideas-backlog.md) — greeran book ideas backlog
 - [greeran-commencement-research-2026-10-16.md](greeran-commencement-research-2026-10-16.md) — greeran commencement research 2026 10 16

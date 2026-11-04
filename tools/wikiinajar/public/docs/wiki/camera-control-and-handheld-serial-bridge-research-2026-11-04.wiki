@@ -1,0 +1,95 @@
+== Camera-control and handheld serial-bridge research ==
+
+Source: docs/camera-control-and-handheld-serial-bridge-research-2026-11-04.md — synced 2026-11-04 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Camera-control and handheld serial-bridge research =
+
+**Reviewed:** 2026-11-04
+**Status:** research and architecture notes only. No camera wiring, pinout, protocol implementation, or handheld hardware design has been approved or built. The exact camera model, connector, firmware, and command protocol are still unknown.
+
+== Short answer ==
+
+**Panavision DXL2 is a plausible remote-shutter-control target, but custom serial control is not ready to wire.** Panavision documents its RCP camera-control path over Wi-Fi, Ethernet, or serial; the DXL2 operation guide exposes shutter as integration time or shutter angle and provides an “Exposure/Shutter” menu. It also describes the free DXL Control app as a remote-control option. This supports using the official app or an approved RCP device for camera control, including shutter settings, but the sources reviewed do **not** provide a DXL2 serial pinout, electrical standard/levels, or a public command map that proves which custom command changes shutter.
+
+A Raspberry Pi or Banana Pi can be a handheld Linux controller, but its GPIO UART is logic-level serial, not a camera-ready RS-232/RS-423 port. An RJ45 is only a connector shape: it does not tell us whether the port carries Ethernet, RS-232, RS-423, or a vendor-specific serial pinout. Do not connect GPIO or an Ethernet jack to an unknown camera port.
+
+== DXL2: what is verified ==
+
+| Question | Verified result | Limit |
+| --- | --- | --- |
+| Does DXL2 expose remote control? | Panavision says DXL2 uses RCP and that direct control is available through Wi-Fi, Ethernet, or serial. Its comms module provides Ethernet, serial, timecode, and genlock connections. | The product page does not identify the serial electrical standard, connector pinout, or a custom command specification. |
+| Is shutter an available setting? | The operation guide's home-page table labels shutter as **integration time or shutter angle** and points to “Exposure/Shutter.” | “Shutter speed” may be presented in exposure time or angle; a value/range depends on camera mode and setup. |
+| Can the camera be remotely controlled? | Panavision lists DXL Control, a free iOS/Android remote-control app, and says RCP apps/devices can directly control DXL2. The guide lists RCP as one way to start recording. | This is not evidence that an arbitrary third-party RCP library is compatible or that a particular serial cable will work. No custom command was tested. |
+| Is a camera trigger port a serial port? | No. The guide separately lists record start via RCP, GPI on the 7-pin AUX port, or 3-pin Fischer R/S through the front 24 V ports. | A record trigger should not be mistaken for a serial control bus or a shutter-control interface. Connector wiring/levels must come from the model-specific guide. |
+
+**Conclusion on shutter control:** DXL2 has a shutter/exposure setting and an official remote-control path. Use DXL Control or obtain Panavision-approved RCP documentation/device for remote adjustment. Do not claim that a hand-built RJ45-to-serial lead or an unverified command can change shutter until the actual camera, connector, and protocol are confirmed.
+
+== Other model-specific examples — not interchangeable ==
+
+| Camera/control family | Publicly found interface fact | What must not be inferred |
+| --- | --- | --- |
+| **RED V-RAPTOR XL** | Its operation guide describes a model-specific 4-pin RS-232 CTRL port. RED's RCP SDK page identifies its own SDK/firmware support range. | This connector/pinout and the RED SDK do not establish DXL2 support or any other RED/Panavision camera's wiring. |
+| **Panavision Genesis** | A public Genesis manual mirror describes a 4-pin REMOTE RS-232 port for the FTZAC control. Panavision's official manual landing page lists the Genesis manual. | An FTZAC/Genesis cable is not a DXL2 serial cable. Verify against the exact manual revision and body. |
+| **Panaflex Millennium** | The public manual describes auxiliary contacts/pulses and shutter-related controls; Preston FI+Z documents a special Panavision Millennium cable for camera-speed/shutter control. | Auxiliary shutter pulses are not a general UART or generic RS-232 input. A special FIZ cable is model-specific. |
+| **Panasonic AW-RP120** | Its interface material belongs to a different Panasonic camera-control system. | It is not evidence for Panavision ports or a universal camera protocol. |
+
+The RED RCP SDK is a separate manufacturer's control interface. Its existence is not proof of DXL2 compatibility. A RED model's pinout must never be carried over to a Panavision camera.
+
+== Serial standards and a uClinux bridge ==
+
+=== RJ45 does not identify the signal ===
+
+Ethernet, serial-over-RJ45, and vendor-specific control connections can all use similar-looking connectors. Identify the **port label, model-specific manual, pinout, and electrical levels** before connecting anything. In particular:
+
+- A normal Ethernet port is not an RS-232 port; do not connect an Ethernet switch or SBC Ethernet PHY to a serial adapter.
+- Some serial devices use RJ45 connectors, but their pin assignment is vendor-specific. A passive RJ45-to-DB9 cable does not convert electrical levels.
+- RS-232, RS-423, RS-422, and 3.3 V TTL UART are different electrical interfaces. The connector alone cannot distinguish them.
+
+=== RS-232, RS-423, and SBC GPIO ===
+
+RS-423 defines electrical driver/receiver properties but **does not define a universal connector or pinout**. It is a single-ended interface with its own voltage thresholds. It is not the same as 3.3 V GPIO UART, and a generic RS-232 dongle is not automatically a verified RS-423 adapter. Analog Devices' ADM5170 is one example of a transceiver explicitly selectable for RS-232E or RS-423A; it is a component reference, not a camera adapter recommendation.
+
+Raspberry Pi and Banana Pi UART/GPIO documentation uses 3.3 V logic-level serial on the board headers. The existing Lantronix xPort Pro design in this repository likewise has a 3.3 V CMOS UART and requires a transceiver for RS-232. **Never put RS-232/RS-423 line voltages on SBC GPIO.** Use a correctly specified USB serial adapter or a level/interface transceiver selected for the actual camera standard, with correct TX/RX direction, signal ground, connector, and any required isolation/protection.
+
+=== What µClinux contributes ===
+
+The repository's [`Lantronix Lab`](../lantronix-lab.html) and [µClinux deep dive](lantronix-uclinux-deep-dive-2026-10-08.md) document the xPort Pro and its `s2e` serial-to-Ethernet application. The module is a device-server component: its RJ45 is Ethernet and its external serial header is 3.3 V CMOS. A line transceiver is needed to reach RS-232; a camera-specific protocol is still needed above that byte bridge. `s2e` does not implement Panavision RCP, RED RCP, shutter logic, or a model-specific cable.
+
+For DXL2 specifically, using the documented Wi-Fi/Ethernet RCP path is a better first investigation than putting an old µClinux xPort module in the handheld. A serial bridge is relevant only after Panavision confirms the serial port's levels and pinout.
+
+== Handheld controller: safe high-level architecture ==
+
+This is a block-level concept, not a bill of materials or wiring diagram:
+
+```text
+[screen + encoder/buttons]
+          |
+[Pi/Banana Pi running supported Linux]
+          |                         |
+  Wi-Fi/Ethernet                 USB/UART
+  (official RCP only)            (only after the camera's pinout,
+                                  levels and protocol are verified)
+          \                         /
+                 [camera-specific adapter]
+                          |
+                   [camera body]
+```
+
+- Start with the camera manufacturer's official app/control path or a vendor-approved RCP device.
+- If a serial connection is confirmed, use a detachable, model-specific interface adapter rather than wiring an unprotected SBC header directly to the camera.
+- Use a battery/regulated supply for the handheld electronics. Do not assume a camera's power or trigger port can power the SBC or tolerate a logic-level output.
+- Keep the UI's shutter units/range tied to the selected camera mode; display the unit explicitly (integration time or degrees) and reject out-of-range values.
+- Add a physical disconnect and a test mode that can display port, protocol, and connection status without sending shutter/record commands.
+
+== Required information before a pinout, schematic, or code ==
+
+Please provide the exact camera make/model and firmware; a photo of the connector labels (not just the connector shape); the relevant manual pages; and whether the goal is shutter angle, exposure time, record trigger, or all three. For serial, obtain the vendor's connector pinout, electrical standard and levels, baud/framing, protocol/access authorization, and any cable/accessory requirements. Until those are known, no wiring is safe to specify.
+
+== Sources ==
+
+- [Panavision DXL2 product page](https://www.panavision.com/camera-and-optics/dxl2) and [official DXL2 Operation Guide PDF](https://www.panavision.com/docs/default-source/downloads/panavision_dxl2_manual_v1_0.pdf?sfvrsn=f883da2d_7).
+- [RED RCP SDK](https://www.reddigitalcinema.com/download/rcp-sdk) and [V-RAPTOR XL CTRL port page](https://docs.red.com/955-0203/955-0203_V1.3+Rev-B+RED+PS,+V-RAPTOR+XL+8K+VV+Operation+Guide+HTML/Content/A_MechDrawings/XL_Ports/XL_CTRL.htm) (model-specific, not DXL2).
+- [Official Panavision Genesis manual landing page](https://www.panavision.com/doc/genesis%C2%AE-user-manual) and [public Genesis manual mirror](https://www.cinematography.net/Manuals/GenesisUsersManual.pdf); [Panaflex Millennium manual mirror](https://www.afcinema.com/IMG/pdf/5/4/1/panavision_millennium_manual.pdf); [Preston FI+Z manual](https://www.cinematography.net/Manuals/FIZ-HU3rev231.pdf).
+- [Analog Devices ADM5170 data sheet](https://www.analog.com/media/en/technical-documentation/data-sheets/ADM5170.pdf) for an explicit RS-232/RS-423 driver example; [Banana Pi BPI-R3 serial documentation](https://wiki.banana-pi.org/Getting_Started_with_BPI-R3) for 3.3 V TTL debug UART; [Raspberry Pi UART reference](https://www.abelectronics.co.uk/kb/article/1035/serial-port-setup-in-raspberry-pi-os).
+- Local hardware reference: [`hardware/lantronix-wallplug/`](../hardware/lantronix-wallplug/) and [`docs/lantronix-uclinux-deep-dive-2026-10-08.md`](lantronix-uclinux-deep-dive-2026-10-08.md).
