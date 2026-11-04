@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#091511" />
-  <meta name="description" content="A local-first, offline contact index for historical directories." />
+  <meta name="description" content="A local-first, offline contact index for historical directories and sourced event suppliers." />
   <title>Local Directory Desk · SITE-K</title>
   <link rel="stylesheet" href="./css/local-contacts.css" />
 </head>
@@ -20,7 +20,7 @@
       <div class="hero-copy">
         <p class="eyebrow">HISTORICAL CONTACT INDEX / OFFLINE FIRST</p>
         <h1 id="pageTitle">Directories, <em>at hand.</em></h1>
-        <p class="hero-text">Import a directory you are authorized to use, then search its people, businesses, places, editions, and page references on this device. No contact feed or map service is called by this app.</p>
+        <p class="hero-text">Import a directory or an event-supplier file you are authorized to use, then search people, businesses, places, editions, booths, and page references on this device. No contact feed, organizer API, or map service is called by this app.</p>
       </div>
       <div class="hero-stats" aria-live="polite">
         <div><strong id="recordCount">0</strong><span>LOCAL RECORDS</span></div>
@@ -31,7 +31,10 @@
 
     <div class="toolbar-row">
       <p class="privacy-note"><strong>Local by design:</strong> records stay in this site's browser storage and are not encrypted or synced. Export a backup.</p>
-      <a class="quiet-link" href="./docs/historical-contact-directory-source-review-2026-11-03.md">SOURCE &amp; UPDATE NOTES ↗</a>
+      <div class="toolbar-links">
+        <a class="quiet-link" href="./docs/historical-contact-directory-source-review-2026-11-03.md">DIRECTORY SOURCE NOTES ↗</a>
+        <a class="quiet-link" href="./docs/convention-suppliers-transit-2017-2020.md">EVENT SUPPLIER &amp; TRANSIT RESEARCH ↗</a>
+      </div>
     </div>
 
     <section class="workspace" aria-label="Contacts workspace">
@@ -40,11 +43,13 @@
           <div><p class="eyebrow">01 / FIND</p><h2>Directory search</h2></div>
           <span class="panel-index">INDEX</span>
         </div>
-        <label class="field-label" for="searchInput">Search name, organization, address, phone, source, or note</label>
-        <input class="search-input" id="searchInput" type="search" placeholder="Try a name, city, or page…" autocomplete="off" />
+        <label class="field-label" for="searchInput">Search name, company, event, booth, category, address, source, or note</label>
+        <input class="search-input" id="searchInput" type="search" placeholder="Try a supplier, event, booth, city, or page…" autocomplete="off" />
         <div class="filter-row">
           <label><span>EDITION YEAR</span><select id="yearFilter"><option value="">All years</option></select></label>
-          <label><span>DIRECTORY</span><select id="sourceFilter"><option value="">All sources</option></select></label>
+          <label><span>DIRECTORY / SOURCE</span><select id="sourceFilter"><option value="">All sources</option></select></label>
+          <label><span>RECORD TYPE</span><select id="kindFilter"><option value="">All record types</option></select></label>
+          <label><span>EVENT / SHOW</span><select id="eventFilter"><option value="">All events</option></select></label>
         </div>
         <div class="results-heading"><span id="searchCount" aria-live="polite">0 matches</span><span>UP TO 100 SHOWN</span></div>
         <div class="results-list" id="contactResults" role="list" aria-label="Search results">
@@ -74,6 +79,14 @@
             <label class="field"><span>EMAIL <small>verbatim transcription</small></span><input name="email" type="text" inputmode="email" maxlength="240" /></label>
           </div>
 
+          <div class="section-divider"><span>EVENT / SUPPLIER DETAILS</span><span>OPTIONAL · KEEP BADGE DATA LOCAL</span></div>
+          <div class="form-grid">
+            <label class="field span-2"><span>EVENT / SHOW NAME</span><input name="eventName" maxlength="240" placeholder="e.g. MD&amp;M West" /></label>
+            <label class="field"><span>BOOTH / STAND</span><input name="booth" maxlength="80" placeholder="Preserve letters and leading zeroes" /></label>
+            <label class="field"><span>PRODUCT / SERVICE CATEGORY</span><input name="productCategory" maxlength="240" /></label>
+            <label class="field span-2"><span>BADGE SCAN DATE / TIME <small>if present in an authorized export</small></span><input name="scanDate" maxlength="120" placeholder="Preserved as supplied; not verified" /></label>
+          </div>
+
           <div class="section-divider"><span>DIRECTORY PROVENANCE</span><span>KEEP THE EDITION WITH THE ENTRY</span></div>
           <div class="form-grid">
             <label class="field span-2"><span>SOURCE / DIRECTORY TITLE</span><input name="sourceTitle" maxlength="240" placeholder="e.g. City telephone directory" /></label>
@@ -98,15 +111,15 @@
     <section class="lower-grid" aria-label="Import and export tools">
       <article class="panel import-panel">
         <div class="panel-heading">
-          <div><p class="eyebrow">03 / BRING IN</p><h2>Import a directory</h2></div>
+          <div><p class="eyebrow">03 / BRING IN</p><h2>Import a directory or lead file</h2></div>
           <span class="panel-index">CSV / JSON</span>
         </div>
-        <p class="panel-intro">CSV and this app's JSON backup format are read locally in your browser. Scanned PDFs need OCR/export to a table first; direct PDF import is not included yet. ZIP/postal codes stay as text; the app does not confirm deliverability.</p>
+        <p class="panel-intro">CSV and this app's JSON backup format are read locally in your browser. You can import an event organizer's badge-scan export if you are authorized to use it. Public exhibitor lists are not proof of scans, and no organizer API is connected. Scanned PDFs need OCR/export to a table first; direct PDF import is not included yet.</p>
         <div class="import-grid">
           <label class="field span-2"><span>FILE <small>CSV or JSON · max 50 MB</small></span><input id="importFile" type="file" accept=".csv,.json,text/csv,application/json" /></label>
-          <label class="field span-2"><span>SOURCE / DIRECTORY TITLE <b>*</b></span><input id="importSourceTitle" maxlength="240" placeholder="Name the directory or saved collection" /></label>
+          <label class="field span-2"><span>SOURCE / EXPORT TITLE <b>*</b></span><input id="importSourceTitle" maxlength="240" placeholder="Name the directory, event, or saved collection" /></label>
           <label class="field"><span>EDITION</span><input id="importSourceEdition" maxlength="120" /></label>
-          <label class="field"><span>YEAR</span><input id="importSourceYear" maxlength="32" placeholder="e.g. 1958" /></label>
+          <label class="field"><span>YEAR / SHOW EDITION</span><input id="importSourceYear" maxlength="32" placeholder="e.g. 1958 or 2020" /></label>
           <label class="field span-2"><span>SOURCE URL OR CATALOG ID</span><input id="importSourceUrl" maxlength="500" placeholder="Optional" /></label>
           <label class="field span-2"><span>RIGHTS / LICENSE <b>*</b></span><input id="importSourceRights" maxlength="500" placeholder="Required for your own provenance notes" /></label>
         </div>

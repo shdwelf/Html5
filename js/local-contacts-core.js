@@ -2,6 +2,10 @@ export const CONTACT_FIELDS = Object.freeze([
   "name",
   "kind",
   "organization",
+  "eventName",
+  "booth",
+  "productCategory",
+  "scanDate",
   "address1",
   "address2",
   "city",
@@ -25,6 +29,10 @@ export const CSV_HEADERS = Object.freeze([
   "name",
   "kind",
   "organization",
+  "event_name",
+  "booth",
+  "product_category",
+  "scan_date",
   "address_line_1",
   "address_line_2",
   "city",
@@ -54,6 +62,10 @@ addAliases("firstName", ["first name", "first", "given name", "forename"]);
 addAliases("lastName", ["last name", "last", "surname", "family name"]);
 addAliases("kind", ["kind", "type", "record type", "category"]);
 addAliases("organization", ["organization", "organisation", "company", "business", "institution", "employer", "firm"]);
+addAliases("eventName", ["event", "event name", "event title", "show", "show name", "conference", "conference name", "trade show"]);
+addAliases("booth", ["booth", "booth number", "booth no", "stand", "stand number", "exhibit booth"]);
+addAliases("productCategory", ["product category", "product service category", "product/service category", "supplier category", "service category", "product or service", "products and services", "industry", "solution category"]);
+addAliases("scanDate", ["scan date", "scan date time", "badge scan date", "badge scan time", "badge scanned at", "date scanned", "scanned date", "scanned at", "scan timestamp"]);
 addAliases("address1", ["address", "street", "street address", "address 1", "address line 1", "address1", "street 1", "street1"]);
 addAliases("address2", ["address 2", "address line 2", "address2", "street 2", "street2", "suite", "unit", "apartment"]);
 addAliases("city", ["city", "town", "locality", "place"]);
@@ -73,9 +85,9 @@ addAliases("longitude", ["longitude", "lon", "lng"]);
 addAliases("notes", ["notes", "note", "comments", "description", "memo"]);
 
 const SEARCH_FIELDS = Object.freeze([
-  "name", "kind", "organization", "address1", "address2", "city", "region",
-  "postalCode", "countryCode", "phone", "email", "sourceTitle", "sourceEdition",
-  "sourceYear", "page", "notes",
+  "name", "kind", "organization", "eventName", "booth", "productCategory", "scanDate",
+  "address1", "address2", "city", "region", "postalCode", "countryCode", "phone", "email",
+  "sourceTitle", "sourceEdition", "sourceYear", "page", "notes",
 ]);
 
 const HEADER_TO_CSV = Object.freeze(Object.fromEntries(
@@ -123,7 +135,7 @@ function fieldMapFromObject(input = {}) {
 export function normalizeContact(input = {}, defaults = {}) {
   const mapped = fieldMapFromObject(input);
   if (!mapped.name?.trim()) {
-    mapped.name = [mapped.firstName, mapped.lastName].filter(Boolean).join(" ");
+    mapped.name = [mapped.firstName, mapped.lastName].filter(Boolean).join(" ") || mapped.organization || "";
   }
   const defaultFields = fieldMapFromObject(defaults);
   const contact = {};
@@ -237,12 +249,14 @@ export function parseDirectoryText(text, { format = "csv", defaults = {} } = {})
   return { headers: parsed.headers, contacts, issues, totalRows: parsed.rows.length };
 }
 
-export function searchContacts(contacts, query = "", { year = "", source = "", limit = Infinity } = {}) {
+export function searchContacts(contacts, query = "", { year = "", source = "", kind = "", event = "", limit = Infinity } = {}) {
   const terms = normalizeText(query).split(" ").filter(Boolean);
   const filtered = [];
   for (const contact of contacts) {
     if (year && contact.sourceYear !== year) continue;
     if (source && sourceKey(contact) !== source) continue;
+    if (kind && contact.kind !== kind) continue;
+    if (event && String(contact.eventName ?? "").trim() !== event) continue;
     if (terms.length) {
       const haystack = normalizeText(SEARCH_FIELDS.map((field) => contact[field] || "").join(" "));
       if (!terms.every((term) => haystack.includes(term))) continue;

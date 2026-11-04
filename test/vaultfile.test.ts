@@ -44,7 +44,9 @@ describe("vault file format", () => {
 
 describe("standalone decryptor page", () => {
   it("is fully self-contained (no external URLs)", () => {
-    const html = standaloneDecryptorHtml(encryptVaultFile([{ a: 1 }], "k"));
+    // Keep the encrypted payload out of this URL scan: arbitrary base64 ciphertext
+    // can contain `//`, which is not an external URL.
+    const html = standaloneDecryptorHtml();
     const external = html.match(/(https?:)?\/\/[a-z0-9.-]+/gi) || [];
     expect(external).toEqual([]);
     expect(html).not.toMatch(/<script[^>]+src=/i);

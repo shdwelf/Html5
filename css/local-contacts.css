@@ -66,6 +66,7 @@ h1 em { color: var(--gold); font-style: normal; }
 .toolbar-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 0 1.25rem; }
 .privacy-note { margin: 0; color: #8fa797; font-size: .75rem; line-height: 1.5; }
 .privacy-note strong { color: var(--mint); font-weight: 650; }
+.toolbar-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem 1rem; }
 .quiet-link { flex: none; color: var(--gold); font: .59rem/1.4 var(--mono); letter-spacing: .08em; text-decoration: none; }
 .quiet-link:hover { text-decoration: underline; }
 
