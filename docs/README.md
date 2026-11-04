@@ -78,10 +78,12 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-54-2026-10-25.md](backlog-execution-round-54-2026-10-25.md) — backlog execution round 54 2026 10 25 (subsurface fleet proof · S4 closed · Georgia repair · renumbered from 52 after PR #162 claimed the slot)
 - [backlog-execution-round-53-2026-10-25.md](backlog-execution-round-53-2026-10-25.md) — backlog execution round 53 2026 10 25 (Drive recipe investigation · spy-manual challenge cookbook · Playfair decrypt fix)
 - [backlog-execution-round-56-2026-11-04.md](backlog-execution-round-56-2026-11-04.md) — backlog execution round 56 2026 11 04 (MLS metasearch · tax-lien/e-file software review · remaining gates)
+- [backlog-execution-round-57-2026-11-04.md](backlog-execution-round-57-2026-11-04.md) — backlog execution round 57 2026 11 04 (Zangi sources · EFF review · ACE Huffman experiment)
 
 ## Research deep dives (the “ghirdra” line)
 
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
+- [eff-secure-messaging-source-check-2026-11-04.md](eff-secure-messaging-source-check-2026-11-04.md) — EFF secure-messaging source check 2026 11 04
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
 - [john-ghidra-diablo-research.md](john-ghidra-diablo-research.md) — john ghidra diablo research
@@ -92,9 +94,11 @@ IANA media types (RFC 6838 / BCP 13).
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
+- [zangi-public-source-review-2026-11-04.md](zangi-public-source-review-2026-11-04.md) — Zangi public-source review 2026 11 04
 
 ## Software protection & disassembly
 
+- [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes
 - [arj-lha-ace-password-notes-2026-10-21.md](arj-lha-ace-password-notes-2026-10-21.md) — arj lha ace password notes 2026 10 21
 - [dos-game-disassembly.md](dos-game-disassembly.md) — dos game disassembly

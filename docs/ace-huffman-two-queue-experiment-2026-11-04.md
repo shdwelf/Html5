@@ -1,0 +1,136 @@
+# ACE Huffman two-queue experiment — 2026-11-04
+
+## Executive result
+
+A test-only replacement for the Huffman length builder in the independent
+[`seb3773/ace-c`](https://github.com/seb3773/ace-c) implementation is preserved
+as [`patches/ace-c-huffman-two-queue.patch`](../patches/ace-c-huffman-two-queue.patch).
+It replaces repeated ordered-array insertion with a stable frequency merge sort
+and the standard two-queue Huffman merge. The patch builds, passes the project
+core tests, round-trips 14,150 synthetic Huffman distributions, and successfully
+creates/tests/extracts five generated ACE archives. It is **not** a change to this
+repository’s ACE parser or a claim of canonical WinACE compatibility.
+
+## Scope and provenance
+
+- Patch base: `seb3773/ace-c` commit
+  [`6cc986fbecf65137bc4657039fba1eb227e2e446`](https://github.com/seb3773/ace-c/tree/6cc986fbecf65137bc4657039fba1eb227e2e446).
+  That repository describes itself as an independent ACE implementation. Its
+  README’s WinACE interoperability statements were not independently verified
+  here.
+- The upstream repository’s BSD-style terms are retained in
+  [`patches/ACE-C-LICENSE.txt`](../patches/ACE-C-LICENSE.txt).
+- The ACE 1.2 format document calls compression type 1 `ACE_LZ77_1`, documents
+  quality levels 0–4, and describes comments as LZP+Huffman:
+  [ACE format v1.2](https://darbinding.sourceforge.net/specs/ACE.txt). This
+  document is useful format context, not a complete encoder specification.
+- The experiment changes only `ace-c/src/huffman.c` when applied. It does not
+  modify files in this repository’s application code.
+
+## Algorithm change
+
+In the unmodified `huff_lengths()` implementation, leaf frequencies are sorted
+with a recursive quicksort. Each Huffman merge then scans an active-node array
+and shifts entries to insert the combined node. That repeated insertion is
+quadratic in the number of symbols in the worst case and performs linear array
+movement across the merge sequence.
+
+The patch instead:
+
+1. stable-sorts `(frequency, symbol)` pairs in ascending order using a
+   bottom-up merge sort (`O(n log n)`);
+2. merges the sorted leaf queue and the already-sorted internal-node queue by
+   popping the least item from either queue, appending each new parent in
+   nondecreasing order (`O(n)` after sorting); and
+3. assigns leaf depths with an explicit stack traversal.
+
+Leaves win equal-weight comparisons. This is deterministic, but it is not
+identical to the old implementation’s tie ordering. Some valid Huffman trees,
+bit lengths, and compressed bytes therefore differ for tie-heavy inputs. The
+format and decoder are unchanged; differences must still be checked against
+independent readers before using this as a compatibility change.
+
+## Reproducible correctness checks
+
+The regression script clones the supplied local source checkout into a temporary
+directory, checks out no new branch, applies the patch only to that temporary
+copy, builds it, and removes the temporary files at exit. Run it with:
+
+```sh
+git clone https://github.com/seb3773/ace-c /tmp/ace-c
+git -C /tmp/ace-c checkout 6cc986fbecf65137bc4657039fba1eb227e2e446
+ACE_C_DIR=/tmp/ace-c ./scripts/test-ace-c-huffman-patch.sh
+```
+
+The script requires `git`, `make`, a C compiler, and Python 3.
+
+Results on the checked-out source:
+
+- `make linux` and `build/linux/test_core`: **PASS** (`test_core: ok`).
+- [`patches/ace-c-huffman-roundtrip.c`](../patches/ace-c-huffman-roundtrip.c):
+  **14,150 cases, zero failures**. For each generated vector, it builds a tree,
+  serializes the tree and active symbols, reads them back, and checks every
+  active symbol. Vectors cover sparse/tied, low-cardinality, periodic, skewed,
+  and deterministic pseudorandom frequencies for alphabet sizes 2–284.
+- ACE archive integration checks: `ace t`, extraction, and byte-for-byte input
+  comparison all passed for the five cases below. Archive sizes are from the
+  reproducible script in this repository.
+
+| Mode | Synthetic input | Input bytes | ACE bytes | Result |
+| --- | --- | ---: | ---: | --- |
+| `-z` | repeated text | 135,168 | 332 | integrity test and extraction match |
+| `-z` | period-8 bytes | 262,144 | 395 | integrity test and extraction match |
+| `-z` | deterministic random bytes | 65,536 | 65,634 | integrity test and extraction match |
+| `-2` | repeated text | 135,168 | 332 | integrity test and extraction match |
+| `-2` | deterministic random bytes | 65,536 | 65,634 | integrity test and extraction match |
+
+An additional varying-offset periodic fixture was tested separately with `-z`:
+baseline and patched archives both tested and extracted correctly and were the
+same size (3,795 bytes), but the archive bytes differed due to Huffman tie
+choices. The same input under `-2` produced a CRC mismatch in both baseline and
+patched builds. That case is excluded from passing results and remains an
+uninvestigated baseline failure, not a patch regression claim.
+
+## Microbenchmark
+
+[`patches/ace-c-huffman-benchmark.c`](../patches/ace-c-huffman-benchmark.c)
+and [`scripts/benchmark-ace-c-huffman-patch.sh`](../scripts/benchmark-ace-c-huffman-patch.sh)
+compare the unmodified source with the patch using 2,500 calls to
+`ace_huff_from_freq()` on a synthetic 284-symbol distribution, five runs each.
+Two five-run batches in this sandbox produced medians of **0.069645 s baseline
+/ 0.042430 s patched** and **0.084143 s baseline / 0.051449 s patched**—about
+**1.64×** in both batches for this builder-only workload. The spread in absolute
+times is a reminder that sandbox scheduling affects the measurement. The
+benchmark uses `-O2`; results are machine/compiler-specific, are not an
+end-to-end compression benchmark, and the script enforces no performance
+threshold.
+
+```sh
+ACE_C_DIR=/tmp/ace-c ./scripts/benchmark-ace-c-huffman-patch.sh
+```
+
+## Archive-format inspection and executable-disassembly limit
+
+The `ace d` command was used on generated archives to inspect the ACE `MAIN` and
+`FILE` headers, packed/original sizes, and CRC fields. This is **archive
+format/header inspection**, not executable disassembly.
+
+No disassembly of an original WinACE encoder routine was completed. The
+repository’s existing DOS disassembler depends on Python Capstone, which is not
+installed in this environment; the bundled ACE32 program inspected with
+`objdump` is a PE32 executable without symbols. The header-only `aceHeader`
+operation in this repository likewise does not decode compressed payloads. The
+optimization claim above comes from source inspection of the independent C
+implementation, not from attributing this algorithm to proprietary WinACE
+machine code.
+
+## Remaining validation gates
+
+- Test the patched encoder’s output with an independently built WinACE-compatible
+  reader and test third-party ACE fixtures with the patched decoder.
+- Verify behavior on supported Windows builds and across relevant ACE versions.
+- Diagnose the shared baseline/patched `-2` patterned-input CRC failure before
+  treating that mode as validated for such inputs.
+- If this is intended for production rather than an educational prototype,
+  define the required ACE version, compatibility target, and accepted
+  interoperability corpus first.
