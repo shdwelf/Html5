@@ -7,8 +7,9 @@ Back to [[Main Page]].
 
 **Date:** 2026-11-05
 
-**State:** source implementation complete; debug APK is produced by CI because
-this workspace does not have Java, Gradle, or the Android SDK installed.
+**State:** source implementation complete; the debug APK built successfully in
+PR #184's GitHub Actions run. This workspace does not have Java, Gradle, or the
+Android SDK installed.
 
 == Deliverable ==
 
@@ -77,4 +78,9 @@ Validation in the source workspace:
   case-colliding Georgia directory names.
 - Node unit tests validate inventory parity, host uniqueness, minSdk/network
   permission policy, catalog routing, and the explicit CDN warning.
-- Android compilation and APK size/hash remain pending the CI runner.
+- PR #184 GitHub Actions run [42088364485](https://github.com/shdwelf/Html5/actions/runs/42088364485)
+  passed the Android Gradle build, inventory checks, and artifact upload. The
+  `html5-offline-launcher-debug-apk` artifact archive is 53,448,446 bytes
+  (archive SHA-256 `5d082779f7d2d2f7fbc18dae1eb148af52e5ab2eb42938ba96fa3ecc2861a2c1`)
+  and expires 2026-12-05. The build log reports the APK's own size and SHA-256;
+  no emulator/device installation test has been performed.
