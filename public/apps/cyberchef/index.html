@@ -25615,7 +25615,8 @@ addOp('pgpSymDecrypt','OpenPGP symmetric-key decrypt (SKESK + SEIPD)','Modern',
     const inner=pt.subarray(18,pt.length-22);
     const storedMdc=pt.subarray(pt.length-20);
     const d3=pt[pt.length-22],d4=pt[pt.length-21];
-    const computedMdc=fdHashBytes(s2k.hashName,pt.subarray(0,pt.length-20));
+    // RFC 4880 §5.13 always uses SHA-1 for the MDC, independent of the S2K digest.
+    const computedMdc=fdHashBytes('SHA-1',pt.subarray(0,pt.length-20));
     const mdcOk=d3===0xd3&&d4===0x14&&fdHex(computedMdc)===fdHex(storedMdc);
     const lines=[];
     lines.push('════ OpenPGP symmetric-key message ════');

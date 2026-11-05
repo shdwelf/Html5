@@ -24,6 +24,13 @@
       "sha256": "3ba6df0fda08add5c6d5c7d72fa434d08eb14dc6272dab9547c0197eacfe8aca"
     },
     {
+      "page": "backlog-execution-round-62-2026-11-05",
+      "source": "docs/backlog-execution-round-62-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 3887,
+      "sha256": "17b484b683e7e400ca704f4db741a83745cffa3c32fb6c2b5053361128c28920"
+    },
+    {
       "page": "cellular-automata-signal-pattern-detection-2026-11-05",
       "source": "docs/cellular-automata-signal-pattern-detection-2026-11-05.md",
       "date": "2026-11-05",
@@ -31,11 +38,18 @@
       "sha256": "103c8006ae35f0a9c1da3014f2edd77c859f6344115a2fde1b09a722f9993b2d"
     },
     {
+      "page": "openpgp-workbench-v1-implementation-2026-11-05",
+      "source": "docs/openpgp-workbench-v1-implementation-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 5275,
+      "sha256": "6875b9fbfb962d450d28370f479851f299731d8da8f64923c867206a534f20a0"
+    },
+    {
       "page": "pgponycore-cyberchef-source-review-2026-11-05",
       "source": "docs/pgponycore-cyberchef-source-review-2026-11-05.md",
       "date": "2026-11-05",
-      "bytes": 6978,
-      "sha256": "2e3e6136be179f2f61b5b824eee2367a45cc48d279f42098f6df85cc0736ea8e"
+      "bytes": 7205,
+      "sha256": "98b613ece9acd976f667f5bcde9dd79edbb3bb2b681298815c6f07168b5a0646"
     },
     {
       "page": "zangi-dex-static-inspection-2026-11-05",
@@ -50,20 +64,6 @@
       "date": "2026-11-04",
       "bytes": 7434,
       "sha256": "5b1c536b14d2cde1655211e31f8c007d7fdd3cf9f0bc2fcc285f4b72955e0f08"
-    },
-    {
-      "page": "backlog-execution-round-56-2026-11-04",
-      "source": "docs/backlog-execution-round-56-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 5070,
-      "sha256": "b0b19826e02015f686e7f7ccbeed7c1788e2379fbce1a5562c6e7db3e64fbd6e"
-    },
-    {
-      "page": "backlog-execution-round-57-2026-11-04",
-      "source": "docs/backlog-execution-round-57-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 3421,
-      "sha256": "6432738fde1569303dc37b0adb0b9f9220e6f85ffe2bc4c1ebe359dff9f2c6e8"
     }
   ]
 }
