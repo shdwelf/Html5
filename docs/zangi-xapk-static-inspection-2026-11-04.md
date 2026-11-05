@@ -31,13 +31,16 @@ identifiers, links, file paths, and copied content.
 
 ## Limits and next gate
 
-This was a package-integrity and manifest pass, not a malware analysis, runtime
-or network test, complete DEX disassembly, or independent E2EE audit. No claim
-about the app's security follows from the matching public checksum or valid
-signatures. APKPure's VirusTotal summary remains a listing-reported result, not
-an independent scan performed here.
+This 2026-11-04 pass was a package-integrity and manifest review, not a malware
+analysis, runtime or network test, complete DEX disassembly, or independent E2EE
+audit. No claim about the app's security follows from the matching public
+checksum or valid signatures. APKPure's VirusTotal summary remains a
+listing-reported result, not an independent scan performed here. A later,
+limited DEX/native triage is recorded in
+[`zangi-dex-static-inspection-2026-11-05.md`](zangi-dex-static-inspection-2026-11-05.md).
 
-The cellular-automata / “Holy Grail” decryption task is separate and remains
-blocked on identifying its target program and supplying an exact known
-plaintext/ciphertext or CA-state vector. The Zangi package was not assumed to be
-that target; no CyberChef operation or cookbook card was added.
+The user subsequently confirmed Zangi as the intended disassembly target. The
+follow-up did not identify a cellular-automata implementation or an independent
+CA known-answer vector in the searched material. The negative result is bounded
+by the follow-up's static-search limitations; it is not a proof that such code
+cannot be present. No CA decryption or recipe was claimed.

@@ -18,11 +18,20 @@ full DEX review, dynamic test, network test, or independent E2EE audit.
 ## Cellular-automata / “Holy Grail” gate
 
 The uploaded files were the Zangi package, not an identified “Holy Grail”
-program or a known-plaintext vector. The Zangi APK was not assumed to be the CA
-cipher target, and no DEX disassembly, decryption, CyberChef operation, or
-cookbook card was added. The standing gate remains: identify the target, observe
-the exact CA and cryptographic transformations, reproduce an independent
-expected-output vector, and duplicate-check the recipe before shipping it.
+program or a known-plaintext vector. At the time of this round, the target had
+not been confirmed, so no DEX disassembly, decryption, CyberChef operation, or
+cookbook card was added.
+
+## Post-resolution note — 2026-11-05
+
+The user subsequently confirmed that Zangi is the intended disassembly target.
+A limited DEX/native static triage was completed and is recorded in
+[`zangi-dex-static-inspection-2026-11-05.md`](zangi-dex-static-inspection-2026-11-05.md).
+No CA implementation or independent CA vector was identified in the searched
+material; this does not prove the absence of obfuscated or unsearched code.
+The standing gate remains: document the exact transform, reproduce an
+independent expected-output vector, and duplicate-check before shipping any
+cipher recipe.
 
 ## Verification
 

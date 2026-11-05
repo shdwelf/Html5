@@ -58,6 +58,7 @@
       <li><a href="#asym">Asymmetric &amp; Signatures</a></li>
       <li><a href="#mac">Hashing &amp; MACs</a></li>
       <li><a href="#pqc">Post-Quantum (PQC)</a></li>
+      <li><a href="#openpgp">OpenPGP messages &amp; PGPonyCore</a></li>
     </ul>
   </div>
 
@@ -300,6 +301,24 @@
     <h3>Haiku BIP44</h3>
     <p>Presents a BIP44 derivation as a 5-7-5 <b>haiku</b> poem. A playful way to see the derivation tree and the derived address.</p>
     <p class="status">Status: <span class="badge b-ok">Verified</span> derives the same address as the BIP44 op.</p>
+  </div>
+
+  <h2 id="openpgp"><span class="n">7.</span>OpenPGP Passphrase-Only Messages &amp; PGPonyCore</h2>
+  <p class="tagline" style="margin-top:-8px;">An OpenPGP packet-level recipe audit: what the current CyberChef kitchen already handles, what PGPonyCore adds in source, and where a separately tested browser port would begin.</p>
+
+  <div class="card">
+    <div class="cat">OpenPGP · SKESK / SEIPD · RFC 4880 / RFC 9580</div>
+    <h3>Passphrase-only OpenPGP message <span class="badge b-ref">Reference</span></h3>
+    <p><a href="https://github.com/norsehorse-dev/PGPonyCore/tree/86d23e0abc05a7135e46c6eab5aa215fea2025d6" target="_blank" rel="noopener noreferrer">PGPonyCore 8.4.0 source</a> writes a classic <code>gpg -c</code>-compatible profile: v4 SKESK (tag 3), iterated-and-salted S2K with SHA-256, AES-256, then SEIPD v1 (tag 18) using CFB plus an MDC. Its source also contains readers for v5/v6 SKESK and newer AEAD packet paths. Those source features are not all present in this browser kitchen.</p>
+    <div class="math">Passphrase → S2K → AES key → CFB-protected SEIPD v1 + MDC<br>Classic writer profile: v4 SKESK · type-3 S2K · SHA-256 · AES-256</div>
+    <ul>
+      <li><b>Already in CyberChef:</b> <code>pgpArmorCheck</code> and <code>pgpSymDecrypt</code>; the Armor and Symmetric Message recipe packs already exist, so this is not a new operation or duplicate recipe.</li>
+      <li><b>Locally verified boundary:</b> <code>pgpSymDecrypt</code> reads v4 SKESK without an encrypted-session-key field, AES-128/192/256, iterated-salted S2K type 3 with SHA-1/SHA-256, and SEIPD v1 CFB+MDC. Tests use GnuPG control messages and cover plaintext, MDC, tampering, wrong passphrases, and out-of-scope message rejection.</li>
+      <li><b>Not covered by that operation:</b> encrypted-session-key SKESK, non-AES ciphers, v5/v6 SKESK, Argon2 S2K, SEIPD v2, and tag-20 AEAD/OCB. Do not treat PGPonyCore's source comments as independent browser test vectors.</li>
+      <li><b>Separate protocol:</b> PGPonyPair is an app-specific local-network pairing protocol (X25519, transcript-bound derivation, a comparison code, and sequenced AES-GCM), not OpenPGP and not a generic cipher recipe.</li>
+      <li><b>Portability:</b> PGPonyCore is an iOS-only Swift package with Apple frameworks and internal APIs, not a JavaScript library. Any HTML5 implementation would be a separate port and needs independent known-answer and negative vectors before being called verified.</li>
+    </ul>
+    <p class="status">Status: <span class="badge b-ref">Reference</span> — documents the verified classic local recipe and the unported PGPonyCore coverage gap; it does not claim a PGPonyCore browser port.</p>
   </div>
 
   <h2 id="saltpack-geb"><span class="n">23.</span>Keybase Saltpack, GEB Formal Systems, Twofish, IDEA &amp; Enigma</h2>

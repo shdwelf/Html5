@@ -94,3 +94,16 @@ If the rule is already known, include the CA dimension, local rule, boundary,
 update order, generation count, and serialization. If it is not known, the
 program itself is needed so those mechanics can be observed. No private Drive
 identifier or link is needed in the repository.
+
+## Post-resolution follow-up — 2026-11-05
+
+The user confirmed that Zangi is the intended disassembly target. The limited
+DEX/native static triage is documented in
+[`zangi-dex-static-inspection-2026-11-05.md`](zangi-dex-static-inspection-2026-11-05.md).
+No CA implementation, complete state-update rule, or independent CA
+known-answer vector was found in the searched material. This does not establish
+that obfuscated or unsearched code cannot contain one. The target is now
+identified, but the exact mechanics and plaintext/ciphertext or CA-state vector
+remain missing; the implementation gate above is still closed. The separate
+question of checking known glider/signal-stream patterns is addressed in
+[`cellular-automata-signal-pattern-detection-2026-11-05.md`](cellular-automata-signal-pattern-detection-2026-11-05.md).

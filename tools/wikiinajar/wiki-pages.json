@@ -1,69 +1,69 @@
 {
-  "syncedOn": "2026-11-04",
+  "syncedOn": "2026-11-05",
   "rule": "newest 9 dated notes in docs/",
   "pages": [
+    {
+      "page": "algorithm-engineering-guidance-2026-11-05",
+      "source": "docs/algorithm-engineering-guidance-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 4145,
+      "sha256": "493977ab3c50bc28b876b5836f2c65e1c3a5b680389d72ab03fc587e64c0b7f9"
+    },
+    {
+      "page": "backlog-execution-round-60-2026-11-05",
+      "source": "docs/backlog-execution-round-60-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 4003,
+      "sha256": "61b9282b200f59a6853c63c6fc1c182085dbf6872150af86a70135f567c26a7b"
+    },
+    {
+      "page": "backlog-execution-round-61-2026-11-05",
+      "source": "docs/backlog-execution-round-61-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 3400,
+      "sha256": "3ba6df0fda08add5c6d5c7d72fa434d08eb14dc6272dab9547c0197eacfe8aca"
+    },
+    {
+      "page": "cellular-automata-signal-pattern-detection-2026-11-05",
+      "source": "docs/cellular-automata-signal-pattern-detection-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 7531,
+      "sha256": "103c8006ae35f0a9c1da3014f2edd77c859f6344115a2fde1b09a722f9993b2d"
+    },
+    {
+      "page": "pgponycore-cyberchef-source-review-2026-11-05",
+      "source": "docs/pgponycore-cyberchef-source-review-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 6978,
+      "sha256": "2e3e6136be179f2f61b5b824eee2367a45cc48d279f42098f6df85cc0736ea8e"
+    },
+    {
+      "page": "zangi-dex-static-inspection-2026-11-05",
+      "source": "docs/zangi-dex-static-inspection-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 4514,
+      "sha256": "4e0b50f3de685fb0f724b313d313b978c4fe0affd0a1fc7e9e5a1e12a893209d"
+    },
     {
       "page": "ace-huffman-two-queue-experiment-2026-11-04",
       "source": "docs/ace-huffman-two-queue-experiment-2026-11-04.md",
       "date": "2026-11-04",
       "bytes": 7434,
-      "sha256": "ba1691adee83405453ccfac445ed759f8119e7c1a653d65fcf574e1c63861424"
+      "sha256": "5b1c536b14d2cde1655211e31f8c007d7fdd3cf9f0bc2fcc285f4b72955e0f08"
     },
     {
       "page": "backlog-execution-round-56-2026-11-04",
       "source": "docs/backlog-execution-round-56-2026-11-04.md",
       "date": "2026-11-04",
       "bytes": 5070,
-      "sha256": "e3f3fa483b21e9bf9982e0bda68531c4822ae4268e04b2f1388f4a5c75848584"
+      "sha256": "b0b19826e02015f686e7f7ccbeed7c1788e2379fbce1a5562c6e7db3e64fbd6e"
     },
     {
       "page": "backlog-execution-round-57-2026-11-04",
       "source": "docs/backlog-execution-round-57-2026-11-04.md",
       "date": "2026-11-04",
       "bytes": 3421,
-      "sha256": "990f4f3f1ea5f64f76969754cd100f2fc1db5fb4b12a1eee19a7b52072a4df0d"
-    },
-    {
-      "page": "backlog-execution-round-58-2026-11-04",
-      "source": "docs/backlog-execution-round-58-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 3183,
-      "sha256": "618e45db0930ac09ac5d30d39afb7e862d0f27384840ccfb0a228c3dac04a518"
-    },
-    {
-      "page": "backlog-execution-round-59-2026-11-04",
-      "source": "docs/backlog-execution-round-59-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 2392,
-      "sha256": "896bdb0724845b63821e05cf69efd3edc20d0a2df574a48e937771345114bfad"
-    },
-    {
-      "page": "camera-control-and-handheld-serial-bridge-research-2026-11-04",
-      "source": "docs/camera-control-and-handheld-serial-bridge-research-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 10660,
-      "sha256": "a4351651f18766343c829acb136771a0457734453d44125a2ddd273345569b8f"
-    },
-    {
-      "page": "cellular-automata-cipher-triage-2026-11-04",
-      "source": "docs/cellular-automata-cipher-triage-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 5601,
-      "sha256": "56f811603a596c9e8ab6634479ea8230e42d015f8b9665430bec076e7e3ac2cb"
-    },
-    {
-      "page": "conferenceparties-and-ces-first-timer-guide-2026-11-04",
-      "source": "docs/conferenceparties-and-ces-first-timer-guide-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 6099,
-      "sha256": "25e821408e02e8ebcb2c7c6b2a1a1d9a302708f7d57c7931b2ec696ff358d78e"
-    },
-    {
-      "page": "eff-secure-messaging-source-check-2026-11-04",
-      "source": "docs/eff-secure-messaging-source-check-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 4333,
-      "sha256": "5ff795b8b64460df0a48c766d2232f0765e6869bd30ea886298c3a4073337e3e"
+      "sha256": "6432738fde1569303dc37b0adb0b9f9220e6f85ffe2bc4c1ebe359dff9f2c6e8"
     }
   ]
 }

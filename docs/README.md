@@ -81,11 +81,15 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-57-2026-11-04.md](backlog-execution-round-57-2026-11-04.md) — backlog execution round 57 2026 11 04 (Zangi sources · EFF review · ACE Huffman experiment)
 - [backlog-execution-round-58-2026-11-04.md](backlog-execution-round-58-2026-11-04.md) — backlog execution round 58 2026 11 04 (XAPK transfer attempt · cellular-automata cipher triage · merge gate)
 - [backlog-execution-round-59-2026-11-04.md](backlog-execution-round-59-2026-11-04.md) — backlog execution round 59 2026 11 04 (Zangi package static check · CA target gate)
+- [backlog-execution-round-60-2026-11-05.md](backlog-execution-round-60-2026-11-05.md) — backlog execution round 60 2026 11 05 (Zangi DEX review · algorithm engineering · PGPonyCore recipe audit)
+- [backlog-execution-round-61-2026-11-05.md](backlog-execution-round-61-2026-11-05.md) — backlog execution round 61 2026 11 05 (CA glider and signal-stream pattern detection)
 
 ## Research deep dives (the “ghirdra” line)
 
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
+- [algorithm-engineering-guidance-2026-11-05.md](algorithm-engineering-guidance-2026-11-05.md) — algorithm-engineering checklist informed by public Springer references
 - [cellular-automata-cipher-triage-2026-11-04.md](cellular-automata-cipher-triage-2026-11-04.md) — cellular-automata cipher triage 2026 11 04
+- [cellular-automata-signal-pattern-detection-2026-11-05.md](cellular-automata-signal-pattern-detection-2026-11-05.md) — checking known CA gliders and signal streams
 - [eff-secure-messaging-source-check-2026-11-04.md](eff-secure-messaging-source-check-2026-11-04.md) — EFF secure-messaging source check 2026 11 04
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
@@ -93,12 +97,14 @@ IANA media types (RFC 6838 / BCP 13).
 - [mime-types-deep-dive-2026-10-21.md](mime-types-deep-dive-2026-10-21.md) — mime types deep dive 2026 10 21
 - [mls-metasearch-and-reso-access-review-2026-11-04.md](mls-metasearch-and-reso-access-review-2026-11-04.md) — real-estate MLS metasearch and authorized RESO access review
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
+- [pgponycore-cyberchef-source-review-2026-11-05.md](pgponycore-cyberchef-source-review-2026-11-05.md) — PGPonyCore source review and CyberChef recipe audit
 - [public-repository-privacy-audit-2026-11-04.md](public-repository-privacy-audit-2026-11-04.md) — public-safe Drive-reference and Wiki-bundle privacy audit
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
 - [zangi-public-source-review-2026-11-04.md](zangi-public-source-review-2026-11-04.md) — Zangi public-source review 2026 11 04
 - [zangi-xapk-static-inspection-2026-11-04.md](zangi-xapk-static-inspection-2026-11-04.md) — Zangi XAPK static inspection 2026 11 04
+- [zangi-dex-static-inspection-2026-11-05.md](zangi-dex-static-inspection-2026-11-05.md) — Zangi DEX and native static-inspection follow-up 2026 11 05
 
 ## Software protection & disassembly
 
