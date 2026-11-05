@@ -810,6 +810,19 @@ is a complete SOCAL SUBSURFACE calculator port; `make -C socal-calc test` re-ver
 green. Only device compilation (sdcc/tigcc via runner) and the F-Droid wrapper remain.
 TI-calc/F-Droid builds and the device-lab items remain open.
 
+*2026-11-05 round (63):* Android replacement-OS terminology and QEMU paths,
+XPort Pro debug-interface status, and HackRF/PortaPack capture/replay controls
+were researched in [`backlog-execution-round-63-2026-11-05.md`](backlog-execution-round-63-2026-11-05.md).
+A BDM-specific check adds detail beyond the earlier JTAG-only search: the
+µClinux notes already mention a BDM connector for MatchPort AR, and Lantronix
+also documents BDM on the separate XPort Pro Dev Board for both Evolution and
+Linux SDK kits, plus a USB BDM probe. This is not evidence of a JTAG interface
+on the production module; no BDM/JTAG implementation or test exists here. Mayhem
+source has capture/stop and replay/stop/loop, and scanner pause/resume, but no
+capture pause or replay seek/pause in the reviewed path. Android/QEMU execution,
+XPort hardware/app porting, and other SDR tests remain open pending exact target
+models and hardware/SDK.
+
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*
 Catalog the OCR haiku into the haiku vault and verify the enso generators + haiku randomizers
 against the standard vault format (the workbench lineage is in the [README](../README.md));

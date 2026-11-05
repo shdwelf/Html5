@@ -296,10 +296,13 @@
         "xdc-viewer.html",
         "tools/build_xdc_wars.mjs",
         "docs/github-jdk-runtime-research-2026-10-23.md",
-        "docs/backlog-execution-round-19-2026-10-23.md"
+        "docs/backlog-execution-round-19-2026-10-23.md",
+        "docs/backlog-execution-round-63-2026-11-05.md"
       ],
       "next_actions": [
-        "QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock/number-porting caselaw notes via LexisNexis alternatives)",
+        "QEMU Android lab (SDK/ADB sideload and boot a selected Android/LineageOS QEMU target; replacement-OS survey delivered in docs/backlog-execution-round-63-2026-11-05.md; exact handset required for installation choice)",
+        "XPort Pro BDM/JTAG hardware test and Evolution OS app conversion (vendor docs identify BDM, not a production-module JTAG interface; exact SKU, Dev Board, SDK/probe, and app subset required)",
+        "HackRF/SDR hardware tests (Mayhem Capture/Replay source review delivered in docs/backlog-execution-round-63-2026-11-05.md; exact SDR models and safe modification targets required)",
         "SIM-lock research (GitHub/GitLab); Eagle CAD unlock schematics",
         "Port xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight notes",
         "GitHub sweep: Hotline/KDX/FXP, Intel iParty + Creative Labs FCC schematics, DUCK codecs, lossless comms room, Tetrinet"
