@@ -41,12 +41,17 @@ cookbook entry was added. The standing cipher gate still applies: observed
 mechanics, an independent expected-output vector, and a duplicate check before
 shipping a recipe.
 
-## Pull-request status
+## Pull-request status at report time
 
-PR #181 is intentionally **left open** for now. The requested merge was not
-performed because the target-specific CA disassembly/decryption and recipe
-cannot be completed without the program and a verifiable plaintext/ciphertext
-or CA vector; the XAPK transfer also lacks locally staged bytes. The new notes
-are pushed to the existing branch. After the missing artifacts are supplied,
-complete the evidence-backed recipe update and then merge the PR if it remains
-the intended review unit.
+PR #181 was being held open because the target-specific CA
+disassembly/decryption and recipe could not be completed without the program
+and a verifiable plaintext/ciphertext or CA vector; the XAPK transfer also
+lacked locally staged bytes. After this report, the user selected merging the
+completed work, and PR #181 was merged. The CA follow-up remains open.
+
+## Subsequent resolution — round 59
+
+The missing archive volume was later supplied; package-level checks are recorded
+in [`zangi-xapk-static-inspection-2026-11-04.md`](zangi-xapk-static-inspection-2026-11-04.md).
+The “Holy Grail” program/vector is still unidentified. See
+[`backlog-execution-round-59-2026-11-04.md`](backlog-execution-round-59-2026-11-04.md).
