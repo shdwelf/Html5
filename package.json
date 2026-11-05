@@ -17,6 +17,7 @@
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
     "build:cyberchef": "node scripts/build-cyberchef-xdc.mjs",
     "build:cyberchef-gb": "node tools/build_cyberchef_gb.mjs",
+    "build:openpgp-workbench": "node scripts/build-openpgp-workbench.mjs",
     "build:yubnub": "node scripts/build-yubnub-xdc.mjs",
     "build:wikiinajar": "node scripts/build-wikiinajar-xdc.mjs",
     "build:greeran-family": "node scripts/build-greeran-family-qr.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs",
@@ -73,6 +74,7 @@
     "bananocurrency-web": "^1.3.4",
     "clsx": "2.1.1",
     "crypto-js": "^4.2.0",
+    "openpgp": "6.3.2",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "tailwind-merge": "3.4.0"

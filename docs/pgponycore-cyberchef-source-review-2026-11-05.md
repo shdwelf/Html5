@@ -93,11 +93,15 @@ claim that the modern PGPonyCore formats are implemented in CyberChef.
   needs independent vectors for each packet/profile, differential testing
   against an independent implementation, malformed/tampered cases, resource
   bounds for S2K/Argon2, and browser-specific security review.
-- The earlier Android consolidation request and the follow-up HTML5 alternative
-  are not yet a defined application scope. The repository has 89 top-level
-  directories under `public/apps`, but only one Android Gradle project was found
-  in the searched inventory. No app conversion or new standalone app was started
-  pending the user's choice of target platform and core functionality.
+- At the time of this source-review snapshot, the Android consolidation request
+  and follow-up HTML5 alternative were not yet a defined application scope. The
+  repository had 89 top-level directories under `public/apps`, but only one
+  Android Gradle project was found in the searched inventory. The later round-62
+  follow-up created a narrowly scoped, separate OpenPGP.js browser app (not a
+  PGPonyCore port); see
+  [`openpgp-workbench-v1-implementation-2026-11-05.md`](openpgp-workbench-v1-implementation-2026-11-05.md).
+  Android consolidation remains next, pending its target set and acceptance
+  criteria.
 
 ## Sources
 

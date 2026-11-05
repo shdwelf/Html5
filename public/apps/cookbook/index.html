@@ -304,21 +304,21 @@
   </div>
 
   <h2 id="openpgp"><span class="n">7.</span>OpenPGP Passphrase-Only Messages &amp; PGPonyCore</h2>
-  <p class="tagline" style="margin-top:-8px;">An OpenPGP packet-level recipe audit: what the current CyberChef kitchen already handles, what PGPonyCore adds in source, and where a separately tested browser port would begin.</p>
+  <p class="tagline" style="margin-top:-8px;">A packet-level view of classic passphrase messages, the existing CyberChef reader, PGPonyCore's source profile, and the separate browser workbench's tested limits.</p>
 
   <div class="card">
     <div class="cat">OpenPGP · SKESK / SEIPD · RFC 4880 / RFC 9580</div>
     <h3>Passphrase-only OpenPGP message <span class="badge b-ref">Reference</span></h3>
-    <p><a href="https://github.com/norsehorse-dev/PGPonyCore/tree/86d23e0abc05a7135e46c6eab5aa215fea2025d6" target="_blank" rel="noopener noreferrer">PGPonyCore 8.4.0 source</a> writes a classic <code>gpg -c</code>-compatible profile: v4 SKESK (tag 3), iterated-and-salted S2K with SHA-256, AES-256, then SEIPD v1 (tag 18) using CFB plus an MDC. Its source also contains readers for v5/v6 SKESK and newer AEAD packet paths. Those source features are not all present in this browser kitchen.</p>
+    <p><a href="https://github.com/norsehorse-dev/PGPonyCore/tree/86d23e0abc05a7135e46c6eab5aa215fea2025d6" target="_blank" rel="noopener noreferrer">PGPonyCore 8.4.0 source</a> writes a classic <code>gpg -c</code>-compatible profile: v4 SKESK (tag 3), iterated-and-salted S2K with SHA-256, AES-256, then SEIPD v1 (tag 18) using CFB plus an MDC. Its source also contains readers for v5/v6 SKESK and newer AEAD packet paths. The separate <a href="../openpgp-workbench/">OpenPGP Workbench</a> uses locally bundled OpenPGP.js 6.3.2 and currently handles only passphrase-protected text in the classic v4/direct-S2K profile; it is not a Swift PGPonyCore port.</p>
     <div class="math">Passphrase → S2K → AES key → CFB-protected SEIPD v1 + MDC<br>Classic writer profile: v4 SKESK · type-3 S2K · SHA-256 · AES-256</div>
     <ul>
       <li><b>Already in CyberChef:</b> <code>pgpArmorCheck</code> and <code>pgpSymDecrypt</code>; the Armor and Symmetric Message recipe packs already exist, so this is not a new operation or duplicate recipe.</li>
-      <li><b>Locally verified boundary:</b> <code>pgpSymDecrypt</code> reads v4 SKESK without an encrypted-session-key field, AES-128/192/256, iterated-salted S2K type 3 with SHA-1/SHA-256, and SEIPD v1 CFB+MDC. Tests use GnuPG control messages and cover plaintext, MDC, tampering, wrong passphrases, and out-of-scope message rejection.</li>
+      <li><b>Locally verified boundary:</b> <code>pgpSymDecrypt</code> reads v4 SKESK without an encrypted-session-key field, AES-128/192/256, iterated-salted S2K type 3 with SHA-1/SHA-256, and SEIPD v1 CFB+MDC. Tests use GnuPG control messages and cover plaintext, MDC, tampering, wrong passphrases, and out-of-scope message rejection. An OpenPGP.js-generated AES-256/SHA-256-S2K message also cross-decrypts; that regression confirms the MDC uses fixed SHA-1, independent of the S2K digest.</li>
       <li><b>Not covered by that operation:</b> encrypted-session-key SKESK, non-AES ciphers, v5/v6 SKESK, Argon2 S2K, SEIPD v2, and tag-20 AEAD/OCB. Do not treat PGPonyCore's source comments as independent browser test vectors.</li>
       <li><b>Separate protocol:</b> PGPonyPair is an app-specific local-network pairing protocol (X25519, transcript-bound derivation, a comparison code, and sequenced AES-GCM), not OpenPGP and not a generic cipher recipe.</li>
-      <li><b>Portability:</b> PGPonyCore is an iOS-only Swift package with Apple frameworks and internal APIs, not a JavaScript library. Any HTML5 implementation would be a separate port and needs independent known-answer and negative vectors before being called verified.</li>
+      <li><b>Portability:</b> PGPonyCore is an iOS-only Swift package with Apple frameworks and internal APIs, not a JavaScript library. The Workbench is a separate OpenPGP.js implementation; its v1 has known-vector, negative, browser-bundle, and cross-reader tests only for the classic symmetric text profile. It does not implement public-key workflows, signatures, or modern AEAD paths.</li>
     </ul>
-    <p class="status">Status: <span class="badge b-ref">Reference</span> — documents the verified classic local recipe and the unported PGPonyCore coverage gap; it does not claim a PGPonyCore browser port.</p>
+    <p class="status">Status: <span class="badge b-ref">Reference</span> — the linked Workbench's classic symmetric profile is tested against a GnuPG control vector and the local CyberChef reader; no PGPonyCore browser port or broader feature coverage is claimed.</p>
   </div>
 
   <h2 id="saltpack-geb"><span class="n">23.</span>Keybase Saltpack, GEB Formal Systems, Twofish, IDEA &amp; Enigma</h2>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="A local-only browser workbench for classic passphrase-protected OpenPGP text messages.">
+  <title>OpenPGP Workbench</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "openpgp": "./vendor/openpgp.min.mjs"
+      }
+    }
+  </script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="OpenPGP Workbench home">
+        <span class="brand-mark" aria-hidden="true">PGP</span>
+        <span class="brand-name">OpenPGP <span>Workbench</span></span>
+      </a>
+      <div class="local-badge"><span class="local-dot" aria-hidden="true"></span> LOCAL PROCESSING</div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span class="eyebrow-line"></span> CLASSIC SYMMETRIC MESSAGES</div>
+        <h1 id="page-title">Keep the message<br><span>between you and the passphrase.</span></h1>
+        <p class="hero-copy">Encrypt or decrypt plain text with a passphrase. OpenPGP runs in this browser tab; this workbench has no upload, telemetry, or local-storage feature.</p>
+        <div id="capability-warning" class="notice notice-warning" role="alert" hidden>
+          This browser needs Web Crypto in a secure context. Open the app over HTTPS or localhost, then reload.
+        </div>
+      </section>
+
+      <section class="workbench" aria-label="OpenPGP message tools">
+        <div class="workbench-heading">
+          <div>
+            <p class="section-kicker">MESSAGE WORKSPACE</p>
+            <h2>Passphrase message</h2>
+          </div>
+          <span class="profile-chip"><span aria-hidden="true">◆</span> AES-256 · SHA-256 S2K</span>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Choose an OpenPGP operation">
+          <button class="tab is-active" id="encrypt-tab" type="button" role="tab" aria-selected="true" aria-controls="encrypt-panel" data-tab="encrypt-panel">Encrypt</button>
+          <button class="tab" id="decrypt-tab" type="button" role="tab" aria-selected="false" aria-controls="decrypt-panel" data-tab="decrypt-panel" tabindex="-1">Decrypt</button>
+        </div>
+
+        <section id="encrypt-panel" class="panel" role="tabpanel" aria-labelledby="encrypt-tab" data-panel="encrypt-panel">
+          <form id="encrypt-form" novalidate>
+            <div class="field-heading">
+              <label for="plaintext">Message text</label>
+              <span class="field-hint">Up to 1 MiB of UTF-8 text</span>
+            </div>
+            <textarea id="plaintext" name="plaintext" rows="7" maxlength="1048576" spellcheck="false" autocomplete="off" placeholder="Write or paste the message you want to protect…"></textarea>
+
+            <div class="two-column">
+              <div class="field">
+                <label for="encrypt-passphrase">Passphrase</label>
+                <div class="password-wrap">
+                  <input id="encrypt-passphrase" name="passphrase" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="encrypt-passphrase" aria-pressed="false">Show</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="encrypt-confirm">Confirm passphrase</label>
+                <div class="password-wrap">
+                  <input id="encrypt-confirm" name="confirm" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="encrypt-confirm" aria-pressed="false">Show</button>
+                </div>
+              </div>
+            </div>
+            <p class="field-hint passphrase-hint">Use a strong, unique passphrase and share it through a separate trusted channel.</p>
+
+            <div class="form-actions">
+              <button class="button button-primary" type="submit" data-crypto-submit>
+                <span aria-hidden="true">↗</span> Encrypt message
+              </button>
+              <button class="button button-quiet" type="button" data-clear-form="encrypt-form">Clear</button>
+            </div>
+            <p class="status-message" id="encrypt-status" role="status" aria-live="polite">Your message and passphrase stay in this tab's memory while you work.</p>
+          </form>
+
+          <div class="output-block">
+            <div class="field-heading">
+              <label for="encrypted-output">Armored OpenPGP message</label>
+              <span class="field-hint">Copy or save as a .asc file</span>
+            </div>
+            <textarea id="encrypted-output" rows="8" readonly spellcheck="false" autocomplete="off" aria-label="Encrypted armored OpenPGP message" placeholder="Your encrypted message will appear here…"></textarea>
+            <div class="output-actions">
+              <button class="button button-secondary" type="button" data-copy="encrypted-output">Copy message</button>
+              <button class="button button-secondary" type="button" data-download="encrypted-output" data-filename="openpgp-message.asc">Download .asc</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="decrypt-panel" class="panel" role="tabpanel" aria-labelledby="decrypt-tab" data-panel="decrypt-panel" hidden>
+          <form id="decrypt-form" novalidate>
+            <div class="field-heading">
+              <label for="armored-input">Armored OpenPGP message</label>
+              <span class="field-hint">Paste a passphrase-protected message</span>
+            </div>
+            <textarea id="armored-input" name="armored" rows="10" spellcheck="false" autocomplete="off" placeholder="-----BEGIN PGP MESSAGE-----&#10;…&#10;-----END PGP MESSAGE-----"></textarea>
+
+            <div class="field decrypt-passphrase-field">
+              <label for="decrypt-passphrase">Passphrase</label>
+              <div class="password-wrap password-wrap-narrow">
+                <input id="decrypt-passphrase" name="passphrase" type="password" autocomplete="current-password" maxlength="4096" required>
+                <button class="reveal-button" type="button" data-toggle-password="decrypt-passphrase" aria-pressed="false">Show</button>
+              </div>
+            </div>
+            <p class="field-hint passphrase-hint">This v1 tool does not decrypt public-key messages or verify signatures.</p>
+
+            <div class="form-actions">
+              <button class="button button-primary" type="submit" data-crypto-submit>
+                <span aria-hidden="true">↙</span> Decrypt message
+              </button>
+              <button class="button button-quiet" type="button" data-clear-form="decrypt-form">Clear</button>
+            </div>
+            <p class="status-message" id="decrypt-status" role="status" aria-live="polite">Only a compatible passphrase-protected OpenPGP message can be opened here.</p>
+          </form>
+
+          <div class="output-block">
+            <div class="field-heading">
+              <label for="decrypted-output">Decrypted text</label>
+              <span class="field-hint">Plain text only</span>
+            </div>
+            <textarea id="decrypted-output" rows="8" readonly spellcheck="false" autocomplete="off" aria-label="Decrypted plaintext" placeholder="Decrypted text will appear here…"></textarea>
+            <div class="output-actions">
+              <button class="button button-secondary" type="button" data-copy="decrypted-output">Copy plaintext</button>
+              <button class="button button-quiet" type="button" data-clear-output="decrypted-output">Clear output</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="details-grid" aria-label="Profile and safety details">
+        <article class="detail-card">
+          <div class="detail-icon" aria-hidden="true">01</div>
+          <h2>Classic compatibility profile</h2>
+          <p>v4 SKESK · iterated-and-salted SHA-256 S2K (coded count 0xFF) · AES-256 · SEIPD v1 with MDC. AEAD output is disabled.</p>
+        </article>
+        <article class="detail-card detail-card-warning">
+          <div class="detail-icon" aria-hidden="true">!</div>
+          <h2>Know what this does not prove</h2>
+          <p>MDC checks message integrity, not who sent it. This app does not authenticate sender identity, verify signatures, or replace an independently reviewed secure-messaging client.</p>
+        </article>
+      </section>
+
+      <section class="scope-note" aria-label="Version one scope">
+        <span class="scope-mark" aria-hidden="true">i</span>
+        <p><strong>Version 1 scope:</strong> text-only, passphrase-based classic OpenPGP. Public-key workflows, signing, file attachments, and modern AEAD profiles are not included. Processing is local to this browser tab; there is no app-level data upload or persistence.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>OpenPGP.js 6.3.2 · locally vendored · LGPL-3.0+</span>
+      <span class="footer-links"><a href="./vendor/openpgp.LICENSE">Library license</a><a href="./THIRD_PARTY_NOTICES.md">Third-party notices</a></span>
+    </footer>
+  </div>
+</body>
+</html>

@@ -21,7 +21,7 @@ import { JSDOM } from "jsdom";
 
 const html = readFileSync(new URL("../public/apps/cyberchef/index.html", import.meta.url), "utf8");
 
-const CFB1 = "Symmetric encrypted message of \"Hello, world!\\n\" using\nthe passphrase \"password\" and cipher AES128.CFB.\n\n-----BEGIN PGP MESSAGE-----\n\njA0EBwMCt0tGQ7H0b2Xt0j8BHVEh+mzI3SyApdQmObZuDtAKNk/dRbERyF7haRCn\ncw3N5t3hbOZ/fWlN/BRAaKplninV//QEo8lqheFFpmI=\n=LxrG\n-----END PGP MESSAGE-----\n";
+const CFB1 = readFileSync(new URL("./fixtures/openpgp/gnupg-enc-sym-cfb-1.asc", import.meta.url), "utf8");
 const CFB2 = "Symmetric encrypted message of \"Hello, world!\\n\" using\nthe passphrase \"password\" and cipher AES256.CFB.\n\n-----BEGIN PGP MESSAGE-----\n\njA0ECQMCN4BmCgZpVHDt0j8B1MRJ3ezrbVqU3Xofj5ykOmb7dgYytxzk6QHqzdNO\nlorumncKV+xjFkte8uKqaGJoPhoKb2s9uJWDgugLMDM=\n=gy0I\n-----END PGP MESSAGE-----\n";
 const PKESK = "-----BEGIN PGP MESSAGE-----\nVersion: GnuPG v2\n\nhF4DkYWHjk/NdMASAQdAPDV6Y3JTfAGDX8pfZcT6YggC7qV3g8B1ezijcfIcdVAw\n+hCFGXS1EikBbZ21v79GtGh6Wp3fmyZFRQcsJZciLE/EFcbf9Mv4Q2qfRhKYHlqj\n0lwBRYQrwTJbMNspOwd2MidjYYUxb/02PNiqZSrWUeX0iPsgHFToJol9RVAqs4Zz\nbZNKL6y/GeRIRZY12Lzo2TIXSLfjvbMTdkoz53mMKiUXsi/fCKXkTmgIheni8w==\n=kmqY\n-----END PGP MESSAGE-----\n";
 const OCB = "Symmetric encrypted message of \"Hello, world!\\n\" using\nthe passphrase \"password\" and cipher AES128.OCB.\nThis is the sample message from the rfc4880bis specs.\n\n-----BEGIN PGP MESSAGE-----\n\nwz0FBwIDCJ8LfaPl6mR3kJnjJuVACpCTbO+06OugjGdzcW0fJxRUCjj8rFKZSdrF\nKdPeMeFbSutynjMAM9vt1EkBBwIOXtK8HkcKvo8dZEx6bIpWew93ARlmEaFUupwl\ndM0FYoSo72gDXGI9k8xwikMhG7bq8rJ/fBjVcbzYOyCt06CLc68VuaCY\n=xyh5\n-----END PGP MESSAGE-----\n";
