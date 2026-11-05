@@ -83,7 +83,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-59-2026-11-04.md](backlog-execution-round-59-2026-11-04.md) — backlog execution round 59 2026 11 04 (Zangi package static check · CA target gate)
 - [backlog-execution-round-60-2026-11-05.md](backlog-execution-round-60-2026-11-05.md) — backlog execution round 60 2026 11 05 (Zangi DEX review · algorithm engineering · PGPonyCore recipe audit)
 - [backlog-execution-round-61-2026-11-05.md](backlog-execution-round-61-2026-11-05.md) — backlog execution round 61 2026 11 05 (CA glider and signal-stream pattern detection)
-- [backlog-execution-round-62-2026-11-05.md](backlog-execution-round-62-2026-11-05.md) — browser OpenPGP Workbench v1 and CyberChef MDC correction
+- [backlog-execution-round-62-2026-11-05.md](backlog-execution-round-62-2026-11-05.md) — browser OpenPGP Workbench v1 and Android launcher target
+- [backlog-execution-round-63-2026-11-05.md](backlog-execution-round-63-2026-11-05.md) — offline Android launcher v1
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -99,6 +100,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [mls-metasearch-and-reso-access-review-2026-11-04.md](mls-metasearch-and-reso-access-review-2026-11-04.md) — real-estate MLS metasearch and authorized RESO access review
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
 - [pgponycore-cyberchef-source-review-2026-11-05.md](pgponycore-cyberchef-source-review-2026-11-05.md) — PGPonyCore source review and CyberChef recipe audit
+- [html5-offline-launcher-v1-implementation-2026-11-05.md](html5-offline-launcher-v1-implementation-2026-11-05.md) — Android offline WebView/catalog launcher for all 89 HTML entrypoints
 - [openpgp-workbench-v1-implementation-2026-11-05.md](openpgp-workbench-v1-implementation-2026-11-05.md) — browser OpenPGP Workbench v1 implementation and verification
 - [public-repository-privacy-audit-2026-11-04.md](public-repository-privacy-audit-2026-11-04.md) — public-safe Drive-reference and Wiki-bundle privacy audit
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21

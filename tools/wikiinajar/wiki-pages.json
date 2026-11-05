@@ -27,8 +27,15 @@
       "page": "backlog-execution-round-62-2026-11-05",
       "source": "docs/backlog-execution-round-62-2026-11-05.md",
       "date": "2026-11-05",
-      "bytes": 3887,
-      "sha256": "17b484b683e7e400ca704f4db741a83745cffa3c32fb6c2b5053361128c28920"
+      "bytes": 3886,
+      "sha256": "27910bd344f0e1cf32e504db9cecbd5f61434f7410aff42c6adf4b6a00d92655"
+    },
+    {
+      "page": "backlog-execution-round-63-2026-11-05",
+      "source": "docs/backlog-execution-round-63-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 2809,
+      "sha256": "43baf313fd13ef587d8068e118fcff3a672ee820f62f5fa622b51c3c1b3afc4b"
     },
     {
       "page": "cellular-automata-signal-pattern-detection-2026-11-05",
@@ -36,6 +43,13 @@
       "date": "2026-11-05",
       "bytes": 7531,
       "sha256": "103c8006ae35f0a9c1da3014f2edd77c859f6344115a2fde1b09a722f9993b2d"
+    },
+    {
+      "page": "html5-offline-launcher-v1-implementation-2026-11-05",
+      "source": "docs/html5-offline-launcher-v1-implementation-2026-11-05.md",
+      "date": "2026-11-05",
+      "bytes": 4332,
+      "sha256": "7ce1562db120298e6e79caa32fcf280eecf5b244c35101326238fb07fbb192df"
     },
     {
       "page": "openpgp-workbench-v1-implementation-2026-11-05",
@@ -50,20 +64,6 @@
       "date": "2026-11-05",
       "bytes": 7205,
       "sha256": "98b613ece9acd976f667f5bcde9dd79edbb3bb2b681298815c6f07168b5a0646"
-    },
-    {
-      "page": "zangi-dex-static-inspection-2026-11-05",
-      "source": "docs/zangi-dex-static-inspection-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 4514,
-      "sha256": "4e0b50f3de685fb0f724b313d313b978c4fe0affd0a1fc7e9e5a1e12a893209d"
-    },
-    {
-      "page": "ace-huffman-two-queue-experiment-2026-11-04",
-      "source": "docs/ace-huffman-two-queue-experiment-2026-11-04.md",
-      "date": "2026-11-04",
-      "bytes": 7434,
-      "sha256": "5b1c536b14d2cde1655211e31f8c007d7fdd3cf9f0bc2fcc285f4b72955e0f08"
     }
   ]
 }
