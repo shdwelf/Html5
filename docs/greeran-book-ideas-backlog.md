@@ -38,11 +38,14 @@ ch. XVI gaps & private prompts).
 ## Open research queue (decidable lookups)
 
 1. Glendora High Class of 2001 commencement program — the exact June 2001 date
-   (venue resolved: Citrus College Stadium; needs the program, yearbook, or an
-   unlocked SGV Tribune archive). The 16 Oct 2026 pass confirmed the venue in a
-   2011 newspaper schedule and on the current school page, but found no 2001
-   primary date; keep it open. See
-   `docs/greeran-commencement-research-2026-10-16.md`.
+   (venue resolved: Citrus College Stadium; needs the program, yearbook, or a
+   contemporaneous newspaper schedule). The 16 Oct 2026 pass confirmed the venue
+   in a 2011 newspaper schedule and on the current school page, but found no
+   2001 primary date. On 7 Nov, the Classmates yearbook preview exposed only its
+   first five pages; the Glendora Public Library archive was identified as a
+   promising free source, but its search route returned a Cloudflare human check
+   in this research tool. Keep the date open and do not bypass either access
+   boundary. See `docs/greeran-commencement-research-2026-10-16.md`.
 2. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster. The
    2001–02 hall register itself is resolved (see below).
 3. "The daily flush" — author confirms (Oct 2026) it was a recurring dorm
@@ -169,8 +172,12 @@ ch. XVI gaps & private prompts).
 - "Satellite Reprographics" returns zero hits in news, LocalWiki, and general
   search — the name as remembered has no indexed trace; needs a period phone
   book or Nexus classified.
-- The GHS Class of 2001 exact graduation date is behind paywalls (SGV Tribune
-  June 2001 archives, classmates.com login); free sources only confirm the
-  Citrus College Stadium venue tradition (2011–2026).
+- The GHS Class of 2001 exact graduation date remains unresolved. The
+  Classmates yearbook preview exposed only pages 1–5; the Glendora Public Library
+  digital archive includes local newspaper titles from the target era, but its
+  search route returned a Cloudflare human-verification page through this agent.
+  Do not bypass the viewer or verification gate. The current official GHS
+  contact page lists a yearbook-advisor route for a direct request; see
+  `docs/greeran-commencement-research-2026-10-16.md`.
 - UC fee: current-era pages dominate; the primary source is the archived UC
   PATHWAYS applicant information (resolved Oct 2026 — $40 per campus).

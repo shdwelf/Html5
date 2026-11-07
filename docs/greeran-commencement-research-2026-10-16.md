@@ -1,4 +1,4 @@
-# Greeran Book research pass: GHS commencement date — 2026-10-16
+# Greeran Book research pass: GHS commencement date — 2026-10-16 (follow-up 2026-11-07)
 
 ## Question
 
@@ -26,19 +26,52 @@ the date needs a contemporaneous record before it can be added to the timeline.
   date. This is a lead to the school-year context, not a commencement schedule
   or proof that the ceremony occurred on the filming day. [Video and transcript](https://www.youtube.com/watch?v=yqI93R_e28A)
 
+## Follow-up research — 2026-11-07
+
+- The Classmates listing confirms a **2001 Glendora High School yearbook** and
+  offers a public preview. The fetched preview exposed only pages 1–5; changing
+  its `page` query parameter did not expose additional pages. The dated
+  commencement page/program was therefore not available in the preview. No
+  access controls were bypassed and no full yearbook was downloaded.
+  [Classmates 2001 yearbook preview](https://www.classmates.com/yearbooks/Glendora-High-School/227247)
+- The official City of Glendora Library page links to the **Glendora Community
+  Archives**. Its title listing includes *Glendora Community News* as a
+  contemporary local source for the final week of May / first week of June
+  2001; the partner page gives inconsistent coverage ranges (1994–2018 in the
+  title list, 1908–2018 in its descriptive list), but both include 2001. The
+  archive advertises free public access, but its search route returned a
+  Cloudflare “Verifying you are human” page through this research tool. No
+  challenge was bypassed and no 2001 issue was inspected. [City archive page](https://www.cityofglendora.gov/Explore/Public-Library/Community-Archive-History)
+  · [Glendora Public Library archive](https://glendora.historyarchives.online/)
+  · [Archive title coverage](https://communityhistoryarchives.com/places/glendora-public-library/)
+- GHS's official Yearbook and Tartan Shield page publishes a current contact
+  route for its yearbook advisor and student newspaper. This is a lead for a
+  request for the **2001 Bellendaine** or commencement program; no contact was
+  made. [Official GHS yearbook / Tartan Shield page](https://www.glendorahigh.net/apps/pages/index.jsp?uREC_ID=516310&type=d&pREC_ID=990816)
+- The public video transcript for “Final Day at GHS: June 2001” discusses the
+  school's last day and includes “It's Friday,” but supplies no calendar date
+  and does not date the commencement. It remains context only, not ceremony
+  evidence. [Video and transcript](https://www.youtube.com/watch?v=yqI93R_e28A)
+- Further exact-phrase and local-archive web searches did not surface a 2001
+  commencement date or a contemporary schedule. Yearbook catalogs, class
+  directories, Reddit comments, and later-year schedules do not establish it.
+
 ## Editorial decision
 
 The exact June 2001 date remains **open**. No date was inferred from later
-commencements and no event was added to the master timeline. Keep the venue
-attributed to its existing evidence tier; promote a date only from the actual
-2001 commencement program, a dated contemporary school publication/yearbook, or
-a contemporaneous newspaper schedule.
+commencements, school-year calendars, or the last-day video, and no event was
+added to the master timeline. Keep the venue attributed to its existing
+evidence tier; promote a date only from the actual 2001 commencement program,
+a dated contemporary school publication/yearbook, or a contemporaneous
+newspaper schedule.
 
 ## Next research step
 
-Try to access the 2001 yearbook viewer and inspect its commencement page and
-photo captions; separately request or locate the printed commencement program
-through Glendora High/Citrus College records. If neither survives, search a
-contemporary SGV Tribune archive around the final week of May and first week of
-June 2001. Record a negative result if the viewer is inaccessible rather than
-replacing the missing date with a pattern-based guess.
+Search the Glendora Community Archives' *Glendora Community News* issues around
+the final week of May and first week of June 2001 through its ordinary public
+viewer (or ask the Glendora Public Library for help if the search challenge
+persists). Separately request or locate the 2001 Bellendaine / printed GHS
+commencement program through the school or the Glendora Historical Society.
+The current research tool cannot get past the archive's human-verification
+page and the yearbook preview stops at its first five pages; do not work around
+either gate. If no dated primary record is found, keep the date unresolved.
