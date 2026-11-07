@@ -1,6 +1,6 @@
 == Algorithm-engineering checklist for implementation work — 2026-11-05 ==
 
-Source: docs/algorithm-engineering-guidance-2026-11-05.md — synced 2026-11-05 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/algorithm-engineering-guidance-2026-11-05.md — synced 2026-11-07 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Algorithm-engineering checklist for implementation work — 2026-11-05 =

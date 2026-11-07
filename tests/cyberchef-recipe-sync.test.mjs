@@ -79,6 +79,8 @@ const POST_MERGE_OPS = [
   // docs/cyberchef-hash-lab-drive-investigation-2026-10-25.md).
   "blake2",
   "argon2",
+  // 2026-11-07 multiplicative ElGamal demo (not FHE).
+  "elgamalMulDemo",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

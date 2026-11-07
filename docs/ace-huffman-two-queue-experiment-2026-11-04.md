@@ -88,8 +88,14 @@ An additional varying-offset periodic fixture was tested separately with `-z`:
 baseline and patched archives both tested and extracted correctly and were the
 same size (3,795 bytes), but the archive bytes differed due to Huffman tie
 choices. The same input under `-2` produced a CRC mismatch in both baseline and
-patched builds. That case is excluded from passing results and remains an
-uninvestigated baseline failure, not a patch regression claim.
+patched builds. The original temporary generator was not preserved, so that
+exact byte sequence could not be replayed. A deterministic representative
+reproducer, root cause, and separately scoped source fix for the same failure
+class are documented in
+[`ace-delta-history-crc-fix-2026-11-07.md`](ace-delta-history-crc-fix-2026-11-07.md).
+The fix preserves the decoder's four-entry LZ77 repeat-distance history across
+blocked-mode tokenization runs; it does not modify the CRC algorithm or the ACE
+header CRC-16 check.
 
 ## Microbenchmark
 
@@ -129,8 +135,10 @@ machine code.
 - Test the patched encoder’s output with an independently built WinACE-compatible
   reader and test third-party ACE fixtures with the patched decoder.
 - Verify behavior on supported Windows builds and across relevant ACE versions.
-- Diagnose the shared baseline/patched `-2` patterned-input CRC failure before
-  treating that mode as validated for such inputs.
+- The representative shared baseline/patched `-2` CRC failure was diagnosed
+  and fixed by the separate distance-history patch documented above; the exact
+  earlier temporary fixture was not saved, and independent WinACE-compatible
+  validation remains open.
 - If this is intended for production rather than an educational prototype,
   define the required ACE version, compatibility target, and accepted
   interoperability corpus first.

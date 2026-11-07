@@ -47,13 +47,28 @@ ACE archive headers with `ace d` but did not produce machine-code disassembly of
 an original WinACE compression routine. Independent WinACE interoperability is
 also unverified.
 
+### ACE `-2` CRC follow-up — 2026-11-07
+
+A deterministic varying-offset fixture reproduced the shared baseline and
+Huffman-only `-2` CRC failure; the same input passed under `-z`. Diagnosis showed
+an encoder/decoder repeat-distance-history mismatch across blocked-mode switches,
+not an error in the CRC algorithm. The separate
+[`ace-c-lz77-distance-history.patch`](../patches/ace-c-lz77-distance-history.patch)
+and
+[`test-ace-c-distance-history-fix.sh`](../scripts/test-ace-c-distance-history-fix.sh)
+reproduce the old failure class and verify integrity plus exact extraction for
+three patterns after the fix. The exact temporary input from the earlier run was
+not saved, so the new fixture is a representative reproducer, not a bit-for-bit
+replay. Full scope and test results:
+[`ace-delta-history-crc-fix-2026-11-07.md`](ace-delta-history-crc-fix-2026-11-07.md).
+
 ## Status and next gates
 
 | Strand | Status | Remaining gate |
 | --- | --- | --- |
 | Zangi | Public-source review complete | Binary provenance, signature/hash verification, and behavior were not assessed; no package was executed. |
 | EFF | Source review complete | None for the requested source check; EFF provides no current Zangi-specific evaluation in the sources located. |
-| ACE | Source-level Huffman prototype and repeatable local tests complete | Original executable disassembly, independent WinACE-compatible interoperability, and cross-version tests remain open. The shared baseline/patched `-2` patterned-input CRC failure also remains undiagnosed. |
+| ACE | Source-level Huffman prototype plus a separately patched blocked-mode distance-history fix; both have repeatable tests | Original executable disassembly, independent WinACE-compatible interoperability, third-party fixtures, and cross-version tests remain open. The exact earlier temporary `-2` fixture was not saved; a representative failure class is reproduced and fixed by the new patch. |
 
 No change was made to the Zangi app, the repository’s ACE parser, or the Wiki in
 a Jar application code in this round.

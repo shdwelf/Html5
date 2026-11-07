@@ -100,12 +100,12 @@ test("the documented registry and pack counts match the live registry", () => {
   dom.window.eval("window.bake = () => Promise.resolve()");
   try {
     const ids = dom.window.eval("OPERATIONS.map(o => o.id)");
-    assert.equal(ids.length, 517, "the kitchen's registry size changed — update the cookbook");
+    assert.equal(ids.length, 518, "the kitchen's registry size changed — update the cookbook");
     const selectAll = dom.window.eval("applyRecipePacks(Object.keys(RECIPE_PACKS))");
     assert.equal(selectAll, ids.length, "SFX select-all must load the whole registry");
     assert.ok(text.includes("147 of the then-480"), "the card must preserve the historical audit count");
     assert.ok(text.includes("333 recipes"), "the card must state what the old select-all produced");
-    assert.ok(text.includes("517 of 517"), "the card must state the current full coverage");
+    assert.ok(text.includes("518 of 518"), "the card must state the current full coverage");
     assert.ok(ids.includes("averyLabels") && ids.includes("qrcode"), "the documented ops exist");
     assert.ok(ids.includes("complexityLab") && ids.includes("symbolicLogic"), "the local logic operations exist");
   } finally { dom.window.close(); }
@@ -121,5 +121,22 @@ test("every documented barcode op id exists in the kitchen", () => {
       assert.equal(dom.window.eval(`OPERATIONS.some(o => o.id === ${JSON.stringify(id)})`), true,
         `${id} is documented but not implemented`);
     }
+  } finally { dom.window.close(); }
+});
+
+test("the ElGamal cookbook entry links the source and stays scoped to one operation", () => {
+  const text = sectionText("asym");
+  assert.ok(text.includes("elgamalMulDemo"), "the public-key card must name the live operation");
+  assert.match(text, /multiplicative homomorphism/i);
+  assert.match(text, /not fully homomorphic encryption/i);
+  assert.match(cookbookHtml, /https:\/\/www\.cs\.utexas\.edu\/~dwu4\/papers\/XRDSFHE\.pdf/);
+  const dom = bootKitchen();
+  try {
+    const output = JSON.parse(dom.window.eval(`OPERATIONS.find(o => o.id === 'elgamalMulDemo').run('', {
+      p:'23', q:'11', g:'2', alpha:'3', m0:'4', r0:'4', m1:'8', r1:'5', rerand:'3'
+    })`));
+    assert.equal(output.homomorphicProduct.decrypted, "9");
+    assert.equal(output.rerandomization.decrypted, "9");
+    assert.match(output.scope, /not FHE/i);
   } finally { dom.window.close(); }
 });
