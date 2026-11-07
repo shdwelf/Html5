@@ -86,11 +86,13 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-62-2026-11-05.md](backlog-execution-round-62-2026-11-05.md) — browser OpenPGP Workbench v1 and CyberChef MDC correction
 - [backlog-execution-round-63-2026-11-05.md](backlog-execution-round-63-2026-11-05.md) — Android/QEMU, XPort Pro, SDR, and backlog research
 - [backlog-execution-round-64-2026-11-07.md](backlog-execution-round-64-2026-11-07.md) — Zangi VPN tunneling, NanoProxy comparison, and authorized Z-Library/IPFS research
+- [backlog-execution-round-65-2026-11-07.md](backlog-execution-round-65-2026-11-07.md) — ACE distance-history fix, CyberChef ElGamal demo, keyservers, AGE/PGPony, and WideBand review
 
 ## Research deep dives (the “ghirdra” line)
 
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
 - [algorithm-engineering-guidance-2026-11-05.md](algorithm-engineering-guidance-2026-11-05.md) — algorithm-engineering checklist informed by public Springer references
+- [age-pgpony-local-recipe-review-2026-11-07.md](age-pgpony-local-recipe-review-2026-11-07.md) — AGE v1.3.2/spec capability check, PGPony source scope, and local recipe-registry audit
 - [cellular-automata-cipher-triage-2026-11-04.md](cellular-automata-cipher-triage-2026-11-04.md) — cellular-automata cipher triage 2026 11 04
 - [cellular-automata-signal-pattern-detection-2026-11-05.md](cellular-automata-signal-pattern-detection-2026-11-05.md) — checking known CA gliders and signal streams
 - [eff-secure-messaging-source-check-2026-11-04.md](eff-secure-messaging-source-check-2026-11-04.md) — EFF secure-messaging source check 2026 11 04
@@ -107,11 +109,13 @@ IANA media types (RFC 6838 / BCP 13).
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
 - [zangi-public-source-review-2026-11-04.md](zangi-public-source-review-2026-11-04.md) — Zangi public-source review 2026 11 04
+- [wideband-nmu-public-evidence-2026-11-07.md](wideband-nmu-public-evidence-2026-11-07.md) — public nMU product sources, undated resume training, and non-transferable Ethernet claims
 - [zangi-xapk-static-inspection-2026-11-04.md](zangi-xapk-static-inspection-2026-11-04.md) — Zangi XAPK static inspection 2026 11 04
 - [zangi-dex-static-inspection-2026-11-05.md](zangi-dex-static-inspection-2026-11-05.md) — Zangi DEX and native static-inspection follow-up 2026 11 05
 
 ## Software protection & disassembly
 
+- [ace-delta-history-crc-fix-2026-11-07.md](ace-delta-history-crc-fix-2026-11-07.md) — representative ACE Delta-mode CRC mismatch, distance-history diagnosis, and regression proof
 - [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes
 - [arj-lha-ace-password-notes-2026-10-21.md](arj-lha-ace-password-notes-2026-10-21.md) — arj lha ace password notes 2026 10 21
@@ -147,6 +151,7 @@ IANA media types (RFC 6838 / BCP 13).
 
 - [aes-nacl-recipe-checks-2026-10-21.md](aes-nacl-recipe-checks-2026-10-21.md) — aes nacl recipe checks 2026 10 21
 - [bip-standards.md](bip-standards.md) — bip standards
+- [openpgp-keyserver-working-list-2026-11-07.md](openpgp-keyserver-working-list-2026-11-07.md) — direct keyserver snapshots, protocol/consent/sync comparison, and dated evidence trail
 
 ## Silicon, RTL & hardware intel
 
@@ -165,6 +170,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [cyberchef-aztec-cuecat.md](cyberchef-aztec-cuecat.md) — cyberchef aztec cuecat
 - [cyberchef-cipher-machine-recipe-checks-2026-10-05.md](cyberchef-cipher-machine-recipe-checks-2026-10-05.md) — cyberchef cipher machine recipe checks 2026 10 05
 - [cyberchef-classical-cipher-deep-dive.md](cyberchef-classical-cipher-deep-dive.md) — cyberchef classical cipher deep dive
+- [cyberchef-elgamal-multiplicative-demo-2026-11-07.md](cyberchef-elgamal-multiplicative-demo-2026-11-07.md) — CyberChef multiplicative ElGamal demo, independent toy vector, and not-FHE scope
 - [cyberchef-gb-rom-2026-10-21.md](cyberchef-gb-rom-2026-10-21.md) — cyberchef gb rom 2026 10 21
 - [cyberchef-matrix-deep-dive.md](cyberchef-matrix-deep-dive.md) — cyberchef matrix deep dive
 - [cyberchef-modern-cryptography-research-2026-09-29.md](cyberchef-modern-cryptography-research-2026-09-29.md) — cyberchef modern cryptography research 2026 09 29

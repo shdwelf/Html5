@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 517 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 518 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -25388,6 +25388,74 @@ addOp('pgpArmorCheck','OpenPGP Radix-64 armor check (CRC-24)','Modern',
       'Caution    : a checksum detects transcription damage only — it is not a MAC, and a mismatch can equally mean the wrong block was pasted.'].join('\n');
   });
 
+/* Educational finite-group ElGamal example. The PDF's p denotes the prime
+   group order; here P is a prime field modulus and q is the order of a prime-order
+   subgroup G=<g> of Z_P*. This is deliberately small and deterministic. */
+const EGM_U64_MAX=(1n<<64n)-1n;
+function egmMod(a,m){const r=a%m;return r<0n?r+m:r;}
+function egmPow(b,e,m){let x=egmMod(b,m),r=1n;while(e>0n){if((e&1n)!==0n)r=(r*x)%m;x=(x*x)%m;e>>=1n;}return r;}
+function egmParse(v,label){const s=String(v==null?'':v).trim();if(!/^(0|[1-9][0-9]*)$/.test(s))throw new Error(label+' must be a non-negative decimal integer');const n=BigInt(s);if(n>EGM_U64_MAX)throw new Error(label+' is limited to an unsigned 64-bit value in this educational operation');return n;}
+function egmPrime64(n){
+  if(n<2n||n>EGM_U64_MAX)return false;
+  const small=[2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n];
+  for(const p of small){if(n===p)return true;if(n%p===0n)return false;}
+  let d=n-1n,s=0;while((d&1n)===0n){d>>=1n;s++;}
+  // Deterministic Miller-Rabin bases for all unsigned 64-bit integers.
+  for(const base of [2n,325n,9375n,28178n,450775n,9780504n,1795265022n]){
+    const a=base%n;if(a===0n)continue;let x=egmPow(a,d,n);
+    if(x===1n||x===n-1n)continue;
+    let passed=false;for(let i=1;i<s;i++){x=(x*x)%n;if(x===n-1n){passed=true;break;}}
+    if(!passed)return false;
+  }
+  return true;
+}
+function egmInv(a,m){let oldR=m,r=egmMod(a,m),oldT=0n,t=1n;while(r!==0n){const q=oldR/r;[oldR,r]=[r,oldR-q*r];[oldT,t]=[t,oldT-q*t];}if(oldR!==1n)throw new Error('No modular inverse exists for the decryption value');return egmMod(oldT,m);}
+function egmGroupMember(x,p,q,label){if(x<=0n||x>=p||egmPow(x,q,p)!==1n)throw new Error(label+' must be a nonzero member of the order-q subgroup G');}
+addOp('elgamalMulDemo','ElGamal multiplicative demo (not FHE)','Public Key',
+  'Educational worked example of the paper\'s multiplicative ElGamal: c=(g^r, h^r·m), h=g^α; componentwise ciphertext multiplication encrypts m₀·m₁, and multiplying by a fresh encryption of 1 rerandomizes it. This operation uses explicit decimal arguments and produces a reproducible JSON report; it does not generate randomness. The default group is the order-11 subgroup G=<2> of Z₂₃*, with tiny, insecure values. This demonstrates one multiplicative homomorphism only: it is NOT fully homomorphic encryption (FHE), not production cryptography, and not an implementation of the paper\'s bootstrapping/GSW material. P is the field modulus and q is the subgroup order; primality checks are deterministic only up to 64 bits.',
+  [
+    {key:'p',label:'Prime modulus P',type:'text',default:'23'},
+    {key:'q',label:'Prime subgroup order q',type:'text',default:'11'},
+    {key:'g',label:'Generator g',type:'text',default:'2'},
+    {key:'alpha',label:'Private exponent α',type:'text',default:'3'},
+    {key:'m0',label:'Message m₀ (group element)',type:'text',default:'4'},
+    {key:'r0',label:'Encryption exponent r₀',type:'text',default:'4'},
+    {key:'m1',label:'Message m₁ (group element)',type:'text',default:'8'},
+    {key:'r1',label:'Encryption exponent r₁',type:'text',default:'5'},
+    {key:'rerand',label:'Rerandomization exponent s',type:'text',default:'3'}
+  ],function(_text,a){
+    const p=egmParse(a.p,'P'),q=egmParse(a.q,'q'),g=egmParse(a.g,'g');
+    if(p<3n||!egmPrime64(p))throw new Error('P must be prime and no larger than 2^64−1');
+    if(q<2n||!egmPrime64(q))throw new Error('q must be prime and no larger than 2^64−1');
+    if(q>=p||(p-1n)%q!==0n)throw new Error('q must be a prime divisor of P−1');
+    if(g<=1n||g>=p||egmPow(g,q,p)!==1n)throw new Error('g must be a non-identity element of the order-q subgroup G');
+    const alpha=egmParse(a.alpha,'α');
+    if(alpha<1n||alpha>=q)throw new Error('α must satisfy 1 ≤ α < q');
+    const m0=egmParse(a.m0,'m₀'),m1=egmParse(a.m1,'m₁');
+    egmGroupMember(m0,p,q,'m₀');egmGroupMember(m1,p,q,'m₁');
+    const r0=egmParse(a.r0,'r₀'),r1=egmParse(a.r1,'r₁'),s=egmParse(a.rerand,'s');
+    for(const [name,r] of [['r₀',r0],['r₁',r1],['s',s]])if(r>=q)throw new Error(name+' must satisfy 0 ≤ exponent < q');
+    const h=egmPow(g,alpha,p);
+    const enc=(m,r)=>({c0:egmPow(g,r,p),c1:(m*egmPow(h,r,p))%p});
+    const c0=enc(m0,r0),c1=enc(m1,r1);
+    const product={c0:(c0.c0*c1.c0)%p,c1:(c0.c1*c1.c1)%p};
+    const decrypt=c=>((c.c1*egmInv(egmPow(c.c0,alpha,p),p))%p);
+    const encOne={c0:egmPow(g,s,p),c1:egmPow(h,s,p)};
+    const rerandomized={c0:(product.c0*encOne.c0)%p,c1:(product.c1*encOne.c1)%p};
+    const jsonCipher=c=>({c0:String(c.c0),c1:String(c.c1)});
+    return JSON.stringify({
+      scope:'Educational multiplicative ElGamal only — not FHE and not production cryptography.',
+      group:{modulusP:String(p),primeOrderQ:String(q),generatorG:String(g),publicH:String(h)},
+      encryptions:[
+        {message:String(m0),randomizer:String(r0),ciphertext:jsonCipher(c0)},
+        {message:String(m1),randomizer:String(r1),ciphertext:jsonCipher(c1)}
+      ],
+      homomorphicProduct:{formula:'(c0₀·c0₁ mod P, c1₀·c1₁ mod P)',ciphertext:jsonCipher(product),plaintextProductModP:String((m0*m1)%p),decrypted:String(decrypt(product))},
+      rerandomization:{formula:'C′ = C · Enc(1; s)',freshExponent:String(s),freshEncryptionOfOne:jsonCipher(encOne),ciphertext:jsonCipher(rerandomized),decrypted:String(decrypt(rerandomized))},
+      notes:['The product ciphertext is an encryption of m₀·m₁ in G; its randomness is the sum of the input exponents modulo q, not fresh independent randomness.','Rerandomization multiplies by Enc(1; s), using the explicitly supplied s; this demo never samples randomness.','One multiplicative homomorphism is not full homomorphism: this does not implement arbitrary circuits, bootstrapping, or GSW.']
+    },null,2);
+  });
+
 /* ---- OpenPGP string-to-key needs a hash inside the page: the iterated count may
    reach 65,011,712 octets (count byte 0xFF), so SHA-1 and SHA-256 are streamed in
    64 KiB chunks and the repeated salt+phrase is never materialised. Both cores are
@@ -33767,7 +33835,7 @@ RECIPE_PACKS["Full Coverage — Keypairs"] = [["genRSA",{}],["genECDSA",{}],["na
 RECIPE_PACKS["Full Coverage — Modern Curves"] = [["ecdh",{}]];
 RECIPE_PACKS["Full Coverage — Parity"] = [["parity",{}],["lrc",{}]];
 RECIPE_PACKS["Full Coverage — Post-Quantum"] = [["mkkem",{}],["mldsa",{}],["mldsaCore",{}]];
-RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}]];
+RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}],["elgamalMulDemo",{}]];
 RECIPE_PACKS["Full Coverage — Recipes"] = [["recipePack",{}]];
 RECIPE_PACKS["Full Coverage — Secret Sharing"] = [["shamir",{}]];
 RECIPE_PACKS["Full Coverage — Steganography"] = [["stegoHide",{}],["stegoReveal",{}],["stegoSpace",{}],["stegoLSB",{}]];
@@ -33780,6 +33848,9 @@ RECIPE_PACKS["Full Coverage — Wallet (BIP39)"] = [["bip39",{}]];
 RECIPE_PACKS["Full Coverage — Wallet (BIP44)"] = [["haikub44",{}]];
 
 RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [["odPoemExact",{}],["vicSchedule",{}],["vicExact",{}],["diana",{}],["dianaTable",{}],["gronsfeld",{key:'123'}],["gronsfeldAnalyze",{}],["odPoemKey",{}],["secomExact",{}],["straddlingCheckerboard",{}]];
+// Based on Wu's ElGamal example in XRDSFHE.pdf: multiplication only, explicitly
+// not FHE. The toy operation ships with an independently checked worked vector.
+RECIPE_PACKS["ElGamal Multiplicative Homomorphism (not FHE)"] = [["elgamalMulDemo",{}]];
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.
 RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];

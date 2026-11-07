@@ -189,6 +189,17 @@
     <p class="status">Status: <span class="badge b-ok">Verified</span> (mathematical proof &amp; example: 4<sup>3</sup>=31 mod 33).</p>
   </div>
 
+  <!-- ElGamal -->
+  <div class="card">
+    <div class="cat">Asymmetric · finite groups · multiplicative homomorphism</div>
+    <h3>ElGamal — one multiplicative homomorphism <span class="badge b-edu">Educational</span></h3>
+    <p>In a prime-order subgroup <span class="kbd">G=&lt;g&gt;</span> of a finite field, choose secret <span class="kbd">α</span> and public <span class="kbd">h=g<sup>α</sup></span>. For <span class="kbd">m∈G</span>, encrypt with <span class="kbd">r</span> as <span class="kbd">(g<sup>r</sup>, h<sup>r</sup>·m)</span>; decrypt <span class="kbd">(c₀,c₁)</span> as <span class="kbd">c₁/(c₀<sup>α</sup>)</span>.</p>
+    <div class="math">Enc(m₀;r₀) · Enc(m₁;r₁) = Enc(m₀m₁; r₀+r₁) &nbsp;·&nbsp; C′ = C · Enc(1;s) rerandomizes</div>
+    <p>The local <span class="kbd">elgamalMulDemo</span> operation uses the paper’s multiplication and fresh-encryption-of-1 rerandomization, with a checked toy subgroup <span class="kbd">P=23, q=11, g=2</span>. The default messages <span class="kbd">4</span> and <span class="kbd">8</span> multiply to <span class="kbd">9</span> mod 23; both the product and rerandomized ciphertext decrypt to 9.</p>
+    <p><b>Scope:</b> this is only multiplicative ElGamal, not fully homomorphic encryption. The PDF's GSW and bootstrapping sections are tutorial sketches, not a ready-to-run FHE implementation. The tiny example is insecure and for learning only. Source: <a href="https://www.cs.utexas.edu/~dwu4/papers/XRDSFHE.pdf" target="_blank" rel="noopener noreferrer">David J. Wu, <i>Fully Homomorphic Encryption: Cryptography’s Holy Grail</i></a>.</p>
+    <p class="status">Status: <span class="badge b-edu">Educational</span> — the runtime recipe is checked against an independent modular-arithmetic vector; it does not generate production keys or randomness.</p>
+  </div>
+
   <!-- ECC -->
   <div class="card">
     <div class="cat">Asymmetric · Elliptic Curves</div>
@@ -1944,8 +1955,8 @@
   <div class="card">
     <div class="cat">Packaging &middot; SFX recipe packs</div>
     <h3>Full-coverage recipe packs</h3>
-    <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, and the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only); each is included in the offline recipe packs.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 517 operations and SFX select-all loads 517 of 517; tests fail if any operation is ever left out of every pack again.</p>
+    <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only), and the ElGamal multiplicative teaching demo (not FHE); each is included in the offline recipe packs.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 518 operations and SFX select-all loads 518 of 518; tests fail if any operation is ever left out of every pack again.</p>
   </div>
 
   <hr class="hr">

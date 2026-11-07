@@ -44,7 +44,13 @@ No support request has been sent. The following confirmations are needed before 
 4. Clarify the required micro 2 variant/pin configuration for a two-wire DC bus, including `ZC_IN` handling. The PEV instruction in the micro 2 datasheet must not be generalized to this different interface without confirmation.
 5. State the intended insulation/working-voltage and test requirements for the full assembly; the transformer’s 4 kVAC/2 s dielectric test alone is insufficient to establish them.
 
-Until these are answered, adapter CAD and hardware claims remain blocked. The user’s endpoint identity, RJ11-only/no-PSTN boundary, and 24 V PLC-plus-power requirement are unchanged.
+## Adjacent WideBand/Ethernet evidence does not clear the PLC gate
+
+The [WideBand Professional Series switch page](https://www.wband.com/products/gigabit-ethernet-networking/professional-101001000-switches/) and [datasheet](https://www.wband.com/resources/datasheets/WB8GMPRO_WB16GM3PRO_WB28GM3PRO.pdf) describe proprietary-signaling Ethernet switches and advertise extended reach over existing Category 5/Category 3 cabling. The same literature also lists 100 Mbps and 1000 Mbps cable support as Category 5 or greater. Treat the reach statements as vendor claims, not as an independently verified PLC coupler specification.
+
+Howard Johnson's [“So Good, it works on Barbed Wire”](https://www.sigcon.com/Pubs/edn/SoGoodBarbedWire.htm) (first printed 2001-07-05) describes a 1998 **100BASE-T4** demonstration: 100 Mbps split over four deliberately spaced differential pairs. The caption uses “Wide-Band Systems,” while the body describes a Broadcom T4 demonstration; no source checked here establishes that this is the same company as WideBand Corporation or the resume's WideBand nMU. Neither the Ethernet product page nor the barbed-wire story demonstrates HomePlug Green PHY over a two-wire RJ11 pair while carrying 24 V DC. They do not justify selecting a transformer, coupling capacitor, protection network, wire spacing, or power-feed topology.
+
+Until the component and 24 V coupler questions above are answered, adapter CAD and hardware claims remain blocked. The user’s endpoint identity, RJ11-only/no-PSTN boundary, and 24 V PLC-plus-power requirement are unchanged.
 
 ## Sources
 

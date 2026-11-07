@@ -1,0 +1,55 @@
+== Backlog execution — round 65 (2026-11-07) ==
+
+Source: docs/backlog-execution-round-65-2026-11-07.md — synced 2026-11-07 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Backlog execution — round 65 (2026-11-07) =
+
+== Completed in this pass ==
+
+=== ACE `-2` archive-data CRC failure ===
+
+The previously open diagnosis gate is closed for a representative failure class. The baseline `seb3773/ace-c` build and the Huffman-only patch reproduce an archive-data CRC mismatch on Delta-mode patterned inputs; carrying the four-entry LZ77 repeat-distance history across blocked tokenization runs fixes the mismatch when combined with the Huffman patch. The exact historical temporary fixture is still unknown, so this is not a bit-for-bit replay of it. The fix remains separate from CyberChef's ACE header CRC-16 check.
+
+- Patch: `patches/ace-c-lz77-distance-history.patch`
+- Regression: `scripts/test-ace-c-distance-history-fix.sh`
+- Diagnosis and caveats: `docs/ace-delta-history-crc-fix-2026-11-07.md`
+- Checks passed on 2026-11-07: distance-history regression (baseline `-z` control, baseline/Huffman-only failures, combined-patch test_core and three `-2` round trips); Huffman regression (14,150 cases, zero failures, five archive round trips).
+
+=== CyberChef ElGamal recipe ===
+
+Added `elgamalMulDemo`, a dedicated **ElGamal Multiplicative Homomorphism (not FHE)** recipe pack, and public Cookbook/README documentation. The operation uses explicit toy parameters; it samples no randomness and warns that it is insecure and not FHE. The default group/vector is independently checked with Python modular exponentiation and pinned in the test suite. Registry count and full-coverage tests were updated from 517 to 518; the Webxdc build synchronizes the merged kitchen.
+
+- Implementation: `public/apps/cyberchef/index.html`
+- Tests: `tests/cyberchef-elgamal-multiplicative.test.mjs`, plus updated cookbook and archive-registry tests
+- Detailed source/vector scope: `docs/cyberchef-elgamal-multiplicative-demo-2026-11-07.md`
+
+=== Keyserver working list ===
+
+Created `docs/openpgp-keyserver-working-list-2026-11-07.md` with direct stats snapshots at 2026-11-07 12:10:52–53Z, protocol/UI observations, lookup/upload/retrieval evidence, consent and identity caveats, peer status, and separate secondary/community classifications. No key was uploaded and no propagation test was attempted. Keyserver presence remains distribution, not identity proof.
+
+=== AGE and PGPony source/registry review ===
+
+Created `docs/age-pgpony-local-recipe-review-2026-11-07.md`. It checks the current AGE spec against age v1.3.2 source and explicitly distinguishes recipient-form support from tagged identity/hardware support. It records upstream `age-inspect` classification tests, the current PGPonyAndroid/F-Droid/Kotlin-core sources, and the unresolved discrepancy between the PGPony open-source page and Kotlin-core README. The live local CyberChef registry contains 518 operations, with `pgpArmorCheck` and `pgpSymDecrypt`, but no AGE or PGPonyCore-specific operation. No new AGE/PGPony operation or cipher code was added.
+
+=== WideBand and public-source Greeran follow-up ===
+
+Added `docs/wideband-nmu-public-evidence-2026-11-07.md`. Direct WideBand product sources establish the nMU product and its May 2, 2006 launch, but do not prove a resume-listed training course or attendance. The undated “Wideband NMU” item was removed from the 1997–2001 placement in `docs/sgreeran-resume-chronology.md`; it is now explicitly unplaced pending a dated source. S-Key remains unassigned to RFC 1760/2289 without protocol evidence. WideBand Ethernet and the barbed-wire anecdote were documented as non-transferable to HomePlug Green PHY.
+
+== Tests and build verification ==
+
+- `ACE_C_DIR=/tmp/ace-c ./scripts/test-ace-c-distance-history-fix.sh` — passed.
+- `ACE_C_DIR=/tmp/ace-c ./scripts/test-ace-c-huffman-patch.sh` — passed: 14,150 cases, zero failures, five archive round trips.
+- CyberChef ElGamal/cookbook/archive/OpenPGP targeted Node tests — passed (22 tests); the later registry-sync/SFX acceptance pair passed 3/3 after the operation-count expectations were updated.
+- `npm run build:wikiinajar` — passed the built-in privacy check; 327 Markdown documents converted to wiki pages and `wikiinajar.xdc` was rebuilt.
+- `node tools/wikiinajar/sync-docs.mjs --check` — all 9 staged pages match their notes.
+- Final `npm test` — passed: Vitest 35 files / 307 tests; Node 970 tests, 959 passed, 0 failed, 11 skipped.
+
+== Still open / blocked ==
+
+- The exact historical ACE temporary fixture and cross-implementation/inter-version ACE validation remain unavailable; do not overstate the reproducer.
+- Keyserver peer listings are not end-to-end synchronization tests; PGPkeys.eu's Delete Info behavior and operator policy remain unverified. A true propagation test needs an authorized controlled test key and operator permission; do not upload synthetic keys to public servers.
+- AGE and PGPony were source-reviewed, not built or executed. The Android app's release/source reproducibility was not independently checked.
+- The public Greeran commencement-date question remains open; no date was inferred.
+- The 24 V DC two-wire RJ11 HomePlug Green PHY adapter remains blocked before CAD: Chargebyte must confirm the controlled I2PLCTR-2 datasheet/pinout, 24 V suitability, coupling/protection network, power path, micro 2 pin configuration, and assembly safety requirements. The endpoints stay identical; never connect to telephone service or mains.
+- The private Greeran backup remains private; no private IDs, links, copies, or passages were added to the public research notes.

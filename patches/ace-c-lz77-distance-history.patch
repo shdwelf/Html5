@@ -1,0 +1,169 @@
+diff --git a/src/compress.c b/src/compress.c
+index 9a97733..734bb61 100644
+--- a/src/compress.c
++++ b/src/compress.c
+@@ -308,12 +308,11 @@ int ace_comp_hist_add(ace_comp_hist_t *h, const uint8_t *p, size_t n, size_t dic
+ 
+ static int tokenize(const uint8_t *prefix, size_t prefix_n,
+                     const uint8_t *in, size_t n, size_t dicsize, unsigned quality,
+-                    ace_tok_t **toks, size_t *ntoks)
++                    uint32_t hist[4], ace_tok_t **toks, size_t *ntoks)
+ {
+     uint32_t *head;
+     uint32_t *head2;
+     uint32_t *prev;
+-    uint32_t hist[4];
+     uint8_t *all = NULL;
+     const uint8_t *src;
+     size_t total, start, i, k;
+@@ -347,7 +346,6 @@ static int tokenize(const uint8_t *prefix, size_t prefix_n,
+         start = 0;
+     }
+ 
+-    memset(hist, 0, sizeof(hist));
+     head = (uint32_t *)calloc(ACE_HASH_SIZE, sizeof(uint32_t));
+     head2 = (uint32_t *)calloc(65536, sizeof(uint32_t));
+     prev = (uint32_t *)calloc(total + 1, sizeof(uint32_t));
+@@ -639,11 +637,13 @@ static unsigned detect_sound(const uint8_t *in, size_t n)
+ 
+ static int encode_buf(ace_bsw_t *w, const uint8_t *prefix, size_t prefix_n,
+                       const uint8_t *buf, size_t n, size_t dicsize,
+-                      unsigned quality, const ace_tok_t *switch_tok)
++                      unsigned quality, uint32_t dist_hist[4],
++                      const ace_tok_t *switch_tok)
+ {
+     ace_tok_t *toks = NULL;
+     size_t ntoks = 0;
+-    int rc = tokenize(prefix, prefix_n, buf, n, dicsize, quality, &toks, &ntoks);
++    int rc = tokenize(prefix, prefix_n, buf, n, dicsize, quality,
++                      dist_hist, &toks, &ntoks);
+     if (rc != ACE_OK)
+         return rc;
+     if (switch_tok) {
+@@ -672,6 +672,7 @@ int ace_compress_lz77_hist(const uint8_t *in, size_t n, size_t dicsize,
+     int rc;
+     const uint8_t *prefix = NULL;
+     size_t prefix_n = 0;
++    uint32_t dist_hist[4] = {0, 0, 0, 0};
+ 
+     *out = NULL;
+     *out_n = 0;
+@@ -689,7 +690,8 @@ int ace_compress_lz77_hist(const uint8_t *in, size_t n, size_t dicsize,
+     rc = ace_bsw_init(&w);
+     if (rc != ACE_OK)
+         return rc;
+-    rc = encode_buf(&w, prefix, prefix_n, in, n, dicsize, quality, NULL);
++    rc = encode_buf(&w, prefix, prefix_n, in, n, dicsize, quality,
++                    dist_hist, NULL);
+     if (rc == ACE_OK)
+         rc = ace_bsw_pad32(&w);
+     if (rc != ACE_OK) {
+@@ -993,7 +995,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+                       size_t dicsize, unsigned quality,
+                       const uint8_t *prefix, size_t prefix_n,
+                       ace_sound_t **snd, ace_pic_t **pic, int *last_delta,
+-                      uint64_t produced, const ace_tok_t *switch_tok)
++                      uint32_t dist_hist[4], uint64_t produced,
++                      const ace_tok_t *switch_tok)
+ {
+     const uint8_t *p = in + r->off;
+     size_t n = r->n;
+@@ -1001,7 +1004,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+     int rc = ACE_OK;
+ 
+     if (r->mode == ACE_MODE_LZ77) {
+-        return encode_buf(w, prefix, prefix_n, p, n, dicsize, quality, switch_tok);
++        return encode_buf(w, prefix, prefix_n, p, n, dicsize, quality,
++                          dist_hist, switch_tok);
+     }
+     if (r->mode == ACE_MODE_LZ77_EXE) {
+         work = (uint8_t *)malloc(n ? n : 1);
+@@ -1009,7 +1013,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+             return ACE_ERR_NOMEM;
+         memcpy(work, p, n);
+         exe_preprocess(work, n, produced, r->a);
+-        rc = encode_buf(w, prefix, prefix_n, work, n, dicsize, quality, switch_tok);
++        rc = encode_buf(w, prefix, prefix_n, work, n, dicsize, quality,
++                        dist_hist, switch_tok);
+         free(work);
+         return rc;
+     }
+@@ -1018,7 +1023,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+         if (!work)
+             return ACE_ERR_NOMEM;
+         delta_preprocess(work, p, n, r->a, last_delta);
+-        rc = encode_buf(w, prefix, prefix_n, work, n, dicsize, quality, switch_tok);
++        rc = encode_buf(w, prefix, prefix_n, work, n, dicsize, quality,
++                        dist_hist, switch_tok);
+         free(work);
+         return rc;
+     }
+@@ -1047,7 +1053,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+             }
+             if (rc == ACE_OK)
+                 rc = encode_buf(w, prefix_n ? pre2 : p, pn2,
+-                                p + sound_n, n - sound_n, dicsize, quality, NULL);
++                                p + sound_n, n - sound_n, dicsize, quality,
++                                dist_hist, NULL);
+             free(pre2);
+         }
+         return rc;
+@@ -1084,7 +1091,8 @@ static int encode_run(ace_bsw_t *w, const ace_run_t *r, const uint8_t *in,
+             }
+             if (rc == ACE_OK)
+                 rc = encode_buf(w, prefix_n ? pre2 : p, pn2,
+-                                p + used, n - used, dicsize, quality, NULL);
++                                p + used, n - used, dicsize, quality,
++                                dist_hist, NULL);
+             free(pre2);
+         }
+         return rc;
+@@ -1111,6 +1119,10 @@ int ace_compress_blocked_hist(const uint8_t *in, size_t n, size_t dicsize,
+     ace_sound_t *snd = NULL;
+     ace_pic_t *pic = NULL;
+     int last_delta = 0;
++    /* The decoder keeps repeat-distance history across mode switches. Keep the
++     * encoder's matching history member-wide rather than resetting it for each
++     * tokenization run. */
++    uint32_t dist_hist[4] = {0, 0, 0, 0};
+     const uint8_t *prefix = NULL;
+     size_t prefix_n = 0;
+     uint8_t *full_prefix = NULL;
+@@ -1202,14 +1214,16 @@ int ace_compress_blocked_hist(const uint8_t *in, size_t n, size_t dicsize,
+             size_t n_run_toks = 0;
+ 
+             if (r->mode == ACE_MODE_LZ77) {
+-                rc = tokenize(pre, pn, in + r->off, r->n, dicsize, quality, &run_toks, &n_run_toks);
++                rc = tokenize(pre, pn, in + r->off, r->n, dicsize, quality,
++                              dist_hist, &run_toks, &n_run_toks);
+             } else if (r->mode == ACE_MODE_LZ77_DELTA) {
+                 uint8_t *work = (uint8_t *)malloc(r->n ? r->n : 1);
+                 if (!work)
+                     rc = ACE_ERR_NOMEM;
+                 else {
+                     delta_preprocess(work, in + r->off, r->n, r->a, &last_delta);
+-                    rc = tokenize(pre, pn, work, r->n, dicsize, quality, &run_toks, &n_run_toks);
++                    rc = tokenize(pre, pn, work, r->n, dicsize, quality,
++                                  dist_hist, &run_toks, &n_run_toks);
+                     if (mirror)
+                         memcpy(mirror + r->off, work, r->n);
+                     free(work);
+@@ -1221,7 +1235,8 @@ int ace_compress_blocked_hist(const uint8_t *in, size_t n, size_t dicsize,
+                 else {
+                     memcpy(work, in + r->off, r->n);
+                     exe_preprocess(work, r->n, r->off, r->a);
+-                    rc = tokenize(pre, pn, work, r->n, dicsize, quality, &run_toks, &n_run_toks);
++                    rc = tokenize(pre, pn, work, r->n, dicsize, quality,
++                                  dist_hist, &run_toks, &n_run_toks);
+                     if (mirror)
+                         memcpy(mirror + r->off, work, r->n);
+                     free(work);
+@@ -1260,7 +1275,7 @@ int ace_compress_blocked_hist(const uint8_t *in, size_t n, size_t dicsize,
+             pre = full_prefix ? full_prefix : prefix;
+             pn = full_prefix ? full_prefix_n : prefix_n;
+             rc = encode_run(&w, r, in, dicsize, quality, pre, pn, &snd, &pic,
+-                            &last_delta, r->off, NULL);
++                            &last_delta, dist_hist, r->off, NULL);
+         }
+ 
+         if (rc == ACE_OK && mirror &&
