@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+def repoRoot = rootProject.projectDir.parentFile.parentFile
+def publicAppsDir = new File(repoRoot, 'public/apps')
+def generatedAssetsDir = layout.buildDirectory.dir('generated/html5-assets')
+
+android {
+    namespace 'org.arena.html5launcher'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'org.arena.html5launcher'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir(generatedAssetsDir)
+        }
+    }
+
+    buildTypes {
+        debug {
+            // The CI build is debug-signed for sideloading and review.
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.register('prepareHtmlAppsAssets', Exec) {
+    workingDir repoRoot
+    commandLine 'node',
+            'scripts/build-html5-offline-launcher-assets.mjs',
+            '--out-dir', generatedAssetsDir.get().asFile.absolutePath
+    inputs.dir(publicAppsDir)
+    outputs.dir(generatedAssetsDir)
+}
+
+tasks.named('preBuild').configure {
+    dependsOn(tasks.named('prepareHtmlAppsAssets'))
+}

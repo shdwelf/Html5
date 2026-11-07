@@ -103,6 +103,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [mls-metasearch-and-reso-access-review-2026-11-04.md](mls-metasearch-and-reso-access-review-2026-11-04.md) — real-estate MLS metasearch and authorized RESO access review
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
 - [pgponycore-cyberchef-source-review-2026-11-05.md](pgponycore-cyberchef-source-review-2026-11-05.md) — PGPonyCore source review and CyberChef recipe audit
+- [html5-offline-launcher-v1-implementation-2026-11-05.md](html5-offline-launcher-v1-implementation-2026-11-05.md) — Android offline WebView/catalog launcher for all 89 HTML entrypoints
 - [openpgp-workbench-v1-implementation-2026-11-05.md](openpgp-workbench-v1-implementation-2026-11-05.md) — browser OpenPGP Workbench v1 implementation and verification
 - [public-repository-privacy-audit-2026-11-04.md](public-repository-privacy-audit-2026-11-04.md) — public-safe Drive-reference and Wiki-bundle privacy audit
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21

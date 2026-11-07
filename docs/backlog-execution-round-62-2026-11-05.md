@@ -50,13 +50,13 @@ the existing CyberChef tests and the new workbench tests.
 ## Next phases
 
 The user-resolved order is browser OpenPGP app → Android consolidation → CA
-pattern inspector when grid/time-series input is available. A read-only inventory
-found 90 top-level `public/apps` directories (89 HTML entrypoints, 79 Webxdc
-manifests) and one Gradle project: `apps/riseup-invizible-gateway`, a
-VPN-specific orchestration scaffold with no tunnel engines, not a launcher for
-the HTML apps. It declares minSdk 24 / targetSdk 34. Java, Gradle, and the
-Android SDK are not installed in this workspace. Before implementation, confirm
-whether consolidation means an offline WebView launcher for the HTML apps,
-extending the VPN scaffold, or combining a selected set of native apps, plus the
-acceptance target. The CA inspector remains conditional on suitable
-grid/time-series data and a specified CA model.
+pattern inspector when grid/time-series input is available. The Android target
+was clarified as a separate offline WebView/catalog app for all 89 HTML
+entrypoints, debug APK plus source, minSdk 24. Phase 2 is now implemented in
+[`apps/html5-offline-launcher/`](../apps/html5-offline-launcher/); its APK is
+built by CI because Java, Gradle, and the Android SDK are not installed in this
+workspace. See
+[`html5-offline-launcher-v1-implementation-2026-11-05.md`](html5-offline-launcher-v1-implementation-2026-11-05.md).
+The existing `apps/riseup-invizible-gateway/` remains a separate VPN-specific
+orchestration scaffold, not the launcher. The CA inspector remains conditional
+on suitable grid/time-series data and a specified CA model.
