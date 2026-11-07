@@ -37,15 +37,23 @@ ch. XVI gaps & private prompts).
 
 ## Open research queue (decidable lookups)
 
-1. Glendora High Class of 2001 commencement program — the exact June 2001 date
-   (venue resolved: Citrus College Stadium; needs the program, yearbook, or a
-   contemporaneous newspaper schedule). The 16 Oct 2026 pass confirmed the venue
-   in a 2011 newspaper schedule and on the current school page, but found no
-   2001 primary date. On 7 Nov, the Classmates yearbook preview exposed only its
-   first five pages; the Glendora Public Library archive was identified as a
-   promising free source, but its search route returned a Cloudflare human check
-   in this research tool. Keep the date open and do not bypass either access
-   boundary. See `docs/greeran-commencement-research-2026-10-16.md`.
+1. Glendora High Class of 2001 commencement — the exact June 2001 date and a
+   contemporaneous GHS-specific venue record remain open. Citrus College
+   Stadium is the working venue clue; the SGV Tribune's 2011 schedule and the
+   current GHS page confirm later-year use, not the 2001 ceremony. A 25 Apr 2001
+   *Citrus College Clarion* article reports Citrus College's own May 18
+   commencement at the stadium, not Glendora High's. Targeted 2001 Clarion
+   searches for “Glendora High,” “graduation,” and “commencement” found no GHS
+   date. The “2001 Y2K bug” lead stays separate: the Clarion's single 2001 Y2K
+   hit is a rhetorical reference, not evidence of a Glendora Unified incident
+   or a GHS/commencement link. The Classmates yearbook preview exposed only its
+   first five pages; the Glendora Public Library archive search route returned
+   a human-verification challenge in this research tool. A 7 Nov BareSearch /
+   LibreSearch and Internet Archive / Gutenberg pass surfaced no direct GHS
+   date; class directories and catalog nulls are not ceremony evidence. Keep
+   both date and GHS-specific venue confirmation open; do not bypass either
+   access boundary. See `docs/greeran-commencement-research-2026-10-16.md` and
+   `docs/sgreeran-resume-chronology.md`.
 2. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster. The
    2001–02 hall register itself is resolved (see below).
 3. "The daily flush" — author confirms (Oct 2026) it was a recurring dorm
@@ -88,8 +96,10 @@ ch. XVI gaps & private prompts).
   ($7,984 double / $8,899 single, unlimited meals, ResNet Ethernet,
   RD/ARD/RA/RCC/APA/MAP staff), freshman lottery across three affiliated halls;
   Fontainebleu's own Dec 2001 page (Main 255 + Annex 175, $7,665–$8,875).
-- **GHS commencement venue** = Citrus College Stadium (school's documented
-  practice 2011–2026); the exact 2001 date stays open.
+- **Later GHS commencement venue** = Citrus College Stadium (documented
+  practice 2011–2026). This does not verify the Class of 2001 ceremony's
+  venue or date; both remain open in the memory-tier timeline record. See
+  `docs/greeran-commencement-research-2026-10-16.md`.
 - **"Fountain Blue / Fountain Bleu"** = Fontainebleu Apartments, 6525 El Colegio
   (late-1950s women's housing; Tropicana purchase 2010 → Tropicana Del Norte).
 - **"The annex"** = Fontainebleu Annex, 811 Camino Pescadero (→ "Villas at

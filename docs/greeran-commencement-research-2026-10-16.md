@@ -3,8 +3,10 @@
 ## Question
 
 What exact date did Glendora High School's Class of 2001 commencement take place?
-The existing chapter already uses Citrus College Stadium as the likely venue;
-the date needs a contemporaneous record before it can be added to the timeline.
+Citrus College Stadium is the working venue clue, but the records reviewed so
+far confirm Glendora High's use of that venue only in later years. The 2001
+date—and a contemporaneous record tying this specific GHS ceremony to the
+stadium—are still needed before either detail is promoted in the timeline.
 
 ## Findings
 
@@ -53,25 +55,77 @@ the date needs a contemporaneous record before it can be added to the timeline.
   and does not date the commencement. It remains context only, not ceremony
   evidence. [Video and transcript](https://www.youtube.com/watch?v=yqI93R_e28A)
 - Further exact-phrase and local-archive web searches did not surface a 2001
-  commencement date or a contemporary schedule. Yearbook catalogs, class
+  commencement date or a contemporary GHS schedule. Yearbook catalogs, class
   directories, Reddit comments, and later-year schedules do not establish it.
+
+### Additional contemporary-source sweep — 2026-11-07
+
+- **Evidence tier — contemporary newspaper record, but for Citrus College's
+  own ceremony only:** the California Digital Newspaper Collection (CDNC)
+  provides the *Citrus College Clarion* issues from 1964–2023. Its 25 April
+  2001 article, “Graduation, student awards given out next month,” reports
+  Citrus College's annual commencement scheduled for Friday, 18 May 2001, at
+  6:30 p.m. at Citrus Stadium. This establishes that Citrus College itself
+  planned its 2001 commencement at the stadium; it is not a Glendora High
+  schedule and cannot establish the GHS date or venue. [CDNC Clarion collection](https://cdnc.ucr.edu/?a=cl&cl=CL1&sp=CCC) · [25 April 2001 article record](https://cdnc.ucr.edu/?a=d&d=CCC20010425.2.8) · [2001 “Citrus Stadium” search results](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=%22Citrus+Stadium%22&yeq=2001&puq=CCC&txf=txIN&ssnip=txt&oa=1)
+- **Evidence tier — contemporary search results, negative within this paper only:**
+  a full-text search of the 2001 *Clarion* for “Glendora High” returns two
+  sports articles from 31 January. Searches for “graduation” and
+  “commencement” return eight and three records, respectively; the May
+  commencement coverage is about Citrus College. The query “Glendora
+  graduation” across the 2000s returns no 2001-dated record. These targeted
+  searches did not surface a GHS ceremony date; they are not proof that no
+  unindexed or OCR-missed notice exists. [2001 “Glendora High” search](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=%22Glendora+High%22&yeq=2001&puq=CCC&txf=txIN&ssnip=txt&oa=1) · [2001 “graduation” search](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=graduation&yeq=2001&puq=CCC&txf=txIN&ssnip=txt&oa=1) · [2001 “commencement” search](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=commencement&yeq=2001&puq=CCC&txf=txIN&ssnip=txt&oa=1) · [2000s “Glendora graduation” search](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=Glendora+graduation&deq=200&puq=CCC&txf=txIN&ssnip=txt&oa=1)
+- **Y2K lead — context, not an incident record:** searching the same
+  contemporary newspaper for “Y2K” in 2001 yields one result, an article
+  titled “Down with electronics” dated 24 October. The indexed excerpt refers
+  rhetorically to wishing the Y2K situation had happened; it is not an
+  incident report and establishes no Glendora Unified/GHS, commencement, or
+  Steven Greeran connection. The 2001 Y2K clue therefore remains
+  unlinked to the résumé/commencement lead. [2001 “Y2K” search results](https://cdnc.ucr.edu/?a=q&hs=1&r=1&results=1&txq=Y2K&yeq=2001&puq=CCC&txf=txIN&ssnip=txt&oa=1) · [24 October 2001 article record](https://cdnc.ucr.edu/?a=d&d=CCC20011024.2.34)
+
+### Cross-engine and catalog sweep — 2026-11-07
+
+- BareSearch and LibreSearch were used as discovery tools for the GHS Class of
+  2001, commencement/Citrus venue, Greeran résumé, and Y2K terms. Both present
+  SearXNG; [searx.space](https://searx.space/) is an instance-status directory,
+  not a historical source. The results repeated the already-known
+  self-published résumé and surfaced class/yearbook directories, but no
+  contemporaneous GHS schedule, program, or date. Alumni directories and
+  yearbook catalogs are leads only; no yearbook files were downloaded and no
+  access controls were bypassed.
+- Internet Archive Advanced Search returned zero records for the exact full
+  name and shorter Greeran variants; Project Gutenberg's catalog likewise
+  returned no name matches. These are catalog-search null results, not proof
+  that no record exists elsewhere. No item was downloaded. [Internet Archive](https://archive.org/) · [Project Gutenberg](https://www.gutenberg.org/ebooks/search/?query=Steven+Thomas+Greeran)
+- Search-engine snippets are discovery aids, not evidence. People-search/data
+  broker results and unrelated personal details were excluded; no contact or
+  residence data was copied into the research record.
 
 ## Editorial decision
 
-The exact June 2001 date remains **open**. No date was inferred from later
-commencements, school-year calendars, or the last-day video, and no event was
-added to the master timeline. Keep the venue attributed to its existing
-evidence tier; promote a date only from the actual 2001 commencement program,
+The exact June 2001 date remains **open**, and the GHS-specific 2001 venue is
+not independently corroborated by the sources examined. No date or event-specific
+venue was inferred from later GHS commencements, Citrus College's separate 2001
+ceremony, school-year calendars, or the last-day video. This pass added nothing
+to the master timeline and did not promote its existing memory-tier row. Keep the
+user's Citrus Stadium clue labeled as a working lead; promote the date and venue
+only from the actual 2001 GHS commencement program,
 a dated contemporary school publication/yearbook, or a contemporaneous
-newspaper schedule.
+newspaper schedule/booking record. Keep the Y2K clue separate unless a source
+connects it to GHS, the commencement, or a résumé entry.
 
 ## Next research step
 
-Search the Glendora Community Archives' *Glendora Community News* issues around
-the final week of May and first week of June 2001 through its ordinary public
-viewer (or ask the Glendora Public Library for help if the search challenge
-persists). Separately request or locate the 2001 Bellendaine / printed GHS
-commencement program through the school or the Glendora Historical Society.
-The current research tool cannot get past the archive's human-verification
-page and the yearbook preview stops at its first five pages; do not work around
-either gate. If no dated primary record is found, keep the date unresolved.
+Request or locate the 2001 *Bellendaine*, printed GHS commencement program, or
+GUSD/Citrus booking schedule through the school's published Yearbook/Tartan
+Shield contact route, the Glendora Public Library, or the Glendora Historical
+Society; no contact has been made. The public *Citrus College Clarion* archive
+has been searched for the relevant 2001 terms, but it only documents Citrus
+College's own May 18 ceremony. The Glendora Community Archives' *Glendora
+Community News* remains a potential source for the final week of May / first
+week of June 2001; if its human-verification page persists, ask library staff
+for help rather than working around the gate. The School Loop archive fetch
+previously returned HTTP 500, and the yearbook preview stops at its first five
+pages. If no dated direct record is found, keep both the date and GHS-specific
+venue confirmation unresolved.
