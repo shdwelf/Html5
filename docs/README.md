@@ -84,6 +84,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-60-2026-11-05.md](backlog-execution-round-60-2026-11-05.md) — backlog execution round 60 2026 11 05 (Zangi DEX review · algorithm engineering · PGPonyCore recipe audit)
 - [backlog-execution-round-61-2026-11-05.md](backlog-execution-round-61-2026-11-05.md) — backlog execution round 61 2026 11 05 (CA glider and signal-stream pattern detection)
 - [backlog-execution-round-62-2026-11-05.md](backlog-execution-round-62-2026-11-05.md) — browser OpenPGP Workbench v1 and CyberChef MDC correction
+- [backlog-execution-round-63-2026-11-05.md](backlog-execution-round-63-2026-11-05.md) — Android/QEMU, XPort Pro, SDR, and backlog research
+- [backlog-execution-round-64-2026-11-07.md](backlog-execution-round-64-2026-11-07.md) — Zangi VPN tunneling, NanoProxy comparison, and authorized Z-Library/IPFS research
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -148,6 +150,7 @@ IANA media types (RFC 6838 / BCP 13).
 
 ## Silicon, RTL & hardware intel
 
+- [24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07.md](24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07.md) — public I2PLCTR-2 data and unresolved 24 V DC coupling gates
 - [cheyenne.md](cheyenne.md) — cheyenne
 - [ingress-intel-connector-research-2026-10-07.md](ingress-intel-connector-research-2026-10-07.md) — ingress intel connector research 2026 10 07
 - [ingress-intel-map-viewer.md](ingress-intel-map-viewer.md) — ingress intel map viewer
