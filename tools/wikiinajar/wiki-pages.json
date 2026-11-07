@@ -1,69 +1,69 @@
 {
-  "syncedOn": "2026-11-05",
+  "syncedOn": "2026-11-07",
   "rule": "newest 9 dated notes in docs/",
   "pages": [
+    {
+      "page": "24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07",
+      "source": "docs/24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 7589,
+      "sha256": "53c7021e76e7ffdcee32e4e0dbdecc832c99fbd381853098ed081ac999b86df1"
+    },
+    {
+      "page": "ace-delta-history-crc-fix-2026-11-07",
+      "source": "docs/ace-delta-history-crc-fix-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 3919,
+      "sha256": "bddc6a0736b1dbfbf4521ef5df80a049704fa2dca0761187e7c56221cc9f1658"
+    },
+    {
+      "page": "age-pgpony-local-recipe-review-2026-11-07",
+      "source": "docs/age-pgpony-local-recipe-review-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 8151,
+      "sha256": "ca5a1e6ddf15c02cec6b8328669a23f63675fbcb200814c63b22050797b04234"
+    },
+    {
+      "page": "backlog-execution-round-64-2026-11-07",
+      "source": "docs/backlog-execution-round-64-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 8367,
+      "sha256": "73f81e9fb4e72e4d23b361a3835ca6e67571233c5022a9364800bddf57521b07"
+    },
+    {
+      "page": "backlog-execution-round-65-2026-11-07",
+      "source": "docs/backlog-execution-round-65-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 5686,
+      "sha256": "f06aa0487d2a1ef5fefd88260edc9b5052711f5f71e3455b0101eee11a448d2e"
+    },
+    {
+      "page": "cyberchef-elgamal-multiplicative-demo-2026-11-07",
+      "source": "docs/cyberchef-elgamal-multiplicative-demo-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 3665,
+      "sha256": "31ed4c000b2aa3ed62a4ace3799ed07abd6c40381ca0b2fd4a8521245d7c8f09"
+    },
+    {
+      "page": "openpgp-keyserver-working-list-2026-11-07",
+      "source": "docs/openpgp-keyserver-working-list-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 12131,
+      "sha256": "42f577461d7edd8604b9fe736aff8ec8c62cb8105681b6bf416d7073dd33fbcd"
+    },
+    {
+      "page": "wideband-nmu-public-evidence-2026-11-07",
+      "source": "docs/wideband-nmu-public-evidence-2026-11-07.md",
+      "date": "2026-11-07",
+      "bytes": 7315,
+      "sha256": "a0051495a0c0ddb23825c3cc7086dce59cf38492b1da033b3e42ed083a3705c9"
+    },
     {
       "page": "algorithm-engineering-guidance-2026-11-05",
       "source": "docs/algorithm-engineering-guidance-2026-11-05.md",
       "date": "2026-11-05",
       "bytes": 4145,
-      "sha256": "493977ab3c50bc28b876b5836f2c65e1c3a5b680389d72ab03fc587e64c0b7f9"
-    },
-    {
-      "page": "backlog-execution-round-60-2026-11-05",
-      "source": "docs/backlog-execution-round-60-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 4003,
-      "sha256": "61b9282b200f59a6853c63c6fc1c182085dbf6872150af86a70135f567c26a7b"
-    },
-    {
-      "page": "backlog-execution-round-61-2026-11-05",
-      "source": "docs/backlog-execution-round-61-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 3400,
-      "sha256": "3ba6df0fda08add5c6d5c7d72fa434d08eb14dc6272dab9547c0197eacfe8aca"
-    },
-    {
-      "page": "backlog-execution-round-62-2026-11-05",
-      "source": "docs/backlog-execution-round-62-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 3886,
-      "sha256": "27910bd344f0e1cf32e504db9cecbd5f61434f7410aff42c6adf4b6a00d92655"
-    },
-    {
-      "page": "backlog-execution-round-63-2026-11-05",
-      "source": "docs/backlog-execution-round-63-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 3090,
-      "sha256": "5e96c38fb0de88780c8f9766a2caee9b2402faf966602c4f4f4ca2d4d2fbc1a8"
-    },
-    {
-      "page": "cellular-automata-signal-pattern-detection-2026-11-05",
-      "source": "docs/cellular-automata-signal-pattern-detection-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 7531,
-      "sha256": "103c8006ae35f0a9c1da3014f2edd77c859f6344115a2fde1b09a722f9993b2d"
-    },
-    {
-      "page": "html5-offline-launcher-v1-implementation-2026-11-05",
-      "source": "docs/html5-offline-launcher-v1-implementation-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 4772,
-      "sha256": "872bac290053bafb896ff89a71d395822c25e39967f153d7b9e07b0ddda884aa"
-    },
-    {
-      "page": "openpgp-workbench-v1-implementation-2026-11-05",
-      "source": "docs/openpgp-workbench-v1-implementation-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 5275,
-      "sha256": "6875b9fbfb962d450d28370f479851f299731d8da8f64923c867206a534f20a0"
-    },
-    {
-      "page": "pgponycore-cyberchef-source-review-2026-11-05",
-      "source": "docs/pgponycore-cyberchef-source-review-2026-11-05.md",
-      "date": "2026-11-05",
-      "bytes": 7205,
-      "sha256": "98b613ece9acd976f667f5bcde9dd79edbb3bb2b681298815c6f07168b5a0646"
+      "sha256": "e0f91ea5a9fb19a96f08d69b96068b3982129f761667ce6ed98c8b3ab1e3da03"
     }
   ]
 }

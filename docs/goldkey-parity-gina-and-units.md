@@ -186,13 +186,20 @@ ordering is ambiguous and the vendor does not resolve it. The tool detects and
 reports this rather than silently picking a number; the panel model uses the
 3.5 in standard and says so.
 
-### The S-Key ambiguity, recorded rather than asserted
+### The S-Key ambiguity, narrowed by product documentation but not resolved
 
 The 2006 nMU launch release says *"high-level security is ensured via its
-integrated S-Key technology."* S/KEY is the Bellcore one-time-password scheme
-(RFC 1760/2289, Neil Haller). WideBand may mean that, or their own mechanism of
-the same name. Nothing I found resolves it, so the BOM line records the question
-instead of asserting an answer.
+integrated S-Key technology."* The current WBNMUPRO datasheet gives more
+context: it describes S-Key as a hardware multifactor-authentication device
+issued to users and administrators and says remote management uses 256-bit AES.
+This establishes the vendor's product-level description, not the protocol or
+key format. S/KEY is also the Bellcore one-time-password scheme (RFC 1760/2289,
+Neil Haller), but the public nMU documents do not identify it as that protocol.
+Do not equate the two or assert a proprietary implementation without source
+code or protocol documentation; keep the BOM line qualified as unresolved.
+
+Public follow-up recorded 2026-11-07:
+[`wideband-nmu-public-evidence-2026-11-07.md`](wideband-nmu-public-evidence-2026-11-07.md).
 
 ## 6. archive.org: science.edu and "earth vitamins"
 
