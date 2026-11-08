@@ -6,9 +6,10 @@ name: arena-gnis-fetch
 
 on:
   push:
-    branches: ['arena/8c721d44-html5', 'arena/fb1c7be1-html5']
+    branches: ['arena/8c721d44-html5', 'arena/fb1c7be1-html5', 'arena/58dd5623-html5']
     paths:
       - '.arena-gnis/candidates.json'
+      - '.arena-gnis/candidates-newyork.json'
       - '.github/workflows/arena-gnis-fetch.yml'
       - 'tools/gnis_extract.py'
   workflow_dispatch:
@@ -23,8 +24,8 @@ on:
           - current
 
 env:
-  GNIS_REQUEST: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'newyork' && '.arena-gnis/candidates-newyork.json' || '.arena-gnis/candidates.json' }}
-  GNIS_OUTPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'newyork' && 'resources/city-subsurface/gnis-candidates-newyork.json' || 'resources/city-subsurface/gnis-candidates-batch7.json' }}
+  GNIS_REQUEST: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && '.arena-gnis/candidates-newyork.json' || '.arena-gnis/candidates.json' }}
+  GNIS_OUTPUT: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && 'resources/city-subsurface/gnis-candidates-newyork.json' || 'resources/city-subsurface/gnis-candidates-batch7.json' }}
 
 permissions:
   contents: write
@@ -71,5 +72,5 @@ jobs:
           git add .arena-gnis/last-run.log
           if [ -f "$GNIS_OUTPUT" ]; then git add "$GNIS_OUTPUT"; fi
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "GNIS candidate extract for ${{ inputs.target || 'current' }} (run ${{ github.run_id }}) [skip ci]"
+          git commit -m "GNIS candidate extract for ${{ (github.event_name == 'workflow_dispatch' && inputs.target) || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5' && 'newyork') || 'current' }} (run ${{ github.run_id }}) [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
