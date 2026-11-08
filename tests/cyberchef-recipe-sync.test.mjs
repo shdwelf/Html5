@@ -81,6 +81,8 @@ const POST_MERGE_OPS = [
   "argon2",
   // 2026-11-07 multiplicative ElGamal demo (not FHE).
   "elgamalMulDemo",
+  // 2026-11-08 ITAR munitions export law protest: Perl RSA T-shirt as free speech.
+  "munitionsTshirt",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

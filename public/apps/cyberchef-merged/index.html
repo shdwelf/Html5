@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 518 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 519 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -25411,6 +25411,84 @@ function egmPrime64(n){
 }
 function egmInv(a,m){let oldR=m,r=egmMod(a,m),oldT=0n,t=1n;while(r!==0n){const q=oldR/r;[oldR,r]=[r,oldR-q*r];[oldT,t]=[t,oldT-q*t];}if(oldR!==1n)throw new Error('No modular inverse exists for the decryption value');return egmMod(oldT,m);}
 function egmGroupMember(x,p,q,label){if(x<=0n||x>=p||egmPow(x,q,p)!==1n)throw new Error(label+' must be a nonzero member of the order-q subgroup G');}
+addOp('munitionsTshirt','Munitions T-shirt (Perl RSA & Free Speech)','Public Key',
+  'Generates and simulates the historic 1995 Adam Back 3-line Perl RSA munitions signature printed on cypherpunk protest T-shirts against ITAR weapons export restrictions. Demonstrates the legal doctrine that code is constitutionally protected speech under the First Amendment (Bernstein v. United States).',
+  [
+    {key:'action',label:'Action',type:'select',options:['Generate Perl script','Encrypt message','Decrypt message','Show legal brief'],default:'Generate Perl script'},
+    {key:'n',label:'Modulus n (hex or decimal)',type:'text',default:'3233'},
+    {key:'k',label:'Exponent e or d (hex or decimal)',type:'text',default:'17'}
+  ],function(text,a){
+    const parseNum=function(s){
+      s=String(s).trim();
+      if(!s)return 0n;
+      if(s.startsWith('0x')||s.startsWith('0X'))return BigInt(s);
+      return /^[0-9a-fA-F]+$/.test(s)&&/[a-fA-F]/.test(s)?BigInt('0x'+s):BigInt(s);
+    };
+    const modPow=function(base,exp,mod){
+      let res=1n;
+      base=((base%mod)+mod)%mod;
+      while(exp>0n){
+        if(exp&1n)res=(res*base)%mod;
+        base=(base*base)%mod;
+        exp>>=1n;
+      }
+      return res;
+    };
+    const action=a.action||'Generate Perl script';
+    const historicPerl='#!/bin/perl -s-- -export-a-crypto-system-sig -RSA-3-lines-PERL\n$m=unpack(H.$w,$m."\\0"x$w),$_=`echo "16do$w 2+4Oi0$d*-^1[d2%Sa\\n2/d0<X+d*La1=z\\U$n%0]SX$k"[$m*]\\EszlXx++p|dc`,s/^.|\\W//g,print\npack(\'H*\',$_)while read(STDIN,$m,($w=2*$d-1+length$n&~1)/2)';
+
+    if(action==='Generate Perl script'){
+      return historicPerl;
+    }
+    if(action==='Show legal brief'){
+      return JSON.stringify({
+        artifact:'Munitions T-Shirt (1995)',
+        author:'Dr. Adam Back',
+        regulatoryRegime:'ITAR (International Traffic in Arms Regulations, 22 CFR 120-130)',
+        category:'Category XIII — Auxiliary Military Equipment (Cryptographic systems)',
+        constitutionalIssue:'First Amendment (Freedom of Speech) vs ITAR prior restraint',
+        landmarkPrecedent:'Bernstein v. United States, 176 F.3d 1132 (9th Cir. 1999)',
+        ruling:'Source code is expressive speech protected by the First Amendment; government export restrictions on cryptographic publishing constitute an unconstitutional prior restraint.',
+        quote:'Cypherpunks write code. We know that someone has to write software to defend privacy, and since we can\x27t get privacy unless we all do, we\x27re going to write it.'
+      },null,2);
+    }
+
+    const n=parseNum(a.n);
+    const k=parseNum(a.k);
+    if(n<=1n)throw new Error('Modulus n must be greater than 1');
+    if(k<=0n)throw new Error('Exponent must be positive');
+
+    if(action==='Encrypt message'){
+      const trimmed=text.trim();
+      const m=trimmed?parseNum(trimmed):42n;
+      if(m>=n)throw new Error('Plaintext integer m must be less than modulus n');
+      const c=modPow(m,k,n);
+      return JSON.stringify({
+        operation:'RSA Encryption (Perl Munitions Model)',
+        input:String(m),
+        modulusN:String(n),
+        publicExponentE:String(k),
+        ciphertext:String(c),
+        hex:'0x'+c.toString(16)
+      },null,2);
+    }
+
+    if(action==='Decrypt message'){
+      const trimmed=text.trim();
+      const c=trimmed?parseNum(trimmed):2183n;
+      const m=modPow(c,k,n);
+      return JSON.stringify({
+        operation:'RSA Decryption (Perl Munitions Model)',
+        ciphertext:String(c),
+        modulusN:String(n),
+        privateExponentD:String(k),
+        plaintext:String(m),
+        hex:'0x'+m.toString(16)
+      },null,2);
+    }
+    return historicPerl;
+  });
+
 addOp('elgamalMulDemo','ElGamal multiplicative demo (not FHE)','Public Key',
   'Educational worked example of the paper\'s multiplicative ElGamal: c=(g^r, h^r·m), h=g^α; componentwise ciphertext multiplication encrypts m₀·m₁, and multiplying by a fresh encryption of 1 rerandomizes it. This operation uses explicit decimal arguments and produces a reproducible JSON report; it does not generate randomness. The default group is the order-11 subgroup G=<2> of Z₂₃*, with tiny, insecure values. This demonstrates one multiplicative homomorphism only: it is NOT fully homomorphic encryption (FHE), not production cryptography, and not an implementation of the paper\'s bootstrapping/GSW material. P is the field modulus and q is the subgroup order; primality checks are deterministic only up to 64 bits.',
   [
@@ -33835,7 +33913,7 @@ RECIPE_PACKS["Full Coverage — Keypairs"] = [["genRSA",{}],["genECDSA",{}],["na
 RECIPE_PACKS["Full Coverage — Modern Curves"] = [["ecdh",{}]];
 RECIPE_PACKS["Full Coverage — Parity"] = [["parity",{}],["lrc",{}]];
 RECIPE_PACKS["Full Coverage — Post-Quantum"] = [["mkkem",{}],["mldsa",{}],["mldsaCore",{}]];
-RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}],["elgamalMulDemo",{}]];
+RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}],["elgamalMulDemo",{}],["munitionsTshirt",{}]];
 RECIPE_PACKS["Full Coverage — Recipes"] = [["recipePack",{}]];
 RECIPE_PACKS["Full Coverage — Secret Sharing"] = [["shamir",{}]];
 RECIPE_PACKS["Full Coverage — Steganography"] = [["stegoHide",{}],["stegoReveal",{}],["stegoSpace",{}],["stegoLSB",{}]];
@@ -33851,6 +33929,7 @@ RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [
 // Based on Wu's ElGamal example in XRDSFHE.pdf: multiplication only, explicitly
 // not FHE. The toy operation ships with an independently checked worked vector.
 RECIPE_PACKS["ElGamal Multiplicative Homomorphism (not FHE)"] = [["elgamalMulDemo",{}]];
+RECIPE_PACKS["Munitions T-Shirt — Perl RSA & Free Speech"] = [["munitionsTshirt",{}]];
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.
 RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];
