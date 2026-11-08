@@ -24,10 +24,11 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 90);
+  assert.equal(expectedSlugs.length, 91);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 90);
+  assert.equal(catalog.length, 91);
+  assert.ok(expectedSlugs.includes("newyork-subsurface"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
 });
 

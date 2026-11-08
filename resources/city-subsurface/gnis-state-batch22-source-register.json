@@ -1,0 +1,443 @@
+{
+  "generated": "2026-10-13",
+  "title": "Round 41 New York statewide GNIS source register",
+  "scope": "New York statewide frame, completing GNIS point coverage of all 50 US states while retaining Buffalo as a separate city frame. 27 exact GNIS rows are screened against the official DomesticNames_NY_Text.zip and retained per-name USGS Geocoder responses. Candidate data are not auto-verified; only exact official name, compatible type, NY state, returned county, permanent FEATURE_ID, and matching primary-point coordinates inside the frame are seeded. The frame and all corridor lines remain schematic context, not state boundary or survey geometry. DomesticNames ZIP SHA-256: 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<requested name>&states=NY&include=gnis&maxSuggestions=10",
+      "candidateFile": "resources/city-subsurface/gnis-geocoder-candidates-newyork.json",
+      "use": "Fuzzy candidate discovery only. The saved per-name results were screened for exact official Name, Type, State, County, GnisId, Latitude, and Longitude; no Geocoder row is VERIFIED by the fetch script."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NY_Text.zip",
+      "candidateFile": "resources/city-subsurface/gnis-candidates-newyork.json",
+      "zipSha256": "9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8",
+      "use": "Official state text extract supplies exact feature names/classes, source-state/county strings, FEATURE_IDs, and GNIS primary points. Each seeded row is matched to the corresponding per-name Geocoder result; water points are not presented as lines or polygons."
+    },
+    "screenRun": "42482246013"
+  },
+  "selectionRules": [
+    "VERIFIED=1 requires exact official name, compatible feature class/Geocoder type, State=NY, matching county, permanent FEATURE_ID, and primary-point latitude/longitude that match across both official USGS surfaces.",
+    "DomesticNames county strings are preserved verbatim in the gazetteer row; the Geocoder full county string is preserved separately in the source register.",
+    "Only primary points inside the New York frame are seeded. A primary point outside the frame is excluded rather than moved; generalized context lines remain tier=context and are explicitly not feature geometry.",
+    "Same-name populated-place, lake, waterfall, and summit records are separate identities and are not collapsed.",
+    "The statewide frame uses explicitly synthetic relief and no DEM. Context corridors and the frame bbox are schematic display aids, not state boundaries, surveyed alignments, shorelines, or stream centerlines."
+  ],
+  "frames": {
+    "newyork": {
+      "state": "NY",
+      "bbox": {
+        "lon0": -79.85,
+        "lat0": 40.45,
+        "lon1": -71.75,
+        "lat1": 45.05
+      },
+      "totalRows": 27,
+      "verifiedRows": [
+        {
+          "name": "Albany",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Albany",
+          "latitude": 42.6525793,
+          "longitude": -73.7562317,
+          "featureId": "977310",
+          "verified": 1,
+          "sourceNote": "State-capital anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=977310; exact official name and Cities & Populated Places type in Albany County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Albany County"
+        },
+        {
+          "name": "Binghamton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Broome",
+          "latitude": 42.0986867,
+          "longitude": -75.9179738,
+          "featureId": "943985",
+          "verified": 1,
+          "sourceNote": "Southern Tier populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=943985; exact official name and Cities & Populated Places type in Broome County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Broome County"
+        },
+        {
+          "name": "Buffalo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Erie",
+          "latitude": 42.8864468,
+          "longitude": -78.8783689,
+          "featureId": "973345",
+          "verified": 1,
+          "sourceNote": "Western New York populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=973345; exact official name and Cities & Populated Places type in Erie County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Erie County"
+        },
+        {
+          "name": "Cayuga Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Cayuga",
+          "latitude": 42.6881354,
+          "longitude": -76.7022922,
+          "featureId": "974076",
+          "verified": 1,
+          "sourceNote": "Finger Lakes hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=974076; exact official name and Lakes & Reservoirs type in Cayuga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Cayuga County"
+        },
+        {
+          "name": "Chautauqua Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Chautauqua",
+          "latitude": 42.1694423,
+          "longitude": -79.4038311,
+          "featureId": "946461",
+          "verified": 1,
+          "sourceNote": "Western New York hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=946461; exact official name and Lakes & Reservoirs type in Chautauqua County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Chautauqua County"
+        },
+        {
+          "name": "Elmira",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Chemung",
+          "latitude": 42.0897965,
+          "longitude": -76.8077338,
+          "featureId": "949577",
+          "verified": 1,
+          "sourceNote": "Chemung Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=949577; exact official name and Cities & Populated Places type in Chemung County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Chemung County"
+        },
+        {
+          "name": "Genesee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Monroe",
+          "latitude": 43.2583951,
+          "longitude": -77.6022239,
+          "featureId": "970162",
+          "verified": 1,
+          "sourceNote": "Western New York stream point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970162; exact official name and Streams & Canals type in Monroe County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Monroe County"
+        },
+        {
+          "name": "Hudson River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "New York",
+          "latitude": 40.6967694,
+          "longitude": -74.0281957,
+          "featureId": "970226",
+          "verified": 1,
+          "sourceNote": "The source primary point is at the New York County harbor reach; it is not a trace of the full river. USGS GNIS Geocoder (GNIS), FEATURE_ID=970226; exact official name and Streams & Canals type in New York County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "New York County"
+        },
+        {
+          "name": "Ithaca",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Tompkins",
+          "latitude": 42.4406284,
+          "longitude": -76.4966071,
+          "featureId": "970238",
+          "verified": 1,
+          "sourceNote": "Tompkins County populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970238; exact official name and Cities & Populated Places type in Tompkins County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Tompkins County"
+        },
+        {
+          "name": "Lake George",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Warren",
+          "latitude": 43.6019166,
+          "longitude": -73.5794567,
+          "featureId": "970163",
+          "verified": 1,
+          "sourceNote": "Lake feature selected over the same-name Populated Place FEATURE_ID 954913. USGS GNIS Geocoder (GNIS), FEATURE_ID=970163; exact official name and Lakes & Reservoirs type in Warren County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Warren County"
+        },
+        {
+          "name": "Mohawk River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Saratoga",
+          "latitude": 42.7609113,
+          "longitude": -73.6870628,
+          "featureId": "970360",
+          "verified": 1,
+          "sourceNote": "Mohawk Valley stream point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970360; exact official name and Streams & Canals type in Saratoga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Saratoga County"
+        },
+        {
+          "name": "Mount Marcy",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Essex",
+          "latitude": 44.11281,
+          "longitude": -73.9236546,
+          "featureId": "973357",
+          "verified": 1,
+          "sourceNote": "Adirondack High Peaks summit anchor; no elevation is asserted from these candidate extracts. USGS GNIS Geocoder (GNIS), FEATURE_ID=973357; exact official name and Summit type in Essex County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a summit-area boundary or elevation contour.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Essex County"
+        },
+        {
+          "name": "New York",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "New York",
+          "latitude": 40.7142691,
+          "longitude": -74.0059729,
+          "featureId": "975772",
+          "verified": 1,
+          "sourceNote": "Official GNIS populated-place spelling is New York; the separate exact-name New York City query returned no record. USGS GNIS Geocoder (GNIS), FEATURE_ID=975772; exact official name and Cities & Populated Places type in New York County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "New York County"
+        },
+        {
+          "name": "Niagara Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Niagara",
+          "latitude": 43.0944999,
+          "longitude": -79.0567111,
+          "featureId": "970406",
+          "verified": 1,
+          "sourceNote": "Populated Place feature selected over the same-name Falls feature FEATURE_ID 958544. USGS GNIS Geocoder (GNIS), FEATURE_ID=970406; exact official name and Cities & Populated Places type in Niagara County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Niagara County"
+        },
+        {
+          "name": "Niagara River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Niagara",
+          "latitude": 43.2622766,
+          "longitude": -79.0703253,
+          "featureId": "958547",
+          "verified": 1,
+          "sourceNote": "Western border-river point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=958547; exact official name and Streams & Canals type in Niagara County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Niagara County"
+        },
+        {
+          "name": "Oneida Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Oswego",
+          "latitude": 43.2031992,
+          "longitude": -75.9098444,
+          "featureId": "959369",
+          "verified": 1,
+          "sourceNote": "Central New York hydrographic anchor; the DomesticNames county string is preserved verbatim. USGS GNIS Geocoder (GNIS), FEATURE_ID=959369; exact official name and Lakes & Reservoirs type in Oswego County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Oswego County"
+        },
+        {
+          "name": "Plattsburgh",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clinton",
+          "latitude": 44.6994873,
+          "longitude": -73.4529124,
+          "featureId": "960698",
+          "verified": 1,
+          "sourceNote": "North Country populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=960698; exact official name and Cities & Populated Places type in Clinton County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Clinton County"
+        },
+        {
+          "name": "Rochester",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Monroe",
+          "latitude": 43.1547845,
+          "longitude": -77.6155568,
+          "featureId": "962684",
+          "verified": 1,
+          "sourceNote": "Genesee Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=962684; exact official name and Cities & Populated Places type in Monroe County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Monroe County"
+        },
+        {
+          "name": "Saranac Lake",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Franklin",
+          "latitude": 44.329496,
+          "longitude": -74.1312662,
+          "featureId": "964482",
+          "verified": 1,
+          "sourceNote": "Adirondack populated-place anchor; this is not a lake feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=964482; exact official name and Cities & Populated Places type in Franklin County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Franklin County"
+        },
+        {
+          "name": "Schenectady",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Schenectady",
+          "latitude": 42.8142432,
+          "longitude": -73.9395687,
+          "featureId": "964570",
+          "verified": 1,
+          "sourceNote": "Capital District populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=964570; exact official name and Cities & Populated Places type in Schenectady County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Schenectady County"
+        },
+        {
+          "name": "Seneca Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Seneca",
+          "latitude": 42.7788172,
+          "longitude": -76.9498099,
+          "featureId": "974079",
+          "verified": 1,
+          "sourceNote": "Finger Lakes hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=974079; exact official name and Lakes & Reservoirs type in Seneca County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Seneca County"
+        },
+        {
+          "name": "Slide Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Ulster",
+          "latitude": 41.9991499,
+          "longitude": -74.3857682,
+          "featureId": "975759",
+          "verified": 1,
+          "sourceNote": "Selected the Ulster County summit FEATURE_ID 975759 from four exact-name Summit records; Essex 965414/965415 and Warren 965413 are excluded. USGS GNIS Geocoder (GNIS), FEATURE_ID=975759; exact official name and Summit type in Ulster County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a summit-area boundary or elevation contour.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Ulster County"
+        },
+        {
+          "name": "Syracuse",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Onondaga",
+          "latitude": 43.0481221,
+          "longitude": -76.1474244,
+          "featureId": "966966",
+          "verified": 1,
+          "sourceNote": "Central New York populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=966966; exact official name and Cities & Populated Places type in Onondaga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Onondaga County"
+        },
+        {
+          "name": "Troy",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Rensselaer",
+          "latitude": 42.7284117,
+          "longitude": -73.6917851,
+          "featureId": "967902",
+          "verified": 1,
+          "sourceNote": "Capital District populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=967902; exact official name and Cities & Populated Places type in Rensselaer County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Rensselaer County"
+        },
+        {
+          "name": "Utica",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Oneida",
+          "latitude": 43.1009031,
+          "longitude": -75.2326641,
+          "featureId": "968324",
+          "verified": 1,
+          "sourceNote": "Mohawk Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=968324; exact official name and Cities & Populated Places type in Oneida County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Oneida County"
+        },
+        {
+          "name": "Watertown",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Jefferson",
+          "latitude": 43.9747838,
+          "longitude": -75.9107565,
+          "featureId": "968914",
+          "verified": 1,
+          "sourceNote": "North Country populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=968914; exact official name and Cities & Populated Places type in Jefferson County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Jefferson County"
+        },
+        {
+          "name": "Yonkers",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Westchester",
+          "latitude": 40.9312099,
+          "longitude": -73.8987469,
+          "featureId": "971828",
+          "verified": 1,
+          "sourceNote": "Lower Hudson populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=971828; exact official name and Cities & Populated Places type in Westchester County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Westchester County"
+        }
+      ],
+      "title": "New York statewide frame (Round 41)",
+      "frameNote": "Round 41: 27 exact, in-frame GNIS primary points — 16 populated places, five lakes, four streams, and two summits — cross-matched between the New York DomesticNames extract and retained per-name Geocoder responses. The official populated-place spelling is New York; duplicate Lake George, Niagara Falls, and Slide Mountain records are resolved by type/county/point. Several out-of-state or out-of-frame river/lake primary points are excluded rather than moved. Relief and context corridors are schematic, not surveyed geometry."
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "New York City exact-name screen, states=NY",
+      "decision": "The USGS Geocoder returned no exact-name candidate and the DomesticNames NY extract has no New York City row. The distinct official Populated Place record is named New York, FEATURE_ID 975772, and is seeded under that verbatim GNIS name."
+    },
+    {
+      "candidate": "Lake George duplicate name, FEATURE_ID 970163 / 954913",
+      "decision": "Seed Lake George as Lake (970163, Lakes & Reservoirs, Warren County); reject the same-name Populated Place record (954913). Both service responses preserve their distinct feature types and points."
+    },
+    {
+      "candidate": "Niagara Falls duplicate name, FEATURE_ID 970406 / 958544",
+      "decision": "Seed Niagara Falls as Populated Place (970406); reject the separate Falls feature (958544). The exact Geocoder type and coordinates distinguish the city from the waterfall."
+    },
+    {
+      "candidate": "Slide Mountain same-name Summit pile, FEATURE_ID 965414 / 965415 / 975759 / 965413",
+      "decision": "Seed only the Ulster County Summit (975759) inside the Catskills frame. Reject the Essex County summits (965414 and 965415) and Warren County summit (965413); all four are exact-name Summit candidates with distinct points."
+    },
+    {
+      "candidate": "Lake Erie, FEATURE_ID 1075813",
+      "decision": "Do not seed in New York: DomesticNames returns the Lake point in Lake County, Ohio at 42.149115,-81.241010, outside the New York frame. The NY Geocoder query returns Lake Erie Beach populated-place/CDP records, not the lake."
+    },
+    {
+      "candidate": "Lake Champlain, FEATURE_ID 946367",
+      "decision": "Do not seed: the DomesticNames primary point is in Grand Isle County, Vermont at 44.591152,-73.306344; the NY Geocoder query returns no candidate. No cross-border point is moved into New York."
+    },
+    {
+      "candidate": "Lake Ontario exact-name screen, states=NY",
+      "decision": "Do not seed a Lake row: DomesticNames has no Lake Ontario row in the NY candidate extract, and the Geocoder returns only Lake Ontario Ordnance Works (historical), a separate Military feature."
+    },
+    {
+      "candidate": "Delaware River, FEATURE_ID 217887",
+      "decision": "Do not seed: the DomesticNames Stream primary point is in New Castle County, Delaware at 39.432612,-75.528813; the NY Geocoder returns Delaware River Gorge (Valley), not the river. A generalized context corridor is labeled non-GNIS geometry."
+    },
+    {
+      "candidate": "Susquehanna River, FEATURE_ID 591690",
+      "decision": "Do not seed: the DomesticNames Stream primary point is in Cecil County, Maryland at 39.540391,-76.073839; the NY Geocoder returns Susquehanna River Island, not a Stream. The point is outside the New York frame."
+    },
+    {
+      "candidate": "Saint Lawrence River, FEATURE_ID 977244",
+      "decision": "Do not seed despite an exact Geocoder ID/type match: both returned primary points are 49.666667,-64.500556, far outside New York and the frame. Keep only a schematic, explicitly non-GNIS context corridor."
+    }
+  ],
+  "knownLimitations": [
+    "DomesticNames supplies a single GNIS primary point, not the full geometry of a populated place, lake, river, summit, or state boundary.",
+    "The GNIS Geocoder is a fuzzy candidate-discovery surface; the retained records were manually screened by exact ID, name, type, state, county, and coordinates against the official New York DomesticNames text extract.",
+    "The statewide terrain is synthetic relief. No DEM, surveyed state outline, water polygon, coastline, shoreline, river centerline, road, or utility alignment is bundled or implied.",
+    "New York City was queried as an exact phrase and returned no candidate; the separate official GNIS Populated Place record is named New York and is stored verbatim under that name.",
+    "Some border/interstate hydrographic DomesticNames points are outside the New York frame. They remain excluded even when the named feature crosses or borders New York; context corridors are explicitly generalized and non-GNIS."
+  ]
+}
