@@ -118,6 +118,7 @@ IANA media types (RFC 6838 / BCP 13).
 ## Software protection & disassembly
 
 - [ace-delta-history-crc-fix-2026-11-07.md](ace-delta-history-crc-fix-2026-11-07.md) — representative ACE Delta-mode CRC mismatch, distance-history diagnosis, and regression proof
+- [ace-huffman-delta-luby-raptor-research-2026-11-07.md](ace-huffman-delta-luby-raptor-research-2026-11-07.md) — ACE Huffman delta, Luby transform, Raptor recovery codes, and microblog BBS filesystem deep dive
 - [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes
 - [arj-lha-ace-password-notes-2026-10-21.md](arj-lha-ace-password-notes-2026-10-21.md) — arj lha ace password notes 2026 10 21
