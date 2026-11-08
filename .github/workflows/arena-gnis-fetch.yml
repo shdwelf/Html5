@@ -12,6 +12,7 @@ on:
       - '.arena-gnis/candidates-newyork.json'
       - '.github/workflows/arena-gnis-fetch.yml'
       - 'tools/gnis_extract.py'
+      - 'tools/gnis_geocoder_candidates.py'
   workflow_dispatch:
     inputs:
       target:
@@ -26,6 +27,7 @@ on:
 env:
   GNIS_REQUEST: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && '.arena-gnis/candidates-newyork.json' || '.arena-gnis/candidates.json' }}
   GNIS_OUTPUT: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && 'resources/city-subsurface/gnis-candidates-newyork.json' || 'resources/city-subsurface/gnis-candidates-batch7.json' }}
+  GNIS_GEOCODER_OUTPUT: resources/city-subsurface/gnis-geocoder-candidates-newyork.json
 
 permissions:
   contents: write
@@ -60,9 +62,14 @@ jobs:
               for st, pack in d["states"].items():
                   print(st, len(pack["rows"]), "candidate rows; zip sha256", pack["zipSha256"][:16])
           PY
+            if [ "$GNIS_REQUEST" = ".arena-gnis/candidates-newyork.json" ]; then
+              echo "Geocoder output: $GNIS_GEOCODER_OUTPUT"
+              python3 tools/gnis_geocoder_candidates.py "$GNIS_REQUEST" "$GNIS_GEOCODER_OUTPUT"
+            fi
           } > .arena-gnis/last-run.log 2>&1
           cat .arena-gnis/last-run.log
           test -s "$GNIS_OUTPUT"
+          if [ "$GNIS_REQUEST" = ".arena-gnis/candidates-newyork.json" ]; then test -s "$GNIS_GEOCODER_OUTPUT"; fi
 
       - name: Commit the extract back to the selected branch
         if: always()
@@ -71,6 +78,7 @@ jobs:
           git config user.email "actions@github.com"
           git add .arena-gnis/last-run.log
           if [ -f "$GNIS_OUTPUT" ]; then git add "$GNIS_OUTPUT"; fi
+          if [ -f "$GNIS_GEOCODER_OUTPUT" ]; then git add "$GNIS_GEOCODER_OUTPUT"; fi
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "GNIS candidate extract for ${{ (github.event_name == 'workflow_dispatch' && inputs.target) || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5' && 'newyork') || 'current' }} (run ${{ github.run_id }}) [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
