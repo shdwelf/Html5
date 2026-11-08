@@ -2,6 +2,7 @@
 // World Factbook register. Pure helpers are exported for tests; the DOM
 // bootstrap only runs in a browser.
 import { COUNTRIES, COUNTRY_DATA_META } from "./country-data.js";
+import { MAP_VIEWS, drawCountryOutlines, nearestCountryAt, projectMapPoint } from "./country-map.js";
 import { makeGazetteerIndex, searchName } from "./city-gazetteer.js";
 import { GAZ_ROWS as atlantaRows } from "./city-gazetteer-data-atlanta.js";
 import { GAZ_ROWS as buffaloRows } from "./city-gazetteer-data-buffalo.js";
@@ -33,41 +34,48 @@ export function formatInt(n) {
   return n.toLocaleString("en-US");
 }
 
-// Equirectangular projection: lon -180..180 -> x 0..w, lat 90..-90 -> y 0..h.
-export function project(lon, lat, w, h) {
-  return [((lon + 180) / 360) * w, ((90 - lat) / 180) * h];
+// Backward-compatible exported projection helper; view is optional.
+export function project(lon, lat, w, h, view = MAP_VIEWS.world) {
+  return projectMapPoint(lon, lat, w, h, view);
 }
 
 export function sortByName(list) {
   return [...list].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function drawMap(canvas, selected, selectedGazetteer = null) {
+function drawMap(canvas, selected, selectedGazetteer = null, outlines = null, view = MAP_VIEWS.world) {
   const ctx = canvas.getContext("2d");
+  if (!ctx) return;
   const w = canvas.width, h = canvas.height;
   ctx.fillStyle = "#0b1622";
   ctx.fillRect(0, 0, w, h);
-  ctx.strokeStyle = "rgba(120,170,220,0.25)";
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip();
+  ctx.strokeStyle = "rgba(120,170,220,0.22)";
+  ctx.lineWidth = 1;
   for (let lon = -150; lon <= 150; lon += 30) {
-    const [x] = project(lon, 0, w, h);
+    const [x] = project(lon, 0, w, h, view);
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
   }
   for (let lat = -60; lat <= 60; lat += 30) {
-    const [, y] = project(0, lat, w, h);
+    const [, y] = project(0, lat, w, h, view);
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
   }
+  drawCountryOutlines(ctx, outlines, w, h, view);
   for (const c of COUNTRIES) {
-    const [x, y] = project(c.lon, c.lat, w, h);
-    ctx.fillStyle = selected && c.code === selected.code ? "#ffd75e" : "#7fd4ff";
-    ctx.beginPath(); ctx.arc(x, y, selected && c.code === selected.code ? 5 : 3, 0, Math.PI * 2); ctx.fill();
+    const [x, y] = project(c.lon, c.lat, w, h, view);
+    if (x < -8 || x > w + 8 || y < -8 || y > h + 8) continue;
+    const isSelected = selected && c.code === selected.code;
+    ctx.fillStyle = isSelected ? "#ffd75e" : "#7fd4ff";
+    ctx.beginPath(); ctx.arc(x, y, isSelected ? 5.5 : Math.min(4, 1.7 + (view.scale ?? 1) * 0.6), 0, Math.PI * 2); ctx.fill();
   }
   if (selected && Number.isFinite(selected.capital.lat) && Number.isFinite(selected.capital.lon)) {
-    const [x, y] = project(selected.capital.lon, selected.capital.lat, w, h);
+    const [x, y] = project(selected.capital.lon, selected.capital.lat, w, h, view);
     ctx.fillStyle = "#ff8a5e";
     ctx.fillRect(x - 3, y - 3, 6, 6);
   }
   if (selectedGazetteer && Number.isFinite(selectedGazetteer.lat) && Number.isFinite(selectedGazetteer.lon)) {
-    const [x, y] = project(selectedGazetteer.lon, selectedGazetteer.lat, w, h);
+    const [x, y] = project(selectedGazetteer.lon, selectedGazetteer.lat, w, h, view);
     ctx.beginPath();
     ctx.arc(x, y, 7, 0, Math.PI * 2);
     ctx.strokeStyle = "#fff";
@@ -78,7 +86,9 @@ function drawMap(canvas, selected, selectedGazetteer = null) {
     ctx.fillStyle = "#ff5c78";
     ctx.fill();
   }
+  ctx.restore();
 }
+
 
 function el(id) { return document.getElementById(id); }
 function esc(s) {
@@ -133,16 +143,27 @@ function main() {
   const gazSearchEl = el("gazSearch");
   const gazResultsEl = el("gazResults");
   const canvas = el("world");
+  const mapStatus = el("mapStatus");
+  const zoomSelected = el("zoomSelected");
   let selected = null;
   let selectedGazetteer = null;
+  let outlines = null;
+  let outlineState = "Loading offline country outlines";
+  let view = MAP_VIEWS.world;
+
+  function renderMap() {
+    drawMap(canvas, selected, selectedGazetteer, outlines, view);
+    if (mapStatus) mapStatus.textContent = `${outlineState} · ${view.label ?? "Custom view"}`;
+  }
 
   function renderList() {
     const items = sortByName(filterCountries(COUNTRIES, searchEl.value));
     listEl.innerHTML = items.map((c) =>
-      `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.capital.name ? `${c.name} — ${c.capital.name}` : c.name}</button></li>`).join("");
+      `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.capital.name ? `${esc(c.name)} — ${esc(c.capital.name)}` : esc(c.name)}</button></li>`).join("");
     listEl.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
       selected = COUNTRIES.find((c) => c.code === b.dataset.code) || null;
-      renderList(); renderDetail(selected); drawMap(canvas, selected, selectedGazetteer);
+      if (zoomSelected) zoomSelected.disabled = !selected;
+      renderList(); renderDetail(selected); renderMap();
     }));
   }
 
@@ -152,7 +173,7 @@ function main() {
     const q = gazSearchEl.value.trim();
     if (q.length < 2) {
       gazResultsEl.innerHTML = q ? '<p class="note">Enter at least two characters.</p>' : "";
-      drawMap(canvas, selected, null);
+      renderMap();
       return;
     }
     const hits = searchGazetteerPoints(q);
@@ -166,11 +187,45 @@ function main() {
     gazResultsEl.querySelectorAll("button[data-point]").forEach((button) => button.addEventListener("click", () => {
       selectedGazetteer = hits[Number(button.dataset.point)] || null;
       renderGazetteerDetail(selectedGazetteer);
-      drawMap(canvas, selected, selectedGazetteer);
+      renderMap();
     }));
-    drawMap(canvas, selected, null);
+    renderMap();
   }
 
+  function setView(name) {
+    view = MAP_VIEWS[name] || MAP_VIEWS.world;
+    document.querySelectorAll("[data-map-view]").forEach((button) => {
+      const active = button.dataset.mapView === name;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    renderMap();
+  }
+
+  document.querySelectorAll("[data-map-view]").forEach((button) => {
+    button.addEventListener("click", () => setView(button.dataset.mapView));
+  });
+  if (zoomSelected) zoomSelected.addEventListener("click", () => {
+    if (!selected) return;
+    const area = selected.areaTotalSqKm ?? 1_000_000;
+    const scale = area < 5_000 ? 12 : area < 50_000 ? 8 : area < 250_000 ? 5 : area < 1_000_000 ? 3.5 : 2.2;
+    view = { label: selected.name, centerLon: selected.lon, centerLat: selected.lat, scale };
+    document.querySelectorAll("[data-map-view]").forEach((button) => {
+      button.classList.remove("active"); button.setAttribute("aria-pressed", "false");
+    });
+    renderMap();
+  });
+  canvas.addEventListener("click", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
+    const y = ((event.clientY - rect.top) / rect.height) * canvas.height;
+    const hit = nearestCountryAt(x, y, COUNTRIES, canvas.width, canvas.height, view, 20);
+    if (!hit) return;
+    selected = hit;
+    if (zoomSelected) zoomSelected.disabled = false;
+    renderList(); renderDetail(selected); renderMap();
+  });
   searchEl.addEventListener("input", renderList);
   gazSearchEl.addEventListener("input", renderGazetteerSearch);
   el("sourcepin").textContent =
@@ -178,7 +233,18 @@ function main() {
     `${COUNTRY_DATA_META.count} seeded countries · register: ${COUNTRY_DATA_META.register}`;
   renderList();
   renderGazetteerSearch();
-  drawMap(canvas, null, null);
+  if (zoomSelected) zoomSelected.disabled = true;
+
+  fetch("./vendor/world/countries.geo.json")
+    .then((response) => {
+      if (!response.ok) throw new Error(`outline data request failed (${response.status})`);
+      return response.json();
+    })
+    .then((data) => { outlines = data; outlineState = `Country outlines loaded (${data.features?.length ?? 0})`; renderMap(); })
+    .catch(() => {
+      outlineState = "Country outlines unavailable; country points remain visible";
+      renderMap();
+    });
 }
 
 if (typeof document !== "undefined") {

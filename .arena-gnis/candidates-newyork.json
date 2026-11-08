@@ -1,0 +1,42 @@
+{
+  "batch": "newyork-state-frame",
+  "states": {
+    "NY": [
+      "Albany",
+      "New York",
+      "New York City",
+      "Buffalo",
+      "Rochester",
+      "Syracuse",
+      "Yonkers",
+      "Binghamton",
+      "Utica",
+      "Watertown",
+      "Plattsburgh",
+      "Ithaca",
+      "Elmira",
+      "Schenectady",
+      "Troy",
+      "Niagara Falls",
+      "Mount Marcy",
+      "Slide Mountain",
+      "Lake Erie",
+      "Lake Ontario",
+      "Lake Champlain",
+      "Lake George",
+      "Oneida Lake",
+      "Seneca Lake",
+      "Cayuga Lake",
+      "Chautauqua Lake",
+      "Hudson River",
+      "Mohawk River",
+      "Genesee River",
+      "Niagara River",
+      "Saint Lawrence River",
+      "Susquehanna River",
+      "Delaware River",
+      "Saranac Lake"
+    ]
+  },
+  "note": "Focused official GNIS DomesticNames extract for the missing New York statewide frame. Candidate rows will be screened for exact populated-place/hydrographic feature type and state before use; no personal data is requested."
+}

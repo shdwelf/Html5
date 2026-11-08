@@ -110,7 +110,36 @@ test("country viewer helpers and page wiring", async () => {
   assert.match(html, /id="sourcepin"/, "page must surface the source pin");
 });
 
-test("country viewer Webxdc bundle carries the offline app", () => {
+test("country outlines render from local Natural Earth data with island-focused views", async () => {
+  const { MAP_VIEWS, projectMapPoint, drawCountryOutlines, nearestCountryAt } = await import("../js/country-map.js");
+  const geojson = JSON.parse(read("vendor/world/countries.geo.json"));
+  assert.equal(geojson.type, "FeatureCollection");
+  assert.equal(geojson.features.length, 180);
+  assert.ok(MAP_VIEWS.caribbean.scale > MAP_VIEWS.world.scale);
+  assert.ok(MAP_VIEWS.pacific.scale > MAP_VIEWS.world.scale);
+  assert.deepEqual(projectMapPoint(0, 0, 960, 480, MAP_VIEWS.world), [480, 240]);
+  const pacificDateLinePoint = projectMapPoint(-170, 0, 960, 480, MAP_VIEWS.pacific);
+  assert.ok(pacificDateLinePoint[0] > 480, "wrapped longitudes should stay near the Pacific center");
+  assert.equal(nearestCountryAt(480, 240, [{ name: "center", lon: 0, lat: 0 }], 960, 480, MAP_VIEWS.world)?.name, "center");
+
+  let strokes = 0;
+  const context = {
+    save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, moveTo() {}, lineTo() {},
+    stroke() { strokes += 1; },
+  };
+  const count = drawCountryOutlines(context, geojson, 960, 480, MAP_VIEWS.world);
+  assert.equal(count, 180);
+  assert.ok(strokes > 180, "polygon and multipolygon rings are stroked as outlines");
+
+  const html = read("country-viewer.html");
+  for (const view of ["world", "europe", "caribbean", "pacific"]) {
+    assert.match(html, new RegExp(`data-map-view="${view}"`));
+  }
+  assert.match(html, /Zoom to selected/);
+  assert.match(html, /Natural Earth country outlines are public domain/);
+});
+
+test("country viewer Webxdc bundle carries the offline app and outline license", () => {
   assert.ok(existsSync("country-viewer.xdc"), "country-viewer.xdc must be built (npm run build:country-viewer)");
   const entries = unzipSync(new Uint8Array(readFileSync("country-viewer.xdc")));
   const names = Object.keys(entries).sort();
@@ -124,8 +153,12 @@ test("country viewer Webxdc bundle carries the offline app", () => {
     "js/city-gazetteer-data.js",
     "js/city-gazetteer.js",
     "js/country-data.js",
+    "js/country-map.js",
     "js/country-viewer.js",
     "manifest.toml",
+    "vendor/world/README.md",
+    "vendor/world/UNLICENSE",
+    "vendor/world/countries.geo.json",
     "webxdc.js",
   ].sort());
   const manifest = new TextDecoder().decode(entries["manifest.toml"]);

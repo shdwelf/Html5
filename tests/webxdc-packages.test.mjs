@@ -39,11 +39,11 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
     "css/app.css", "css/wm.css", "css/project-y-sites.css", "css/project-y-4dwm.css",
     "css/planet-viewer-4dwm.css", "js/sitek-modes.js", "js/flash-coordinates.js",
     "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
-    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js", "js/country-map.js",
     "js/country-data.js", "js/city-gazetteer.js", "js/city-gazetteer-data.js",
     "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
     "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
-    "js/city-gazetteer-data-toronto.js", "apps/red-october-command-viewer/core.js",
+    "js/city-gazetteer-data-toronto.js", "js/sanborn-restaurant-manifest.js", "apps/red-october-command-viewer/core.js",
     "vendor/world/countries.geo.json",
     "js/project-y-sites-data.js", "js/project-y-sites.js", "js/project-y-4dwm.js",
     "vendor/three.module.min.js", "vendor/OrbitControls.js",
@@ -57,13 +57,14 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   assert.equal(text(files, "js/project-y-sites-data.js"), source("js/project-y-sites-data.js"));
   const worker = text(files, "sw.js");
   assert.equal(worker, source("sw.js"));
+  assert.ok(worker.includes('"./js/sanborn-restaurant-manifest.js"'), "Sanborn's local parser is precached for first offline launch");
   for (const file of [
-    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js",
+    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js", "js/country-map.js",
     "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
     "js/planet-viewer-data.js", "js/planet-globe.js", "js/city-gazetteer.js",
     "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
     "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
-    "js/city-gazetteer-data-toronto.js",
+    "js/city-gazetteer-data-toronto.js", "js/sanborn-restaurant-manifest.js",
   ]) assert.equal(text(files, file), source(file), `${file} is stale in SITE-K XDC`);
   const portTargets = [...text(files, "4dwm-ports.html").matchAll(/href="\.\/([^"#?]+\.html)"/g)].map((match) => match[1]);
   for (const target of portTargets) {

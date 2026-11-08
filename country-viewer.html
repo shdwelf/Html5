@@ -19,7 +19,15 @@
       background: #0e2033; color: inherit; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 12px; }
     #countries button.active { background: #274a68; border-color: #ffd75e; }
     section { padding: 12px 16px; }
-    canvas { width: 100%; height: auto; background: #0b1622; border: 1px solid #1d3a52; }
+    .map-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
+    .map-toolbar button { padding: 7px 9px; background: #0e2033; color: inherit; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 11px; }
+    .map-toolbar button:hover, .map-toolbar button.active { border-color: #ffd75e; background: #183149; }
+    .map-toolbar button:disabled { opacity: .55; cursor: not-allowed; }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 12px; color: #8fb4d4; font-size: 11px; margin: 0 0 8px; }
+    .map-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .map-outline-key { width: 16px; border-top: 2px solid #7ab1d9; }
+    #mapStatus { min-height: 1.3em; margin: 6px 0 10px; color: #8fb4d4; font-size: 11px; }
+    canvas { display: block; width: 100%; height: auto; background: #0b1622; border: 1px solid #1d3a52; }
     #detail table { border-collapse: collapse; margin-top: 8px; }
     #detail th { text-align: left; color: #8fb4d4; padding: 4px 12px 4px 0; vertical-align: top; font-weight: normal; }
     #detail td { padding: 4px 0; }
@@ -42,7 +50,7 @@
 <body>
   <header>
     <h1>COUNTRY VIEWER · PC-GLOBE STYLE</h1>
-    <p>CIA World Factbook notes — capitals, reference points, population, area, languages, government, national anthems. Offline seed register; not a survey product.</p>
+    <p>CIA World Factbook notes and offline country outlines — capitals, reference points, population, area, languages, government, national anthems. Schematic map; not a survey product.</p>
   </header>
   <main>
     <aside>
@@ -58,8 +66,22 @@
       </section>
       <ul id="countries"></ul>
     </aside>
-    <section>
-      <canvas id="world" width="960" height="480">This visualization needs a canvas-capable browser.</canvas>
+    <section aria-label="Country map and profile">
+      <div class="map-toolbar" role="group" aria-label="Map regions">
+        <button type="button" data-map-view="world" class="active" aria-pressed="true">World</button>
+        <button type="button" data-map-view="europe" aria-pressed="false">Europe</button>
+        <button type="button" data-map-view="caribbean" aria-pressed="false">Caribbean</button>
+        <button type="button" data-map-view="pacific" aria-pressed="false">Pacific</button>
+        <button type="button" id="zoomSelected" disabled>Zoom to selected</button>
+      </div>
+      <div class="map-legend" aria-label="Map legend">
+        <span><i class="map-outline-key" aria-hidden="true"></i>country outlines</span>
+        <span><i style="width:8px;height:8px;border-radius:50%;background:#7fd4ff" aria-hidden="true"></i>reference point</span>
+        <span><i style="width:8px;height:8px;background:#ff8a5e" aria-hidden="true"></i>selected capital</span>
+      </div>
+      <p id="mapStatus" role="status">Loading offline country outlines…</p>
+      <canvas id="world" width="960" height="480" tabindex="0" role="img" aria-label="World map with country outlines and reference points. Click a point or use the country list to select a country.">This visualization needs a canvas-capable browser.</canvas>
+      <p class="note">Natural Earth country outlines are public domain and bundled locally (see <code>vendor/world/README.md</code> and <code>UNLICENSE</code>). Use the regional presets or “Zoom to selected” to separate small-island markers.</p>
       <div id="detail"><p>Select a country.</p></div>
     </section>
   </main>

@@ -35,7 +35,7 @@
     "build:socal-subsurface-inlined": "node scripts/build-socal-subsurface-inlined.mjs",
     "check:socal-subsurface-inlined": "node scripts/build-socal-subsurface-inlined.mjs --check",
     "build:ingress-intel": "node scripts/build-ingress-intel-xdc.mjs",
-    "build:4dwm": "npm run build:casefiles && node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && npm run build:planet && npm run build:socal-subsurface-inlined && node scripts/build-ingress-intel-xdc.mjs && node scripts/build-vincennes-xdc.mjs && npm run build:city-subsurface",
+    "build:4dwm": "npm run build:casefiles && node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && npm run build:planet && npm run build:planet-offline && npm run build:socal-subsurface-inlined && node scripts/build-ingress-intel-xdc.mjs && node scripts/build-vincennes-xdc.mjs && npm run build:city-subsurface",
     "build:web": "vite build",
     "preview": "vite preview",
     "serve:catalog": "node tools/z3950-server.mjs",
@@ -44,6 +44,9 @@
     "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
     "test": "vitest run && node --test tests/*.test.mjs",
     "build:planet": "node scripts/build-planet-viewer-xdc.mjs",
+    "build:planet-offline": "node scripts/build-planet-viewer-offline-app.mjs",
+    "build:anc-studio": "node scripts/build-anc-studio-css.mjs",
+    "check:anc-studio": "node scripts/build-anc-studio-css.mjs --check",
     "build:virus-xena": "node tools/build_virus_xena.mjs",
     "build:fna-xena": "node tools/build_fna_xena.mjs",
     "build:changelly-xena": "node tools/build_changelly_drainer_xena.mjs",
@@ -81,6 +84,7 @@
     "tailwind-merge": "3.4.0"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
     "@tailwindcss/vite": "4.1.17",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.3",
