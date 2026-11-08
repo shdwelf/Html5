@@ -1,0 +1,382 @@
+{
+ "format": "gnis-candidates-v1",
+ "retrieved": "2026-11-08T12:48:43Z",
+ "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
+ "states": {
+  "NY": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NY_Text.zip",
+   "zipSha256": "9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8",
+   "candidatesRequested": [
+    "Albany",
+    "New York",
+    "New York City",
+    "Buffalo",
+    "Rochester",
+    "Syracuse",
+    "Yonkers",
+    "Binghamton",
+    "Utica",
+    "Watertown",
+    "Plattsburgh",
+    "Ithaca",
+    "Elmira",
+    "Schenectady",
+    "Troy",
+    "Niagara Falls",
+    "Mount Marcy",
+    "Slide Mountain",
+    "Lake Erie",
+    "Lake Ontario",
+    "Lake Champlain",
+    "Lake George",
+    "Oneida Lake",
+    "Seneca Lake",
+    "Cayuga Lake",
+    "Chautauqua Lake",
+    "Hudson River",
+    "Mohawk River",
+    "Genesee River",
+    "Niagara River",
+    "Saint Lawrence River",
+    "Susquehanna River",
+    "Delaware River",
+    "Saranac Lake"
+   ],
+   "rows": [
+    {
+     "featureId": "977310",
+     "name": "Albany",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Albany",
+     "lat": 42.6525793,
+     "lon": -73.7562317
+    },
+    {
+     "featureId": "943985",
+     "name": "Binghamton",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Broome",
+     "lat": 42.0986867,
+     "lon": -75.9179738
+    },
+    {
+     "featureId": "973345",
+     "name": "Buffalo",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Erie",
+     "lat": 42.8864468,
+     "lon": -78.8783689
+    },
+    {
+     "featureId": "974076",
+     "name": "Cayuga Lake",
+     "featureClass": "Lake",
+     "state": "New York",
+     "county": "Cayuga",
+     "lat": 42.6881354,
+     "lon": -76.7022922
+    },
+    {
+     "featureId": "946461",
+     "name": "Chautauqua Lake",
+     "featureClass": "Lake",
+     "state": "New York",
+     "county": "Chautauqua",
+     "lat": 42.1694423,
+     "lon": -79.4038311
+    },
+    {
+     "featureId": "217887",
+     "name": "Delaware River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.4326121,
+     "lon": -75.528813
+    },
+    {
+     "featureId": "949577",
+     "name": "Elmira",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Chemung",
+     "lat": 42.0897965,
+     "lon": -76.8077338
+    },
+    {
+     "featureId": "970162",
+     "name": "Genesee River",
+     "featureClass": "Stream",
+     "state": "New York",
+     "county": "Monroe",
+     "lat": 43.2583951,
+     "lon": -77.6022239
+    },
+    {
+     "featureId": "970226",
+     "name": "Hudson River",
+     "featureClass": "Stream",
+     "state": "New York",
+     "county": "New York",
+     "lat": 40.6967694,
+     "lon": -74.0281957
+    },
+    {
+     "featureId": "970238",
+     "name": "Ithaca",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Tompkins",
+     "lat": 42.4406284,
+     "lon": -76.4966071
+    },
+    {
+     "featureId": "946367",
+     "name": "Lake Champlain",
+     "featureClass": "Lake",
+     "state": "Vermont",
+     "county": "Grand Isle",
+     "lat": 44.5911519,
+     "lon": -73.3063442
+    },
+    {
+     "featureId": "1075813",
+     "name": "Lake Erie",
+     "featureClass": "Lake",
+     "state": "Ohio",
+     "county": "Lake",
+     "lat": 42.149115,
+     "lon": -81.2410103
+    },
+    {
+     "featureId": "970163",
+     "name": "Lake George",
+     "featureClass": "Lake",
+     "state": "New York",
+     "county": "Warren",
+     "lat": 43.6019166,
+     "lon": -73.5794567
+    },
+    {
+     "featureId": "954913",
+     "name": "Lake George",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Warren",
+     "lat": 43.4261809,
+     "lon": -73.7123408
+    },
+    {
+     "featureId": "970360",
+     "name": "Mohawk River",
+     "featureClass": "Stream",
+     "state": "New York",
+     "county": "Saratoga",
+     "lat": 42.7609113,
+     "lon": -73.6870628
+    },
+    {
+     "featureId": "973357",
+     "name": "Mount Marcy",
+     "featureClass": "Summit",
+     "state": "New York",
+     "county": "Essex",
+     "lat": 44.11281,
+     "lon": -73.9236546
+    },
+    {
+     "featureId": "975772",
+     "name": "New York",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "New York",
+     "lat": 40.7142691,
+     "lon": -74.0059729
+    },
+    {
+     "featureId": "958544",
+     "name": "Niagara Falls",
+     "featureClass": "Falls",
+     "state": "New York",
+     "county": "Niagara",
+     "lat": 43.0833889,
+     "lon": -79.0706003
+    },
+    {
+     "featureId": "970406",
+     "name": "Niagara Falls",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Niagara",
+     "lat": 43.0944999,
+     "lon": -79.0567111
+    },
+    {
+     "featureId": "958547",
+     "name": "Niagara River",
+     "featureClass": "Stream",
+     "state": "New York",
+     "county": "Niagara",
+     "lat": 43.2622766,
+     "lon": -79.0703253
+    },
+    {
+     "featureId": "959369",
+     "name": "Oneida Lake",
+     "featureClass": "Lake",
+     "state": "New York",
+     "county": "Oswego",
+     "lat": 43.2031992,
+     "lon": -75.9098444
+    },
+    {
+     "featureId": "960698",
+     "name": "Plattsburgh",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Clinton",
+     "lat": 44.6994873,
+     "lon": -73.4529124
+    },
+    {
+     "featureId": "962684",
+     "name": "Rochester",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Monroe",
+     "lat": 43.1547845,
+     "lon": -77.6155568
+    },
+    {
+     "featureId": "977244",
+     "name": "Saint Lawrence River",
+     "featureClass": "Stream",
+     "state": "New York",
+     "county": "Franklin",
+     "lat": 49.6666667,
+     "lon": -64.5005556
+    },
+    {
+     "featureId": "964482",
+     "name": "Saranac Lake",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Franklin",
+     "lat": 44.329496,
+     "lon": -74.1312662
+    },
+    {
+     "featureId": "964570",
+     "name": "Schenectady",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Schenectady",
+     "lat": 42.8142432,
+     "lon": -73.9395687
+    },
+    {
+     "featureId": "974079",
+     "name": "Seneca Lake",
+     "featureClass": "Lake",
+     "state": "New York",
+     "county": "Seneca",
+     "lat": 42.7788172,
+     "lon": -76.9498099
+    },
+    {
+     "featureId": "965414",
+     "name": "Slide Mountain",
+     "featureClass": "Summit",
+     "state": "New York",
+     "county": "Essex",
+     "lat": 44.2765047,
+     "lon": -73.8862389
+    },
+    {
+     "featureId": "965415",
+     "name": "Slide Mountain",
+     "featureClass": "Summit",
+     "state": "New York",
+     "county": "Essex",
+     "lat": 44.3836586,
+     "lon": -74.0051491
+    },
+    {
+     "featureId": "975759",
+     "name": "Slide Mountain",
+     "featureClass": "Summit",
+     "state": "New York",
+     "county": "Ulster",
+     "lat": 41.9991499,
+     "lon": -74.3857682
+    },
+    {
+     "featureId": "965413",
+     "name": "Slide Mountain",
+     "featureClass": "Summit",
+     "state": "New York",
+     "county": "Warren",
+     "lat": 43.7296656,
+     "lon": -74.1388817
+    },
+    {
+     "featureId": "591690",
+     "name": "Susquehanna River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Cecil",
+     "lat": 39.5403911,
+     "lon": -76.0738386
+    },
+    {
+     "featureId": "966966",
+     "name": "Syracuse",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Onondaga",
+     "lat": 43.0481221,
+     "lon": -76.1474244
+    },
+    {
+     "featureId": "967902",
+     "name": "Troy",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Rensselaer",
+     "lat": 42.7284117,
+     "lon": -73.6917851
+    },
+    {
+     "featureId": "968324",
+     "name": "Utica",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Oneida",
+     "lat": 43.1009031,
+     "lon": -75.2326641
+    },
+    {
+     "featureId": "968914",
+     "name": "Watertown",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Jefferson",
+     "lat": 43.9747838,
+     "lon": -75.9107565
+    },
+    {
+     "featureId": "971828",
+     "name": "Yonkers",
+     "featureClass": "Populated Place",
+     "state": "New York",
+     "county": "Westchester",
+     "lat": 40.9312099,
+     "lon": -73.8987469
+    }
+   ]
+  }
+ }
+}
