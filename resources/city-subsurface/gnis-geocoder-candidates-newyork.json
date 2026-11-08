@@ -1,6 +1,6 @@
 {
  "format": "gnis-geocoder-candidates-v1",
- "retrieved": "2026-11-08T12:51:11Z",
+ "retrieved": "2026-11-08T12:52:28Z",
  "source": {
   "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
   "parameters": "term=<requested name>&states=<requested state>&include=gnis&maxSuggestions=10",
