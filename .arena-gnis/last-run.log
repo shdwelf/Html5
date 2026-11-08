@@ -1,7 +1,43 @@
-run 42481960093 attempt 1 · 2026-11-08T12:48:43Z
+run 42482148221 attempt 1 · 2026-11-08T12:51:10Z
 request: .arena-gnis/candidates-newyork.json
 output: resources/city-subsurface/gnis-candidates-newyork.json
 NY: 37 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NY_Text.zip sha256=9471de762b1d6bdd...
 wrote resources/city-subsurface/gnis-candidates-newyork.json
 extract exit: 0
 NY 37 candidate rows; zip sha256 9471de762b1d6bdd
+Geocoder output: resources/city-subsurface/gnis-geocoder-candidates-newyork.json
+NY Albany: 0 Geocoder candidate features
+NY New York: 0 Geocoder candidate features
+NY New York City: 0 Geocoder candidate features
+NY Buffalo: 0 Geocoder candidate features
+NY Rochester: 0 Geocoder candidate features
+NY Syracuse: 0 Geocoder candidate features
+NY Yonkers: 0 Geocoder candidate features
+NY Binghamton: 0 Geocoder candidate features
+NY Utica: 0 Geocoder candidate features
+NY Watertown: 0 Geocoder candidate features
+NY Plattsburgh: 0 Geocoder candidate features
+NY Ithaca: 0 Geocoder candidate features
+NY Elmira: 0 Geocoder candidate features
+NY Schenectady: 0 Geocoder candidate features
+NY Troy: 0 Geocoder candidate features
+NY Niagara Falls: 0 Geocoder candidate features
+NY Mount Marcy: 0 Geocoder candidate features
+NY Slide Mountain: 0 Geocoder candidate features
+NY Lake Erie: 0 Geocoder candidate features
+NY Lake Ontario: 0 Geocoder candidate features
+NY Lake Champlain: 0 Geocoder candidate features
+NY Lake George: 0 Geocoder candidate features
+NY Oneida Lake: 0 Geocoder candidate features
+NY Seneca Lake: 0 Geocoder candidate features
+NY Cayuga Lake: 0 Geocoder candidate features
+NY Chautauqua Lake: 0 Geocoder candidate features
+NY Hudson River: 0 Geocoder candidate features
+NY Mohawk River: 0 Geocoder candidate features
+NY Genesee River: 0 Geocoder candidate features
+NY Niagara River: 0 Geocoder candidate features
+NY Saint Lawrence River: 0 Geocoder candidate features
+NY Susquehanna River: 0 Geocoder candidate features
+NY Delaware River: 0 Geocoder candidate features
+NY Saranac Lake: 0 Geocoder candidate features
+wrote resources/city-subsurface/gnis-geocoder-candidates-newyork.json
