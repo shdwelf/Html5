@@ -55,8 +55,13 @@ def main():
         for index, name in enumerate(names):
             url, payload = fetch(name, state)
             queries.append({"term": name, "url": url, "response": payload})
-            features = payload.get("features", []) if isinstance(payload, dict) else []
-            print(f"{state} {name}: {len(features)} Geocoder candidate features")
+            if isinstance(payload, list):
+                candidates = payload
+            elif isinstance(payload, dict):
+                candidates = payload.get("features", payload.get("results", []))
+            else:
+                candidates = []
+            print(f"{state} {name}: {len(candidates)} Geocoder candidates")
             if index + 1 < len(names):
                 time.sleep(0.2)
         result["states"][state] = {"queries": queries}
