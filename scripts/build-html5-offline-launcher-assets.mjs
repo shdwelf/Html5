@@ -20,12 +20,13 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sync4dwmWindowAssets } from "./build-4dwm-window-assets.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_APPS = join(ROOT, "public", "apps");
-const EXPECTED_ENTRYPOINTS = 91;
+const EXPECTED_ENTRYPOINTS = 93;
 const APP_SLUG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const HOST_LABEL_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const EXTERNAL_RESOURCE_PATTERN = /<(?:script|link|img|iframe|video|audio|source|object)\b[^>]*?\b(?:src|href)\s*=\s*(["'])https?:\/\//is;
@@ -85,17 +86,21 @@ function shortHash(value) {
   return createHash("sha256").update(value, "utf8").digest("hex").slice(0, 8);
 }
 
+function checkAppSlug(slug) {
+  if (!APP_SLUG_PATTERN.test(slug)) {
+    throw new Error(`Unsupported app directory name: ${JSON.stringify(slug)}`);
+  }
+}
+
 export function discoverApps() {
   if (!existsSync(PUBLIC_APPS)) {
     throw new Error(`Apps directory not found: ${PUBLIC_APPS}`);
   }
 
-  return readdirSync(PUBLIC_APPS, { withFileTypes: true })
+  const apps = readdirSync(PUBLIC_APPS, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && existsSync(join(PUBLIC_APPS, entry.name, "index.html")))
     .map((entry) => {
-      if (!APP_SLUG_PATTERN.test(entry.name)) {
-        throw new Error(`Unsupported app directory name: ${JSON.stringify(entry.name)}`);
-      }
+      checkAppSlug(entry.name);
       const directory = join(PUBLIC_APPS, entry.name);
       const indexPath = join(directory, "index.html");
       const index = readFileSync(indexPath, "utf8");
@@ -109,13 +114,20 @@ export function discoverApps() {
 
       return {
         slug: entry.name,
+        sourceType: "directory",
         directory,
         name,
         description: description.slice(0, 280),
         hasRemoteResources: EXTERNAL_RESOURCE_PATTERN.test(index),
       };
-    })
-    .sort((left, right) => left.slug.localeCompare(right.slug, "en"));
+    });
+
+  const seen = new Set();
+  for (const app of apps) {
+    if (seen.has(app.slug)) throw new Error(`Duplicate offline launcher app slug: ${app.slug}`);
+    seen.add(app.slug);
+  }
+  return apps.sort((left, right) => left.slug.localeCompare(right.slug, "en"));
 }
 
 export function assignAppHosts(apps) {
@@ -146,8 +158,7 @@ export function assignAppHosts(apps) {
   return hostBySlug;
 }
 
-export function buildCatalog() {
-  const apps = discoverApps();
+function catalogFromApps(apps) {
   const hosts = assignAppHosts(apps);
   return apps
     .map(({ slug, name, description, hasRemoteResources }) => ({
@@ -164,7 +175,12 @@ export function buildCatalog() {
     );
 }
 
+export function buildCatalog() {
+  return catalogFromApps(discoverApps());
+}
+
 function checkInventory() {
+  sync4dwmWindowAssets({ checkOnly: true });
   const catalog = buildCatalog();
   if (catalog.length !== EXPECTED_ENTRYPOINTS) {
     throw new Error(
@@ -184,6 +200,10 @@ function checkInventory() {
   );
 }
 
+function stageAppSource(app, destination) {
+  cpSync(app.directory, destination, { recursive: true, dereference: true, force: true });
+}
+
 function writeStagedAssets(outDir) {
   const output = resolve(outDir);
   const allowedRoot = resolve(ROOT, "apps", "html5-offline-launcher", "app", "build") + sep;
@@ -191,7 +211,9 @@ function writeStagedAssets(outDir) {
     throw new Error(`Refusing to write outside the launcher Gradle build directory: ${output}`);
   }
 
-  const catalog = buildCatalog();
+  sync4dwmWindowAssets();
+  const sourceApps = discoverApps();
+  const catalog = catalogFromApps(sourceApps);
   if (catalog.length !== EXPECTED_ENTRYPOINTS) {
     throw new Error(
       `Expected ${EXPECTED_ENTRYPOINTS} HTML app entrypoints; found ${catalog.length}.`,
@@ -202,10 +224,9 @@ function writeStagedAssets(outDir) {
   mkdirSync(join(output, "apps"), { recursive: true });
   mkdirSync(join(output, "launcher"), { recursive: true });
 
-  for (const app of catalog) {
-    const source = join(PUBLIC_APPS, app.slug);
+  for (const app of sourceApps) {
     const destination = join(output, "apps", app.slug);
-    cpSync(source, destination, { recursive: true, dereference: true, force: true });
+    stageAppSource(app, destination);
   }
 
   writeFileSync(

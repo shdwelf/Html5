@@ -75,6 +75,18 @@ jobs:
         working-directory: apps/html5-offline-launcher
         run: gradle --no-daemon --stacktrace :app:assembleDebug
 
+      - name: Verify packaged microphone and offline permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/debug/app-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          printf '%s\n' "$permissions"
+          grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+
       - name: Report APK size and SHA-256
         shell: bash
         run: |

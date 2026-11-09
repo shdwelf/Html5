@@ -44,6 +44,9 @@ tools/java-compiler/.rt/
 # root. Only the packed casefiles.xdc is committed.
 public/apps/casefiles/
 
+# Browser WASM runtime copied from the pinned npm package by scripts/build-7z-wasm-assets.mjs
+public/vendor/7z-wasm/
+
 # Local-only research photo backups (user direction: store locally, not remotely)
 /research-assets/
 /image-search/
