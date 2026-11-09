@@ -1,7 +1,10 @@
 package org.arena.html5launcher;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -20,8 +23,11 @@ import android.widget.Toast;
 public final class MainActivity extends Activity {
     private static final int INK = Color.rgb(20, 27, 38);
     private static final int ACCENT = Color.rgb(66, 214, 190);
+    private static final int REQUEST_ANC_AUDIO = 4105;
+    private static final String ANC_AUDIO_HOST = "app-anc-studio.invalid";
     private WebView webView;
     private TextView pageTitle;
+    private PermissionRequest pendingAudioRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +120,14 @@ public final class MainActivity extends Activity {
 
             @Override
             public void onPermissionRequest(PermissionRequest request) {
-                request.deny();
+                runOnUiThread(() -> handleWebPermissionRequest(request));
+            }
+
+            @Override
+            public void onPermissionRequestCanceled(PermissionRequest request) {
+                runOnUiThread(() -> {
+                    if (pendingAudioRequest == request) pendingAudioRequest = null;
+                });
             }
 
             @Override
@@ -131,8 +144,71 @@ public final class MainActivity extends Activity {
         webView.loadUrl(OfflineAssetWebViewClient.HOME_URL);
     }
 
+    private void handleWebPermissionRequest(PermissionRequest request) {
+        if (request == null || !isAllowedAncAudioRequest(request)) {
+            if (request != null) request.deny();
+            return;
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            request.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            return;
+        }
+        if (pendingAudioRequest != null) {
+            request.deny();
+            return;
+        }
+        pendingAudioRequest = request;
+        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            Toast.makeText(this,
+                    "ANC microphone access is requested only after you press Start and stays on this device.",
+                    Toast.LENGTH_LONG).show();
+        }
+        requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, REQUEST_ANC_AUDIO);
+    }
+
+    private boolean isAllowedAncAudioRequest(PermissionRequest request) {
+        if (webView == null || !isAncOrigin(request.getOrigin())) return false;
+        Uri currentPage = Uri.parse(webView.getUrl() == null ? "" : webView.getUrl());
+        if (!isAncOrigin(currentPage)) return false;
+        String[] resources = request.getResources();
+        return resources != null && resources.length == 1 &&
+                PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resources[0]);
+    }
+
+    private static boolean isAncOrigin(Uri uri) {
+        return uri != null &&
+                "https".equalsIgnoreCase(uri.getScheme()) &&
+                ANC_AUDIO_HOST.equalsIgnoreCase(uri.getHost()) &&
+                (uri.getPort() == -1 || uri.getPort() == 443);
+    }
+
+    private void denyPendingAudioRequest() {
+        if (pendingAudioRequest != null) {
+            pendingAudioRequest.deny();
+            pendingAudioRequest = null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode != REQUEST_ANC_AUDIO) return;
+        PermissionRequest request = pendingAudioRequest;
+        pendingAudioRequest = null;
+        boolean granted = grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        if (request == null) return;
+        if (granted && isAllowedAncAudioRequest(request)) {
+            request.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+        } else {
+            request.deny();
+        }
+    }
+
     private void goBack() {
         if (webView != null && webView.canGoBack()) {
+            denyPendingAudioRequest();
             webView.goBack();
         } else if (webView != null) {
             Toast.makeText(this, "You are at the app catalog.", Toast.LENGTH_SHORT).show();
@@ -140,7 +216,10 @@ public final class MainActivity extends Activity {
     }
 
     private void openCatalog() {
-        if (webView != null) webView.loadUrl(OfflineAssetWebViewClient.HOME_URL);
+        if (webView != null) {
+            denyPendingAudioRequest();
+            webView.loadUrl(OfflineAssetWebViewClient.HOME_URL);
+        }
     }
 
     private int dp(int value) {
@@ -150,6 +229,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (webView != null && webView.canGoBack()) {
+            denyPendingAudioRequest();
             webView.goBack();
         } else {
             super.onBackPressed();
@@ -158,6 +238,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        denyPendingAudioRequest();
         if (webView != null) {
             webView.loadUrl("about:blank");
             webView.stopLoading();

@@ -236,8 +236,8 @@
             </div>
 
             <div id="offlineMicNotice" class="hidden rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-100" role="status" aria-live="polite">
-              <strong class="block text-amber-200">Microphone unavailable in the offline Android viewer</strong>
-              <p class="mt-1 text-xs leading-relaxed">This packaged viewer denies microphone permission, so live capture and Smart Calibrate are disabled here. The rest of the lab remains available for review. Open the app in a browser that explicitly grants microphone access to run live audio; this demo does not send or record microphone audio.</p>
+              <strong class="block text-amber-200">Microphone permission is requested only after you press Start</strong>
+              <p class="mt-1 text-xs leading-relaxed">The offline Android viewer asks Android for microphone permission only when you start ANC or Smart Calibrate. WebView audio capture is allowed only for this ANC app; no camera or network permission is requested. Audio is processed locally and is not saved or transmitted. If you deny Android's prompt, live capture and calibration remain unavailable, while the rest of the lab stays usable.</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-3">
@@ -1432,15 +1432,12 @@
     }
 
     const offlineMicNotice = document.getElementById('offlineMicNotice');
-    const offlineLauncherOrigin = location.protocol === 'https:' && location.hostname.endsWith('.invalid');
+    const offlineLauncherOrigin = location.protocol === 'https:' && location.hostname === 'app-anc-studio.invalid';
     if (offlineLauncherOrigin) {
       offlineMicNotice.classList.remove('hidden');
-      startBtn.disabled = true;
-      calibrateBtn.disabled = true;
       startBtn.setAttribute('aria-describedby', 'offlineMicNotice');
       calibrateBtn.setAttribute('aria-describedby', 'offlineMicNotice');
-      startBtnText.textContent = 'Microphone unavailable offline';
-      setStatus('Offline preview only', 'warn', 'The Android offline viewer denies microphone permission. Live audio and Smart Calibrate are unavailable here.');
+      setStatus('Ready · microphone permission on demand', 'info', 'Press Start or Smart Calibrate to request Android microphone permission for this ANC app.');
     }
 
     setFilterUI('lowpass');

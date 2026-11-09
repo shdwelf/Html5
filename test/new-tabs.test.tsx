@@ -66,7 +66,8 @@ describe("new tabs render", () => {
         <HaikuWallet ensoId="EN0TEST" />
       </PipeProvider>
     );
-    expect(screen.getByText(/Export \.haikuvault/)).toBeTruthy();
+    expect(screen.getByText(/Export v1 \.haikuvault/)).toBeTruthy();
+    expect(screen.getByText(/Export v2 \.haikuvault/)).toBeTruthy();
     expect(screen.getByText(/Standalone decryptor ⬇/)).toBeTruthy();
     expect(screen.getByText(/Import \.haikuvault/)).toBeTruthy();
   });

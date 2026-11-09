@@ -12,6 +12,11 @@ const CLIENT = readFileSync(
   join(PROJECT, "app/src/main/java/org/arena/html5launcher/OfflineAssetWebViewClient.java"),
   "utf8",
 );
+const MAIN_ACTIVITY = readFileSync(
+  join(PROJECT, "app/src/main/java/org/arena/html5launcher/MainActivity.java"),
+  "utf8",
+);
+const LAUNCHER_BUILDER = readFileSync(join(ROOT, "scripts", "build-html5-offline-launcher-assets.mjs"), "utf8");
 const CATALOG_HTML = readFileSync(join(PROJECT, "app/src/main/assets/launcher/index.html"), "utf8");
 const CATALOG_JS = readFileSync(join(PROJECT, "app/src/main/assets/launcher/catalog.js"), "utf8");
 
@@ -24,11 +29,13 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 91);
+  assert.equal(expectedSlugs.length, 93);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 91);
+  assert.equal(catalog.length, 93);
   assert.ok(expectedSlugs.includes("newyork-subsurface"));
+  assert.ok(expectedSlugs.includes("helios-observatory"));
+  assert.ok(expectedSlugs.includes("prime-viewer"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
 });
 
@@ -54,12 +61,28 @@ test("the bundled entrypoints have no direct remote resource tags; the launcher 
   assert.doesNotMatch(anc, /cdn\.jsdelivr\.net|fonts\.googleapis\.com/i);
 });
 
-test("Android package has minSdk 24 and intentionally omits INTERNET permission", () => {
+test("Android package has minSdk 24 and no network permission", () => {
   assert.match(GRADLE, /minSdk\s+24/);
   assert.match(GRADLE, /targetSdk\s+34/);
+  assert.match(MANIFEST, /android\.permission\.RECORD_AUDIO/);
   assert.doesNotMatch(MANIFEST, /android\.permission\.INTERNET/);
   assert.match(MANIFEST, /android:usesCleartextTraffic="false"/);
   assert.match(MANIFEST, /android:allowBackup="false"/);
+});
+
+test("only ANC can request WebView audio after the Android runtime permission grant", () => {
+  assert.match(MAIN_ACTIVITY, /ANC_AUDIO_HOST\s*=\s*"app-anc-studio\.invalid"/);
+  assert.match(MAIN_ACTIVITY, /isAncOrigin\(request\.getOrigin\(\)\)/);
+  assert.match(MAIN_ACTIVITY, /resources != null &&\s*resources\.length == 1/);
+  assert.match(MAIN_ACTIVITY, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
+  assert.match(MAIN_ACTIVITY, /requestPermissions\(new String\[\]\s*\{\s*Manifest\.permission\.RECORD_AUDIO\s*\}/);
+  assert.match(MAIN_ACTIVITY, /onRequestPermissionsResult/);
+  assert.match(MAIN_ACTIVITY, /request\.deny\(\)/);
+  assert.doesNotMatch(MAIN_ACTIVITY, /RESOURCE_VIDEO_CAPTURE/);
+});
+
+test("unreviewed BIP-39 candidates are not added to the offline launcher", () => {
+  assert.doesNotMatch(LAUNCHER_BUILDER, /haiku\.xdc|bip39-standalone\.html/);
 });
 
 test("the WebView client serves packaged assets and blocks unknown hosts", () => {

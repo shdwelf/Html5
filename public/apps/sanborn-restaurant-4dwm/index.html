@@ -27,10 +27,22 @@ button { cursor:pointer; }
 .topnav button:hover,.topnav button.active { color:var(--cyan); border-bottom-color:var(--cyan); }
 .header-meta { margin-left:auto; text-align:right; font:10px/1.35 var(--mono); color:var(--muted); }
 .header-meta strong { color:var(--amber); font-weight:500; }
-.workspace { min-height:0; display:grid; grid-template-columns:205px minmax(420px,1fr) 310px; gap:1px; }
-.sidebar,.inspector { min-height:0; overflow:auto; background:rgba(7,19,22,.9); }
-.sidebar { border-right:1px solid var(--line); padding:14px 12px; }
-.inspector { border-left:1px solid var(--line); padding:14px; }
+.workspace { min-height:0; position:relative; display:grid; grid-template-columns:minmax(0,1fr); gap:1px; }
+.sidebar,.inspector {
+  position:fixed; z-index:6; top:62px; width:min(310px,calc(100vw - 24px));
+  max-height:calc(100dvh - 102px); min-height:0; overflow:hidden;
+  background:rgba(7,19,22,.96); border:1px solid var(--line); box-shadow:0 14px 38px #0009;
+}
+.sidebar { left:12px; border-right:1px solid var(--line); padding:0; }
+.inspector { right:12px; border-left:1px solid var(--line); padding:0; }
+.sidebar .four-dwm-window-body,.inspector .four-dwm-window-body { padding:14px 12px; }
+.sidebar .four-dwm-window-head,.inspector .four-dwm-window-head {
+  color:var(--cyan); background:rgba(6,16,19,.98); border-bottom-color:var(--line);
+  font:10px var(--mono); letter-spacing:.12em;
+}
+.sidebar .four-dwm-window-head button,.inspector .four-dwm-window-head button {
+  border:1px solid #3a686c; background:#07171a; color:var(--cyan); font:12px var(--mono);
+}
 .eyebrow { margin:0 0 7px; color:var(--cyan); font:10px var(--mono); letter-spacing:.16em; text-transform:uppercase; }
 .block { border:1px solid var(--line); background:linear-gradient(135deg,#10262a99,#07151899); margin-bottom:12px; }
 .block h2 { margin:0; padding:9px 10px; border-bottom:1px solid var(--line); color:#e6f6f1; font:11px var(--mono); letter-spacing:.1em; }
@@ -84,8 +96,8 @@ button { cursor:pointer; }
 .statusbar { display:flex; align-items:center; gap:16px; padding:0 13px; border-top:1px solid var(--line); background:#061012; color:#6d898c; font:9px var(--mono); letter-spacing:.04em; }.statusbar b{color:var(--cyan);font-weight:500}.statusbar .right{margin-left:auto}
 .drawer { position:absolute; left:16px; bottom:45px; width:min(590px,calc(100% - 32px)); max-height:46%; display:none; z-index:2; border:1px solid #356166; background:#071619ed; box-shadow:0 14px 45px #000b; }.drawer.open{display:block}.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line);font:10px var(--mono);color:var(--cyan)}.drawer pre{margin:0;padding:10px;overflow:auto;max-height:320px;white-space:pre-wrap;color:#c1ddd7;font:9px/1.45 var(--mono)}
 #toast { position:absolute; left:50%; bottom:56px; transform:translate(-50%,10px); opacity:0; pointer-events:none; transition:.2s; padding:7px 12px; border:1px solid var(--cyan); background:#07191beF; color:var(--cyan); font:10px var(--mono); z-index:4; }.toast-show{opacity:1!important;transform:translate(-50%,0)!important}
-@media(max-width:1000px){.workspace{grid-template-columns:165px minmax(360px,1fr) 270px}.brand{min-width:180px}.topnav button{padding:0 7px}}
-@media(max-width:760px){body{overflow:auto}.app{height:auto;min-height:100dvh;grid-template-rows:50px auto 28px}.workspace{min-height:calc(100dvh - 78px);grid-template-columns:1fr;grid-template-rows:auto minmax(480px,65dvh) auto}.sidebar{border:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.sidebar .block{margin:0}.sidebar .block:last-child{grid-column:1/-1}.inspector{border:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:10px}.inspector .block{margin:0}.inspector .block:first-child{grid-column:1/-1}.inspector .source-block{grid-column:1/-1}.topnav{display:none}.header-meta{font-size:9px}.brand{min-width:0}.viewport-foot{font-size:9px}}
+@media(max-width:1000px){.workspace{grid-template-columns:minmax(0,1fr)}.brand{min-width:180px}.topnav button{padding:0 7px}}
+@media(max-width:760px){body{overflow:hidden}.app{height:100dvh;min-height:100dvh;grid-template-rows:50px minmax(0,1fr) 28px}.workspace{min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}.sidebar,.inspector{position:fixed;top:60px;bottom:auto;display:flex;flex-direction:column;width:min(310px,calc(100vw - 24px));max-height:calc(100dvh - 92px);gap:0}.sidebar{left:12px;right:auto;border:1px solid var(--line);padding:0}.inspector{right:12px;left:auto;border:1px solid var(--line);padding:0}.topnav{display:none}.header-meta{font-size:9px}.brand{min-width:0}.viewport-foot{font-size:9px}}
 </style>
 </head>
 <body>
@@ -96,7 +108,7 @@ button { cursor:pointer; }
     <div class="header-meta"><strong id="clock">00:00:00</strong><br>4DWM SESSION · <span id="load-state">LOADING</span></div>
   </header>
   <main class="workspace">
-    <aside class="sidebar" aria-label="Scene controls">
+    <aside class="sidebar" aria-label="Scene controls" data-4dwm-window data-window-title="SCENE CONTROLS">
       <div class="block"><h2>WINDOW / VIEW</h2><div class="block-body"><div class="nav-list"><button class="active" data-preset="axon">AXONOMETRIC <span>01</span></button><button data-preset="plan">PLAN / TOP <span>02</span></button><button data-preset="bar">BAR + STOOLS <span>03</span></button><button data-preset="kitchen">KITCHEN <span>04</span></button></div></div></div>
       <div class="block"><h2>LAYERS</h2><div class="block-body">
         <label class="layer-row"><input type="checkbox" data-layer="blueprint" checked><i class="layer-key key-blue"></i> blueprint datum</label>
@@ -120,7 +132,7 @@ button { cursor:pointer; }
       <div id="toast" role="status" aria-live="polite"></div>
     </section>
 
-    <aside class="inspector" aria-label="Inspector and research">
+    <aside class="inspector" aria-label="Inspector and research" data-4dwm-window data-window-title="INSPECTOR · RESEARCH">
       <div class="block"><div class="block-body"><p class="eyebrow">XDC / SELECTED STUDY</p><h2 class="inspect-title">Service Counter<br>Restaurant Study</h2><p class="inspect-sub">ORIGINAL INTERPRETIVE MODEL · NOT A CLAIMED SANBORN RECONSTRUCTION</p><div class="chips"><span class="chip confirmed">VRML97</span><span class="chip confirmed">WIREFRAME</span><span class="chip caution">RESEARCH LAYER</span><span class="chip invented">DESIGN STUDY</span></div></div></div>
       <div class="block"><h2>INSPECTOR</h2><div class="block-body"><div class="data-list"><div class="data-row"><span>selection</span><b id="inspector-selection">room / all</b></div><div class="data-row"><span>material</span><b id="inspector-material">copper, glass, steel</b></div><div class="data-row"><span>state</span><b id="inspector-state">counter closed</b></div><div class="data-row"><span>source</span><b>sanborn-restaurant.wrl</b></div></div></div></div>
       <div class="block"><h2>ANNOTATIONS / CLICK TO FOCUS</h2><div class="block-body" id="annotations"><div class="annotation" data-focus="booths"><i></i><div><strong>TWO BOOTH RUNS</strong><span>symmetrical upholstered bays · left + right</span></div></div><div class="annotation" data-focus="bar"><i></i><div><strong>FOUR BAR STOOLS</strong><span>high rail with amber service light</span></div></div><div class="annotation" data-focus="cashier"><i></i><div><strong>CASHIER / FLIP PASS</strong><span>hinged countertop opens toward guest lane</span></div></div><div class="annotation" data-focus="display"><i></i><div><strong>GLASS DISPLAY CASE</strong><span>two trays · transparent enclosure</span></div></div><div class="annotation" data-focus="kitchen"><i></i><div><strong>SMALL DEEP-FRY KITCHEN</strong><span>fryer, hood, prep table, under-counter fridge</span></div></div></div></div>
@@ -137,6 +149,7 @@ button { cursor:pointer; }
   </main>
   <footer class="statusbar"><span>STATUS <b id="status-text">loading VRML manifest…</b></span><span>RENDER <b id="render-text">THREE.JS</b></span><span class="right">XDC-02 / SANBORN STUDY · <b>OFFLINE-CAPABLE</b></span></footer>
 </div>
+<script type="module" src="./js/4dwm-window-manager.js"></script>
 <script type="module">
 import * as THREE from "./vendor/three.module.min.js";
 import { OrbitControls } from "./vendor/OrbitControls.js";
