@@ -226,30 +226,47 @@ convention leaves the far-western Aleutians (keyed at east longitudes
 across the antimeridian) outside the seeded frame, disclosed rather
 than spanned. The machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch21-source-register-2026-10-24.json).
-New Jersey and Hawaii are carried by the open PR #145 on the batch-20
-branch; when it merges, every US state has a statewide frame and the
-country/planet thread follows.
+New Jersey and Hawaii were carried by PR #145 on the batch-20 branch.
+New York still had only the separate Buffalo city frame, so the statewide
+atlas remained one state short after those additions.
 
 Round 40 update: **2026-10-24**. `newjersey` and `hawaii` join as the
-fifty-seventh and fifty-eighth configurations, completing the
-50-state atlas. Their batch-20 evidence was produced on PR #145's
-branch (round 38 there); after PR #146 (Alaska) merged first, that PR
-became conflicting, so its unique work was re-integrated here under
-the main-preferred rule from PRs #141/#143: the frozen register
+fifty-seventh and fifty-eighth configurations, completing the other
+forty-nine statewide frames; the existing Buffalo view remains city-only,
+with New York statewide still to be added. Their batch-20 evidence was
+produced on PR #145's branch (round 38 there); after PR #146 (Alaska)
+merged first, that PR became conflicting, so its unique work was
+re-integrated here under the main-preferred rule from PRs #141/#143: the
+frozen register
 [`resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json`](../resources/city-subsurface/gnis-state-batch20-source-register-2026-10-24.json)
-is transferred verbatim, the NJ/HI extract states were merged into
-this branch's cumulative extract (now covering twenty-nine states,
-Alaska included), and the batch-20 test runs beside Alaska's. High
-Point (1,803 feet) and Mauna Kea (13,796 feet) keep their per-ID
-checks; the Delaware River stays a corridor in New Jersey, and Hawaii
-keeps its verbatim diacritic spellings. PR #145 is superseded by this
-round's pull request and can be closed unmerged. Next: the
+is transferred verbatim, the NJ/HI extract states were merged into this
+branch's cumulative extract (now covering twenty-nine states, Alaska
+included), and the batch-20 test runs beside Alaska's. High Point (1,803
+feet) and Mauna Kea (13,796 feet) keep their per-ID checks; the Delaware
+River stays a corridor in New Jersey, and Hawaii keeps its verbatim
+diacritic spellings. PR #145 is superseded by this round's pull request
+and can be closed unmerged. New York statewide follows before the
 country/planet thread.
+
+Round 41 update. `newyork` joins as the fifty-ninth configuration, adding
+the statewide GNIS frame missing from the earlier list while retaining
+Buffalo as a separate city view. The starter register has 27 all-GNIS
+points (16 populated places, five lakes, four streams, two summits), each
+matched by exact FEATURE_ID, name, class/type, state, county, and primary
+coordinates across the retained per-name USGS Geocoder responses and the
+official New York DomesticNames extract. The screen records same-name
+Lake George, Niagara Falls, and Slide Mountain decisions; the New York
+City phrase returns no candidate, so the official `New York` populated
+place remains under its exact GNIS name. Border and interstate lake/river
+points outside the frame are excluded rather than shifted. Synthetic
+relief and seven generalized context lines are clearly not DEM or feature
+geometry. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch22-source-register.json`](../resources/city-subsurface/gnis-state-batch22-source-register.json).
 
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifty-eight configurations — five cities,
-forty-nine statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifty-nine configurations — five cities,
+fifty statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -312,6 +329,7 @@ its own offline Webxdc:
 | Alaska (statewide) | `alaska-subsurface.html` | `js/city-subsurface-data-alaska.js` | `js/city-gazetteer-data-alaska.js` | `alaska-subsurface.xdc` |
 | New Jersey (statewide) | `newjersey-subsurface.html` | `js/city-subsurface-data-newjersey.js` | `js/city-gazetteer-data-newjersey.js` | `newjersey-subsurface.xdc` |
 | Hawaii (statewide) | `hawaii-subsurface.html` | `js/city-subsurface-data-hawaii.js` | `js/city-gazetteer-data-hawaii.js` | `hawaii-subsurface.xdc` |
+| New York (statewide) | `newyork-subsurface.html` | `js/city-subsurface-data-newyork.js` | `js/city-gazetteer-data-newyork.js` | `newyork-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

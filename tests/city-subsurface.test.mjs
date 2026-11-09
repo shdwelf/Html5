@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia", "wisconsin", "michigan", "illinois", "indiana", "ohio", "pennsylvania", "arkansas", "Kentucky", "tennessee", "virginia", "westvirginia", "northcarolina", "southcarolina", "florida", "Maryland", "delaware", "newhampshire", "vermont", "maine", "massachusetts", "connecticut", "rhodeisland", "alaska", "newjersey", "hawaii"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas", "iowa", "missouri", "minnesota", "louisiana", "mississippi", "alabama", "georgia", "wisconsin", "michigan", "illinois", "indiana", "ohio", "pennsylvania", "arkansas", "Kentucky", "tennessee", "virginia", "westvirginia", "northcarolina", "southcarolina", "florida", "Maryland", "delaware", "newhampshire", "vermont", "maine", "massachusetts", "connecticut", "rhodeisland", "alaska", "newjersey", "hawaii", "newyork"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -3913,6 +3913,153 @@ test("New Jersey and Hawaii complete the New Jersey-Hawaii GNIS state batch", as
     assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
     assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
   }
+});
+
+test("New York completes the 50-state statewide GNIS atlas with screened batch-22 records", async () => {
+  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch22-source-register.json"));
+  const extract = JSON.parse(read("resources/city-subsurface/gnis-candidates-newyork.json"));
+  const geocoder = JSON.parse(read("resources/city-subsurface/gnis-geocoder-candidates-newyork.json"));
+  const config = JSON.parse(read("resources/city-subsurface/cities.json"));
+  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
+  const expectedRows = new Map([
+    ["Albany|Populated Place", "977310"],
+    ["Binghamton|Populated Place", "943985"],
+    ["Buffalo|Populated Place", "973345"],
+    ["Cayuga Lake|Lake", "974076"],
+    ["Chautauqua Lake|Lake", "946461"],
+    ["Elmira|Populated Place", "949577"],
+    ["Genesee River|Stream", "970162"],
+    ["Hudson River|Stream", "970226"],
+    ["Ithaca|Populated Place", "970238"],
+    ["Lake George|Lake", "970163"],
+    ["Mohawk River|Stream", "970360"],
+    ["Mount Marcy|Summit", "973357"],
+    ["New York|Populated Place", "975772"],
+    ["Niagara Falls|Populated Place", "970406"],
+    ["Niagara River|Stream", "958547"],
+    ["Oneida Lake|Lake", "959369"],
+    ["Plattsburgh|Populated Place", "960698"],
+    ["Rochester|Populated Place", "962684"],
+    ["Saranac Lake|Populated Place", "964482"],
+    ["Schenectady|Populated Place", "964570"],
+    ["Seneca Lake|Lake", "974079"],
+    ["Slide Mountain|Summit", "975759"],
+    ["Syracuse|Populated Place", "966966"],
+    ["Troy|Populated Place", "967902"],
+    ["Utica|Populated Place", "968324"],
+    ["Watertown|Populated Place", "968914"],
+    ["Yonkers|Populated Place", "971828"],
+  ]);
+  const geocoderTypes = {
+    "Populated Place": "Cities & Populated Places",
+    Lake: "Lakes & Reservoirs",
+    Stream: "Streams & Canals",
+    Summit: "Summit",
+  };
+  const expectedBbox = { lon0: -79.85, lat0: 40.45, lon1: -71.75, lat1: 45.05 };
+  const frame = config.cities.newyork;
+  const data = await import("../js/city-subsurface-data-newyork.js");
+  const gaz = await import("../js/city-gazetteer-data-newyork.js");
+
+  assert.ok(frame, "cities.json must contain the New York state frame");
+  assert.equal(frame.state, "NY");
+  assert.deepEqual(frame.bbox, expectedBbox);
+  assert.equal(frame.demRequired, false, "the statewide view uses disclosed synthetic relief, not a DEM");
+  assert.equal(data.CITY.id, "newyork");
+  assert.equal(data.CITY.state, "NY");
+  assert.equal(data.CITY.requiresDem, false);
+  assert.deepEqual(data.BBOX, expectedBbox);
+  assert.deepEqual(data.COAST, [], "the frame does not invent a coastline geometry");
+  assert.equal(gaz.GAZ_ROWS.length, 27);
+  const rowCounts = gaz.GAZ_ROWS.reduce((counts, row) => {
+    counts[row[1]] = (counts[row[1]] ?? 0) + 1;
+    return counts;
+  }, {});
+  assert.deepEqual(rowCounts, { "Populated Place": 16, Lake: 5, Stream: 4, Summit: 2 });
+  assert.equal(gaz.GAZ_META.verified, 27);
+  assert.equal(gaz.GAZ_META.unverified, 0);
+  assert.deepEqual(new Set(gaz.GAZ_ROWS.map((row) => `${row[0]}|${row[1]}`)), new Set(expectedRows.keys()));
+
+  const registerFrame = register.frames.newyork;
+  assert.equal(registerFrame.state, "NY");
+  assert.deepEqual(registerFrame.bbox, expectedBbox);
+  assert.equal(registerFrame.totalRows, 27);
+  const registerRows = registerFrame.verifiedRows.map((row) => [
+    row.name, row.featureClass, row.ftt, row.county, row.latitude, row.longitude,
+    null, row.featureId, row.verified, row.sourceNote,
+  ]);
+  assert.deepEqual(registerRows, gaz.GAZ_ROWS, "batch-22 evidence must reproduce the generated gazetteer exactly");
+  assert.equal(register.services.gnisDomesticNames.zipSha256, extract.states.NY.zipSha256);
+  assert.match(extract.states.NY.zipSha256, /^[0-9a-f]{64}$/);
+  assert.equal(register.services.gnisDomesticNames.candidateFile, "resources/city-subsurface/gnis-candidates-newyork.json");
+  assert.equal(register.services.usgsGeocoder.candidateFile, "resources/city-subsurface/gnis-geocoder-candidates-newyork.json");
+
+  const rowsById = new Map(extract.states.NY.rows.map((row) => [row.featureId, row]));
+  const queriesByTerm = new Map(geocoder.states.NY.queries.map((query) => [query.term, query.response]));
+  for (const row of gaz.GAZ_ROWS) {
+    const [name, featureClass, ftt, county, latitude, longitude, elevation, featureId, verified, note] = row;
+    const key = `${name}|${featureClass}`;
+    assert.equal(featureId, expectedRows.get(key), `${key}: selected FEATURE_ID`);
+    assert.equal(verified, 1, `${key}: only screened official GNIS rows may be VERIFIED=1`);
+    assert.equal(GAZ_CLASS_META[featureClass] != null, true, `${key}: gazetteer class must render`);
+    assert.equal(ftt, { "Populated Place": "pop.place", Lake: "hydro.lake", Stream: "hydro.stream", Summit: "phys.summit" }[featureClass]);
+    assert.equal(elevation, null);
+    assert.match(note, /USGS GNIS Geocoder/);
+    assert.match(note, new RegExp(`FEATURE_ID=${featureId}`));
+    assert.match(note, /DomesticNames_NY_Text\.zip/);
+    assert.match(note, /GNIS primary point/);
+    assert.match(note, /not a .*?(?:boundary|geocode|shoreline|polygon|centerline|contour)/);
+
+    const domestic = rowsById.get(featureId);
+    assert.ok(domestic, `${key}: feature must occur in the official NY DomesticNames extract`);
+    assert.equal(domestic.name, name);
+    assert.equal(domestic.featureClass, featureClass);
+    assert.equal(domestic.state, "New York");
+    assert.equal(domestic.county, county, `${key}: preserve the DomesticNames county string`);
+    assert.equal(domestic.lat, latitude);
+    assert.equal(domestic.lon, longitude);
+
+    const matches = (queriesByTerm.get(name) ?? []).filter((candidate) => String(candidate.GnisId) === featureId);
+    assert.equal(matches.length, 1, `${key}: exact ID must occur once in the retained per-name Geocoder response`);
+    const [candidate] = matches;
+    assert.equal(candidate.Name, name);
+    assert.equal(candidate.Type, geocoderTypes[featureClass]);
+    assert.equal(candidate.State, "NY");
+    assert.equal(candidate.County, `${county} County`);
+    assert.equal(candidate.Latitude, latitude);
+    assert.equal(candidate.Longitude, longitude);
+  }
+  for (const row of registerFrame.verifiedRows) {
+    assert.equal(row.geocoderType, geocoderTypes[row.featureClass]);
+    assert.equal(row.geocoderCounty, `${row.county} County`);
+  }
+
+  assert.equal(data.CORRIDORS.length, 7);
+  assert.ok(data.CORRIDORS.every((corridor) => corridor.tier === "context"));
+  assert.ok(data.CORRIDORS.every((corridor) => /generalized|schematic|context/i.test(corridor.facts[0])));
+  const gnissPoints = new Set(gaz.GAZ_ROWS.map((row) => `${row[0]}|${row[5]}|${row[4]}`));
+  assert.equal(data.NODES.length, 8);
+  for (const node of data.NODES) {
+    assert.equal(node.tier, "official");
+    assert.ok(gnissPoints.has(`${node.name}|${node.lon}|${node.lat}`), `${node.name}: scene node must reuse its GNIS primary point`);
+  }
+
+  const query = (term) => geocoder.states.NY.queries.find((item) => item.term === term)?.response ?? [];
+  assert.equal(query("New York City").length, 0, "the empty exact-name screen is preserved");
+  assert.ok(!gaz.GAZ_ROWS.some((row) => row[7] === "954913"), "Lake George Populated Place twin must not replace the Lake");
+  assert.ok(!gaz.GAZ_ROWS.some((row) => row[7] === "958544"), "Niagara Falls feature must not replace the Populated Place");
+  assert.ok(!gaz.GAZ_ROWS.some((row) => ["965414", "965415", "965413"].includes(row[7])), "only the Ulster County Slide Mountain Summit is seeded");
+  for (const term of ["Lake Erie", "Lake Champlain", "Lake Ontario", "Delaware River", "Susquehanna River", "Saint Lawrence River"]) {
+    assert.ok(!gaz.GAZ_ROWS.some((row) => row[0] === term), `${term}: out-of-frame or mismatched feature must not be seeded`);
+  }
+  for (const phrase of ["Lake George", "Niagara Falls", "Slide Mountain", "New York City", "Lake Erie", "Lake Champlain", "Lake Ontario", "Delaware River", "Susquehanna River", "Saint Lawrence River"]) {
+    assert.ok(register.identityDecisions.some((decision) => `${decision.candidate} ${decision.decision}`.includes(phrase)), `source register must preserve the ${phrase} decision`);
+  }
+
+  const engine = read("js/city-subsurface.js");
+  assert.match(engine, /city-subsurface-data-newyork\.js/, "New York data loader");
+  assert.match(engine, /city-gazetteer-data-newyork\.js/, "New York gazetteer loader");
+  assert.match(engine, /city-dem-grid-newyork\.js/, "New York optional DEM loader");
 });
 
 test("shared city engine parses as an ES module", () => {

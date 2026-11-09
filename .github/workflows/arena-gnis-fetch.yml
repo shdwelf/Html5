@@ -1,21 +1,33 @@
 name: arena-gnis-fetch
 
-# Fetches USGS GNIS DomesticNames state text files and extracts the
-# candidate rows for the next city-subsurface batch (T4.1). The GNIS web
-# app is a JavaScript SPA over a POST API and the sandbox's egress is
-# allowlisted, so the runner does the download; only the small screened
-# extract is committed (resources/city-subsurface/gnis-candidates-*.json),
-# never the bulk gazetteer. The extract path is deliberately NOT a
-# trigger path, so the result commit cannot retrigger the fetch.
+# Fetches USGS GNIS DomesticNames state text files and extracts the named
+# candidate rows. The GitHub runner has access to the published state zips;
+# only small screened extracts are committed, never the bulk gazetteers.
 
 on:
   push:
-    branches: ['arena/8c721d44-html5', 'arena/fb1c7be1-html5']
+    branches: ['arena/8c721d44-html5', 'arena/fb1c7be1-html5', 'arena/58dd5623-html5']
     paths:
       - '.arena-gnis/candidates.json'
+      - '.arena-gnis/candidates-newyork.json'
       - '.github/workflows/arena-gnis-fetch.yml'
       - 'tools/gnis_extract.py'
+      - 'tools/gnis_geocoder_candidates.py'
   workflow_dispatch:
+    inputs:
+      target:
+        description: Which pinned candidate request to extract
+        type: choice
+        required: true
+        default: newyork
+        options:
+          - newyork
+          - current
+
+env:
+  GNIS_REQUEST: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && '.arena-gnis/candidates-newyork.json' || '.arena-gnis/candidates.json' }}
+  GNIS_OUTPUT: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'newyork') || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5')) && 'resources/city-subsurface/gnis-candidates-newyork.json' || 'resources/city-subsurface/gnis-candidates-batch7.json' }}
+  GNIS_GEOCODER_OUTPUT: resources/city-subsurface/gnis-geocoder-candidates-newyork.json
 
 permissions:
   contents: write
@@ -30,35 +42,43 @@ jobs:
       - name: Extract GNIS candidate rows
         shell: bash
         run: |
-          # Diagnostics are committed even on failure: the sandbox cannot
-          # read runner logs, so the branch is the error channel.
           mkdir -p .arena-gnis
           {
             echo "run ${{ github.run_id }} attempt ${{ github.run_attempt }} · $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            python3 tools/gnis_extract.py .arena-gnis/candidates.json \
-              resources/city-subsurface/gnis-candidates-batch7.json
-            echo "extract exit: $?"
+            echo "request: $GNIS_REQUEST"
+            echo "output: $GNIS_OUTPUT"
+            if python3 tools/gnis_extract.py "$GNIS_REQUEST" "$GNIS_OUTPUT"; then
+              echo "extract exit: 0"
+            else
+              status=$?
+              echo "extract exit: $status"
+              exit "$status"
+            fi
             python3 - <<'PY'
-          import json, pathlib
-          p = pathlib.Path("resources/city-subsurface/gnis-candidates-batch7.json")
+          import json, os, pathlib
+          p = pathlib.Path(os.environ["GNIS_OUTPUT"])
           if p.exists():
               d = json.loads(p.read_text())
               for st, pack in d["states"].items():
-                  print(st, len(pack["rows"]), "rows; zip sha256", pack["zipSha256"][:16])
+                  print(st, len(pack["rows"]), "candidate rows; zip sha256", pack["zipSha256"][:16])
           PY
+            if [ "$GNIS_REQUEST" = ".arena-gnis/candidates-newyork.json" ]; then
+              echo "Geocoder output: $GNIS_GEOCODER_OUTPUT"
+              python3 tools/gnis_geocoder_candidates.py "$GNIS_REQUEST" "$GNIS_GEOCODER_OUTPUT"
+            fi
           } > .arena-gnis/last-run.log 2>&1
           cat .arena-gnis/last-run.log
-          test -s resources/city-subsurface/gnis-candidates-batch7.json
+          test -s "$GNIS_OUTPUT"
+          if [ "$GNIS_REQUEST" = ".arena-gnis/candidates-newyork.json" ]; then test -s "$GNIS_GEOCODER_OUTPUT"; fi
 
-      - name: Commit the extract back to the branch
+      - name: Commit the extract back to the selected branch
         if: always()
         run: |
           git config user.name "arena-gnis-fetch"
           git config user.email "actions@github.com"
           git add .arena-gnis/last-run.log
-          if [ -f resources/city-subsurface/gnis-candidates-batch7.json ]; then
-            git add resources/city-subsurface/gnis-candidates-batch7.json
-          fi
+          if [ -f "$GNIS_OUTPUT" ]; then git add "$GNIS_OUTPUT"; fi
+          if [ -f "$GNIS_GEOCODER_OUTPUT" ]; then git add "$GNIS_GEOCODER_OUTPUT"; fi
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "GNIS batch-7 candidate extract (run ${{ github.run_id }}) [skip ci]"
-          git push
+          git commit -m "GNIS candidate extract for ${{ (github.event_name == 'workflow_dispatch' && inputs.target) || (github.event_name == 'push' && github.ref_name == 'arena/58dd5623-html5' && 'newyork') || 'current' }} (run ${{ github.run_id }}) [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

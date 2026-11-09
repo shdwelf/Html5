@@ -1,0 +1,1463 @@
+{
+ "format": "gnis-geocoder-candidates-v1",
+ "retrieved": "2026-11-08T12:52:28Z",
+ "source": {
+  "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+  "parameters": "term=<requested name>&states=<requested state>&include=gnis&maxSuggestions=10",
+  "use": "Fuzzy candidate discovery only. Responses are retained for review; no candidate is VERIFIED by this script."
+ },
+ "states": {
+  "NY": {
+   "queries": [
+    {
+     "term": "Albany",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Albany&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Counties & Political Divisions",
+       "Name": "Albany County",
+       "County": "Albany County",
+       "State": "NY",
+       "Latitude": 42.6001764,
+       "Longitude": -73.9735586,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974099
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Albany",
+       "County": "Albany County",
+       "State": "NY",
+       "Latitude": 42.6525793,
+       "Longitude": -73.7562317,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 977310
+      },
+      {
+       "Source": "gnis",
+       "Type": "Bar",
+       "Name": "Albany Rock",
+       "County": "Suffolk County",
+       "State": "NY",
+       "Latitude": 40.9714871,
+       "Longitude": -72.8145455,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 942239
+      },
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Albany Mountain",
+       "County": "Hamilton County",
+       "State": "NY",
+       "Latitude": 43.9286892,
+       "Longitude": -74.7951758,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 972016
+      }
+     ]
+    },
+    {
+     "term": "New York",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=New+York&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Counties & Political Divisions",
+       "Name": "New York County",
+       "County": "New York County",
+       "State": "NY",
+       "Latitude": 40.7740183,
+       "Longitude": -73.9700088,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974129
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "New York",
+       "County": "New York County",
+       "State": "NY",
+       "Latitude": 40.7142691,
+       "Longitude": -74.0059729,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 975772
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "New York Mills",
+       "County": "Oneida County",
+       "State": "NY",
+       "Latitude": 43.1053475,
+       "Longitude": -75.2912778,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 958479
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "New York State Barge Canal",
+       "County": "Oswego County",
+       "State": "NY",
+       "Latitude": 43.4542351,
+       "Longitude": -76.5077194,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973663
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "NEW York State Boat Channel",
+       "County": "Suffolk County",
+       "State": "NY",
+       "Latitude": 40.608991,
+       "Longitude": -73.47457,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973888
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "New York Naval Shipyard (historical)",
+       "County": "Kings County",
+       "State": "NY",
+       "Latitude": 40.7020471,
+       "Longitude": -73.9729164,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974781
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "New York Port of Embarkation And Army Supply Base (historical)",
+       "County": "Kings County",
+       "State": "NY",
+       "Latitude": 40.645,
+       "Longitude": -74.0263889,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2104215
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "New York Arsenal (historical)",
+       "County": "New York County",
+       "State": "NY",
+       "Latitude": 40.6925,
+       "Longitude": -74.0163889,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2575554
+      }
+     ]
+    },
+    {
+     "term": "New York City",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=New+York+City&states=NY&include=gnis&maxSuggestions=10",
+     "response": []
+    },
+    {
+     "term": "Buffalo",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Buffalo&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Buffalo",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.8864468,
+       "Longitude": -78.8783689,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973345
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Buffalo Corners",
+       "County": "Wyoming County",
+       "State": "NY",
+       "Latitude": 42.778117,
+       "Longitude": -78.0077851,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 945108
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Buffalo Creek",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.8708918,
+       "Longitude": -78.7872545,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 969923
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Buffalo Entrance Channel",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.8783912,
+       "Longitude": -78.8844801,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973422
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Buffalo River",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.8783912,
+       "Longitude": -78.8864247,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 945112
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Buffalo Ship Canal",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.8633914,
+       "Longitude": -78.8697573,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973334
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Buffalo Ship Canal",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.863947,
+       "Longitude": -78.8717017,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973594
+      },
+      {
+       "Source": "gnis",
+       "Type": "Bays & Harbors",
+       "Name": "Buffalo Outer Harbor",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.850336,
+       "Longitude": -78.873924,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973955
+      },
+      {
+       "Source": "gnis",
+       "Type": "Beaches & Capes",
+       "Name": "Buffalo Municipal Bathing Beach",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.6592254,
+       "Longitude": -79.0630943,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 945111
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Buffalo Connecticut Street Armory",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.917239,
+       "Longitude": -78.891019,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2714990
+      }
+     ]
+    },
+    {
+     "term": "Rochester",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Rochester&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Rochester",
+       "County": "Monroe County",
+       "State": "NY",
+       "Latitude": 43.1547845,
+       "Longitude": -77.6155568,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 962684
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Rochester Junction",
+       "County": "Monroe County",
+       "State": "NY",
+       "Latitude": 42.983952,
+       "Longitude": -77.5930542,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973015
+      },
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Rochester Creek",
+       "County": "Ulster County",
+       "State": "NY",
+       "Latitude": 41.796918,
+       "Longitude": -74.247773,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 962687
+      },
+      {
+       "Source": "gnis",
+       "Type": "Basins",
+       "Name": "Rochester Basin",
+       "County": "Wayne County",
+       "State": "NY",
+       "Latitude": 43.6167288,
+       "Longitude": -76.999703,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 1851796
+      },
+      {
+       "Source": "gnis",
+       "Type": "Census Divisions",
+       "Name": "Rochester Institute of Technology Census Designated Place",
+       "County": "Monroe County",
+       "State": "NY",
+       "Latitude": 43.0827037,
+       "Longitude": -77.6714169,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2806944
+      },
+      {
+       "Source": "gnis",
+       "Type": "Valley",
+       "Name": "Rochester Hollow",
+       "County": "Ulster County",
+       "State": "NY",
+       "Latitude": 42.1155012,
+       "Longitude": -74.4534301,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 962689
+      }
+     ]
+    },
+    {
+     "term": "Syracuse",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Syracuse&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Syracuse",
+       "County": "Onondaga County",
+       "State": "NY",
+       "Latitude": 43.0481221,
+       "Longitude": -76.1474244,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 966966
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Syracuse Air Force Station (historical)",
+       "County": "Onondaga County",
+       "State": "NY",
+       "Latitude": 43.1222222,
+       "Longitude": -76.0966667,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2091470
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Syracuse Army Air Base (historical)",
+       "County": "Onondaga County",
+       "State": "NY",
+       "Latitude": 43.1138889,
+       "Longitude": -76.1152778,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2091472
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Syracuse Marine Core Reserve Center",
+       "County": "Onondaga County",
+       "State": "NY",
+       "Latitude": 43.0982111,
+       "Longitude": -76.1232557,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2832934
+      }
+     ]
+    },
+    {
+     "term": "Yonkers",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Yonkers&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Yonkers",
+       "County": "Westchester County",
+       "State": "NY",
+       "Latitude": 40.9312099,
+       "Longitude": -73.8987469,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 971828
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Yonkers Armory",
+       "County": "Westchester County",
+       "State": "NY",
+       "Latitude": 40.938846,
+       "Longitude": -73.89667,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2617572
+      }
+     ]
+    },
+    {
+     "term": "Binghamton",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Binghamton&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Binghamton",
+       "County": "Broome County",
+       "State": "NY",
+       "Latitude": 42.0986867,
+       "Longitude": -75.9179738,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 943985
+      },
+      {
+       "Source": "gnis",
+       "Type": "Census Divisions",
+       "Name": "Binghamton University Census Designated Place",
+       "County": "Broome County",
+       "State": "NY",
+       "Latitude": 42.0891413,
+       "Longitude": -75.9684559,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2631223
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Binghamton State Armory",
+       "County": "Broome County",
+       "State": "NY",
+       "Latitude": 42.1016667,
+       "Longitude": -75.9466667,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2376624
+      }
+     ]
+    },
+    {
+     "term": "Utica",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Utica&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Utica",
+       "County": "Oneida County",
+       "State": "NY",
+       "Latitude": 43.1009031,
+       "Longitude": -75.2326641,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 968324
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Utica Reservoir",
+       "County": "Oneida County",
+       "State": "NY",
+       "Latitude": 43.1430136,
+       "Longitude": -75.2089804,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 968326
+      }
+     ]
+    },
+    {
+     "term": "Watertown",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Watertown&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Watertown",
+       "County": "Jefferson County",
+       "State": "NY",
+       "Latitude": 43.9747838,
+       "Longitude": -75.9107565,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 968914
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Watertown Center",
+       "County": "Jefferson County",
+       "State": "NY",
+       "Latitude": 43.9425624,
+       "Longitude": -75.9157558,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 968915
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Watertown Air Force Station (historical)",
+       "County": "Jefferson County",
+       "State": "NY",
+       "Latitude": 43.9241667,
+       "Longitude": -75.9094444,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2091471
+      }
+     ]
+    },
+    {
+     "term": "Plattsburgh",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Plattsburgh&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Plattsburgh",
+       "County": "Clinton County",
+       "State": "NY",
+       "Latitude": 44.6994873,
+       "Longitude": -73.4529124,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 960698
+      },
+      {
+       "Source": "gnis",
+       "Type": "Census Divisions",
+       "Name": "Plattsburgh West Census Designated Place",
+       "County": "Clinton County",
+       "State": "NY",
+       "Latitude": 44.6837138,
+       "Longitude": -73.5037879,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2389683
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Plattsburgh Air Force Base (historical)",
+       "County": "Clinton County",
+       "State": "NY",
+       "Latitude": 44.6508774,
+       "Longitude": -73.4673571,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 978233
+      }
+     ]
+    },
+    {
+     "term": "Ithaca",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Ithaca&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Ithaca",
+       "County": "Tompkins County",
+       "State": "NY",
+       "Latitude": 42.4406284,
+       "Longitude": -76.4966071,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970238
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Ithaca Reservoir",
+       "County": "Tompkins County",
+       "State": "NY",
+       "Latitude": 42.4141056,
+       "Longitude": -76.4599435,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 953857
+      },
+      {
+       "Source": "gnis",
+       "Type": "Falls",
+       "Name": "Ithaca Falls",
+       "County": "Tompkins County",
+       "State": "NY",
+       "Latitude": 42.4528505,
+       "Longitude": -76.4916069,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970239
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Ithaca Armory",
+       "County": "Tompkins County",
+       "State": "NY",
+       "Latitude": 42.475214,
+       "Longitude": -76.428122,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2599299
+      }
+     ]
+    },
+    {
+     "term": "Elmira",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Elmira&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Elmira",
+       "County": "Chemung County",
+       "State": "NY",
+       "Latitude": 42.0897965,
+       "Longitude": -76.8077338,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 949577
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Elmira Heights",
+       "County": "Chemung County",
+       "State": "NY",
+       "Latitude": 42.1297967,
+       "Longitude": -76.8207898,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 949579
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Elmira Reservoir",
+       "County": "Chemung County",
+       "State": "NY",
+       "Latitude": 42.1092379,
+       "Longitude": -76.8496714,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 949580
+      }
+     ]
+    },
+    {
+     "term": "Schenectady",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Schenectady&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Counties & Political Divisions",
+       "Name": "Schenectady County",
+       "County": "Schenectady County",
+       "State": "NY",
+       "Latitude": 42.8181212,
+       "Longitude": -74.0585726,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974144
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Schenectady",
+       "County": "Schenectady County",
+       "State": "NY",
+       "Latitude": 42.8142432,
+       "Longitude": -73.9395687,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 964570
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Schenectady Armory (historical)",
+       "County": "Schenectady County",
+       "State": "NY",
+       "Latitude": 42.813311,
+       "Longitude": -73.948956,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2617568
+      }
+     ]
+    },
+    {
+     "term": "Troy",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Troy&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Troy",
+       "County": "Rensselaer County",
+       "State": "NY",
+       "Latitude": 42.7284117,
+       "Longitude": -73.6917851,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 967902
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Troy Reservoir",
+       "County": "Rensselaer County",
+       "State": "NY",
+       "Latitude": 42.7645057,
+       "Longitude": -73.6341373,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 967903
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Troy - Glenmore Road Armory",
+       "County": "Rensselaer County",
+       "State": "NY",
+       "Latitude": 42.690427,
+       "Longitude": -73.700812,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2617569
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Troy - South Lake Armory",
+       "County": "Rensselaer County",
+       "State": "NY",
+       "Latitude": 42.733752,
+       "Longitude": -73.65728,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2617570
+      }
+     ]
+    },
+    {
+     "term": "Niagara Falls",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Niagara+Falls&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Niagara Falls",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.0944999,
+       "Longitude": -79.0567111,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970406
+      },
+      {
+       "Source": "gnis",
+       "Type": "Falls",
+       "Name": "Niagara Falls",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.0833889,
+       "Longitude": -79.0706003,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 958544
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Niagara Falls Armory",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.097685,
+       "Longitude": -79.053814,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2715479
+      },
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Niagara Falls International Airport Air Reserve Station",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.1159478,
+       "Longitude": -78.939925,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2511965
+      }
+     ]
+    },
+    {
+     "term": "Mount Marcy",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Mount+Marcy&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Mount Marcy",
+       "County": "Essex County",
+       "State": "NY",
+       "Latitude": 44.11281,
+       "Longitude": -73.9236546,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 973357
+      }
+     ]
+    },
+    {
+     "term": "Slide Mountain",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Slide+Mountain&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Slide Mountain Brook",
+       "County": "Essex County",
+       "State": "NY",
+       "Latitude": 44.1603286,
+       "Longitude": -73.8565301,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 965416
+      },
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Slide Mountain",
+       "County": "Essex County",
+       "State": "NY",
+       "Latitude": 44.2765047,
+       "Longitude": -73.8862389,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 965414
+      },
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Slide Mountain",
+       "County": "Essex County",
+       "State": "NY",
+       "Latitude": 44.3836586,
+       "Longitude": -74.0051491,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 965415
+      },
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Slide Mountain",
+       "County": "Ulster County",
+       "State": "NY",
+       "Latitude": 41.9991499,
+       "Longitude": -74.3857682,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 975759
+      },
+      {
+       "Source": "gnis",
+       "Type": "Summit",
+       "Name": "Slide Mountain",
+       "County": "Warren County",
+       "State": "NY",
+       "Latitude": 43.7296656,
+       "Longitude": -74.1388817,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 965413
+      }
+     ]
+    },
+    {
+     "term": "Lake Erie",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Lake+Erie&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Lake Erie Beach",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.6242257,
+       "Longitude": -79.066983,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 954911
+      },
+      {
+       "Source": "gnis",
+       "Type": "Census Divisions",
+       "Name": "Lake Erie Beach Census Designated Place",
+       "County": "Erie County",
+       "State": "NY",
+       "Latitude": 42.6241824,
+       "Longitude": -79.0785613,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2390015
+      }
+     ]
+    },
+    {
+     "term": "Lake Ontario",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Lake+Ontario&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Military",
+       "Name": "Lake Ontario Ordnance Works (historical)",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.2275,
+       "Longitude": -78.9763889,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 2106101
+      }
+     ]
+    },
+    {
+     "term": "Lake Champlain",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Lake+Champlain&states=NY&include=gnis&maxSuggestions=10",
+     "response": []
+    },
+    {
+     "term": "Lake George",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Lake+George&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Lake George",
+       "County": "Warren County",
+       "State": "NY",
+       "Latitude": 43.4261809,
+       "Longitude": -73.7123408,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 954913
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Lake George",
+       "County": "Warren County",
+       "State": "NY",
+       "Latitude": 43.6019166,
+       "Longitude": -73.5794567,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970163
+      }
+     ]
+    },
+    {
+     "term": "Oneida Lake",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Oneida+Lake&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Oneida Lake Beach East",
+       "County": "Madison County",
+       "State": "NY",
+       "Latitude": 43.1664573,
+       "Longitude": -75.7643532,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 959370
+      },
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Oneida Lake Beach West",
+       "County": "Madison County",
+       "State": "NY",
+       "Latitude": 43.1575681,
+       "Longitude": -75.8454678,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 959371
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Oneida Lake",
+       "County": "Oswego County",
+       "State": "NY",
+       "Latitude": 43.2031992,
+       "Longitude": -75.9098444,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 959369
+      }
+     ]
+    },
+    {
+     "term": "Seneca Lake",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Seneca+Lake&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Seneca Lake Inlet",
+       "County": "Schuyler County",
+       "State": "NY",
+       "Latitude": 42.386462,
+       "Longitude": -76.8552356,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974057
+      },
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Seneca Lake",
+       "County": "Seneca County",
+       "State": "NY",
+       "Latitude": 42.7788172,
+       "Longitude": -76.9498099,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974079
+      }
+     ]
+    },
+    {
+     "term": "Cayuga Lake",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Cayuga+Lake&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Cayuga Lake",
+       "County": "Cayuga County",
+       "State": "NY",
+       "Latitude": 42.6881354,
+       "Longitude": -76.7022922,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 974076
+      }
+     ]
+    },
+    {
+     "term": "Chautauqua Lake",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Chautauqua+Lake&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Lakes & Reservoirs",
+       "Name": "Chautauqua Lake",
+       "County": "Chautauqua County",
+       "State": "NY",
+       "Latitude": 42.1694423,
+       "Longitude": -79.4038311,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 946461
+      }
+     ]
+    },
+    {
+     "term": "Hudson River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Hudson+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Hudson River",
+       "County": "New York County",
+       "State": "NY",
+       "Latitude": 40.6967694,
+       "Longitude": -74.0281957,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970226
+      }
+     ]
+    },
+    {
+     "term": "Mohawk River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Mohawk+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Mohawk River",
+       "County": "Saratoga County",
+       "State": "NY",
+       "Latitude": 42.7609113,
+       "Longitude": -73.6870628,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970360
+      }
+     ]
+    },
+    {
+     "term": "Genesee River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Genesee+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Genesee River",
+       "County": "Monroe County",
+       "State": "NY",
+       "Latitude": 43.2583951,
+       "Longitude": -77.6022239,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 970162
+      }
+     ]
+    },
+    {
+     "term": "Niagara River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Niagara+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Niagara River",
+       "County": "Niagara County",
+       "State": "NY",
+       "Latitude": 43.2622766,
+       "Longitude": -79.0703253,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 958547
+      }
+     ]
+    },
+    {
+     "term": "Saint Lawrence River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Saint+Lawrence+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Streams & Canals",
+       "Name": "Saint Lawrence River",
+       "County": "Franklin County",
+       "State": "NY",
+       "Latitude": 49.6666667,
+       "Longitude": -64.5005556,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 977244
+      }
+     ]
+    },
+    {
+     "term": "Susquehanna River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Susquehanna+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Islands",
+       "Name": "Susquehanna River Island",
+       "County": "Tioga County",
+       "State": "NY",
+       "Latitude": 42.0903521,
+       "Longitude": -76.2757666,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 966168
+      }
+     ]
+    },
+    {
+     "term": "Delaware River",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Delaware+River&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Valley",
+       "Name": "Delaware River Gorge",
+       "County": "Orange County",
+       "State": "NY",
+       "Latitude": 41.3721474,
+       "Longitude": -74.697322,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 1201456
+      }
+     ]
+    },
+    {
+     "term": "Saranac Lake",
+     "url": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0?term=Saranac+Lake&states=NY&include=gnis&maxSuggestions=10",
+     "response": [
+      {
+       "Source": "gnis",
+       "Type": "Cities & Populated Places",
+       "Name": "Saranac Lake",
+       "County": "Franklin County",
+       "State": "NY",
+       "Latitude": 44.329496,
+       "Longitude": -74.1312662,
+       "LatitudeMin": null,
+       "LatitudeMax": null,
+       "LongitudeMin": null,
+       "LongitudeMax": null,
+       "GnisId": 964482
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

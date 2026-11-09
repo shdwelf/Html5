@@ -4,16 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ANC Studio Ultra - HTML5 Active Noise Control Lab</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./anc-studio-tailwind.css" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
     :root {
       color-scheme: dark;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
       background:
         radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.16), transparent 30%),
         radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.14), transparent 28%),
@@ -110,6 +109,8 @@
       background-size: 6px 6px, 6px 6px;
       background-repeat: no-repeat;
     }
+
+    button:disabled { cursor: not-allowed; opacity: .58; filter: saturate(.55); }
 
     .mini-log::-webkit-scrollbar {
       width: 6px;
@@ -232,6 +233,11 @@
                 <div id="profileName" class="text-lg font-bold text-cyan-300">Manual</div>
                 <div id="profileHint" class="text-xs text-slate-500 mt-1">Tune filters yourself or run Smart Calibrate.</div>
               </div>
+            </div>
+
+            <div id="offlineMicNotice" class="hidden rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-100" role="status" aria-live="polite">
+              <strong class="block text-amber-200">Microphone unavailable in the offline Android viewer</strong>
+              <p class="mt-1 text-xs leading-relaxed">This packaged viewer denies microphone permission, so live capture and Smart Calibrate are disabled here. The rest of the lab remains available for review. Open the app in a browser that explicitly grants microphone access to run live audio; this demo does not send or record microphone audio.</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-3">
@@ -1425,6 +1431,18 @@
       document.getElementById('httpsBadge').className = 'badge-soft rounded-full px-3 py-1 text-amber-300';
     }
 
+    const offlineMicNotice = document.getElementById('offlineMicNotice');
+    const offlineLauncherOrigin = location.protocol === 'https:' && location.hostname.endsWith('.invalid');
+    if (offlineLauncherOrigin) {
+      offlineMicNotice.classList.remove('hidden');
+      startBtn.disabled = true;
+      calibrateBtn.disabled = true;
+      startBtn.setAttribute('aria-describedby', 'offlineMicNotice');
+      calibrateBtn.setAttribute('aria-describedby', 'offlineMicNotice');
+      startBtnText.textContent = 'Microphone unavailable offline';
+      setStatus('Offline preview only', 'warn', 'The Android offline viewer denies microphone permission. Live audio and Smart Calibrate are unavailable here.');
+    }
+
     setFilterUI('lowpass');
     setLimiterUI(true);
     setFreezeUI(false);
@@ -1432,7 +1450,9 @@
     updateModeUI();
     updateStaticLabels();
     fitCanvas();
-    logEvent('ANC Studio Ultra loaded. Awaiting user gesture to initialize audio.', 'info');
+    logEvent(offlineLauncherOrigin
+      ? 'ANC Studio Ultra loaded in offline preview mode; microphone permission is unavailable here.'
+      : 'ANC Studio Ultra loaded. Awaiting user gesture to initialize audio.', offlineLauncherOrigin ? 'warn' : 'info');
   </script>
 </body>
 </html>

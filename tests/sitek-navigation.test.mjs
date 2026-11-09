@@ -81,7 +81,7 @@ test("SITE-K app dock publishes both viewers and their offline dependencies", ()
   }
   for (const module of [
     "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
-    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js", "js/country-map.js",
     "js/city-gazetteer.js", "js/city-gazetteer-data-atlanta.js",
     "js/city-gazetteer-data-buffalo.js", "js/city-gazetteer-data-kansascity.js",
     "js/city-gazetteer-data-lawrence.js", "js/city-gazetteer-data-toronto.js",
@@ -125,5 +125,5 @@ test("all standalone app modes share one shell visibility rule", () => {
   assert.match(wmCss, /body\[data-shell-view="frame"\] \.wm-desk/);
   assert.match(app, /syncSitekDockLink\(a, mode\)/);
   assert.match(worker, /"\.\/wasm\/ghidra\/ghidra_decompiler\.wasm"/);
-  assert.match(worker, /CACHE_PREFIX\}v42/);
+  assert.match(worker, /CACHE_PREFIX\}v44/);
 });

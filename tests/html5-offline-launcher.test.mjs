@@ -24,10 +24,11 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 89);
+  assert.equal(expectedSlugs.length, 91);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 89);
+  assert.equal(catalog.length, 91);
+  assert.ok(expectedSlugs.includes("newyork-subsurface"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
 });
 
@@ -42,12 +43,15 @@ test("every entrypoint has a unique synthetic origin, including case-only slug c
   assert.notEqual(georgia[0].host, georgia[1].host);
 });
 
-test("the known CDN-dependent entrypoint is visibly flagged, not silently treated as offline-complete", () => {
+test("the bundled entrypoints have no direct remote resource tags; the launcher still flags blocked navigation", () => {
   const catalog = buildCatalog();
   const flagged = catalog.filter((app) => app.hasRemoteResources).map((app) => app.slug);
-  assert.deepEqual(flagged, ["anc-studio"]);
+  assert.deepEqual(flagged, []);
   assert.match(CATALOG_HTML, /External links and network requests are blocked/);
   assert.match(CATALOG_JS, /Remote asset blocked/);
+  const anc = readFileSync(join(ROOT, "public", "apps", "anc-studio", "index.html"), "utf8");
+  assert.match(anc, /href="\.\/tailwind\.css"/);
+  assert.doesNotMatch(anc, /cdn\.jsdelivr\.net|fonts\.googleapis\.com/i);
 });
 
 test("Android package has minSdk 24 and intentionally omits INTERNET permission", () => {

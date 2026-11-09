@@ -46,6 +46,10 @@ button { cursor:pointer; }
 .key-blue { color:#5bc9d1; }.key-wire { color:#8feee5; }.key-light { color:#f1bd67; }.key-label { color:#d79361; }
 #viewer-wrap { position:relative; min-height:0; overflow:hidden; background:#061014; }
 #viewport { display:block; width:100%; height:100%; outline:none; }
+#fallbackCanvas { display:none; position:absolute; inset:0; width:100%; height:100%; outline:none; }
+#fallbackCanvas.active { display:block; }
+#webglFallback { position:absolute; left:16px; bottom:44px; max-width:min(560px,calc(100% - 32px)); z-index:2; padding:8px 10px; border:1px solid #8f6b39; background:#071619ed; color:#f1d6a5; font:10px/1.5 var(--mono); }
+#webglFallback[hidden] { display:none; }
 .viewport-grid { position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,#65f6df08 1px,transparent 1px),linear-gradient(#65f6df08 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(to bottom,transparent 0%,#000 35%,#000 100%); opacity:.13; }
 .viewport-head { position:absolute; top:13px; left:16px; right:16px; display:flex; justify-content:space-between; pointer-events:none; }
 .viewport-head > * { pointer-events:auto; }
@@ -101,12 +105,15 @@ button { cursor:pointer; }
         <label class="layer-row"><input type="checkbox" data-layer="labels" checked><i class="layer-key key-label"></i> room labels</label>
       </div></div>
       <div class="block"><h2>OPERATOR ACTIONS</h2><div class="block-body"><button class="tool" id="flip-btn" style="width:100%;margin-bottom:6px">FLIP COUNTERTOP <span>↗</span></button><button class="tool" id="reset-btn" style="width:100%">RESET CAMERA <span>↺</span></button></div></div>
-      <div class="block"><h2>SCENE NOTE</h2><div class="block-body"><p class="small-copy">Original compact service study. Reported Zola motifs inform the red-velvet booths, mirror spy windows, acrylic light panels, and wine-display rhythm; cashier, flip-up pass, display case, and deep-fry kitchen are authored additions.</p></div></div>
+      <div class="block"><h2>SCENE NOTE</h2><div class="block-body"><p class="small-copy">Original compact service study. Reported Zola motifs inform the red-velvet booths, mirror spy windows, acrylic light panels, and wine-display rhythm; cashier, flip-up pass, display case, and deep-fry kitchen are authored additions. The Three.js model is generated from the local <code># XDC_*</code> manifest comments. The companion .wrl is valid, sparse VRML97, but this page is not a general VRML97 parser.</p></div></div>
     </aside>
 
-    <section id="viewer-wrap" aria-label="Three.js VRML viewport">
-      <canvas id="viewport" tabindex="0" aria-label="Interactive 3D restaurant model"></canvas><div class="viewport-grid"></div>
-      <div class="viewport-head"><div class="view-title">VRML / XDC VIEWER <span>· LIVE SCENE</span></div><div class="view-actions"><button class="tool" id="wire-btn">WIREFRAME</button><button class="tool" id="light-btn">LIVE LIGHT</button><button class="tool" id="source-btn">VRML SOURCE</button></div></div>
+    <section id="viewer-wrap" aria-label="Three.js XDC scene viewport with VRML97 companion source">
+      <canvas id="viewport" tabindex="0" aria-label="Interactive 3D restaurant model"></canvas>
+      <canvas id="fallbackCanvas" aria-hidden="true"></canvas>
+      <div id="webglFallback" hidden role="status" aria-live="polite"></div>
+      <div class="viewport-grid"></div>
+      <div class="viewport-head"><div class="view-title">XDC MANIFEST SCENE <span>· VRML97 COMPANION / NOT A FULL PARSER</span></div><div class="view-actions"><button class="tool active" id="wire-btn" aria-pressed="true">WIREFRAME</button><button class="tool active" id="light-btn" aria-pressed="true">LIVE LIGHT</button><button class="tool" id="source-btn">VRML SOURCE</button></div></div>
       <div id="hotspot"></div>
       <div class="viewport-foot"><div><b id="object-count">—</b> objects · <b id="camera-readout">AXON</b> camera · drag orbit / wheel zoom</div><div class="readout">Y <strong id="y-readout">0.00</strong> · <span id="selection-readout">no selection</span></div></div>
       <div class="drawer" id="source-drawer"><div class="drawer-head"><span>SANBORN-RESTAURANT.WRL · READ-ONLY SOURCE</span><button class="tool" id="close-source">CLOSE</button></div><pre id="source-text"></pre></div>
@@ -133,27 +140,14 @@ button { cursor:pointer; }
 <script type="module">
 import * as THREE from "./vendor/three.module.min.js";
 import { OrbitControls } from "./vendor/OrbitControls.js";
+import { lightIntensity, parseSanbornManifest } from "./js/sanborn-restaurant-manifest.js";
 
 const FALLBACK = `# XDC_BOX floor 0 -0.12 0 24 0.24 18 #173640 structure none Room floor\n# XDC_BOX cashier-base 0 1.65 -7.2 10.4 3.3 1.2 #6a3d2b cashier none Cashier counter\n# XDC_BOX flip-top 0 0.14 0.65 10 0.28 1.3 #d9a565 cashier flip Flip-up countertop\n# XDC_BOX glass-case-body -2.9 3.05 -7.12 3.4 1.25 .86 #77d5d0 display glass Glass display case\n# XDC_BOX fryer 6 1.25 6 3.4 2.5 2.4 #7a4a35 kitchen none Deep fry unit`;
 let scene, camera, renderer, controls, model, blueprint, wire, labels, flipPivot, raycaster, pointer;
-let sourceText = "", picked = null, flipped = false, liveLight = true, wireOn = true;
+let sourceText = "", picked = null, flipped = false, liveLight = true, wireOn = true, fallbackRows = [];
 const objects = [], hotspots = new Map(), materials = new Set(), lights = [];
 const $ = (id) => document.getElementById(id);
 const hex = (value) => new THREE.Color(value);
-function num(v){ return Number.parseFloat(v) || 0; }
-function parseManifest(text){
-  const rows=[];
-  for(const raw of text.split(/\r?\n/)){
-    const line=raw.trim(); if(!line.startsWith("# XDC_")) continue;
-    const p=line.split(/\s+/), kind=p[1];
-    if(kind === "BOX" && p.length >= 13) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],size:[num(p[6]),num(p[7]),num(p[8])],color:p[9],layer:p[10],group:p[11],label:p.slice(12).join(" ")});
-    if((kind === "CYL" || kind === "CYLINDER") && p.length >= 12) rows.push({kind:"CYL",id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],radius:num(p[6]),height:num(p[7]),color:p[8],layer:p[9],group:p[10],label:p.slice(11).join(" ")});
-    if(kind === "LINE" && p.length >= 11) rows.push({kind,id:p[2],a:[num(p[3]),num(p[4]),num(p[5])],b:[num(p[6]),num(p[7]),num(p[8])],color:p[9],layer:p[10],label:p.slice(11).join(" ")});
-    if(kind === "LABEL" && p.length >= 8) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],size:num(p[6]),color:p[7],layer:p[8],label:p.slice(9).join(" ")});
-    if(kind === "POINTLIGHT" && p.length >= 11) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],color:p[6],intensity:num(p[7]),distance:num(p[8]),layer:p[9],label:p.slice(10).join(" ")});
-  }
-  return rows;
-}
 function makeLabel(text,color,size=0.24){
   const c=document.createElement("canvas"), ctx=c.getContext("2d"); c.width=640;c.height=96;
   ctx.font="600 28px monospace";ctx.fillStyle=color;ctx.fillText(text,12,52);
@@ -162,9 +156,18 @@ function makeLabel(text,color,size=0.24){
 }
 function mat(color,opts={}){ const m=new THREE.MeshStandardMaterial({color:hex(color),roughness:.66,metalness:.16,...opts}); materials.add(m);return m; }
 function build(rows){
+  fallbackRows=rows;
+  if(!rows.length){showWebGLFallback(rows,new Error("No supported XDC manifest rows were found."));return;}
   scene=new THREE.Scene(); scene.background=new THREE.Color("#061014");
   camera=new THREE.PerspectiveCamera(42,1,.1,100); camera.position.set(22,17,25);
-  renderer=new THREE.WebGLRenderer({canvas:$("viewport"),antialias:true,preserveDrawingBuffer:false}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+  try{
+    renderer=new THREE.WebGLRenderer({canvas:$("viewport"),antialias:true,preserveDrawingBuffer:false});
+  }catch(error){
+    renderer=null;
+    showWebGLFallback(rows,error);
+    return;
+  }
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2)); renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.07; controls.target.set(0,1,0); controls.minDistance=7;controls.maxDistance=50; controls.maxPolarAngle=Math.PI*.49;
   scene.add(new THREE.HemisphereLight("#aacbc7","#071014",1.5));
@@ -180,9 +183,49 @@ function build(rows){
   }
   makeBlueprint(); makeWireframe(); addExtraMeshes();
   $("object-count").textContent=String(objects.length); $("load-state").textContent="READY"; $("status-text").textContent=`${objects.length} manifest objects · source loaded`;
+  setLight(liveLight,false); setVisibility();
   resize(); window.addEventListener("resize",resize); renderer.domElement.addEventListener("pointerdown",onPointer); renderer.domElement.addEventListener("pointermove",onPointerMove);
   requestAnimationFrame(animate);
 }
+function drawTopDownFallback(rows=fallbackRows){
+  const canvas=$("fallbackCanvas"),wrap=$("viewer-wrap");
+  if(!canvas||!wrap)return;
+  const width=Math.max(1,wrap.clientWidth||960),height=Math.max(1,wrap.clientHeight||480),dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.classList.add("active");
+  const ctx=canvas.getContext("2d");if(!ctx)return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle="#061014";ctx.fillRect(0,0,width,height);
+  const scale=Math.max(.1,Math.min((width-72)/24,(height-76)/18)),cx=width/2,cy=height/2;
+  ctx.strokeStyle="#123338";ctx.lineWidth=1;
+  for(let x=-11;x<=11;x+=2){ctx.beginPath();ctx.moveTo(cx+x*scale,24);ctx.lineTo(cx+x*scale,height-28);ctx.stroke();}
+  for(let z=-8;z<=8;z+=2){ctx.beginPath();ctx.moveTo(28,cy+z*scale);ctx.lineTo(width-28,cy+z*scale);ctx.stroke();}
+  ctx.strokeStyle="#65f6df";ctx.strokeRect(cx-11*scale,cy-8*scale,22*scale,16*scale);
+  for(const row of rows){
+    if(row.kind==="BOX"){
+      const [x,,z]=row.pos,[sx,,sz]=row.size;const rx=cx+(x-sx/2)*scale,ry=cy-(z+sz/2)*scale;
+      ctx.globalAlpha=row.group==="glass"?.42:.76;ctx.fillStyle=row.color;ctx.fillRect(rx,ry,sx*scale,sz*scale);ctx.globalAlpha=1;
+      ctx.strokeStyle="#79cfc6";ctx.strokeRect(rx,ry,sx*scale,sz*scale);
+    }else if(row.kind==="CYL"){
+      const [x,,z]=row.pos;ctx.beginPath();ctx.arc(cx+x*scale,cy-z*scale,Math.max(2,row.radius*scale),0,Math.PI*2);ctx.fillStyle=row.color;ctx.fill();
+    }else if(row.kind==="POINTLIGHT"&&liveLight&&($("layer-livelight")?.checked??true)){
+      const [x,,z]=row.pos;ctx.beginPath();ctx.arc(cx+x*scale,cy-z*scale,7,0,Math.PI*2);ctx.fillStyle=row.color;ctx.globalAlpha=.9;ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle="#d5ebe5";ctx.font="10px monospace";ctx.fillText(row.id,cx+x*scale+9,cy-z*scale-6);
+    }
+  }
+  ctx.fillStyle="#65f6df";ctx.font="11px monospace";ctx.fillText("TOP-DOWN XDC PREVIEW · 3D ORBIT REQUIRES WEBGL",16,18);
+}
+function showWebGLFallback(rows,error){
+  fallbackRows=rows;
+  const canvas=$("viewport"),notice=$("webglFallback");
+  if(canvas)canvas.style.display="none";
+  if(notice){notice.hidden=false;notice.textContent="WebGL could not start; showing a top-down XDC preview. 3D orbit and countertop animation require WebGL. Open VRML SOURCE for the bundled companion file; this app is not a full VRML97 renderer.";}
+  $("object-count").textContent=String(rows.filter(row=>row.kind==="BOX"||row.kind==="CYL").length);
+  $("load-state").textContent="2D FALLBACK";$("status-text").textContent="WebGL unavailable · XDC preview";$("render-text").textContent="2D FALLBACK";
+  ["flip-btn","reset-btn","wire-btn"].forEach(id=>{const button=$(id);if(button)button.disabled=true;});
+  document.querySelectorAll("[data-preset], [data-mode=blueprint]").forEach(button=>{button.disabled=true;});
+  drawTopDownFallback(rows);
+  window.addEventListener("resize",resize);
+}
+
 function targetGroup(row){ return row.group==="flip" ? flipPivot : model; }
 function addBox(row){
   const isGlass=row.group==="glass"; const m=mat(row.color,isGlass?{transparent:true,opacity:.24,roughness:.18,metalness:.05,side:THREE.DoubleSide}:{ });
@@ -210,25 +253,39 @@ function addExtraMeshes(){
   }
   const beam=new THREE.Mesh(new THREE.BoxGeometry(14,.09,.09),mat("#65f6df",{emissive:"#65f6df",emissiveIntensity:1.4}));beam.position.set(0,3.5,5);beam.userData.layer="livelight";model.add(beam);
 }
-function resize(){ if(!renderer)return;const el=$("viewer-wrap"),w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix(); }
-function animate(){ requestAnimationFrame(animate); if(controls){controls.update();renderer.render(scene,camera);$("y-readout").textContent=camera.position.y.toFixed(2);} }
+function resize(){ if(!renderer){if(fallbackRows.length)drawTopDownFallback();return;}const el=$("viewer-wrap"),w=Math.max(1,el.clientWidth),h=Math.max(1,el.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix(); }
+function animate(){ requestAnimationFrame(animate); if(controls&&renderer){controls.update();renderer.render(scene,camera);$("y-readout").textContent=camera.position.y.toFixed(2);} }
 function preset(name){
+  if(!camera||!controls){toast("3D camera controls require WebGL");return;}
   const p={axon:[[22,17,25],[0,1,0]],plan:[[0,24,.01],[0,0,0]],bar:[[0,8,19],[0,2.3,4]],kitchen:[[16,9,16],[5,2.2,5]]}[name]||[[22,17,25],[0,1,0]];
   camera.position.set(...p[0]);controls.target.set(...p[1]);controls.update();$("camera-readout").textContent=name.toUpperCase();document.querySelectorAll("[data-preset]").forEach(b=>b.classList.toggle("active",b.dataset.preset===name));
 }
-function focus(tag){ const pos={booths:[[18,8,16],[-1,1.5,1]],bar:[[0,7,16],[0,2.4,5]],cashier:[[0,7,-18],[0,2.5,-7]],display:[[-10,5,-16],[-2.9,3,-7]],kitchen:[[15,8,14],[6,2.5,6]]}[tag];if(pos){camera.position.set(...pos[0]);controls.target.set(...pos[1]);controls.update();toast(tag.replace(/^./,c=>c.toUpperCase())+" focus");}}
+function focus(tag){ const pos={booths:[[18,8,16],[-1,1.5,1]],bar:[[0,7,16],[0,2.4,5]],cashier:[[0,7,-18],[0,2.5,-7]],display:[[-10,5,-16],[-2.9,3,-7]],kitchen:[[15,8,14],[6,2.5,6]]}[tag];if(pos&&camera&&controls){camera.position.set(...pos[0]);controls.target.set(...pos[1]);controls.update();toast(tag.replace(/^./,c=>c.toUpperCase())+" focus");}}
 function setVisibility(){
-  blueprint.visible=$("layer-blueprint")?.checked ?? true; wire.visible=$("layer-wiremesh")?.checked ?? true; labels.visible=$("layer-labels")?.checked ?? true; lights.forEach(l=>l.visible=$("layer-livelight")?.checked ?? true);
+  if(blueprint)blueprint.visible=$("layer-blueprint")?.checked ?? true;
+  if(wire)wire.visible=$("layer-wiremesh")?.checked ?? true;
+  if(labels)labels.visible=$("layer-labels")?.checked ?? true;
+  lights.forEach(l=>l.visible=$("layer-livelight")?.checked ?? true);
+  if(!renderer&&fallbackRows.length)drawTopDownFallback();
 }
-function flip(){ flipped=!flipped;flipPivot.rotation.x=flipped?-Math.PI/2:0;$("flip-btn").innerHTML=`${flipped?"CLOSE":"FLIP"} COUNTERTOP <span>${flipped?"↙":"↗"}</span>`;$("inspector-state").textContent=flipped?"counter open":"counter closed";toast(flipped?"countertop flipped up":"countertop reset flat"); }
-function setLight(on){liveLight=on;lights.forEach(l=>l.intensity=on?Number(l.userData.intensity):0);materials.forEach(m=>{if(m.emissive)m.emissiveIntensity=on?1.35:0;});$("light-btn").classList.toggle("active",on);toast(on?"livelight emitters on":"livelight emitters off");}
-function setWire(on){wireOn=on;$("layer-wiremesh").checked=on;wire.visible=on;$("wire-btn").classList.toggle("active",on);}
+function flip(){ if(!flipPivot){toast("Countertop animation requires WebGL");return;}flipped=!flipped;flipPivot.rotation.x=flipped?-Math.PI/2:0;$("flip-btn").innerHTML=`${flipped?"CLOSE":"FLIP"} COUNTERTOP <span>${flipped?"↙":"↗"}</span>`;$("inspector-state").textContent=flipped?"counter open":"counter closed";toast(flipped?"countertop flipped up":"countertop reset flat"); }
+function setLight(on,announce=true){
+  liveLight=Boolean(on);
+  lights.forEach(l=>l.intensity=lightIntensity(l.userData,liveLight));
+  materials.forEach(m=>{if(m.emissive)m.emissiveIntensity=liveLight?1.35:0;});
+  const button=$("light-btn"),checkbox=$("layer-livelight");
+  if(button){button.classList.toggle("active",liveLight);button.setAttribute("aria-pressed",String(liveLight));}
+  if(checkbox)checkbox.checked=liveLight;
+  if(!renderer&&fallbackRows.length)drawTopDownFallback();
+  if(announce)toast(liveLight?"livelight emitters on":"livelight emitters off");
+}
+function setWire(on){wireOn=Boolean(on);const checkbox=$("layer-wiremesh"),button=$("wire-btn");if(checkbox)checkbox.checked=wireOn;if(wire)wire.visible=wireOn;if(button){button.classList.toggle("active",wireOn);button.setAttribute("aria-pressed",String(wireOn));}}
 function toast(message){const t=$("toast");t.textContent=message;t.classList.add("toast-show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove("toast-show"),1800);}
 function onPointer(e){const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(objects,true)[0];if(!hit)return;picked=hit.object;const d=picked.userData;$("selection-readout").textContent=d.label||d.id;$("inspector-selection").textContent=d.label||d.id;$("inspector-material").textContent=d.group==="glass"?"transparent glass":"solid study material";toast(d.label||d.id);}
 function onPointerMove(e){ /* reserved for future projected hotspot placement */ }
 async function load(){
   try{sourceText=await fetch("./sanborn-restaurant.wrl").then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})}catch(e){sourceText=FALLBACK;$("status-text").textContent="fallback manifest · fetch unavailable";}
-  $("source-text").textContent=sourceText;const rows=parseManifest(sourceText);build(rows);
+  $("source-text").textContent=sourceText;const rows=parseSanbornManifest(sourceText);build(rows);
 }
 function bind(){
   document.querySelectorAll("[data-preset]").forEach(b=>b.addEventListener("click",()=>preset(b.dataset.preset)));

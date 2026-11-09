@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_APPS = join(ROOT, "public", "apps");
-const EXPECTED_ENTRYPOINTS = 89;
+const EXPECTED_ENTRYPOINTS = 91;
 const APP_SLUG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const HOST_LABEL_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const EXTERNAL_RESOURCE_PATTERN = /<(?:script|link|img|iframe|video|audio|source|object)\b[^>]*?\b(?:src|href)\s*=\s*(["'])https?:\/\//is;

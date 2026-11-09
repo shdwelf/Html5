@@ -2,18 +2,30 @@ name: HTML5 Offline Library — Android debug APK
 
 on:
   push:
-    branches: ['arena/469491c7-html5']
+    branches: ['arena/58dd5623-html5']
     paths:
       - 'apps/html5-offline-launcher/**'
       - 'public/apps/**'
+      - 'resources/city-subsurface/**'
+      - 'js/city-subsurface.js'
+      - 'css/city-subsurface.css'
+      - 'resources/city-subsurface-template.html'
+      - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   pull_request:
     paths:
       - 'apps/html5-offline-launcher/**'
       - 'public/apps/**'
+      - 'resources/city-subsurface/**'
+      - 'js/city-subsurface.js'
+      - 'css/city-subsurface.css'
+      - 'resources/city-subsurface-template.html'
+      - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   workflow_dispatch:

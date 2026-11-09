@@ -21,12 +21,14 @@ const appDir = path.join(root, "public", "apps", "country-viewer");
 const outName = "country-viewer.xdc";
 const mtime = new Date("2026-10-02T00:00:00.000Z"); // reproducible builds
 
-const manifest = `name = "Country Viewer - PC-Globe style (Factbook)"
+const manifest = `name = "Country Viewer - Country Outlines + Factbook"
 source_code_url = "https://github.com/shdwelf/Html5"
+description = "Offline PC-Globe-style country profiles with Natural Earth outlines, regional map views, and a five-city Gazetteer subset."
 `;
 
 await rm(appDir, { recursive: true, force: true });
 await mkdir(path.join(appDir, "js"), { recursive: true });
+await mkdir(path.join(appDir, "vendor", "world"), { recursive: true });
 
 let html = await readFile(path.join(root, "country-viewer.html"), "utf8");
 html = html.replace(
@@ -35,12 +37,15 @@ html = html.replace(
 );
 await writeFile(path.join(appDir, "index.html"), html);
 for (const f of [
-  "country-viewer.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
+  "country-viewer.js", "country-map.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
   "city-gazetteer-data-atlanta.js", "city-gazetteer-data-buffalo.js",
   "city-gazetteer-data-kansascity.js", "city-gazetteer-data-lawrence.js",
   "city-gazetteer-data-toronto.js",
 ]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
+}
+for (const f of ["countries.geo.json", "README.md", "UNLICENSE"]) {
+  await copyFile(path.join(root, "vendor", "world", f), path.join(appDir, "vendor", "world", f));
 }
 
 // Simulator shim: Delta Chat replaces webxdc.js at runtime, but shipping one

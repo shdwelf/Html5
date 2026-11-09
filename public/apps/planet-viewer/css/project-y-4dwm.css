@@ -1,0 +1,222 @@
+/* Project Y 4Dwm — floating PIPs loaded up from badge cards.
+   Motif-style window chrome in the archive's paper palette. */
+
+.pip-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.pip4 {
+  position: fixed;
+  width: min(360px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  background: #fbf9f2;
+  border: 1px solid #8b8774;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #a5a189,
+    4px 8px 22px rgba(40, 43, 37, 0.28);
+}
+.pip4.focus {
+  border-color: var(--accent, #b74b2b);
+}
+.pip4.is-min .pip4-body { display: none; }
+.pip4.is-icon { display: none; }
+
+.pip4-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font: 10px monospace;
+  letter-spacing: 1.4px;
+  background: linear-gradient(180deg, #eae6d7, #d8d3bf);
+  border-bottom: 1px solid #b9b39f;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.pip4-title:active { cursor: grabbing; }
+.pip4.focus .pip4-title { color: var(--accent, #b74b2b); }
+.pip4-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pip4-name i { font-style: normal; color: var(--muted, #797b71); }
+
+.pip4-btns { display: flex; gap: 3px; flex: none; }
+.pip4-btns button {
+  width: 20px;
+  height: 17px;
+  padding: 0;
+  font: 11px/15px monospace;
+  color: var(--ink, #282b25);
+  background: linear-gradient(180deg, #f4f1e6, #ddd8c5);
+  border: 1px solid #8b8774;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #a5a189;
+  cursor: pointer;
+}
+.pip4-btns button:active { transform: translate(1px, 1px); }
+
+.pip4-body {
+  min-height: 0;
+  max-height: min(58vh, 480px);
+  overflow: auto;
+  padding: 14px 16px 16px;
+}
+/* The pip body carries the same record markup as the detail dialog,
+   reflowed to a single column. */
+.pip4-body img {
+  display: block;
+  width: 62%;
+  max-width: 220px;
+  margin: 0 auto 10px;
+  border: 1px solid var(--line, #d8d8cc);
+  background: #e8e4d8;
+  padding: 6px 6px 0;
+}
+.pip4-body .image-fallback { margin-bottom: 10px; }
+.pip4-body .eyebrow { margin: 0 0 4px; }
+.pip4-body h2 { font-size: 22px; margin: 4px 0 6px; }
+.pip4-body .badge-tag { margin: 0 0 8px; }
+.pip4-body p { line-height: 1.7; color: var(--muted, #797b71); font-size: 12px; }
+.pip4-body .source-filename { word-break: break-all; }
+.pip4-body a { display: block; margin: 14px 0; text-decoration: underline; font-size: 12px; }
+.pip4-body .research-profile h3 { font-size: 11px; letter-spacing: 1px; margin: 14px 0 4px; }
+.pip4-body .research-profile ul { padding-left: 18px; font-size: 11px; color: var(--muted, #797b71); }
+.pip4-body .research-profile li { margin: 4px 0; }
+.pip4-body .research-profile a { display: inline; margin: 0; }
+.pip4-body .detail-save {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Toolbar + card affordances */
+.pip-results-btn {
+  align-self: center;
+  font: 11px "DM Sans", Arial, sans-serif;
+  letter-spacing: 1px;
+  padding: 7px 12px;
+  border: 1px solid #aaa99c;
+  background: #fbf9f2;
+  color: var(--ink, #282b25);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.pip-results-btn:hover { color: var(--accent, #b74b2b); border-color: var(--accent, #b74b2b); }
+.record-actions { display: flex; align-items: center; gap: 6px; }
+.pip-open {
+  font-size: 13px;
+  line-height: 1;
+  padding: 2px 6px;
+  border: 1px solid var(--line, #d8d8cc);
+  background: transparent;
+  color: var(--muted, #797b71);
+  cursor: pointer;
+}
+.pip-open:hover { color: var(--accent, #b74b2b); border-color: var(--accent, #b74b2b); }
+
+/* 4Dwm desk: the taskbar that parks iconified pips. */
+.wm4d {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  z-index: 70;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  max-width: calc(100vw - 16px);
+  padding: 5px;
+  background: #fbf9f2;
+  border: 1px solid #8b8774;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #a5a189,
+    3px 5px 16px rgba(40, 43, 37, 0.22);
+}
+.wm4d[hidden] { display: none; }
+.wm4d-btn {
+  min-width: 52px;
+  min-height: 36px;
+  padding: 0 10px;
+  font: 10px monospace;
+  letter-spacing: 1.4px;
+  color: var(--ink, #282b25);
+  background: linear-gradient(180deg, #f4f1e6, #ddd8c5);
+  border: 1px solid #8b8774;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #a5a189;
+  cursor: pointer;
+}
+.wm4d-btn:active { transform: translate(1px, 1px); }
+.wm4d-btn.view { color: var(--accent, #b74b2b); }
+.wm4d-tray {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  max-width: min(46vw, 460px);
+  scrollbar-width: none;
+}
+.wm4d-tray::-webkit-scrollbar { display: none; }
+.wm4d-chip {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 58px;
+  min-height: 36px;
+  padding: 2px 8px;
+  font-family: inherit;
+  color: var(--muted, #797b71);
+  background: #f3f0e8;
+  border: 1px solid #b9b39f;
+  cursor: pointer;
+}
+.wm4d-chip b { font: 9px monospace; letter-spacing: 1px; color: var(--ink, #282b25); }
+.wm4d-chip span { font: 7px monospace; letter-spacing: 1px; text-transform: uppercase; }
+.wm4d-chip:hover { border-color: var(--accent, #b74b2b); color: var(--accent, #b74b2b); }
+.wm4d-chip.on { background: #ece8da; border-color: #8b8774; }
+.wm4d-status {
+  align-self: center;
+  max-width: 150px;
+  font: 8px monospace;
+  letter-spacing: 1px;
+  color: var(--muted, #797b71);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  /* Small screens: a pip opens as a bottom sheet, one sheet at a time. */
+  .pip4 {
+    left: 8px !important;
+    right: 8px;
+    top: auto !important;
+    bottom: 66px;
+    width: auto;
+    max-height: 56vh;
+  }
+  .pip4-body { overflow: auto; -webkit-overflow-scrolling: touch; }
+  .wm4d {
+    left: 8px;
+    right: 8px;
+    transform: none;
+    max-width: none;
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+  .wm4d-tray { max-width: none; flex: 1; }
+  .wm4d-status { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pip4, .wm4d { transition: none; }
+}
