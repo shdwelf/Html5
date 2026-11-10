@@ -4,7 +4,10 @@ plugins {
 
 def repoRoot = rootProject.projectDir.parentFile.parentFile
 def publicAppsDir = new File(repoRoot, 'public/apps')
-def generatedAssetsDir = layout.buildDirectory.dir('generated/html5-assets')
+def assetProfiles = ['public', 'private']
+def generatedAssetsByProfile = assetProfiles.collectEntries { profile ->
+    [(profile): layout.buildDirectory.dir("generated/html5-assets/${profile}")]
+}
 
 android {
     namespace 'org.arena.html5launcher'
@@ -19,15 +22,21 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    sourceSets {
-        main {
-            assets.srcDir(generatedAssetsDir)
+    flavorDimensions 'catalog'
+    productFlavors {
+        create('public') {
+            dimension 'catalog'
+        }
+        create('private') {
+            dimension 'catalog'
+            applicationIdSuffix '.private'
+            versionNameSuffix '-private'
         }
     }
 
     buildTypes {
         debug {
-            // The CI build is debug-signed for sideloading and review.
+            // Debug builds are signed for sideloading and review.
         }
         release {
             minifyEnabled false
@@ -40,17 +49,31 @@ android {
     }
 }
 
-tasks.register('prepareHtmlAppsAssets', Exec) {
-    workingDir repoRoot
-    commandLine 'node',
-            'scripts/build-html5-offline-launcher-assets.mjs',
-            '--out-dir', generatedAssetsDir.get().asFile.absolutePath
-    inputs.dir(publicAppsDir)
-    outputs.dir(generatedAssetsDir)
+// Each flavor gets only its own generated app tree; never put both profiles
+// under the shared main assets root.
+assetProfiles.each { profile ->
+    android.sourceSets.getByName(profile).assets.srcDir(generatedAssetsByProfile[profile])
 }
 
+def registerHtmlAppsAssetsTask = { profile ->
+    def outputDir = generatedAssetsByProfile[profile]
+    tasks.register("prepare${profile.capitalize()}HtmlAppsAssets", Exec) {
+        workingDir repoRoot
+        commandLine 'node',
+                'scripts/build-html5-offline-launcher-assets.mjs',
+                '--profile', profile,
+                '--out-dir', outputDir.get().asFile.absolutePath
+        inputs.dir(publicAppsDir)
+        inputs.property('profile', profile)
+        outputs.dir(outputDir)
+    }
+}
+
+def publicAssetsTask = registerHtmlAppsAssetsTask('public')
+def privateAssetsTask = registerHtmlAppsAssetsTask('private')
+
 tasks.named('preBuild').configure {
-    dependsOn(tasks.named('prepareHtmlAppsAssets'))
+    dependsOn(publicAssetsTask, privateAssetsTask)
 }
 
 dependencies {

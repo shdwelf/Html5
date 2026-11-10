@@ -95,6 +95,8 @@ binary vault lives in the JAR editions. Nothing is uploaded to a remote wiki.
 
 ## Standalone viewers
 
+- **[HTML5 Offline Viewer](offline-viewer.html)** — curated public catalogue for the locally bundled Helios Observatory and Prime Viewer apps, plus the local WebXDC player. `python3 scripts/build-private-html5-offline-viewer.py` creates a separate ignored delivery ZIP from the same fixed app allowlist.
+- **[HTML5 Offline Library for Android](apps/html5-offline-launcher/README.md)** — public and curated private APK build instructions. CI publishes only the public APK artifact; the two-app private APK is built and verified without public artifact upload.
 - **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`) with the repository Markdown library (root deep dives + `docs/*.md`) converted to wiki pages in its Docs tab; see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
 - **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).

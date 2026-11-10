@@ -4,9 +4,10 @@
  * launcher. Assets are copied only into Gradle's ignored build directory;
  * the repository keeps one canonical copy under public/apps/.
  *
- *   node scripts/build-html5-offline-launcher-assets.mjs --check
- *   node scripts/build-html5-offline-launcher-assets.mjs --out-dir \
- *     apps/html5-offline-launcher/app/build/generated/html5-assets
+ *   node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
+ *   node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+ *   node scripts/build-html5-offline-launcher-assets.mjs --profile public --out-dir \
+ *     apps/html5-offline-launcher/app/build/generated/html5-assets/public
  */
 
 import { createHash } from "node:crypto";
@@ -27,6 +28,8 @@ import { sync4dwmWindowAssets } from "./build-4dwm-window-assets.mjs";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_APPS = join(ROOT, "public", "apps");
 const EXPECTED_ENTRYPOINTS = 93;
+export const PRIVATE_APP_SLUGS = Object.freeze(["helios-observatory", "prime-viewer"]);
+const EXPECTED_PRIVATE_ENTRYPOINTS = PRIVATE_APP_SLUGS.length;
 const APP_SLUG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const HOST_LABEL_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const EXTERNAL_RESOURCE_PATTERN = /<(?:script|link|img|iframe|video|audio|source|object)\b[^>]*?\b(?:src|href)\s*=\s*(["'])https?:\/\//is;
@@ -130,6 +133,21 @@ export function discoverApps() {
   return apps.sort((left, right) => left.slug.localeCompare(right.slug, "en"));
 }
 
+export function appsForProfile(profile = "public") {
+  const apps = discoverApps();
+  if (profile === "public") return apps;
+  if (profile !== "private") {
+    throw new Error(`Unknown Android app profile: ${JSON.stringify(profile)}`);
+  }
+
+  const bySlug = new Map(apps.map((app) => [app.slug, app]));
+  const missing = PRIVATE_APP_SLUGS.filter((slug) => !bySlug.has(slug));
+  if (missing.length) {
+    throw new Error(`Private Android app allowlist is incomplete: ${missing.join(", ")}`);
+  }
+  return PRIVATE_APP_SLUGS.map((slug) => bySlug.get(slug));
+}
+
 export function assignAppHosts(apps) {
   const groups = new Map();
   for (const app of apps) {
@@ -175,23 +193,30 @@ function catalogFromApps(apps) {
     );
 }
 
-export function buildCatalog() {
-  return catalogFromApps(discoverApps());
+export function buildCatalog(profile = "public") {
+  return catalogFromApps(appsForProfile(profile));
 }
 
-function checkInventory() {
+function expectedCount(profile) {
+  if (profile === "public") return EXPECTED_ENTRYPOINTS;
+  if (profile === "private") return EXPECTED_PRIVATE_ENTRYPOINTS;
+  throw new Error(`Unknown Android app profile: ${JSON.stringify(profile)}`);
+}
+
+function checkInventory(profile = "public") {
   sync4dwmWindowAssets({ checkOnly: true });
-  const catalog = buildCatalog();
-  if (catalog.length !== EXPECTED_ENTRYPOINTS) {
+  const catalog = buildCatalog(profile);
+  const expected = expectedCount(profile);
+  if (catalog.length !== expected) {
     throw new Error(
-      `Expected ${EXPECTED_ENTRYPOINTS} HTML app entrypoints; found ${catalog.length}. ` +
+      `Expected ${expected} ${profile} HTML app entrypoints; found ${catalog.length}. ` +
         "Review the launcher inventory and update its acceptance test if the corpus changed.",
     );
   }
   if (catalog.some((app) => !app.host || !app.name || !app.slug)) {
     throw new Error("Catalog contains an incomplete app record.");
   }
-  console.log(`Validated ${catalog.length} local HTML entrypoints.`);
+  console.log(`Validated ${catalog.length} ${profile} local HTML entrypoints.`);
   const remoteApps = catalog.filter((app) => app.hasRemoteResources).map((app) => app.slug);
   console.log(
     remoteApps.length
@@ -204,7 +229,7 @@ function stageAppSource(app, destination) {
   cpSync(app.directory, destination, { recursive: true, dereference: true, force: true });
 }
 
-function writeStagedAssets(outDir) {
+function writeStagedAssets(outDir, profile = "public") {
   const output = resolve(outDir);
   const allowedRoot = resolve(ROOT, "apps", "html5-offline-launcher", "app", "build") + sep;
   if (!output.startsWith(allowedRoot)) {
@@ -212,12 +237,11 @@ function writeStagedAssets(outDir) {
   }
 
   sync4dwmWindowAssets();
-  const sourceApps = discoverApps();
+  const sourceApps = appsForProfile(profile);
   const catalog = catalogFromApps(sourceApps);
-  if (catalog.length !== EXPECTED_ENTRYPOINTS) {
-    throw new Error(
-      `Expected ${EXPECTED_ENTRYPOINTS} HTML app entrypoints; found ${catalog.length}.`,
-    );
+  const expected = expectedCount(profile);
+  if (catalog.length !== expected) {
+    throw new Error(`Expected ${expected} ${profile} HTML app entrypoints; found ${catalog.length}.`);
   }
 
   rmSync(output, { recursive: true, force: true });
@@ -251,24 +275,30 @@ function writeStagedAssets(outDir) {
     return total + walk(join(output, "apps", app.slug));
   }, 0);
   console.log(
-    `Staged ${catalog.length} apps / ${fileCount.toLocaleString("en-US")} files ` +
+    `Staged ${profile} profile: ${catalog.length} apps / ${fileCount.toLocaleString("en-US")} files ` +
       `(${rawBytes.toLocaleString("en-US")} bytes uncompressed) at ${output}`,
   );
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
-  if (args.includes("--check")) {
-    checkInventory();
+  const profileIndex = args.indexOf("--profile");
+  const inlineProfile = args.find((argument) => argument.startsWith("--profile="));
+  const profile = profileIndex >= 0 ? args[profileIndex + 1] : inlineProfile?.slice("--profile=".length) ?? "public";
+  if (profile !== "public" && profile !== "private") {
+    console.error(`Unknown profile ${JSON.stringify(profile)}. Use --profile public or --profile private.`);
+    process.exitCode = 2;
+  } else if (args.includes("--check")) {
+    checkInventory(profile);
   } else {
     const outIndex = args.indexOf("--out-dir");
     const inlineOut = args.find((argument) => argument.startsWith("--out-dir="));
     const outDir = outIndex >= 0 ? args[outIndex + 1] : inlineOut?.slice("--out-dir=".length);
     if (!outDir || outDir.startsWith("--")) {
-      console.error("Usage: build-html5-offline-launcher-assets.mjs --check | --out-dir <Gradle build path>");
+      console.error("Usage: build-html5-offline-launcher-assets.mjs [--profile public|private] --check | --out-dir <Gradle build path>");
       process.exitCode = 2;
     } else {
-      writeStagedAssets(outDir);
+      writeStagedAssets(outDir, profile);
     }
   }
 }
