@@ -88,6 +88,7 @@ jobs:
           ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
 
       - name: Run Android WebView permission and Headline Harry smoke tests
+        id: android-smoke-tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -96,7 +97,55 @@ jobs:
           profile: Pixel_2
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
-          script: cd apps/html5-offline-launcher && gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
+          script: |
+            cd apps/html5-offline-launcher
+            if gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > "$RUNNER_TEMP/android-webview-tests.log" 2>&1; then
+              cat "$RUNNER_TEMP/android-webview-tests.log"
+            else
+              status=$?
+              cat "$RUNNER_TEMP/android-webview-tests.log"
+              exit "$status"
+            fi
+
+      - name: Surface Android instrumentation failure details
+        if: steps.android-smoke-tests.outcome == 'failure'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob
+          import re
+          import xml.etree.ElementTree as ET
+
+          reports = glob.glob("apps/html5-offline-launcher/app/build/outputs/androidTest-results/**/*.xml", recursive=True)
+          failures = []
+          for report in reports:
+              try:
+                  root = ET.parse(report).getroot()
+              except (ET.ParseError, OSError):
+                  continue
+              for case in root.iter("testcase"):
+                  for result in list(case.findall("failure")) + list(case.findall("error")):
+                      detail = " ".join(part.strip() for part in [result.get("message", ""), *result.itertext()] if part and part.strip())
+                      detail = re.sub(r"\s+", " ", detail).strip()
+                      name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
+                      failures.append(f"{name}: {detail[:3000]}")
+
+          if failures:
+              for failure in failures:
+                  safe = failure.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::error title=Android-instrumentation-failure::{safe}")
+          else:
+              print("::error title=Android-instrumentation-failure::No JUnit failure details were written; inspect the emulator/Gradle step output.")
+
+          log_path = __import__("os").path.join(__import__("os").environ.get("RUNNER_TEMP", "/tmp"), "android-webview-tests.log")
+          try:
+              lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()[-25:]
+          except OSError:
+              lines = []
+          for line in lines:
+              safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Android-instrumentation-log::{safe[:1000]}")
+          PY
 
       - name: Report APK size and SHA-256
         shell: bash
