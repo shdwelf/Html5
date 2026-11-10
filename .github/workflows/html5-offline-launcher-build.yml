@@ -100,13 +100,13 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          profile: pixel_2
+          profile: pixel_7_pro
           emulator-boot-timeout: 300
+          working-directory: apps/html5-offline-launcher
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: |
-            cd "$GITHUB_WORKSPACE/apps/html5-offline-launcher"
-            log_file="$GITHUB_WORKSPACE/apps/html5-offline-launcher/app/build/android-webview-tests.log"
+            log_file=app/build/android-webview-tests.log
             if gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > "$log_file" 2>&1; then
               cat "$log_file"
             else
