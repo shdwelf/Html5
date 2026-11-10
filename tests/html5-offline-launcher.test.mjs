@@ -54,6 +54,7 @@ test("private Android profile contains only its fixed two-app allowlist", () => 
   assert.match(GRADLE, /create\('private'\)/);
   assert.match(GRADLE, /applicationIdSuffix '\.private'/);
   assert.match(PRIVATE_MANIFEST, /HTML5 Offline Library \(Private\)/);
+  assert.match(PRIVATE_MANIFEST, /tools:replace="android:label"/);
   assert.match(PRIVATE_MANIFEST, /android\.permission\.RECORD_AUDIO[\s\S]*?tools:node="remove"/);
   assert.match(PRIVATE_MANIFEST, /android\.permission\.MODIFY_AUDIO_SETTINGS[\s\S]*?tools:node="remove"/);
 });

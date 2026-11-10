@@ -7,5 +7,7 @@
     <uses-permission
         android:name="android.permission.MODIFY_AUDIO_SETTINGS"
         tools:node="remove" />
-    <application android:label="HTML5 Offline Library (Private)" />
+    <application
+        android:label="HTML5 Offline Library (Private)"
+        tools:replace="android:label" />
 </manifest>
