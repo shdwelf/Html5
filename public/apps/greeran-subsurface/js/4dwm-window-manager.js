@@ -77,6 +77,7 @@ function attachDrag(element, handle) {
 function observeMinimizedState(windowElement, button) {
   const update = () => {
     const minimized = windowElement.classList.contains("min");
+    button.textContent = minimized ? "+" : "−";
     button.setAttribute("aria-expanded", String(!minimized));
     button.setAttribute("aria-label", minimized ? "Restore window" : "Minimize window");
   };

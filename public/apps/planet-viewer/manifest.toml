@@ -1,4 +1,4 @@
 name = "Planet Viewer · 4DWM"
 source_code_url = "https://github.com/shdwelf/Html5"
-description = "Offline 3DEP terrain plates, five-city GNIS subset, country globe, and PC Globe index. The viewer is schematic, not a survey product."
+description = "Offline 3DEP terrain plates, a limited Gazetteer place-name index, country globe, and PC Globe index. The viewer is schematic, not a survey product."
 icon = "icon.png"

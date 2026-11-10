@@ -130,13 +130,9 @@ input[type="search"] { cursor: text; width: 100%; }
   text-transform: uppercase;
   color: var(--dim);
   border-bottom: 1px solid var(--line);
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
+  cursor: default;
 }
-.pip header:active { cursor: grabbing; }
 .pip header b { color: var(--ink); font-weight: 400; }
-.pip header button { cursor: pointer; touch-action: auto; }
 .pip .body { padding: 7px 9px; max-height: 44vh; overflow: auto; }
 .pip.min .body { display: none; }
 .pip.min { min-width: 0; }

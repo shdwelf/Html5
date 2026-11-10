@@ -18,6 +18,8 @@
     #countries button { display: block; width: 100%; text-align: left; padding: 7px 8px; margin-bottom: 4px;
       background: #0e2033; color: inherit; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 12px; }
     #countries button.active { background: #274a68; border-color: #ffd75e; }
+    #countries small { display: block; color: #8fb4d4; margin-top: 3px; font-size: 10px; }
+    #countries .search-note { padding: 8px; margin-bottom: 4px; border-left: 2px solid #6f96b5; color: #b4cce0; font-size: 11px; line-height: 1.45; }
     section { padding: 12px 16px; }
     .map-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
     .map-toolbar button { padding: 7px 9px; background: #0e2033; color: inherit; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 11px; }
@@ -54,13 +56,14 @@
   </header>
   <main>
     <aside>
-      <label for="search" class="note">Countries</label>
-      <input id="search" type="search" placeholder="Search country or capital…" aria-label="Search countries" />
+      <label for="search" class="note">Profiles, ISO names, and IANA ccTLDs · 250 Factbook records</label>
+      <input id="search" type="search" placeholder="Search profile, capital, ISO code, IANA .ca…" aria-label="Search country profiles, ISO names, and IANA country-code domains" />
+      <p class="note">Search names, ISO codes, and offline IANA ccTLD aliases such as <code>.ca</code> or <code>.uk</code>. Shared TLD aliases can return multiple entries; this is a pinned snapshot, not a live IANA lookup.</p>
       <section class="gaz-box" aria-labelledby="gazHeading">
-        <h2 id="gazHeading">OFFLINE GAZETTEER POINTS</h2>
-        <p class="note">Five-city feature subset. Only rows marked GNIS carry an official GNIS ID; this is not a complete or live lookup.</p>
+        <h2 id="gazHeading">OFFLINE PLACE SEARCH</h2>
+        <p class="note">A limited five-city Gazetteer plus one Bora Bora name-only locality record. Only rows marked GNIS carry an official GNIS ID. Bora Bora is a place in French Polynesia, not a separate country; no coordinates are included. This is not a complete or live lookup.</p>
         <label for="gazSearch" class="note">Search place names</label>
-        <input id="gazSearch" type="search" placeholder="Search Gazetteer names (2+ letters)…" autocomplete="off" aria-label="Search offline Gazetteer points" />
+        <input id="gazSearch" type="search" placeholder="Search offline place names (2+ letters)…" autocomplete="off" aria-label="Search offline place names" />
         <div id="gazResults" aria-live="polite"></div>
         <div id="gazDetail" aria-live="polite">Choose a result to highlight it on the world map.</div>
       </section>

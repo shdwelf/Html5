@@ -11,10 +11,11 @@
     "build:bluetops": "node scripts/build-bluetops-xdc.mjs",
     "build:casefiles": "node tools/build_casefiles.mjs && node scripts/build-casefiles-xdc.mjs",
     "build:cheyenne": "node scripts/build-cheyenne-xdc.mjs",
-    "build:city-subsurface": "node scripts/build-city-dem-data.mjs && node scripts/build-city-subsurface.mjs && node scripts/build-city-subsurface-xdc.mjs",
+    "build:city-subsurface": "node scripts/build-city-dem-data.mjs && node scripts/build-city-subsurface.mjs && node scripts/build-city-subsurface-xdc.mjs && node scripts/build-georgia-subsurface-alias-xdc.mjs",
     "build:astronomy-offline": "node scripts/build-astronomy-offline-viewers.mjs",
     "check:astronomy-offline": "node scripts/build-astronomy-offline-viewers.mjs --check",
     "build:historical-network": "node scripts/build-historical-network.mjs",
+    "build:headline-harry": "node scripts/build-headline-harry-public-app.mjs",
     "build:four-corners": "node scripts/build-four-corners-xdc.mjs",
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
     "build:cyberchef": "node scripts/build-cyberchef-xdc.mjs",
@@ -68,7 +69,8 @@
     "build:unit-cad": "node tools/build_unit_cad.mjs --emit --out-dir cad/out",
     "check:unit-cad": "node tools/build_unit_cad.mjs --check",
     "build:xdc-wars": "node tools/build_xdc_wars.mjs",
-    "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-xdc.mjs",
+    "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-iso-crosswalk.mjs && node scripts/build-country-viewer-iana-cctlds.mjs && node scripts/build-country-viewer-xdc.mjs",
+    "check:country-viewer-crosswalk": "node scripts/build-country-viewer-iso-crosswalk.mjs --check && node scripts/build-country-viewer-iana-cctlds.mjs --check",
     "build:keyviewer": "node scripts/build-keyviewer-xdc.mjs"
   },
   "dependencies": {

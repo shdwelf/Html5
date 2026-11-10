@@ -35,7 +35,7 @@ await mkdir(path.join(appDir, "vendor"), { recursive: true });
 let html = await readFile(path.join(root, "esgvrop-4dwm.html"), "utf8");
 html = html.replace(
   '<script type="module" src="js/esgvrop-4dwm.js"></script>',
-  '<script src="./webxdc.js"></script>\n  <script type="module" src="./"js/esgvrop-4dwm.js"></script>',
+  '<script src="./webxdc.js"></script>\n  <script type="module" src="./js/4dwm-window-manager.js"></script>\n  <script type="module" src="./js/esgvrop-4dwm.js"></script>',
 );
 await writeFile(path.join(appDir, "index.html"), html);
 
@@ -87,6 +87,10 @@ for (const abs of modules) {
   await mkdir(path.dirname(path.join(appDir, rel)), { recursive: true });
   await copyFile(abs, path.join(appDir, rel));
 }
+await copyFile(
+  path.join(root, "public", "apps", "_shared", "4dwm-window-manager.js"),
+  path.join(appDir, "js", "4dwm-window-manager.js"),
+);
 for (const dependency of optional) console.log(`Optional module not shipped: ${dependency}`);
 
 for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {

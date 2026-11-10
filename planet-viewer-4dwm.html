@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="./css/planet-viewer-4dwm.css" />
 </head>
 <body data-mode="relief">
-  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
-  <canvas id="globeStage" hidden>Globe plate: drag to rotate the Red October orthographic globe.</canvas>
+  <canvas id="stage" role="img" aria-label="Interactive three-dimensional terrain plate. Use the plate, mode, and Gazetteer controls to explore the offline data.">This visualization needs a canvas-capable browser.</canvas>
+  <canvas id="globeStage" hidden role="img" aria-label="Interactive orthographic globe. Drag to rotate; country markers show Factbook capitals.">Globe plate: drag to rotate the Red October orthographic globe.</canvas>
   <section id="pcgPanel" hidden aria-label="PC Globe 1990 index plate">
     <h2>PC GLOBE (1990) · INDEX PLATE</h2>
     <p class="small" id="pcgMeta">Decoded PC Globe index — names and label strings only.</p>
@@ -19,7 +19,7 @@
       pointer table) is undecoded, so country records are listed by file position — not matched to country
       names — and nothing from PC Globe is plotted on the terrain or globe plates. Globe markers are the
       country viewer's Factbook capitals.</p>
-    <input type="search" id="pcgSearch" placeholder="filter country names, records, features…" autocomplete="off" />
+    <input type="search" id="pcgSearch" aria-label="Filter PC Globe index names and records" placeholder="Filter names, records, features…" autocomplete="off" />
     <div id="pcgBody"></div>
   </section>
   <div id="labels" aria-hidden="true"></div>
@@ -30,6 +30,10 @@
       <p>USGS 3DEP control-point terrain · offline GNIS · schematic, not a survey product</p>
     </div>
     <div class="top-actions">
+      <div class="panel-toggles" role="group" aria-label="Show viewer panels">
+        <button type="button" id="btnControls" aria-expanded="false" aria-controls="controlsPanel">CONTROLS</button>
+        <button type="button" id="btnInspector" aria-expanded="false" aria-controls="inspectorPanel">INSPECTOR</button>
+      </div>
       <div class="plate-switch" role="group" aria-label="Plate">
         <button type="button" data-plate="chey" class="active" aria-pressed="true">CHEYENNE</button>
         <button type="button" data-plate="ange" aria-pressed="false">SAN GABRIEL</button>
@@ -38,9 +42,9 @@
         <button type="button" data-plate="pcg" aria-pressed="false">PC GLOBE INDEX</button>
       </div>
       <div class="mode-switch" role="group" aria-label="View mode">
-        <button type="button" data-mode="relief" class="active">RELIEF</button>
-        <button type="button" data-mode="wire">WIREFRAME</button>
-        <button type="button" data-mode="xray">X-RAY</button>
+        <button type="button" data-mode="relief" class="active" aria-pressed="true">RELIEF</button>
+        <button type="button" data-mode="wire" aria-pressed="false">WIREFRAME</button>
+        <button type="button" data-mode="xray" aria-pressed="false">X-RAY</button>
       </div>
       <button type="button" id="btnLabels" class="active" aria-pressed="true">LABELS</button>
       <button type="button" id="btnVrml" title="Export the current plate as a VRML 2.0 terrarium">VRML ↓</button>
@@ -48,14 +52,14 @@
     </div>
   </header>
 
-  <aside class="panel panel-left">
+  <aside class="panel panel-left" id="controlsPanel" aria-label="Viewer controls and checks">
     <section class="card">
-      <h2>Offline Gazetteer · five cities</h2>
+      <h2>Offline Gazetteer · five cities + Bora Bora</h2>
       <form class="search-row" role="search" onsubmit="return false">
-        <input type="search" id="searchBox" aria-label="Search the offline five-city Gazetteer" placeholder="Search Gazetteer names (2+ letters)…" autocomplete="off" />
+        <input type="search" id="searchBox" aria-label="Search offline Gazetteer place names" placeholder="Search place names (2+ letters)…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
-      <p class="tiny">Search spans the five-city offline subset. Select a result to jump to its terrain plate, or the globe when no DEM plate is packed. Only records labeled GNIS are official GNIS points; this is not address lookup.</p>
+      <p class="tiny">Search covers five city datasets plus a name-only Bora Bora locality in French Polynesia (not a country; no coordinates included). Select a mapped result to jump to terrain or the globe. Only records labeled GNIS are official GNIS points; this is not address lookup.</p>
       <div class="slider-row">
         <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
         <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
@@ -74,7 +78,7 @@
     </section>
   </aside>
 
-  <aside class="panel panel-right">
+  <aside class="panel panel-right" id="inspectorPanel" aria-label="Inspector and source details">
     <section class="card">
       <h2 id="infoTitle">Inspector</h2>
       <div id="infoBody"><p class="small">Click a GNIS marker. Every point carries its GNIS class and coordinates.</p></div>
@@ -91,7 +95,7 @@
     <span id="statPlate">plate: —</span>
     <span id="statChecks">checks: —</span>
     <span id="hudFps">fps: —</span>
-    <span id="status">boot…</span>
+    <span id="status" role="status" aria-live="polite">boot…</span>
   </div>
 
   <div class="pip-layer" id="pipLayer"></div>

@@ -200,6 +200,26 @@ test("country viewer renders its register and answers search + selection", opts,
   assert.match(document.getElementById("detail").textContent,
     /none published \(source profile lists no capital\)/);
 
+  search.value = ".ca";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const canada = document.querySelector("#countries button");
+  assert.ok(canada && canada.dataset.code === "ca", "an IANA country-code domain selects Canada exactly");
+  canada.click();
+  assert.match(document.getElementById("detail").textContent, /IANA ccTLD aliases\s*\.ca/);
+
+  search.value = ".aq";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  assert.equal(document.querySelectorAll("#countries button").length, 0, "a name-only TLD lookup never fabricates a profile");
+  const tldOnlyNotes = [...document.querySelectorAll("#countries .search-note")].map((node) => node.textContent).join(" ");
+  assert.match(tldOnlyNotes, /Antarctica/);
+  assert.match(tldOnlyNotes, /Heard Island and McDonald Islands/);
+  assert.match(tldOnlyNotes, /Do not create or infer a country profile from an unmatched ISO label/);
+
+  search.value = ".su";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  assert.equal(document.querySelectorAll("#countries button").length, 0, "the ambiguous legacy .su alias does not route to Russia");
+  assert.match(document.querySelector("#countries").textContent, /legacy IANA TLDs are withheld/);
+
   const gazSearch = document.getElementById("gazSearch");
   gazSearch.value = "Lawrence";
   gazSearch.dispatchEvent(new window.Event("input", { bubbles: true }));
@@ -241,7 +261,52 @@ test("planet viewer boots and routes Gazetteer selections across its available p
   document.querySelector("#searchResults .res").click();
   assert.equal(document.getElementById("statPlate").textContent, "plate: lawrence");
   assert.equal(document.getElementById("pcgPanel").hidden, true);
+
+  search.value = "Bora Bora";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const nameOnly = document.querySelector("#searchResults .res");
+  assert.ok(nameOnly, "the locality name is searchable without coordinate data");
+  nameOnly.click();
+  assert.equal(document.getElementById("infoTitle").textContent, "Bora Bora");
+  assert.match(document.getElementById("infoBody").textContent, /Coordinates not included/);
+  assert.match(document.getElementById("status").textContent, /not a country profile.*no map pin shown/);
+  assert.equal(document.getElementById("statPlate").textContent, "plate: lawrence",
+    "name-only records do not jump to 0,0 or change the active plate");
   assert.deepEqual(errors, []);
+});
+
+test("planet viewer exposes compact controls and opens the inspector for a place result", opts, async () => {
+  const previousWidth = globalThis.innerWidth;
+  const { window, document, errors } = await bootPage("planet-viewer-4dwm.html", 900);
+  globalThis.innerWidth = 390;
+  try {
+    const controlsButton = document.getElementById("btnControls");
+    const inspectorButton = document.getElementById("btnInspector");
+    const controlsPanel = document.getElementById("controlsPanel");
+    const inspectorPanel = document.getElementById("inspectorPanel");
+
+    controlsButton.click();
+    assert.equal(controlsPanel.classList.contains("is-open"), true);
+    assert.equal(controlsButton.getAttribute("aria-expanded"), "true");
+    inspectorButton.click();
+    assert.equal(controlsPanel.classList.contains("is-open"), false, "only one compact panel is open at a time");
+    assert.equal(inspectorPanel.classList.contains("is-open"), true);
+
+    document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    assert.equal(inspectorPanel.classList.contains("is-open"), false, "Escape closes a compact panel");
+    assert.equal(inspectorButton.getAttribute("aria-expanded"), "false");
+
+    const search = document.getElementById("searchBox");
+    search.value = "Bora Bora";
+    search.dispatchEvent(new window.Event("input", { bubbles: true }));
+    document.querySelector("#searchResults .res").click();
+    assert.equal(inspectorPanel.classList.contains("is-open"), true,
+      "selecting a search result reveals its details on compact screens");
+    assert.match(document.getElementById("infoBody").textContent, /Coordinates not included/);
+    assert.deepEqual(errors, []);
+  } finally {
+    globalThis.innerWidth = previousWidth;
+  }
 });
 
 test("keyviewer (mathspace) boots and answers interactions", opts, async () => {

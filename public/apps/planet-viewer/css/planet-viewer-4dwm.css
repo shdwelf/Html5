@@ -145,3 +145,105 @@ button.active { color: #05080b; background: var(--accent); border-color: var(--a
 .statusbar #status { margin-left: auto; color: var(--accent); }
 
 @media (max-width: 1100px) { .panel { width: 268px; } }
+
+.panel-toggles { display: none; }
+button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--warn);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  :root { --mobile-ui-top: 160px; }
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    padding: 7px 8px;
+    background: linear-gradient(180deg, rgba(6, 9, 12, 0.98), rgba(6, 9, 12, 0.88));
+  }
+  .topbar h1 { font-size: 13px; letter-spacing: 0.12em; }
+  .topbar p { display: none; }
+  .top-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: 5px;
+    justify-content: initial;
+  }
+  .top-actions > button, .top-actions .mode-switch button,
+  .top-actions .plate-switch button, .panel-toggles button {
+    min-height: 34px;
+    padding: 7px 8px;
+    white-space: nowrap;
+  }
+  .panel-toggles {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: 5px;
+  }
+  .panel-toggles button { flex: 1 1 0; }
+  .plate-switch {
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .plate-switch button { flex: 0 0 auto; }
+  .mode-switch { min-width: 0; overflow-x: auto; }
+  .mode-switch button { flex: 0 0 auto; }
+  .top-actions > #btnLabels, .top-actions > #btnVrml, .top-actions > #btnReset {
+    align-self: stretch;
+    letter-spacing: 0.04em;
+  }
+  .panel {
+    top: var(--mobile-ui-top);
+    bottom: 58px;
+    width: min(92vw, 380px);
+    max-height: calc(100dvh - var(--mobile-ui-top) - 64px);
+    display: none;
+    padding: 0;
+    background: rgba(5, 10, 15, 0.96);
+    border: 1px solid var(--panel-edge);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+    overscroll-behavior: contain;
+  }
+  .panel.is-open { display: flex; }
+  .panel-left { left: 8px; }
+  .panel-right { right: 8px; }
+  .card { backdrop-filter: blur(8px); }
+  .statusbar {
+    min-height: 50px;
+    max-height: 58px;
+    flex-wrap: wrap;
+    gap: 3px 10px;
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+  .statusbar #status {
+    order: 2;
+    flex: 1 1 100%;
+    min-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #pcgPanel { inset: var(--mobile-ui-top) 8px 60px; padding: 12px; }
+  #pcgBody .cols { columns: 1; }
+}
+
+@media (max-width: 390px) {
+  .mode-switch button { padding-inline: 6px; font-size: 9px; }
+  .top-actions > button { padding-inline: 7px; font-size: 9px; }
+}
+
+@media (max-width: 760px) and (max-height: 580px) {
+  :root { --mobile-ui-top: 137px; }
+  .topbar { gap: 3px; padding-block: 4px; }
+  .top-actions > button, .top-actions .mode-switch button,
+  .top-actions .plate-switch button, .panel-toggles button {
+    min-height: 29px;
+    padding-block: 4px;
+  }
+}

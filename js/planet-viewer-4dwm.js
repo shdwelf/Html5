@@ -8,6 +8,7 @@ import { GAZ_ROWS as buf } from "./city-gazetteer-data-buffalo.js";
 import { GAZ_ROWS as ksc } from "./city-gazetteer-data-kansascity.js";
 import { GAZ_ROWS as law } from "./city-gazetteer-data-lawrence.js";
 import { GAZ_ROWS as tor } from "./city-gazetteer-data-toronto.js";
+import { GAZ_ROWS as polynesia } from "./city-gazetteer-data-polynesia.js";
 import { demToVrml, downloadText } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
@@ -415,6 +416,34 @@ function announce(msg) {
   const s = $("status");
   if (s) s.textContent = msg;
 }
+
+const PANEL_BUTTONS = { controlsPanel: "btnControls", inspectorPanel: "btnInspector" };
+function compactPanels() {
+  return typeof matchMedia === "function"
+    ? matchMedia("(max-width: 760px)").matches
+    : innerWidth <= 760;
+}
+function setPanelOpen(panelId, open) {
+  if (!compactPanels()) open = false;
+  if (open) {
+    for (const id of Object.keys(PANEL_BUTTONS)) {
+      if (id !== panelId) setPanelOpen(id, false);
+    }
+  }
+  const panel = $(panelId);
+  const button = $(PANEL_BUTTONS[panelId]);
+  panel?.classList.toggle("is-open", open);
+  button?.setAttribute("aria-expanded", String(open));
+}
+function revealPanelOnCompact(panelId) {
+  if (compactPanels()) setPanelOpen(panelId, true);
+}
+function syncResponsivePanels() {
+  if (!compactPanels()) {
+    for (const id of Object.keys(PANEL_BUTTONS)) setPanelOpen(id, false);
+  }
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
@@ -545,18 +574,27 @@ function syncGazetteerMarker() {
 }
 
 function focusGazetteerPoint(point) {
-  const destination = locateGazetteerPoint(plates, PLATE_ORDER, point);
-  if (!destination) {
-    announce("This Gazetteer result has no valid coordinates.");
+  selectedGazetteer = point;
+  const hasCoords = Number.isFinite(point?.lat) && Number.isFinite(point?.lon);
+  const identity = point?.verified && point?.gnis
+    ? `USGS GNIS ${point.gnis}`
+    : hasCoords ? "reference point; no GNIS id claimed" : "name-only locality; no coordinates included";
+  $("infoTitle").textContent = point?.name || "Place record";
+  $("infoBody").innerHTML =
+    `<div class="tiny dim">${esc(point?.fclass || "Place")} · ${esc(point?.county || "area not recorded")}</div>` +
+    `<p class="small">${hasCoords ? `${point.lat.toFixed(5)}, ${point.lon.toFixed(5)}` : "Coordinates not included"} · ${esc(identity)}</p>` +
+    (point?.note ? `<p class="tiny dim">${esc(point.note)}</p>` : "");
+  revealPanelOnCompact("inspectorPanel");
+  if (!hasCoords) {
+    announce(`${point?.name || "Place"} · locality record, not a country profile · coordinates not included; no map pin shown`);
     return;
   }
-  selectedGazetteer = point;
-  const identity = point.verified && point.gnis ? `USGS GNIS ${point.gnis}` : "reference point; no GNIS id claimed";
-  $("infoTitle").textContent = point.name;
-  $("infoBody").innerHTML =
-    `<div class="tiny dim">${esc(point.fclass)} · ${esc(point.county || "county not recorded")}</div>` +
-    `<p class="small">${point.lat.toFixed(5)}, ${point.lon.toFixed(5)} · ${esc(identity)}</p>`;
 
+  const destination = locateGazetteerPoint(plates, PLATE_ORDER, point);
+  if (!destination) {
+    announce("This Gazetteer result has invalid coordinates.");
+    return;
+  }
   if (destination.kind === "terrain") {
     if (globeOn || pcgOn || plate.id !== destination.plateId) selectPlate(destination.plateId);
     syncGazetteerMarker();
@@ -593,12 +631,16 @@ function doSearch(q) {
   host.innerHTML = hits.length
     ? hits.map((r, i) => {
       const destination = locateGazetteerPoint(plates, PLATE_ORDER, r);
-      const place = destination?.kind === "terrain" ? `${plates[destination.plateId].name} plate` : "globe";
-      const identity = r.verified && r.gnis ? `GNIS ${r.gnis}` : "reference point";
+      const place = !Number.isFinite(r.lat) || !Number.isFinite(r.lon)
+        ? "name only · no coordinates"
+        : destination?.kind === "terrain" ? `${plates[destination.plateId].name} plate` : "globe";
+      const identity = r.verified && r.gnis
+        ? `GNIS ${r.gnis}`
+        : Number.isFinite(r.lat) && Number.isFinite(r.lon) ? "reference point" : "locality name";
       return `<button type="button" class="res" data-result="${i}" aria-label="${esc(r.name)}, ${esc(r.fclass)}, ${esc(identity)}, ${esc(place)}">` +
         `<b>${esc(r.name)}</b><span>${esc(r.fclass)} · ${esc(identity)} · ${esc(place)}</span></button>`;
     }).join("")
-    : `<div class="tiny dim">No match in the five-city offline Gazetteer subset.</div>`;
+    : `<div class="tiny dim">No match in the limited offline place-name index; this is not a live or complete lookup.</div>`;
   host.querySelectorAll(".res").forEach((button) => {
     button.addEventListener("click", () => focusGazetteerPoint(hits[Number(button.dataset.result)]));
   });
@@ -652,7 +694,19 @@ function bind() {
     renderer.setSize(innerWidth, innerHeight, false);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
+    syncResponsivePanels();
     if (globeOn) drawGlobe();
+  });
+  syncResponsivePanels();
+  for (const [panelId, buttonId] of Object.entries(PANEL_BUTTONS)) {
+    $(buttonId)?.addEventListener("click", () => {
+      const panel = $(panelId);
+      setPanelOpen(panelId, !panel?.classList.contains("is-open"));
+    });
+  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !compactPanels()) return;
+    for (const id of Object.keys(PANEL_BUTTONS)) setPanelOpen(id, false);
   });
 
   const gc = $("globeStage");
@@ -708,11 +762,12 @@ function bind() {
     if (!hit) return;
     $("infoTitle").textContent = hit.object.userData.pick.label;
     $("infoBody").innerHTML = `<div class="tiny dim">${esc(hit.object.userData.pick.detail)}</div>`;
+    revealPanelOnCompact("inspectorPanel");
   });
 }
 
 function init() {
-  gazIndex = makeGazetteerIndex([...atl, ...buf, ...ksc, ...law, ...tor]);
+  gazIndex = makeGazetteerIndex([...atl, ...buf, ...ksc, ...law, ...tor, ...polynesia]);
   plates = buildPlates(140, 100);
   globeData = globeMarkers(COUNTRIES);
   // Same bundled coastline file the Red October globe draws; failure is a
