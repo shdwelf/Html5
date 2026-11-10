@@ -99,6 +99,9 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_SMOKE_TEST, /https:\/\/app-headline-harry\.invalid\/index\.html/);
   assert.match(ANDROID_SMOKE_TEST, /DOSBox ready/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
+  assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
+  assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);
+  assert.match(ANDROID_WORKFLOW, /pactl set-default-source ci_mic_bus\.monitor/);
   assert.match(ANDROID_WORKFLOW, /grep -Fq 'android\.permission\.MODIFY_AUDIO_SETTINGS'/);
   assert.match(ANDROID_WORKFLOW, /:app:connectedDebugAndroidTest/);
   assert.match(README, /93\*\* HTML entrypoints/);

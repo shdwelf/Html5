@@ -57,7 +57,8 @@ app/build/outputs/apk/debug/app-debug.apk
 The Android instrumentation suite exercises the ANC-only WebView permission
 policy, requests a real `getUserMedia` audio track, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
-emulator and uploads the debug APK as the
+emulator with a silent, local PulseAudio source; this verifies permission and
+track startup, not acoustic capture quality. CI uploads the debug APK as the
 `html5-offline-launcher-debug-apk` artifact. The sandbox itself has no local
 Java/Gradle/Android SDK, so a physical-device microphone check remains a useful
 follow-up. The APK is debug-signed for sideloading/review; it is not a Play

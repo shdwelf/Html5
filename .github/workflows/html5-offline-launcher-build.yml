@@ -88,6 +88,13 @@ jobs:
           ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
           ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
 
+      - name: Install PulseAudio runtime for Android emulator microphone tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils
+
       - name: Enable KVM group permissions for the Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -97,6 +104,9 @@ jobs:
       - name: Run Android WebView permission and Headline Harry smoke tests
         id: android-smoke-tests
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          XDG_RUNTIME_DIR: ${{ runner.temp }}/pulse-runtime
+          PULSE_SERVER: unix:${{ runner.temp }}/pulse-runtime/native
         with:
           api-level: 34
           target: google_apis
@@ -108,7 +118,7 @@ jobs:
           disable-animations: true
           # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
           pre-emulator-launch-script: >-
-            { echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
+            { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
             gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
 
