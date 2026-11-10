@@ -98,8 +98,8 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: |
-            cd apps/html5-offline-launcher
-            log_file=app/build/android-webview-tests.log
+            cd "$GITHUB_WORKSPACE/apps/html5-offline-launcher"
+            log_file="$GITHUB_WORKSPACE/apps/html5-offline-launcher/app/build/android-webview-tests.log"
             if gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > "$log_file" 2>&1; then
               cat "$log_file"
             else
@@ -114,6 +114,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import glob
+          import os
           import re
           import xml.etree.ElementTree as ET
 
@@ -136,9 +137,12 @@ jobs:
                   safe = failure.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
                   print(f"::error title=Android-instrumentation-failure::{safe}")
           else:
-              print("::error title=Android-instrumentation-failure::No JUnit failure details were written; inspect the emulator/Gradle step output.")
+              report_names = ", ".join(os.path.relpath(report) for report in reports) or "none found"
+              print(f"::error title=Android-instrumentation-failure::No JUnit failure details; XML reports: {report_names}")
 
           log_path = "apps/html5-offline-launcher/app/build/android-webview-tests.log"
+          if not os.path.isfile(log_path):
+              print(f"::error title=Android-instrumentation-log::Gradle log file is missing: {log_path}")
           try:
               lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()[-25:]
           except OSError:
