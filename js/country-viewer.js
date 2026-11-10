@@ -2,26 +2,32 @@
 // World Factbook register. Pure helpers are exported for tests; the DOM
 // bootstrap only runs in a browser.
 import { COUNTRIES, COUNTRY_DATA_META } from "./country-data.js";
+import { COUNTRY_ISO_REGISTER_META } from "./country-iso-crosswalk.js";
+import { COUNTRY_IANA_TLD_META } from "./country-iana-cctlds.js";
 import { MAP_VIEWS, drawCountryOutlines, nearestCountryAt, projectMapPoint } from "./country-map.js";
+import {
+  countryDisplayName,
+  countryIanaTlds,
+  countryIsoCodes,
+  filterCountries,
+  findUnprofiledIsoEntries,
+  isoIanaTlds,
+  sortByName,
+} from "./country-viewer-search.js";
+
 import { makeGazetteerIndex, searchName } from "./city-gazetteer.js";
 import { GAZ_ROWS as atlantaRows } from "./city-gazetteer-data-atlanta.js";
 import { GAZ_ROWS as buffaloRows } from "./city-gazetteer-data-buffalo.js";
 import { GAZ_ROWS as kansasCityRows } from "./city-gazetteer-data-kansascity.js";
 import { GAZ_ROWS as lawrenceRows } from "./city-gazetteer-data-lawrence.js";
 import { GAZ_ROWS as torontoRows } from "./city-gazetteer-data-toronto.js";
+import { GAZ_ROWS as polynesiaRows } from "./city-gazetteer-data-polynesia.js";
+
+export { countryDisplayName, countryIanaTlds, countryIsoCodes, filterCountries, findUnprofiledIsoEntries, isoIanaTlds, sortByName };
 
 const GAZETTEER_INDEX = makeGazetteerIndex([
-  ...atlantaRows, ...buffaloRows, ...kansasCityRows, ...lawrenceRows, ...torontoRows,
+  ...atlantaRows, ...buffaloRows, ...kansasCityRows, ...lawrenceRows, ...torontoRows, ...polynesiaRows,
 ]);
-
-export function filterCountries(list, query) {
-  const q = (query || "").trim().toLowerCase();
-  if (!q) return [...list];
-  return list.filter((c) =>
-    c.name.toLowerCase().includes(q) ||
-    c.capital.name.toLowerCase().includes(q) ||
-    c.code.toLowerCase() === q);
-}
 
 export function searchGazetteerPoints(query, limit = 8) {
   const q = String(query ?? "").trim();
@@ -37,10 +43,6 @@ export function formatInt(n) {
 // Backward-compatible exported projection helper; view is optional.
 export function project(lon, lat, w, h, view = MAP_VIEWS.world) {
   return projectMapPoint(lon, lat, w, h, view);
-}
-
-export function sortByName(list) {
-  return [...list].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function drawMap(canvas, selected, selectedGazetteer = null, outlines = null, view = MAP_VIEWS.world) {
@@ -101,11 +103,15 @@ function renderGazetteerDetail(point) {
     host.textContent = "Choose a result to highlight it on the world map.";
     return;
   }
+  const hasCoords = Number.isFinite(point.lat) && Number.isFinite(point.lon);
   const identity = point.verified && point.gnis
     ? `USGS GNIS ${esc(point.gnis)}`
-    : "local reference point · no GNIS id claimed";
-  host.innerHTML = `<b>${esc(point.name)}</b><br>${esc(point.fclass)} · ${esc(point.county || "county not recorded")}<br>` +
-    `${point.lat.toFixed(5)}, ${point.lon.toFixed(5)}<br>${identity}<br><span class="note">${esc(point.note || "")}</span>`;
+    : hasCoords
+      ? "reference point · no GNIS id claimed"
+      : "name-only record · no coordinates included";
+  const coordinateText = hasCoords ? `${point.lat.toFixed(5)}, ${point.lon.toFixed(5)}` : "Coordinates not included";
+  host.innerHTML = `<b>${esc(point.name)}</b><br>${esc(point.fclass)} · ${esc(point.county || "area not recorded")}<br>` +
+    `${coordinateText}<br>${identity}<br><span class="note">${esc(point.note || "")}</span>`;
 }
 
 export function capitalText(c) {
@@ -118,23 +124,31 @@ export function capitalText(c) {
 
 function renderDetail(c) {
   const d = el("detail");
-  if (!c) { d.innerHTML = "<p>Select a country.</p>"; return; }
+  if (!c) { d.innerHTML = "<p>Select a country or area profile.</p>"; return; }
+  const displayName = countryDisplayName(c);
+  const isoCodes = countryIsoCodes(c);
+  const ianaTlds = countryIanaTlds(c);
+  const identifiers = `CIA Factbook code: ${c.code.toUpperCase()}` +
+    (isoCodes.length ? ` · ISO 3166-1 alpha-2: ${isoCodes.join(", ")}` : " · no direct ISO name match in this crosswalk");
   d.innerHTML = `
-    <h2>${c.name}</h2>
-    <p class="loc">${c.location}</p>
+    <h2>${esc(displayName)}</h2>
+    <p class="loc">${esc(c.location)}</p>
     <table>
-      <tr><th>Capital</th><td>${capitalText(c)}</td></tr>
-      <tr><th>Country reference point</th><td>${c.lat}, ${c.lon}</td></tr>
-      <tr><th>Area (total)</th><td>${formatInt(c.areaTotalSqKm)} sq km</td></tr>
-      <tr><th>Population</th><td>${c.populationText}</td></tr>
-      <tr><th>Languages</th><td>${c.languages}</td></tr>
-      <tr><th>Government</th><td>${c.governmentType}</td></tr>
-      <tr><th>National anthem</th><td>“${c.anthemTitle}”<br><span class="byline">${c.anthemLyricsMusic}</span></td></tr>
+      <tr><th>Source identifiers</th><td>${esc(identifiers)}</td></tr>
+      <tr><th>IANA ccTLD aliases</th><td>${esc(ianaTlds.join(", ") || "none in the pinned search index")}</td></tr>
+      <tr><th>Capital</th><td>${esc(capitalText(c))}</td></tr>
+      <tr><th>Country reference point</th><td>${esc(`${c.lat}, ${c.lon}`)}</td></tr>
+      <tr><th>Area (total)</th><td>${esc(formatInt(c.areaTotalSqKm))} sq km</td></tr>
+      <tr><th>Population</th><td>${esc(c.populationText)}</td></tr>
+      <tr><th>Languages</th><td>${esc(c.languages)}</td></tr>
+      <tr><th>Government</th><td>${esc(c.governmentType)}</td></tr>
+      <tr><th>National anthem</th><td>“${esc(c.anthemTitle)}”<br><span class="byline">${esc(c.anthemLyricsMusic)}</span></td></tr>
     </table>
     <p class="note">Anthem shown as Factbook title/credit text; audio is not bundled.
     The Factbook source pin carries no national-instruments field, so none is shown
     rather than substituting a value from another source.
-    Fields are verbatim CIA World Factbook extractions (see source pin below).</p>`;
+    Profile fields are verbatim CIA World Factbook extractions; display-name and search aliases
+    are a separate ISO crosswalk (see source pin below).</p>`;
 }
 
 function main() {
@@ -157,9 +171,29 @@ function main() {
   }
 
   function renderList() {
-    const items = sortByName(filterCountries(COUNTRIES, searchEl.value));
-    listEl.innerHTML = items.map((c) =>
-      `<li><button type="button" data-code="${c.code}" class="${selected && c.code === selected.code ? "active" : ""}">${c.capital.name ? `${esc(c.name)} — ${esc(c.capital.name)}` : esc(c.name)}</button></li>`).join("");
+    const query = searchEl.value;
+    const items = sortByName(filterCountries(COUNTRIES, query));
+    const isoOnly = findUnprofiledIsoEntries(query, 8);
+    const profileMarkup = items.map((c) => {
+      const name = countryDisplayName(c);
+      const capital = c.capital?.name ? ` — ${esc(c.capital.name)}` : "";
+      const isoCodes = countryIsoCodes(c);
+      const ianaTlds = countryIanaTlds(c);
+      const identifiers = `Factbook ${c.code.toUpperCase()}` +
+        (isoCodes.length ? ` · ISO ${isoCodes.join(", ")}` : "") +
+        (ianaTlds.length ? ` · IANA ${ianaTlds.join(", ")}` : "");
+      return `<li><button type="button" data-code="${esc(c.code)}" class="${selected && c.code === selected.code ? "active" : ""}">` +
+        `${esc(name)}${capital}<small>${esc(identifiers)}</small></button></li>`;
+    }).join("");
+    const isoOnlyMarkup = isoOnly.map((entry) => {
+      const tlds = isoIanaTlds(entry.isoAlpha2);
+      const tldLabel = tlds.length ? ` · IANA ccTLD ${tlds.join(", ")}` : "";
+      return `<li class="search-note"><strong>${esc(entry.names[0])} (${esc(entry.isoAlpha2)})</strong>` +
+        `<small>ISO name index only${esc(tldLabel)} · no separate Factbook profile is represented here. ` +
+        `Do not create or infer a country profile from an unmatched ISO label.</small></li>`;
+    }).join("");
+    listEl.innerHTML = profileMarkup + isoOnlyMarkup ||
+      '<li class="search-note">No match in this limited offline index. Unmapped or legacy IANA TLDs are withheld rather than assigned to a country profile.</li>';
     listEl.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
       selected = COUNTRIES.find((c) => c.code === b.dataset.code) || null;
       if (zoomSelected) zoomSelected.disabled = !selected;
@@ -179,11 +213,14 @@ function main() {
     const hits = searchGazetteerPoints(q);
     gazResultsEl.innerHTML = hits.length
       ? hits.map((point, i) => {
-        const provenance = point.verified && point.gnis ? `GNIS ${esc(point.gnis)}` : "reference point";
+        const hasCoords = Number.isFinite(point.lat) && Number.isFinite(point.lon);
+        const provenance = point.verified && point.gnis
+          ? `GNIS ${esc(point.gnis)}`
+          : hasCoords ? "reference point" : "name only · no coordinates";
         return `<button type="button" data-point="${i}" aria-label="${esc(point.name)}, ${esc(provenance)}">` +
           `${esc(point.name)}<small>${esc(point.fclass)} · ${esc(point.county || "county unknown")} · ${esc(provenance)}</small></button>`;
       }).join("")
-      : '<p class="note">No match in the five-city offline Gazetteer subset.</p>';
+      : '<p class="note">No match in the limited offline place-name index; this is not a live or complete lookup.</p>';
     gazResultsEl.querySelectorAll("button[data-point]").forEach((button) => button.addEventListener("click", () => {
       selectedGazetteer = hits[Number(button.dataset.point)] || null;
       renderGazetteerDetail(selectedGazetteer);
@@ -209,7 +246,7 @@ function main() {
     if (!selected) return;
     const area = selected.areaTotalSqKm ?? 1_000_000;
     const scale = area < 5_000 ? 12 : area < 50_000 ? 8 : area < 250_000 ? 5 : area < 1_000_000 ? 3.5 : 2.2;
-    view = { label: selected.name, centerLon: selected.lon, centerLat: selected.lat, scale };
+    view = { label: countryDisplayName(selected), centerLon: selected.lon, centerLat: selected.lat, scale };
     document.querySelectorAll("[data-map-view]").forEach((button) => {
       button.classList.remove("active"); button.setAttribute("aria-pressed", "false");
     });
@@ -230,7 +267,15 @@ function main() {
   gazSearchEl.addEventListener("input", renderGazetteerSearch);
   el("sourcepin").textContent =
     `${COUNTRY_DATA_META.source} · upstream ${COUNTRY_DATA_META.upstreamCommit.slice(0, 12)} · ` +
-    `${COUNTRY_DATA_META.count} seeded countries · register: ${COUNTRY_DATA_META.register}`;
+    `${COUNTRY_DATA_META.count} seeded Factbook records · register: ${COUNTRY_DATA_META.register}. ` +
+    `Search overlay: ${COUNTRY_ISO_REGISTER_META.source.package} ${COUNTRY_ISO_REGISTER_META.source.version} ` +
+    `(MIT), reviewed ${COUNTRY_ISO_REGISTER_META.reviewDate}; ` +
+    `${COUNTRY_ISO_REGISTER_META.counts.isoNameEntries} ISO names, ` +
+    `${COUNTRY_ISO_REGISTER_META.counts.mappedIsoEntries} mapped, ` +
+    `${COUNTRY_ISO_REGISTER_META.counts.unmappedIsoEntries} ISO-only; policy: “Do not create or infer a country profile from an unmatched ISO label.” ` +
+    `IANA ccTLD search: ${COUNTRY_IANA_TLD_META.counts.uniqueValidatedTlds} TLD names from ` +
+    `world-countries ${COUNTRY_IANA_TLD_META.source.version} (ODbL-1.0), checked against the pinned IANA-list mirror; ` +
+    `${COUNTRY_IANA_TLD_META.counts.sharedTldNames} shared TLD names; snapshot, not live.`;
   renderList();
   renderGazetteerSearch();
   if (zoomSelected) zoomSelected.disabled = true;

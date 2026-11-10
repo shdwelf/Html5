@@ -106,10 +106,15 @@ test("the page wires every control the viewer binds", () => {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const b of ["chey", "ange", "lawrence", "globe", "pcg"]) assert.ok(html.includes(`data-plate="${b}"`));
-  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody"]) {
+  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody", "controlsPanel", "inspectorPanel", "btnControls", "btnInspector"]) {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const m of ["relief", "wire", "xray"]) assert.ok(html.includes(`data-mode="${m}"`));
+  for (const pressed of ["true", "false"]) assert.match(html, new RegExp(`aria-pressed="${pressed}"`));
+  const css = readFileSync(new URL("../css/planet-viewer-4dwm.css", import.meta.url), "utf8");
+  assert.match(css, /@media \(max-width: 760px\)/, "mobile layout has a dedicated breakpoint");
+  assert.match(css, /\.panel\.is-open/, "mobile panels can be opened without covering the viewer by default");
+  assert.match(css, /button:focus-visible/, "keyboard focus is visible");
 });
 
 test("the viewer reuses the shared modules rather than re-deriving", () => {

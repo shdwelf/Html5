@@ -19,6 +19,12 @@ const MAIN_ACTIVITY = readFileSync(
 const LAUNCHER_BUILDER = readFileSync(join(ROOT, "scripts", "build-html5-offline-launcher-assets.mjs"), "utf8");
 const CATALOG_HTML = readFileSync(join(PROJECT, "app/src/main/assets/launcher/index.html"), "utf8");
 const CATALOG_JS = readFileSync(join(PROJECT, "app/src/main/assets/launcher/catalog.js"), "utf8");
+const README = readFileSync(join(PROJECT, "README.md"), "utf8");
+const ANDROID_SMOKE_TEST = readFileSync(
+  join(PROJECT, "app/src/androidTest/java/org/arena/html5launcher/OfflineWebViewSmokeTest.java"),
+  "utf8",
+);
+const ANDROID_WORKFLOW = readFileSync(join(ROOT, ".github", "workflows", "html5-offline-launcher-build.yml"), "utf8");
 
 const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(ROOT, "public", "apps", entry.name, "index.html")))
@@ -72,6 +78,7 @@ test("Android package has minSdk 24 and no network permission", () => {
 
 test("only ANC can request WebView audio after the Android runtime permission grant", () => {
   assert.match(MAIN_ACTIVITY, /ANC_AUDIO_HOST\s*=\s*"app-anc-studio\.invalid"/);
+  assert.match(MAIN_ACTIVITY, /void handleWebPermissionRequest\(PermissionRequest request\)/);
   assert.match(MAIN_ACTIVITY, /isAncOrigin\(request\.getOrigin\(\)\)/);
   assert.match(MAIN_ACTIVITY, /resources != null &&\s*resources\.length == 1/);
   assert.match(MAIN_ACTIVITY, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
@@ -79,6 +86,20 @@ test("only ANC can request WebView audio after the Android runtime permission gr
   assert.match(MAIN_ACTIVITY, /onRequestPermissionsResult/);
   assert.match(MAIN_ACTIVITY, /request\.deny\(\)/);
   assert.doesNotMatch(MAIN_ACTIVITY, /RESOURCE_VIDEO_CAPTURE/);
+  assert.match(MAIN_ACTIVITY, /Enable it in Android Settings > Apps > HTML5 Offline Library > Permissions/);
+});
+
+test("Android emulator tests exercise microphone capture and Headline Harry boot", () => {
+  assert.match(ANDROID_SMOKE_TEST, /navigator\.mediaDevices\.getUserMedia\(\{audio: true\}\)/);
+  assert.match(ANDROID_SMOKE_TEST, /headline-harry\.invalid/);
+  assert.match(ANDROID_SMOKE_TEST, /DOSBox ready/);
+  assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
+  assert.match(ANDROID_WORKFLOW, /:app:connectedDebugAndroidTest/);
+  assert.match(README, /93\*\* HTML entrypoints/);
+  assert.match(README, /8,441\s+files/);
+  assert.match(README, /160,420,682 bytes uncompressed/);
+  assert.match(README, /ANC Studio microphone capture is opt-in/);
+  assert.doesNotMatch(README, /still denies microphone permission/);
 });
 
 test("unreviewed BIP-39 candidates are not added to the offline launcher", () => {

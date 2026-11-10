@@ -27,6 +27,9 @@ test("Android microphone access is ANC-only, opt-in, and runtime-permission gate
   assert.match(html, /id="offlineMicNotice"/);
   assert.match(html, /Microphone permission is requested only after you press Start/);
   assert.match(html, /hostname === 'app-anc-studio\.invalid'/);
+  assert.match(html, /Android Settings &gt; Apps &gt; HTML5 Offline Library &gt; Permissions/);
+  assert.match(html, /microphone permission is requested on demand/);
+  assert.doesNotMatch(html, /microphone permission is unavailable here/i);
   assert.doesNotMatch(html, /startBtn\.disabled\s*=\s*true|calibrateBtn\.disabled\s*=\s*true/);
   assert.match(html, /navigator\.mediaDevices\.getUserMedia/);
   assert.match(html, /startBtn\.addEventListener\('click',[\s\S]*?if \(!isRunning\) startEngine\(\)/);

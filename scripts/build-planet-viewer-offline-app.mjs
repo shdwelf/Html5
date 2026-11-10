@@ -22,11 +22,13 @@ const staticAssets = [
   "vendor/world/countries.geo.json",
   "vendor/world/README.md",
   "vendor/world/UNLICENSE",
+  "resources/country-viewer/bora-bora-place-register-2026-11-09.json",
+  "resources/country-viewer/licenses/ODbL-1.0.md",
   "icon.png",
 ];
 const manifest = `name = "Planet Viewer · 4DWM"
 source_code_url = "https://github.com/shdwelf/Html5"
-description = "Offline 3DEP terrain plates, five-city GNIS subset, country globe, and PC Globe index. The viewer is schematic, not a survey product."
+description = "Offline 3DEP terrain plates, a limited Gazetteer place-name index, country globe, and PC Globe index. The viewer is schematic, not a survey product."
 icon = "icon.png"
 `;
 
@@ -117,7 +119,11 @@ async function walk(directory) {
   }
 }
 await walk(appDir);
-for (const required of ["index.html", "manifest.toml", "webxdc.js", "vendor/world/countries.geo.json", "vendor/world/UNLICENSE"]) {
+for (const required of [
+  "index.html", "manifest.toml", "webxdc.js", "vendor/world/countries.geo.json", "vendor/world/UNLICENSE",
+  "resources/country-viewer/bora-bora-place-register-2026-11-09.json",
+  "resources/country-viewer/licenses/ODbL-1.0.md",
+]) {
   if (!appFiles.includes(required)) throw new Error(`Planet Viewer offline app is missing ${required}`);
 }
 console.log(`Staged public/apps/planet-viewer (${appFiles.length} files; ${modules.length} local modules).`);

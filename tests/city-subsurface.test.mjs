@@ -209,6 +209,7 @@ test("city gazetteer engine searches names, facets, boxes, and geocaches", async
   const lawrence = await import("../js/city-gazetteer-data-lawrence.js");
   const buffalo = await import("../js/city-gazetteer-data-buffalo.js");
   const toronto = await import("../js/city-gazetteer-data-toronto.js");
+  const polynesia = await import("../js/city-gazetteer-data-polynesia.js");
 
   const idx = makeGazetteerIndex(lawrence.GAZ_ROWS);
   const hits = searchName(idx, "lawrence", { limit: 5 });
@@ -228,6 +229,16 @@ test("city gazetteer engine searches names, facets, boxes, and geocaches", async
   assert.ok(path.length >= 0); // PATH is a corridor/node, not necessarily a gazetteer row
   const firstPost = searchName(torontoIdx, "First Post Office", { limit: 5 });
   assert.equal(firstPost[0]?.fclass, "Geocache");
+
+  const placeOnlyIdx = makeGazetteerIndex(polynesia.GAZ_ROWS);
+  const boraBora = searchName(placeOnlyIdx, "Bora Bora", { limit: 5 });
+  assert.equal(boraBora[0]?.fclass, "Locality");
+  assert.equal(boraBora[0]?.county, "French Polynesia");
+  assert.deepEqual([boraBora[0]?.lat, boraBora[0]?.lon], [null, null], "name-only entries never invent a point");
+  assert.equal(searchBox(placeOnlyIdx, { lat0: -90, lat1: 90, lon0: -180, lon1: 180 }).length, 0,
+    "missing coordinates never match spatial boxes via null-to-zero coercion");
+  assert.equal(searchPoint(placeOnlyIdx, 0, 0, { radiusKm: 20_000 }).length, 0,
+    "missing coordinates never become a point at 0,0");
 });
 
 test("California keeps curated rows separate from its per-ID GNIS extract", async () => {

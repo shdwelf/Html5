@@ -144,7 +144,9 @@ public final class MainActivity extends Activity {
         webView.loadUrl(OfflineAssetWebViewClient.HOME_URL);
     }
 
-    private void handleWebPermissionRequest(PermissionRequest request) {
+    // Package-private so the Android instrumentation suite can exercise the
+    // same WebView permission policy with deterministic PermissionRequest fakes.
+    void handleWebPermissionRequest(PermissionRequest request) {
         if (request == null || !isAllowedAncAudioRequest(request)) {
             if (request != null) request.deny();
             return;
@@ -203,6 +205,11 @@ public final class MainActivity extends Activity {
             request.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
         } else {
             request.deny();
+            if (!granted) {
+                Toast.makeText(this,
+                        "Microphone permission was not granted. Enable it in Android Settings > Apps > HTML5 Offline Library > Permissions, then retry.",
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 

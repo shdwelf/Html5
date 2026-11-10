@@ -87,6 +87,17 @@ jobs:
           ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
           ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
 
+      - name: Run Android WebView permission and Headline Harry smoke tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: Pixel_2
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: cd apps/html5-offline-launcher && gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
+
       - name: Report APK size and SHA-256
         shell: bash
         run: |

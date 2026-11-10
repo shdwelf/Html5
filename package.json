@@ -69,7 +69,8 @@
     "build:unit-cad": "node tools/build_unit_cad.mjs --emit --out-dir cad/out",
     "check:unit-cad": "node tools/build_unit_cad.mjs --check",
     "build:xdc-wars": "node tools/build_xdc_wars.mjs",
-    "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-xdc.mjs",
+    "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-iso-crosswalk.mjs && node scripts/build-country-viewer-iana-cctlds.mjs && node scripts/build-country-viewer-xdc.mjs",
+    "check:country-viewer-crosswalk": "node scripts/build-country-viewer-iso-crosswalk.mjs --check && node scripts/build-country-viewer-iana-cctlds.mjs --check",
     "build:keyviewer": "node scripts/build-keyviewer-xdc.mjs"
   },
   "dependencies": {

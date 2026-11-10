@@ -205,6 +205,7 @@ export const searchPoint = (idx, lat, lon, opts = {}) => {
   for (const e of idx.entries) {
     if (!facetMatch(e, facet)) continue;
     if (classes && !classes.has(e.fclass)) continue;
+    if (!Number.isFinite(e.lat) || !Number.isFinite(e.lon)) continue;
     const d = haversineKm(lat, lon, e.lat, e.lon);
     if (d <= radiusKm) hits.push({ e, d });
   }
@@ -220,6 +221,7 @@ export const searchBox = (idx, box, opts = {}) => {
   for (const e of idx.entries) {
     if (!facetMatch(e, facet)) continue;
     if (classes && !classes.has(e.fclass)) continue;
+    if (!Number.isFinite(e.lat) || !Number.isFinite(e.lon)) continue;
     if (e.lat >= lat0 && e.lat <= lat1 && e.lon >= lon0 && e.lon <= lon1) hits.push(e);
   }
   hits.sort((a, b) => a.name.localeCompare(b.name));
