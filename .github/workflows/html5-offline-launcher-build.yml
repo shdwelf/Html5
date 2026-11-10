@@ -108,7 +108,7 @@ jobs:
             fi
 
       - name: Surface Android instrumentation failure details
-        if: steps.android-smoke-tests.outcome == 'failure'
+        if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
         shell: bash
         run: |
           python3 - <<'PY'
