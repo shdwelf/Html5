@@ -106,10 +106,17 @@ jobs:
           import pathlib
           import sys
 
-          lines = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace").splitlines()[-40:]
-          for line in lines:
-              safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-              print(f"::error title=Private-APK-Gradle::{safe[:2000]}")
+          lines = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace").splitlines()
+          markers = ("failure: build failed", "what went wrong:", "execution failed for task", "caused by:", "could not")
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line.lower() for marker in markers):
+                  selected.extend(lines[max(0, index - 2):min(len(lines), index + 6)])
+          if not selected:
+              selected = lines[-60:]
+          details = "\n".join(dict.fromkeys(selected))[-6000:]
+          safe = details.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Private-APK-Gradle::{safe}")
           PY
             exit "$status"
           fi
