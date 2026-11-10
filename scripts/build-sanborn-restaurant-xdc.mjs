@@ -18,7 +18,15 @@ const webxdc = `// Offline Webxdc compatibility shim. The study has no network o
 await rm(app, { recursive: true, force: true });
 await mkdir(path.join(app, "vendor"), { recursive: true });
 await mkdir(path.join(app, "js"), { recursive: true });
-await cp(path.join(root, "sanborn-restaurant-4dwm.html"), path.join(app, "index.html"));
+let html = await readFile(path.join(root, "sanborn-restaurant-4dwm.html"), "utf8");
+const inlineModule = '<script type="module">\nimport * as THREE from "./vendor/three.module.min.js";';
+if (!html.includes(inlineModule)) throw new Error("Sanborn viewer module insertion point is missing.");
+html = html.replace(
+  inlineModule,
+  '<script type="module" src="./js/4dwm-window-manager.js"></script>\n' + inlineModule,
+);
+await writeFile(path.join(app, "index.html"), html);
+await cp(path.join(root, "public/apps/_shared/4dwm-window-manager.js"), path.join(app, "js/4dwm-window-manager.js"));
 await cp(path.join(root, "js/sanborn-restaurant-manifest.js"), path.join(app, "js/sanborn-restaurant-manifest.js"));
 await cp(path.join(root, "sanborn-restaurant.wrl"), path.join(app, "sanborn-restaurant.wrl"));
 await cp(path.join(root, "vendor/three.module.min.js"), path.join(app, "vendor/three.module.min.js"));
@@ -27,7 +35,7 @@ await cp(path.join(root, "research/jim-sanborn-source-check.md"), path.join(app,
 await writeFile(path.join(app, "manifest.toml"), manifest);
 await writeFile(path.join(app, "webxdc.js"), webxdc);
 
-const files = ["index.html", "sanborn-restaurant.wrl", "research-source-check.md", "manifest.toml", "webxdc.js", "js/sanborn-restaurant-manifest.js", "vendor/OrbitControls.js", "vendor/three.module.min.js"];
+const files = ["index.html", "sanborn-restaurant.wrl", "research-source-check.md", "manifest.toml", "webxdc.js", "js/4dwm-window-manager.js", "js/sanborn-restaurant-manifest.js", "vendor/OrbitControls.js", "vendor/three.module.min.js"];
 const archive = {};
 for (const file of files) archive[file] = [new Uint8Array(await readFile(path.join(app, file))), { level: 9, mtime }];
 const bytes = zipSync(archive, { level: 9, mtime });
