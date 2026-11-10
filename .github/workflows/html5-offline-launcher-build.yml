@@ -2,7 +2,7 @@ name: HTML5 Offline Library — Android debug APK
 
 on:
   push:
-    branches: ['arena/58dd5623-html5']
+    branches: ['main']
     paths:
       - 'apps/html5-offline-launcher/**'
       - 'public/apps/**'
@@ -68,18 +68,21 @@ jobs:
       - name: Test launcher inventory and offline policy
         run: node --test tests/html5-offline-launcher.test.mjs
 
-      - name: Validate app inventory
-        run: node scripts/build-html5-offline-launcher-assets.mjs --check
+      - name: Validate public app inventory
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
 
-      - name: Build debug APK
+      - name: Validate private app allowlist
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+
+      - name: Build public debug APK
         working-directory: apps/html5-offline-launcher
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assemblePublicDebug
 
-      - name: Verify packaged microphone and offline permissions
+      - name: Verify public APK permissions
         shell: bash
         run: |
           set -euo pipefail
-          apk=apps/html5-offline-launcher/app/build/outputs/apk/debug/app-debug.apk
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
           aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
           permissions="$("$aapt" dump permissions "$apk")"
           printf '%s\n' "$permissions"
@@ -87,6 +90,68 @@ jobs:
           grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
           ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
           ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+
+      - name: Build curated private debug APK (do not upload)
+        working-directory: apps/html5-offline-launcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/private-apk-build.log"
+          set +e
+          gradle --no-daemon --stacktrace :app:assemblePrivateDebug > "$log" 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            python3 - "$log" <<'PY'
+          import pathlib
+          import sys
+
+          lines = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace").splitlines()
+          markers = ("failure: build failed", "what went wrong:", "execution failed for task", "caused by:", "could not")
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line.lower() for marker in markers):
+                  selected.extend(lines[max(0, index - 2):min(len(lines), index + 6)])
+          if not selected:
+              selected = lines[-60:]
+          details = "\n".join(dict.fromkeys(selected))[-6000:]
+          safe = details.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Private-APK-Gradle::{safe}")
+          PY
+            exit "$status"
+          fi
+          tail -n 12 "$log"
+
+      - name: Verify private APK allowlist and reduced permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/private/debug/app-private-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          ! grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          ! grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
+          ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+          python3 - "$apk" <<'PY'
+          import json
+          import sys
+          import zipfile
+
+          apk_path = sys.argv[1]
+          expected = ["helios-observatory", "prime-viewer"]
+          with zipfile.ZipFile(apk_path) as apk:
+              catalog = json.loads(apk.read("assets/launcher/catalog.json"))
+              slugs = sorted(app["slug"] for app in catalog["apps"])
+              roots = sorted({
+                  name.split("/")[2]
+                  for name in apk.namelist()
+                  if name.startswith("assets/apps/") and len(name.split("/")) > 3
+              })
+              if slugs != expected or roots != expected:
+                  raise SystemExit(f"Unexpected private APK app set: catalog={slugs}, assets={roots}")
+          print("Private APK contains only the two allowlisted apps; it will not be uploaded.")
+          PY
 
       - name: Install PulseAudio runtime for Android emulator microphone tests
         shell: bash
@@ -120,7 +185,7 @@ jobs:
           pre-emulator-launch-script: >-
             { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
-            gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
+            gradle --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
@@ -141,10 +206,13 @@ jobs:
                   continue
               for case in root.iter("testcase"):
                   for result in list(case.findall("failure")) + list(case.findall("error")):
-                      detail = " ".join(part.strip() for part in [result.get("message", ""), *result.itertext()] if part and part.strip())
-                      detail = re.sub(r"\s+", " ", detail).strip()
-                      name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
-                      failures.append(f"{name}: {detail[:3000]}")
+                  attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
+                  text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
+                  detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
+                  if not detail:
+                      detail = "failure element has no attributes or text"
+                  name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
+                  failures.append(f"{name}: {detail[:4000]}")
 
           if failures:
               for failure in failures:
@@ -156,10 +224,12 @@ jobs:
 
           prelaunch_path = "apps/html5-offline-launcher/app/build/emulator-prelaunch.log"
           if os.path.isfile(prelaunch_path):
-              prelaunch_lines = open(prelaunch_path, encoding="utf-8", errors="replace").read().splitlines()[-12:]
-              for line in prelaunch_lines:
-                  safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-                  print(f"::error title=Android-emulator-prelaunch::{safe[:1000]}")
+              prelaunch_lines = open(prelaunch_path, encoding="utf-8", errors="replace").read().splitlines()
+              relevant = [line for line in prelaunch_lines if re.search(r"(?i)error|fail|pulse|source|audio|kvm|emulator", line)]
+              if relevant:
+                  message = "\n".join(relevant[-10:])
+                  safe = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::error title=Android-emulator-prelaunch::{safe[:5000]}")
           else:
               print(f"::error title=Android-emulator-prelaunch::Pre-launch diagnostics were not written: {prelaunch_path}")
 
@@ -167,26 +237,26 @@ jobs:
           if not os.path.isfile(log_path):
               print(f"::error title=Android-instrumentation-log::Gradle log file is missing: {log_path}")
           try:
-              lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()[-25:]
-          except OSError:
-              lines = []
-          for line in lines:
-              safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-              print(f"::error title=Android-instrumentation-log::{safe[:1000]}")
+              lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()
+          except OSError as error:
+              lines = [f"Could not read Gradle log: {error}"]
+          message = "\n".join(lines[-80:]) if lines else f"Gradle log exists but is empty ({os.path.getsize(log_path)} bytes)"
+          safe = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Android-instrumentation-log::{safe[-10000:]}")
           PY
 
-      - name: Report APK size and SHA-256
+      - name: Report public APK size and SHA-256
         shell: bash
         run: |
           set -euo pipefail
-          apk=apps/html5-offline-launcher/app/build/outputs/apk/debug/app-debug.apk
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
           test -s "$apk"
           ls -lh "$apk"
           sha256sum "$apk"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: html5-offline-launcher-debug-apk
-          path: apps/html5-offline-launcher/app/build/outputs/apk/debug/app-debug.apk
+          name: html5-offline-launcher-public-debug-apk
+          path: apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
           if-no-files-found: error
           retention-days: 30

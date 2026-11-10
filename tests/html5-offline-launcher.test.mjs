@@ -7,6 +7,7 @@ import { buildCatalog, discoverApps } from "../scripts/build-html5-offline-launc
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
 const PROJECT = join(ROOT, "apps", "html5-offline-launcher");
 const MANIFEST = readFileSync(join(PROJECT, "app/src/main/AndroidManifest.xml"), "utf8");
+const PRIVATE_MANIFEST = readFileSync(join(PROJECT, "app/src/private/AndroidManifest.xml"), "utf8");
 const GRADLE = readFileSync(join(PROJECT, "app/build.gradle"), "utf8");
 const CLIENT = readFileSync(
   join(PROJECT, "app/src/main/java/org/arena/html5launcher/OfflineAssetWebViewClient.java"),
@@ -43,6 +44,19 @@ test("catalog includes every current HTML entrypoint and no data-only sibling", 
   assert.ok(expectedSlugs.includes("helios-observatory"));
   assert.ok(expectedSlugs.includes("prime-viewer"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
+});
+
+test("private Android profile contains only its fixed two-app allowlist", () => {
+  const catalog = buildCatalog("private");
+  assert.deepEqual(catalog.map((app) => app.slug).sort(), ["helios-observatory", "prime-viewer"]);
+  assert.equal(new Set(catalog.map((app) => app.host)).size, 2);
+  assert.match(GRADLE, /create\('public'\)/);
+  assert.match(GRADLE, /create\('private'\)/);
+  assert.match(GRADLE, /applicationIdSuffix '\.private'/);
+  assert.match(PRIVATE_MANIFEST, /HTML5 Offline Library \(Private\)/);
+  assert.match(PRIVATE_MANIFEST, /tools:replace="android:label"/);
+  assert.match(PRIVATE_MANIFEST, /android\.permission\.RECORD_AUDIO[\s\S]*?tools:node="remove"/);
+  assert.match(PRIVATE_MANIFEST, /android\.permission\.MODIFY_AUDIO_SETTINGS[\s\S]*?tools:node="remove"/);
 });
 
 test("every entrypoint has a unique synthetic origin, including case-only slug collisions", () => {
@@ -103,7 +117,15 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);
   assert.match(ANDROID_WORKFLOW, /pactl set-default-source ci_mic_bus\.monitor/);
   assert.match(ANDROID_WORKFLOW, /grep -Fq 'android\.permission\.MODIFY_AUDIO_SETTINGS'/);
-  assert.match(ANDROID_WORKFLOW, /:app:connectedDebugAndroidTest/);
+  assert.match(ANDROID_WORKFLOW, /:app:connectedPublicDebugAndroidTest/);
+  assert.match(ANDROID_WORKFLOW, /:app:assemblePrivateDebug/);
+  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-debug-apk/);
+  assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
+  assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps; it will not be uploaded/);
+  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions/upload-artifact@v4"));
+  assert.match(uploadStep, /path: apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.doesNotMatch(uploadStep, /private-debug\.apk/);
   assert.match(README, /93\*\* HTML entrypoints/);
   assert.match(README, /8,441\s+files/);
   assert.match(README, /160,420,682 bytes uncompressed/);

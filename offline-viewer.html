@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-app-root="./public/apps/" data-package-root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#09101d">
+  <meta name="description" content="A curated HTML5 offline viewer for locally bundled astronomy and prime-number apps.">
+  <title>HTML5 Offline Viewer</title>
+  <style>
+    :root{color-scheme:dark;--bg:#09101d;--panel:#111d30;--line:#253856;--ink:#ecf4ff;--muted:#a8bbd4;--accent:#80d9ff;--good:#8fe0b0}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(ellipse at 20% 0,#142b47 0,transparent 38rem),var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+    header,main,footer{width:min(1080px,calc(100% - 32px));margin:auto}
+    header{padding:42px 0 18px}
+    .eyebrow{color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.05;letter-spacing:-.04em;margin:.45rem 0 .8rem}
+    h2{font-size:1.1rem;margin:0}
+    p{margin:.6rem 0}
+    .lede,.muted{color:var(--muted)}
+    .lede{max-width:760px}
+    .notice{border:1px solid #31533f;background:#10241c;color:#d5f6df;border-radius:12px;padding:14px 16px;margin:18px 0}
+    .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0 14px}
+    input{min-width:min(100%,320px);border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#0d1727;color:var(--ink);font:inherit}
+    a{color:var(--accent)}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 12px;border:1px solid #39608b;border-radius:9px;background:#142a43;color:var(--ink);font-weight:700;text-decoration:none}
+    .button:hover,.button:focus-visible{background:#1a395c;outline:2px solid var(--accent);outline-offset:2px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+    .card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(150deg,#13223a,#0e1726);padding:18px;min-height:220px}
+    .card h2{font-size:1.2rem}
+    .card p{color:var(--muted);margin:0}
+    .badge{width:max-content;border:1px solid #31533f;border-radius:999px;padding:2px 9px;color:var(--good);font-size:.76rem;font-weight:700}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+    .empty{display:none;color:var(--muted);padding:16px 2px}
+    footer{padding:28px 0 42px;color:var(--muted);font-size:.9rem}
+    code{overflow-wrap:anywhere}
+    @media(max-width:540px){header{padding-top:28px}.toolbar{align-items:stretch}.toolbar input{width:100%}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">HTML5 · offline-ready · curated</div>
+    <h1>Offline Viewer</h1>
+    <p class="lede">Open the bundled astronomy and prime-number apps, or use the local WebXDC player for an archive you choose. The viewer and the two listed apps use local assets; this page does not fetch remote resources.</p>
+    <div class="notice"><strong>Offline note:</strong> keep the full folder together. For pages that use JavaScript modules, open the folder from a local static web server rather than <code>file://</code>. No account, network service, or user data is required.</div>
+  </header>
+  <main>
+    <div class="toolbar">
+      <label for="filter">Filter apps</label>
+      <input id="filter" type="search" autocomplete="off" placeholder="Search name or description">
+      <a class="button" href="./xdc-viewer.html">Open local XDC player</a>
+    </div>
+    <section class="grid" id="apps" aria-label="Available offline apps"></section>
+    <p class="empty" id="empty" role="status">No apps match that search.</p>
+  </main>
+  <footer>
+    <p>Public viewer: this curated catalogue contains only the two listed repository apps; no user-supplied files are bundled.</p>
+    <p>WebXDC archives can be downloaded from a card and opened with the local XDC player’s file picker.</p>
+  </footer>
+  <script>
+    const APPS = [
+      {
+        slug: "helios-observatory",
+        name: "Helios Observatory",
+        description: "Offline orrery, curated celestial catalogue, near-Earth object radar, meteor streams, and a companion Prime Viewer page.",
+        package: "helios-observatory.xdc"
+      },
+      {
+        slug: "prime-viewer",
+        name: "Prime Viewer",
+        description: "Offline prime atlas, residue-class views, counting statistics, gaps, factorizations, and integer inspection.",
+        package: "prime-viewer.xdc"
+      }
+    ];
+    const appRoot = document.documentElement.dataset.appRoot;
+    const packageRoot = document.documentElement.dataset.packageRoot;
+    const cards = document.getElementById("apps");
+    const filter = document.getElementById("filter");
+    const empty = document.getElementById("empty");
+
+    function render() {
+      const query = filter.value.trim().toLocaleLowerCase();
+      cards.replaceChildren();
+      let shown = 0;
+      for (const app of APPS) {
+        if (query && !`${app.name} ${app.description}`.toLocaleLowerCase().includes(query)) continue;
+        const card = document.createElement("article");
+        card.className = "card";
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = "Offline bundle";
+        const heading = document.createElement("h2");
+        heading.textContent = app.name;
+        const description = document.createElement("p");
+        description.textContent = app.description;
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        const launch = document.createElement("a");
+        launch.className = "button";
+        launch.href = `${appRoot}${encodeURIComponent(app.slug)}/index.html`;
+        launch.textContent = "Open HTML app";
+        const download = document.createElement("a");
+        download.className = "button";
+        download.href = `${packageRoot}${encodeURIComponent(app.package)}`;
+        download.setAttribute("download", "");
+        download.textContent = "Download WebXDC";
+        actions.append(launch, download);
+        card.append(badge, heading, description, actions);
+        cards.append(card);
+        shown += 1;
+      }
+      empty.style.display = shown ? "none" : "block";
+    }
+    filter.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>

@@ -33,33 +33,44 @@ Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
   remain unavailable, and the static external-resource scan is a warning aid,
   not a complete runtime-dependency audit.
 
-## Build and test the debug APK
+## Build and test the APK profiles
 
 Requirements: JDK 17, Gradle 8.7, Android SDK platform/build-tools 34, and Node
-22 (the Gradle asset-staging task runs the repository's Node builder).
+22 (the Gradle asset-staging tasks run the repository's Node builder).
 
 From the repository root:
 
 ```sh
-node scripts/build-html5-offline-launcher-assets.mjs --check
+node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
+node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
 cd apps/html5-offline-launcher
-gradle --no-daemon :app:assembleDebug
+gradle --no-daemon :app:assemblePublicDebug
+gradle --no-daemon :app:assemblePrivateDebug
 # With an API 34 Android emulator running:
-gradle --no-daemon :app:connectedDebugAndroidTest
+gradle --no-daemon :app:connectedPublicDebugAndroidTest
 ```
 
-The APK is written to:
+The **public** profile packages all 93 approved local HTML entrypoints. The
+**private** profile is a separate, reduced build with a fixed two-app allowlist
+(Helios Observatory and Prime Viewer), a distinct application ID, and no audio
+permissions. Both profiles omit network permission and are debug-signed for
+sideloading/review; neither is a Play Store release build.
+
+APK outputs:
 
 ```text
-app/build/outputs/apk/debug/app-debug.apk
+Public:  app/build/outputs/apk/public/debug/app-public-debug.apk
+Private: app/build/outputs/apk/private/debug/app-private-debug.apk
 ```
 
 The Android instrumentation suite exercises the ANC-only WebView permission
 policy, requests a real `getUserMedia` audio track, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
-track startup, not acoustic capture quality. CI uploads the debug APK as the
-`html5-offline-launcher-debug-apk` artifact. The sandbox itself has no local
-Java/Gradle/Android SDK, so a physical-device microphone check remains a useful
-follow-up. The APK is debug-signed for sideloading/review; it is not a Play
-Store release build.
+track startup, not acoustic capture quality. CI uploads only the public APK as
+the `html5-offline-launcher-public-debug-apk` artifact. It also builds and
+validates the private APK but does not retain or publish it as an artifact,
+because this repository is public. Build `privateDebug` locally and keep that
+APK in the authorized private delivery location. The sandbox itself has no
+local Java/Gradle/Android SDK, so a physical-device microphone check remains a
+useful follow-up.
