@@ -93,7 +93,27 @@ jobs:
 
       - name: Build curated private debug APK (do not upload)
         working-directory: apps/html5-offline-launcher
-        run: gradle --no-daemon --stacktrace :app:assemblePrivateDebug
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/private-apk-build.log"
+          set +e
+          gradle --no-daemon --stacktrace :app:assemblePrivateDebug > "$log" 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            python3 - "$log" <<'PY'
+          import pathlib
+          import sys
+
+          lines = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace").splitlines()[-40:]
+          for line in lines:
+              safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Private-APK-Gradle::{safe[:2000]}")
+          PY
+            exit "$status"
+          fi
+          tail -n 12 "$log"
 
       - name: Verify private APK allowlist and reduced permissions
         shell: bash
