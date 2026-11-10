@@ -105,15 +105,11 @@ jobs:
           working-directory: apps/html5-offline-launcher
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
-          script: |
-            log_file=app/build/android-webview-tests.log
-            if gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > "$log_file" 2>&1; then
-              cat "$log_file"
-            else
-              status=$?
-              cat "$log_file"
-              exit "$status"
-            fi
+          # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
+          pre-emulator-launch-script: >-
+            { echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; cat "$ANDROID_AVD_HOME/test.avd/config.ini" || true; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
+          script: >-
+            gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
@@ -146,6 +142,15 @@ jobs:
           else:
               report_names = ", ".join(os.path.relpath(report) for report in reports) or "none found"
               print(f"::error title=Android-instrumentation-failure::No JUnit failure details; XML reports: {report_names}")
+
+          prelaunch_path = "apps/html5-offline-launcher/app/build/emulator-prelaunch.log"
+          if os.path.isfile(prelaunch_path):
+              prelaunch_lines = open(prelaunch_path, encoding="utf-8", errors="replace").read().splitlines()[-12:]
+              for line in prelaunch_lines:
+                  safe = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::error title=Android-emulator-prelaunch::{safe[:1000]}")
+          else:
+              print(f"::error title=Android-emulator-prelaunch::Pre-launch diagnostics were not written: {prelaunch_path}")
 
           log_path = "apps/html5-offline-launcher/app/build/android-webview-tests.log"
           if not os.path.isfile(log_path):
