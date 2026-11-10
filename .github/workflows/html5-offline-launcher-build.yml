@@ -84,6 +84,7 @@ jobs:
           permissions="$("$aapt" dump permissions "$apk")"
           printf '%s\n' "$permissions"
           grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
           ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
           ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
 
@@ -107,7 +108,7 @@ jobs:
           disable-animations: true
           # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
           pre-emulator-launch-script: >-
-            { echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; cat "$ANDROID_AVD_HOME/test.avd/config.ini" || true; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
+            { echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
             gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
 

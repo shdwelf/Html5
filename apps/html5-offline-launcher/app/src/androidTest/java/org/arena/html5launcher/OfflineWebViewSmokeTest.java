@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @RunWith(AndroidJUnit4.class)
 public final class OfflineWebViewSmokeTest {
     private static final String ANC_URL = "https://app-anc-studio.invalid/index.html";
-    private static final String HARRY_URL = "https://headline-harry.invalid/index.html";
+    private static final String HARRY_URL = "https://app-headline-harry.invalid/index.html";
     private static final long PAGE_TIMEOUT_MS = 20_000;
     private static final long GAME_BOOT_TIMEOUT_MS = 60_000;
 

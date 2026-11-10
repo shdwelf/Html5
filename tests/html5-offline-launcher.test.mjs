@@ -54,6 +54,10 @@ test("every entrypoint has a unique synthetic origin, including case-only slug c
   const georgia = catalog.filter((app) => app.slug.toLowerCase() === "georgia-subsurface");
   assert.equal(georgia.length, 2);
   assert.notEqual(georgia[0].host, georgia[1].host);
+  assert.equal(
+    catalog.find((app) => app.slug === "headline-harry")?.host,
+    "app-headline-harry.invalid",
+  );
 });
 
 test("the bundled entrypoints have no direct remote resource tags; the launcher still flags blocked navigation", () => {
@@ -71,6 +75,7 @@ test("Android package has minSdk 24 and no network permission", () => {
   assert.match(GRADLE, /minSdk\s+24/);
   assert.match(GRADLE, /targetSdk\s+34/);
   assert.match(MANIFEST, /android\.permission\.RECORD_AUDIO/);
+  assert.match(MANIFEST, /android\.permission\.MODIFY_AUDIO_SETTINGS/);
   assert.doesNotMatch(MANIFEST, /android\.permission\.INTERNET/);
   assert.match(MANIFEST, /android:usesCleartextTraffic="false"/);
   assert.match(MANIFEST, /android:allowBackup="false"/);
@@ -91,9 +96,10 @@ test("only ANC can request WebView audio after the Android runtime permission gr
 
 test("Android emulator tests exercise microphone capture and Headline Harry boot", () => {
   assert.match(ANDROID_SMOKE_TEST, /navigator\.mediaDevices\.getUserMedia\(\{audio: true\}\)/);
-  assert.match(ANDROID_SMOKE_TEST, /headline-harry\.invalid/);
+  assert.match(ANDROID_SMOKE_TEST, /https:\/\/app-headline-harry\.invalid\/index\.html/);
   assert.match(ANDROID_SMOKE_TEST, /DOSBox ready/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
+  assert.match(ANDROID_WORKFLOW, /grep -Fq 'android\.permission\.MODIFY_AUDIO_SETTINGS'/);
   assert.match(ANDROID_WORKFLOW, /:app:connectedDebugAndroidTest/);
   assert.match(README, /93\*\* HTML entrypoints/);
   assert.match(README, /8,441\s+files/);

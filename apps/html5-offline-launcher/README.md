@@ -24,8 +24,10 @@ Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
 - ANC Studio microphone capture is opt-in. Only its dedicated app origin may
   request audio, and only after the user starts ANC or Smart Calibrate. The
   WebView permission is granted only after Android's `RECORD_AUDIO` runtime
-  permission is granted; all other apps and non-audio WebView resources are
-  denied. Captured audio stays on-device and is not saved or transmitted. If
+  permission is granted. The APK also declares Android's normal
+  `MODIFY_AUDIO_SETTINGS` permission, which WebView audio capture needs for
+  audio routing; all other apps and non-audio WebView resources are denied.
+  Captured audio stays on-device and is not saved or transmitted. If
   permission is denied, enable Microphone under Android Settings → Apps → HTML5
   Offline Library → Permissions, then retry. Other browser-only features may
   remain unavailable, and the static external-resource scan is a warning aid,
