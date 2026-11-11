@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the checked-in Sneakers js-dos payload in native DOSBox under Xvfb.
-# Writes DOSBox diagnostics, password/menu screenshots, and OCR output to SNEAKERS_SMOKE_DIR.
+# Writes DOSBox diagnostics, startup/menu screenshots, and OCR output to SNEAKERS_SMOKE_DIR.
 set -eEuo pipefail
 trap 'code=$?; echo "::error title=Sneakers smoke failure::line $LINENO: $BASH_COMMAND (exit $code)"; exit "$code"' ERR
 
@@ -86,10 +86,11 @@ emulator_pid=$!
   printf '%s\n' "$window" > "$WORK_DIR/window.id"
   xdotool windowfocus --sync "$window" 2>/dev/null || true
 
-  # Fixed sleeps made the test race DOSBox/game startup on slower CI runners:
-  # the window could exist while its frame was still blank, so XTest typed into
-  # a screen that had not reached the password prompt. Poll the actual DOSBox
-  # frame and OCR state transitions before sending any input.
+  # Fixed sleeps raced DOSBox/game startup: a window could exist while its
+  # frame was blank. Poll for a real password prompt or the press-kit menu
+  # before sending any keys. The checked-in reconstruction has booted directly
+  # to the menu in CI, so handle both observed startup states and report which
+  # state was reached instead of typing a password blindly.
   capture_screen() {
     local stem="$1"
     if ! import -window "$window" "$stem.png" 2>/dev/null; then return 1; fi
@@ -101,45 +102,60 @@ emulator_pid=$!
     SCREEN_TEXT="$(tr '[:upper:]' '[:lower:]' < "$stem.txt" | tr -cd '[:alnum:]\n')"
   }
 
-  wait_for_password_prompt() {
+  is_press_kit_menu() {
+    grep -q 'sneakerspresskit' <<<"$SCREEN_TEXT" \
+      && grep -Eq 'castbiographies|plotsynopsis|productionnotes|photogallery|printpressmaterials|crosswordvertical' <<<"$SCREEN_TEXT" \
+      && grep -q 'exit' <<<"$SCREEN_TEXT"
+  }
+
+  wait_for_startup_state() {
     local deadline=$((SECONDS + 45))
     while (( SECONDS < deadline )); do
-      if capture_screen "$WORK_DIR/before-password" \
-        && grep -Eq 'accesscode|entercode|securitysystem' <<<"$SCREEN_TEXT"; then
-        return 0
+      if capture_screen "$WORK_DIR/startup"; then
+        if is_press_kit_menu; then
+          printf '%s\n' menu > "$WORK_DIR/startup-state.txt"
+          return 0
+        fi
+        if grep -Eq 'accesscode|entercode|securitysystem' <<<"$SCREEN_TEXT"; then
+          printf '%s\n' password-prompt > "$WORK_DIR/startup-state.txt"
+          return 0
+        fi
       fi
       if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
       sleep 1
     done
-    echo "Timed out waiting for the Sneakers password prompt; last OCR: $(tr '\n' ' ' < "$WORK_DIR/before-password.txt" 2>/dev/null || true)" >&2
+    echo "Timed out waiting for a Sneakers password prompt or press-kit menu; last OCR: $(tr '\n' ' ' < "$WORK_DIR/startup.txt" 2>/dev/null || true)" >&2
     return 1
   }
 
   wait_for_press_kit_menu() {
     local deadline=$((SECONDS + 45))
     while (( SECONDS < deadline )); do
-      if capture_screen "$WORK_DIR/after-password" \
-        && grep -q 'sneakerspresskit' <<<"$SCREEN_TEXT" \
-        && grep -Eq 'castbiographies|plotsynopsis|productionnotes|photogallery|printpressmaterials|crosswordvertical' <<<"$SCREEN_TEXT" \
-        && grep -q 'exit' <<<"$SCREEN_TEXT"; then
+      if capture_screen "$WORK_DIR/menu" && is_press_kit_menu; then
         return 0
       fi
       if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
       sleep 1
     done
-    echo "Timed out waiting for the Sneakers press-kit menu; last OCR: $(tr '\n' ' ' < "$WORK_DIR/after-password.txt" 2>/dev/null || true)" >&2
+    echo "Timed out waiting for the Sneakers press-kit menu; last OCR: $(tr '\n' ' ' < "$WORK_DIR/menu.txt" 2>/dev/null || true)" >&2
     return 1
   }
 
-  if ! wait_for_password_prompt; then
-    echo "::error title=Sneakers DOSBox password prompt missing::window=$window colors=${SCREEN_COLORS:-unknown}"
+  if ! wait_for_startup_state; then
+    echo "::error title=Sneakers DOSBox startup screen missing::window=$window colors=${SCREEN_COLORS:-unknown}"
     exit 1
   fi
-  xdotool type --clearmodifiers --delay 45 'setec astronomy'
-  xdotool key Return
-  if ! wait_for_press_kit_menu; then
-    echo "::error title=Sneakers DOSBox press-kit menu missing::window=$window colors=${SCREEN_COLORS:-unknown}"
-    exit 1
+  startup_state="$(cat "$WORK_DIR/startup-state.txt")"
+  printf 'Observed Sneakers startup state: %s\n' "$startup_state"
+  if [[ "$startup_state" == password-prompt ]]; then
+    xdotool type --clearmodifiers --delay 45 'setec astronomy'
+    xdotool key Return
+    if ! wait_for_press_kit_menu; then
+      echo "::error title=Sneakers DOSBox press-kit menu missing after password::window=$window colors=${SCREEN_COLORS:-unknown}"
+      exit 1
+    fi
+  else
+    cp "$WORK_DIR/startup.png" "$WORK_DIR/menu.png"
   fi
   xdotool type --clearmodifiers '7'
   xdotool key Return
@@ -163,16 +179,17 @@ fi
 wait "$emulator_pid" 2>/dev/null || true
 emulator_pid=""
 
-test -s "$WORK_DIR/after-password.png"
-colors="$(identify -format '%k' "$WORK_DIR/after-password.png")"
-convert "$WORK_DIR/after-password.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$WORK_DIR/ocr.png"
+test -s "$WORK_DIR/menu.png"
+startup_state="$(cat "$WORK_DIR/startup-state.txt")"
+colors="$(identify -format '%k' "$WORK_DIR/menu.png")"
+convert "$WORK_DIR/menu.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$WORK_DIR/ocr.png"
 tesseract "$WORK_DIR/ocr.png" "$WORK_DIR/ocr" --psm 6 >/dev/null 2>&1
 normalized="$(tr '[:upper:]' '[:lower:]' < "$WORK_DIR/ocr.txt" | tr -cd '[:alnum:]\n')"
 printf '%s\n' '--- DOSBox screen OCR ---'
 cat "$WORK_DIR/ocr.txt"
 if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
   {
-    printf '%s\n' '### Sneakers DOSBox smoke test' '' "Screenshot colors: $colors" '' '```text'
+    printf '%s\n' '### Sneakers DOSBox smoke test' '' "Startup state: $startup_state" "Screenshot colors: $colors" '' '```text'
     cat "$WORK_DIR/ocr.txt"
     printf '%s\n' '```'
   } >> "$GITHUB_STEP_SUMMARY"
@@ -188,5 +205,5 @@ if ! grep -q 'sneakerspresskit' <<<"$normalized" \
   echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::window=$window colors=$colors OCR=$summary"
   exit 1
 fi
-printf 'DOSBox reached the Sneakers press-kit menu; screenshot has %s colors.\n' "$colors"
+printf 'DOSBox reached the Sneakers press-kit menu (startup state: %s); screenshot has %s colors.\n' "$startup_state" "$colors"
 cat "$WORK_DIR/dosbox.log"

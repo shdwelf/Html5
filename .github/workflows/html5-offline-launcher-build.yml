@@ -206,13 +206,13 @@ jobs:
                   continue
               for case in root.iter("testcase"):
                   for result in list(case.findall("failure")) + list(case.findall("error")):
-                  attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
-                  text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
-                  detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
-                  if not detail:
-                      detail = "failure element has no attributes or text"
-                  name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
-                  failures.append(f"{name}: {detail[:4000]}")
+                      attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
+                      text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
+                      detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
+                      if not detail:
+                          detail = "failure element has no attributes or text"
+                      name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
+                      failures.append(f"{name}: {detail[:4000]}")
 
           if failures:
               for failure in failures:
