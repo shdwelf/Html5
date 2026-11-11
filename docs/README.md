@@ -264,6 +264,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
 - [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
+- [keyhole-investor-ecosystem-2026-11-11.md](keyhole-investor-ecosystem-2026-11-11.md) — keyhole inc venture capital angel investors and lineage
 - [kromecorp-rodger-ramrod-casefile.md](kromecorp-rodger-ramrod-casefile.md) — kromecorp rodger ramrod casefile
 - [lantronix-uclinux-deep-dive-2026-10-08.md](lantronix-uclinux-deep-dive-2026-10-08.md) — lantronix uclinux deep dive 2026 10 08
 - [lawrence-kansas-subsurface.md](lawrence-kansas-subsurface.md) — lawrence kansas subsurface
