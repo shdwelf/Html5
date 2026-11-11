@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <title>PLANET VIEWER · 4DWM — USGS 3DEP terrain + GNIS</title>
-  <meta name="description" content="Offline USGS 3DEP terrain plates with wireframe, x-ray, VRML, labels and relief modes over an offline USGS GNIS gazetteer, in the socal-subsurface viewer idiom." />
+  <meta name="description" content="Offline USGS 3DEP terrain plates with local Cheyenne and SoCal place-name registers, five city Gazetteers, wireframe, x-ray, VRML and relief modes." />
   <link rel="stylesheet" href="./css/project-y-4dwm.css" />
   <link rel="stylesheet" href="./css/planet-viewer-4dwm.css" />
 </head>
@@ -54,12 +54,12 @@
 
   <aside class="panel panel-left" id="controlsPanel" aria-label="Viewer controls and checks">
     <section class="card">
-      <h2>Offline Gazetteer · five cities + Bora Bora</h2>
+      <h2>Offline Gazetteer · terrain plates + city names</h2>
       <form class="search-row" role="search" onsubmit="return false">
         <input type="search" id="searchBox" aria-label="Search offline Gazetteer place names" placeholder="Search place names (2+ letters)…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
-      <p class="tiny">Search covers five city datasets plus a name-only Bora Bora locality in French Polynesia (not a country; no coordinates included). Select a mapped result to jump to terrain or the globe. Only records labeled GNIS are official GNIS points; this is not address lookup.</p>
+      <p class="tiny">Search covers the Cheyenne/Pikes Peak register, the synced SoCal register for the San Gabriel plate, five city datasets, and a name-only Bora Bora locality in French Polynesia (not a country; no coordinates included). Select a mapped result to jump to terrain or the globe. GNIS identifiers are shown only where retained in the source register; this is not address lookup.</p>
       <div class="slider-row">
         <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
         <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
@@ -81,7 +81,7 @@
   <aside class="panel panel-right" id="inspectorPanel" aria-label="Inspector and source details">
     <section class="card">
       <h2 id="infoTitle">Inspector</h2>
-      <div id="infoBody"><p class="small">Click a GNIS marker. Every point carries its GNIS class and coordinates.</p></div>
+      <div id="infoBody"><p class="small">Click a Gazetteer marker to inspect its place-name record and source.</p></div>
     </section>
 
     <section class="card">

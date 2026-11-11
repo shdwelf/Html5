@@ -27,7 +27,7 @@ import { sync4dwmWindowAssets } from "./build-4dwm-window-assets.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_APPS = join(ROOT, "public", "apps");
-const EXPECTED_ENTRYPOINTS = 93;
+const EXPECTED_ENTRYPOINTS = 94;
 export const PRIVATE_APP_SLUGS = Object.freeze(["helios-observatory", "prime-viewer"]);
 const EXPECTED_PRIVATE_ENTRYPOINTS = PRIVATE_APP_SLUGS.length;
 const APP_SLUG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Packs the Keyspace Viewer (keyspace.html) as a standalone webxdc app.
+# Stages the Keyspace Viewer as a local offline app and packs its WebXDC.
 set -eu
 root="$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)"
 out="$root/keyspace.xdc"
@@ -10,6 +10,7 @@ cd "$root"
 mkdir -p "$tmp/css" "$tmp/js" "$tmp/wasm" "$tmp/vendor" "$tmp/config"
 cp keyspace.html "$tmp/index.html"
 cp webxdc.js "$tmp/"
+cp LICENSE "$tmp/"
 cp css/viewer.css "$tmp/css/"
 # every module viewer.js imports, plus the ones those import
 cp js/viewer.js js/bip39.js js/bip39-en.js js/engine.js js/spacefill.js \
@@ -19,7 +20,7 @@ cp js/viewer.js js/bip39.js js/bip39-en.js js/engine.js js/spacefill.js \
    js/hash.js js/secp256k1.js js/ed25519.js js/key-stats.js "$tmp/js/"
 cp wasm/entropy.wasm "$tmp/wasm/"
 cp vendor/three.module.min.js vendor/OrbitControls.js "$tmp/vendor/"
-cp vendor/THREE_LICENSE "$tmp/vendor/" 2>/dev/null || true
+cp vendor/THREE_LICENSE "$tmp/vendor/"
 cp icon.png "$tmp/icon.png"
 cp config/coins-top500.json "$tmp/config/"
 
@@ -27,6 +28,13 @@ cat > "$tmp/manifest.toml" <<'TOML'
 name = "Keyspace Viewer"
 source_code_url = "https://github.com/shdwelf/Html5"
 TOML
+
+# The offline catalogue opens the same self-contained app tree that ships in
+# keyspace.xdc; keep this generated copy rooted at index.html.
+app_dir="$root/public/apps/keyspace"
+rm -rf "$app_dir"
+mkdir -p "$(dirname "$app_dir")"
+cp -R "$tmp/." "$app_dir/"
 
 # zip updates an existing archive in place and otherwise leaves removed files
 # behind. Recreate it so the package is exactly the declared dependency set.

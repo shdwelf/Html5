@@ -3,12 +3,7 @@ import { OrbitControls } from "../vendor/OrbitControls.js";
 import { initPipWm } from "./project-y-4dwm.js";
 import { hypsometric, sampleDem } from "./cheyenne-dem.js";
 import { makeGazetteerIndex, searchName, searchBox } from "./city-gazetteer.js";
-import { GAZ_ROWS as atl } from "./city-gazetteer-data-atlanta.js";
-import { GAZ_ROWS as buf } from "./city-gazetteer-data-buffalo.js";
-import { GAZ_ROWS as ksc } from "./city-gazetteer-data-kansascity.js";
-import { GAZ_ROWS as law } from "./city-gazetteer-data-lawrence.js";
-import { GAZ_ROWS as tor } from "./city-gazetteer-data-toronto.js";
-import { GAZ_ROWS as polynesia } from "./city-gazetteer-data-polynesia.js";
+import { PLANET_GAZ_ROWS } from "./planet-viewer-gazetteer.js";
 import { demToVrml, downloadText } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
@@ -114,10 +109,11 @@ function buildTerrain(p) {
   contours.visible = false;
   g.add(contours);
 
-  // GNIS markers in the plate bbox.
+  // Gazetteer markers in the active plate bbox. The limit accommodates the
+  // complete synced SoCal register inside the compact Angeles frame.
   labelMarkers = [];
   const [bw, bs, be, bn] = p.grid.bbox;
-  const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 60 });
+  const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 120 });
   for (const r of inBox) {
     const m = sampleDem(p.grid, r.lon, r.lat);
     const x = ((r.lon - bw) / (be - bw) - 0.5) * w;
@@ -468,12 +464,12 @@ function renderLayers() {
   const host = $("layerList");
   if (!host) return;
   const [bw, bs, be, bn] = plate.grid.bbox;
-  const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 60 });
+  const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 120 });
   const rows = [
     ["surface", "Hypsometric surface", `${plate.grid.nx}×${plate.grid.ny}`],
     ["wire", "Wireframe lattice", mode === "wire" ? "on" : "off"],
     ["contour", "Contour bands (x-ray)", "6"],
-    ["gnis", "GNIS markers", String(inBox.length)],
+    ["gnis", "Gazetteer points", String(inBox.length)],
   ];
   host.innerHTML = rows
     .map(
@@ -652,7 +648,7 @@ function initWm() {
   const cards = [
     ...PLATE_ORDER.map((id) => ({ id: `plate:${id}`, ref: plates[id] })),
     { id: "src-dem", ref: { id: "src-dem", label: "USGS 3DEP control points (NAVD 88)", tier: "official", note: "Committed control sets, Shepard-interpolated; grain between samples is disclosed texture, not data. This sandbox cannot reach USGS endpoints, so no live fetch." } },
-    { id: "src-gnis", ref: { id: "src-gnis", label: "USGS GNIS offline subset (5 cities)", tier: "official", note: "ADL GSP-flavoured gazetteer ops reimplemented client-side; trigram similarity. Only packed cities have points — mountain plates legitimately show none." } },
+    { id: "src-gnis", ref: { id: "src-gnis", label: "USGS GNIS-oriented offline registers", tier: "official", note: "Cheyenne/Pikes Peak names plus the synced SoCal register and five city datasets; Gazetteer search is implemented client-side with trigram similarity. The source packs retain their own coordinates and verification levels; this is a limited place-name index, not a live or complete lookup." } },
   ];
   const byId = Object.fromEntries(cards.map((c) => [c.id, c.ref]));
   wm = initPipWm({
@@ -767,7 +763,7 @@ function bind() {
 }
 
 function init() {
-  gazIndex = makeGazetteerIndex([...atl, ...buf, ...ksc, ...law, ...tor, ...polynesia]);
+  gazIndex = makeGazetteerIndex(PLANET_GAZ_ROWS);
   plates = buildPlates(140, 100);
   globeData = globeMarkers(COUNTRIES);
   // Same bundled coastline file the Red October globe draws; failure is a
@@ -815,6 +811,7 @@ function init() {
     // Expose the active plate and actual Three.js draw counts on the canvas
     // for diagnostics and deterministic browser smoke tests.
     renderer.domElement.dataset.activePlate = globeOn ? "globe" : pcgOn ? "pcg" : plate.id;
+    renderer.domElement.dataset.cameraDistance = controls.getDistance().toFixed(3);
     renderer.domElement.dataset.drawCalls = String(renderer.info.render.calls);
     renderer.domElement.dataset.triangles = String(renderer.info.render.triangles);
     syncLabels();

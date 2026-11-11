@@ -12,9 +12,10 @@
  *   djvu-rs/   vendored MIT djvu-rs 0.42.0 decoder (from tools/wikiinajar,
  *              provenance in tools/wikiinajar/THIRD_PARTY_NOTICES.md)
  *   media/djvu-smoke.djvu   the Unlicense smoke fixture the demo page embeds
- *   docs.json  every root *.md + docs/*.md converted Markdown -> wikitext
- *              by tools/wikiinajar/md2wiki.mjs (one bundled page per file;
- *              the app loads them as virtual pages, Edit copies to local)
+ *   docs.json  approved root *.md + docs/*.md converted Markdown ->
+ *              wikitext by tools/wikiinajar/md2wiki.mjs; an explicit privacy
+ *              policy omits personal biography, family, and education-history
+ *              notes before the app or archive is written.
  *
  *   node scripts/build-wikiinajar-xdc.mjs   (or: npm run build:wikiinajar)
  */
@@ -37,9 +38,12 @@ const manifest = `name = "Wiki in a Jar"
 source_code_url = "https://github.com/shdwelf/Html5"
 `;
 
-// Documentation corpus: every root *.md + docs/*.md, one wiki page each.
+// Documentation corpus: approved root *.md + docs/*.md, one wiki page each.
 // Complete the privacy and corpus checks before clearing or replacing any output.
 const { buildDocs } = await import("../tools/wikiinajar/md2wiki.mjs");
+const { PUBLIC_CORPUS_EXCLUDED_SOURCES } = await import("../tools/wikiinajar/public-corpus-policy.mjs");
+const { findUnsafeCloudReferenceSources, findPrivateBackupPassageSources } = await import("../tools/wikiinajar/privacy-preflight.mjs");
+const excludedSources = new Set(PUBLIC_CORPUS_EXCLUDED_SOURCES);
 async function mdFiles(dir, prefix) {
   const names = (await readdir(path.join(root, dir), { withFileTypes: true }))
     .filter((e) => e.isFile() && e.name.endsWith(".md"))
@@ -50,22 +54,15 @@ async function mdFiles(dir, prefix) {
   })));
 }
 const appHtml = await readFile(path.join(root, "wikiinajar.html"), "utf8");
-const corpus = [...await mdFiles(".", ""), ...await mdFiles("docs", "docs/")];
-const privateGoogleLink = /https?:\/\/(?:docs|drive|sheets|forms)\.google\.com\/[^\s)<>"']*(?:\/d\/|\/folders\/|[?&]id=)[A-Za-z0-9_-]{20,}/i;
-const googleDriveIdContext = /(?:google\s+(?:drive|docs?|sheets?|forms?)|drive\s+(?:search|file|folder|item|copy|backup|link|document)|spreadsheet|(?:document|file|folder)\s*(?:id|identifier))/i;
+const allMarkdown = [...await mdFiles(".", ""), ...await mdFiles("docs", "docs/")];
+const corpus = allMarkdown.filter(({ source }) => !excludedSources.has(source));
+const excludedFromCorpus = allMarkdown.length - corpus.length;
 const privacyInputs = [...corpus, { source: "wikiinajar.html", markdown: appHtml }];
-const unsafeDocs = privacyInputs.filter(({ markdown }) => {
-  if (privateGoogleLink.test(markdown)) return true;
-  return markdown.split(/\r?\n/).some((line) => {
-    if (!googleDriveIdContext.test(line)) return false;
-    const tokens = line.match(/(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{28,44}(?![A-Za-z0-9_-])/g) ?? [];
-    return tokens.some((token) =>
-      !/^[0-9a-f]{28,44}$/i.test(token) && !/^[a-z0-9]+(?:-[a-z0-9]+)+$/i.test(token),
-    );
-  });
-}).map(({ source }) => source);
-if (unsafeDocs.length) {
-  throw new Error(`refusing to bundle possible private Google Drive identifiers/links from: ${unsafeDocs.join(", ")}`);
+const unsafeCloudDocs = findUnsafeCloudReferenceSources(privacyInputs);
+const unsafeBackupDocs = findPrivateBackupPassageSources(corpus);
+if (unsafeCloudDocs.length || unsafeBackupDocs.length) {
+  const sources = [...new Set([...unsafeCloudDocs, ...unsafeBackupDocs])];
+  throw new Error(`refusing to bundle private cloud/archive references from: ${sources.join(", ")}`);
 }
 const docPages = buildDocs(corpus);
 if (new Set(docPages.map((p) => p.title.toLowerCase())).size !== docPages.length) {
@@ -83,7 +80,7 @@ await writeFile(path.join(appDir, "docs.json"), JSON.stringify({
   count: docPages.length,
   pages: docPages,
 }));
-console.log(`Documentation: ${docPages.length} markdown files -> wiki pages`);
+console.log(`Documentation: ${docPages.length} approved Markdown files -> wiki pages (${excludedFromCorpus} direct sources excluded; ${PUBLIC_CORPUS_EXCLUDED_SOURCES.length} total policy paths including nested archive exclusions)`);
 
 // DjVu decoder (scalar + SIMD variants) so [[djvu:...]] renders inside the chat.
 async function copyTree(src, dst) {

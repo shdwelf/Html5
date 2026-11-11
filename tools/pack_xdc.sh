@@ -74,7 +74,10 @@ TOML
 # particular, Project Y needs its site data, six VRML exports, photos, and the
 # local three.js modules; the viewers need their offline Gazetteer and terrain
 # modules. Omitting any of these leaves tabs blank in a network-restricted host.
-cp -R css js wasm vendor img src docs assets data models "$tmp/"
+cp -R css js wasm vendor img src assets data models "$tmp/"
+# Apply the shared privacy policy and cloud-reference preflight to the docs tree;
+# SITE-K must not re-expose Markdown excluded from the public Wiki bundle.
+node "$root/tools/wikiinajar/copy-public-docs.mjs" "$tmp/docs"
 # Planet Viewer's shared orthographic projection lives with the Red October app.
 mkdir -p "$tmp/apps/red-october-command-viewer"
 cp apps/red-october-command-viewer/core.js "$tmp/apps/red-october-command-viewer/core.js"

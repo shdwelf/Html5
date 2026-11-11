@@ -75,8 +75,9 @@ export const POLITICS = {
 
 /* ----------------------------------------------------- gazetteer ------- */
 /* USGS GNIS (federal gazetteer, carto.nationalmap.gov geonames MapServer,
- * July 2026 refresh), queried 2026-10-02 over both plate envelopes. First
- * point of each MultiPoint geometry; feature class retained. */
+ * July 2026 refresh). The exact query date is unverified in retained source
+ * notes; do not infer 2026-10-02 from adjacent 3DEP/MRDS pulls. First point
+ * of each MultiPoint geometry; feature class retained. */
 
 export const GAZETTEER = {
   chey: [
@@ -729,4 +730,3 @@ export default {
   META, LAYERS, POLITICS, GAZETTEER, FACILITIES, CAMPS, MINES_ANGE, MINES_CRIPPLE,
   CORRIDORS, VIEWS, OFF_FRAME, allMines, mineSources,
 };
-

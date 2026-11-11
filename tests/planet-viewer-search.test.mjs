@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 
 import { buildPlates, PLATE_ORDER } from "../js/planet-viewer-data.js";
 import { locateGazetteerPoint } from "../js/planet-viewer-search.js";
+import { makeGazetteerIndex, searchName } from "../js/city-gazetteer.js";
 import { GAZ_ROWS as atlantaRows } from "../js/city-gazetteer-data-atlanta.js";
 import { GAZ_ROWS as lawrenceRows } from "../js/city-gazetteer-data-lawrence.js";
 import { GAZ_ROWS as polynesiaRows } from "../js/city-gazetteer-data-polynesia.js";
+import { PLANET_GAZ_ROWS } from "../js/planet-viewer-gazetteer.js";
 
 test("Gazetteer search routes an in-plate point to its terrain plate", () => {
   const plates = buildPlates(64, 48);
@@ -13,6 +15,21 @@ test("Gazetteer search routes an in-plate point to its terrain plate", () => {
   assert.ok(lawrence, "the packed Lawrence Gazetteer point exists");
   const result = locateGazetteerPoint(plates, PLATE_ORDER, { lat: lawrence[4], lon: lawrence[5] });
   assert.deepEqual(result, { kind: "terrain", plateId: "lawrence" });
+});
+
+test("Cheyenne, SoCal, and Lawrence Gazetteer entries route to their local terrain plates", () => {
+  const plates = buildPlates(64, 48);
+  const idx = makeGazetteerIndex(PLANET_GAZ_ROWS);
+  const expected = new Map([["Pikes Peak", "chey"], ["Mount Wilson", "ange"], ["Lawrence", "lawrence"]]);
+  for (const [name, plateId] of expected) {
+    const entry = searchName(idx, name, { limit: 10 }).find((hit) => hit.name === name);
+    assert.ok(entry, `missing local Gazetteer entry ${name}`);
+    assert.deepEqual(
+      locateGazetteerPoint(plates, PLATE_ORDER, { lat: entry.lat, lon: entry.lon }),
+      { kind: "terrain", plateId },
+      `${name} should focus its matching terrain plate`,
+    );
+  }
 });
 
 test("a valid point outside the DEM plates falls back to the globe", () => {

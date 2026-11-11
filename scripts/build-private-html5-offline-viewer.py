@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build an ignored, private copy of the curated HTML5 offline viewer.
 
-This allowlist intentionally contains only the repository's Helios Observatory
-and Prime Viewer apps. It never reads staged or user-supplied files.
+The allowlist contains only reviewed repository apps. It never reads staged or
+user-supplied files.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_BASE = ROOT / "google_drive"
 OUT_DIR = OUT_BASE / "html5-offline-viewer-private"
 ZIP_PATH = OUT_BASE / "html5-offline-viewer-private.zip"
-APP_SLUGS = ("helios-observatory", "prime-viewer")
+APP_SLUGS = ("helios-observatory", "prime-viewer", "wikiinajar", "keyspace")
 
 
 def digest(path: Path) -> str:
@@ -63,7 +63,7 @@ def copy_inputs() -> None:
 
     (OUT_DIR / "README.md").write_text(
         "# HTML5 Offline Viewer — private copy\n\n"
-        "This portable bundle contains the curated Helios Observatory and Prime Viewer apps, their WebXDC packages, and the local XDC player. It is a separate private delivery copy of the allowlisted repository software.\n\n"
+        "This portable bundle contains the reviewed Helios Observatory, Prime Viewer, Wiki in a Jar, and Keyspace Viewer apps, their WebXDC packages, and the local XDC player. It is a separate private delivery copy of the allowlisted repository software. Keyspace handles seed phrases locally; use dummy phrases only, never credentials for real funds.\n\n"
         "## Run offline\n\n"
         "Keep the folder structure intact. Serve this directory from a local static HTTP server and open `index.html`; the apps and their assets are bundled here and require no external service. JavaScript modules may be blocked when opened directly with a `file://` URL.\n\n"
         "Use **Open local XDC player** to load an additional `.xdc` from disk. The player keeps app updates in memory and does not upload the selected file.\n\n"
@@ -84,6 +84,8 @@ def copy_inputs() -> None:
         "contents": [
             {"slug": "helios-observatory", "name": "Helios Observatory", "source": "public/apps/helios-observatory", "package": "packages/helios-observatory.xdc"},
             {"slug": "prime-viewer", "name": "Prime Viewer", "source": "public/apps/prime-viewer", "package": "packages/prime-viewer.xdc"},
+            {"slug": "wikiinajar", "name": "Wiki in a Jar", "source": "public/apps/wikiinajar", "package": "packages/wikiinajar.xdc"},
+            {"slug": "keyspace", "name": "Keyspace Viewer", "source": "public/apps/keyspace", "package": "packages/keyspace.xdc"},
         ],
         "privacy": "Only allowlisted repository apps are included. No staged or user-supplied files are read or copied.",
         "files": file_records,

@@ -262,33 +262,39 @@ palette plus one of ten typography, layout, shape and pattern looks.
 It works in the bare HTML and inside the network-isolated `.xdc`; the
 credit chip is the only part that needs the network, and only if clicked.
 
-**Bundled documentation (rebuilt 2026-10-14, one page per `*.md`).** At
-build time the script also converts the repository's whole Markdown
-library — all 11 root `*.md` (the five `*-deep-dive.md` plus PRIME,
-KEYSPACE, ASTRONOMY, GODSEYE, the 4DWM review and the README) and all
-128 `docs/*.md` files, **139 pages / 1.44 M source chars** — into native
-wikitext with `tools/wikiinajar/md2wiki.mjs` and ships them as
-`docs.json` (1.54 MB, beside `index.html` in the bundle; the converter
-is dependency-free and deterministic). Conversion is structural, not
-verbatim: ATX/setext headings become `==` headings, `**`/`*` become
-`'''`/`''`, fences become space-indented pre blocks (including fences
-indented inside list items), pipe tables survive as pipe tables, tasks
-become ☐/☑ list items, and — the point of doing it — **links between
-corpus documents become real `[[wiki links]]`** (587 generated across
-the corpus), while non-corpus relative links keep their target as an
-inline-code annotation and remote links stay remote. Titles come from
-each file's first H1 (sanitised: `:` → ` -`, no `[]|`), disambiguated
-on collision; every converted page ends with a provenance footer naming
-its source file and `[[tags:documentation,…]]`. In the app the corpus
-is *virtual*: a **Docs tab** groups the pages by folder, Index/Tags/
-Search treat them as first-class pages, and nothing touches
-`localStorage` until a page is edited — saving materialises a local
-copy that shadows the bundle, deleting the copy reveals the bundled
-original, and deleting a bundled-only page writes a local tombstone.
-Rebuilding regenerates the bundled copies and never touches local
-pages. (The Java edition was deliberately *not* flooded with 139
-`.wiki` files — that was the unchosen scope; its documentation page
-remains §7's single hub.)
+**Bundled documentation (initial build notes from 2026-10-14; now privacy-gated).**
+The original build converted the repository's whole Markdown library —
+all 11 root `*.md` and 128 `docs/*.md` files, **139 pages / 1.44 M
+source chars** — into native wikitext with
+`tools/wikiinajar/md2wiki.mjs`. Conversion is structural, not verbatim:
+ATX/setext headings become `==` headings, `**`/`*` become `'''`/`''`,
+fences become space-indented pre blocks (including fences indented
+inside list items), pipe tables survive as pipe tables, tasks become
+☐/☑ list items, and links between corpus documents become real
+`[[wiki links]]`. Titles come from each file's first H1 (sanitised:
+`:` → ` -`, no `[]|`), disambiguated on collision; each page ends with
+a provenance footer and `[[tags:documentation,…]]`. In the app the
+corpus is *virtual*: a **Docs tab** groups pages by folder, Index/Tags/
+Search treat them as first-class pages, and nothing touches `localStorage`
+until a page is edited — saving materialises a local copy that shadows
+the bundle, deleting the copy reveals the bundled original, and deleting
+a bundled-only page writes a local tombstone. Rebuilding regenerates the
+bundled copies and never touches local pages.
+
+**Public-corpus privacy gate.** The current Wiki builder discovers 335 direct
+root/`docs/*.md` sources and omits 28 of those sources before conversion:
+personal biography/family/education notes, operational storage/retrieval
+notes, and conservative address-review candidates. The resulting
+public `docs.json` and `.xdc` each carry 307 pages. The same policy also
+excludes two nested Markdown files with private cloud-storage references from
+SITE-K's broader offline docs tree (30 exclusion paths total).
+`tools/wikiinajar/public-corpus-policy.mjs` is the source of truth; source
+Markdown remains unchanged. The preflight refuses Google Drive item URLs,
+Dropbox URLs, and contextual Drive-like identifiers before clearing existing
+outputs or copying SITE-K docs. Tests pin the exclusions, exact Wiki page
+count, and byte-for-byte agreement between staged and archived corpora. The
+Java edition remains a separate scope; its documentation page is still §7's
+hub.
 
 ## 7. The documentation page (both editions, one text)
 
@@ -339,14 +345,13 @@ deterministically (≈1.26 MB, 12 entries: `index.html`,
 offline single-file shape, the seed documentation, renderer semantics
 (headings/lists/links/namespaces/error strings/escape-first XSS,
 md2wiki `` `code` `` spans), tag & backlink collection, the bundle
-shape, the Java `.wiki` page and this document's cross-links. The
-documentation rebuild adds: md2wiki unit conversions, a corpus census
-asserting one unique-titled page per root/`docs/*.md` file with
-provenance footers and no surviving fences, a byte-level check that the
-`.xdc`'s `docs.json` matches the staged one, and a full render pass —
-all 139 converted pages go through the shipped renderer without
-producing script or undefined output (1.78 M HTML chars). Later
-passes added: R1 rejection checks and the Java-patch cross-reference,
+shape, the Java `.wiki` page and this document's cross-links. The initial documentation rebuild added md2wiki unit conversions, a
+139-page corpus census with provenance footers and no surviving fences,
+a byte-level check that the `.xdc`'s `docs.json` matches the staged one,
+and a full render pass. The current privacy-gated test asserts one page
+per approved source after 10 explicit exclusions, unique titles and
+footers, no Google Drive or Dropbox item links, and exact agreement
+between staged and archived `docs.json`. Later passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
 the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
 the R4 three-way merge algebra, and the R8 print/round-trip

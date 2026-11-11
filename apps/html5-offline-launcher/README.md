@@ -6,8 +6,8 @@ Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
 
 ## Scope and packaging
 
-- The current builder discovers **93** HTML entrypoints and packages **8,441
-  files** (160,420,682 bytes uncompressed) inside those app directories. It
+- The current builder discovers **94** HTML entrypoints and packages **8,475
+  files** (161,806,930 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
@@ -50,11 +50,12 @@ gradle --no-daemon :app:assemblePrivateDebug
 gradle --no-daemon :app:connectedPublicDebugAndroidTest
 ```
 
-The **public** profile packages all 93 approved local HTML entrypoints. The
-**private** profile is a separate, reduced build with a fixed two-app allowlist
-(Helios Observatory and Prime Viewer), a distinct application ID, and no audio
-permissions. Both profiles omit network permission and are debug-signed for
-sideloading/review; neither is a Play Store release build.
+The **public** profile packages all 94 approved local HTML entrypoints. The
+**private Android** profile is a separate, reduced build with a fixed two-app
+allowlist (Helios Observatory and Prime Viewer), a distinct application ID, and
+no audio permissions. This Android allowlist is separate from the four-app
+private browser bundle. Both Android profiles omit network permission and are
+debug-signed for sideloading/review; neither is a Play Store release build.
 
 APK outputs:
 

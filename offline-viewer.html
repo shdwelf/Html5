@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#09101d">
-  <meta name="description" content="A curated HTML5 offline viewer for locally bundled astronomy and prime-number apps.">
+  <meta name="description" content="A curated HTML5 offline viewer for locally bundled, self-contained HTML apps.">
   <title>HTML5 Offline Viewer</title>
   <style>
     :root{color-scheme:dark;--bg:#09101d;--panel:#111d30;--line:#253856;--ink:#ecf4ff;--muted:#a8bbd4;--accent:#80d9ff;--good:#8fe0b0}
@@ -41,8 +41,8 @@
   <header>
     <div class="eyebrow">HTML5 · offline-ready · curated</div>
     <h1>Offline Viewer</h1>
-    <p class="lede">Open the bundled astronomy and prime-number apps, or use the local WebXDC player for an archive you choose. The viewer and the two listed apps use local assets; this page does not fetch remote resources.</p>
-    <div class="notice"><strong>Offline note:</strong> keep the full folder together. For pages that use JavaScript modules, open the folder from a local static web server rather than <code>file://</code>. No account, network service, or user data is required.</div>
+    <p class="lede">Open the bundled astronomy, prime-number, Wiki in a Jar, and Keyspace apps, or use the local WebXDC player for an archive you choose. The viewer does not fetch remote resources; app dependencies are bundled locally.</p>
+    <div class="notice"><strong>Offline note:</strong> keep the full folder together. For pages that use JavaScript modules, open the folder from a local static web server rather than <code>file://</code>. Keyspace processes seed phrases locally: never enter a mnemonic or passphrase that protects real funds. Wiki pages sync only when the app is run inside a WebXDC host.</div>
   </header>
   <main>
     <div class="toolbar">
@@ -54,7 +54,7 @@
     <p class="empty" id="empty" role="status">No apps match that search.</p>
   </main>
   <footer>
-    <p>Public viewer: this curated catalogue contains only the two listed repository apps; no user-supplied files are bundled.</p>
+    <p>Public viewer: this catalogue contains only the repository apps listed here; no user-supplied files are bundled.</p>
     <p>WebXDC archives can be downloaded from a card and opened with the local XDC player’s file picker.</p>
   </footer>
   <script>
@@ -70,6 +70,18 @@
         name: "Prime Viewer",
         description: "Offline prime atlas, residue-class views, counting statistics, gaps, factorizations, and integer inspection.",
         package: "prime-viewer.xdc"
+      },
+      {
+        slug: "wikiinajar",
+        name: "Wiki in a Jar",
+        description: "Offline personal wiki with a locally bundled documentation corpus, image and DjVu support, and optional WebXDC chat sync.",
+        package: "wikiinajar.xdc"
+      },
+      {
+        slug: "keyspace",
+        name: "Keyspace Viewer",
+        description: "Local BIP-39 and keyspace visualizer. Use dummy phrases only; never enter a real wallet mnemonic.",
+        package: "keyspace.xdc"
       }
     ];
     const appRoot = document.documentElement.dataset.appRoot;
