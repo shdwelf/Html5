@@ -90,6 +90,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-66-2026-11-11.md](backlog-execution-round-66-2026-11-11.md) — CyberChef munitionsTshirt, Perl cookbook, v2 inactivation decoder, 3D lighting sync
 - [backlog-execution-round-67-2026-11-11.md](backlog-execution-round-67-2026-11-11.md) — ARPANET 1969/1971/1977 time-slice invariants, comms history layer, and backlog audit
 - [google-drive-html5-xdc-integration-research-2026-11-11.md](google-drive-html5-xdc-integration-research-2026-11-11.md) — Google Drive 15 HTML files and 53 XDC packages triage, deduplication, and offline integration
+- [backlog-execution-round-68-2026-11-11.md](backlog-execution-round-68-2026-11-11.md) — Backlog execution round 68: Drive archive consolidation, offline viewer tier validation, and test pass
 
 ## Research deep dives (the “ghirdra” line)
 
