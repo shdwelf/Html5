@@ -92,6 +92,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [google-drive-html5-xdc-integration-research-2026-11-11.md](google-drive-html5-xdc-integration-research-2026-11-11.md) — Google Drive 15 HTML files and 53 XDC packages triage, deduplication, and offline integration
 - [backlog-execution-round-68-2026-11-11.md](backlog-execution-round-68-2026-11-11.md) — Backlog execution round 68: Drive archive consolidation, offline viewer tier validation, and test pass
 - [backlog-execution-round-69-2026-11-11.md](backlog-execution-round-69-2026-11-11.md) — Backlog execution round 69: Open backlog audit, stream status reconciliation, and suite verification
+- [backlog-execution-round-70-2026-11-11.md](backlog-execution-round-70-2026-11-11.md) — Backlog execution round 70: Planet Viewer DEM zoom and OrbitControls inspection tuning
 
 ## Research deep dives (the “ghirdra” line)
 
