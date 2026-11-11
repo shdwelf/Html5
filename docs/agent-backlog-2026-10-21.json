@@ -525,8 +525,8 @@
       "line": 6,
       "stream": "S6",
       "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
-      "status": "partial",
-      "note": "round 18: FidoNet local nodelist/nodediff adapter and browser SHA-256 capture metadata shipped, but no historical nodelist was bundled or parsed into the Keyhole fixture, so the Denver evidence and independence status are unchanged; round 17: Keyhole Phase 0 evidence fixture/viewer/local importer shipped; TEXTFILES 303 compilation gives a 1994-1996 retrospective span but per-record independence from USBBS is unresolved; exact NodelistDB searches found no Denver match; distinct 818 Keyhole BBS remains rejected; round 16: USBBS134 (Jul 1995) repeats the Denver Keyhole BBS listing and gives first-listed code 123, but it is the same publication lineage—not independent corroboration; consumer historical-network viewer scoped in docs/historical-network-viewer-scope-2026-10-22.md; round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/keyhole-disambiguation-deep-dive-2026-10-22.md + docs/keyhole-investor-ecosystem-2026-11-11.md): Denver Keyhole BBS (USBBS 127/134) disambiguated; Keyhole Inc. founding team (Hanke, Ohazama, Aubin, Keslin, Bar-Zeev) and complete investor mapping (Angels: Brian McClendon, George T. Harber; Strategic: Sony, NVIDIA; IC/VC: In-Q-Tel / NIMA-NGA; Menlo Ventures Series B / Google acquisition) fully documented."
     },
     {
       "id": "T6.2",
