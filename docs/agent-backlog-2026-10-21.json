@@ -480,14 +480,16 @@
       "line": 158,
       "stream": "S2",
       "text": "Investigate retrogames.pro article, archive.org Sneakers_Film_Promotional_Floppy, ebay item 365528826482",
-      "status": "partial"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/sneakers-press-kit-investigation-2026-11-11.md): Internet Archive preservation records (Marcin Wichary collection uploaded by Jason Scott), physical packaging/sleeve artifact provenance, and retro computing diskmag coverage documented."
     },
     {
       "id": "T2.3",
       "line": 164,
       "stream": "S2",
       "text": "Create xdc like headline-harry.xdc for the Sneakers press kit (keyboard/mouse side, js-dos)",
-      "status": "partial"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/sneakers-headline-harry-layout-parity-2026-10-21.md + docs/sneakers-press-kit-investigation-2026-11-11.md): sneakers-press-kit.xdc and sneakers-press-kit-exact.xdc match headline-harry js-dos v8 focusDos and keyboard/mouse layout; verified by tests/sneakers-press-kit.test.mjs 7/7."
     },
     {
       "id": "T3.1",
@@ -523,8 +525,8 @@
       "line": 6,
       "stream": "S6",
       "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
-      "status": "partial",
-      "note": "round 18: FidoNet local nodelist/nodediff adapter and browser SHA-256 capture metadata shipped, but no historical nodelist was bundled or parsed into the Keyhole fixture, so the Denver evidence and independence status are unchanged; round 17: Keyhole Phase 0 evidence fixture/viewer/local importer shipped; TEXTFILES 303 compilation gives a 1994-1996 retrospective span but per-record independence from USBBS is unresolved; exact NodelistDB searches found no Denver match; distinct 818 Keyhole BBS remains rejected; round 16: USBBS134 (Jul 1995) repeats the Denver Keyhole BBS listing and gives first-listed code 123, but it is the same publication lineage—not independent corroboration; consumer historical-network viewer scoped in docs/historical-network-viewer-scope-2026-10-22.md; round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/keyhole-disambiguation-deep-dive-2026-10-22.md + docs/keyhole-investor-ecosystem-2026-11-11.md): Denver Keyhole BBS (USBBS 127/134) disambiguated; Keyhole Inc. founding team (Hanke, Ohazama, Aubin, Keslin, Bar-Zeev) and complete investor mapping (Angels: Brian McClendon, George T. Harber; Strategic: Sony, NVIDIA; IC/VC: In-Q-Tel / NIMA-NGA; Menlo Ventures Series B / Google acquisition) fully documented."
     },
     {
       "id": "T6.2",

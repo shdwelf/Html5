@@ -138,7 +138,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [ghidra-dos-disasm-plan.md](ghidra-dos-disasm-plan.md) — ghidra dos disasm plan
 - [ghidra-headless-benign-sample-methodology.md](ghidra-headless-benign-sample-methodology.md) — ghidra headless benign sample methodology
 - [jcreator-jdk-ghidra.md](jcreator-jdk-ghidra.md) — jcreator jdk ghidra
+- [sneakers-headline-harry-layout-parity-2026-10-21.md](sneakers-headline-harry-layout-parity-2026-10-21.md) — sneakers headline harry layout parity audit
 - [sneakers-original-ghidra-wasm-2026-10-18.md](sneakers-original-ghidra-wasm-2026-10-18.md) — sneakers original ghidra wasm 2026 10 18
+- [sneakers-press-kit-investigation-2026-11-11.md](sneakers-press-kit-investigation-2026-11-11.md) — sneakers 1992 electronic press kit archival and web investigation
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis
 - [spycraft-research.md](spycraft-research.md) — spycraft research
@@ -262,6 +264,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
 - [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
+- [keyhole-investor-ecosystem-2026-11-11.md](keyhole-investor-ecosystem-2026-11-11.md) — keyhole inc venture capital angel investors and lineage
 - [kromecorp-rodger-ramrod-casefile.md](kromecorp-rodger-ramrod-casefile.md) — kromecorp rodger ramrod casefile
 - [lantronix-uclinux-deep-dive-2026-10-08.md](lantronix-uclinux-deep-dive-2026-10-08.md) — lantronix uclinux deep dive 2026 10 08
 - [lawrence-kansas-subsurface.md](lawrence-kansas-subsurface.md) — lawrence kansas subsurface
