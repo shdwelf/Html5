@@ -125,7 +125,12 @@ if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
     printf '%s\n' '```'
   } >> "$GITHUB_STEP_SUMMARY"
 fi
-if ! grep -q 'sneakerspresskit' <<<"$normalized" || ! grep -q 'select' <<<"$normalized" || ! grep -q 'exit' <<<"$normalized"; then
+# Tesseract sometimes drops the final characters of the selection prompt even
+# when the menu is visibly present. Require the title, a real menu entry, and
+# the Exit item instead of depending on an exact OCR reading of "Select".
+if ! grep -q 'sneakerspresskit' <<<"$normalized" \
+  || ! grep -Eq 'castbiographies|plotsynopsis|productionnotes|photogallery|printpressmaterials|crosswordvertical' <<<"$normalized" \
+  || ! grep -q 'exit' <<<"$normalized"; then
   summary="$(tr '\n' ' ' < "$WORK_DIR/ocr.txt")"
   window="$(cat "$WORK_DIR/window.id" 2>/dev/null || true)"
   echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::window=$window colors=$colors OCR=$summary"
