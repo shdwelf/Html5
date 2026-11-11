@@ -301,6 +301,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [sgreeran-resume-chronology.md](sgreeran-resume-chronology.md) — sgreeran resume chronology
 - [sierra-shadow-president-sweep-2026-10-21.md](sierra-shadow-president-sweep-2026-10-21.md) — sierra shadow president sweep 2026 10 21
 - [simgirls-disassembly-research.md](simgirls-disassembly-research.md) — simgirls disassembly research
+- [sim-lock-research-2026-10-23.md](sim-lock-research-2026-10-23.md) — sim lock research primary law and regulatory timeline
+- [imei-sim-lock-lnp-metasearch-research-2026-11-11.md](imei-sim-lock-lnp-metasearch-research-2026-11-11.md) — mobile device identifier imei sim network unlock lnp and metasearch research
 - [size-coding-256b-notes.md](size-coding-256b-notes.md) — size coding 256b notes
 - [source-check-2026-09-28.md](source-check-2026-09-28.md) — source check 2026 09 28
 - [source-check-2026-09-29-vincennes.md](source-check-2026-09-29-vincennes.md) — source check 2026 09 29 vincennes
