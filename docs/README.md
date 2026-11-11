@@ -87,6 +87,11 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-63-2026-11-05.md](backlog-execution-round-63-2026-11-05.md) — Android/QEMU, XPort Pro, SDR, and backlog research
 - [backlog-execution-round-64-2026-11-07.md](backlog-execution-round-64-2026-11-07.md) — Zangi VPN tunneling, NanoProxy comparison, and authorized Z-Library/IPFS research
 - [backlog-execution-round-65-2026-11-07.md](backlog-execution-round-65-2026-11-07.md) — ACE distance-history fix, CyberChef ElGamal demo, keyservers, AGE/PGPony, and WideBand review
+- [backlog-execution-round-66-2026-11-11.md](backlog-execution-round-66-2026-11-11.md) — CyberChef munitionsTshirt, Perl cookbook, v2 inactivation decoder, 3D lighting sync
+- [backlog-execution-round-67-2026-11-11.md](backlog-execution-round-67-2026-11-11.md) — ARPANET 1969/1971/1977 time-slice invariants, comms history layer, and backlog audit
+- [google-drive-html5-xdc-integration-research-2026-11-11.md](google-drive-html5-xdc-integration-research-2026-11-11.md) — Google Drive 15 HTML files and 53 XDC packages triage, deduplication, and offline integration
+- [backlog-execution-round-68-2026-11-11.md](backlog-execution-round-68-2026-11-11.md) — Backlog execution round 68: Drive archive consolidation, offline viewer tier validation, and test pass
+- [backlog-execution-round-69-2026-11-11.md](backlog-execution-round-69-2026-11-11.md) — Backlog execution round 69: Open backlog audit, stream status reconciliation, and suite verification
 
 ## Research deep dives (the “ghirdra” line)
 
@@ -119,6 +124,7 @@ IANA media types (RFC 6838 / BCP 13).
 
 - [ace-delta-history-crc-fix-2026-11-07.md](ace-delta-history-crc-fix-2026-11-07.md) — representative ACE Delta-mode CRC mismatch, distance-history diagnosis, and regression proof
 - [ace-huffman-delta-luby-raptor-research-2026-11-07.md](ace-huffman-delta-luby-raptor-research-2026-11-07.md) — ACE Huffman delta, Luby transform, Raptor recovery codes, and microblog BBS filesystem deep dive
+- [offline-viewer-and-3d-pipeline-investigation-2026-11-11.md](offline-viewer-and-3d-pipeline-investigation-2026-11-11.md) — Offline viewer, 3D VRML pipeline, DEM stitching, and cryptographic hardware backlog investigation
 - [cryptofountain-cookbook-and-perl-guide-2026-11-07.md](cryptofountain-cookbook-and-perl-guide-2026-11-07.md) — CryptoFountain BBS cookbook, Perl porting guide, and ITAR munitions T-shirt free speech analysis
 - [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes

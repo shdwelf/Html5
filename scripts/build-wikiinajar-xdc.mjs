@@ -75,6 +75,7 @@ await writeFile(path.join(appDir, "index.html"), appHtml);
 await writeFile(path.join(appDir, "docs.json"), JSON.stringify({
   format: "wikiinajar-docs",
   version: 1,
+  // Fixed snapshot stamp for reproducible output, not the latest build time.
   generated: "2026-10-14",
   converter: "tools/wikiinajar/md2wiki.mjs",
   count: docPages.length,

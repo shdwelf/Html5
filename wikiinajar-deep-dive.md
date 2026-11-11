@@ -281,15 +281,15 @@ the bundle, deleting the copy reveals the bundled original, and deleting
 a bundled-only page writes a local tombstone. Rebuilding regenerates the
 bundled copies and never touches local pages.
 
-**Public-corpus privacy gate.** The current Wiki builder discovers 335 direct
-root/`docs/*.md` sources and omits 28 of those sources before conversion:
-personal biography/family/education notes, operational storage/retrieval
-notes, and conservative address-review candidates. The resulting
-public `docs.json` and `.xdc` each carry 307 pages. The same policy also
-excludes two nested Markdown files with private cloud-storage references from
-SITE-K's broader offline docs tree (30 exclusion paths total).
-`tools/wikiinajar/public-corpus-policy.mjs` is the source of truth; source
-Markdown remains unchanged. The preflight refuses Google Drive item URLs,
+**Public-corpus privacy gate.** The current Wiki builder discovers 341 direct
+root/`docs/*.md` sources and omits 34 of those sources before conversion:
+personal biography/family/education notes, operational storage/retrieval and
+Drive-inventory research notes, and conservative address-review candidates.
+The resulting public `docs.json` and `.xdc` each carry 307 pages. The same
+policy also excludes two nested Markdown files with private cloud-storage
+references from SITE-K's broader offline docs tree (36 exclusion paths total).
+`tools/wikiinajar/public-corpus-policy.mjs` is the source of truth; the
+builder leaves source Markdown untouched. The preflight refuses Google Drive item URLs,
 Dropbox URLs, and contextual Drive-like identifiers before clearing existing
 outputs or copying SITE-K docs. Tests pin the exclusions, exact Wiki page
 count, and byte-for-byte agreement between staged and archived corpora. The
@@ -349,9 +349,9 @@ shape, the Java `.wiki` page and this document's cross-links. The initial docume
 139-page corpus census with provenance footers and no surviving fences,
 a byte-level check that the `.xdc`'s `docs.json` matches the staged one,
 and a full render pass. The current privacy-gated test asserts one page
-per approved source after 10 explicit exclusions, unique titles and
-footers, no Google Drive or Dropbox item links, and exact agreement
-between staged and archived `docs.json`. Later passes added: R1 rejection checks and the Java-patch cross-reference,
+per approved source after 34 direct-source exclusions (plus two nested
+archive exclusions), unique titles and footers, no Google Drive or Dropbox
+item links, and exact agreement between staged and archived `docs.json`. Later passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
 the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
 the R4 three-way merge algebra, and the R8 print/round-trip

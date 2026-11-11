@@ -72,10 +72,9 @@ elevation; famous summits land in a sanity window).
 
 - `tests/planet-viewer.test.mjs` — pure data, resampling/orientation, checks,
   Gazetteer, VRML, and page-wiring regressions.
-- `tests/planet-viewer-browser.mjs` — automation covers real WebGL drawing,
-  plate/mode changes, terrain zoom, and Gazetteer jumps. Running it requires a
-  supported browser runtime; this environment has no Chromium/Chrome binary, so
-  no real-browser result is claimed here.
+- `tests/planet-viewer-browser.mjs` — 12/12 passed in headless Chromium with
+  SwiftShader WebGL, covering terrain draw/zoom, plate and mode changes, search
+  jumps, globe/GNIS overlays, and VRML download.
 - `npm run build:planet-offline` stages the self-contained catalog app and its
   complete relative module graph. `npm run build:planet` continues to rebuild
   `socal-subsurface.xdc` under the legacy compatibility filename by design.
