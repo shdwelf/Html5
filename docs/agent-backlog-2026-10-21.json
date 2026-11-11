@@ -480,14 +480,16 @@
       "line": 158,
       "stream": "S2",
       "text": "Investigate retrogames.pro article, archive.org Sneakers_Film_Promotional_Floppy, ebay item 365528826482",
-      "status": "partial"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/sneakers-press-kit-investigation-2026-11-11.md): Internet Archive preservation records (Marcin Wichary collection uploaded by Jason Scott), physical packaging/sleeve artifact provenance, and retro computing diskmag coverage documented."
     },
     {
       "id": "T2.3",
       "line": 164,
       "stream": "S2",
       "text": "Create xdc like headline-harry.xdc for the Sneakers press kit (keyboard/mouse side, js-dos)",
-      "status": "partial"
+      "status": "done",
+      "note": "Closed 2026-11-11 (docs/sneakers-headline-harry-layout-parity-2026-10-21.md + docs/sneakers-press-kit-investigation-2026-11-11.md): sneakers-press-kit.xdc and sneakers-press-kit-exact.xdc match headline-harry js-dos v8 focusDos and keyboard/mouse layout; verified by tests/sneakers-press-kit.test.mjs 7/7."
     },
     {
       "id": "T3.1",

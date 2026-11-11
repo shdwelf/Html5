@@ -138,7 +138,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [ghidra-dos-disasm-plan.md](ghidra-dos-disasm-plan.md) — ghidra dos disasm plan
 - [ghidra-headless-benign-sample-methodology.md](ghidra-headless-benign-sample-methodology.md) — ghidra headless benign sample methodology
 - [jcreator-jdk-ghidra.md](jcreator-jdk-ghidra.md) — jcreator jdk ghidra
+- [sneakers-headline-harry-layout-parity-2026-10-21.md](sneakers-headline-harry-layout-parity-2026-10-21.md) — sneakers headline harry layout parity audit
 - [sneakers-original-ghidra-wasm-2026-10-18.md](sneakers-original-ghidra-wasm-2026-10-18.md) — sneakers original ghidra wasm 2026 10 18
+- [sneakers-press-kit-investigation-2026-11-11.md](sneakers-press-kit-investigation-2026-11-11.md) — sneakers 1992 electronic press kit archival and web investigation
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis
 - [spycraft-research.md](spycraft-research.md) — spycraft research
