@@ -113,6 +113,11 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_SMOKE_TEST, /navigator\.mediaDevices\.getUserMedia\(\{audio: true\}\)/);
   assert.match(ANDROID_SMOKE_TEST, /https:\/\/app-headline-harry\.invalid\/index\.html/);
   assert.match(ANDROID_SMOKE_TEST, /DOSBox ready/);
+  assert.match(ANDROID_SMOKE_TEST, /window\.__arenaSmokeErrors/);
+  assert.match(ANDROID_SMOKE_TEST, /headlineDiagnostics/);
+  assert.match(ANDROID_WORKFLOW, /android-webview-logcat\.log/);
+  assert.match(ANDROID_WORKFLOW, /system-out/);
+  assert.match(ANDROID_WORKFLOW, /adb logcat -d -v threadtime/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
   assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);
