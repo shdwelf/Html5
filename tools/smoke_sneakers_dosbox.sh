@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the checked-in Sneakers js-dos payload in native DOSBox under Xvfb.
-# Writes DOSBox diagnostics, a post-password screenshot, and OCR output to SNEAKERS_SMOKE_DIR.
+# Writes DOSBox diagnostics, password/menu screenshots, and OCR output to SNEAKERS_SMOKE_DIR.
 set -eEuo pipefail
 trap 'code=$?; echo "::error title=Sneakers smoke failure::line $LINENO: $BASH_COMMAND (exit $code)"; exit "$code"' ERR
 
@@ -85,10 +85,62 @@ emulator_pid=$!
   fi
   printf '%s\n' "$window" > "$WORK_DIR/window.id"
   xdotool windowfocus --sync "$window" 2>/dev/null || true
+
+  # Fixed sleeps made the test race DOSBox/game startup on slower CI runners:
+  # the window could exist while its frame was still blank, so XTest typed into
+  # a screen that had not reached the password prompt. Poll the actual DOSBox
+  # frame and OCR state transitions before sending any input.
+  capture_screen() {
+    local stem="$1"
+    if ! import -window "$window" "$stem.png" 2>/dev/null; then return 1; fi
+    SCREEN_COLORS="$(identify -format '%k' "$stem.png" 2>/dev/null || true)"
+    [[ "$SCREEN_COLORS" =~ ^[0-9]+$ ]] || return 1
+    (( SCREEN_COLORS > 1 )) || return 1
+    convert "$stem.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$stem-ocr.png"
+    if ! tesseract "$stem-ocr.png" "$stem" --psm 6 >/dev/null 2>&1; then return 1; fi
+    SCREEN_TEXT="$(tr '[:upper:]' '[:lower:]' < "$stem.txt" | tr -cd '[:alnum:]\n')"
+  }
+
+  wait_for_password_prompt() {
+    local deadline=$((SECONDS + 45))
+    while (( SECONDS < deadline )); do
+      if capture_screen "$WORK_DIR/before-password" \
+        && grep -Eq 'accesscode|entercode|securitysystem' <<<"$SCREEN_TEXT"; then
+        return 0
+      fi
+      if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
+      sleep 1
+    done
+    echo "Timed out waiting for the Sneakers password prompt; last OCR: $(tr '\n' ' ' < "$WORK_DIR/before-password.txt" 2>/dev/null || true)" >&2
+    return 1
+  }
+
+  wait_for_press_kit_menu() {
+    local deadline=$((SECONDS + 45))
+    while (( SECONDS < deadline )); do
+      if capture_screen "$WORK_DIR/after-password" \
+        && grep -q 'sneakerspresskit' <<<"$SCREEN_TEXT" \
+        && grep -Eq 'castbiographies|plotsynopsis|productionnotes|photogallery|printpressmaterials|crosswordvertical' <<<"$SCREEN_TEXT" \
+        && grep -q 'exit' <<<"$SCREEN_TEXT"; then
+        return 0
+      fi
+      if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
+      sleep 1
+    done
+    echo "Timed out waiting for the Sneakers press-kit menu; last OCR: $(tr '\n' ' ' < "$WORK_DIR/after-password.txt" 2>/dev/null || true)" >&2
+    return 1
+  }
+
+  if ! wait_for_password_prompt; then
+    echo "::error title=Sneakers DOSBox password prompt missing::window=$window colors=${SCREEN_COLORS:-unknown}"
+    exit 1
+  fi
   xdotool type --clearmodifiers --delay 45 'setec astronomy'
   xdotool key Return
-  sleep 3
-  import -window "$window" "$WORK_DIR/after-password.png"
+  if ! wait_for_press_kit_menu; then
+    echo "::error title=Sneakers DOSBox press-kit menu missing::window=$window colors=${SCREEN_COLORS:-unknown}"
+    exit 1
+  fi
   xdotool type --clearmodifiers '7'
   xdotool key Return
 ) > "$WORK_DIR/input.log" 2>&1 &
