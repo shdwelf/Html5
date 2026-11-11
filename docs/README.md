@@ -119,6 +119,7 @@ IANA media types (RFC 6838 / BCP 13).
 
 - [ace-delta-history-crc-fix-2026-11-07.md](ace-delta-history-crc-fix-2026-11-07.md) — representative ACE Delta-mode CRC mismatch, distance-history diagnosis, and regression proof
 - [ace-huffman-delta-luby-raptor-research-2026-11-07.md](ace-huffman-delta-luby-raptor-research-2026-11-07.md) — ACE Huffman delta, Luby transform, Raptor recovery codes, and microblog BBS filesystem deep dive
+- [offline-viewer-and-3d-pipeline-investigation-2026-11-11.md](offline-viewer-and-3d-pipeline-investigation-2026-11-11.md) — Offline viewer, 3D VRML pipeline, DEM stitching, and cryptographic hardware backlog investigation
 - [cryptofountain-cookbook-and-perl-guide-2026-11-07.md](cryptofountain-cookbook-and-perl-guide-2026-11-07.md) — CryptoFountain BBS cookbook, Perl porting guide, and ITAR munitions T-shirt free speech analysis
 - [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes
