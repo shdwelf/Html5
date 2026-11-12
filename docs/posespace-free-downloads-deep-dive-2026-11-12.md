@@ -110,10 +110,14 @@ That public-domain label conflicts with PoseSpace's [copyright and educational p
 | --- | --- | --- |
 | [POSEmuse free poses](https://www.posemuse.com/free-poses) | A page of free pose references; its author describes them as royalty-free to use for art, including commercial use. | Check the site's terms for the particular intended use; that statement does not establish a redistribution licence. |
 | [Quickposes library](https://quickposes.com/en/library) | Browsable figure and other reference-image collections. | The page says all images are copyrighted, for practice or inspiration, and not for use in work unless heavily modified beyond recognition. |
-| [Line of Action](https://line-of-action.com/) | Figure, animal, hands/feet and other practice tools. | Individual licensing, offline downloads, and commercial use were not verified. |
-| [Posemaniacs](https://www.posemaniacs.com/) | 3D pose/hand tools and figure-reference resources. | Access and terms vary by feature; photo download rights were not established. |
+| [Line of Action](https://line-of-action.com/) | Figure, animal, hands/feet and other practice tools. | Its [FAQ](https://line-of-action.com/faq) says commercial use of drawings is **“Maybe”**: many photos are loaned only for educational use and the site cannot grant commercial rights for all images. Check the photographer's terms or contact them. The FAQ allows posting drawings for critique if not sold; the [site terms](https://line-of-action.com/terms-and-conditions) limit temporary downloads of site materials to personal, noncommercial viewing. |
+| [Posemaniacs](https://www.posemaniacs.com/) | 3D pose/hand tools and figure-reference resources. | The [Japanese terms](https://www.posemaniacs.com/terms-of-use) distinguish drawing from viewing poses from downloading or redistributing service content; they contain specific prohibitions and exceptions. Seek a reliable translation and check current terms before commercial use; do not assume photo download rights. |
 
-These are different resources, not equivalent catalogues or blanket permissions to redistribute images.
+These are different resources, not equivalent catalogues or blanket permissions to redistribute images. A [libresearch query](https://libresearch.space/search?q=site%3Aadorkastock.com+stock+rules+commercial+reference) also located AdorkaStock's user licence and FAQ, but direct fetches of both returned HTTP 500 in this environment; search snippets alone are insufficient to establish its current licence.
+
+### Follow-up verification limits
+
+Direct fetch attempts for the first Zaza016 JPEG on both official hosts returned HTTP 500 from the page-fetching tool. That is a tool-level failure, not proof that the files are unavailable in a browser; neither dimensions nor byte equality could be checked. A repeat [ShawneC003 listing](https://posespace.com/posetool/?p=shawnec003) showed $4.99 / 4 credits while logged out. A [search.utilibre query for free credits](https://search.utilibre.org/search?q=site%3Aposespace.com+%22free%22+%22credits%22) returned unrelated results; [baresearch's Posemaniacs commercial-use query](https://baresearch.org/search?q=site%3Aposemaniacs.com+%22commercial%22+copyright+poses+terms) returned no results. Neither negative result proves absence.
 
 ## 10. Open questions and next research steps
 
