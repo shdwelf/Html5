@@ -1,0 +1,50 @@
+{
+  "title": "PoseSpace free downloads: evidence register",
+  "research_date_utc": "2026-11-12",
+  "scope": "Page text, links, metadata, and metasearch results; no authenticated account, bonus redemption, purchase, downloaded ZIP, or file dimensions tested.",
+  "labels": {
+    "verified-live": "Page or metadata was fetched; attributed claims remain the source's claims, not independently proven facts.",
+    "indexed": "Search snippet only; potentially stale or incomplete.",
+    "historical": "Dated older source; not necessarily current.",
+    "unverified": "Workflow or outcome has not been tested."
+  },
+  "sources": [
+    {"id":"S01","label":"verified-live","title":"PoseSpace homepage","url":"https://posespace.com/","observation":"7,000+ poses advertised as free to browse; complete sample advertised with no form; content warning."},
+    {"id":"S02","label":"verified-live","title":"Public sample","url":"https://posespace.com/sample.aspx","observation":"Clothed Zaza016: 24 linked frames labelled full-size and a large complete ZIP advertised. No image or ZIP bytes inspected."},
+    {"id":"S03","label":"verified-live","title":"Art Models gateway","url":"https://www.artmodels.us/","observation":"Same named sample frames and explicit link labelled complete set ZIP. Download not tested."},
+    {"id":"S04","label":"verified-live","title":"Pose Reference","url":"https://posespace.com/pose-reference/","observation":"Advertises two full-size login samples; thumbnails name Jenni026 and Jesse003; states 48 photos per pose. No account tested."},
+    {"id":"S05","label":"verified-live","title":"Account signup","url":"https://posespace.com/member/newLogin.aspx","observation":"Google or email/password signup; email confirmation; states two free Library samples. Newsletter opt-out and privacy information provided. Signup not tested."},
+    {"id":"S06","label":"verified-live","title":"Art Models Bonus","url":"https://posespace.com/free/","observation":"Asks Art Models owners for ISBN or book code for bonus poses; may contain nudes. Redemption not tested."},
+    {"id":"S07","label":"verified-live","title":"Art Models 10 sample","url":"https://posespace.com/free/am10.aspx","observation":"Book-sample control and previews with nudity warning; workflow not tested."},
+    {"id":"S08","label":"verified-live","title":"How PoseSpace works","url":"https://posespace.com/howdoesitwork.aspx","observation":"Says preview is watermarked 1 MP; purchased photos up to 50 MP; two login samples; individual Library and expiring large download distinction."},
+    {"id":"S09","label":"verified-live","title":"Pose Tool","url":"https://posespace.com/posetool/","observation":"Says sample photos are 512 pixels, purchased photos up to 48 MP, and most Poses $6.99 or 5 credits."},
+    {"id":"S10","label":"verified-live","title":"FAQ / photo usage","url":"https://posespace.com/sitenotes.aspx","observation":"Reference-based traditional art may be sold; actual photos cannot be given away or resold; substantive manipulation discussed for games, video and digital art."},
+    {"id":"S11","label":"verified-live","title":"Educational use","url":"https://posespace.com/license.aspx","observation":"Copyright attributed to Douglas Johnson; conditional live-class display, five full-resolution photos, instruction-video previews, and teacher offers; also claims additional free Poses in tool."},
+    {"id":"S12","label":"historical","title":"PoseSpace news, 2020-11-15","url":"https://posespace.com/news.aspx","observation":"A dated entry said ShawneC poses were free via the credits button, warning cart would charge; not proof of current offer."},
+    {"id":"S13","label":"verified-live","title":"ShawneC model results","url":"https://posespace.com/posetool/?mn=shawnec","observation":"Logged-out listing showed 12 poses at $4.99 / 4 credits each. Authenticated redemption not tested."},
+    {"id":"S14","label":"historical","title":"WetCanvas free-pose thread, 2008","url":"https://www.wetcanvas.com/forums/topic/free-download-reference-photo-or-a-virtual-life-class/","observation":"Participants described Becca029 at zero credits; contemporaneous claims are not proof of current availability."},
+    {"id":"S15","label":"verified-live","title":"Current Becca029 listing","url":"https://posespace.com/posetool/?p=becca029","observation":"Logged-out listing showed $6.99 / 5 credits."},
+    {"id":"S16","label":"verified-live","title":"Internet Archive metadata","url":"https://archive.org/metadata/posespace-archive","observation":"Public Domain Mark asserted and publisher named, but authority and content of ZIP unverified; conflicts with publisher rights statements."},
+    {"id":"S17","label":"verified-live","title":"Quickposes library","url":"https://quickposes.com/en/library","observation":"Copyright notice restricts images to practice or inspiration and limits their use in work."},
+    {"id":"S18","label":"verified-live","title":"POSEmuse free poses","url":"https://www.posemuse.com/free-poses","observation":"Author states references may be used royalty-free for art, including commercial art; redistribution rights not established."},
+    {"id":"S19","label":"verified-live","title":"PoseSpace robots.txt","url":"https://posespace.com/robots.txt","observation":"Site declares search=yes, ai-train=no, use=reference and an EU Article 4 reservation; legal scope not independently decided."},
+    {"id":"S20","label":"verified-live","title":"Companion disk product","url":"https://posespace.com/shop/DLCompDisk.aspx","observation":"Example displayed $29.99, 632 MB, five downloads in seven days; page's 64-versus-61 pose count conflicts internally."}
+  ],
+  "queries": [
+    {"instance":"libresearch.space","query":"posespace.com free downloads","url":"https://libresearch.space/search?q=posespace.com+free+downloads","observation":"Official sample, bonus, information pages and archive metadata lead."},
+    {"instance":"baresearch.org","query":"posespace.com free poses","url":"https://baresearch.org/search?q=posespace.com+free+poses","observation":"ArtModels.us and alternative-resource leads."},
+    {"instance":"search.utilibre.org","query":"posespace free downloads","url":"https://search.utilibre.org/search?q=posespace+free+downloads","observation":"Some Pose Tool links, but many unrelated results."},
+    {"instance":"libresearch.space","query":"site:posespace.com \"free\" \"Pose Tool\" poses","url":"https://libresearch.space/search?q=site%3Aposespace.com+%22free%22+%22Pose+Tool%22+poses","observation":"Preview-size and sample leads, checked against live Pose Tool."},
+    {"instance":"libresearch.space","query":"site:posespace.com/free/","url":"https://libresearch.space/search?q=site%3Aposespace.com%2Ffree%2F","observation":"Discovered book-sample and bonus landing pages."},
+    {"instance":"libresearch.space","query":"posespace \"zero credits\" free pose posetool","url":"https://libresearch.space/search?q=posespace+%22zero+credits%22+free+pose+posetool","observation":"Led to dated WetCanvas promotion."},
+    {"instance":"www.isci.si","query":"site:posespace.com \"free\" \"poses\"","url":"https://www.isci.si/search?q=site%3Aposespace.com+%22free%22+%22poses%22","observation":"Surfaced historical ShawneC news announcement, checked directly; unrelated results also appeared."},
+    {"instance":"baresearch.org","query":"\"posespace\" royalty free photos redistribution copyright","url":"https://baresearch.org/search?q=%22posespace%22+royalty+free+photos+redistribution+copyright","observation":"No results in this attempt; no inference of absence."}
+  ],
+  "open_questions": [
+    "Confirm signup sample identity, sizes and contents through an account with the user's consent.",
+    "Verify current zero-credit promotions and check price before any transaction.",
+    "Test sample ZIP download and image dimensions; compare the two official sample sites if needed.",
+    "Test bonus redemption only using a legitimately owned book and record actual conditions.",
+    "Ask publisher to reconcile preview dimensions, educational use and disputed archive provenance."
+  ]
+}
