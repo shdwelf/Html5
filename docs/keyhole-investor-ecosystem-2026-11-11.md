@@ -1,7 +1,7 @@
 # Keyhole, Inc.: Venture Capital, Angel Investors, and Institutional Lineage (T6.1 Research)
 
-**Date**: 2026-11-11  
-**Scope**: Stream S6 (Task `T6.1`) — Historical Networks, Telecom, and Keyhole Investigation  
+**Date**: 2026-11-11
+**Scope**: Stream S6 (Task `T6.1`) — Historical Networks, Telecom, and Keyhole Investigation
 **Companions**:
 - `docs/keyhole-disambiguation-deep-dive-2026-10-22.md`
 - `docs/historical-network-viewer-scope-2026-10-22.md`

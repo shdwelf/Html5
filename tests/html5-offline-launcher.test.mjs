@@ -36,13 +36,14 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 93);
+  assert.equal(expectedSlugs.length, 94);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 93);
+  assert.equal(catalog.length, 94);
   assert.ok(expectedSlugs.includes("newyork-subsurface"));
   assert.ok(expectedSlugs.includes("helios-observatory"));
   assert.ok(expectedSlugs.includes("prime-viewer"));
+  assert.ok(expectedSlugs.includes("keyspace"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
 });
 
@@ -112,6 +113,11 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_SMOKE_TEST, /navigator\.mediaDevices\.getUserMedia\(\{audio: true\}\)/);
   assert.match(ANDROID_SMOKE_TEST, /https:\/\/app-headline-harry\.invalid\/index\.html/);
   assert.match(ANDROID_SMOKE_TEST, /DOSBox ready/);
+  assert.match(ANDROID_SMOKE_TEST, /window\.__arenaSmokeErrors/);
+  assert.match(ANDROID_SMOKE_TEST, /headlineDiagnostics/);
+  assert.match(ANDROID_WORKFLOW, /android-webview-logcat\.log/);
+  assert.match(ANDROID_WORKFLOW, /system-out/);
+  assert.match(ANDROID_WORKFLOW, /adb logcat -d -v threadtime/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
   assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);
@@ -126,9 +132,10 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions/upload-artifact@v4"));
   assert.match(uploadStep, /path: apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
   assert.doesNotMatch(uploadStep, /private-debug\.apk/);
-  assert.match(README, /93\*\* HTML entrypoints/);
-  assert.match(README, /8,441\s+files/);
-  assert.match(README, /160,420,682 bytes uncompressed/);
+  assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
+  assert.match(README, /94\*\* HTML entrypoints/);
+  assert.match(README, /8,475\s+files/);
+  assert.match(README, /161,806,930 bytes uncompressed/);
   assert.match(README, /ANC Studio microphone capture is opt-in/);
   assert.doesNotMatch(README, /still denies microphone permission/);
 });

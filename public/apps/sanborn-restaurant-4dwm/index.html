@@ -57,14 +57,15 @@ button { cursor:pointer; }
 .layer-key { width:9px; height:9px; border:1px solid currentColor; display:inline-block; }
 .key-blue { color:#5bc9d1; }.key-wire { color:#8feee5; }.key-light { color:#f1bd67; }.key-label { color:#d79361; }
 #viewer-wrap { position:relative; min-height:0; overflow:hidden; background:#061014; }
-#viewport { display:block; width:100%; height:100%; outline:none; }
+#viewport { position:relative; z-index:0; display:block; width:100%; height:100%; outline:none; }
 #fallbackCanvas { display:none; position:absolute; inset:0; width:100%; height:100%; outline:none; }
 #fallbackCanvas.active { display:block; }
 #webglFallback { position:absolute; left:16px; bottom:44px; max-width:min(560px,calc(100% - 32px)); z-index:2; padding:8px 10px; border:1px solid #8f6b39; background:#071619ed; color:#f1d6a5; font:10px/1.5 var(--mono); }
 #webglFallback[hidden] { display:none; }
 .viewport-grid { position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,#65f6df08 1px,transparent 1px),linear-gradient(#65f6df08 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(to bottom,transparent 0%,#000 35%,#000 100%); opacity:.13; }
-.viewport-head { position:absolute; top:13px; left:16px; right:16px; display:flex; justify-content:space-between; pointer-events:none; }
+.viewport-head { position:absolute; z-index:7; top:13px; left:16px; right:16px; display:flex; justify-content:space-between; pointer-events:none; }
 .viewport-head > * { pointer-events:auto; }
+.view-actions { position:absolute; left:50%; transform:translateX(-50%); }
 .view-title { font:11px var(--mono); color:var(--cyan); letter-spacing:.12em; text-shadow:0 0 12px #000; }
 .view-title span { color:var(--muted); }
 .view-actions { display:flex; gap:5px; }
@@ -72,7 +73,7 @@ button { cursor:pointer; }
 .tool:hover,.tool.active { border-color:var(--cyan); color:var(--cyan); background:#133237e6; }
 .hotspot { position:absolute; display:none; border:1px solid var(--amber); color:var(--amber); background:#0b1819d9; padding:5px 8px; font:10px var(--mono); letter-spacing:.07em; pointer-events:auto; }
 .hotspot:hover { border-color:var(--cyan); color:var(--cyan); }
-.viewport-foot { position:absolute; bottom:13px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:end; pointer-events:none; font:10px var(--mono); color:#759497; }
+.viewport-foot { position:absolute; z-index:5; bottom:13px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:end; pointer-events:none; font:10px var(--mono); color:#759497; }
 .viewport-foot b { color:var(--cyan); font-weight:500; }
 .readout { display:grid; gap:2px; text-align:right; }
 .readout strong { color:var(--amber); }
@@ -158,7 +159,7 @@ import { lightIntensity, parseSanbornManifest } from "./js/sanborn-restaurant-ma
 
 const FALLBACK = `# XDC_BOX floor 0 -0.12 0 24 0.24 18 #173640 structure none Room floor\n# XDC_BOX cashier-base 0 1.65 -7.2 10.4 3.3 1.2 #6a3d2b cashier none Cashier counter\n# XDC_BOX flip-top 0 0.14 0.65 10 0.28 1.3 #d9a565 cashier flip Flip-up countertop\n# XDC_BOX glass-case-body -2.9 3.05 -7.12 3.4 1.25 .86 #77d5d0 display glass Glass display case\n# XDC_BOX fryer 6 1.25 6 3.4 2.5 2.4 #7a4a35 kitchen none Deep fry unit`;
 let scene, camera, renderer, controls, model, blueprint, wire, labels, flipPivot, raycaster, pointer;
-let sourceText = "", picked = null, flipped = false, liveLight = true, wireOn = true, fallbackRows = [];
+let sourceText = "", picked = null, flipped = false, liveLight = true, wireOn = true, viewMode = "viewport", fallbackRows = [];
 const objects = [], hotspots = new Map(), materials = new Set(), lights = [];
 const $ = (id) => document.getElementById(id);
 const hex = (value) => new THREE.Color(value);
@@ -275,12 +276,39 @@ function preset(name){
   camera.position.set(...p[0]);controls.target.set(...p[1]);controls.update();$("camera-readout").textContent=name.toUpperCase();document.querySelectorAll("[data-preset]").forEach(b=>b.classList.toggle("active",b.dataset.preset===name));
 }
 function focus(tag){ const pos={booths:[[18,8,16],[-1,1.5,1]],bar:[[0,7,16],[0,2.4,5]],cashier:[[0,7,-18],[0,2.5,-7]],display:[[-10,5,-16],[-2.9,3,-7]],kitchen:[[15,8,14],[6,2.5,6]]}[tag];if(pos&&camera&&controls){camera.position.set(...pos[0]);controls.target.set(...pos[1]);controls.update();toast(tag.replace(/^./,c=>c.toUpperCase())+" focus");}}
-function setVisibility(){
+function syncDisplayMode(){
+  const blueprintMode=viewMode==="blueprint";
+  if(scene)scene.background.set(blueprintMode?"#030712":"#061014");
+  if(model)model.visible=!blueprintMode;
   if(blueprint)blueprint.visible=$("layer-blueprint")?.checked ?? true;
   if(wire)wire.visible=$("layer-wiremesh")?.checked ?? true;
   if(labels)labels.visible=$("layer-labels")?.checked ?? true;
+  if(renderer){
+    renderer.domElement.dataset.viewMode=viewMode;
+    renderer.domElement.dataset.modelVisible=String(Boolean(model?.visible));
+    renderer.domElement.dataset.blueprintVisible=String(Boolean(blueprint?.visible));
+    renderer.domElement.dataset.wireVisible=String(Boolean(wire?.visible));
+    renderer.domElement.dataset.lightOn=String(liveLight);
+  }
+}
+function setVisibility(){
+  syncDisplayMode();
   lights.forEach(l=>l.visible=$("layer-livelight")?.checked ?? true);
   if(!renderer&&fallbackRows.length)drawTopDownFallback();
+}
+function setViewMode(next){
+  if(!["viewport","blueprint","research"].includes(next))return;
+  viewMode=next;
+  document.querySelectorAll("[data-mode]").forEach(button=>{
+    const active=button.dataset.mode===viewMode;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+  if(viewMode==="blueprint")preset("plan");
+  else if(viewMode==="viewport")preset("axon");
+  if(viewMode==="research")$("source-drawer").classList.add("open");
+  setVisibility();
+  toast(`${viewMode} mode selected`);
 }
 function flip(){ if(!flipPivot){toast("Countertop animation requires WebGL");return;}flipped=!flipped;flipPivot.rotation.x=flipped?-Math.PI/2:0;$("flip-btn").innerHTML=`${flipped?"CLOSE":"FLIP"} COUNTERTOP <span>${flipped?"↙":"↗"}</span>`;$("inspector-state").textContent=flipped?"counter open":"counter closed";toast(flipped?"countertop flipped up":"countertop reset flat"); }
 function setLight(on,announce=true){
@@ -290,6 +318,7 @@ function setLight(on,announce=true){
   const button=$("light-btn"),checkbox=$("layer-livelight");
   if(button){button.classList.toggle("active",liveLight);button.setAttribute("aria-pressed",String(liveLight));}
   if(checkbox)checkbox.checked=liveLight;
+  if(renderer)renderer.domElement.dataset.lightOn=String(liveLight);
   if(!renderer&&fallbackRows.length)drawTopDownFallback();
   if(announce)toast(liveLight?"livelight emitters on":"livelight emitters off");
 }
@@ -306,7 +335,7 @@ function bind(){
   document.querySelectorAll("[data-layer]").forEach(input=>{input.id=`layer-${input.dataset.layer}`;input.addEventListener("change",()=>{if(input.dataset.layer==="wiremesh")setWire(input.checked);else if(input.dataset.layer==="livelight")setLight(input.checked);else setVisibility();});});
   $("flip-btn").onclick=flip;$("reset-btn").onclick=()=>preset("axon");$("wire-btn").onclick=()=>setWire(!wireOn);$("light-btn").onclick=()=>setLight(!liveLight);$("source-btn").onclick=()=>$("source-drawer").classList.toggle("open");$("close-source").onclick=()=>$("source-drawer").classList.remove("open");
   document.querySelectorAll("[data-focus]").forEach(a=>a.addEventListener("click",()=>focus(a.dataset.focus)));
-  document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-mode]").forEach(x=>x.classList.remove("active"));b.classList.add("active");toast(`${b.dataset.mode} mode selected`);if(b.dataset.mode==="blueprint")preset("plan");if(b.dataset.mode==="research")$("source-drawer").classList.add("open");}));
+  document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>setViewMode(b.dataset.mode)));
   setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString([], {hour12:false}),1000);
 }
 bind();load();

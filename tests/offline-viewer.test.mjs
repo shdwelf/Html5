@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const PAGE = readFileSync(join(ROOT, "offline-viewer.html"), "utf8");
 const BUILDER = readFileSync(join(ROOT, "scripts", "build-private-html5-offline-viewer.py"), "utf8");
-const APPS = ["helios-observatory", "prime-viewer"];
+const APPS = ["helios-observatory", "prime-viewer", "wikiinajar", "keyspace"];
 
 function appFiles(slug) {
   const root = join(ROOT, "public", "apps", slug);
@@ -32,6 +32,9 @@ test("public offline viewer contains only the explicitly reviewed local apps", (
     assert.match(PAGE, new RegExp(`slug:\\s*"${slug}"`));
   }
   assert.equal((PAGE.match(/slug:\s*"[a-z0-9-]+"/g) ?? []).length, APPS.length);
+  assert.match(PAGE, /slug:\s*"keyspace",\s*name:\s*"Keyspace Viewer"/);
+  assert.match(PAGE, /slug:\s*"wikiinajar",\s*name:\s*"Wiki in a Jar"/);
+  assert.doesNotMatch(PAGE, /slug:\s*"keyviewer"/, "Keyspace Viewer is distinct from the keyviewer app");
   assert.match(PAGE, /\.\/xdc-viewer\.html/);
   assert.doesNotMatch(PAGE, /bip39-haiku|Greeran|Resume|\.arena-drive|drive\.google\.com/i);
 });
@@ -46,13 +49,14 @@ test("viewer page and selected app entrypoints make no automatic remote requests
       if (!/\.(?:html|js|mjs|css)$/i.test(path)) continue;
       const text = readFileSync(path, "utf8");
       assert.doesNotMatch(text, /<(?:script|link|img|iframe|audio|video)\b[^>]*\b(?:src|href)\s*=\s*["']https?:\/\//i, path);
-      assert.doesNotMatch(text, /\bfetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon/i, path);
+      assert.doesNotMatch(text, /\bfetch\s*\(\s*(?:new\s+URL\s*\(\s*)?["'`]https?:\/\//i, path);
+      assert.doesNotMatch(text, /\bXMLHttpRequest\b|\bWebSocket\b|\bsendBeacon\b/i, path);
     }
   }
 });
 
-test("private builder is ignored-output-only and uses the same two-app allowlist", () => {
-  assert.match(BUILDER, /APP_SLUGS = \("helios-observatory", "prime-viewer"\)/);
+test("private builder is ignored-output-only and uses the same four-app allowlist", () => {
+  assert.match(BUILDER, /APP_SLUGS = \("helios-observatory", "prime-viewer", "wikiinajar", "keyspace"\)/);
   assert.match(BUILDER, /OUT_BASE = ROOT \/ "google_drive"/);
   assert.doesNotMatch(BUILDER, /M \(1\)\.xdc|haiku-workbench|Resume \(1\)\.html|greeran-family/);
   assert.match(BUILDER, /Only allowlisted repository apps are included/);

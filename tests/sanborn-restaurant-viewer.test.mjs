@@ -43,8 +43,16 @@ test("Sanborn Webxdc and offline app include the local parser dependency", () =>
     "run npm run build:4dwm or node scripts/build-sanborn-restaurant-xdc.mjs");
   const appParser = readFileSync("public/apps/sanborn-restaurant-4dwm/js/sanborn-restaurant-manifest.js", "utf8");
   assert.equal(appParser, readFileSync("js/sanborn-restaurant-manifest.js", "utf8"));
-  assert.equal(readFileSync("public/apps/sanborn-restaurant-4dwm/index.html", "utf8"), html);
+  const inlineModule = '<script type="module">\nimport * as THREE from "./vendor/three.module.min.js";';
+  assert.ok(html.includes(inlineModule), "canonical source has the expected module insertion point");
+  const expectedHtml = html.replace(
+    inlineModule,
+    '<script type="module" src="./js/4dwm-window-manager.js"></script>\n' + inlineModule,
+  );
+  const stagedHtml = readFileSync("public/apps/sanborn-restaurant-4dwm/index.html", "utf8");
+  assert.equal(stagedHtml, expectedHtml, "the only staged HTML change is the local 4Dwm module hook");
   const archive = unzipSync(new Uint8Array(readFileSync("sanborn-restaurant-4dwm.xdc")));
   assert.ok(archive["js/sanborn-restaurant-manifest.js"]);
+  assert.equal(new TextDecoder().decode(archive["index.html"]), stagedHtml, "the XDC carries the staged page");
   assert.equal(new TextDecoder().decode(archive["js/sanborn-restaurant-manifest.js"]), appParser);
 });

@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.Instrumentation;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.PermissionRequest;
@@ -34,6 +35,7 @@ public final class OfflineWebViewSmokeTest {
     private static final String HARRY_URL = "https://app-headline-harry.invalid/index.html";
     private static final long PAGE_TIMEOUT_MS = 20_000;
     private static final long GAME_BOOT_TIMEOUT_MS = 60_000;
+    private static final String HARRY_LOG_TAG = "HeadlineHarrySmoke";
 
     // Grant only the Android OS permission here. WebView still has to request
     // origin-scoped audio permission through MainActivity's WebChromeClient.
@@ -95,33 +97,87 @@ public final class OfflineWebViewSmokeTest {
         MainActivity activity = activityRule.launchActivity(null);
         WebView webView = findWebView(activity.getWindow().getDecorView());
         assertNotNull("launcher must host one packaged WebView", webView);
-        loadAndWait(webView, HARRY_URL);
-        assertEquals("js-dos must load from the packaged app origin", "function",
-                evaluateString(webView, "typeof window.Dos"));
 
+        Log.i(HARRY_LOG_TAG, "loading packaged Headline Harry page");
+        loadAndWait(webView, HARRY_URL);
+        String dosApiType = evaluateString(webView, "typeof window.Dos");
+        Log.i(HARRY_LOG_TAG, "Headline Harry page loaded; typeof window.Dos=" + dosApiType);
+        assertEquals("js-dos must load from the packaged app origin", "function", dosApiType);
+
+        evaluate(webView,
+                "(() => { window.__arenaSmokeErrors = []; " +
+                "const record = detail => { if (window.__arenaSmokeErrors.length < 30) " +
+                "window.__arenaSmokeErrors.push(String(detail).slice(0, 400)); }; " +
+                "window.addEventListener('error', event => record( " +
+                "String(event.message || event.error || 'window error') + ' at ' + event.filename + ':' + event.lineno)); " +
+                "window.addEventListener('unhandledrejection', event => record( " +
+                "'unhandled rejection: ' + String(event.reason))); " +
+                "['error', 'warn'].forEach(level => { const original = console[level]; " +
+                "console[level] = function() { const detail = Array.prototype.map.call(arguments, String).join(' '); " +
+                "record(level + ': ' + detail); return original.apply(console, arguments); }; }); " +
+                "return 'diagnostics-installed'; })()");
+        Log.i(HARRY_LOG_TAG, "invoking packaged start control");
         evaluate(webView,
                 "document.getElementById('start').click(); 'start-clicked'");
         long deadline = SystemClock.uptimeMillis() + GAME_BOOT_TIMEOUT_MS;
         String status = "";
+        String lastLoggedStatus = null;
         while (SystemClock.uptimeMillis() < deadline) {
             status = evaluateString(webView,
                     "document.getElementById('status').textContent");
-            if (status.contains("DOSBox ready")) return;
-            assertFalse("Headline Harry boot failed in WebView: " + status,
-                    status.startsWith("DOSBox error") || status.startsWith("failed to start js-dos"));
+            if (!status.equals(lastLoggedStatus)) {
+                Log.i(HARRY_LOG_TAG, "js-dos status: " + status);
+                lastLoggedStatus = status;
+            }
+            if (status.contains("DOSBox ready")) {
+                Log.i(HARRY_LOG_TAG, "Headline Harry reached DOSBox ci-ready");
+                return;
+            }
+            if (status.startsWith("DOSBox error") || status.startsWith("failed to start js-dos")) {
+                String detail = headlineDiagnostics(webView);
+                Log.e(HARRY_LOG_TAG, "Headline Harry boot error: " + detail);
+                assertFalse("Headline Harry boot failed in WebView: " + detail,
+                        status.startsWith("DOSBox error") || status.startsWith("failed to start js-dos"));
+            }
             SystemClock.sleep(250);
         }
-        assertTrue("Headline Harry should reach js-dos ci-ready; last status: " + status,
+        String detail = headlineDiagnostics(webView);
+        Log.e(HARRY_LOG_TAG, "Timed out waiting for DOSBox ci-ready: " + detail);
+        assertTrue("Headline Harry should reach js-dos ci-ready: " + detail,
                 status.contains("DOSBox ready"));
+    }
+
+    private static String headlineDiagnostics(WebView webView) {
+        String pageState;
+        try {
+            pageState = evaluateString(webView,
+                    "JSON.stringify((() => { const status = document.getElementById('status'); " +
+                    "const overlay = document.getElementById('overlay'); " +
+                    "const container = document.getElementById('dosbox-container'); " +
+                    "const canvas = container && container.querySelector('canvas'); " +
+                    "return {url: location.href, readyState: document.readyState, " +
+                    "status: status ? status.textContent : null, " +
+                    "overlayDisplay: overlay ? getComputedStyle(overlay).display : null, " +
+                    "dosApi: typeof window.Dos, canvas: canvas ? {width: canvas.width, height: canvas.height} : null, " +
+                    "jsErrors: window.__arenaSmokeErrors || []}; })())");
+        } catch (Exception | AssertionError error) {
+            pageState = "unavailable: " + error.getClass().getSimpleName() + ": " + error.getMessage();
+        }
+        return "page=" + pageState;
     }
 
     private static void loadAndWait(WebView webView, String url) throws Exception {
         InstrumentationRegistryAccess.runOnMainSync(() -> webView.loadUrl(url));
         long deadline = SystemClock.uptimeMillis() + PAGE_TIMEOUT_MS;
         String state = "";
+        String lastLoggedState = null;
         while (SystemClock.uptimeMillis() < deadline) {
             state = evaluateString(webView,
                     "document.readyState + '|' + location.href");
+            if (HARRY_URL.equals(url) && !state.equals(lastLoggedState)) {
+                Log.i(HARRY_LOG_TAG, "page load state: " + state);
+                lastLoggedState = state;
+            }
             if (state.equals("complete|" + url)) return;
             SystemClock.sleep(100);
         }

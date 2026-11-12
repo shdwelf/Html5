@@ -10,7 +10,7 @@ Advancing the 3D DEM geospatial pipeline and Planet Viewer controls (Stream S4 /
    - Ran complete 22-test suite across `tests/planet-viewer.test.mjs`, `tests/planet-viewer-search.test.mjs`, and `tests/planet-viewer-offline-app.test.mjs`.
    - Verified regression status against all 64 unit and integration tests in the primary suite.
 3. **Documentation & Package Sync**:
-   - Synchronized `docs/README.md` and rebuilt `wikiinajar.xdc` (342 docs).
+   - Synchronized `docs/README.md` and rebuilt `wikiinajar.xdc` (342 Markdown candidates; the privacy-filtered public Wiki contains 308 approved pages).
 
 ## Completed in this pass
 - Verified that all 22 Planet Viewer tests pass (`tests/planet-viewer*.test.mjs`).

@@ -11,10 +11,26 @@ import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { buildDocs, convertMarkdown } from "../tools/wikiinajar/md2wiki.mjs";
+import { PUBLIC_CORPUS_EXCLUDED_SOURCES } from "../tools/wikiinajar/public-corpus-policy.mjs";
+import {
+  findPrivateBackupPassageSources,
+  findUnsafeCloudReferenceSources,
+  hasPrivateBackupPassage,
+  hasPrivateCloudReference,
+} from "../tools/wikiinajar/privacy-preflight.mjs";
 import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const html = readFileSync(path.join(root, "wikiinajar.html"), "utf8");
+
+function markdownSources(directory, prefix = "") {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const relative = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) return markdownSources(absolute, relative);
+    return entry.isFile() && entry.name.endsWith(".md") ? [relative] : [];
+  });
+}
 
 function renderer() {
   const m = html.match(/\/\*WIKI-RENDER-BEGIN\*\/([\s\S]*?)\/\*WIKI-RENDER-END\*\//);
@@ -32,7 +48,20 @@ const CTX = {
   contactHref: () => "#/contacts",
   mediaHref: (n) => (n === "ok.png" ? "data:image/png;base64,AA==" : null),
 };
-const PRIVATE_GOOGLE_ITEM_LINK = /https?:\/\/(?:docs|drive|sheets|forms)\.google\.com\/[^\s)<>"']*(?:\/d\/|\/folders\/|[?&]id=)[A-Za-z0-9_-]{20,}/i;
+const PRIVATE_GOOGLE_ITEM_LINK = /https?:\/\/(?:docs|drive|sheets|forms)\.google\.com\/[^\s)<>"']*(?:\/d\/|\/folders\/|[?&]id=)[A-Za-z0-9_-]{15,64}/i;
+const PRIVATE_DROPBOX_LINK = /https?:\/\/(?:www\.)?(?:dropbox\.com|dropboxusercontent\.com)\/[^\s)<>"']+/i;
+
+test("cloud privacy preflight catches short Drive IDs and Dropbox item links", () => {
+  const fakeDriveId = "fakeDriveId00000000";
+  assert.equal(fakeDriveId.length, 19, "synthetic test ID pins the short folder-ID case");
+  assert.equal(hasPrivateCloudReference(`Google Drive folder ID: ${fakeDriveId}`), true);
+  assert.equal(hasPrivateCloudReference(`https://drive.google.com/drive/folders/${fakeDriveId}`), true);
+  assert.equal(hasPrivateCloudReference("https://www.dropbox.com/s/example/private.zip"), true);
+  assert.equal(hasPrivateCloudReference("A public Google Drive help page has no item identifier."), false);
+  assert.equal(hasPrivateBackupPassage("private backup stored in a cloud account"), true);
+  assert.equal(hasPrivateBackupPassage("Google Drive backup archive"), true);
+  assert.equal(hasPrivateBackupPassage("A generic backup plan has no storage destination."), false);
+});
 
 test("app is a single offline file with the webxdc hook", () => {
   assert.match(html, /<script src="\.\/webxdc\.js"><\/script>/);
@@ -363,15 +392,41 @@ test("renderer: md2wiki code spans render as <code>, contents stay literal", () 
   assert.doesNotMatch(out, /<strong>/);
 });
 
-test("bundled documentation: one converted page per root/docs *.md", () => {
-  const rootMd = readdirSync(root).filter((f) => f.endsWith(".md")).length;
-  const docsMd = readdirSync(path.join(root, "docs")).filter((f) => f.endsWith(".md")).length;
+test("bundled documentation applies the public-corpus privacy exclusions", () => {
+  const eligibleSources = new Set([
+    ...readdirSync(root).filter((f) => f.endsWith(".md")),
+    ...readdirSync(path.join(root, "docs")).filter((f) => f.endsWith(".md")).map((f) => `docs/${f}`),
+  ]);
+  const allMarkdownSources = new Set([
+    ...readdirSync(root).filter((f) => f.endsWith(".md")),
+    ...markdownSources(path.join(root, "docs"), "docs"),
+  ]);
+  for (const source of PUBLIC_CORPUS_EXCLUDED_SOURCES) {
+    assert.ok(allMarkdownSources.has(source), `privacy exclusion must still point at a Markdown source: ${source}`);
+  }
+  const excludedFromWiki = PUBLIC_CORPUS_EXCLUDED_SOURCES.filter((source) => eligibleSources.has(source)).length;
+  const expectedCount = eligibleSources.size - excludedFromWiki;
   const staged = JSON.parse(readFileSync(path.join(root, "public", "apps", "wikiinajar", "docs.json"), "utf8"));
   assert.equal(staged.format, "wikiinajar-docs");
-  assert.equal(staged.count, rootMd + docsMd, "one page per .md file");
+  assert.equal(staged.count, expectedCount, "one page per approved .md file");
   assert.equal(staged.pages.length, staged.count);
+  const sources = new Set(staged.pages.map((page) => page.source));
+  for (const source of PUBLIC_CORPUS_EXCLUDED_SOURCES) {
+    assert.ok(!sources.has(source), `${source} must not be copied into the public Wiki corpus`);
+  }
   const bundledDocs = JSON.stringify(staged.pages);
   assert.doesNotMatch(bundledDocs, PRIVATE_GOOGLE_ITEM_LINK, "private Google Drive item links must not be copied into bundled documentation");
+  assert.doesNotMatch(bundledDocs, PRIVATE_DROPBOX_LINK, "private Dropbox links must not be copied into bundled documentation");
+  const privacyInputs = staged.pages.map((page) => ({ source: page.source, markdown: `${page.title}\n${page.body}` }));
+  assert.deepEqual(findUnsafeCloudReferenceSources(privacyInputs), []);
+  assert.deepEqual(findPrivateBackupPassageSources(privacyInputs), []);
+  for (const page of staged.pages) {
+    assert.equal(
+      hasPrivateCloudReference(`${page.title}\n${page.body}`),
+      false,
+      `${page.source} has no contextual Drive ID or private cloud link`,
+    );
+  }
   const titles = new Set(staged.pages.map((p) => p.title.toLowerCase()));
   assert.equal(titles.size, staged.pages.length, "page titles are unique");
   for (const page of staged.pages) {
@@ -386,8 +441,10 @@ test("bundled documentation: one converted page per root/docs *.md", () => {
   // the .xdc carries the same corpus the staged tree advertises
   const bundle = unzipSync(new Uint8Array(readFileSync(path.join(root, "wikiinajar.xdc"))));
   assert.ok(bundle["docs.json"], "xdc contains docs.json");
-  const inBundle = JSON.parse(new TextDecoder().decode(bundle["docs.json"]));
-  assert.equal(inBundle.count, staged.count, "bundled docs.json matches staged docs.json");
+  assert.ok(
+    Buffer.from(bundle["docs.json"]).equals(readFileSync(path.join(root, "public", "apps", "wikiinajar", "docs.json"))),
+    "the XDC carries the same privacy-filtered corpus as the staged tree",
+  );
   assert.ok(html.includes("./docs.json") && html.includes('#/docs'), "app loads docs.json and routes the Docs view");
   assert.doesNotMatch(html, PRIVATE_GOOGLE_ITEM_LINK, "private Google Drive item links must not be embedded in the public app");
   assert.ok(seeds()["Documentation"], "fresh jars seed a Documentation guide page");

@@ -7,7 +7,7 @@
  * [data-mode] selector does not let a stray click reset the view.
  *
  * Skips cleanly when the browser deps are absent:
- *   npm i --no-save puppeteer-core @sparticized/chromium
+ *   npm i --no-save puppeteer-core @sparticuz/chromium
  */
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -48,6 +48,27 @@ try {
 
   await test("the viewer boots on real WebGL with no console errors", () => {
     assert.deepEqual(errors, [], errors.join("\n"));
+  });
+
+  await test("mouse-wheel zoom moves the camera in and out on the terrain canvas", async () => {
+    await page.click('[data-plate="chey"]');
+    await page.waitForFunction(() => Number(document.getElementById("stage")?.dataset.cameraDistance) > 0);
+    const before = await page.$eval("#stage", (canvas) => Number(canvas.dataset.cameraDistance));
+    const rect = await page.$eval("#stage", (canvas) => {
+      const r = canvas.getBoundingClientRect();
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+    });
+    const hitTarget = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.id, rect);
+    assert.equal(hitTarget, "stage", "the hidden globe canvas must not intercept terrain gestures");
+    await page.mouse.move(rect.x, rect.y);
+    await page.mouse.wheel({ deltaY: -350 });
+    await page.waitForFunction((distance) => Number(document.getElementById("stage")?.dataset.cameraDistance) < distance - 1, {}, before);
+    const closer = await page.$eval("#stage", (canvas) => Number(canvas.dataset.cameraDistance));
+    await page.mouse.wheel({ deltaY: 350 });
+    await page.waitForFunction((distance) => Number(document.getElementById("stage")?.dataset.cameraDistance) > distance + 1, {}, closer);
+    const farther = await page.$eval("#stage", (canvas) => Number(canvas.dataset.cameraDistance));
+    assert.ok(closer < before, `wheel up should zoom in: ${before} -> ${closer}`);
+    assert.ok(farther > closer, `wheel down should zoom out: ${closer} -> ${farther}`);
   });
 
   await test("WebGL is live and the terrain draws", async () => {
@@ -124,7 +145,26 @@ try {
     assert.equal(lawrence.plate, "lawrence");
     assert.ok(cheyenne.triangles > 0 && lawrence.triangles > 0);
     assert.notEqual(cheyenne.triangles, lawrence.triangles, "different terrain meshes are actually submitted to WebGL");
-    assert.notEqual(cheyenne.grid, lawrence.grid, "the surface dimensions follow the selected plate");
+    assert.equal(cheyenne.grid, lawrence.grid, "all plates use the shared display resolution after DEM resampling");
+    assert.equal(cheyenne.grid, "140×100", "the viewer keeps its configured terrain resolution");
+  });
+
+  await test("Cheyenne and SoCal place names are searchable on their matching terrain plates", async () => {
+    for (const [plate, name] of [["chey", "Pikes Peak"], ["ange", "Mount Wilson"]]) {
+      await page.click(`[data-plate="${plate}"]`);
+      await page.waitForFunction((id) => document.getElementById("stage")?.dataset.activePlate === id, {}, plate);
+      await page.$eval("#searchBox", (input, value) => {
+        input.value = value;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }, name);
+      await page.waitForFunction((value) => [...document.querySelectorAll("#searchResults .res")].some((button) => button.textContent.includes(value)), {}, name);
+      await page.$eval("#searchResults", (host, value) => {
+        [...host.querySelectorAll(".res")].find((button) => button.textContent.includes(value))?.click();
+      }, name);
+      await page.waitForFunction(() => document.getElementById("stage")?.dataset.gazetteerMarker === "active");
+      assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.activePlate), plate);
+      assert.match(await page.evaluate(() => document.getElementById("status").textContent), new RegExp(name));
+    }
   });
 
   await test("Gazetteer search jumps from a mountain plate to the matching terrain plate", async () => {

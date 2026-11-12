@@ -1,7 +1,7 @@
 # Mobile Device Identifier, SIM/Network Unlock, Rooting & Metasearch Research (T8.4)
 
-**Date**: 2026-11-11  
-**Scope**: Stream S8 (`T8.4` follow-up & research expansion) — Mobile Baseband, SIM Lock, Android Rooting Ecosystem, and Metasearch Architectures  
+**Date**: 2026-11-11
+**Scope**: Stream S8 (`T8.4` follow-up & research expansion) — Mobile Baseband, SIM Lock, Android Rooting Ecosystem, and Metasearch Architectures
 **Companions**:
 - `docs/sim-lock-research-2026-10-23.md`
 - `docs/agent-backlog-2026-10-21.json`

@@ -1,7 +1,7 @@
 # Sneakers 1992 Electronic Press Kit: Archival, Auction & Web Investigation (T2.2 & T2.3)
 
-**Date**: 2026-11-11  
-**Scope**: Agent Backlog Task Stream S2 (`T2.2` and `T2.3`)  
+**Date**: 2026-11-11
+**Scope**: Agent Backlog Task Stream S2 (`T2.2` and `T2.3`)
 **Companion Documents**:
 - `docs/sneakers-original-ghidra-wasm-2026-10-18.md`
 - `docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md`

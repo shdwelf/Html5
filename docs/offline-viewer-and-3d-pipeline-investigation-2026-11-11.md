@@ -1,8 +1,8 @@
 # Investigation & Architectural Triage: Offline Viewer, 3D VRML Pipeline, DEM Stitching, and Cryptographic Hardware Backlog
 
-**Date:** 2026-11-11  
-**Branch:** `arena/1c7359a3-html5`  
-**Base Commit:** `926d0453717934ee4fdaf4b480cc1fb9501f686a`  
+**Date:** 2026-11-11<br>
+**Branch:** `arena/1c7359a3-html5`<br>
+**Base Commit:** `926d0453717934ee4fdaf4b480cc1fb9501f686a`<br>
 
 ---
 

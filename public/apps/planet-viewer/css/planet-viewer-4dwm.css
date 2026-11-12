@@ -29,6 +29,7 @@ html, body {
 
 #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #globeStage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 5; cursor: grab; background: var(--bg); touch-action: none; }
+#globeStage[hidden] { display: none; }
 #globeStage:active { cursor: grabbing; }
 #pcgPanel {
   position: fixed; inset: 64px 16px 48px 16px; z-index: 7; overflow: auto;

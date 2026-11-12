@@ -185,7 +185,7 @@ jobs:
           pre-emulator-launch-script: >-
             { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
-            gradle --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; status=$?; cat app/build/android-webview-tests.log; exit "$status"
+            adb logcat -c || true; if gradle --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; then status=0; else status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; fi; cat app/build/android-webview-tests.log; exit "$status"
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
@@ -195,6 +195,7 @@ jobs:
           import glob
           import os
           import re
+          import subprocess
           import xml.etree.ElementTree as ET
 
           reports = glob.glob("apps/html5-offline-launcher/app/build/outputs/androidTest-results/**/*.xml", recursive=True)
@@ -206,13 +207,21 @@ jobs:
                   continue
               for case in root.iter("testcase"):
                   for result in list(case.findall("failure")) + list(case.findall("error")):
-                  attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
-                  text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
-                  detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
-                  if not detail:
-                      detail = "failure element has no attributes or text"
-                  name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
-                  failures.append(f"{name}: {detail[:4000]}")
+                      attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
+                      text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
+                      detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
+                      if not detail:
+                          case_output = " ".join(
+                              part.strip()
+                              for element in list(case.findall("system-out")) + list(case.findall("system-err"))
+                              for part in element.itertext()
+                              if part and part.strip()
+                          )
+                          detail = re.sub(r"\s+", " ", case_output).strip()
+                      if not detail:
+                          detail = "failure element has no attributes, text, or testcase output"
+                      name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
+                      failures.append(f"{name}: {detail[:4000]}")
 
           if failures:
               for failure in failures:
@@ -240,9 +249,63 @@ jobs:
               lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()
           except OSError as error:
               lines = [f"Could not read Gradle log: {error}"]
-          message = "\n".join(lines[-80:]) if lines else f"Gradle log exists but is empty ({os.path.getsize(log_path)} bytes)"
-          safe = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-          print(f"::error title=Android-instrumentation-log::{safe[-10000:]}")
+          if not lines:
+              lines = [f"Gradle log exists but is empty ({os.path.getsize(log_path)} bytes)"]
+
+          # GitHub clips a single annotation at 4 KB. Emit focused failure
+          # contexts and the log tail as separate annotations so the actual
+          # Gradle/JUnit cause is not hidden behind hundreds of stack frames.
+          marker = re.compile(
+              r"(?i)(FAILURE:|what went wrong:|execution failed for task|caused by:|"
+              r"assertionerror|headline.?harry|ci-ready|dosbox error|failed to start js-dos|"
+              r"instrumentation_status|instrumentation_code|fatal exception|build failed)"
+          )
+          hits = [index for index, line in enumerate(lines) if marker.search(line)]
+          selected = {}
+          for index in hits[-12:]:
+              for context_index in range(max(0, index - 2), min(len(lines), index + 5)):
+                  selected[context_index] = lines[context_index]
+          selected.update({index: lines[index] for index in range(max(0, len(lines) - 40), len(lines))})
+          diagnostic_lines = [selected[index] for index in sorted(selected)]
+          message = "\n".join(diagnostic_lines) if diagnostic_lines else "\n".join(lines[-40:])
+          message = message[-20000:]
+          for chunk_index, start in enumerate(range(0, len(message), 1000), start=1):
+              chunk = message[start:start + 1000]
+              safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Android-instrumentation-log-{chunk_index}::{safe}")
+
+          # Capture logcat inside the emulator-runner action before it tears
+          # down the virtual device; fall back to adb here for older runs.
+          logcat_path = "apps/html5-offline-launcher/app/build/android-webview-logcat.log"
+          if os.path.isfile(logcat_path):
+              try:
+                  logcat = open(logcat_path, encoding="utf-8", errors="replace").read().splitlines()
+              except OSError as error:
+                  logcat = [f"Could not read captured Android logcat: {error}"]
+          else:
+              try:
+                  result = subprocess.run(
+                      ["adb", "logcat", "-d", "-t", "1500", "-v", "brief"],
+                      capture_output=True, text=True, errors="replace", timeout=20,
+                  )
+                  logcat = result.stdout.splitlines()
+                  if result.returncode and result.stderr:
+                      logcat.append(f"adb logcat exited {result.returncode}: {result.stderr.strip()}")
+              except (OSError, subprocess.TimeoutExpired) as error:
+                  logcat = [f"Could not read adb logcat: {error}"]
+          logcat_pattern = re.compile(
+              r"(?i)(FATAL EXCEPTION|AndroidRuntime|chromium|crash_dump|SIGSEGV|ANR in|"
+              r"WebView|headline.?harry|js-dos|DOSBox error|failed to start|"
+              r"HeadlineHarrySmoke|Html5Offline|console)"
+          )
+          relevant_logcat = [line for line in logcat if logcat_pattern.search(line)][-60:]
+          if not relevant_logcat:
+              relevant_logcat = ["No matching Android/WebView crash or Headline Harry logcat lines."]
+          logcat_text = "\n".join(relevant_logcat)
+          for chunk_index, start in enumerate(range(0, len(logcat_text), 1000), start=1):
+              chunk = logcat_text[start:start + 1000]
+              safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Android-logcat-{chunk_index}::{safe}")
           PY
 
       - name: Report public APK size and SHA-256
