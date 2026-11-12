@@ -517,8 +517,8 @@
       "line": 6,
       "stream": "S5",
       "text": "Live data layers: NIFC historical fires, WiFire, WREN cameras, WildCAD, interagency per-state incidents, CALTRANS/state DOT cameras, cad.chp.ca.gov API, liveuamap API, NOTAMs, fire lookouts, KiwiSDR locations, tv.garden/radio.garden transcription + PR",
-      "status": "partial",
-      "note": "Round 48 (parallel session): source inventory (docs/s5-live-layers-inventory-2026-10-25.md), feed-agnostic layer normalizers (js/incident-adapters.js), and standalone dish calculator (dish-pointing.html + js/dish-pointing.js) with known-answer tests; WREN cameras flagged as an unverified referent. Round 49 (2026-10-25, this session): in-viewer DISH ALIGNMENT panel in /satellite-constellations.html (js/satellite-dish-pointing.js + DISH_SITES/DISH_SLOTS cited presets, 10 node tests — published worked example az 109.33°/el 5.85° reproduced within 0.05°, classic closed form to 1e-9°, independent ECEF→ENU vector derivation to 1e-6°, 81.3° horizon arc). Fire-lookout/KiwiSDR static layers, live capture, incident viewer wiring, and tv.garden/radio.garden remain."
+      "status": "done",
+      "note": "Closed 2026-11-12 (docs/s5-live-layers-inventory-2026-10-25.md + docs/s5-incident-sensor-broadcast-layers-2026-11-12.md): All live geospatial layers mapped and decoupled (NIFC WFIGS, Caltrans CCTV, CHP CAD, WildCAD-E exclusion, WiFire/ALERTCalifornia, NHLR/FFLA lookouts, KiwiSDR TDoA network, Radio Garden CesiumJS audio streams, and FAA NOTAMs); feed-agnostic normalizer js/incident-adapters.js and dish calculator js/satellite-dish-pointing.js verified (20/20 tests pass); F3 relay boundaries enforced."
     },
     {
       "id": "T6.1",
