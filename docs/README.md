@@ -282,6 +282,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [los-alamos-source-check-2026-09-30.md](los-alamos-source-check-2026-09-30.md) — los alamos source check 2026 09 30
 - [lost-treasure-source-check-2026-10-04.md](lost-treasure-source-check-2026-10-04.md) — lost treasure source check 2026 10 04
 - [norton-ghost-deep-dive.md](norton-ghost-deep-dive.md) — norton ghost deep dive
+- [s5-live-layers-inventory-2026-10-25.md](s5-live-layers-inventory-2026-10-25.md) — stream s5 live incident camera and sensor layers inventory
+- [s5-incident-sensor-broadcast-layers-2026-11-12.md](s5-incident-sensor-broadcast-layers-2026-11-12.md) — stream s5 live incident camera sdr and broadcast layers deep dive
 - [pdfdrive-deep-dive-2026-10-13.md](pdfdrive-deep-dive-2026-10-13.md) — pdfdrive deep dive 2026 10 13
 - [phreaking-boxes-vlsi-notes.md](phreaking-boxes-vlsi-notes.md) — phreaking boxes vlsi notes
 - [planet-viewer-deep-dive.md](planet-viewer-deep-dive.md) — planet viewer deep dive
