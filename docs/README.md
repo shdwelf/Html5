@@ -95,6 +95,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-70-2026-11-11.md](backlog-execution-round-70-2026-11-11.md) — Backlog execution round 70: Planet Viewer DEM zoom and OrbitControls inspection tuning
 - [backlog-execution-round-71-2026-11-12.md](backlog-execution-round-71-2026-11-12.md) — Backlog execution round 71: Offline viewer index verification and incident adapters audit
 - [backlog-execution-round-72-2026-11-12.md](backlog-execution-round-72-2026-11-12.md) — Backlog execution round 72: HTML5 offline viewer and XDC viewer integration verification
+- [backlog-execution-round-73-2026-11-13.md](backlog-execution-round-73-2026-11-13.md) — Backlog execution round 73: backlog resume, Linear notes sync, and Drive PR packet (PR #215)
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
 ## Research deep dives (the “ghirdra” line)
