@@ -10,7 +10,7 @@ resume and a Google Drive PR packet for the next pull request (PR #215).
    - No new code changes required this round — verification-only resume, per the pattern of rounds 71–72.
 2. **Linear notes sync**:
    - Linear workspace `ensogen` / team `Ensõ` (`ENS`, `98735b3a-d645-4b36-95ab-2429a30e4170`) previously held only the four onboarding issues (ENS-1…ENS-4) with zero documents and zero comments.
-   - Created Linear project **Html5 Backlog Resume** with a resume-notes document and per-stream issues so the backlog is now tracked in Linear alongside the repo docs.
+   - Created Linear project **Html5 Backlog Resume** with a resume-notes document and three round-level tracking issues (ENS-5–ENS-7); the project notes summarize all 14 streams, while the repo docs remain the detailed backlog register.
 3. **Google Drive PR packet (PR #215)**:
    - Generated the standard change-only backup set for branch `arena/96e6d5c7-html5` against base `c3116f9f68a7d84b7535363bdbc5862e3a4b2280` (PR #214):
      - `html5-session-20261113-pr215.bundle` (git bundle)
