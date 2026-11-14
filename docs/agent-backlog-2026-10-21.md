@@ -660,6 +660,16 @@ feed-agnostic layer normalizers (`js/incident-adapters.js`; loud
 rejections, dedupe, staleness, ArcGIS-point adapter; synthetic fixtures
 only). "WREN cameras" remains an unverified referent — flagged, not
 guessed. Live capture is F3 runner work; viewer wiring is next.
+
+**Round 74 status (2026-11-13): local snapshot viewer wiring shipped.**
+`planet-viewer-4dwm.html` and its packaged offline app now accept a
+user-chosen canonical S5 JSON snapshot, validate and age-gate it through
+`js/incident-snapshot.js` / `js/incident-adapters.js`, and plot the accepted
+points on the orthographic globe with kind filters, provenance inspection,
+rejection counts, and in-memory clear. Browser and Node tests use only
+synthetic fixtures. No live request, remote camera media, or private record
+is bundled; upstream captures and feed permissions remain F3 runner work.
+See [`backlog-execution-round-74-2026-11-13.md`](backlog-execution-round-74-2026-11-13.md).
 ### S6 · BBS & telecom history: Keyhole, FidoNet/ARPANET, payphones, ColdFire — *partial*
 Keyhole BBS + forum deep dive and In-Q-Tel/VC mapping are new; the BBS→ColdFire port line has
 several docs already ([`bbs-abandonware-coldfire-port.md`](bbs-abandonware-coldfire-port.md),

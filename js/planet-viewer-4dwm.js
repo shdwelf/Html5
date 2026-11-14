@@ -11,6 +11,7 @@ import { COUNTRIES } from "./country-data.js";
 import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments, projectOrthographic } from "./planet-globe.js";
 import { locateGazetteerPoint } from "./planet-viewer-search.js";
 import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
+import { filterIncidentFeatures, MAX_SNAPSHOT_BYTES, parseIncidentSnapshot } from "./incident-snapshot.js";
 
 /* =========================================================================
    PLANET VIEWER · 4DWM
@@ -50,6 +51,14 @@ let globeRings = null; // coastline rings from vendor/world/countries.geo.json
 let selectedGazetteer = null; // the most recently focused offline place
 let gazetteerMarker = null; // selected terrain point, separate from the DEM mesh
 let fpsAcc = { n: 0, t0: 0, fps: 0 };
+// S5: only user-selected canonical JSON. No bundled/live incident feed.
+let incidentSnapshot = null;
+let selectedIncident = null;
+let incidentLoadSerial = 0;
+const INCIDENT_COLORS = Object.freeze({
+  incident: "#ff6b76", fire: "#ffb454", camera: "#c4b5fd",
+  notam: "#facc15", lookout: "#86efac", sdr: "#67e8f9",
+});
 
 const COL = { sky: 0x0a1016, contour: 0x5cd6ff, marker: 0xffb020 };
 
@@ -255,6 +264,38 @@ function drawGlobe() {
     }
   }
 
+  // Imported markers have their own palette and never imply a live feed.
+  // visibleMarkers excludes the far hemisphere, exactly as for capitals.
+  const sensorVis = visibleMarkers(
+    filterIncidentFeatures(incidentSnapshot?.features ?? [], $("sensorKind")?.value ?? "all"),
+    cLat, cLon,
+  );
+  cv.dataset.sensorVisible = String(sensorVis.length);
+  for (const feature of sensorVis) {
+    const [x, y] = toPx(feature);
+    ctx.beginPath();
+    ctx.arc(x, y, sameIncident(feature, selectedIncident) ? 6 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = INCIDENT_COLORS[feature.kind];
+    ctx.fill();
+    ctx.strokeStyle = "#051018";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    if (sameIncident(feature, selectedIncident)) {
+      ctx.beginPath();
+      ctx.arc(x, y, 8, 0, Math.PI * 2);
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+    }
+  }
+  if (labelsOn && sensorVis.length) {
+    ctx.font = "bold 10px " + getComputedStyle(document.body).getPropertyValue("--mono");
+    for (const feature of sensorVis.filter((m) => m.z > 0.65).slice(-16)) {
+      const [x, y] = toPx(feature);
+      ctx.fillStyle = INCIDENT_COLORS[feature.kind];
+      ctx.fillText(feature.title.slice(0, 80), x + 7, y - 5);
+    }
+  }
+
   if (selectedGazetteer) {
     const p = projectOrthographic(selectedGazetteer.lat, selectedGazetteer.lon, cLat, cLon);
     if (p.visible) {
@@ -294,6 +335,142 @@ function setGlobe(on) {
         : "globe · coastlines unavailable — graticule and capital markers remain (offline fallback)",
     );
   }
+}
+
+/* ----------------------------------------------------- S5 local snapshot
+   The globe is the only map for imported points. A snapshot is explicitly
+   dated and never silently refreshed or fetched from agency hosts. */
+
+const sameIncident = (a, b) => Boolean(a && b
+  && a.id === b.id && a.kind === b.kind && a.sourceId === b.sourceId);
+
+function renderIncidentSnapshot() {
+  const status = $("sensorStatus");
+  status.dataset.error = "false";
+  const list = $("sensorResults");
+  list.replaceChildren();
+  const errors = $("sensorRejects");
+  errors.hidden = !incidentSnapshot?.rejected.length;
+  errors.querySelector("summary").textContent = `Rejected records: ${incidentSnapshot?.rejected.length ?? 0}`;
+  const reasons = errors.querySelector("ul");
+  reasons.replaceChildren();
+  for (const reject of (incidentSnapshot?.rejected ?? []).slice(0, 20)) {
+    const row = document.createElement("li");
+    row.textContent = `${reject.id ?? "(no ID)"}: ${reject.reason}`;
+    reasons.appendChild(row);
+  }
+  if (incidentSnapshot?.rejected.length > 20) {
+    const more = document.createElement("li");
+    more.textContent = `…and ${incidentSnapshot.rejected.length - 20} more; see the source file for details.`;
+    reasons.appendChild(more);
+  }
+  $("sensorClear").disabled = !incidentSnapshot;
+  if (!incidentSnapshot) {
+    status.textContent = "No snapshot imported.";
+    return;
+  }
+  const records = filterIncidentFeatures(incidentSnapshot.features, $("sensorKind").value);
+  status.textContent = `Dated snapshot ${new Date(incidentSnapshot.capturedAtEpochMs).toISOString()} · `
+    + `${records.length}/${incidentSnapshot.features.length} shown on GLOBE · `
+    + `${incidentSnapshot.rejected.length} rejected, ${incidentSnapshot.deduplicatedCount} superseded · not live or saved.`;
+  for (const feature of records.slice(0, 50)) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sensor-record";
+    button.setAttribute("aria-label", `Inspect ${feature.kind}: ${feature.title}`);
+    const name = document.createElement("span");
+    name.textContent = feature.title;
+    const meta = document.createElement("small");
+    meta.textContent = `${feature.kind} · ${feature.sourceId}`;
+    button.append(name, meta);
+    button.addEventListener("click", () => focusIncident(feature));
+    list.appendChild(button);
+  }
+  if (records.length > 50) {
+    const more = document.createElement("p");
+    more.className = "tiny";
+    more.textContent = `${records.length - 50} more markers on the globe. Narrow the kind filter to inspect more here.`;
+    list.appendChild(more);
+  }
+}
+
+function focusIncident(feature) {
+  selectedIncident = feature;
+  selectedGazetteer = null;
+  clearGazetteerMarker();
+  globeCentre = { lat: feature.lat, lon: feature.lon };
+  if (pcgOn || !globeOn) selectPlate("globe");
+  drawGlobe();
+  $("infoTitle").textContent = feature.title;
+  const host = $("infoBody");
+  host.replaceChildren();
+  const line = document.createElement("p");
+  line.className = "small";
+  line.textContent = `${feature.kind} · ${feature.lat.toFixed(5)}, ${feature.lon.toFixed(5)} · source ${feature.sourceId}`;
+  const timing = document.createElement("p");
+  timing.className = "tiny dim";
+  timing.textContent = `Record updated ${new Date(feature.updatedEpochMs).toISOString()} · `
+    + `snapshot captured ${new Date(incidentSnapshot.capturedAtEpochMs).toISOString()}. `
+    + "Imported file only; no live status or remote link loaded.";
+  host.append(line, timing);
+  revealPanelOnCompact("inspectorPanel");
+  announce(`Imported ${feature.kind} snapshot · ${feature.title} · centered globe (not live)`);
+}
+
+function pickIncidentAt(clientX, clientY) {
+  const cv = $("globeStage");
+  const rect = cv.getBoundingClientRect();
+  const radius = Math.min(rect.width, rect.height) * 0.42;
+  let closest = null;
+  let distance = 12 ** 2;
+  for (const feature of visibleMarkers(
+    filterIncidentFeatures(incidentSnapshot?.features ?? [], $("sensorKind").value),
+    globeCentre.lat, globeCentre.lon,
+  )) {
+    const x = rect.left + rect.width / 2 + feature.x * radius;
+    const y = rect.top + rect.height / 2 - feature.y * radius;
+    const d = (x - clientX) ** 2 + (y - clientY) ** 2;
+    if (d < distance) { closest = feature; distance = d; }
+  }
+  if (closest) focusIncident(closest);
+}
+
+async function importIncidentFile(file) {
+  const serial = ++incidentLoadSerial;
+  try {
+    if (file.size > MAX_SNAPSHOT_BYTES) throw new RangeError("snapshot exceeds 1 MiB limit");
+    const parsed = parseIncidentSnapshot(await file.text());
+    if (serial !== incidentLoadSerial) return; // clearing/reselecting beats a slow read
+    incidentSnapshot = parsed;
+    selectedIncident = null;
+    renderIncidentSnapshot();
+    if (!globeOn) selectPlate("globe");
+    else { renderLayers(); drawGlobe(); }
+    announce(`Imported dated local snapshot · ${parsed.features.length} accepted · ${parsed.rejected.length} rejected (not live)`);
+  } catch (error) {
+    if (serial !== incidentLoadSerial) return;
+    const status = $("sensorStatus");
+    status.dataset.error = "true";
+    status.textContent = `Could not import: ${error.message}. ${incidentSnapshot ? "Previous snapshot kept." : "No snapshot loaded."}`;
+  } finally {
+    if (serial === incidentLoadSerial) $("sensorFile").value = "";
+  }
+}
+
+function clearIncidentSnapshot() {
+  incidentLoadSerial++;
+  const wasSelected = Boolean(selectedIncident);
+  incidentSnapshot = null;
+  selectedIncident = null;
+  $("sensorFile").value = "";
+  $("sensorKind").value = "all";
+  if (wasSelected) {
+    $("infoTitle").textContent = "Inspector";
+    $("infoBody").textContent = "Click a Gazetteer marker to inspect its place-name record and source.";
+  }
+  renderIncidentSnapshot();
+  if (globeOn) { renderLayers(); drawGlobe(); }
+  announce("Local incident snapshot cleared; no records retained");
 }
 
 /* ------------------------------------------------------- PC Globe index
@@ -463,14 +640,22 @@ function renderChecks() {
 function renderLayers() {
   const host = $("layerList");
   if (!host) return;
-  const [bw, bs, be, bn] = plate.grid.bbox;
-  const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 120 });
-  const rows = [
-    ["surface", "Hypsometric surface", `${plate.grid.nx}×${plate.grid.ny}`],
-    ["wire", "Wireframe lattice", mode === "wire" ? "on" : "off"],
-    ["contour", "Contour bands (x-ray)", "6"],
-    ["gnis", "Gazetteer points", String(inBox.length)],
-  ];
+  const rows = globeOn ? [
+    ["capitals", "Factbook capitals", String(globeData?.markers.length ?? 0)],
+    ["coasts", "Offline coastlines", globeRings ? "on" : "unavailable"],
+    ["sensor", "Imported snapshot (not live)", String(filterIncidentFeatures(
+      incidentSnapshot?.features ?? [], $("sensorKind")?.value ?? "all",
+    ).length)],
+  ] : (() => {
+    const [bw, bs, be, bn] = plate.grid.bbox;
+    const inBox = searchBox(gazIndex, { lat0: bs, lat1: bn, lon0: bw, lon1: be }, { limit: 120 });
+    return [
+      ["surface", "Hypsometric surface", `${plate.grid.nx}×${plate.grid.ny}`],
+      ["wire", "Wireframe lattice", mode === "wire" ? "on" : "off"],
+      ["contour", "Contour bands (x-ray)", "6"],
+      ["gnis", "Gazetteer points", String(inBox.length)],
+    ];
+  })();
   host.innerHTML = rows
     .map(
       ([k, label, val]) =>
@@ -709,17 +894,24 @@ function bind() {
   if (gc) {
     let drag = null;
     gc.addEventListener("pointerdown", (e) => {
-      drag = { x: e.clientX, y: e.clientY };
+      drag = { x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, moved: false };
       gc.setPointerCapture(e.pointerId);
     });
     gc.addEventListener("pointermove", (e) => {
       if (!drag) return;
+      if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 5) drag.moved = true;
       globeCentre.lon -= (e.clientX - drag.x) * 0.25;
       globeCentre.lat = Math.max(-80, Math.min(80, globeCentre.lat + (e.clientY - drag.y) * 0.25));
-      drag = { x: e.clientX, y: e.clientY };
+      drag.x = e.clientX;
+      drag.y = e.clientY;
       drawGlobe();
     });
-    gc.addEventListener("pointerup", () => (drag = null));
+    gc.addEventListener("pointerup", (e) => {
+      if (drag && !drag.moved && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) <= 5) {
+        pickIncidentAt(e.clientX, e.clientY);
+      }
+      drag = null;
+    });
     gc.addEventListener("pointercancel", () => (drag = null));
   }
 
@@ -748,6 +940,20 @@ function bind() {
   });
   $("searchBox")?.addEventListener("input", (e) => doSearch(e.target.value.trim()));
   $("pcgSearch")?.addEventListener("input", (e) => renderPcGlobe(e.target.value));
+  $("sensorFile").addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (file) void importIncidentFile(file);
+  });
+  $("sensorKind").addEventListener("change", () => {
+    if (selectedIncident) {
+      selectedIncident = null;
+      $("infoTitle").textContent = "Inspector";
+      $("infoBody").textContent = "Select a snapshot record or marker to inspect its source.";
+    }
+    renderIncidentSnapshot();
+    if (globeOn) { renderLayers(); drawGlobe(); }
+  });
+  $("sensorClear").addEventListener("click", clearIncidentSnapshot);
 
   renderer.domElement.addEventListener("pointerdown", (ev) => {
     const r = renderer.domElement.getBoundingClientRect();
@@ -801,6 +1007,7 @@ function init() {
 
   selectPlate("chey");
   initWm();
+  renderIncidentSnapshot();
   bind();
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight;
