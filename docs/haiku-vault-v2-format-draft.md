@@ -47,13 +47,44 @@ parsing.
   member and keep it only when the archive is smaller than the raw JSON. A
   no-compression v2 frame is used otherwise.
 - The library also has `none` and `lzma2` modes for interoperability tests and
-  callers that explicitly require the LZMA2 codec.
+  callers that explicitly require the LZMA2 codec. The unchanged default is
+  7z/LZMA2 effort 5 with an 8 MiB dictionary request. Callers can pass
+  `lzma2Level: 0..9`; level 0 still emits a valid LZMA2 member in the pinned
+  7zz build, **not** a claim that Vault codec ID 0 was selected.
+- `deltaDistance: 1..256` is an **opt-in** standard 7z Delta prefilter before
+  LZMA2, only when compression is enabled. It is intended for suitable
+  structured data; it does not guarantee smaller JSON. Invalid levels or
+  strides are rejected rather than truncated. The default UI remains `auto`
+  with no Delta filter.
 - Maximum uncompressed JSON: 16 MiB. Maximum 7z archive: 32 MiB.
 - The WebAssembly runtime is pinned as `7z-wasm@1.2.0`, copied into local app
   assets by `scripts/build-7z-wasm-assets.mjs`, and loaded lazily only for v2
   LZMA2 work. There is no CDN or network fallback.
 - The codec notice and upstream license texts are in
   [`public/licenses/7z-wasm/`](../public/licenses/7z-wasm/).
+
+**Compatibility/version plan.** Level and Delta settings live inside the
+standard single-member 7z archive, under the existing authenticated codec ID 1;
+the nine-byte v2 frame is unchanged. The pinned 7zz decoder handles both the
+old LZMA2-only archive and the new optional Delta+LZMA2 chain. The reader now
+rejects other 7z methods under ID 1 before extraction. A future new compressor
+(e.g. Huffman-coded ZIP/DEFLATE) would need its own explicitly negotiated codec
+ID or a new envelope version, plus old/new-reader tests: neither the ZIP writer
+nor ACE's Huffman patch is silently substituted here. The repository's Luby
+Transform (LT) is **erasure recovery for transport**, not compression; placing
+LT packets inside this v2 frame would change its grammar and reader contract,
+so this change leaves LT outside Vault. A regression test separately applies
+existing LT packets to an **already encrypted** synthetic v2 file, drops 25%
+of packets, reconstructs the exact bytes and authenticates/decrypts the vault;
+that test is not a new Vault packet format or a general recovery guarantee.
+LZMA2 itself uses range coding, not a Huffman stage that can be toggled on by
+raising its effort level.
+
+To evaluate sizes without any private Vault content, run
+`node tools/bench-vault-v2-codecs.mjs --json`. It verifies reconstructed bytes
+and SHA-256 on three seeded/synthetic JSON corpora across all ten LZMA2 effort
+settings, with and without Delta at levels 5 and 9, and compares standard
+ZIP/DEFLATE separately. This is a size study, **not** a speed/security claim.
 
 The generated standalone HTML decryptor is a v1 tool. V2 import currently runs
 inside the offline-capable application, which includes the local JS/WASM codec

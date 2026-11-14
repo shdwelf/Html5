@@ -11,7 +11,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { unzipSync } from "../vendor/fflate/index.mjs";
-import { PUBLIC_CORPUS_EXCLUDED_SOURCES } from "../tools/wikiinajar/public-corpus-policy.mjs";
+import { PUBLIC_CORPUS_EXCLUDED_ASSETS, PUBLIC_CORPUS_EXCLUDED_SOURCES } from "../tools/wikiinajar/public-corpus-policy.mjs";
 import { hasPrivateBackupPassage, hasPrivateCloudReference } from "../tools/wikiinajar/privacy-preflight.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -38,6 +38,19 @@ function treeFiles(directory, prefix = "") {
   });
 }
 
+function assertPublicDocs(files, archiveName) {
+  for (const privateSource of [...PUBLIC_CORPUS_EXCLUDED_SOURCES, ...PUBLIC_CORPUS_EXCLUDED_ASSETS]
+    .filter((name) => name.startsWith("docs/"))) {
+    assert.ok(!files[privateSource], `${privateSource} must not be copied into ${archiveName}`);
+  }
+  for (const name of Object.keys(files).filter((name) =>
+    name.startsWith("docs/") && !name.endsWith("/") && !/\.(?:png|jpe?g|gif|webp|bmp)$/i.test(name))) {
+    const content = text(files, name);
+    assert.equal(hasPrivateCloudReference(content), false, `${name} contains a private cloud reference`);
+    assert.equal(hasPrivateBackupPassage(content), false, `${name} contains private backup context`);
+  }
+}
+
 test("SITE-K archive contains the current shell and complete Project Y exhibit", () => {
   const files = archive("sitek.xdc");
   for (const file of [
@@ -60,14 +73,7 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   ]) text(files, file);
 
   assert.match(text(files, "manifest.toml"), /SITE-K · Offline Site Collection/);
-  for (const privateSource of PUBLIC_CORPUS_EXCLUDED_SOURCES.filter((name) => name.startsWith("docs/"))) {
-    assert.ok(!files[privateSource], `${privateSource} must not be copied into the public SITE-K archive`);
-  }
-  for (const markdown of Object.keys(files).filter((name) => name.startsWith("docs/") && name.endsWith(".md"))) {
-    const content = text(files, markdown);
-    assert.equal(hasPrivateCloudReference(content), false, `${markdown} contains a private cloud reference`);
-    assert.equal(hasPrivateBackupPassage(content), false, `${markdown} contains private backup context`);
-  }
+  assertPublicDocs(files, "the public SITE-K archive");
   assert.equal(text(files, "index.html"), source("index.html"));
   assert.equal(text(files, "4dwm-ports.html"), source("4dwm-ports.html"));
   assert.equal(text(files, "js/sitek-modes.js"), source("js/sitek-modes.js"));
@@ -75,6 +81,10 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   assert.equal(text(files, "js/project-y-sites-data.js"), source("js/project-y-sites-data.js"));
   const worker = text(files, "sw.js");
   assert.equal(worker, source("sw.js"));
+  assert.equal(text(files, "js/zip.js"), source("js/zip.js"), "offline ZIP writer is current");
+  assert.equal(text(files, "vendor/fflate/browser.mjs"), source("vendor/fflate/browser.mjs"), "ZIP compressor is bundled");
+  assert.match(source("js/zip.js"), /from "\.\.\/vendor\/fflate\/browser\.mjs"/);
+  assert.ok(worker.includes('"./vendor/fflate/browser.mjs"'), "ZIP compressor is precached for offline exports");
   assert.ok(worker.includes('"./js/sanborn-restaurant-manifest.js"'), "Sanborn's local parser is precached for first offline launch");
   for (const file of [
     "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js", "js/country-map.js",
@@ -102,14 +112,7 @@ test("ADL Gazetteer archive uses the privacy-filtered public docs tree", () => {
   const files = archive("adl.xdc");
   assert.ok(files["index.html"] && files["manifest.toml"]);
   assert.ok(files["docs/research/03_GAZBEAN_ARCHITECTURE.md"], "public ADL architecture note remains available offline");
-  for (const privateSource of PUBLIC_CORPUS_EXCLUDED_SOURCES.filter((name) => name.startsWith("docs/"))) {
-    assert.ok(!files[privateSource], `${privateSource} must not be copied into the ADL archive`);
-  }
-  for (const markdown of Object.keys(files).filter((name) => name.startsWith("docs/") && name.endsWith(".md"))) {
-    const content = text(files, markdown);
-    assert.equal(hasPrivateCloudReference(content), false, `${markdown} contains a private cloud reference`);
-    assert.equal(hasPrivateBackupPassage(content), false, `${markdown} contains private backup context`);
-  }
+  assertPublicDocs(files, "the ADL archive");
 });
 
 test("focused Project Y archive ships all six sites and their local dependencies", () => {

@@ -34,6 +34,10 @@ export type VaultFileV2Compression = "none" | "lzma2" | "auto";
 export interface VaultFileV2Options {
   /** `auto` keeps the LZMA2 archive only when it is smaller than the JSON. */
   compression?: VaultFileV2Compression;
+  /** 7z/LZMA2 effort 0..9, default 5. Even level 0 is an LZMA2 7z member. */
+  lzma2Level?: number;
+  /** Optional 7z Delta prefilter stride 1..256, applied before LZMA2. */
+  deltaDistance?: number;
   /** Deterministic test hooks; omit both in production to use fresh randomness. */
   salt?: Uint8Array;
   iv?: Uint8Array;
@@ -160,7 +164,14 @@ function validateSevenZipMemberListing(output: string[], expectedBytes: number):
     fields.set(key, line.slice(separator + 3));
   }
   const memberSize = Number(fields.get("Size"));
+  const method = fields.get("Method") ?? "";
+  // Only the standard 7z LZMA2 coder, optionally preceded by a Delta filter,
+  // belongs to codec 1. A different 7z method needs a new authenticated codec
+  // ID and a reader/version plan, not a silent substitution in existing v2.
+  const chain = /^LZMA2(?::[0-9]+[kmg]?)?(?: Delta:(\d{1,3}))?$/.exec(method);
+  const delta = Number(chain?.[1]);
   if (
+    !chain || (chain[1] !== undefined && (delta < 1 || delta > 256)) ||
     fields.get("Path") !== "payload.json" ||
     fields.get("Folder") === "+" ||
     fields.has("Symbolic Link") ||
@@ -173,7 +184,9 @@ function validateSevenZipMemberListing(output: string[], expectedBytes: number):
   }
 }
 
-async function compressJsonWithLzma2(json: Uint8Array): Promise<Uint8Array> {
+async function compressJsonWithLzma2(
+  json: Uint8Array, level: number, deltaDistance?: number,
+): Promise<Uint8Array> {
   const sevenZip = await loadSevenZip();
   const runRoot = `/hv2-compress-${sevenZipRunId++}`;
   const inputPath = `${runRoot}/payload.json`;
@@ -183,7 +196,10 @@ async function compressJsonWithLzma2(json: Uint8Array): Promise<Uint8Array> {
   try {
     fs.writeFile(inputPath, json);
     runSevenZip(sevenZip, [
-      "a", "-t7z", "-m0=LZMA2", "-mx=5", "-md=8m", "-mmt=1",
+      "a", "-t7z", "-m0=LZMA2",
+      // 7z's coder order is decoder-first: LZMA2 then optional Delta.
+      ...(deltaDistance === undefined ? [] : [`-m1=Delta:${deltaDistance}`]),
+      `-mx=${level}`, "-md=8m", "-mmt=1",
       "-mtc=off", "-mta=off", "-mtm=off", "-bd", "-bso0", "-bsp0", "-bse0",
       archivePath, inputPath,
     ]);
@@ -257,11 +273,23 @@ export async function encryptVaultFileV2(
   if (json.byteLength > V2_MAX_JSON_BYTES) throw new Error("JSON payload exceeds the v2 size limit.");
   const mode = options.compression ?? "auto";
   if (!["none", "lzma2", "auto"].includes(mode)) throw new Error("Unsupported v2 compression mode.");
+  const level = options.lzma2Level ?? 5;
+  const deltaDistance = options.deltaDistance;
+  if (!Number.isInteger(level) || level < 0 || level > 9) {
+    throw new RangeError("v2 LZMA2 level must be an integer from 0 through 9.");
+  }
+  if (deltaDistance !== undefined &&
+      (!Number.isInteger(deltaDistance) || deltaDistance < 1 || deltaDistance > 256)) {
+    throw new RangeError("v2 Delta distance must be an integer from 1 through 256.");
+  }
+  if (mode === "none" && (options.lzma2Level !== undefined || deltaDistance !== undefined)) {
+    throw new Error("v2 raw JSON mode cannot use LZMA2 or Delta options.");
+  }
 
   let codec = V2_CODEC_NONE;
   let payload: Uint8Array<ArrayBufferLike> = json;
   if (mode !== "none") {
-    const archive = await compressJsonWithLzma2(json);
+    const archive = await compressJsonWithLzma2(json, level, deltaDistance);
     if (mode === "lzma2" || archive.byteLength < json.byteLength) {
       codec = V2_CODEC_7Z_LZMA2;
       payload = archive;

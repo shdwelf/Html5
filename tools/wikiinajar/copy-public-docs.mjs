@@ -2,12 +2,13 @@
 /**
  * Copy the reviewed public Markdown/asset tree into a distributable app while
  * honoring the same source exclusions as Wiki in a Jar. The copy is refused
- * if any included Markdown contains a likely private Drive/Dropbox reference.
+ * if any included text asset (including JSON, not just Markdown) contains a
+ * likely private Drive/Dropbox reference or private-backup passage.
  */
 import { copyFile, mkdir, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { PUBLIC_CORPUS_EXCLUDED_SOURCES } from "./public-corpus-policy.mjs";
+import { PUBLIC_CORPUS_EXCLUDED_ASSETS, PUBLIC_CORPUS_EXCLUDED_SOURCES } from "./public-corpus-policy.mjs";
 import { findUnsafeCloudReferenceSources, findPrivateBackupPassageSources } from "./privacy-preflight.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -18,7 +19,8 @@ if (!destination) {
   process.exit(2);
 }
 const destinationRoot = path.resolve(destination);
-const excluded = new Set(PUBLIC_CORPUS_EXCLUDED_SOURCES.filter((name) => name.startsWith("docs/")));
+const excludedMarkdown = PUBLIC_CORPUS_EXCLUDED_SOURCES.filter((name) => name.startsWith("docs/"));
+const excluded = new Set([...excludedMarkdown, ...PUBLIC_CORPUS_EXCLUDED_ASSETS]);
 
 async function collect(directory, relative = "docs") {
   const files = [];
@@ -32,12 +34,15 @@ async function collect(directory, relative = "docs") {
 }
 
 const files = await collect(sourceRoot);
-const markdown = await Promise.all(files
-  .filter(({ relativePath }) => relativePath.endsWith(".md"))
+// Images are the only binary assets presently shipped from docs/. Check all
+// other assets as text, not just .md: the repository also stores JSON that can
+// contain private cloud identifiers. New binary types require a separate audit.
+const textAssets = await Promise.all(files
+  .filter(({ relativePath }) => !/\.(?:png|jpe?g|gif|webp|bmp)$/i.test(relativePath))
   .map(async ({ sourcePath, relativePath }) => ({ source: relativePath, markdown: await readFile(sourcePath, "utf8") })));
 const unsafe = [...new Set([
-  ...findUnsafeCloudReferenceSources(markdown),
-  ...findPrivateBackupPassageSources(markdown),
+  ...findUnsafeCloudReferenceSources(textAssets),
+  ...findPrivateBackupPassageSources(textAssets),
 ])];
 if (unsafe.length) {
   throw new Error(`refusing to copy private cloud/archive references from: ${unsafe.join(", ")}`);
@@ -49,4 +54,4 @@ for (const { sourcePath, relativePath } of files) {
   await mkdir(path.dirname(target), { recursive: true });
   await copyFile(sourcePath, target);
 }
-console.log(`Copied ${files.length} public docs assets (${excluded.size} private/personal Markdown sources excluded).`);
+console.log(`Copied ${files.length} public docs assets (${excludedMarkdown.length} excluded Markdown sources; ${PUBLIC_CORPUS_EXCLUDED_ASSETS.length} excluded text assets).`);
