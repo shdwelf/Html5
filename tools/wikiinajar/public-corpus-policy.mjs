@@ -4,6 +4,14 @@
  * retrieval notes, and address-review candidates remain in their repository
  * locations but are not copied into the public Wiki or SITE-K XDC.
  */
+// These non-Markdown files contain private cloud inventory/references and must
+// not be copied by the SITE-K/ADL docs-tree packer. The Wiki corpus contains
+// only Markdown, so keep this list separate from its source exclusions.
+export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
+  "docs/agent-backlog-2026-10-21.json",
+  "docs/drive-inventory-2026-10-04.json",
+]);
+
 export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/README.md",
   "docs/greeran-book-ideas-backlog.md",
@@ -22,6 +30,8 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/backlog-execution-round-67-2026-11-11.md",
   "docs/backlog-execution-round-68-2026-11-11.md",
   "docs/backlog-execution-round-69-2026-11-11.md",
+  // Round 73 discusses private backups; never copy it into public offline apps.
+  "docs/backlog-execution-round-73-2026-11-13.md",
   "docs/chipwright-restore-status-2026-10-22.md",
   "docs/drive-backup-2026-10-08.md",
   "docs/drive-backup-2026-10-17.md",

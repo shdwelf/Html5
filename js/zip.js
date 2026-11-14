@@ -1,14 +1,23 @@
 /**
- * Minimal ZIP writer (STORE, or DEFLATE via stored deflate blocks).
+ * Small ZIP32 writer (STORE or standard DEFLATE, no ZIP64).
  *
- * webxdc (.xdc) packages are plain ZIP archives, so this is what backs the
- * "WEBXDC" export button as well as the Duke3D total-conversion bundle
- * when it is handed over as a .zip alongside the .grp.
- *
+ * webxdc (.xdc) packages are plain ZIP archives. The synchronous compressor
+ * is the already-vendored, browser-compatible fflate implementation; no
+ * network or platform-specific compression API is needed at export time.
  * Pure module: no DOM.
  */
 
+import { deflateSync } from "../vendor/fflate/browser.mjs";
 import { crc32 } from "./binfmt.js";
+
+const ZIP32_MAX = 0xffffffff;
+
+function zip32(value, field) {
+  if (!Number.isSafeInteger(value) || value < 0 || value > ZIP32_MAX) {
+    throw new RangeError(`${field} exceeds ZIP32 limits (ZIP64 is not supported)`);
+  }
+}
+
 
 function dosDateTime(d = new Date()) {
   const year = Math.max(1980, d.getUTCFullYear());
@@ -23,11 +32,16 @@ function strBytes(s) {
 
 /**
  * @param {Array<{name:string,data:Uint8Array|string,comment?:string}>} files
- * @param {object} opts { deflate?:boolean, date?:Date, comment?:string }
+ * @param {object} opts { deflate?:boolean, level?:number (0..9), date?:Date }
  * @returns {Uint8Array}
  */
 export function zipFiles(files, opts = {}) {
   const useDeflate = !!opts.deflate;
+  const level = opts.level ?? 6; // balance encode time and ratio; level 9 is optional
+  if (useDeflate && (!Number.isInteger(level) || level < 0 || level > 9)) {
+    throw new RangeError("ZIP DEFLATE level must be an integer from 0 to 9");
+  }
+  if (files.length > 0xffff) throw new RangeError("ZIP32 supports at most 65535 entries");
   const { time, date } = dosDateTime(opts.date || new Date());
   const parts = [];
   const central = [];
@@ -36,13 +50,22 @@ export function zipFiles(files, opts = {}) {
   for (const f of files) {
     const nameBytes = strBytes(f.name);
     const raw = typeof f.data === "string" ? strBytes(f.data) : f.data;
+    if (!(raw instanceof Uint8Array)) throw new TypeError("ZIP data must be a string or Uint8Array");
+    if (nameBytes.length > 0xffff) throw new RangeError("ZIP filename exceeds 65535 UTF-8 bytes");
+    zip32(raw.length, "Uncompressed size");
+    zip32(offset, "Local header offset");
     const crc = crc32(raw);
     let stored = raw;
     let method = 0;
-    if (useDeflate) {
-      stored = rawDeflate(raw); // raw DEFLATE stream of stored blocks
-      method = 8;
+    if (useDeflate && raw.length) {
+      const compressed = deflateSync(raw, { level }); // raw RFC 1951 stream, not zlib/gzip
+      if (compressed.length < raw.length) {
+        stored = compressed;
+        method = 8;
+      }
     }
+    zip32(stored.length, "Compressed size");
+    zip32(offset + 30 + nameBytes.length + stored.length, "Central directory offset");
     const local = new Uint8Array(30 + nameBytes.length);
     const lv = new DataView(local.buffer);
     lv.setUint32(0, 0x04034b50, true);
@@ -86,6 +109,8 @@ export function zipFiles(files, opts = {}) {
   }
 
   const cdSize = central.reduce((s, c) => s + c.length, 0);
+  zip32(cdSize, "Central directory size");
+  zip32(offset + cdSize + 22, "Archive size");
   const end = new Uint8Array(22);
   const ev = new DataView(end.buffer);
   ev.setUint32(0, 0x06054b50, true);
@@ -112,7 +137,10 @@ export function zipFiles(files, opts = {}) {
   return out;
 }
 
-/** Raw DEFLATE stream of stored blocks (no zlib header, no adler). */
+/** Legacy stored-block DEFLATE helper (no zlib header, no Adler-32).
+ * Kept for callers that need a lossless uncompressed DEFLATE stream; the ZIP
+ * writer now uses fflate's real LZ77/Huffman compressor instead.
+ */
 export function rawDeflate(data) {
   const maxBlock = 65535;
   const blocks = Math.max(1, Math.ceil(data.length / maxBlock));

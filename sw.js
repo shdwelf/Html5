@@ -1,7 +1,7 @@
 /* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
    visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v44`;
+const CACHE = `${CACHE_PREFIX}v45`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -217,6 +217,7 @@ const PRECACHE = [
   "./js/makint.js",
   "./samples/makint/analysis.json",
   "./vendor/fflate/index.mjs",
+  "./vendor/fflate/browser.mjs", // ZIP export from js/zip.js works offline
 ];
 
 async function precache() {
