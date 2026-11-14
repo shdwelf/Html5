@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { runBfvDemo } from "../tools/he-bfv-demo.mjs";
 
-test("BFV really evaluates addition and multiplication on encrypted inputs", async () => {
-  for (const [a, b] of [[3, 5], [0, 100], [100, 100]]) {
+test("BFV evaluates encrypted addition, modular subtraction and multiplication", async () => {
+  for (const [a, b] of [[3, 5], [0, 100], [100, 100], [99, 0]]) {
     const result = await runBfvDemo(a, b);
     assert.equal(result.sum, a + b);
+    assert.ok(result.plainModulus > 100, "plaintext modulus covers the demo input range");
+    assert.equal(result.differenceResidue,
+      ((a - b) % result.plainModulus + result.plainModulus) % result.plainModulus);
     assert.equal(result.product, a * b);
     assert.equal(result.securityLevelBits, 128);
     assert.ok(result.noiseBudgetBits > 0);

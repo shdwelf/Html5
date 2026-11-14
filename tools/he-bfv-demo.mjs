@@ -2,8 +2,9 @@
 /**
  * Locally executable, bounded-depth homomorphic arithmetic example.
  *
- * BFV encrypts integer slots; the evaluator adds AND multiplies ciphertexts
- * without seeing their plaintext. It is leveled HE, NOT an unbounded/FHE demo:
+ * BFV encrypts integer slots; the evaluator adds, subtracts and multiplies
+ * ciphertexts without seeing their plaintext. Subtraction is modulo the BFV
+ * plaintext prime. It is leveled HE, NOT an unbounded/FHE demo:
  * node-seal 7 / SEAL 4.1.2 do not provide bootstrapping in this example.
  * Keys and ciphertexts exist only in memory; do not use as a key-management
  * or multi-party deployment template. Run `npm ci && npm run demo:bfv`.
@@ -19,14 +20,16 @@ function evaluateEncrypted(seal, context, relinKeys, ciphertextA, ciphertextB, o
   // decryptor, plaintext inputs, or decoded values are passed here.
   const evaluator = own(new seal.Evaluator(context));
   const sum = own(new seal.Ciphertext());
+  const difference = own(new seal.Ciphertext());
   const product = own(new seal.Ciphertext());
   evaluator.add(ciphertextA, ciphertextB, sum);
+  evaluator.sub(ciphertextA, ciphertextB, difference);
   evaluator.multiply(ciphertextA, ciphertextB, product);
   evaluator.relinearizeInplace(product, relinKeys);
-  return { sum, product };
+  return { sum, difference, product };
 }
 
-/** @returns {Promise<{sum:number,product:number,securityLevelBits:number,noiseBudgetBits:number}>} */
+/** @returns {Promise<{sum:number,differenceResidue:number,product:number,plainModulus:number,securityLevelBits:number,noiseBudgetBits:number}>} */
 export async function runBfvDemo(a = 3, b = 5) {
   // Keep examples within the plaintext modulus so arithmetic doesn't wrap.
   if (![a, b].every((n) => Number.isInteger(n) && n >= 0 && n <= 100)) {
@@ -42,7 +45,9 @@ export async function runBfvDemo(a = 3, b = 5) {
     const parameters = own(new seal.EncryptionParameters(seal.SchemeType.bfv));
     parameters.setPolyModulusDegree(4096);
     parameters.setCoeffModulus(own(seal.CoeffModulus.BFVDefault(4096, seal.SecLevelType.tc128)));
-    parameters.setPlainModulus(own(seal.PlainModulus.Batching(4096, 20)));
+    const plainModulus = own(seal.PlainModulus.Batching(4096, 20));
+    parameters.setPlainModulus(plainModulus);
+    const modulus = plainModulus.value();
     const context = own(new seal.SEALContext(parameters, true, seal.SecLevelType.tc128));
     if (!context.parametersSet()) throw new Error("SEAL rejected BFV parameters");
     const contextData = own(context.firstContextData());
@@ -72,7 +77,9 @@ export async function runBfvDemo(a = 3, b = 5) {
 
     const ciphertextA = encrypt(a);
     const ciphertextB = encrypt(b);
-    const { sum, product } = evaluateEncrypted(seal, context, relinKeys, ciphertextA, ciphertextB, own);
+    const { sum, difference, product } = evaluateEncrypted(
+      seal, context, relinKeys, ciphertextA, ciphertextB, own
+    );
     const decrypt = (ciphertext) => {
       const plain = own(new seal.Plaintext());
       decryptor.decrypt(ciphertext, plain);
@@ -82,11 +89,14 @@ export async function runBfvDemo(a = 3, b = 5) {
     };
     const result = {
       sum: decrypt(sum),
+      differenceResidue: decrypt(difference),
       product: decrypt(product),
+      plainModulus: Number(modulus),
       securityLevelBits,
       noiseBudgetBits: decryptor.invariantNoiseBudget(product),
     };
     assert.equal(result.sum, a + b);
+    assert.equal(result.differenceResidue, Number((BigInt(a) - BigInt(b) + modulus) % modulus));
     assert.equal(result.product, a * b);
     assert.ok(result.noiseBudgetBits > 0, "multiplication exhausted BFV noise budget");
     return result;
@@ -97,8 +107,9 @@ export async function runBfvDemo(a = 3, b = 5) {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  const { sum, product, securityLevelBits, noiseBudgetBits } = await runBfvDemo();
-  console.log(`BFV encrypted evaluation: 3 + 5 = ${sum}; 3 × 5 = ${product}`);
+  const { sum, differenceResidue, product, plainModulus,
+    securityLevelBits, noiseBudgetBits } = await runBfvDemo();
+  console.log(`BFV encrypted evaluation: 3 + 5 = ${sum}; 3 − 5 ≡ ${differenceResidue} (mod ${plainModulus}); 3 × 5 = ${product}`);
   console.log(`SEAL context: ${securityLevelBits}-bit parameter check, ${noiseBudgetBits}-bit remaining noise budget`);
-  console.log("Bounded-depth leveled HE; not a bootstrapped fully homomorphic implementation.");
+  console.log("Bounded-depth leveled HE; no encrypted-denominator division or bootstrapping here.");
 }
