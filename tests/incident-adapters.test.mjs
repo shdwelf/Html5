@@ -37,7 +37,7 @@ test("invalid records are rejected with reasons, never NaN features", () => {
   ]);
 });
 
-test("feed dedupes by id keeping the newest, and drops stale records loudly", () => {
+test("feed dedupes by agency/kind/id keeping the newest, and drops stale records loudly", () => {
   const { features, rejected } = normalizeFeed([
     rec({ title: "old copy", updatedEpochMs: NOW - 5000 }),
     rec({ title: "new copy", updatedEpochMs: NOW - 1000 }),

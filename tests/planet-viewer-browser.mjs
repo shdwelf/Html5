@@ -228,7 +228,82 @@ try {
       "leaving the PC Globe overlay restores the selected point marker on terrain");
   });
 
+  await test("S5 imports a local-only dated snapshot and lets the globe filter, inspect, and clear it", async () => {
+    const externalRequests = [];
+    const capture = (request) => {
+      if (!request.url().startsWith(base)) externalRequests.push(request.url());
+    };
+    page.on("request", capture);
+    try {
+      await page.$eval("#sensorFile", (input) => {
+        const now = Date.now();
+        const records = [
+          { id: "syn-1", kind: "incident", title: '<img src="https://example.invalid/nope">',
+            lat: 34.1, lon: -118.2, sourceId: "synthetic-chp", updatedEpochMs: now - 1_000 },
+          { id: "syn-2", kind: "lookout", title: "Synthetic lookout", lat: 49, lon: 2,
+            sourceId: "synthetic-lookout", updatedEpochMs: now - 1_000 },
+          { id: "syn-3", kind: "fire", title: "Stale synthetic fire", lat: 35, lon: -119,
+            sourceId: "synthetic-fire", updatedEpochMs: now - 172_800_000 },
+          { id: "syn-4", kind: "camera", title: "Invalid synthetic camera", lat: 0, lon: 0,
+            sourceId: "synthetic-camera", updatedEpochMs: now - 1_000 },
+        ];
+        const file = new File([JSON.stringify({ schema: "html5-incident-snapshot-v1",
+          capturedAt: new Date(now).toISOString(), records })], "synthetic.json", { type: "application/json" });
+        const transfer = new DataTransfer();
+        transfer.items.add(file);
+        input.files = transfer.files;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      await page.waitForFunction(() => document.getElementById("sensorStatus")?.textContent.includes("2/2 shown"));
+      // Prior Gazetteer tests may have rotated the globe. Fix the centre so
+      // visibility and click coordinates describe the known hemisphere.
+      await page.click("#btnReset");
+      const state = await page.evaluate(() => ({
+        count: document.querySelectorAll("#sensorResults .sensor-record").length,
+        rejected: document.querySelector("#sensorRejects summary").textContent,
+        imageNodes: document.querySelectorAll("#sensorResults img").length,
+        globe: !document.getElementById("globeStage").hidden,
+        visible: Number(document.getElementById("globeStage").dataset.sensorVisible),
+      }));
+      assert.deepEqual(state, {
+        count: 2, rejected: "Rejected records: 2", imageNodes: 0, globe: true, visible: 1,
+      }, "no HTML injection or far-side marker should leak into the globe");
+      const lookoutPoint = await page.evaluate(async () => {
+        const { projectOrthographic } = await import("../js/planet-globe.js");
+        const p = projectOrthographic(49, 2, 20, 10);
+        return { x: innerWidth / 2 + p.x * Math.min(innerWidth, innerHeight) * 0.42,
+          y: innerHeight / 2 - p.y * Math.min(innerWidth, innerHeight) * 0.42 };
+      });
+      await page.mouse.click(lookoutPoint.x, lookoutPoint.y);
+      await page.waitForFunction(() => document.getElementById("infoTitle")?.textContent === "Synthetic lookout");
+      assert.match(await page.$eval("#infoBody", (node) => node.textContent), /snapshot captured.*no live status/);
+      await page.click("#sensorResults .sensor-record:first-child");
+      await page.waitForFunction(() => document.getElementById("infoTitle")?.textContent.includes("<img"));
+      assert.equal(await page.$eval("#infoBody", (node) => node.querySelectorAll("img").length), 0);
+      await page.select("#sensorKind", "lookout");
+      assert.match(await page.$eval("#sensorStatus", (node) => node.textContent), /1\/2 shown/);
+      await page.$eval("#sensorFile", (input) => {
+        const transfer = new DataTransfer();
+        transfer.items.add(new File(["not JSON"], "bad.json", { type: "application/json" }));
+        input.files = transfer.files;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      await page.waitForFunction(() => document.getElementById("sensorStatus")?.dataset.error === "true");
+      assert.match(await page.$eval("#sensorStatus", (node) => node.textContent), /Previous snapshot kept/);
+      assert.equal(await page.$$eval("#sensorResults .sensor-record", (nodes) => nodes.length), 1);
+      await page.click("#sensorClear");
+      assert.equal(await page.$eval("#sensorStatus", (node) => node.textContent), "No snapshot imported.");
+      assert.equal(await page.$eval("#globeStage", (node) => node.dataset.sensorVisible), "0");
+      assert.deepEqual(externalRequests, [], "import and inspection must never contact an external host");
+    } finally {
+      page.off("request", capture);
+    }
+  });
+
   await test("the VRML export produces a real download", async () => {
+    const { mkdirSync } = await import("node:fs");
+    mkdirSync("/tmp/planet-dl", { recursive: true });
+    await page.click('[data-plate="chey"]');
     const client = await page.createCDPSession();
     await client.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: "/tmp/planet-dl" });
     await page.click("#btnVrml");

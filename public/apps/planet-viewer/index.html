@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <title>PLANET VIEWER · 4DWM — USGS 3DEP terrain + GNIS</title>
-  <meta name="description" content="Offline USGS 3DEP terrain plates with local Cheyenne and SoCal place-name registers, five city Gazetteers, wireframe, x-ray, VRML and relief modes." />
+  <meta name="description" content="Offline USGS 3DEP terrain plates, a country globe and PC Globe index, plus optional local incident and sensor snapshot imports. No live feed is fetched." />
   <link rel="stylesheet" href="./css/project-y-4dwm.css" />
   <link rel="stylesheet" href="./css/planet-viewer-4dwm.css" />
 </head>
 <body data-mode="relief">
   <canvas id="stage" role="img" aria-label="Interactive three-dimensional terrain plate. Use the plate, mode, and Gazetteer controls to explore the offline data.">This visualization needs a canvas-capable browser.</canvas>
-  <canvas id="globeStage" hidden role="img" aria-label="Interactive orthographic globe. Drag to rotate; country markers show Factbook capitals.">Globe plate: drag to rotate the Red October orthographic globe.</canvas>
+  <canvas id="globeStage" hidden role="img" aria-label="Interactive orthographic globe. Drag to rotate; capital markers and optional imported snapshot markers can be inspected.">Globe plate: drag to rotate the Red October orthographic globe.</canvas>
   <section id="pcgPanel" hidden aria-label="PC Globe 1990 index plate">
     <h2>PC GLOBE (1990) · INDEX PLATE</h2>
     <p class="small" id="pcgMeta">Decoded PC Globe index — names and label strings only.</p>
@@ -71,6 +71,32 @@
       <ul class="legend" id="layerList"></ul>
     </section>
 
+    <section class="card" aria-labelledby="sensorHeading">
+      <h2 id="sensorHeading">S5 · Local incident &amp; sensor snapshot</h2>
+      <p class="tiny">Choose a versioned canonical JSON export (up to 1 MiB / 2,000 records). No live feed is fetched; no file is uploaded or saved. Dynamic records (incident, fire, camera, NOTAM) older than 24 hours are rejected. Static lookout and SDR locations keep their dated snapshot context. Markers appear on GLOBE only.</p>
+      <label class="small sensor-label" for="sensorFile">Import snapshot JSON</label>
+      <input id="sensorFile" type="file" accept=".json,application/json" />
+      <div class="sensor-actions">
+        <label class="small" for="sensorKind">Show</label>
+        <select id="sensorKind" aria-label="Filter imported snapshot kind">
+          <option value="all">All kinds</option>
+          <option value="incident">Incidents</option>
+          <option value="fire">Fires</option>
+          <option value="camera">Cameras</option>
+          <option value="notam">NOTAMs</option>
+          <option value="lookout">Lookouts</option>
+          <option value="sdr">SDR receivers</option>
+        </select>
+        <button id="sensorClear" type="button" disabled>Clear</button>
+      </div>
+      <p id="sensorStatus" class="small" role="status" aria-live="polite">No snapshot imported.</p>
+      <div id="sensorResults" class="sensor-results" aria-label="Imported snapshot records"></div>
+      <details id="sensorRejects" hidden>
+        <summary>Rejected records: 0</summary>
+        <ul></ul>
+      </details>
+    </section>
+
     <section class="card">
       <h2>Cross-checks</h2>
       <div id="checkList" class="check-list"></div>
@@ -81,7 +107,7 @@
   <aside class="panel panel-right" id="inspectorPanel" aria-label="Inspector and source details">
     <section class="card">
       <h2 id="infoTitle">Inspector</h2>
-      <div id="infoBody"><p class="small">Click a Gazetteer marker to inspect its place-name record and source.</p></div>
+      <div id="infoBody"><p class="small">Click a Gazetteer marker or an imported snapshot marker/record to inspect its source.</p></div>
     </section>
 
     <section class="card">

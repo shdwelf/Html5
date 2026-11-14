@@ -52,6 +52,7 @@ export function normalizeRecord(raw, rejects = []) {
   const bad = validCoords(raw.lat, raw.lon);
   if (bad) return reject(bad);
   if (!Number.isFinite(raw.updatedEpochMs)) return reject("updatedEpochMs not finite");
+  if (Math.abs(raw.updatedEpochMs) > 8.64e15) return reject("updatedEpochMs outside Date range");
   if (typeof raw.sourceId !== "string" || raw.sourceId === "") return reject("missing sourceId");
   return {
     id: raw.id,
@@ -88,22 +89,25 @@ export function fromArcgisPoint(feature, { kind, sourceId, fields }) {
 }
 
 /**
- * Normalize a whole feed: validate, dedupe by id (newest wins), drop
- * records older than maxAgeMs relative to nowEpochMs, sort newest
- * first. Returns { features, rejected } — nothing vanishes quietly.
+ * Normalize a whole feed: validate, dedupe by (sourceId, kind, id)
+ * (newest wins), drop records older than maxAgeMs relative to nowEpochMs,
+ * sort newest first. Two agencies can both issue incident #42 without
+ * erasing each other. Returns { features, rejected } — invalid and stale
+ * records are reported, while superseded copies are deliberately deduped.
  */
 export function normalizeFeed(rawRecords, { nowEpochMs, maxAgeMs = Infinity } = {}) {
   if (!Array.isArray(rawRecords)) throw new TypeError("rawRecords must be an array");
   if (!Number.isFinite(nowEpochMs)) throw new TypeError("nowEpochMs is required");
   const rejected = [];
-  const byId = new Map();
+  const byIdentity = new Map();
   for (const raw of rawRecords) {
     const f = normalizeRecord(raw, rejected);
     if (!f) continue;
-    const prev = byId.get(f.id);
-    if (!prev || f.updatedEpochMs >= prev.updatedEpochMs) byId.set(f.id, f);
+    const key = JSON.stringify([f.sourceId, f.kind, f.id]);
+    const prev = byIdentity.get(key);
+    if (!prev || f.updatedEpochMs >= prev.updatedEpochMs) byIdentity.set(key, f);
   }
-  const features = [...byId.values()]
+  const features = [...byIdentity.values()]
     .filter((f) => {
       if (nowEpochMs - f.updatedEpochMs > maxAgeMs) {
         rejected.push({ id: f.id, reason: "stale: older than maxAgeMs" });
