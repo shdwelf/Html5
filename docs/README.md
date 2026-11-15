@@ -97,6 +97,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-72-2026-11-12.md](backlog-execution-round-72-2026-11-12.md) — Backlog execution round 72: HTML5 offline viewer and XDC viewer integration verification
 - [backlog-execution-round-73-2026-11-13.md](backlog-execution-round-73-2026-11-13.md) — Backlog execution round 73: backlog resume, Linear notes sync, and Drive PR packet (PR #215)
 - [backlog-execution-round-74-2026-11-13.md](backlog-execution-round-74-2026-11-13.md) — Backlog execution round 74: S5 offline incident snapshot viewer wiring (PR #215)
+- [backlog-execution-round-75-2026-11-15.md](backlog-execution-round-75-2026-11-15.md) — Backlog execution round 75: Keyspace Viewer word counts 25…512 (layered page re-merged, menu lists every count, suites 05/07 gating again) and the OnlyKey web-app investigation
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
 ## Research deep dives (the “ghirdra” line)
@@ -170,6 +171,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [aes-nacl-recipe-checks-2026-10-21.md](aes-nacl-recipe-checks-2026-10-21.md) — aes nacl recipe checks 2026 10 21
 - [bip-standards.md](bip-standards.md) — bip standards
 - [openpgp-keyserver-working-list-2026-11-07.md](openpgp-keyserver-working-list-2026-11-07.md) — direct keyserver snapshots, protocol/consent/sync comparison, and dated evidence trail
+- [onlykey-webapp-releases-2026-11-15.md](onlykey-webapp-releases-2026-11-15.md) — OnlyKey web apps: `apps.crp.to` (Webcrypt 3.0.0 + archived beta7/Beta8, firmware ≤ v3.0.4) vs `apps.onlykey.io` (4.0.0, PQC age/PGP, firmware > v3.0.4), how `/app/past_releases?version=beta7` redirects, and the firmware-version router
 
 ## Silicon, RTL & hardware intel
 
