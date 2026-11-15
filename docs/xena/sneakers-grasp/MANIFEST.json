@@ -1,0 +1,1597 @@
+{
+  "generator": "tools/xena_binary_archive.py sneakers",
+  "wrapper": "Default Package Wrapper",
+  "normaliser": "au.gov.naa.digipres.xena.kernel.normalise.BinaryToXenaBinaryNormaliser",
+  "binary_object_namespace": "http://preservation.naa.gov.au/binary-object/1.0",
+  "entries": [
+    {
+      "name": "Sneakers_Promotional_Diskette.zip",
+      "xena_file": "Sneakers_Promotional_Diskette.zip_Binary.xena",
+      "length": 2066643,
+      "sha256": "b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef",
+      "xena_sha256": "d5ad93403c16bd6a229eef7656538089776bc7da30134b10eb1af28756e98b7d"
+    },
+    {
+      "name": "SNEAKERS.EXE",
+      "xena_file": "SNEAKERS.EXE_Binary.xena",
+      "length": 2219117,
+      "sha256": "d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961",
+      "xena_sha256": "3681949e34b0c955c198be98a4f4de8ce2aab87584089898c410099384e9f4e5"
+    },
+    {
+      "name": "SNEAK.EXE",
+      "xena_file": "SNEAK.EXE_Binary.xena",
+      "length": 1074631,
+      "sha256": "4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb",
+      "xena_sha256": "fb45ad7d2425312926eab46b55dc3e5501f7093edd6a3608500a474090f4f67e"
+    },
+    {
+      "name": "asintro.txt",
+      "xena_file": "asintro.txt_Binary.xena",
+      "length": 10153,
+      "sha256": "4184e79efdf783e8ebd1fb4bc57cd16cb7287b42ffe67cfa1d043de2d1ed9b68",
+      "xena_sha256": "e35efbe560f18147167cf0154544218db53e1f43624fff2c34c7847498efe93b"
+    },
+    {
+      "name": "int5rtn.grp",
+      "xena_file": "int5rtn.grp_Binary.xena",
+      "length": 66,
+      "sha256": "eceb85f8daa8783e48af6d66f65197542d895ee5242d2c97d88e27d57a1de8cb",
+      "xena_sha256": "dca76e3987db7cc9fa4c9011881beaa14fc0aa1b2f06fbf180d714c1bc11c590"
+    },
+    {
+      "name": "boxdrw.txt",
+      "xena_file": "boxdrw.txt_Binary.xena",
+      "length": 1164,
+      "sha256": "7a5c1a01791123670094bc72cb1092ce7a3d7504214945c16bfb20e757aea2e3",
+      "xena_sha256": "51f7628b0d9844111ec645f731f1fe139e77043a46cf8c60e157cb3a78b59fe1"
+    },
+    {
+      "name": "movie1.txt",
+      "xena_file": "movie1.txt_Binary.xena",
+      "length": 4445,
+      "sha256": "6902648471e3c242da3b4b144917cac3ab256607afcf63e13e1b09ba0080063d",
+      "xena_sha256": "8135050bbabd38e6a076f28ef82d7b2b9e516e0011cfa10c53c851825415a619"
+    },
+    {
+      "name": "menu.txt",
+      "xena_file": "menu.txt_Binary.xena",
+      "length": 10216,
+      "sha256": "9143228e366317437d79a711f208c3d7a5ec59378d18be9dc177b563d5e30674",
+      "xena_sha256": "e2ef7b99edd4bbb3cd545c300a2448d1be3edc7ad175e0c53be63a9a9faa88f1"
+    },
+    {
+      "name": "wlmain2.set",
+      "xena_file": "wlmain2.set_Binary.xena",
+      "length": 3047,
+      "sha256": "769b9cf841b361b5e1d4871428e56b6d8a2d413cafed921c9b197d7cc8706e36",
+      "xena_sha256": "8a70f55c1dcb5ec4cd15db47a1146672f193002dd657c1d407aaa0d0b2ed4b43"
+    },
+    {
+      "name": "wlanti2.set",
+      "xena_file": "wlanti2.set_Binary.xena",
+      "length": 3047,
+      "sha256": "b0f903a9340105cc7f89a4fa558ea305eaa13be122a937af6a9cf1065dcf861f",
+      "xena_sha256": "298b73bd871d091ee50635265aaf561045cd9b1eef0715902d5e3c0cad7db61a"
+    },
+    {
+      "name": "black.pal",
+      "xena_file": "black.pal_Binary.xena",
+      "length": 99,
+      "sha256": "cea400c746bc2247064d80d19ec8cd079c69adee8fc2dc07a07919658fdef5ea",
+      "xena_sha256": "c183069eb1327b608969ba3dc1c9d214474e0036db3b751a642b936bd6b22d3d"
+    },
+    {
+      "name": "atcntrl.pic",
+      "xena_file": "atcntrl.pic_Binary.xena",
+      "length": 48773,
+      "sha256": "df6c833e45fbe13e50ff87a3c8b6968c19231b4e8f980d6840c6744e3e4c2749",
+      "xena_sha256": "f1fce0dd3694cb7c2ba4baf713005f4ba9c68a7f3102723eca03e0c74075c911"
+    },
+    {
+      "name": "plane01.clp",
+      "xena_file": "plane01.clp_Binary.xena",
+      "length": 319,
+      "sha256": "10dbc9f94ed7e5d039acc32316b707c8bd083ab77fbbd8de3f56c1345d2a4445",
+      "xena_sha256": "b459788d1b6617b555b649e1aeb17d3f53011fedef0a5b85f47b7540648751e7"
+    },
+    {
+      "name": "plane02.clp",
+      "xena_file": "plane02.clp_Binary.xena",
+      "length": 311,
+      "sha256": "f58e21f7ffbb901d52186bb1bccd28567296aeb7a8197d537a397840cdd16ec7",
+      "xena_sha256": "8a1edcce2008ec35cdf42bce92369f71b4746311b99de83ad888abcb041c3c15"
+    },
+    {
+      "name": "plane03.clp",
+      "xena_file": "plane03.clp_Binary.xena",
+      "length": 571,
+      "sha256": "6c97bb573078f9757d090e8f66cd6cc084defff4a6624a634ed33675d984a04f",
+      "xena_sha256": "b063db2842eca9e523f0d4ef003e4d1fb99d6ad29948dbbb05b75968d3b2ecee"
+    },
+    {
+      "name": "plane04.clp",
+      "xena_file": "plane04.clp_Binary.xena",
+      "length": 329,
+      "sha256": "693184f35312947ab3b6936a19516bcbaa9855015ae3f5d20ccdbacae663db37",
+      "xena_sha256": "91adbd1d6e27c57efd02c74cbf8ad1b94557d4cc164e760787cf68435a0a040e"
+    },
+    {
+      "name": "nemap.pic",
+      "xena_file": "nemap.pic_Binary.xena",
+      "length": 66566,
+      "sha256": "ee9256666a292c543ca55a355474c01ea90d19455a5c7b243cfa1eeae2cffcc4",
+      "xena_sha256": "9d642a747a1c63eb778071d97cdd604de3e00f11e671c1e256399d839b1962ab"
+    },
+    {
+      "name": "windows.pic",
+      "xena_file": "windows.pic_Binary.xena",
+      "length": 11059,
+      "sha256": "faf1a05d85a76003cb334933b801371b092ff657b0798886b84bb28958c426cf",
+      "xena_sha256": "074e14143f55de8f368ee5af5c8003db3b47c615ef6963ef84314515647be772"
+    },
+    {
+      "name": "income.clp",
+      "xena_file": "income.clp_Binary.xena",
+      "length": 40120,
+      "sha256": "0affb59bfa1db71b296f3d1b0f9f628e6e0bd61ba3229ab6a38a9b94a7e60f2b",
+      "xena_sha256": "32c796958d89ec36de14afcf4ec9c08613bb22f766f0bc56df7de3dc34cbc347"
+    },
+    {
+      "name": "hot_gam.clp",
+      "xena_file": "hot_gam.clp_Binary.xena",
+      "length": 26310,
+      "sha256": "99edae9d7436ad9b31af5560d994a180d282a2d612d056a467ad7f0d5facd771",
+      "xena_sha256": "b72700e1dff1faca35937860a92114bd8a438a46bccf6807b019c9fae2528ddc"
+    },
+    {
+      "name": "finance.clp",
+      "xena_file": "finance.clp_Binary.xena",
+      "length": 20383,
+      "sha256": "dcd5d017f1bfef676812efc7ea9f3d559855c232f46ac3b6ec3ca33a96a8adc9",
+      "xena_sha256": "19b47ccd4f47924ad9d03b9aa7b1d000f3c61ba2d3eee7ebf94e8d3dd42b4e57"
+    },
+    {
+      "name": "flormenm.pic",
+      "xena_file": "flormenm.pic_Binary.xena",
+      "length": 12928,
+      "sha256": "68516bb973027c22b2b1f3db3b0e766c419f3db9e7bb35379bd9cfc3823c19ec",
+      "xena_sha256": "0b5fd9a276ced15054fc2e07e0f739dc30724dc4fbc06bfe5f9d34d23cc7280c"
+    },
+    {
+      "name": "rtarrow.clp",
+      "xena_file": "rtarrow.clp_Binary.xena",
+      "length": 195,
+      "sha256": "1e348148d9b822fc28253afe352f5507bf44c66117b066b9d69fe8c382004ac7",
+      "xena_sha256": "e7d8afa240d351121b10c5e7171571048a211037ce75ad63980d7abd609e1390"
+    },
+    {
+      "name": "ltarrow.clp",
+      "xena_file": "ltarrow.clp_Binary.xena",
+      "length": 132,
+      "sha256": "c94304616db36057570b86fc12a629df9a0d8d4fa4c3dda85f6661c4597d59d4",
+      "xena_sha256": "328d10ffeb8d49073acf38ff6cd7842183f51710502f5afcd52a434b6ffe780c"
+    },
+    {
+      "name": "uparrow.clp",
+      "xena_file": "uparrow.clp_Binary.xena",
+      "length": 140,
+      "sha256": "febe25d5c2e0b4eb50e12c9195d953a6ae4505c40fc81f11a15c6a45a2edc262",
+      "xena_sha256": "33f27628f107f5de730b8e478dc52383440f9b9cb45b033e00fefbd23112797a"
+    },
+    {
+      "name": "dnarrow.clp",
+      "xena_file": "dnarrow.clp_Binary.xena",
+      "length": 141,
+      "sha256": "ac237359b91c0408172af2e1ed9e21a88e90cd7f7360157eb83a48d9da15fa9c",
+      "xena_sha256": "3ce5c507fdece46badaaf9b828fc30daf2e886cba613220e26d37fe6503626c8"
+    },
+    {
+      "name": "florplan.pic",
+      "xena_file": "florplan.pic_Binary.xena",
+      "length": 32320,
+      "sha256": "3c80f8fd35eb37fab6e69ac04c91d61a2fc001e8156d772d23bf48c496e1faef",
+      "xena_sha256": "c7b7f138a54dbaff21b22de32f40364d64c5efa16756043d5ce3a6b747f5f3d3"
+    },
+    {
+      "name": "movie2.txt",
+      "xena_file": "movie2.txt_Binary.xena",
+      "length": 16960,
+      "sha256": "8a30307c8b02d0187eb679b2bf2035122e1f126558517ec29dbb6e55063e04c3",
+      "xena_sha256": "d2a57beb7ec88ab93acf44aecdd9d8865e857b614844a8637b599ea39eeb2f60"
+    },
+    {
+      "name": "harderr.grp",
+      "xena_file": "harderr.grp_Binary.xena",
+      "length": 271,
+      "sha256": "dc0b0c520d2beea5386689f362682ea88b4c7648bb9760b0aea7011f08e5423d",
+      "xena_sha256": "3a821bc0ce4fb2c6f1283909330af21b57c3fb8b61fe1d540e53ac5d64c7d874"
+    },
+    {
+      "name": "board.pic",
+      "xena_file": "board.pic_Binary.xena",
+      "length": 54432,
+      "sha256": "9cda5f7d2b67510ebfec9d55066ac4ca9ee796ea1ae71ff9028c3a5c20e961db",
+      "xena_sha256": "744a816a21441ef752b3bf906d2b384b9eb49efaf16bddd1c715c9b3f5b9b474"
+    },
+    {
+      "name": "whitguts.clp",
+      "xena_file": "whitguts.clp_Binary.xena",
+      "length": 59,
+      "sha256": "dc7b4bc089a5af85df72b7aa3ec32f626496776afacba40bf9a0264e155ea3c3",
+      "xena_sha256": "8bb87fe4273bb935cfa46f814d5b184232145c0c203f3a0066a939f5576d4fc9"
+    },
+    {
+      "name": "facegts2.clp",
+      "xena_file": "facegts2.clp_Binary.xena",
+      "length": 5956,
+      "sha256": "c51d7dd727a8daef814da7c3faf97d38bb176549199f44b93d57a903ef43ef9f",
+      "xena_sha256": "8565a8d4b071a7ebd929bab78407a35dbe21071b3972c2c79325da2af8022a11"
+    },
+    {
+      "name": "faceguts.clp",
+      "xena_file": "faceguts.clp_Binary.xena",
+      "length": 8458,
+      "sha256": "06e525e094072a64784a61cbe1f89a84466b884957d928eb5405a7203c1d3886",
+      "xena_sha256": "92ac39e0de9af5306c885f08e091147e3fc27ff11c29e03110710d3b5d89dcfd"
+    },
+    {
+      "name": "chipguts.clp",
+      "xena_file": "chipguts.clp_Binary.xena",
+      "length": 12198,
+      "sha256": "707581eb386ed9966d195128dfb7388338a1db1cc67ac5926b80e7913919819b",
+      "xena_sha256": "7513e93a2ee70a82160ed6ac4f60a32135d7ee0310d116074c90cf04cc3db63b"
+    },
+    {
+      "name": "icon6.clp",
+      "xena_file": "icon6.clp_Binary.xena",
+      "length": 6512,
+      "sha256": "1e8f7b4c3c759cd9c163f97d008b2e0b95c7b556faaef46e5957333f51d73d97",
+      "xena_sha256": "82773b1ea38bec4ef894b90c4e8b929be1854918575e827c10928ae9f4c04244"
+    },
+    {
+      "name": "icon6.pal",
+      "xena_file": "icon6.pal_Binary.xena",
+      "length": 99,
+      "sha256": "d5458fa75e9fdbb189020e0249da90f8459fe000b31e67880d027036cd31b576",
+      "xena_sha256": "db6e7f501720544570483c3456aa8f13c6c452289bb0e7ee890cbeb23af20ecc"
+    },
+    {
+      "name": "doss.txt",
+      "xena_file": "doss.txt_Binary.xena",
+      "length": 19697,
+      "sha256": "ce4df1262920b15fa3b4e764ce7ef11c928e8052f66986bc8f559d5634f2e941",
+      "xena_sha256": "98bdbda30be32c10088b6ee8f29959af0169d2fc7d4821828403f91b43f9a92f"
+    },
+    {
+      "name": "icon7.clp",
+      "xena_file": "icon7.clp_Binary.xena",
+      "length": 7498,
+      "sha256": "1a2d9a4928969b5c480b78974ddb68fd2f0bb69cf0b5f3b1c2ba982e3e39b0ca",
+      "xena_sha256": "768c931c9143df2524cb4039887aed7c6d3a3022c28b83a01778a73e16bc2528"
+    },
+    {
+      "name": "icon7.pal",
+      "xena_file": "icon7.pal_Binary.xena",
+      "length": 99,
+      "sha256": "1d6f04787dab0dfb8d526aebe749646fbaac8f9a505787327cf3bff305efc9da",
+      "xena_sha256": "eee4df5c3e5ad8b9833d9d147197a83782160332b37c79b0c3b35729d2d2db69"
+    },
+    {
+      "name": "ccf.txt",
+      "xena_file": "ccf.txt_Binary.xena",
+      "length": 2722,
+      "sha256": "ee963ae65de5a6333ac69bdc19bb2dc189bd74f05545c554c70b8a62598f9d42",
+      "xena_sha256": "582f65c916d54e6ce34ce5fe3922980106ffa9caf05d896659c6d8e33fd9596e"
+    },
+    {
+      "name": "icon1.clp",
+      "xena_file": "icon1.clp_Binary.xena",
+      "length": 4117,
+      "sha256": "d592f21fa5b74cd36bbddf10915bb31164b13ead9fbc2742fd5a5efe39c2fba0",
+      "xena_sha256": "24096a2fdad8813115fff19a35fa7f3919579883cb8c88cd82bd689ce8032109"
+    },
+    {
+      "name": "icon1.pal",
+      "xena_file": "icon1.pal_Binary.xena",
+      "length": 99,
+      "sha256": "ec7ec6312585c37dac4632b24dc98e2f0dd2eebab77dcbcd75edab8d98678513",
+      "xena_sha256": "9bf8d9b411f9ebf115320fce5c27d9f57c653e96d192a1d0689b5875dc020cf9"
+    },
+    {
+      "name": "prodtxt.txt",
+      "xena_file": "prodtxt.txt_Binary.xena",
+      "length": 3426,
+      "sha256": "d2597b021b0a2157b625de98e91c7f273e0ff5161747c872aea4ef46da3667a9",
+      "xena_sha256": "f910d6813bedbb823341fc2b7f65b20cbb93443303a7610ffed990681a703f03"
+    },
+    {
+      "name": "icon4.clp",
+      "xena_file": "icon4.clp_Binary.xena",
+      "length": 3723,
+      "sha256": "219b04db0349dd8a18e4acc2141f58bbaa37e6fbc4c82f7e77593b91e1cc3218",
+      "xena_sha256": "33bb610c6e9c30a597454eda932c2b542078d1961ff436a754f4b6e8a3fa5741"
+    },
+    {
+      "name": "icon4.pal",
+      "xena_file": "icon4.pal_Binary.xena",
+      "length": 99,
+      "sha256": "e97ce6545cafe3ec0591527ce06e895c31336c1f8373deb3ae07f99cb7fb7d82",
+      "xena_sha256": "d98281f55ea7a66fc805a1390f7b943c2a6f3f4b1d26986a44c0c214311bb5ae"
+    },
+    {
+      "name": "bio.txt",
+      "xena_file": "bio.txt_Binary.xena",
+      "length": 3854,
+      "sha256": "efe572511504997dbd6480ca99881166fb2d9fa322c179d1481c370fcdafd25b",
+      "xena_sha256": "c657ae3dae28290f29e349679da9a60753142c57ba22fa9967f0ad6b3c8826e0"
+    },
+    {
+      "name": "icon5.clp",
+      "xena_file": "icon5.clp_Binary.xena",
+      "length": 2964,
+      "sha256": "86879206af458503780a4dfeaa15a2dc03c094d05bdf3680e2c626a6a1e1db6d",
+      "xena_sha256": "ad1fdbf9fda43ab3880cd891ef7b9768ae90bfa9d258a68797a08fd889f85730"
+    },
+    {
+      "name": "icon5.pal",
+      "xena_file": "icon5.pal_Binary.xena",
+      "length": 99,
+      "sha256": "d5458fa75e9fdbb189020e0249da90f8459fe000b31e67880d027036cd31b576",
+      "xena_sha256": "e0d88dee10c1d67603157c80716b4821720f712bc29d1e2f474a3fb14ff4aa38"
+    },
+    {
+      "name": "icon2.clp",
+      "xena_file": "icon2.clp_Binary.xena",
+      "length": 8718,
+      "sha256": "d44596d7bab82bb081073e32343e766fca2fca0f05e7ba0138b38a8edfaf58ad",
+      "xena_sha256": "e02ca7f23b966e0c74189f115b8cb2c9659d2dd8927a375602fd9450de0c7b57"
+    },
+    {
+      "name": "icon2.pal",
+      "xena_file": "icon2.pal_Binary.xena",
+      "length": 99,
+      "sha256": "a6a599781d0a62b23e724b10e6545a083ac3d23d8839e48e035548b169a9876f",
+      "xena_sha256": "96e1245c08b1a9201431c75c52f74d6ac5e8334b96f6c200146ef6ccda41beb5"
+    },
+    {
+      "name": "titles.txt",
+      "xena_file": "titles.txt_Binary.xena",
+      "length": 14753,
+      "sha256": "689944e4490a523d19da50836fe0e9160db55fd8690ef2bec249521a3933b0b3",
+      "xena_sha256": "f1b8742e3e0bdeafa802074d9d54797e948759e815f5b6fbb9fec4d57e73b749"
+    },
+    {
+      "name": "icon3.clp",
+      "xena_file": "icon3.clp_Binary.xena",
+      "length": 4976,
+      "sha256": "546d90b86a43966cd3ed25aa7bc2d6192aa595ea3c73a3a7d022ca007e6b320f",
+      "xena_sha256": "9349e5a0364ec731ad140607b853a24ea2fc97c4366f3e64e3f88b0c6168a522"
+    },
+    {
+      "name": "icon3.pal",
+      "xena_file": "icon3.pal_Binary.xena",
+      "length": 99,
+      "sha256": "3792f029a6015614b9ec0aa759e8d9e37101b70a89e60620d1d8750bde4de03e",
+      "xena_sha256": "fa7f73dcb417176f50144aa79e59b77399c5a31dbdef8bdcf3f7bf0035eb1f2e"
+    },
+    {
+      "name": "about.txt",
+      "xena_file": "about.txt_Binary.xena",
+      "length": 3532,
+      "sha256": "e7c63644509a2f889920b4a4095a0102d419a6b8823afe8991ace85edb2fa495",
+      "xena_sha256": "1dfd921ac5025d55677179bb33fa289717ece53e6b983e271160402d43150835"
+    },
+    {
+      "name": "titles.set",
+      "xena_file": "titles.set_Binary.xena",
+      "length": 7607,
+      "sha256": "1dda748c935ece88628e2942775e7a734e7e4d5ca506de3423dd40a428ac2873",
+      "xena_sha256": "23d8df4c510e233b2668937ca09658f4933469c042bc44a4f91bad802637295a"
+    },
+    {
+      "name": "sneaklog.clp",
+      "xena_file": "sneaklog.clp_Binary.xena",
+      "length": 8629,
+      "sha256": "e05a68886f5ad6ce47598cda4e307bc68d65af5a863d0d6fbf46b687f72abd42",
+      "xena_sha256": "9664791f373549bfff99906128cee961131f35dd9cf059575f7c370c254a531a"
+    },
+    {
+      "name": "dossback.pic",
+      "xena_file": "dossback.pic_Binary.xena",
+      "length": 50947,
+      "sha256": "a2e879fc2ba3394dea240846b1e38a9ff212871f6ce90dd6e06ce08780909c33",
+      "xena_sha256": "7c9b38e0d76e4143184f210c6dde2b07b8ed3f7903a68aa6e7d58ef087d3b225"
+    },
+    {
+      "name": "botbar.clp",
+      "xena_file": "botbar.clp_Binary.xena",
+      "length": 77,
+      "sha256": "cce1767c5ccfa6e035e60fd1984fb47a2f720e3d99394c6555660355c3337a95",
+      "xena_sha256": "856705400abac3b16c4bdff312436e5e2ada20d48509dd8013fdb1eb3d2c3f21"
+    },
+    {
+      "name": "rob1.clp",
+      "xena_file": "rob1.clp_Binary.xena",
+      "length": 9743,
+      "sha256": "f4b85840463e4efdd3fb5908a825aabf8abf111bd485b7d5bf4eb58e47fe4864",
+      "xena_sha256": "9ab8552505258ca4ed0b4a2d31683c0d82ea69e00b134ada1fd63a3b5446eb79"
+    },
+    {
+      "name": "robert.clp",
+      "xena_file": "robert.clp_Binary.xena",
+      "length": 15918,
+      "sha256": "ca8bfd4c773377a1c0c3a08f3200d4329776f6103500f4cc8dba507ab5cf6dd3",
+      "xena_sha256": "3ec75db0a00d715c2332372e6207273e6c6f2722c921b88caea281710c56154a"
+    },
+    {
+      "name": "sid1.clp",
+      "xena_file": "sid1.clp_Binary.xena",
+      "length": 11711,
+      "sha256": "f982bce1c7fd58fe10ed9075ea490b7f5245f23867db78ddf3167a36c81f582f",
+      "xena_sha256": "a7ae0c2cb5cd00ac86df1cac4d834f3133621aef19c53e6700843076c1e51394"
+    },
+    {
+      "name": "sidney.clp",
+      "xena_file": "sidney.clp_Binary.xena",
+      "length": 17693,
+      "sha256": "e13a54c3d5ca0fc16743645f9941792b2df1ff21af2a8eadfdf640aefc8d3fb2",
+      "xena_sha256": "880a5ee8bb4fbfadef05f0abac9b29f39903c31ae64484a4157ee01d926c32f9"
+    },
+    {
+      "name": "dan1.clp",
+      "xena_file": "dan1.clp_Binary.xena",
+      "length": 9939,
+      "sha256": "43d7b2acd1b5b30585ac580969ded7ea4d8cd2dbc4b878d2f71eade2eee02a98",
+      "xena_sha256": "4c6b4d049d2b20bfd213659f36e3cbc6e49ff114064d57118d6f4964bf1e4ee9"
+    },
+    {
+      "name": "dan.clp",
+      "xena_file": "dan.clp_Binary.xena",
+      "length": 17395,
+      "sha256": "2f2119f0ff2691ede24e08e6e77e210cb0c6234152bfed97339b01cbf5ae0ae4",
+      "xena_sha256": "9dbadd4164992e7b0bd5df6aac8ab73df99e7894517208d0dfb32ae3ad56f135"
+    },
+    {
+      "name": "riv1.clp",
+      "xena_file": "riv1.clp_Binary.xena",
+      "length": 11773,
+      "sha256": "f0451e9aaf61ee4ece1e3e52c0a500e5832e0ad3152ef49696629b5736a6fc48",
+      "xena_sha256": "2feefbb8109ad80699b3ee851605e598e23825d84ab9bb2997205c4694662da5"
+    },
+    {
+      "name": "river.clp",
+      "xena_file": "river.clp_Binary.xena",
+      "length": 17798,
+      "sha256": "7064c093911ba203ad7e99ed707ad2b99c396472507a386cb76b42f15be49027",
+      "xena_sha256": "317373efefae22f52ecd495a78e542b5962170e1f1056ea9f2116efd76308d2e"
+    },
+    {
+      "name": "dav1.clp",
+      "xena_file": "dav1.clp_Binary.xena",
+      "length": 12371,
+      "sha256": "b93a2588419768e41fe0d0c3907a336d9b44de74a45b715516f62741bf755c27",
+      "xena_sha256": "d6f053f2a5e8c502e0b8ed7f51dcef5cf20c956180d2248b8bc0e835e89832c4"
+    },
+    {
+      "name": "david.clp",
+      "xena_file": "david.clp_Binary.xena",
+      "length": 18646,
+      "sha256": "093536f61a8172212d3b542f37ce4c5d05907fb06d3ae76d4ae93abdeb7bc7c9",
+      "xena_sha256": "6742cf55d8c5150302eb637be5dd09f5b4d2de251dc3c89e4b5cd63d2562a3ec"
+    },
+    {
+      "name": "ben1.clp",
+      "xena_file": "ben1.clp_Binary.xena",
+      "length": 9475,
+      "sha256": "3a9cf40fc0e110da9decb808d86a413888ccce1ca03d5a7a875ae43a3df49ddb",
+      "xena_sha256": "a9c4a9bcedfe4e9f3bc6b9b4cebb8b5892fb9ebf230eac815df2f14b28b883f8"
+    },
+    {
+      "name": "ben.clp",
+      "xena_file": "ben.clp_Binary.xena",
+      "length": 16200,
+      "sha256": "51ee4be38053ebcd8e1b9be5fd2e2291644e4bf879e4c3c7875abc60e2e0b605",
+      "xena_sha256": "b9bcc4d437d9529cd7822ced2d8322277077ae8a97d049cd031af808073afa41"
+    },
+    {
+      "name": "mary1.clp",
+      "xena_file": "mary1.clp_Binary.xena",
+      "length": 10063,
+      "sha256": "5136af66e7b049ad666d083e7b5b56aa3c646dcea59530477c932f02b6222cf9",
+      "xena_sha256": "f4224cf8f07e48c8bccde0866174151fb43e98847cc1c178cfca7527d36c2e80"
+    },
+    {
+      "name": "mary.clp",
+      "xena_file": "mary.clp_Binary.xena",
+      "length": 15285,
+      "sha256": "bc02b9bcc79c4b3e79961c329faf52e1c6e236657cd4fcfa0edec48e7417ea9c",
+      "xena_sha256": "a8072f0a1a5a59de8e59bb17f479ebf6be40652f199ba434b6ed4af6e00f989b"
+    },
+    {
+      "name": "jam1.clp",
+      "xena_file": "jam1.clp_Binary.xena",
+      "length": 9727,
+      "sha256": "d007b978a42ee718d8812b5f02b17c78066415210bd6b7e443306628699efa51",
+      "xena_sha256": "371be6f92569a2644ec0c6059e421ef86faed372d0557e03de925244781ba7d4"
+    },
+    {
+      "name": "james.clp",
+      "xena_file": "james.clp_Binary.xena",
+      "length": 15248,
+      "sha256": "aedf9a66cb590bc93da45de9662fd1e99e78d90eb1b4a791f1a2f0323b1d49d8",
+      "xena_sha256": "2daae6b1e3ad7fcd4ea2f31d783c40279d43597dd8f5b94c2fa9ae399ab17394"
+    },
+    {
+      "name": "ccfbar1.clp",
+      "xena_file": "ccfbar1.clp_Binary.xena",
+      "length": 220,
+      "sha256": "65b1b3fd7d5817c643882e3fb0b4278adbc439c689ccbffafe5919ba618c6e34",
+      "xena_sha256": "bbefd7ff5cb3e31e0626298ee9c1141dcc8f87af29c9979a2c172dd552bd3b32"
+    },
+    {
+      "name": "ccfbar2.clp",
+      "xena_file": "ccfbar2.clp_Binary.xena",
+      "length": 341,
+      "sha256": "836844c54c484498bdfe245f5d57f0dfda44684a523fea5c67d54f588a99efff",
+      "xena_sha256": "2a42131f0894493d54c66defef52ed59ff42ff3cb4afc0889bb0795c2fd97de9"
+    },
+    {
+      "name": "ccfbar3.clp",
+      "xena_file": "ccfbar3.clp_Binary.xena",
+      "length": 202,
+      "sha256": "54d5e91d98c3bb09306405f727ab66493b481b3af81f3a1dad39db2827899b0c",
+      "xena_sha256": "a76fed443d1d7ccc39edecba38d911d8de666fe048358d17fa1eee47ebdf82d7"
+    },
+    {
+      "name": "ccfbar4.clp",
+      "xena_file": "ccfbar4.clp_Binary.xena",
+      "length": 323,
+      "sha256": "a9ddc659c29b1e4ced8ef24db427f19647fab726f3ee97018a48bb4f42082a3a",
+      "xena_sha256": "589d54de7e6756bcc03de9ebe7df67a7f3081775fe2ebd35b77723811d0564c2"
+    },
+    {
+      "name": "ccfback.pic",
+      "xena_file": "ccfback.pic_Binary.xena",
+      "length": 28594,
+      "sha256": "a27177a6522281cd850bcb73a5711b4d90a71f5960af2d3906e43ebf9edeb33d",
+      "xena_sha256": "9dc46657176ebefb25342794558ba346ebda84b5f88e2585089924bfcf55dc78"
+    },
+    {
+      "name": "prodback.pic",
+      "xena_file": "prodback.pic_Binary.xena",
+      "length": 12554,
+      "sha256": "92638d9a312c5d380a4a8d96a2a6c2d7b148d4b853fc4a185e9bb551eeecf0ed",
+      "xena_sha256": "92378136341ebc722c4a950105e634eb55544692e33ddc92ca144bf0dcec47c1"
+    },
+    {
+      "name": "prodrepl.clp",
+      "xena_file": "prodrepl.clp_Binary.xena",
+      "length": 8051,
+      "sha256": "13a1399ab270d49f9e3fc5181024f0281abdb536f7fd91447a703f8bbfab5239",
+      "xena_sha256": "99420d03e771106910375144d48d0e0ac2ccb1637edd78bb502529d2bb1d7cbf"
+    },
+    {
+      "name": "pnotes1.txt",
+      "xena_file": "pnotes1.txt_Binary.xena",
+      "length": 15131,
+      "sha256": "0c251d4408118a1102cbf58aec90465d7d6c4e823c21a19888583a62d1c5f368",
+      "xena_sha256": "3e950e53799a9813bb9fb3f81b652582bd3264f89aac278fc2e1bf4fefb8a1ea"
+    },
+    {
+      "name": "produc6.clp",
+      "xena_file": "produc6.clp_Binary.xena",
+      "length": 12592,
+      "sha256": "ba0b22a7a128c8ae09c2f47eca0b3faa8e2fc8fa4d63eda0bd38a400f7e2d03d",
+      "xena_sha256": "c92344a16c25d19626db46b80243322b6be329d4726e6f35e83d6a384d2fa7d1"
+    },
+    {
+      "name": "produc3.clp",
+      "xena_file": "produc3.clp_Binary.xena",
+      "length": 14188,
+      "sha256": "53125aa4aab8aff8e884ac5457fb58aecb5ca17d81e865b65db9d635450c837b",
+      "xena_sha256": "a48606fd664f4657a9dcebfc6321ab5f7dc714af98c9f9b8186b52f28a9abdf8"
+    },
+    {
+      "name": "produc1.clp",
+      "xena_file": "produc1.clp_Binary.xena",
+      "length": 14197,
+      "sha256": "4fdd51a28e4bb9c0c9ab514cc8822ea7e157cb60879ef9c6414020356337af67",
+      "xena_sha256": "9d4c675e3871d3c9d5ca67df2d79ceb61daacfc7127765a683df83eb65373bfc"
+    },
+    {
+      "name": "produc4.clp",
+      "xena_file": "produc4.clp_Binary.xena",
+      "length": 15815,
+      "sha256": "8193ca7aff70dc018abb8188313d5ddb3b8c01d550718696d1089eb37bcaac37",
+      "xena_sha256": "ceaf4051ec67a6749f60fc644dc4e3446d10c377fb5f64162250c387c6d211f9"
+    },
+    {
+      "name": "produc8.clp",
+      "xena_file": "produc8.clp_Binary.xena",
+      "length": 16314,
+      "sha256": "5038e4f4bdf4a6b909a4ebcbd11493ce4ba1c137065218260a5cd704649aa50d",
+      "xena_sha256": "718aacd86aecb80d4b7e624359565c3f72168f51dfcccffed6f6895d550dae73"
+    },
+    {
+      "name": "produc5.clp",
+      "xena_file": "produc5.clp_Binary.xena",
+      "length": 16058,
+      "sha256": "893294a35fe5110ed08fde2d69e7a3210982c4e67dc7c179f6f511c98385226e",
+      "xena_sha256": "62d747e9fcc45edcd7aa5a9e2bf2704afc79466be6a199039e651845ba65533f"
+    },
+    {
+      "name": "produc7.clp",
+      "xena_file": "produc7.clp_Binary.xena",
+      "length": 15630,
+      "sha256": "cdc3d32ad8b89f129bd09facbcc13ecc7af2a69ebfbbce1a308a9e68ba9d3ff0",
+      "xena_sha256": "8c0a1b8ef8139f956e69f9f804bda03226e4464e3ac03d5523ef39e614aa9f34"
+    },
+    {
+      "name": "produc2.clp",
+      "xena_file": "produc2.clp_Binary.xena",
+      "length": 13207,
+      "sha256": "0b43a920eb02f9d800ee00a6a7bafad6bcd0c54204aff1b69b64519c5472b3bd",
+      "xena_sha256": "62212b9dfe74c6bcd55c8cb803f2f784c4f4261a80fe5fb0047e81c5b81ec08c"
+    },
+    {
+      "name": "bioback.pic",
+      "xena_file": "bioback.pic_Binary.xena",
+      "length": 12911,
+      "sha256": "3ebbd7cd5444d8065ed912fe5d4a5e9236ef78d7afe79024e3f2454e9aff6239",
+      "xena_sha256": "8028bb8272ccedd41573fb43a09c28eaa34807baadb77f8e721836465360a882"
+    },
+    {
+      "name": "titback.pic",
+      "xena_file": "titback.pic_Binary.xena",
+      "length": 1257,
+      "sha256": "1a5e853dbef7a5ea1263db3489abe92945e52c6fb896c7d142407b6add4a9ad6",
+      "xena_sha256": "03b52d1b8ff840851a396c7a48aa4a550901090291f64d1c58d61a3f65fc915b"
+    },
+    {
+      "name": "floppy1.pic",
+      "xena_file": "floppy1.pic_Binary.xena",
+      "length": 53869,
+      "sha256": "24e19ffdeb29862645c2cbc8ab21351e24c6360ecf6e5ba31e6967665c9ca40d",
+      "xena_sha256": "4650e14e99995e407496799c46fb362c5fe038f6652a5aa28a293d355f56198f"
+    },
+    {
+      "name": "menu.pic",
+      "xena_file": "menu.pic_Binary.xena",
+      "length": 499,
+      "sha256": "c54019c782a015be4a1805e9dc04e8b722ba5762656365e3058ed88998f794de",
+      "xena_sha256": "7026aaba0e3083e738dd124701ec560f4d517e91cba9fde05deb90195c72bf2e"
+    },
+    {
+      "name": "menu001.pic",
+      "xena_file": "menu001.pic_Binary.xena",
+      "length": 499,
+      "sha256": "a80a60050749fc19b15ee44cb854c64792868e3bb9d39f06fa6e06d23b379380",
+      "xena_sha256": "7f720a360d221a12c248387c94d0d9b950effa252647986d1133a16ce8f4b67a"
+    },
+    {
+      "name": "menu002.pic",
+      "xena_file": "menu002.pic_Binary.xena",
+      "length": 499,
+      "sha256": "a2cbb108d3c9c9421a8042aca4958106cfb6b309422d04c9d00160e5f1ac12b0",
+      "xena_sha256": "81028912642b581a2aaa713ec7caf08251bc59acc681c1e0678d7052acae6ee5"
+    },
+    {
+      "name": "menu003.pic",
+      "xena_file": "menu003.pic_Binary.xena",
+      "length": 499,
+      "sha256": "1a6ad4fd3c9c12438683b382816fe42eb74f395eebdf4a552067ea9771d441b5",
+      "xena_sha256": "6f6e83d3792d78c51eb1ec5694f4bf5066fa318281e1c120b225f7ff25caf5fb"
+    },
+    {
+      "name": "menu004.pic",
+      "xena_file": "menu004.pic_Binary.xena",
+      "length": 499,
+      "sha256": "859566764d646e8d6643430dd766b2a6389310e5e1061e4e4a4f2df63488bce5",
+      "xena_sha256": "eae7c465e2a1b382f2992b2827eaea4811fde7c3304878040a52462466cfbf6c"
+    },
+    {
+      "name": "menu005.pic",
+      "xena_file": "menu005.pic_Binary.xena",
+      "length": 499,
+      "sha256": "493a574fe0e94c6fda569d410bcb40c48d31d0afbfcacd43d337c895f1853617",
+      "xena_sha256": "2dc259d41b9bae82dca6d4122539a2d3429233345826c6e1dd1f78a396979b05"
+    },
+    {
+      "name": "menu006.pic",
+      "xena_file": "menu006.pic_Binary.xena",
+      "length": 499,
+      "sha256": "326315435ddfbe8afd13dbf485877ac33505bac7cb8c791966de505c53021dce",
+      "xena_sha256": "b8d2c80f90a617f35f08e50b5ba9410cfe01a020202dec376670afc78c929032"
+    },
+    {
+      "name": "menu007.pic",
+      "xena_file": "menu007.pic_Binary.xena",
+      "length": 499,
+      "sha256": "29b44b3666262341463fbc833f2589852c747145431683f28720c68419b5a1c0",
+      "xena_sha256": "422e044d18ac733afd252cd51fe0bd80817afdccf56594f68e949da9dcb79dea"
+    },
+    {
+      "name": "menu008.pic",
+      "xena_file": "menu008.pic_Binary.xena",
+      "length": 499,
+      "sha256": "f07fc6665495ecc57c22ded41c3798807f4bec16f8813508bc7b2de5e645835b",
+      "xena_sha256": "e92b0df081ff505fe3d0eaa4deb1f3e227dee6e709be825a348be04a57ccd2b8"
+    },
+    {
+      "name": "menu009.pic",
+      "xena_file": "menu009.pic_Binary.xena",
+      "length": 499,
+      "sha256": "fad4850871f104325ddb8608eb974864d431234f16f8cfe365fe43834245ce87",
+      "xena_sha256": "08921a65c8bea91448d8f4dae82c0d567ee285b2498377038b09b202c0caa046"
+    },
+    {
+      "name": "menu010.pic",
+      "xena_file": "menu010.pic_Binary.xena",
+      "length": 499,
+      "sha256": "5554139030654221ef93cee90a68e56a2638c8b050aaea214c09470274c38689",
+      "xena_sha256": "58664861bda3e539e80bff6ce4af7b5f7515030b3aab0496aaf9eab3c393b392"
+    },
+    {
+      "name": "menu011.pic",
+      "xena_file": "menu011.pic_Binary.xena",
+      "length": 728,
+      "sha256": "766174e4530940c8362af8e8886115ab216aab369a60744d01be9faf1bd268d9",
+      "xena_sha256": "f68cc93c19ed6fcd3cedfd48d766d6e2a1d84f7d1296d3418c1c0bdcf082f56b"
+    },
+    {
+      "name": "menu012.pic",
+      "xena_file": "menu012.pic_Binary.xena",
+      "length": 728,
+      "sha256": "2bd2b98d710b3bb9359eac93077f0c5040e3a44dce54c63e468237d3f92315e6",
+      "xena_sha256": "efcd7a02a89e2cb3c5f806dba3c2f2414363e3ab07b4e612102d13263f319076"
+    },
+    {
+      "name": "menu013.pic",
+      "xena_file": "menu013.pic_Binary.xena",
+      "length": 728,
+      "sha256": "f8a4d15344d8ce69d735968ae7cfd1001cd5fa63461e36a9a3373cee39be87b4",
+      "xena_sha256": "f89a355e0f8d64518ad00b05825fc039a7cf13325b50bbc33864e1ae16398fe9"
+    },
+    {
+      "name": "menu014.pic",
+      "xena_file": "menu014.pic_Binary.xena",
+      "length": 728,
+      "sha256": "8b243a37ba4ee9f83733acc93c3667544e0d9822c813b9952e3eac9eec5c1555",
+      "xena_sha256": "8bf7b54355cd0eb250f69582898a6df535976bce4b37ddf42540f6368bc12181"
+    },
+    {
+      "name": "menu015.pic",
+      "xena_file": "menu015.pic_Binary.xena",
+      "length": 728,
+      "sha256": "ecaa75f6a01fc980c0d2c29a6a2c612e3ced60ca26ee651b7585b74caad136c2",
+      "xena_sha256": "61bbeb5555807a7b0e963ea89ffff00a268d0ffebc00787e99006ddc632ad4df"
+    },
+    {
+      "name": "menu016.pic",
+      "xena_file": "menu016.pic_Binary.xena",
+      "length": 728,
+      "sha256": "7253fdeb28200e3c95d3bd168710918d8ace73cfe529c6ece9b436fa73dbbc73",
+      "xena_sha256": "40c86f5b82d2bb563bab54adefb1f1a981c8e19645d22cb71ffcd7b0f4294f70"
+    },
+    {
+      "name": "menu017.pic",
+      "xena_file": "menu017.pic_Binary.xena",
+      "length": 728,
+      "sha256": "712c3471d9ae499391784cc73be1da49a85e521f05d10e2400d73aae314ec03e",
+      "xena_sha256": "d9d7932db4a5071067e41bd3bb339fa3397f618c5a4d41bb06c4859b03138a36"
+    },
+    {
+      "name": "menu018.pic",
+      "xena_file": "menu018.pic_Binary.xena",
+      "length": 728,
+      "sha256": "e06344b3773e6eaf836735d1f92b47db313cfceb61759983b2708606535cd4d1",
+      "xena_sha256": "736371ece928289a4c2f618a4a0d6ba0e86b598d74eca231474ca04aa1564f79"
+    },
+    {
+      "name": "menu019.pic",
+      "xena_file": "menu019.pic_Binary.xena",
+      "length": 728,
+      "sha256": "a8569c13ae5519c86952291f23794dfcd2b5f1566d8f54d9fdc9c7055ddf85c8",
+      "xena_sha256": "1997794ca776d6d457401b5a7eef06d5d8128e33c09dae347c7e2438504a4740"
+    },
+    {
+      "name": "menu020.pic",
+      "xena_file": "menu020.pic_Binary.xena",
+      "length": 728,
+      "sha256": "0f61d4d604374e8a16a1529b173381709682030999c4fa95afd0c681c601bd44",
+      "xena_sha256": "fdfcb577b586061e020ef64bb6478856588d99e559fd23fedbdffe7e1ae67687"
+    },
+    {
+      "name": "scrn001.pic",
+      "xena_file": "scrn001.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "f8f40dd05805bebac177caad8fc6fb3ce0790fcc11854b2705428af0611c7259",
+      "xena_sha256": "4903a804cbbda2e85c8c00986c877d6000d0f5fbe042426cee6a728d4094861f"
+    },
+    {
+      "name": "scrn002.pic",
+      "xena_file": "scrn002.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "8d88fa2ccd35b7b0aa24d5f3a6d78bf4e139957f244ed480e17f631ce9f32abe",
+      "xena_sha256": "01a492f7898e08bf9541fdd9d44a99ef652f29008195db7a3e9082df4dcf6222"
+    },
+    {
+      "name": "scrn003.pic",
+      "xena_file": "scrn003.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "1154a7d11153288bbd391b944c6934c04aebcc589ef6086a5d02859b2d0020f0",
+      "xena_sha256": "a0dd621f1501689cbea4cae2c1418bae9a2151c0bff62804251b87eebdc05117"
+    },
+    {
+      "name": "scrn004.pic",
+      "xena_file": "scrn004.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "95cad372a980169ac96811577c41fe2ccc370b40e41d99b9b311e8b658ea2bac",
+      "xena_sha256": "86014de1be5b678a880066dbb57ba293c092fbcebe0e0cfebef77d3b069b83fd"
+    },
+    {
+      "name": "scrn005.pic",
+      "xena_file": "scrn005.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "19314fcf0d668dce9e00e78e4ed68e0c3a1a4ff63a8c38ffbc26fed2eed74ecc",
+      "xena_sha256": "fcfdcf4a220b3fc37c318a758ce7d091af28e0c08a8d848f70aae551e2bc19dc"
+    },
+    {
+      "name": "scrn006.pic",
+      "xena_file": "scrn006.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "3403e3f644c31dde30728a7776e8cd369f9fa7318a9e69b072f65e415fe3ab71",
+      "xena_sha256": "79433e8342a9ada43836a71d1de7a783c0fe3b8837fd7b76266fd3abc3fc33c6"
+    },
+    {
+      "name": "scrn007.pic",
+      "xena_file": "scrn007.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "77326d56bf07ba66cc38a6b180b54c302ea696495b9cedc7c851703a913e99eb",
+      "xena_sha256": "ea89b4e0097b04ec11493d9ff3cb7a9264c3ff72d6a107be3bc9dfde79a4ae97"
+    },
+    {
+      "name": "scrn008.pic",
+      "xena_file": "scrn008.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "0721a6615232aa34cc7cd1d51dac1b5a2eeb77f43e67b2c20e72810015f378c6",
+      "xena_sha256": "26ae08019b19086d8cc7b860789dff895458b496cd6759f36c99885bcd0d6880"
+    },
+    {
+      "name": "scrn009.pic",
+      "xena_file": "scrn009.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "cf2f9a5fed1e404f8d442cebe5dba9e9a13246fb9f8743131310e689b6861797",
+      "xena_sha256": "cb9d0fa18087085d3398973eca899c08f6550840b98c8c6981535f121cd74d06"
+    },
+    {
+      "name": "scrn010.pic",
+      "xena_file": "scrn010.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "085acf2da0532c0b7b57593c250b9dc4ee3f271c50e9fa931a06c8ba9df391cc",
+      "xena_sha256": "4c203b3bf976ded34451d1d954f8f5bbc8efca9b01a3dd8e55da7ea63fb1bfe2"
+    },
+    {
+      "name": "scrn011.pic",
+      "xena_file": "scrn011.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "a01ce0e4890959fda0dc368605086eff49a9d837926d5d9979a95cd22d783501",
+      "xena_sha256": "9ebd35c10f9064ca33ee178a1159711ef74782854451c39836bd54d509084001"
+    },
+    {
+      "name": "scrn012.pic",
+      "xena_file": "scrn012.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "641ee0483907029f31cdfa205fc5c4a70dfbcac681c9c0acfce0cde7266850df",
+      "xena_sha256": "076e495b9ea8dd995c611d0f9c33daa3341b9049e43f593b2101f260ee743c75"
+    },
+    {
+      "name": "scrn013.pic",
+      "xena_file": "scrn013.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "7fbf08c355aa40843f6cc98db502aaf496cc01c7fc5192bb5b35b8e9572ad44a",
+      "xena_sha256": "5a49370b99ad8ed980a15204bd7f21618b52ba8e2a1a1332e03049f25152309a"
+    },
+    {
+      "name": "scrn014.pic",
+      "xena_file": "scrn014.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "cba0f8d530542c5a60a63dfdd05c49cb97618ac8360878c3969249fd2729105d",
+      "xena_sha256": "fac87b978957f8c6f34b6adbe0f7408b275da8c90f33c2cc3fb75c447972c5aa"
+    },
+    {
+      "name": "scrn015.pic",
+      "xena_file": "scrn015.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "4005daa12d5f5d17049c5143acfdb7bfbd1575d1c31b001cf05ba3936b323adb",
+      "xena_sha256": "12b77c65b104e2c5276f22d9a80d8d0c2eab26129fd73aa4dfd005339918707a"
+    },
+    {
+      "name": "scrn016.pic",
+      "xena_file": "scrn016.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "d10516bc41576507362d6f6db2dbc591ecd63c50dab8e0e9f1e289a0b9c8df09",
+      "xena_sha256": "d8792bc581843e1db1a23fa79d9d10897745085af9c4e51293bf964b9fa4f76e"
+    },
+    {
+      "name": "scrn017.pic",
+      "xena_file": "scrn017.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "23e0cbe8d524987fd6d6789fe67d72e5c1ec77afe0cdda7aa0c8373c9dd0bdfe",
+      "xena_sha256": "2115f3ac08b66bdb227e16b2ec8104b5e36a6e8ab7ff4524e2d6dbc6049082fb"
+    },
+    {
+      "name": "scrn018.pic",
+      "xena_file": "scrn018.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "244f3cb9bd6203c81d5390100946fcf676ecedf1429ce5aef42e2b70b6c3ded2",
+      "xena_sha256": "85a41ac57a50f57584c15e20509ae65fd0f1864952beeb32ef9335f911f444fb"
+    },
+    {
+      "name": "scrn019.pic",
+      "xena_file": "scrn019.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "ec9a9307ef796f853a0e628bd9c023f8342b35dd2b44801da90526e0674f67dd",
+      "xena_sha256": "5386c43cc5785e29ab334673c41f7bc0f50dc1eb431f8de52a70aaa52410867e"
+    },
+    {
+      "name": "scrn020.pic",
+      "xena_file": "scrn020.pic_Binary.xena",
+      "length": 2024,
+      "sha256": "29978a8b9d62b9aa3a8856e90967492f99ae6766c8b8d90518a7760974b9f0a0",
+      "xena_sha256": "86f92d05a912ad1262b52b83e7c0f949da37e8c5bcc03ca44dc8f386ff5377e7"
+    },
+    {
+      "name": "lilben.clp",
+      "xena_file": "lilben.clp_Binary.xena",
+      "length": 3522,
+      "sha256": "f124b1ecb5cb938de2945b6ca1e82bd2f2d2e27699adaea81dad6483ad35042a",
+      "xena_sha256": "9caddd20f4814a248e555b05c526ba3e94e03e1b7a653d7b2def2f4acf4c371d"
+    },
+    {
+      "name": "lildan.clp",
+      "xena_file": "lildan.clp_Binary.xena",
+      "length": 3794,
+      "sha256": "a0b6cbcd70786dab18b0ca00815cb901486003186af207d36545f4d6b3fea909",
+      "xena_sha256": "dfef8a9ed0af3391d24c4ae8896160ee4bbea11dad6633b4dfd97e75542b6db7"
+    },
+    {
+      "name": "lildav.clp",
+      "xena_file": "lildav.clp_Binary.xena",
+      "length": 4138,
+      "sha256": "f8a48f7902d554f769c033fa0641b2475565bb62ba898bd80bfa916f3026a274",
+      "xena_sha256": "c574ea4035681818c4622786981a1c803ec0942129f05b03108ed8aa0ae90b9b"
+    },
+    {
+      "name": "lillar.clp",
+      "xena_file": "lillar.clp_Binary.xena",
+      "length": 3674,
+      "sha256": "018370dbd3624ab3d9ca31d28af77c02f931ebeff3dba9173f6198936ee11440",
+      "xena_sha256": "eef47b3742e11b7c64aef64384bf41355d9a8611f3131e3a25b70f02d5249579"
+    },
+    {
+      "name": "lilmar.clp",
+      "xena_file": "lilmar.clp_Binary.xena",
+      "length": 3764,
+      "sha256": "14085a7dc553d98acf7a7f743b56d0a739b479f3e3944dffe13996349e98bf95",
+      "xena_sha256": "08e798d2e1cdf6120cffb2756216771271b8d739ed08e9da9423240ada6242b1"
+    },
+    {
+      "name": "lilpar.clp",
+      "xena_file": "lilpar.clp_Binary.xena",
+      "length": 3963,
+      "sha256": "deaf3d78767d4764cc1f460a0a1ec64c85a74029c0262e2a5d287304095cb59d",
+      "xena_sha256": "8e292097de4f44cc82da2fab8ab1fd2b4769c2fc8852b527635f5ef406506a85"
+    },
+    {
+      "name": "lilpro.clp",
+      "xena_file": "lilpro.clp_Binary.xena",
+      "length": 2196,
+      "sha256": "0fa42a717621b5845ee3b1430833b888d8f30023906d7eb19e49cf8a7a335ddb",
+      "xena_sha256": "1bbd0ddbe49adb345d0605d22a71e6771b8b63af82b408c4cb5147fe1e4971da"
+    },
+    {
+      "name": "lilriv.clp",
+      "xena_file": "lilriv.clp_Binary.xena",
+      "length": 4057,
+      "sha256": "d9fd8f9941d9cda11eeb02387a4fd42f95abd5332279127a3f1fbeab909113ff",
+      "xena_sha256": "debaf74ba0c7ecb05529bac2cec3a82234e9d840ea4a8f595348137128d63188"
+    },
+    {
+      "name": "lilrob.clp",
+      "xena_file": "lilrob.clp_Binary.xena",
+      "length": 3742,
+      "sha256": "25887f6f245a9f3f0dbd0714fc1b139238daba747d5054f2951717716525e28d",
+      "xena_sha256": "273584be218b648d2582e6459ba0cd28ac984965ee3e8aa2c9c0141bde3d1cd7"
+    },
+    {
+      "name": "lilsid.clp",
+      "xena_file": "lilsid.clp_Binary.xena",
+      "length": 3987,
+      "sha256": "f862a0fef7c279d84fc23edc02498d3072ffe51b41bdc4fbb8c330ccfc949339",
+      "xena_sha256": "36d92b59ae98a19c5c03871d7c734e38368c806ff6d9dfdad2de26cda8abfdba"
+    },
+    {
+      "name": "lilsup.clp",
+      "xena_file": "lilsup.clp_Binary.xena",
+      "length": 2198,
+      "sha256": "6a6edd93f5facc94251e6e38bada382690754dd85419b37a1fc22502f0e25700",
+      "xena_sha256": "02f871995a8d4ac71cc8ad991998211032303f299fd8d8898fde9bd76bc96a4d"
+    },
+    {
+      "name": "lilwal.clp",
+      "xena_file": "lilwal.clp_Binary.xena",
+      "length": 3775,
+      "sha256": "04f248d351f851f1a7a7a6968a7f044b994b49c88ad8407af7ec5b59d884b11d",
+      "xena_sha256": "2bb3542957c5dfc81552eb396010a56702c5a128f91f07497ce1a5e763c223d6"
+    },
+    {
+      "name": "x1.txt",
+      "xena_file": "x1.txt_Binary.xena",
+      "length": 661,
+      "sha256": "43c55214822ef5324bc3f4994a15d1b456caeaa1b168af0d2b7e1b86388d2022",
+      "xena_sha256": "4d24cb6a02229262529344f0c553b0866f51161b41002103dd5de18bf20cf7e2"
+    },
+    {
+      "name": "x2.txt",
+      "xena_file": "x2.txt_Binary.xena",
+      "length": 5582,
+      "sha256": "e3ab8f8fc8c73b5515893a30dfe56a2b1dc115940de0a47b9fd947e5b4631c34",
+      "xena_sha256": "557bd623e46009e261bcdc497f24016e0178e85fba24b34d98a8dbaab24ad09d"
+    },
+    {
+      "name": "x3.txt",
+      "xena_file": "x3.txt_Binary.xena",
+      "length": 4888,
+      "sha256": "e24511b6dd076879dc2a306f4fc8bbc141dccf39824b3a8d5f62e0b0675691b3",
+      "xena_sha256": "ab282f23a83b80bfaa455fb7ec606b971ba0ba49a5a859685e24826bb4e1dcc0"
+    },
+    {
+      "name": "x4.txt",
+      "xena_file": "x4.txt_Binary.xena",
+      "length": 6125,
+      "sha256": "cb7f2404d81c20fbebe517bf6b3eef9b83d027c9a50fc1e7aea01f0231c0d84d",
+      "xena_sha256": "158836b4898144da5395862e4feecb1c5581871803883476d54499002d6c27c4"
+    },
+    {
+      "name": "snkrc1.txt",
+      "xena_file": "snkrc1.txt_Binary.xena",
+      "length": 3757,
+      "sha256": "48531204c6d9272d2f435f0f43d8a2d777273d7576566db76d437d80d0a91bb5",
+      "xena_sha256": "8a0f268811ec97b856bcb0c8b3db5eb35eed21d6893a5532a82a3bdbd649b55e"
+    },
+    {
+      "name": "snkrc10.txt",
+      "xena_file": "snkrc10.txt_Binary.xena",
+      "length": 1702,
+      "sha256": "9aed54b817e3adb61c31782e142ae3ffb50d6e1accc40d7825a79109b1e6cd18",
+      "xena_sha256": "1eae2d0f3af9b5cf669c8207e8ac7aee7fe06a826612f8c81d55b81cd53634d7"
+    },
+    {
+      "name": "snkrc11.txt",
+      "xena_file": "snkrc11.txt_Binary.xena",
+      "length": 1640,
+      "sha256": "10f750c26246d07386c4954d0c2a3df4846bd20e0f4a372d0edad89db0ab0ab8",
+      "xena_sha256": "5551655d011a08bc0fb802e0dc3564a5f5442c8aed6e0aaa86fd80bb166b6aa5"
+    },
+    {
+      "name": "snkrc12.txt",
+      "xena_file": "snkrc12.txt_Binary.xena",
+      "length": 5613,
+      "sha256": "e6a84b538a3d93d8525915cb1cb28ccb150d3ba251f06285ce8a0aeb0c1b3c10",
+      "xena_sha256": "c4e663c6e1df410e03d16bc0c731b3cb3fa9f2a1d41490b01422b62842e524de"
+    },
+    {
+      "name": "snkrc2.txt",
+      "xena_file": "snkrc2.txt_Binary.xena",
+      "length": 1897,
+      "sha256": "9a4eecaae9deca14e3e5168f966d21279ade3284cb21cce8565c1ac37d230db0",
+      "xena_sha256": "6d4add025fc8a0832d3e2f9624b277b2c3473f4b41d46798c3096fbee390bb22"
+    },
+    {
+      "name": "snkrc3.txt",
+      "xena_file": "snkrc3.txt_Binary.xena",
+      "length": 1704,
+      "sha256": "d9b57fc94dfa03c420db01450194a7d8538fb39b584077fb4481d54c67c13a97",
+      "xena_sha256": "e299e06fe1e92b49a28e46e8f646c4c8fcbd6bd02878c16580fc489edecb434c"
+    },
+    {
+      "name": "snkrc4.txt",
+      "xena_file": "snkrc4.txt_Binary.xena",
+      "length": 1544,
+      "sha256": "abe849254fd79124a48151d01e2d8c8576f1f83c949d61d8fd7820ca03126ead",
+      "xena_sha256": "e8077d53c0581796b650cda223b780852b95b9b04c9637d626ad8056071e7f88"
+    },
+    {
+      "name": "snkrc5.txt",
+      "xena_file": "snkrc5.txt_Binary.xena",
+      "length": 1802,
+      "sha256": "bf0e478dabf54f5a50dd9a4a5f51ec6d83dc381bb96c55c92f3060648807cd21",
+      "xena_sha256": "02fdf6aa0d8269cf460df8427f68258bff74a07218a527322dc8ab58f52817cb"
+    },
+    {
+      "name": "snkrc6.txt",
+      "xena_file": "snkrc6.txt_Binary.xena",
+      "length": 2513,
+      "sha256": "363180646a9ffe939d6e7bbc540a2e64eaa6dfc1afca61fde94430d9c53f9614",
+      "xena_sha256": "bf4672f351c98c4a1f5f3fba05555c77c4448f42a2145a94c9d64bd56b2b4ad5"
+    },
+    {
+      "name": "snkrc7.txt",
+      "xena_file": "snkrc7.txt_Binary.xena",
+      "length": 1637,
+      "sha256": "5f3626a06b21c0b43b01f386643767d8fa5b67aff9949739b1c5dae7e96ffa41",
+      "xena_sha256": "ebae608bc0f162fd2433f336447212caa69fe789490a5c0314f5ce0eec4c1cb3"
+    },
+    {
+      "name": "snkrc8.txt",
+      "xena_file": "snkrc8.txt_Binary.xena",
+      "length": 5091,
+      "sha256": "6e99d2b10a5c90337ff0f7e12bcadeb871622bd7fe4619d9d0c27fecf81755e6",
+      "xena_sha256": "91c3c577ae345604a2351d8086c5fb9d9325630008bf346f78a765352b83c3aa"
+    },
+    {
+      "name": "snkrc9.txt",
+      "xena_file": "snkrc9.txt_Binary.xena",
+      "length": 1882,
+      "sha256": "e8163cb7265170ced237b0f8b7adc4781195206d940877c25bf760021ad77772",
+      "xena_sha256": "051a4f50202c58b7bd8939139ecc556219a9575ea61b392b69c6af5c8e181842"
+    },
+    {
+      "name": "snkr01.prn",
+      "xena_file": "snkr01.prn_Binary.xena",
+      "length": 1576,
+      "sha256": "49a717d89e9a36dc2defd1a22e7daf1600f3c483e4b105e21a7d755d63ceb30a",
+      "xena_sha256": "3c6f82a69b65a091020181485a76fc918c660a9f274a1cdcc9a2ce5a44ebd793"
+    },
+    {
+      "name": "snkr02.prn",
+      "xena_file": "snkr02.prn_Binary.xena",
+      "length": 1882,
+      "sha256": "0c5116b7fbd9af5684652bc417d0d7fd242e39a28f53d7ae931434c70f3581bf",
+      "xena_sha256": "7e4e778ffc6e5df0f6050ce5aedb51cb1a35683a172105408bdf0d05f2ca575f"
+    },
+    {
+      "name": "snkr03.prn",
+      "xena_file": "snkr03.prn_Binary.xena",
+      "length": 1993,
+      "sha256": "8aac4f243ecce3f410d11c806eb4c11c5144f87db6414b18ba24f4bbfdf9044c",
+      "xena_sha256": "6f27f97bab0bb7cae2e6ac316166713070f8689fbda655d3be33e6583ed73c25"
+    },
+    {
+      "name": "snkr04.prn",
+      "xena_file": "snkr04.prn_Binary.xena",
+      "length": 1733,
+      "sha256": "427898c54fa5e7cde64fd62f30232702c1373b9641480ca0c3f963539f52ad63",
+      "xena_sha256": "d1773f6357e3e74d04853005b847dd43f834e9d505c0b82b2ddd19b765eb1b1d"
+    },
+    {
+      "name": "snkr05.prn",
+      "xena_file": "snkr05.prn_Binary.xena",
+      "length": 2036,
+      "sha256": "e7aadce24548c412e244cf8bf42b1f554c8a5bc098f2ac0dcf17961235fb563f",
+      "xena_sha256": "a1ba69b8900bcd006abde6fa592c120e2cd3ad72736bc8bcc2deeef99f352402"
+    },
+    {
+      "name": "snkr06.prn",
+      "xena_file": "snkr06.prn_Binary.xena",
+      "length": 1977,
+      "sha256": "d52e3867a383feadf109cea4009b960dad996cf7c464b61af6bfb9a20e735cb0",
+      "xena_sha256": "f8c45b55001d48c9330b4660a234ec3118290b43983dea4a19f54ad7850d7ea1"
+    },
+    {
+      "name": "snkr07.prn",
+      "xena_file": "snkr07.prn_Binary.xena",
+      "length": 1901,
+      "sha256": "002295068559476b300fdc17861d15f86c4edc098127b1756fbe3b78c1f613df",
+      "xena_sha256": "57e8fcadc72f360a8674e263af374a71af29f712e861b09cb925b597a20c5221"
+    },
+    {
+      "name": "snkr08.prn",
+      "xena_file": "snkr08.prn_Binary.xena",
+      "length": 2004,
+      "sha256": "8f9bf603b640566cfe77841843b36bd677aa7e203cc42013dff9371f824df62d",
+      "xena_sha256": "e1ee07d79ca1d13c360f1613d086604c0660a4fca77b66a6eb88f107e350f0d9"
+    },
+    {
+      "name": "snkr09.prn",
+      "xena_file": "snkr09.prn_Binary.xena",
+      "length": 1959,
+      "sha256": "2f39cbb1a12fe2ada95eb24e91195278e56926c3968826ca7da40308329c1fd5",
+      "xena_sha256": "f1d27426615c7d2ef26fd574bb13ec5d6ffe5e5fa6da1749ea8d0730293c35eb"
+    },
+    {
+      "name": "snkr10.prn",
+      "xena_file": "snkr10.prn_Binary.xena",
+      "length": 2049,
+      "sha256": "873bd2f8713038cb845fd919705c09d26a1f08f7046b7b8f3284c244311b85b4",
+      "xena_sha256": "579e9abf845406ff93bd70552bcf3437a55c26f8f21411bbdb64b586a5c1d56d"
+    },
+    {
+      "name": "snkr11.prn",
+      "xena_file": "snkr11.prn_Binary.xena",
+      "length": 1970,
+      "sha256": "d3a27b0b6c494056236b361e1db7c92229669173a978a737c81ad0a33bd14b08",
+      "xena_sha256": "95239b7fb6aec434ff5eefb52b872383f9c25ddb373d167b13fec62af767687c"
+    },
+    {
+      "name": "snkr12.prn",
+      "xena_file": "snkr12.prn_Binary.xena",
+      "length": 1864,
+      "sha256": "2318c2f4bcf6d204cbd8f1a77086a4ef9930bfcf79f50ad2e2b802fa772b8d38",
+      "xena_sha256": "218cf9e340b681143d76b5bd788e6b7192c52bb4c87b038d99dc93473850a6c2"
+    },
+    {
+      "name": "snkr13.prn",
+      "xena_file": "snkr13.prn_Binary.xena",
+      "length": 1979,
+      "sha256": "8b5501967649acfc1d34978ae3ec522eef953558e442104865767dbf507e85b8",
+      "xena_sha256": "95e64bb9016e35d0d6b616ddb2a5fb641e0464f3c5d627db1430c5ca72cbe7e9"
+    },
+    {
+      "name": "snkr14.prn",
+      "xena_file": "snkr14.prn_Binary.xena",
+      "length": 1615,
+      "sha256": "936ccdd5b24f8a07215e15bc2580b941878a00732a81a0b52abe11624fb6569c",
+      "xena_sha256": "e33d46f57d77d41319865c3967dc305464d264966f772dfd7ec7f9f0745a7642"
+    },
+    {
+      "name": "snkr15.prn",
+      "xena_file": "snkr15.prn_Binary.xena",
+      "length": 1853,
+      "sha256": "3ec7179c5db2a7eb4a744aeb3349f96c31efaf794f2bf37490fa3f35f5114905",
+      "xena_sha256": "615ca10fa4d338f8d303588d50e04438b701fff7ed4ed0462f03a353347a268a"
+    },
+    {
+      "name": "snkr16.prn",
+      "xena_file": "snkr16.prn_Binary.xena",
+      "length": 1896,
+      "sha256": "4f897b52c86ffdcc1545cc71f223aba4b049473ca182d835dfcad4b1fdbb7b51",
+      "xena_sha256": "2a2fcb03641abf6f62f21188d175aa6eec563bb129735e0ee7504c33ce7aead3"
+    },
+    {
+      "name": "snkr17.prn",
+      "xena_file": "snkr17.prn_Binary.xena",
+      "length": 1816,
+      "sha256": "b54ce484b87f7b5272b937be03a6562db34c0f7f661dc605fcd83fac10853f05",
+      "xena_sha256": "0e01935b90254c9e8f54bd6826da2f8fc75a74ca59504b581ff41964c78a942e"
+    },
+    {
+      "name": "snkr18.prn",
+      "xena_file": "snkr18.prn_Binary.xena",
+      "length": 1788,
+      "sha256": "75098847e277c6e23d4bdea492f1963837e3bdcb6c389130fbc4da0dd3733a3f",
+      "xena_sha256": "2ae6c3a2c97871cb2e714308883780bd26e1eadbbaf1bb64842f7bf26904fc14"
+    },
+    {
+      "name": "snkr19.prn",
+      "xena_file": "snkr19.prn_Binary.xena",
+      "length": 1738,
+      "sha256": "052a2f226b2762153fdfd70b64550e0514c096d176a655825f6f54ec487545a3",
+      "xena_sha256": "0dad81b3926a3fcadcbad65415a110c3e1c596be85874c42f2c8da7d8ee499bc"
+    },
+    {
+      "name": "snkr20.prn",
+      "xena_file": "snkr20.prn_Binary.xena",
+      "length": 2005,
+      "sha256": "c311fe32d309370f47750916a2e37bd4c732db60d053a30f1f5ba9b44c5c15b8",
+      "xena_sha256": "c90c5c3ce79ebc715378b4a3502440aa85483f0589027815e420e902a5522eca"
+    },
+    {
+      "name": "snkr21.prn",
+      "xena_file": "snkr21.prn_Binary.xena",
+      "length": 1687,
+      "sha256": "753cde0ef5d44edd9bc59a4db57492ab8557ab5b6d5a5d5c9de2949f377e9135",
+      "xena_sha256": "c6e91abbedffdd358b228e0cc171179644b0ffe3ab7ec2c24a63cd81c6f857b3"
+    },
+    {
+      "name": "snkr22.prn",
+      "xena_file": "snkr22.prn_Binary.xena",
+      "length": 1671,
+      "sha256": "5e5d3ec7e6b435d76747ba9375c76fce4b4ad1207ffbfd1f8b5e49f195ac76c1",
+      "xena_sha256": "b107705583ba6bba70efcb9ddc4f554c3495723ca613e4ee3451e5604bb42c24"
+    },
+    {
+      "name": "snkr23.prn",
+      "xena_file": "snkr23.prn_Binary.xena",
+      "length": 1771,
+      "sha256": "18937aad72c65171d7a5dc20557ee51af49febddea6b67b7de2cac274ec8d533",
+      "xena_sha256": "be9594925762a7f17281bff5f6957de0c713d99ecc83ebcf40d38cd257507b0b"
+    },
+    {
+      "name": "snkr24.prn",
+      "xena_file": "snkr24.prn_Binary.xena",
+      "length": 1609,
+      "sha256": "9026939b623313b72c90674cea2ac122b0871a58e92fd6d778fe27f3378d7feb",
+      "xena_sha256": "e17a5f0f2674b04804c639d028c4d3befd22058e1f0301858ee4865ea3019561"
+    },
+    {
+      "name": "snkr25.prn",
+      "xena_file": "snkr25.prn_Binary.xena",
+      "length": 1660,
+      "sha256": "1382724e6a49f527e370a48c896bb58b75d240a4f345087b945a230f74fbb949",
+      "xena_sha256": "b13b3d79e4e0bcf5ca6c8a8fc85593592843c88f7f778ace286506c3c43d1e2f"
+    },
+    {
+      "name": "snkr26.prn",
+      "xena_file": "snkr26.prn_Binary.xena",
+      "length": 1857,
+      "sha256": "42317d0656ff8eb882f4da7b0a480c9dab2d1d07db126cef7144f6d8871d3cb3",
+      "xena_sha256": "d785d4f86f7dd214edf06e435d508d6b4b56a84ffd3e45756c8b60af264b2b96"
+    },
+    {
+      "name": "snkr27.prn",
+      "xena_file": "snkr27.prn_Binary.xena",
+      "length": 1649,
+      "sha256": "566390b0117c98e3202e5f850e5adc321b2fd5da523dc109bcf4044a0c93f8fd",
+      "xena_sha256": "a78f277c1b24d399c4b610b5b55eb6bb89fba6f690a64d8b2b87230ee1725929"
+    },
+    {
+      "name": "snkr28.prn",
+      "xena_file": "snkr28.prn_Binary.xena",
+      "length": 1849,
+      "sha256": "e9e04970341106028d50d46692511b852ba259456e03724559c7e6cb6e299676",
+      "xena_sha256": "819d87ccab6ef24dc3978309b5d28aae4048d09465441bf865986b510d5ac909"
+    },
+    {
+      "name": "snkr29.prn",
+      "xena_file": "snkr29.prn_Binary.xena",
+      "length": 1823,
+      "sha256": "5b8281043c5c471931c689c73597ccf2e87541e1ba330c30d4a5daa589ddaf0e",
+      "xena_sha256": "71a3c0117aa9ab711ad6edbebe6e872c7b7f9c5e5bcd926a6fe398b00fff29e3"
+    },
+    {
+      "name": "snkr30.prn",
+      "xena_file": "snkr30.prn_Binary.xena",
+      "length": 1581,
+      "sha256": "709ff5f3d6097c638fc3229d4a77e15fb8fe551a69dfac9ab31dbcb1babfe548",
+      "xena_sha256": "cfb074137f4f207ff680eff69aae85d89e2c65f78a644c1b06e7f45b76fe4fdf"
+    },
+    {
+      "name": "snkr31.prn",
+      "xena_file": "snkr31.prn_Binary.xena",
+      "length": 1742,
+      "sha256": "e68affd131dd86e7d6903358fff2f7d8c9f7913c4e5095a7526d9e2f833a8cf0",
+      "xena_sha256": "b6c406c30222bad91e7c8d497f81978f721d8a2f0e4af3be7b8238c9dc4f7701"
+    },
+    {
+      "name": "snkr32.prn",
+      "xena_file": "snkr32.prn_Binary.xena",
+      "length": 1782,
+      "sha256": "e29e37a5a7f949f61b09518d796c8f98e010ed84d4641a2cf406ece1f5ab2f63",
+      "xena_sha256": "bae1c90091d86178e36f543add325827c0b9af5fddc9eca94a04f1d7356d281b"
+    },
+    {
+      "name": "snkr33.prn",
+      "xena_file": "snkr33.prn_Binary.xena",
+      "length": 1798,
+      "sha256": "b89061d4e8ce381c30aae18fca225eb59df9acd5ac47f3ffc6d5f001a706f7eb",
+      "xena_sha256": "3dcb83bd7802ae4c0cfc0d05c411eafb7dacc853b504128b4c0cd0efb76f0036"
+    },
+    {
+      "name": "snkr34.prn",
+      "xena_file": "snkr34.prn_Binary.xena",
+      "length": 1915,
+      "sha256": "df18ff17bca270964ebc12bd52abd58809d28cd61815009a88a2721438359f12",
+      "xena_sha256": "f3f32afc57b30c712e2da2ca552fc910f6f072be91431542041f4f7f80c7b2d5"
+    },
+    {
+      "name": "snkr35.prn",
+      "xena_file": "snkr35.prn_Binary.xena",
+      "length": 333,
+      "sha256": "3ac8990888cbbaf1ec93d49afbed5af1881c52068ed1054654b9d45addd7bcba",
+      "xena_sha256": "126d66b55a53afa73ce3c05337476d9bc0221b44f2f80f52e4470c4a8929932c"
+    },
+    {
+      "name": "titl01.pic",
+      "xena_file": "titl01.pic_Binary.xena",
+      "length": 11067,
+      "sha256": "1a225ff268543c888c80be04544902c318b650ddaec5ce788bddad6aab158bc5",
+      "xena_sha256": "25d2fc3eba7e9bf1142edcb6f9529bff2f965fe3aefc8934e7eaf83c3cb02677"
+    },
+    {
+      "name": "titl02.pic",
+      "xena_file": "titl02.pic_Binary.xena",
+      "length": 16371,
+      "sha256": "fbf1e1eaab891fe16765f0aaf32b96f5bce3746e61b41540b1422fe411a0937c",
+      "xena_sha256": "b440879480642120651349975cdf061d288074f398ab35b3d250ce806aa3bd70"
+    },
+    {
+      "name": "titl03.pic",
+      "xena_file": "titl03.pic_Binary.xena",
+      "length": 18703,
+      "sha256": "04ce00f330a7006da46b14f89a285e74a681f6793612c481e4dba85c6c3deacb",
+      "xena_sha256": "b5b5f5c6a7c6e687fccc7ff650fab1f064214df3bb01f9e14df4e5c87a7b6f53"
+    },
+    {
+      "name": "titl04.pic",
+      "xena_file": "titl04.pic_Binary.xena",
+      "length": 28027,
+      "sha256": "4c5dfdcbc0576e8d04c4b08da36a3511194459fe47aae9c4fb457d130929c029",
+      "xena_sha256": "96a64dfee042a7295282b7fbefc9e322aae97be0208ad4df20c588bb7e775b4c"
+    },
+    {
+      "name": "titl05.pic",
+      "xena_file": "titl05.pic_Binary.xena",
+      "length": 30300,
+      "sha256": "1105fa7c669e11698e0616ff9921ca0e0e924764f35edb4ee6edbf7aacc61b74",
+      "xena_sha256": "211562c11e5b8c43b3378bb218914ef0e2ec7f62b7b58d0c0c9e12cf9ec238f7"
+    },
+    {
+      "name": "titl06.pic",
+      "xena_file": "titl06.pic_Binary.xena",
+      "length": 32490,
+      "sha256": "2f9561d9743a527a766267da5fb4966299374dcb3836bec8b18764bc8a68d685",
+      "xena_sha256": "c4075dedb2e14eea8b74181b96588dab2972df1872aff3205137a3b2d8c49362"
+    },
+    {
+      "name": "titl07.pic",
+      "xena_file": "titl07.pic_Binary.xena",
+      "length": 41387,
+      "sha256": "d173ce7a5190dde3f512bda5ed744b8be711b2342f629c97cf54a61707c87ae8",
+      "xena_sha256": "0db4fd5173423c9063ffff1588e1fe788a201d071b3309af775409d53feb9030"
+    },
+    {
+      "name": "titl08.pic",
+      "xena_file": "titl08.pic_Binary.xena",
+      "length": 30392,
+      "sha256": "6b00e590e9d8f07cf6672b2386d1847d046b67e82106587620a507cf448d88df",
+      "xena_sha256": "06994459a74796752c8c8715b64fda6b9ba60480f3ee99ca1fe48902ed8f3e28"
+    },
+    {
+      "name": "titl09.pic",
+      "xena_file": "titl09.pic_Binary.xena",
+      "length": 29244,
+      "sha256": "e033aafaffd7d72e5c56b50fe7d7554aa7296d470ed5a262f6b241a115906a91",
+      "xena_sha256": "a6e964f3cad90ca90607bfa7a7a16f66ef431842fd82cbb0ca3ca9f73a86fdb5"
+    },
+    {
+      "name": "titl10.pic",
+      "xena_file": "titl10.pic_Binary.xena",
+      "length": 38141,
+      "sha256": "32b568ded706b85ebe572be6e5d5ddbf8372d9037112b13797853d782d4b3016",
+      "xena_sha256": "2de3991f73f40bde43b2ebcbd80766d361f11b405bb24f33deba944a6a5d1313"
+    },
+    {
+      "name": "titl11.pic",
+      "xena_file": "titl11.pic_Binary.xena",
+      "length": 42689,
+      "sha256": "7cfc86dd17196150830a08e61afdb9a14bd589b445f442d1d98c27d0b30fdf4e",
+      "xena_sha256": "2ca7d00db5e52af622eadaa71812619bddbddfc3f1781a3e8e0b38361bf6206a"
+    },
+    {
+      "name": "titl12.pic",
+      "xena_file": "titl12.pic_Binary.xena",
+      "length": 34346,
+      "sha256": "e9193d8c1b65a5b04198bea3751b423b287af0df78b1c1568e5c0c7b20904067",
+      "xena_sha256": "7b1f92b0356330bbce490df6d9444d6b06253ffc113b6889c6f01432c622fb12"
+    },
+    {
+      "name": "titl13.pic",
+      "xena_file": "titl13.pic_Binary.xena",
+      "length": 36471,
+      "sha256": "e10ac55a7832760be3ea2f6c8fdea7b61dca5fdbaf6319ef7802cd5f8554aef6",
+      "xena_sha256": "e9e3ff209c3c0b1928627bc12ef4c297b703e4ecf10fbdbc809ea2af5f3a9346"
+    },
+    {
+      "name": "titl14.pic",
+      "xena_file": "titl14.pic_Binary.xena",
+      "length": 37040,
+      "sha256": "2c55f2e0e8240b32b89854c7050d7cb9bf3b9a6b43a8424d4da5d4ac9c9304a2",
+      "xena_sha256": "1463babc96e0f7f699b3be3cf5797000206d387c9e91575ea555b1ddadcd1933"
+    },
+    {
+      "name": "titl15.pic",
+      "xena_file": "titl15.pic_Binary.xena",
+      "length": 41677,
+      "sha256": "e925f47549f0c68066b392dcf19257a4c6aa76ec79c88954e9101a8a650b5f1f",
+      "xena_sha256": "fdd820ff4618ba20cd734e3320768864c31c1e73aa31155aaa7e4d092520259b"
+    },
+    {
+      "name": "titl16.pic",
+      "xena_file": "titl16.pic_Binary.xena",
+      "length": 38112,
+      "sha256": "f439e5bf8d9e45b86d0938555a6e5f285edb3552622c998cc04129df37f46fa2",
+      "xena_sha256": "d9e2769fb9c47da7cb94edf0bd50f9aab81228ebd3bf7a72b013acd2ca1249c5"
+    },
+    {
+      "name": "titl17.pic",
+      "xena_file": "titl17.pic_Binary.xena",
+      "length": 39884,
+      "sha256": "2622d7dcb238d43ff31e0feeb4a766309ea1745450018b6a43e74263aa25174a",
+      "xena_sha256": "a1e025194576945e2ca2b8415dda0cfeb7fee202aa0dbd92204cc20f0a90dd0e"
+    },
+    {
+      "name": "titl18.pic",
+      "xena_file": "titl18.pic_Binary.xena",
+      "length": 42351,
+      "sha256": "14f66e9c1d48e75d69f36334d1c20b1cc02c0d60a6aa59c708e47ec4f92d6555",
+      "xena_sha256": "42488c93f89e4c4843802cb277a70e5fe083ef7a51733bd0913f20eeae2e761b"
+    },
+    {
+      "name": "titl19.pic",
+      "xena_file": "titl19.pic_Binary.xena",
+      "length": 38712,
+      "sha256": "f166be37c443dc8b49966fd8cc651d0d7a18e2a12221c626155b728c7bf3ca72",
+      "xena_sha256": "b7048fe75958540761e6801af31ec1240fb73360f1f2f2da7cf7464a5a8b802a"
+    },
+    {
+      "name": "titl20.pic",
+      "xena_file": "titl20.pic_Binary.xena",
+      "length": 35162,
+      "sha256": "38e4f3fb1c0fc0d5c1555312e88241d345700ba6321b5bd73ecdab497ad7e79d",
+      "xena_sha256": "8318b28072b11e6f30c72878313d74f6453f8098ac62281e412ccc6f3873de03"
+    },
+    {
+      "name": "titl21.pic",
+      "xena_file": "titl21.pic_Binary.xena",
+      "length": 20203,
+      "sha256": "aa9d5cea892426f0370920ae800ee9e269597af4c22d80474c1cbae43e6df497",
+      "xena_sha256": "4661dd96eb04cc600f3316b83185df94d95b3e1ff639e46aea9f5a0d21aa1e9d"
+    },
+    {
+      "name": "titl22.pic",
+      "xena_file": "titl22.pic_Binary.xena",
+      "length": 22542,
+      "sha256": "c3b269dd75474a36a0bee77963bdc5f6e90836f4e3bf3f40f2d8adf01230fe49",
+      "xena_sha256": "a7fe62319e6dde8fe8840b643efe3bb6e0a46abf5ca04919fc4e212b35af0349"
+    },
+    {
+      "name": "titl23.pic",
+      "xena_file": "titl23.pic_Binary.xena",
+      "length": 21346,
+      "sha256": "aadb2e3e3c0fc678d72f83fcba7c2f4336e6878e7f19bca2859b03ffd986e60a",
+      "xena_sha256": "c535e7aa21f8ad517e19532284683cb704272798dfdec0a14675c641442837a0"
+    },
+    {
+      "name": "titl24.pic",
+      "xena_file": "titl24.pic_Binary.xena",
+      "length": 22186,
+      "sha256": "215f5ceba65ae53124bbd236759046267ab68615961ddb0ae3e869b5e6dd88e3",
+      "xena_sha256": "2f53c8875c16ec1aa580975515762a340d7cc0b4cf4979539ff4afeb52763200"
+    },
+    {
+      "name": "titl25.pic",
+      "xena_file": "titl25.pic_Binary.xena",
+      "length": 19111,
+      "sha256": "5f2a65c8721f2846983600ff347112aecea16ccea1bf186273a7b17b8e324799",
+      "xena_sha256": "5c4329c2547245f6f705256225b5a73029dfbab9381adbe94a53d32324237bc2"
+    },
+    {
+      "name": "titl26.pic",
+      "xena_file": "titl26.pic_Binary.xena",
+      "length": 25635,
+      "sha256": "4cdf0305ba77c2e30545a72151a667def17c3e0e61c8265222598889ebd69fd2",
+      "xena_sha256": "0ce7e6a24b00cb1a282b781779ce43329c976365efca53744cfcfc6cc29cbb31"
+    },
+    {
+      "name": "titl27.pic",
+      "xena_file": "titl27.pic_Binary.xena",
+      "length": 30301,
+      "sha256": "c092923ecc068934c00498034d7624eb095cdba98f31a4bf73b5864f83d61307",
+      "xena_sha256": "db334b5a84063d286f9362c14dc23db85e2eb9125bf38a116b6b84e2fb6f5b1b"
+    },
+    {
+      "name": "titl28.pic",
+      "xena_file": "titl28.pic_Binary.xena",
+      "length": 23427,
+      "sha256": "facd3dc905f62699abcfe10d91aa23cba77aed23d7a523e06878189d60ee2788",
+      "xena_sha256": "5de30f8678f5937eb4ff80afdb4bd3cf2943a06063f2220103053be7ed453d55"
+    },
+    {
+      "name": "titl29.pic",
+      "xena_file": "titl29.pic_Binary.xena",
+      "length": 20116,
+      "sha256": "40a99a54186e9d48130dcdad3c7dc4fc1ab9b1634ae3b32d7e4b9b761c405d6b",
+      "xena_sha256": "ed39ef5ac98ca2e445b7c03df0e9aa013bd0430c492b8e7b26113f41507289cd"
+    },
+    {
+      "name": "biotxt.txt",
+      "xena_file": "biotxt.txt_Binary.xena",
+      "length": 2454,
+      "sha256": "ef47293cdf81a4918649ad61a9d66a80b4addfcf5bdc605b7397a8018e5c1750",
+      "xena_sha256": "9cf8957d5b872e83cff5dbabf19171a6d7a17098a0ba815efd1d3d21ace88027"
+    }
+  ]
+}
