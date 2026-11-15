@@ -83,6 +83,10 @@ const POST_MERGE_OPS = [
   "elgamalMulDemo",
   // 2026-11-08 ITAR munitions export law protest: Perl RSA T-shirt as free speech.
   "munitionsTshirt",
+  // 2026-11-13 GRASP 4.00d protected-library cipher recovered from the Sneakers
+  // press kit (docs/sneakers-grasp-library-cipher-2026-11-13.md).
+  "graspGlTable",
+  "graspGlDirectory",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

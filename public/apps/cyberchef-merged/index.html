@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 519 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 521 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -331,18 +331,22 @@ addOp('gronsfeld','Gronsfeld Cipher','Classical',
     }).join('');
   });
 
-/* 4. One-Time Pad / XOR */
+/* 4. One-Time Pad / XOR — hex key is useful for binary RE; text stays default. */
 addOp('xor','One-Time Pad / XOR','Classical',
-  'Bitwise XOR of input bytes with key bytes (key repeats). XOR is self-inverse.',
+  'Bitwise XOR of input bytes with repeating key bytes (text or hex). XOR is self-inverse.',
   [
     {key:'key',label:'Key',type:'text',default:'key'},
+    {key:'keyFmt',label:'Key format',type:'select',default:'text',options:[['text','Text (legacy)'],['hex','Hex bytes']]},
     {key:'infmt',label:'Input fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]},
     {key:'outfmt',label:'Output fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]}
   ],
   function(text,args){
-    const keyBytes=args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
+    const hexKey=String(args.key||'').replace(/[\s:,\-]/g,'');
+    if(args.keyFmt==='hex' && !/^(?:[0-9a-fA-F]{2})+$/.test(hexKey))
+      throw new Error('Hex key must contain complete byte pairs (e.g. f4901795)');
+    const keyBytes=args.keyFmt==='hex'?bytesFromHex(hexKey):args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
     if(!keyBytes.length)return text;
-    let bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
+    const bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
     const out=bytes.map((b,i)=>b^keyBytes[i%keyBytes.length]);
     return args.outfmt==='hex'?hexFromBytes(out):utf8Decode(out);
   });
@@ -2900,6 +2904,109 @@ addOp('lzexeDecode','LZEXE 0.91 Unpack','EXE Protection',
     return L.join('\n');
   });
 
+/* ---- GRASP 4.00d protected GL library (Sneakers 1992 press kit) ----
+   Recovered from the GRASPRT 4.00d load module of SNEAKERS.EXE (sha256
+   d5738c9a…5961) with objdump real-mode disassembly; see
+   docs/sneakers-grasp-library-cipher-2026-11-13.md.  Code-segment offsets
+   (file offset = 0x1200 + offset):
+     0x1224a  rng: x=state&0x7fffffff; x^=x>>13; x^=x<<18 (32-bit); return low 16 bits
+     0x16024  perm=0..255; for i in 0..255: j=rng()&0xff; swap(perm[i],perm[j])
+     0x16087  inverse[perm[i]]=i   (the table the DOS read hook at 0xc003 applies via xlat)
+     0x145b2  key word = HIGH word of the first directory entry's offset; seed = key*0x7cf7
+   cipher = perm[plain] for every member byte, including the 4-byte length prefix. */
+function graspXorshift31(seed){
+  let s=seed>>>0;
+  return ()=>{let x=s&0x7fffffff; x^=x>>>13; x=(x^(x<<18))>>>0; s=x; return x&0xffff;};
+}
+function graspPermutation(keyWord,mult){
+  const rng=graspXorshift31(Math.imul(keyWord&0xffff,(mult==null?0x7cf7:mult)&0xffff)>>>0);
+  const p=Array.from({length:256},(_,i)=>i);
+  for(let i=0;i<256;i++){const j=rng()&0xff; const t=p[i]; p[i]=p[j]; p[j]=t;}
+  return p;
+}
+function graspInverse(p){const inv=new Array(256); for(let i=0;i<256;i++)inv[p[i]]=i; return inv;}
+function graspKeyWord(s){
+  const h=String(s==null?'':s).trim().replace(/^0x/i,'');
+  if(!/^[0-9a-fA-F]{1,4}$/.test(h))throw new Error('GRASP key word must be 1–4 hex digits (Sneakers: ec70)');
+  return parseInt(h,16);
+}
+function graspMzLoadModule(b){
+  if(b.length<0x1c||b[0]!==0x4d||b[1]!==0x5a)return 0;
+  const cblp=b[2]|(b[3]<<8), cp=b[4]|(b[5]<<8);
+  return cblp?((cp-1)*512+cblp):cp*512;
+}
+function graspParseLibrary(bytes,offset){
+  const data=bytes.subarray(offset);
+  if(data.length<2)throw new Error('No GL directory after offset '+offset);
+  const dirLen=data[0]|(data[1]<<8);
+  const entries=[];
+  for(let pos=2;pos+17<=dirLen+2;pos+=17){
+    const off=(data[pos]|(data[pos+1]<<8)|(data[pos+2]<<16)|(data[pos+3]<<24))>>>0;
+    let name=''; for(let k=4;k<17&&data[pos+k];k++)name+=String.fromCharCode(data[pos+k]);
+    entries.push({off,name});
+  }
+  if(!entries.length)throw new Error('Empty GL directory');
+  const keyWord=entries[0].off>>>16; entries[0].off&=0xffff;
+  const members=entries.filter(e=>e.name);
+  const table=keyWord?graspInverse(graspPermutation(keyWord)):Array.from({length:256},(_,i)=>i);
+  members.forEach((m,i)=>{
+    const next=i+1<members.length?members[i+1].off:data.length;
+    const L=[0,1,2,3].map(k=>table[data[m.off+k]]);
+    m.length=(L[0]|(L[1]<<8)|(L[2]<<16)|(L[3]<<24))>>>0;
+    m.span=next-m.off-4;
+    m.ok=m.length===m.span;
+  });
+  return {offset,dirLen,keyWord,members,table,data};
+}
+addOp('graspGlTable','GRASP 4.00d Protected-Library Bytes','EXE Protection',
+  'Byte substitution used by GRASPRT 4.00d for “protected” GL libraries (Sneakers 1992 press kit). The 16-bit key word seeds a 31-bit xorshift (>>13, <<18) via key×0x7cf7; 256 swaps build the table. Decrypt = inverse table. Paste a reviewed hex excerpt of member bytes, or feed Load File bytes.',
+  [
+    {key:'keyWord',label:'Key word (hex)',type:'text',default:'ec70'},
+    {key:'mode',label:'Mode',type:'select',default:'decrypt',options:[['decrypt','Decrypt (inverse table)'],['encrypt','Encrypt (perm table)'],['table','Show tables only']]},
+    {key:'infmt',label:'Input fmt',type:'select',default:'hex',options:[['hex','Hex'],['binstr','Raw byte string (Load File)'],['text','UTF-8 text']]},
+    {key:'outfmt',label:'Output fmt',type:'select',default:'text',options:[['text','Latin-1 text'],['hex','Hex'],['binstr','Raw byte string']]}
+  ],
+  function(t,a){
+    const keyWord=graspKeyWord(a.keyWord);
+    const perm=graspPermutation(keyWord), inv=graspInverse(perm);
+    if(a.mode==='table')
+      return 'key word 0x'+keyWord.toString(16).padStart(4,'0')+' · seed 0x'+(Math.imul(keyWord,0x7cf7)>>>0).toString(16).padStart(8,'0')+
+        '\nencrypt (plain→cipher): '+perm.map(v=>v.toString(16).padStart(2,'0')).join('')+
+        '\ndecrypt (cipher→plain): '+inv.map(v=>v.toString(16).padStart(2,'0')).join('');
+    const bytes=a.infmt==='hex'?bytesFromHex(t):a.infmt==='binstr'?bytesFromBinStr(t):utf8Encode(t);
+    const table=a.mode==='encrypt'?perm:inv;
+    const out=new Uint8Array(bytes.length); for(let i=0;i<bytes.length;i++)out[i]=table[bytes[i]];
+    return a.outfmt==='hex'?hexFromBytes(out):binStrFromBytes(out);
+  });
+addOp('graspGlDirectory','GRASP GL Library Directory (EXE-bound)','EXE Protection',
+  'Parse a GRASP .GL library or an EXE-bound GRASPRT presentation (Load File → raw byte string). Reads the 17-byte directory entries, recovers the protection key word from the first entry’s high offset word, decodes every member’s 4-byte length prefix and checks it against the directory. Optionally output one decoded member. Static parse only — never runs the presentation or its .grp code members.',
+  [
+    {key:'offset',label:'Library offset (blank = MZ load-module size)',type:'text',default:''},
+    {key:'member',label:'Output member (name) or blank for the listing',type:'text',default:''},
+    {key:'outfmt',label:'Member output',type:'select',default:'text',options:[['text','Latin-1 text'],['hex','Hex'],['binstr','Raw byte string']]}
+  ],
+  function(t,a){
+    const bytes=bytesFromBinStr(t);
+    const offset=String(a.offset||'').trim()?parseInt(a.offset,10):graspMzLoadModule(bytes);
+    const lib=graspParseLibrary(bytes,offset);
+    const want=String(a.member||'').trim().toLowerCase();
+    if(want){
+      const m=lib.members.find(x=>x.name.toLowerCase()===want);
+      if(!m)throw new Error('No member named '+want);
+      if(!m.ok)throw new Error('Member length prefix disagrees with the directory; wrong key or offset?');
+      const raw=lib.data.subarray(m.off+4,m.off+4+m.length);
+      const out=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++)out[i]=lib.table[raw[i]];
+      return a.outfmt==='hex'?hexFromBytes(out):binStrFromBytes(out);
+    }
+    const ok=lib.members.filter(m=>m.ok).length;
+    const L=['GRASP GL directory @ file offset '+offset+' (0x'+offset.toString(16)+') · directory bytes '+lib.dirLen+
+      ' · key word 0x'+lib.keyWord.toString(16).padStart(4,'0')+(lib.keyWord?' (protected)':' (plain)')+
+      ' · members '+lib.members.length+' · length-consistent '+ok];
+    L.push('name          file-offset  length  check');
+    for(const m of lib.members)L.push(m.name.padEnd(13)+' '+(offset+m.off).toString().padStart(11)+' '+String(m.length).padStart(7)+'  '+(m.ok?'ok':'MISMATCH'));
+    return L.join('\n');
+  });
+
 /* ---- PKLITE: the stub decrypts itself before it decompresses ----
    Only a short preamble is plaintext; it ends in a backwards running-XOR
    chain (std + lodsw/xchg/xor/stosw) over its own body.  The chain key is the
@@ -3276,6 +3383,20 @@ const RECIPE_PACKS={
  'Encoding Lab — Base64, Base32, URL, Unicode, Hex, ROT47 round-trips':[['toB64',{}],['fromB64',{}],['toBase32',{}],['fromBase32',{}],['toURL',{}],['fromURL',{}],['toUnicode',{}],['fromUnicode',{}],['toHex',{sep:'none'}],['fromHex',{mode:'utf8'}],['rot47',{}],['rot47',{}]],
  'Binary File Lab — byte-exact Base64 round-trip (load a file first)':[['binToB64',{wrap:0}],['b64ToBin',{}]],
  'Obfuscation Lab — single-byte XOR with a toy ASCII input':[['xor',{key:'B',infmt:'text',outfmt:'text'}],['xorBrute',{}]],
+ // FBCTF 2019 source + hash-pinned distribution: see docs/ctftime-facebook-2019-software-crypto-2026-11-13.md.
+ // Paste a reviewed hex excerpt only; the challenge executables are NOT recipe inputs.
+ 'FBCTF 2019 — SOMBRERO ROJO key-file path (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO printed flag bytes (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (XOR; NOT Base64 decoded)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ // An analyst-only interpretation, NOT the runtime KEK path; the decoded FLAG{...} is not the printed fb{...}.
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (analyst Base64 inspection)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}],['fromB64',{}]],
+ // Load ONLY the organizer's 64-byte dist/enc via Load File; 32-byte IV + ciphertext, no decryption.
+ 'FBCTF 2019 — netscream enc envelope (inspect only)':[['toHexdump',{srcfmt:'binstr',width:'16'}]],
+ // Sneakers 1992 press kit: GRASPRT 4.00d protected library; algorithm recovered from the runtime's own code.
+ // Load File SNEAKERS.EXE (repo ZIP webxdc-sneakers-exact/source) for the directory; paste a hex excerpt for the byte op.
+ 'Sneakers 1992 — GRASP GL directory + key word (Load File SNEAKERS.EXE)':[['graspGlDirectory',{}]],
+ 'Sneakers 1992 — GRASP protected member bytes (decrypt hex excerpt)':[['graspGlTable',{keyWord:'ec70',mode:'decrypt',infmt:'hex',outfmt:'text'}]],
+ 'Sneakers 1992 — GRASP substitution tables for key word ec70':[['graspGlTable',{keyWord:'ec70',mode:'table'}]],
  'Encryption Lab — AES-GCM password round-trip (demo text only)':[['aesGCM',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesGCM',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Encryption Lab — AES-CBC round-trip (legacy mode; demo text only)':[['aesCBC',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesCBC',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Block Cipher Lab — Camellia ECB round-trip (demo text only)':[['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'encrypt'}],['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'decrypt'}]],
@@ -6500,10 +6621,11 @@ addOp('privacyIdeaTotp','privacyIDEA OATH TOTP / HOTP Token','FIDO & Hardware Ke
     }
     const period = parseInt(a.period) || 30;
     let tsVal = 1700000000;
-    if(a.ts === 'NOW' || a.ts === 'now' || !a.ts){
+    const tsText = String(a.ts == null ? '' : a.ts).trim();
+    if(/^now$/i.test(tsText) || !tsText){
       tsVal = Math.floor(Date.now() / 1000);
-    }else{
-      tsVal = parseInt(a.ts) || 1700000000;
+    }else if(/^[0-9]+$/.test(tsText)){
+      tsVal = parseInt(tsText, 10); // "0" is a valid counter (RFC 4226 Appendix D), not a fallback
     }
     const counter = Math.floor(tsVal / period);
     const tb = [];
@@ -11327,10 +11449,12 @@ function tapDec(s){
 /* ===== SOLITAIRE (unkeyed + passphrase) ===== */
 function solNewDeck(){const d=[]; for(let i=1;i<=54;i++) d.push(i); return d;}
 function solMove(d,card,n){
-  let i=d.indexOf(card);
+  // Schneier: a joker at the bottom wraps to just below the top card; one up from
+  // the bottom moving two goes below the top card. After removal d has 53 cards,
+  // so any landing index past 53 wraps by exactly 53 (verified on sol-test.txt).
+  const i=d.indexOf(card);
   d.splice(i,1);
-  let j=i+n; if(j>=d.length) j=(j%d.length)+1; // skip wrapping to top as bottom
-  if(j>d.length) j=d.length;
+  let j=i+n; if(j>d.length) j-=d.length;
   d.splice(j,0,card);
 }
 function solTriple(d){
@@ -11397,7 +11521,7 @@ addOp('gcwTapir','TAPIR (NVA / STASI)','GCWizard',
   }
 );
 addOp('gcwSolitaire','Solitaire / Pontifex','GCWizard',
-  'Bruce Schneier Solitaire (Cryptonomicon “Pontifex”). 54-card deck keystream, passphrase keying, Beaufort-style add/subtract mod 26. GCWizard leftover. Self-consistent encrypt↔decrypt verified. Keystream letters for the published KDWUP ONOWT demo: DONOTUSEPC → OSKJJJGTMW.',
+  'Bruce Schneier Solitaire (Cryptonomicon “Pontifex”). 54-card deck keystream, passphrase keying, add/subtract mod 26. Matches all 12 vectors of Schneier’s sol-test.txt (tests/kitchen-published-vectors.test.mjs); self-consistent encrypt↔decrypt verified. Keystream letters for the published KDWUP ONOWT demo: DONOTUSEPC → OSKJJJGTMW.',
   [
     {key:'op',label:'Mode',type:'select',default:'encode',options:[['encode','Encrypt'],['decode','Decrypt']]},
     {key:'pass',label:'Passphrase (deck key)',type:'text',default:''}
