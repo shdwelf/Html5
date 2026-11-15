@@ -86,8 +86,10 @@ jobs:
           git init "$source_dir"
           git -C "$source_dir" remote add origin https://github.com/TorgoTorgo/ghidra-findcrypt.git
           git -C "$source_dir" fetch --no-tags --depth=1 origin "$FINDCRYPT_COMMIT"
-          test "$(git -C "$source_dir" rev-parse FETCH_HEAD)" = "$FINDCRYPT_COMMIT"
+          git -C "$source_dir" checkout --detach FETCH_HEAD
+          test "$(git -C "$source_dir" rev-parse HEAD)" = "$FINDCRYPT_COMMIT"
           database="$source_dir/FindCrypt/data/database.json"
+          test -s "$database"
           printf '%s  %s\n' "$FINDCRYPT_DB_SHA256" "$database" | sha256sum --check --strict
           python3 - "$database" "$RUNNER_TEMP/fbctf-static/findcrypt-signatures.tsv" <<'PY'
           import json, pathlib, sys
