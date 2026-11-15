@@ -331,18 +331,22 @@ addOp('gronsfeld','Gronsfeld Cipher','Classical',
     }).join('');
   });
 
-/* 4. One-Time Pad / XOR */
+/* 4. One-Time Pad / XOR — hex key is useful for binary RE; text stays default. */
 addOp('xor','One-Time Pad / XOR','Classical',
-  'Bitwise XOR of input bytes with key bytes (key repeats). XOR is self-inverse.',
+  'Bitwise XOR of input bytes with repeating key bytes (text or hex). XOR is self-inverse.',
   [
     {key:'key',label:'Key',type:'text',default:'key'},
+    {key:'keyFmt',label:'Key format',type:'select',default:'text',options:[['text','Text (legacy)'],['hex','Hex bytes']]},
     {key:'infmt',label:'Input fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]},
     {key:'outfmt',label:'Output fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]}
   ],
   function(text,args){
-    const keyBytes=args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
+    const hexKey=String(args.key||'').replace(/[\s:,\-]/g,'');
+    if(args.keyFmt==='hex' && !/^(?:[0-9a-fA-F]{2})+$/.test(hexKey))
+      throw new Error('Hex key must contain complete byte pairs (e.g. f4901795)');
+    const keyBytes=args.keyFmt==='hex'?bytesFromHex(hexKey):args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
     if(!keyBytes.length)return text;
-    let bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
+    const bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
     const out=bytes.map((b,i)=>b^keyBytes[i%keyBytes.length]);
     return args.outfmt==='hex'?hexFromBytes(out):utf8Decode(out);
   });
@@ -3276,6 +3280,15 @@ const RECIPE_PACKS={
  'Encoding Lab — Base64, Base32, URL, Unicode, Hex, ROT47 round-trips':[['toB64',{}],['fromB64',{}],['toBase32',{}],['fromBase32',{}],['toURL',{}],['fromURL',{}],['toUnicode',{}],['fromUnicode',{}],['toHex',{sep:'none'}],['fromHex',{mode:'utf8'}],['rot47',{}],['rot47',{}]],
  'Binary File Lab — byte-exact Base64 round-trip (load a file first)':[['binToB64',{wrap:0}],['b64ToBin',{}]],
  'Obfuscation Lab — single-byte XOR with a toy ASCII input':[['xor',{key:'B',infmt:'text',outfmt:'text'}],['xorBrute',{}]],
+ // FBCTF 2019 source + hash-pinned distribution: see docs/ctftime-facebook-2019-software-crypto-2026-11-13.md.
+ // Paste a reviewed hex excerpt only; the challenge executables are NOT recipe inputs.
+ 'FBCTF 2019 — SOMBRERO ROJO key-file path (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO printed flag bytes (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (XOR; NOT Base64 decoded)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ // An analyst-only interpretation, NOT the runtime KEK path; the decoded FLAG{...} is not the printed fb{...}.
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (analyst Base64 inspection)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}],['fromB64',{}]],
+ // Load ONLY the organizer's 64-byte dist/enc via Load File; 32-byte IV + ciphertext, no decryption.
+ 'FBCTF 2019 — netscream enc envelope (inspect only)':[['toHexdump',{srcfmt:'binstr',width:'16'}]],
  'Encryption Lab — AES-GCM password round-trip (demo text only)':[['aesGCM',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesGCM',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Encryption Lab — AES-CBC round-trip (legacy mode; demo text only)':[['aesCBC',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesCBC',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Block Cipher Lab — Camellia ECB round-trip (demo text only)':[['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'encrypt'}],['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'decrypt'}]],

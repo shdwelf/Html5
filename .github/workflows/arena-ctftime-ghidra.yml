@@ -1,0 +1,206 @@
+name: FBCTF 2019 — pinned native Ghidra and FindCrypt
+
+# The sole sources are organizer-published, MIT-licensed puzzle artifacts.
+# Analysis is static: never execute either challenge, its embedded payload,
+# the sample's Makefile, or its solution program.
+on:
+  push:
+    branches: ['arena/cbd4749d-html5']
+    paths:
+      - '.github/workflows/arena-ctftime-ghidra.yml'
+      - 'tools/summarize_ctftime_ghidra.py'
+      - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/ghidra_scripts/SneakersFindCryptReport.java'
+  workflow_dispatch:
+
+permissions:
+  contents: write  # compact, allowlisted evidence only, on the same session branch
+
+jobs:
+  static-analysis:
+    if: github.ref == 'refs/heads/arena/cbd4749d-html5'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+      FINDCRYPT_COMMIT: '5c2fd5bb50d13a4092da136dc7004becd8129c7b'
+      FINDCRYPT_DB_SHA256: 'ec3f54412ea1a1ddca05ec39eaa8ad1a9c38ce021297f359dbc0a58b9c7a8897'
+      FBCTF_COMMIT: '4353c2ce588cf097ac6ca9bcf7b943a99742ac75'
+      NETSCREAM_BLOB: 'fcfe3749ce76956264218548d19137fd4406e0fe'
+      NETSCREAM_SHA256: '0a3b86e635d220fda3381432e67a139a2efa6cf587cc97e20e28caf08a714b89'
+      SOMBRERO_BLOB: '03656defc4dbc4e6ea33c950db22dc956b19b710'
+      SOMBRERO_SHA256: '5433df31bdc99d8980c5fe11cde9b68516d21e5a95efb85e94205539185026f8'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Acquire and verify exact organizer-distributed bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fbctf-static"
+          mkdir -p "$root/input" "$root/projects" "$root/logs" "$root/reports/sentinel" "$root/reports/netscream/elf" "$root/reports/netscream/raw" "$root/reports/sombrero/raw"
+          # Check blob membership in the pinned organizer tree; the SHA-256 gate
+          # then independently checks decoded bytes. No binary enters the checkout.
+          test "$(gh api "repos/fbsamples/fbctf-2019-challenges/contents/crypto/netscream/dist/bin?ref=$FBCTF_COMMIT" --jq .sha)" = "$NETSCREAM_BLOB"
+          test "$(gh api "repos/fbsamples/fbctf-2019-challenges/contents/reversing/SOMBRERO_ROJO/dist/sombrero_rojo?ref=$FBCTF_COMMIT" --jq .sha)" = "$SOMBRERO_BLOB"
+          gh api "repos/fbsamples/fbctf-2019-challenges/git/blobs/$NETSCREAM_BLOB" --jq .content | base64 -d > "$root/input/netscream.bin"
+          gh api "repos/fbsamples/fbctf-2019-challenges/git/blobs/$SOMBRERO_BLOB" --jq .content | base64 -d > "$root/input/sombrero_rojo"
+          printf '%s  %s\n' "$NETSCREAM_SHA256" "$root/input/netscream.bin" | sha256sum --check --strict
+          printf '%s  %s\n' "$SOMBRERO_SHA256" "$root/input/sombrero_rojo" | sha256sum --check --strict
+          python3 - "$root/input/netscream.bin" "$root/input/sombrero_rojo" <<'PY'
+          import pathlib, sys
+          n, s = (pathlib.Path(arg).read_bytes() for arg in sys.argv[1:])
+          assert len(n) == 9688 and n[:6] == b'\x7fELF\x02\x01', 'netscream must be ELF64 little-endian'
+          assert len(s) == 807688 and s[:6] == b'\x7fELF\x02\x02', 'SOMBRERO intentionally advertises wrong ELF data encoding'
+          print('Verified inputs: 9,688-byte ELF and 807,688-byte deliberately altered ELF header; static-only.')
+          PY
+          java -version 2>&1 | tee "$root/java-version.txt"
+
+      - name: Install pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra-fbctf.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 \
+            "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip" -o "$archive"
+          printf '%s  %s\n' "$GHIDRA_SHA256" "$archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          ghidra_home="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC"
+          test -x "$ghidra_home/support/analyzeHeadless"
+          echo "GHIDRA_HOME=$ghidra_home" >> "$GITHUB_ENV"
+          echo "Ghidra $GHIDRA_VERSION ($GHIDRA_DATE), SHA-256 $GHIDRA_SHA256" | tee "$RUNNER_TEMP/fbctf-static/ghidra-version.txt"
+
+      - name: Verify FindCrypt signature database and generate TSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir="$RUNNER_TEMP/ghidra-findcrypt-src"
+          git init "$source_dir"
+          git -C "$source_dir" remote add origin https://github.com/TorgoTorgo/ghidra-findcrypt.git
+          git -C "$source_dir" fetch --no-tags --depth=1 origin "$FINDCRYPT_COMMIT"
+          test "$(git -C "$source_dir" rev-parse FETCH_HEAD)" = "$FINDCRYPT_COMMIT"
+          database="$source_dir/FindCrypt/data/database.json"
+          printf '%s  %s\n' "$FINDCRYPT_DB_SHA256" "$database" | sha256sum --check --strict
+          python3 - "$database" "$RUNNER_TEMP/fbctf-static/findcrypt-signatures.tsv" <<'PY'
+          import json, pathlib, sys
+          rows = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+          assert isinstance(rows, list) and len(rows) == 126
+          assert any(row['name'] == 'AES_Encryption_SBox' for row in rows)
+          for row in rows:
+              assert row['name'] and '\t' not in row['name'] and '\n' not in row['name']
+              assert row['hexBytes'] and len(row['hexBytes']) % 2 == 0
+              bytes.fromhex(row['hexBytes'])
+          pathlib.Path(sys.argv[2]).write_text(''.join(f"{row['name']}\t{row['hexBytes']}\n" for row in rows), encoding='utf-8')
+          print(f"Pinned FindCrypt DB: {len(rows)} signatures; SHA-256 verified")
+          PY
+
+      - name: Run native Ghidra AES signature positive control
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fbctf-static"
+          python3 - "$RUNNER_TEMP/ghidra-findcrypt-src/FindCrypt/data/database.json" "$root/aes-sentinel.bin" <<'PY'
+          import json, pathlib, sys
+          rows = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+          row = next(x for x in rows if x['name'] == 'AES_Encryption_SBox')
+          pathlib.Path(sys.argv[2]).write_bytes(bytes.fromhex(row['hexBytes']))
+          PY
+          log="$root/logs/aes-sentinel.log"
+          if ! timeout 10m "$GHIDRA_HOME/support/analyzeHeadless" "$root/projects" "FBCTF_AES_Control" \
+            -import "$root/aes-sentinel.bin" \
+            -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:32:default \
+            -noanalysis -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            -postScript SneakersFindCryptReport.java "$root/reports/sentinel" "aes-sentinel.bin" "$root/findcrypt-signatures.tsv" \
+            -deleteProject > "$log" 2>&1; then
+            tail -n 120 "$log"; exit 1
+          fi
+          grep -q 'CRYPT_AES_Encryption_SBox' "$root/reports/sentinel/aes-sentinel.bin.findcrypt.md"
+          echo 'Native Ghidra FindCrypt positive control: AES S-box signature matched.'
+
+      - name: Disassemble only the normal ELF and scan both complete original files as raw bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fbctf-static"
+          headless="$GHIDRA_HOME/support/analyzeHeadless"
+          scripts="$GITHUB_WORKSPACE/tools/ghidra_scripts"
+          log="$root/logs/netscream-elf.log"
+          if ! timeout 15m "$headless" "$root/projects" "FBCTF_Netscream_ELF" \
+            -import "$root/input/netscream.bin" \
+            -analysisTimeoutPerFile 300 -max-cpu 2 -scriptPath "$scripts" \
+            -postScript GenericProgramReport.java "$root/reports/netscream/elf" \
+            -deleteProject > "$log" 2>&1; then
+            tail -n 180 "$log"; exit 1
+          fi
+          for item in 'netscream.bin netscream' 'sombrero_rojo sombrero'; do
+            set -- $item
+            sample="$1"; dir="$2"
+            log="$root/logs/${dir}-raw.log"
+            echo "Native Ghidra full-file raw signature scan: $sample"
+            if ! timeout 15m "$headless" "$root/projects" "FBCTF_${dir}_Raw" \
+              -import "$root/input/$sample" \
+              -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:64:default \
+              -noanalysis -scriptPath "$scripts" \
+              -postScript SneakersFindCryptReport.java "$root/reports/$dir/raw" "$sample" "$root/findcrypt-signatures.tsv" \
+              -deleteProject > "$log" 2>&1; then
+              tail -n 180 "$log"; exit 1
+            fi
+          done
+          test -s "$root/reports/netscream/elf/netscream.bin.ghidra.json"
+          test -s "$root/reports/netscream/raw/netscream.bin.findcrypt.md"
+          test -s "$root/reports/sombrero/raw/sombrero_rojo.findcrypt.md"
+
+      - name: Validate and summarize allowlisted native metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fbctf-static"
+          python3 tools/summarize_ctftime_ghidra.py \
+            --netscream-json "$root/reports/netscream/elf/netscream.bin.ghidra.json" \
+            --netscream-findcrypt "$root/reports/netscream/raw/netscream.bin.findcrypt.md" \
+            --sombrero-findcrypt "$root/reports/sombrero/raw/sombrero_rojo.findcrypt.md" \
+            --sentinel-findcrypt "$root/reports/sentinel/aes-sentinel.bin.findcrypt.md" \
+            --output "$root/native-summary.md"
+          cat "$root/native-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit bounded evidence to the SAME session branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/arena/cbd4749d-html5'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fbctf-static"
+          out="$GITHUB_WORKSPACE/docs/ghidra"
+          mkdir -p "$out/ctftime-facebook-2019-native-evidence"
+          cp "$root/native-summary.md" "$out/ctftime-facebook-2019-native-ghidra-2026-11-13.md"
+          cp "$root/reports/netscream/elf/netscream.bin.ghidra.json" "$out/ctftime-facebook-2019-native-evidence/"
+          cp "$root/reports/netscream/raw/netscream.bin.findcrypt.md" "$out/ctftime-facebook-2019-native-evidence/"
+          cp "$root/reports/sombrero/raw/sombrero_rojo.findcrypt.md" "$out/ctftime-facebook-2019-native-evidence/"
+          git config user.name arena-ctftime-ghidra
+          git config user.email arena-ctftime-ghidra@users.noreply.github.com
+          git add docs/ghidra/ctftime-facebook-2019-native-ghidra-2026-11-13.md docs/ghidra/ctftime-facebook-2019-native-evidence/
+          git diff --cached --check
+          if git diff --cached --quiet; then echo 'No native evidence changes'; exit 0; fi
+          git commit -m "Record hash-gated native FBCTF Ghidra and FindCrypt evidence"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload reports for manual xref and decompilation review (never input binaries)
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: fbctf-2019-static-ghidra-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/fbctf-static/java-version.txt
+            ${{ runner.temp }}/fbctf-static/ghidra-version.txt
+            ${{ runner.temp }}/fbctf-static/native-summary.md
+            ${{ runner.temp }}/fbctf-static/reports
+            ${{ runner.temp }}/fbctf-static/logs
+          if-no-files-found: warn
+          retention-days: 30
