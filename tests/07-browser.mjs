@@ -144,7 +144,7 @@ try {
   check("boots to a valid phrase", /Checksum valid/.test(boot.status), boot.status);
   check("12 chips rendered", boot.chips === 12, boot.chips);
   check("72 rack rows", boot.rackRows === 72, boot.rackRows);
-  check("13 3-D forms", boot.forms === 13, boot.forms);
+  check("15 3-D forms", boot.forms === 15, boot.forms);
   check("layout note correct", /132 bits = 128 ENT \+ 4 CS/.test(boot.wcNote), boot.wcNote);
   check("WebGL context live", boot.webgl);
   check("GL renderer", boot.renderer.length > 0, boot.renderer.slice(0, 60));
@@ -213,6 +213,42 @@ try {
   }));
   check("modal μ lens renders", mu.rows.length > 0, mu.rows.join(" | "));
   await page.screenshot({ path: "/tmp/keyspace-3-modal.png" });
+
+  /* the ceiling of the length menu: 512 words = 5624 ENT + 8 CS, rendered for real */
+  const menu = await page.evaluate(() => {
+    const values = [...document.getElementById("wc").options].map((o) => o.value);
+    const beyond = values.filter((v) => Number(v) > 24).map(Number);
+    return { count: beyond.length, first: beyond[0], last: beyond[beyond.length - 1], contiguous: beyond.every((v, i) => v === 25 + i) };
+  });
+  check("menu lists every count 25…512", menu.count === 488 && menu.first === 25 && menu.last === 512 && menu.contiguous, JSON.stringify(menu));
+  await page.select("#wc", "512");
+  await page.evaluate(() => document.getElementById("wc").dispatchEvent(new Event("change", { bubbles: true })));
+  const t512 = Date.now();
+  await page.click("#gen");
+  await page.waitForFunction(() => document.querySelectorAll("#chips .chip").length === 512, { timeout: 120000 });
+  const w512 = await page.evaluate(() => ({
+    chips: document.querySelectorAll("#chips .chip").length,
+    status: document.getElementById("status").textContent,
+    hexLen: document.getElementById("hex").textContent.length,
+    ent: document.getElementById("entBits").textContent,
+    cs: document.getElementById("csBits").textContent,
+    flipMax: document.getElementById("flipBit").max,
+    tape: document.querySelectorAll("#tape tbody tr").length,
+    wcNote: document.getElementById("wcNote").textContent,
+  }));
+  check("512 words generated", w512.chips === 512, `${w512.chips} in ${Date.now() - t512} ms`);
+  check("512-word layout note", /5632 bits = 5624 ENT \+ 8 CS/.test(w512.wcNote), w512.wcNote.slice(0, 60));
+  check("512-word phrase validates as generalised", /Checksum valid.*generalised/.test(w512.status), w512.status.slice(0, 58));
+  check("1406 hex nibbles (703 bytes)", w512.hexLen === 1406, w512.hexLen);
+  check("ENT/CS readouts", w512.ent === "5624 bits" && w512.cs === "8 bits", `${w512.ent} / ${w512.cs}`);
+  check("flip slider spans the ENT", w512.flipMax === "5623", w512.flipMax);
+  check("tape has 512 rows", w512.tape === 512, w512.tape);
+  const stage512 = pngLitPixels(await (await page.$("#stage")).screenshot());
+  check("stage still rasterises at 512 words", stage512.lit > 2000, `${stage512.lit} lit px`);
+  await page.click("#deriveWallet");
+  await page.waitForFunction(() => /standard 12\/15\/18\/21\/24-word/.test(document.getElementById("walletStatus").textContent), { timeout: 10000 });
+  check("wallet refuses the 512-word phrase", true);
+  await page.screenshot({ path: "/tmp/keyspace-4-512.png" });
 } finally {
   await browser.close();
 }

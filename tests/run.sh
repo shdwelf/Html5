@@ -5,11 +5,10 @@
 #   (headless Chromium + SwiftShader); each skips its own missing package
 #   cleanly, so this stays runnable on a bare checkout.
 #
-# Suites 05 and 07 are KNOWN-STALE and do not gate this script: they drive
-# markup keyspace.html no longer has (#lensRack [data-lens], #customBits, and a
-# #wc=25 that the page replaced with explicit #bits/#entBits/#csBits). They are
-# still run, and still print their failures, because the gap is worth seeing —
-# see the note in KEYSPACE.md. Set STALE_GATE=1 to make them fail the run.
+# Suites 05 and 07 gate the run again: keyspace.html / js/viewer.js carry the
+# layered viewer they drive (#lensRack, #customWords/#customBits, the invert
+# A↔B block and a #wc menu that lists every word count 25…512). They were
+# non-gating while that markup had been lost in a merge; see KEYSPACE.md.
 set -u
 cd "$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)"
 
@@ -20,16 +19,7 @@ for t in tests/01-layout.mjs tests/02-lens-math.mjs tests/03-lens-draw.mjs tests
 done
 
 echo "──────────────────────────────────────────────"
-# Callers pass the script, not the interpreter: this used to be
-# `run_stale node tests/05…`, which ran `node node tests/05…` and failed with
-# MODULE_NOT_FOUND instead of ever booting the suite.
-run_stale() {
-  if node "$@"; then return 0; fi
-  echo "  ^^ KNOWN-STALE suite (markup expectations from an older keyspace.html): not gating; STALE_GATE=1 to gate"
-  [ -n "${STALE_GATE:-}" ] && return 1
-  return 0
-}
-run_stale --import ./tests/stubs/register.mjs tests/05-viewer-dom.mjs || status=1
+node --import ./tests/stubs/register.mjs tests/05-viewer-dom.mjs || status=1
 
 echo "──────────────────────────────────────────────"
 node tests/06-extreme.mjs || status=1
@@ -48,7 +38,7 @@ if [ -z "${KEYSPACE_URL:-}" ]; then
 fi
 
 echo "──────────────────────────────────────────────"
-run_stale tests/07-browser.mjs "$KEYSPACE_URL" || status=1
+node tests/07-browser.mjs "$KEYSPACE_URL" || status=1
 
 echo "──────────────────────────────────────────────"
 node tests/08-syllables.mjs || status=1

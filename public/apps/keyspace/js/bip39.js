@@ -17,10 +17,30 @@ const INDEX = new Map(WORDLIST.map((w, i) => [w, i]));
  */
 export const LADDER = { 12: 128, 15: 160, 18: 192, 21: 224, 24: 256 };
 
+/** BIP-39 proper: the five standard word counts, in order. */
+export const STANDARD_WORDS = [12, 15, 18, 21, 24];
+
+/**
+ * Word-count ceiling the viewer exposes. The 11·n = ENT + CS identity itself is
+ * unbounded; 512 words (5624-bit ENT + 8 CS = 5632 bits, 703 entropy bytes) is
+ * where the UI stops so every phrase still fits the WASM engine's index and
+ * path buffers and a full ∂Φ flip sweep stays interactive. Every integer in
+ * MIN_WORDS…MAX_WORDS has a layout — there are no gaps above the ladder.
+ */
+export const MIN_WORDS = 2;
+export const MAX_WORDS = 512;
+
+/** Every word count the viewer accepts, 2…512, with its layout. */
+export function allLayouts() {
+  const out = [];
+  for (let n = MIN_WORDS; n <= MAX_WORDS; n++) out.push(layoutForWords(n));
+  return out;
+}
+
 /** @returns {{words:number,entBits:number,csBits:number,entBytes:number,totalBits:number,standard:boolean}|null} */
 export function layoutForWords(n) {
   const words = n | 0;
-  if (!(words >= 2 && words <= 512)) return null;
+  if (!(words >= MIN_WORDS && words <= MAX_WORDS)) return null;
   const total = 11 * words;
   const r = total & 7;
   // c ≡ 11n (mod 8), 1 ≤ c ≤ 11: the candidates are r and r + 8, and r = 0 must
@@ -51,7 +71,7 @@ export function layoutForEntropyBits(entBits) {
     words += 1;
     cs = 11 * words - ent;
   }
-  if (!(cs >= 1 && cs <= 11) || words > 512) return null;
+  if (!(cs >= 1 && cs <= 11) || words < MIN_WORDS || words > MAX_WORDS) return null;
   return {
     words,
     entBits: ent,
@@ -135,7 +155,7 @@ export async function entropyToMnemonic(entropy) {
 
 export async function randomMnemonic(wordCount = 12) {
   const layout = layoutForWords(wordCount);
-  if (!layout) throw new Error(`No ${wordCount}-word layout: use 2…512 words`);
+  if (!layout) throw new Error(`No ${wordCount}-word layout: use ${MIN_WORDS}…${MAX_WORDS} words`);
   const entropy = new Uint8Array(layout.entBytes);
   crypto.getRandomValues(entropy);
   const words = await entropyToMnemonic(entropy);
@@ -172,7 +192,7 @@ export async function mnemonicToEntropy(words) {
   const n = words.length;
   const layout = layoutForWords(n);
   if (!layout) {
-    return { ok: false, reason: n < 2 || n > 512 ? `Word count ${n} has no 11-bit layout (2…512)` : "Unusable word count" };
+    return { ok: false, reason: n < MIN_WORDS || n > MAX_WORDS ? `Word count ${n} has no 11-bit layout (${MIN_WORDS}…${MAX_WORDS})` : "Unusable word count" };
   }
   const idxs = indicesOf(words);
   if (idxs.some((i) => i < 0)) {
