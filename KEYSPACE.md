@@ -32,11 +32,22 @@ CS = the largest c ≤ 11 such that (11·n − c) is a whole number of bytes
 | 6 | 56 | 10 | 66 | from the "ENT bits" box |
 
 It reproduces BIP-39 exactly on the ladder and both directions agree
-(`layoutForWords` / `layoutForEntropyBits` are mutual inverses for n = 2…60,
-asserted in the test suite). The custom box takes either a word count (2–512)
-or an entropy bit length (any multiple of 8). Above the ladder the checksum is
-a *smaller* fraction of the entropy, so the generalised lengths are not
-"stronger BIP-39" — the UI says which rule produced the phrase.
+(`layoutForWords` / `layoutForEntropyBits` are mutual inverses for every
+n = 2…512, asserted in suite 01). There are no gaps: every integer word count
+from 2 to 512 closes `11n = ENT + CS` with a byte-aligned ENT and a checksum of
+4…11 bits (CS = 11 recurs every 8 words: 9, 17, 25, 33, …). The **Phrase** menu
+therefore lists every count above the ladder, 25 … 512, each labelled with its
+ENT/CS straight from `layoutForWords` (`js/viewer.js` rebuilds the menu at boot
+so the labels cannot drift from the maths), and the custom row takes either a
+word count (2–512) or an entropy bit length (any multiple of 8). 512 words is
+the ceiling (`MAX_WORDS` in `js/bip39.js`): 5624-bit ENT + 8 CS = 5632 bits,
+703 entropy bytes — the identity itself is unbounded, the UI stops where every
+phrase still fits the WASM engine's index/path buffers and a full ∂Φ flip sweep
+stays interactive (suite 06 measures it). Above the ladder the checksum is a
+*smaller* fraction of the entropy, so the generalised lengths are not
+"stronger BIP-39" — the status line, the layout note and the menu group all say
+which rule produced the phrase, and the wallet / top-50 derivations in §14 keep
+refusing anything that is not a standard 12/15/18/21/24-word phrase.
 
 ## Invert keyspace A ↔ B
 
@@ -69,10 +80,11 @@ computes numbers from the loaded key and writes a **Describe / Explain /
 Predict** readout. The dot adds or removes the layer in the 3-D scene (turning
 one on opens its panel); the name opens the readout without touching the scene.
 
-Ten families, 44 lenses: invert (4), λ-calculus (4), analysis (7), logic (5),
-algebra (7), geometry (6), trigonometry (4), time (3), stochastic (2), process
-(2). The **algebra** group keeps the lenses it already had (`boolean`, `umbral`)
-and merges in group theory (the sorting permutation's cycle type / order / sign),
+Ten families, 72 lenses (`LENSES` in `js/formal.js` is the count the rack
+renders and suites 03/05/06 assert): invert (4), λ-calculus (4), analysis (7),
+logic (5), algebra (35), geometry (6), trigonometry (4), time (3), stochastic
+(2), process (2). The **algebra** group keeps the lenses it already had
+(`boolean`, `umbral`) and merges in group theory (the sorting permutation's cycle type / order / sign),
 linear algebra over GF(2) (rank of the word-bit matrix), finite fields
 (GF(2⁸) byte arithmetic + inverses), the divisor lattice of the word count, and
 the index sequence as a polynomial over Z. **Geometry** adds metric, Euclidean,
@@ -81,10 +93,11 @@ spherical, projective (cross-ratio), convex (hull/shoelace) and topological
 Parseval, the laws of sines/cosines, and harmonic regression.
 
 Where a system has real geometry or real measurement behind it, it gets a
-renderer. Where it does not, the entry is marked `card` and says why — there is
-exactly one today: **typed λ-calculus**, because stating Φ's type precisely
-needs a dependent type (`Φ : (e : Bit^ENT) → Bit^(ENT/32)`), and there is no
-keyspace geometry to draw from that.
+renderer. Where it does not, the entry is marked `card` and says why — the
+first was **typed λ-calculus**, because stating Φ's type precisely needs a
+dependent type (`Φ : (e : Bit^ENT) → Bit^(ENT/32)`), and there is no keyspace
+geometry to draw from that; the abstract-algebra entries (Hopf, C*, von
+Neumann, Kleene, …) are cards for the same reason, 17 in all.
 
 Measurement-backed examples:
 
@@ -140,7 +153,7 @@ tested in suite 16.
 
 ## Seed Haiku identity (Drive research integration)
 
-Section 11 now carries forward the useful local-only presentation ideas from
+Section 13 now carries forward the useful local-only presentation ideas from
 `create (1).xdc.xml` / **Seed Haiku Lab** without importing its wallet or game
 surface into the keyspace viewer:
 
@@ -162,7 +175,7 @@ identifier also found that its check character was emitted but never verified;
 `decodeEnsoId` now rejects a corrupted check character, with a regression test.
 
 The source `.xdc` also contains BIP-32/BIP-44/49/84 wallet derivatives. Section
-12 now preserves that workflow using this repository's independently
+14 now preserves that workflow using this repository's independently
 vector-tested wallet stack rather than copying the archive's inline crypto:
 PBKDF2-HMAC-SHA512 seed, root xprv, account xpub/ypub/zpub, and five receive
 addresses plus compressed-mainnet WIFs for each scheme. Derivation requires an
@@ -197,28 +210,27 @@ npm i --no-save wabt jsdom puppeteer-core @sparticuz/chromium
 
 | suite | covers | assertions |
 |------:|--------|-----------:|
-| 01 | generalised layout both directions, mutual invertibility, encode/decode round trips, deterministic checksum corruption, and the measured false-accept rate of a random 12-word phrase | 73 |
+| 01 | generalised layout both directions, mutual invertibility for all 511 counts, the 4…11 checksum widths, the 512-word ceiling and 513 rejection, encode/decode round trips, deterministic checksum corruption, and the measured false-accept rate of a random 12-word phrase | 91 |
 | 02 | every lens `compute()` on a real 25-word key, plus known-answer maths (Grünwald–Letnikov coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism, AES field multiply, GF(2) rank, spherical excess, cross-ratio invariance, Parseval) and the differential prediction checked against the real hash | 148 |
-| 03 | every 2-D renderer (all 44 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 140 |
+| 03 | every 2-D renderer (all 72 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 140 |
 | 04 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism, null-not-throw with no key | 20 |
-| 05 | the real `js/viewer.js` booted in jsdom: 44 rack rows, the 25-word switch, invert invariants through the buttons, the 264-bit flip sweep, card behaviour, toggle-vs-focus, custom bit length | 38 |
-| 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 44 lenses computing *and* drawing without NaN | 151 |
+| 05 | the real `js/viewer.js` booted in jsdom: 72 rack rows, the 25-word switch, invert invariants through the buttons, the 264-bit flip sweep, card behaviour, toggle-vs-focus, custom bit length, the menu listing every count 25…512, a 512-word phrase end to end (chips, tape, hole plates, 1406 hex nibbles, flip slider), the wallet refusing it, a custom 40-word count and the 513 rejection | 62 |
+| 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 72 lenses computing *and* drawing without NaN | 151 |
 | 07 | the real thing: headless Chromium (from `@sparticuz/chromium`, whose tarball supplies the browser *and* the three NSS libs this sandbox lacks) with SwiftShader for WebGL, driving the live page — boot, 25-word switch, invert invariants, the measured flip sweep, and pixel-decoded proof that the stage rasterises | 20 |
 | 08 | the syllable counter and 5-7-5 layout the workbench shares (`tools/blink_contract.mjs` is unrelated; this one predates it) | 12 |
 | 09 | the DOM stand-ins measured against Blink itself — `getContext`'s accepted ids, the memoised-context and wrong-type rules, `[PermissiveDictionaryConversion]`, the canvas size gates, `bufferData`/`texImage2D` overload arity, the WebAssembly-shaped buffer ceiling, and `getElementById` returning `Element?` | 56 |
 | 10 | the WebAssembly rasteriser: `wasm/lens3d.wat` assembled and validated, its projection checked against `js/spacefill.js`, bit-exact parity with the JS shadow on vertices *and* texture, geometry invariants, overflow/NaN/viewport guards, and a real-Chromium boot of `lens3d-wasm.html` | 72 |
 | 16 | descriptive key statistics known cases, p-value helpers, lag correlations, histogram accounting, and finite geometry for the distribution/autocorrelation 3-D layers | 33 |
 
-Suite 05 is **stale, not skipped**: it drives 18 element ids (`lensRack`,
-`lensName`, `invSub`, `lensCanvas`, …) that neither `keyspace.html` nor
-`js/viewer.js` contains — `node tools/check-dom-ids.mjs --html keyspace.html
---js js/viewer.js` finds no gap between the page and its controller, so the page
-is self-consistent and it is the *suite* that was left behind when the layout
-moved to `cubeSeg`/`curveSeg`/`embedSeg`/`math*`. It runs (jsdom is installed)
-and fails on a stale `wcNote` expectation and then on `getElementById` returning
-null, which is what real Blink does for an id the markup lacks. Repairing it
-means rewriting its expectations against the current markup — a separate job from
-the wasm work below, and deliberately not papered over here.
+Suite 05 gates `tests/run.sh` again. For a while it was *stale, not skipped*:
+the invert A↔B block (§11), the lens rack (§12) and the generalised length menu
+had been dropped from `keyspace.html` / `js/viewer.js` when the haiku, wallet
+and statistics work was merged on top of an older copy of the page, while
+`js/formal.js`, `js/lens-draw.js`, `js/lens-3d.js` and the suites that drive
+them stayed in the tree. The layered page was re-merged from that history
+(three-way against its base, keeping §6 statistics, §13 haiku and §14 wallet),
+and `node tools/check-dom-ids.mjs --html keyspace.html --js js/viewer.js`
+again finds every controller id in the markup.
 
 Suite 05 stubs only the WebGL backend (a module-resolve hook) and the canvas
 rasteriser; viewer.js, formal.js, lens-draw.js, bip39.js and

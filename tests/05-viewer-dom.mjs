@@ -79,7 +79,7 @@ s.eq("chips rendered", $("chips").querySelectorAll(".chip").length, 12);
 s.ok("wcNote states the layout", /132 bits = 128 ENT \+ 4 CS/.test($("wcNote").textContent), $("wcNote").textContent);
 s.eq("rack rows = all lenses", $("lensRack").querySelectorAll("[data-lens]").length, 72);
 s.ok("default focus", $("lensName").textContent === "Invert · affine subcube", $("lensName").textContent);
-s.eq("3-D forms listed", $("formSel").options.length, 13);
+s.eq("3-D forms listed", $("formSel").options.length, 15);
 s.eq("tape rows", $("tape").querySelectorAll("tbody tr").length, 12);
 s.ok("entropy hex shown", /^[0-9a-f]{32}$/.test($("hex").textContent), $("hex").textContent);
 
@@ -90,7 +90,7 @@ s.ok("wcNote: " + $("wcNote").textContent.slice(0, 56), /275 bits = 264 ENT \+ 1
 click($("gen"));
 await until(() => $("chips").querySelectorAll(".chip").length === 25, 20000, "25-word generate");
 s.eq("chips after switch", $("chips").querySelectorAll(".chip").length, 25);
-s.ok("status flags the generalised rule", /Checksum valid · generalised/.test($("status").textContent), $("status").textContent.slice(0, 56));
+s.ok("status flags the generalised rule", /Checksum valid.*generalised layout, not BIP-39/.test($("status").textContent), $("status").textContent.slice(0, 56));
 s.eq("entropy hex nibbles", $("hex").textContent.length, 66);
 
 console.log("\n[3] invert layers");
@@ -151,7 +151,60 @@ await until(() => $("chips").querySelectorAll(".chip").length === 6, 20000, "56-
 s.eq("chips for 56-bit entropy", $("chips").querySelectorAll(".chip").length, 6);
 s.ok("status valid", /Checksum valid/.test($("status").textContent), $("status").textContent.slice(0, 46));
 
-console.log("\n[8] no uncaught errors during the run");
+console.log("\n[9] the length menu offers every generalised count 25…512");
+const menuValues = [...$("wc").options].map((o) => o.value);
+const beyond = menuValues.filter((v) => Number(v) > 24).map(Number);
+s.eq("first and last generalised entries", [beyond[0], beyond[beyond.length - 1]], [25, 512]);
+s.ok("no gaps between 25 and 512", beyond.length === 488 && beyond.every((v, i) => v === 25 + i), `${beyond.length} entries`);
+s.ok("ladder listed exactly once each", ["12", "15", "18", "21", "24"].every((v) => menuValues.filter((x) => x === v).length === 1));
+s.ok("custom entry kept", menuValues.includes("custom"));
+const opt512 = [...$("wc").options].find((o) => o.value === "512");
+s.ok("labels carry ENT/CS from the layout rule", /^512 words · 5624-bit ENT · CS 8$/.test(opt512.textContent), opt512.textContent);
+const opt26 = [...$("wc").options].find((o) => o.value === "26");
+s.ok("26 words = 280 ENT + 6 CS", /280-bit ENT · CS 6/.test(opt26.textContent), opt26.textContent);
+
+console.log("\n[10] the ceiling: 512 words through the menu");
+$("wc").value = "512";
+$("wc").dispatchEvent(new window.Event("change", { bubbles: true }));
+s.ok("custom row hidden again", $("customRow").hidden === true);
+s.ok("wcNote: " + $("wcNote").textContent.slice(0, 60), /5632 bits = 5624 ENT \+ 8 CS/.test($("wcNote").textContent) && /generalised/.test($("wcNote").textContent));
+click($("gen"));
+await until(() => $("chips").querySelectorAll(".chip").length === 512, 90000, "512-word generate");
+s.eq("chips at the ceiling", $("chips").querySelectorAll(".chip").length, 512);
+s.eq("entropy hex nibbles (703 bytes)", $("hex").textContent.length, 1406);
+s.ok("status valid + generalised", /Checksum valid.*generalised/.test($("status").textContent), $("status").textContent.slice(0, 56));
+s.eq("ENT readout", $("entBits").textContent, "5624 bits");
+s.eq("CS readout", $("csBits").textContent, "8 bits");
+s.eq("flip slider follows ENT", $("flipBit").max, "5623");
+s.eq("tape rows", $("tape").querySelectorAll("tbody tr").length, 512);
+s.eq("hole plates", $("holes").querySelectorAll(".hole-row").length, 512);
+
+console.log("\n[11] wallet derivation still refuses a non-standard length");
+click($("deriveWallet"));
+await settle(80);
+s.ok("walletStatus refuses: " + $("walletStatus").textContent.slice(0, 48), /standard 12\/15\/18\/21\/24-word/.test($("walletStatus").textContent));
+s.ok("no wallet output", $("walletOutput").hidden === true);
+
+console.log("\n[12] custom word count (40 words = 432 ENT + 8 CS)");
+$("wc").value = "custom";
+$("wc").dispatchEvent(new window.Event("change", { bubbles: true }));
+$("customBits").value = "";
+$("customWords").value = "40";
+$("customWords").dispatchEvent(new window.Event("input", { bubbles: true }));
+s.ok("wcNote: " + $("wcNote").textContent.slice(0, 56), /440 bits = 432 ENT \+ 8 CS/.test($("wcNote").textContent));
+click($("gen"));
+await until(() => $("chips").querySelectorAll(".chip").length === 40, 30000, "40-word generate");
+s.eq("chips for 40 words", $("chips").querySelectorAll(".chip").length, 40);
+s.ok("status valid", /Checksum valid/.test($("status").textContent), $("status").textContent.slice(0, 46));
+$("customWords").value = "513";
+$("customWords").dispatchEvent(new window.Event("input", { bubbles: true }));
+s.ok("513 words rejected: " + $("wcNote").textContent.slice(0, 40), /no valid layout/.test($("wcNote").textContent));
+click($("gen"));
+await settle(80);
+s.ok("generate refuses an invalid length", /Pick a valid length/.test($("status").textContent), $("status").textContent.slice(0, 60));
+s.eq("phrase unchanged", $("chips").querySelectorAll(".chip").length, 40);
+
+console.log("\n[13] no uncaught errors during the run");
 s.ok("errors: " + (errors[0] ?? "none"), errors.length === 0, errors.slice(0, 2).join(" | "));
 
 process.exit(s.done() || errors.length ? 1 : 0);
