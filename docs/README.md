@@ -100,6 +100,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-75-2026-11-15.md](backlog-execution-round-75-2026-11-15.md) — Backlog execution round 75: Keyspace Viewer word counts 25…512 (layered page re-merged, menu lists every count, suites 05/07 gating again) and the OnlyKey web-app investigation
 - [backlog-execution-round-76-2026-11-15.md](backlog-execution-round-76-2026-11-15.md) — LCS35 alternate source, BFV/TOTP boundaries, GitHub TOTP code review, FindCrypt/recipe cross-check, GRASP decoding record, wiki server catalog, and Keyspace Viewer status
 - [backlog-execution-round-77-2026-11-15.md](backlog-execution-round-77-2026-11-15.md) — seven-design CAD registry/test alignment, EAGLE net-class and connectivity corrections, generated coins freshness, and full-suite verification
+- [backlog-execution-round-78-2026-11-16.md](backlog-execution-round-78-2026-11-16.md) — restore the pinned TiddlyWiki dependency, build the separate workspace, back up portable outputs, and review conversion warnings
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
 ## Research deep dives (the “ghirdra” line)
