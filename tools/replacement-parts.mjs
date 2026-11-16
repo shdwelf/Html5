@@ -24,7 +24,10 @@
  * needs reading before it goes on a board.
  */
 
-export const DESIGNS = ['lantronix-wallplug', 'wimax-cpe', 'pi-wall-socket', 'plc-bridge'];
+export const DESIGNS = [
+  'lantronix-wallplug', 'wimax-cpe', 'pi-wall-socket', 'plc-bridge',
+  'xport-v92-faxcard', 'xport-v92-audiobridge', 'xport-v92-linetestset',
+];
 
 export const SUBSTITUTES = [
   /* ------------------------------------------------------------------ serial */
