@@ -625,7 +625,7 @@
 <signal name="V5" class="0"><contactref element="J5" pad="2"/>
 <contactref element="R17" pad="1"/>
 <contactref element="R15" pad="2"/></signal>
-<signal name="GND" class="0.5">
+<signal name="GND" class="0">
 <polygon width="0.4" layer="1" isolate="0.4" orphans="yes" rank="2" thermals="yes" pour="solid"><vertex x="1.5" y="1.5"/>
 <vertex x="118.5" y="1.5"/>
 <vertex x="118.5" y="88.5"/>

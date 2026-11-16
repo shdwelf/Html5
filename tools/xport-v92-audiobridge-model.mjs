@@ -829,7 +829,7 @@ export const DESCRIPTION =
   + 'through a 600:600 ohm wet isolation transformer and a resistive hybrid.';
 export const DOC_REF = 'docs/xport-nucleo-v92-audio-bridge.md';
 
-export const NET_CLASS = { GND: 0.5 };
+export const NET_CLASS = { GND: 0 };
 
 export const UNCONNECTED = [
   ['T1', '2'],      // primary centre tap, not used by the 1:1 arrangement

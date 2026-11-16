@@ -745,7 +745,7 @@
 <pinref part="TP1" gate="G$1" pin="1"/>
 <wire x1="155" y1="225.46" x2="155" y2="220.38" width="0.1524" layer="91"/>
 <label x="155" y="220.38" size="1.778" layer="95" rot="R270"/></segment></net>
-<net name="GND" class="0.5"><segment><pinref part="TP2" gate="G$1" pin="1"/>
+<net name="GND" class="0"><segment><pinref part="TP2" gate="G$1" pin="1"/>
 <wire x1="215" y1="225.46" x2="215" y2="220.38" width="0.1524" layer="91"/>
 <label x="215" y="220.38" size="1.778" layer="95" rot="R270"/>
 <pinref part="T1" gate="G$1" pin="S"/>

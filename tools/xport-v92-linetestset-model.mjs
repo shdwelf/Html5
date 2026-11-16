@@ -446,11 +446,10 @@ export const DESCRIPTION =
   + 'isolated 600:600 wet transformer and switchable TALK / MONITOR loading.';
 export const DOC_REF = 'docs/phreaking-boxes-vlsi-notes.md';
 
-export const NET_CLASS = { GND: 0.5 };
+export const NET_CLASS = { GND: 0 };
 
 export const UNCONNECTED = [
   ['T1', '2'],     // primary centre tap, not used by the 1:1 arrangement
-  ['MIC1', '2'],   // electret case, tied at the capsule
 ];
 
 export const POWER_BUDGET = [
