@@ -12,6 +12,10 @@ test("BFV evaluates encrypted addition, modular subtraction and multiplication",
     assert.equal(result.product, a * b);
     assert.equal(result.securityLevelBits, 128);
     assert.ok(result.noiseBudgetBits > 0);
+    assert.equal(result.randomizationDistinctForA, true);
+    assert.equal(result.randomizationDistinctForB, true);
+    assert.equal(result.repeatedPlaintextA, a);
+    assert.equal(result.repeatedPlaintextB, b);
   }
 });
 

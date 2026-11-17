@@ -6,8 +6,11 @@
  * ciphertexts without seeing their plaintext. Subtraction is modulo the BFV
  * plaintext prime. It is leveled HE, NOT an unbounded/FHE demo:
  * node-seal 7 / SEAL 4.1.2 do not provide bootstrapping in this example.
- * Keys and ciphertexts exist only in memory; do not use as a key-management
- * or multi-party deployment template. Run `npm ci && npm run demo:bfv`.
+ * A small known-plaintext regression also re-encrypts the same values and
+ * checks their serialized ciphertexts differ and decrypt correctly. This is
+ * not a security proof. Keys and ciphertexts exist only in memory; do not use
+ * as a key-management or multi-party deployment template. Run
+ * `npm ci && npm run demo:bfv`.
  */
 
 import assert from "node:assert/strict";
@@ -29,7 +32,7 @@ function evaluateEncrypted(seal, context, relinKeys, ciphertextA, ciphertextB, o
   return { sum, difference, product };
 }
 
-/** @returns {Promise<{sum:number,differenceResidue:number,product:number,plainModulus:number,securityLevelBits:number,noiseBudgetBits:number}>} */
+/** @returns {Promise<{sum:number,differenceResidue:number,product:number,plainModulus:number,securityLevelBits:number,noiseBudgetBits:number,randomizationDistinctForA:boolean,randomizationDistinctForB:boolean,repeatedPlaintextA:number,repeatedPlaintextB:number}>} */
 export async function runBfvDemo(a = 3, b = 5) {
   // Keep examples within the plaintext modulus so arithmetic doesn't wrap.
   if (![a, b].every((n) => Number.isInteger(n) && n >= 0 && n <= 100)) {
@@ -77,6 +80,31 @@ export async function runBfvDemo(a = 3, b = 5) {
 
     const ciphertextA = encrypt(a);
     const ciphertextB = encrypt(b);
+    // A known-plaintext regression check: encrypt each known input a second
+    // time under the same key. SEAL's encryption randomness, not an added
+    // plaintext/LT mask, should make these serialized ciphertexts differ.
+    const repeatedCiphertextA = encrypt(a);
+    const repeatedCiphertextB = encrypt(b);
+    const ciphertextsDiffer = (left, right) => {
+      const leftBytes = left.saveToArray(seal.ComprModeType.none);
+      const rightBytes = right.saveToArray(seal.ComprModeType.none);
+      try {
+        if (leftBytes.length !== rightBytes.length) return true;
+        for (let i = 0; i < leftBytes.length; i++) {
+          if (leftBytes[i] !== rightBytes[i]) return true;
+        }
+        return false;
+      } finally {
+        leftBytes.fill(0);
+        rightBytes.fill(0);
+      }
+    };
+    const randomizationDistinctForA = ciphertextsDiffer(ciphertextA, repeatedCiphertextA);
+    const randomizationDistinctForB = ciphertextsDiffer(ciphertextB, repeatedCiphertextB);
+    if (!randomizationDistinctForA || !randomizationDistinctForB) {
+      throw new Error("Fresh BFV encryptions of known plaintexts unexpectedly matched");
+    }
+
     const { sum, difference, product } = evaluateEncrypted(
       seal, context, relinKeys, ciphertextA, ciphertextB, own
     );
@@ -87,6 +115,10 @@ export async function runBfvDemo(a = 3, b = 5) {
       plain.setZero();
       return Number(decoded);
     };
+    const repeatedPlaintextA = decrypt(repeatedCiphertextA);
+    const repeatedPlaintextB = decrypt(repeatedCiphertextB);
+    assert.equal(repeatedPlaintextA, a);
+    assert.equal(repeatedPlaintextB, b);
     const result = {
       sum: decrypt(sum),
       differenceResidue: decrypt(difference),
@@ -94,6 +126,10 @@ export async function runBfvDemo(a = 3, b = 5) {
       plainModulus: Number(modulus),
       securityLevelBits,
       noiseBudgetBits: decryptor.invariantNoiseBudget(product),
+      randomizationDistinctForA,
+      randomizationDistinctForB,
+      repeatedPlaintextA,
+      repeatedPlaintextB,
     };
     assert.equal(result.sum, a + b);
     assert.equal(result.differenceResidue, Number((BigInt(a) - BigInt(b) + modulus) % modulus));
@@ -108,8 +144,10 @@ export async function runBfvDemo(a = 3, b = 5) {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const { sum, differenceResidue, product, plainModulus,
-    securityLevelBits, noiseBudgetBits } = await runBfvDemo();
+    securityLevelBits, noiseBudgetBits, randomizationDistinctForA,
+    randomizationDistinctForB, repeatedPlaintextA, repeatedPlaintextB } = await runBfvDemo();
   console.log(`BFV encrypted evaluation: 3 + 5 = ${sum}; 3 − 5 ≡ ${differenceResidue} (mod ${plainModulus}); 3 × 5 = ${product}`);
   console.log(`SEAL context: ${securityLevelBits}-bit parameter check, ${noiseBudgetBits}-bit remaining noise budget`);
+  console.log(`Known-plaintext randomization check: repeated 3 distinct=${randomizationDistinctForA}, decrypt=${repeatedPlaintextA}; repeated 5 distinct=${randomizationDistinctForB}, decrypt=${repeatedPlaintextB}`);
   console.log("Bounded-depth leveled HE; no encrypted-denominator division or bootstrapping here.");
 }
