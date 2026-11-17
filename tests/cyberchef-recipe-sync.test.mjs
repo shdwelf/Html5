@@ -87,6 +87,11 @@ const POST_MERGE_OPS = [
   // press kit (docs/sneakers-grasp-library-cipher-2026-11-13.md).
   "graspGlTable",
   "graspGlDirectory",
+  // 2026-11-17 FHE study lab: exact F17 oracle / codec / architecture card,
+  // explicitly educational and not an encryption implementation, plus a
+  // separate manual CKKS architecture-profile calculator.
+  "fheKitchenLab",
+  "fheArchitectureLab",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

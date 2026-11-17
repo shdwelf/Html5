@@ -200,6 +200,16 @@
     <p class="status">Status: <span class="badge b-edu">Educational</span> — the runtime recipe is checked against an independent modular-arithmetic vector; it does not generate production keys or randomness.</p>
   </div>
 
+  <!-- FHE study: educational profile tools, not an FHE implementation -->
+  <div class="card">
+    <div class="cat">Homomorphic Encryption &middot; architecture and profiling study</div>
+    <h3>FHE Study Lab &amp; CKKS Profile <span class="badge b-edu">Educational</span></h3>
+    <p><span class="kbd">fheKitchenLab</span> keeps three exercises separate: an exact F17 <b>plaintext</b> arithmetic oracle, a deterministic UTF-8/base-17 pair codec, and a source-grounded Lancelot federated-learning architecture card. None encrypts or evaluates ciphertext.</p>
+    <p><span class="kbd">fheArchitectureLab</span> is a distinct manual-profile recipe. It accepts bounded schema-1 JSON with user-entered stage wall times, optional GPU-event/allocation times, and optional byte/work counters. A sequential non-overlapping profile may report a stage-wall sum; overlapping stages or alternative runs deliberately get no sum. The apparent byte rate is only as meaningful as the caller-supplied byte counters.</p>
+    <p>Research context: Agrawal and Joshi distinguish CKKS client encoding/encryption/decryption from server evaluation and analyze memory-bound workloads. XeHE describes a SYCL/Microsoft SEAL CKKS GPU backend and whole-pipeline optimizations, but its reported results use two experimental, non-production Intel GPUs and are not hardware-selection guarantees. Sources: <a href="https://doi.org/10.1007/978-3-031-31754-5" target="_blank" rel="noopener noreferrer">Agrawal &amp; Joshi (2023)</a>; Lyashevsky et al., <i>XeHE</i> (2023), ISBN 979-8-88638-001-9, CC BY 4.0.</p>
+    <p class="status">Status: <span class="badge b-edu">Educational</span> — no keys, ciphertext evaluation, noise refresh, CKKS precision/noise estimate, BFV noise budget, or security assessment. The FHE profile calculator is not a benchmark runner or a production service.</p>
+  </div>
+
   <!-- ECC -->
   <div class="card">
     <div class="cat">Asymmetric · Elliptic Curves</div>
@@ -1955,8 +1965,8 @@
   <div class="card">
     <div class="cat">Packaging &middot; SFX recipe packs</div>
     <h3>Full-coverage recipe packs</h3>
-    <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only), the ElGamal multiplicative teaching demo (not FHE), and the two GRASP 4.00d protected-library readers (<span class="kbd">graspGlTable</span>, <span class="kbd">graspGlDirectory</span>) recovered from the Sneakers press kit; each is included in the offline recipe packs.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 521 operations and SFX select-all loads 521 of 521; tests fail if any operation is ever left out of every pack again.</p>
+    <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only), the ElGamal multiplicative teaching demo (not FHE), the F17/byte-pair/Lancelot FHE study modes, a separate CKKS architecture profile calculator, and the two GRASP 4.00d protected-library readers (<span class="kbd">graspGlTable</span>, <span class="kbd">graspGlDirectory</span>) recovered from the Sneakers press kit; each is included in the offline recipe packs.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 523 operations and SFX select-all loads 523 of 523; tests fail if any operation is ever left out of every pack again.</p>
   </div>
 
   <hr class="hr">

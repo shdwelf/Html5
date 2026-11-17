@@ -174,6 +174,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [aes-nacl-recipe-checks-2026-10-21.md](aes-nacl-recipe-checks-2026-10-21.md) — aes nacl recipe checks 2026 10 21
 - [bip-standards.md](bip-standards.md) — bip standards
 - [fhe-randomization-stream-audit-2026-11-17.md](fhe-randomization-stream-audit-2026-11-17.md) — randomized FHE encryption, known-input regression, evaluation-key provenance, and LT transport boundary
+- [cyberchef-fhe-study-lab-2026-11-17.md](cyberchef-fhe-study-lab-2026-11-17.md) — public teaching boundaries and Drive-informed FHE architecture notes
+- [cyberchef-fhe-architecture-profile-2026-11-17.md](cyberchef-fhe-architecture-profile-2026-11-17.md) — second Drive-informed FHE research edition and bounded manual CKKS profile recipe
 - [openpgp-keyserver-working-list-2026-11-07.md](openpgp-keyserver-working-list-2026-11-07.md) — direct keyserver snapshots, protocol/consent/sync comparison, and dated evidence trail
 - [onlykey-webapp-releases-2026-11-15.md](onlykey-webapp-releases-2026-11-15.md) — OnlyKey web apps: `apps.crp.to` (Webcrypt 3.0.0 + archived beta7/Beta8, firmware ≤ v3.0.4) vs `apps.onlykey.io` (4.0.0, PQC age/PGP, firmware > v3.0.4), how `/app/past_releases?version=beta7` redirects, and the firmware-version router
 
@@ -195,6 +197,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [cyberchef-cipher-machine-recipe-checks-2026-10-05.md](cyberchef-cipher-machine-recipe-checks-2026-10-05.md) — cyberchef cipher machine recipe checks 2026 10 05
 - [cyberchef-classical-cipher-deep-dive.md](cyberchef-classical-cipher-deep-dive.md) — cyberchef classical cipher deep dive
 - [cyberchef-elgamal-multiplicative-demo-2026-11-07.md](cyberchef-elgamal-multiplicative-demo-2026-11-07.md) — CyberChef multiplicative ElGamal demo, independent toy vector, and not-FHE scope
+- [cyberchef-fhe-study-lab-2026-11-17.md](cyberchef-fhe-study-lab-2026-11-17.md) — Drive-sourced FHE architecture research and the new plaintext-only F17 / byte-pair / Lancelot study recipes
 - [cyberchef-gb-rom-2026-10-21.md](cyberchef-gb-rom-2026-10-21.md) — cyberchef gb rom 2026 10 21
 - [cyberchef-matrix-deep-dive.md](cyberchef-matrix-deep-dive.md) — cyberchef matrix deep dive
 - [cyberchef-modern-cryptography-research-2026-09-29.md](cyberchef-modern-cryptography-research-2026-09-29.md) — cyberchef modern cryptography research 2026 09 29
