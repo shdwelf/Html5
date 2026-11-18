@@ -456,6 +456,7 @@ test("Keyspace Viewer archive carries the exact offline app and its licenses", (
     "config/coins-top500.json", "config/token-networks.json", "wasm/entropy.wasm", "vendor/three.module.min.js",
     "vendor/OrbitControls.js", "vendor/THREE_LICENSE", "js/bip39.js", "js/bip39-en.js",
     "js/engine.js", "js/viewer.js", "js/galois.js", "js/galois-view.js", "js/coin-networks.js",
+    "js/coin-research.js", "js/coin-workbench.js", "js/wallet-investigation.js", "js/chain-read.js", "js/nft-viewer.js", "apps/index3.html", "config/chain-research.json",
   ]) text(files, file);
   assert.equal(text(files, "index.html"), source("keyspace.html"));
   assert.equal(text(files, "LICENSE"), source("LICENSE"));
@@ -491,7 +492,8 @@ test("Keyspace's full module/registry graph is fresh in both archives and precac
     }
   }
   visit("js/viewer.js");
-  for (const file of ["config/coins-top500.json", "config/token-networks.json"]) {
+  visit("js/nft-viewer.js");
+  for (const file of ["config/coins-top500.json", "config/token-networks.json", "config/chain-research.json", "apps/index3.html"]) {
     assert.equal(text(keyspace, file), source(file));
     assert.equal(text(sitek, file), source(file));
     assert.ok(worker.includes(`"./${file}"`));

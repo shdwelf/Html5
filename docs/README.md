@@ -9,6 +9,13 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
+## Current round 81 · evidence and investigation
+
+- [Coin fees, network evidence and opt-in wallet investigation](coin-fees-and-investigation-2026-11-17.md) — local default leaves, explicit read-only consent, expected-chain guard and the existing NFT/ERC-20 metadata viewer.
+- [All 500 asset coverage rows and explicit research gaps](coin-research-inventory-2026-11-17.md) — 57 host profiles, 14 reviewed fee models / 43 pending; not 500 independently verified token contracts.
+- [FHE Masked Aggregation v2](cyberchef-fhe-masked-aggregation-2026-11-17.md) — distinct plaintext Kitchen oracle plus separate actual finite-depth BFV encrypted-mask companion; no bootstrapping/paper speedup claim.
+- [Round 81 execution and remaining gates](backlog-execution-round-81-2026-11-17.md).
+
 ## MIME quick reference
 
 *Full study: [`mime-types-deep-dive-2026-10-21.md`](mime-types-deep-dive-2026-10-21.md).

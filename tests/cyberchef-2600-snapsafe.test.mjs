@@ -41,7 +41,7 @@ const inspect = async (bytes, mode = "header") => JSON.parse(await bake([["snapS
 
 test("three source-labelled packs exist, are in full coverage, and reproduce public 2600 examples", async () => {
   const ids = w.eval("OPERATIONS.map(op=>op.id)");
-  assert.equal(ids.length, 524);
+  assert.equal(ids.length, 525);
   assert.equal(ids.filter((id) => id === "snapSafeSecv").length, 1);
   assert.ok(packs["Full Coverage — Data"].some(([id]) => id === "snapSafeSecv"));
   assert.deepEqual(packs[headerPack], [["snapSafeSecv", { mode: "header" }]]);

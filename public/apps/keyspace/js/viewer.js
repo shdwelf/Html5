@@ -53,6 +53,8 @@ import { LENSES, LENS_BY_ID, invertReport, notBytes } from "./formal.js";
 import { drawLens } from "./lens-draw.js";
 import { buildLensLayer, LENS_3D } from "./lens-3d.js";
 import { initGaloisExplorer } from "./galois-view.js";
+import { researchedNetworks } from "./coin-research.js";
+import { initCoinWorkbench } from "./coin-workbench.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -101,6 +103,7 @@ const state = {
 let formGroup = null;
 let lensGroup = null;
 let galoisExplorer = null;
+let coinWorkbench = null;
 
 let scene, camera, renderer, controls;
 let wordCloud, fieldPts, pathLine, pathGlow, sliceMarker;
@@ -876,6 +879,7 @@ function renderWalletScheme() {
 }
 
 function clearTopCoin() {
+  coinWorkbench?.clearDerived();
   state.topCoinEpoch++;
   state.topCoinResult = null;
   $("topCoinOutput").hidden = true;
@@ -895,11 +899,13 @@ function updateTopCoinNetwork() {
   $("deriveTopCoin").disabled = !coin?.derive;
   $("topCoinNetworkInfo").textContent = "";
   if (!coin) {
+    coinWorkbench?.setSelection(null, null);
     $("topCoinNote").textContent = "No matching asset in the offline snapshot.";
     return;
   }
   const networkId = $("topCoinNetwork").value;
   const network = networksForCoin(state.tokenNetworks, coin).find((item) => item.id === networkId);
+  coinWorkbench?.setSelection(coin, network);
   if (!network) {
     $("deriveTopCoin").disabled = true;
     $("topCoinNote").textContent = "Select an explicit network first.";
@@ -911,7 +917,7 @@ function updateTopCoinNetwork() {
   identity.push(network.warning);
   $("topCoinNetworkInfo").textContent = identity.join(" · ");
   $("topCoinNote").textContent = coin.derive
-    ? `#${coin.rank} ${coin.name} · ${coinOnNetwork(state.tokenNetworks, coin, networkId).row.path} · offline receive-address derivation only. No signing, transfers, balance checks or bridging.`
+    ? `#${coin.rank} ${coin.name} · ${coinOnNetwork(state.tokenNetworks, coin, networkId).row.path} · local receive derivation. No signing, transfers, automatic balance checks or bridging. Read-only lookups require separate consent in the investigation tab.`
     : `#${coin.rank} ${coin.name} · unsupported: ${coin.reason}`;
 }
 
@@ -925,7 +931,9 @@ function updateTopCoinSelection() {
 function filterTopCoins() {
   const select = $("topCoin");
   const previous = select.value;
-  const matches = searchCoins(state.topCoins, $("topCoinSearch").value, state.topCoins.length);
+  const found = searchCoins(state.topCoins, $("topCoinSearch").value, state.topCoins.length);
+  const matches = coinWorkbench?.orderedCoins(found) || found;
+  coinWorkbench?.renderCosts(found);
   select.replaceChildren(...matches.map((coin) => option(
     `#${coin.rank} · ${coin.symbol} · ${coin.name}${coin.derive ? "" : " · unsupported"}`, coin.id,
   )));
@@ -941,12 +949,25 @@ async function loadTopCoins() {
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
       return response.json();
     };
-    const [registry, networks] = await Promise.all([
-      load("./config/coins-top500.json"), load("./config/token-networks.json"),
+    const [registry, networks, research] = await Promise.all([
+      load("./config/coins-top500.json"), load("./config/token-networks.json"), load("./config/chain-research.json"),
     ]);
-    if (!Array.isArray(registry.assets) || networks.schema !== "html5-token-networks-v1") throw new Error("Invalid offline asset registry");
+    if (!Array.isArray(registry.assets) || networks.schema !== "html5-token-networks-v1" || research.schema !== "html5-chain-research-v1") throw new Error("Invalid offline asset registry");
     state.topCoins = registry.assets;
-    state.tokenNetworks = networks;
+    state.tokenNetworks = researchedNetworks(registry.assets, networks, research);
+    coinWorkbench = initCoinWorkbench(document, {
+      coins: state.topCoins, networks: state.tokenNetworks, research,
+      getPhrase: currentStandardPhrase, onListChange: filterTopCoins,
+      onInspect: (row) => {
+        try { currentStandardPhrase(); }
+        catch (error) { $("coinInvestigationStatus").textContent = error.message; coinWorkbench?.invalidateAll(); return; }
+        $("topCoinSearch").value = ""; $("topCoinGroup").value = "all";
+        filterTopCoins(); $("topCoin").value = row.id; updateTopCoinSelection();
+        const coin = selectedTopCoin();
+        const network = networksForCoin(state.tokenNetworks, coin).find((item) => item.id === row.networkId);
+        if (coin && network) showTopCoinResult(coin, { ...row, coin, network });
+      },
+    });
     $("topCoinSearch").disabled = false;
     filterTopCoins();
   } catch (error) {
@@ -956,18 +977,35 @@ async function loadTopCoins() {
   }
 }
 
+function currentStandardPhrase() {
+  if (!state.analysis?.ok || !state.analysis?.layout?.standard || parsePhrase($("phrase").value).join(" ") !== state.words.join(" ")) {
+    throw new Error("Apply a checksum-valid standard BIP-39 phrase first; edited/unapplied phrases cannot be derived or queried.");
+  }
+  return { mnemonic: state.words.join(" "), passphrase: $("walletPass").value };
+}
+
+function showTopCoinResult(coin, result) {
+  state.topCoinResult = result;
+  $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.network.name} · path`;
+  $("topCoinPath").textContent = result.path;
+  $("topCoinAddress").textContent = result.address;
+  $("topCoinPublic").textContent = result.pubkeyHex;
+  $("topCoinOutput").hidden = false;
+  $("clearWallet").disabled = false;
+  coinWorkbench?.setDerived(result);
+  $("topCoinNote").textContent = `Derived a holder receive address on ${result.network.name}, not a token contract. No private material is displayed or shared here. Read-only balance lookup is separate and opt-in; one default leaf cannot establish whole-wallet holdings.`;
+}
+
 async function deriveSelectedTopCoin() {
   const coin = selectedTopCoin();
   const networkId = $("topCoinNetwork").value;
   if (!coin?.derive || !networkId) return;
-  if (!state.analysis?.ok || !state.analysis?.layout?.standard) {
-    $("topCoinNote").textContent = "Use a valid standard BIP-39 phrase first.";
-    return;
-  }
+  let phrase;
+  try { phrase = currentStandardPhrase(); }
+  catch (error) { $("topCoinNote").textContent = error.message; return; }
   clearTopCoin();
   const epoch = state.topCoinEpoch;
-  const mnemonic = state.words.join(" ");
-  const passphrase = $("walletPass").value;
+  const { mnemonic, passphrase } = phrase;
   const button = $("deriveTopCoin");
   button.disabled = true;
   $("topCoinNote").textContent = `Deriving ${coin.symbol} locally…`;
@@ -975,14 +1013,7 @@ async function deriveSelectedTopCoin() {
   try {
     if (epoch !== state.topCoinEpoch) return;
     const result = deriveCoinNetwork(state.topCoins, state.tokenNetworks, mnemonic, coin.id, networkId, { passphrase });
-    state.topCoinResult = result;
-    $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.network.name} · path`;
-    $("topCoinPath").textContent = result.path;
-    $("topCoinAddress").textContent = result.address;
-    $("topCoinPublic").textContent = result.pubkeyHex;
-    $("topCoinOutput").hidden = false;
-    $("clearWallet").disabled = false;
-    $("topCoinNote").textContent = `Derived a holder receive address on ${result.network.name}, not a token contract. No private material is displayed or shared here. The same EVM address can exist on different networks; verify the recipient network independently.`;
+    showTopCoinResult(coin, result);
   } catch (error) {
     clearTopCoin();
     $("topCoinNote").textContent = `Derivation failed: ${error.message || error}`;
@@ -992,6 +1023,7 @@ async function deriveSelectedTopCoin() {
 }
 
 function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = false) {
+  coinWorkbench?.invalidateAll();
   state.wallet = null;
   clearTopCoin();
   if (clearPassphrase) $("walletPass").value = "";
@@ -1008,8 +1040,8 @@ function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = 
 
 async function deriveWallet() {
   const standard = state.analysis?.layout?.standard;
-  if (!state.analysis?.ok || !standard) {
-    clearWallet("Use a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
+  if (!state.analysis?.ok || !standard || parsePhrase($("phrase").value).join(" ") !== state.words.join(" ")) {
+    clearWallet("Apply a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
     return;
   }
   const button = $("deriveWallet");
@@ -1082,8 +1114,7 @@ async function applyPhrase(text, { broadcast = false } = {}) {
   const words = parsePhrase(text);
   const normalized = words.join(" ");
   if (normalized !== state.words.join(" ")) {
-    if (state.wallet || state.topCoinResult) clearWallet("Phrase changed · derive again explicitly.", true);
-    else clearTopCoin();
+    clearWallet("Phrase changed · derive again explicitly.", true);
   }
   $("phrase").value = normalized;
   state.words = words;
@@ -1598,8 +1629,10 @@ async function main() {
   $("topCoinNetwork").addEventListener("change", updateTopCoinNetwork);
   $("topCoinSearch").addEventListener("input", filterTopCoins);
   $("walletPass").addEventListener("input", () => {
-    if (state.wallet || state.topCoinResult) clearWallet("Passphrase changed · derive again explicitly.");
-    else clearTopCoin();
+    clearWallet("Passphrase changed · derive again explicitly.");
+  });
+  $("phrase").addEventListener("input", () => {
+    clearWallet("Phrase edited · apply it, then derive again explicitly.");
   });
   $("walletScheme").addEventListener("click", (event) => {
     const button = event.target.closest("[data-wallet-scheme]");

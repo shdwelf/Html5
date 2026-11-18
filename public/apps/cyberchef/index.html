@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 524 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 525 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -25850,6 +25850,47 @@ addOp('fheArchitectureLab','FHE Architecture Profile (manual measurements only)'
   [],
   function(text){return fheArchitectureProfile(text);});
 
+/* FHE follow-up v2: exact plaintext reference for a real, separate BFV experiment. */
+function fheMaskReference(text){
+  const input=String(text??'');
+  if(utf8Encode(input).length>16384)throw new Error('Mask workload JSON is limited to 16384 UTF-8 bytes');
+  let data;
+  try{data=JSON.parse(input);}catch(_){throw new Error('Enter valid mask workload JSON: {"schema":1,"updates":[[2,3],[10,20],[4,5]],"selection":[1,0,1]}');}
+  if(!data||typeof data!=='object'||Array.isArray(data)||data.schema!==1)throw new Error('Mask workload schema must be 1');
+  if(Object.keys(data).some(key=>!['schema','updates','selection'].includes(key)))throw new Error('Unknown mask workload key');
+  const updates=data.updates,selection=data.selection;
+  if(!Array.isArray(updates)||updates.length<1||updates.length>16)throw new Error('updates must have 1 to 16 clients');
+  const width=updates[0]&&updates[0].length;
+  if(!Number.isInteger(width)||width<1||width>32)throw new Error('updates must have 1 to 32 features');
+  if(!Array.isArray(selection)||selection.length!==updates.length||selection.some(bit=>bit!==0&&bit!==1))throw new Error('selection must contain one 0/1 bit per client');
+  if(updates.some(row=>!Array.isArray(row)||row.length!==width||row.some(n=>!Number.isInteger(n)||n<0||n>100)))throw new Error('updates must be rectangular integer rows in 0..100');
+  const selectedCount=selection.reduce((sum,bit)=>sum+bit,0);
+  const selectedSum=updates[0].map((_,feature)=>updates.reduce((sum,row,client)=>sum+row[feature]*selection[client],0));
+  return JSON.stringify({
+    scope:'Plaintext reference only: this recipe performs NO encryption, ciphertext evaluation, key generation, decryption, sorting or bootstrapping.',
+    workload_version:2,
+    dimensions:{clients:updates.length,features:width,input_range:[0,100],maximum_possible_sum:updates.length*100},
+    selectedSum,selectedCount,
+    meanOutsideCiphertextEvaluation:selectedCount?selectedSum.map(sum=>sum/selectedCount):null,
+    empty_selection:selectedCount===0,
+    operations_in_separate_bfv_experiment:{ciphertextMultiplications:updates.length,ciphertextAdditions:updates.length-1,relinearizations:1,multiplicativeDepth:1,bootstraps:0},
+    separate_backend:'tools/he-bfv-mask-demo.mjs uses node-seal 7.0.0 / Microsoft SEAL 4.1.2 for actual finite-depth BFV encryption and evaluation. The browser recipe does not load that backend.',
+    trust_boundaries:[
+      'Lancelot uses an interactive trusted key-generation centre to decrypt and sort distances, then encrypt a client-selection mask. The server applies that encrypted mask to encrypted updates. This reference starts AFTER selection; it implements no distances, encrypted comparisons, Krum, Multi-Krum or Byzantine-robust training.',
+      'The separate BFV experiment co-locates client/selector/evaluator/owner roles in one local process. Its evaluator receives ciphertexts and a relinearization key, not a secret key or plaintext selection. This is not a deployed multi-party protocol.',
+      'The selected count and mean are outside ciphertext evaluation; division and zero-selection handling are not encrypted here. A zero selected count yields null, not a valid zero average.',
+      'No range/bit proofs, authenticated transport, key lifecycle, differential privacy or output-privacy guarantee. Aggregation and a ledger of usage do not by themselves prove computation correctness or prevent data leakage.'
+    ],
+    research_sources:[
+      {doi:'10.1038/s42256-025-01107-6',title:'Towards compute-efficient Byzantine-robust federated learning with fully homomorphic encryption',review:'Accessible introduction and system-model excerpt, including the trusted-centre encrypted-mask workflow; not a full security or benchmark reproduction.'},
+      {doi:'10.1109/CVCI51460.2020.9338620',title:'The Data Protection of Intelligent Connected Vehicles Cloud Control Framework Using Fully Homomorphic Encryption',review:'Accessible opening excerpt motivates separating encrypted computation from a consortium-ledger usage trail. No vehicle-control, CKKS or Hyperledger benchmark was reproduced.'}
+    ]
+  },null,2);
+}
+addOp('fheMaskLab','FHE Masked Aggregation v2 (plaintext reference)','Educational',
+  'Bounded synthetic update vectors and explicit selection bits: compute exact sums/count/mean and audit the trusted-selector boundary. Plaintext only; actual finite-depth BFV is a separate local CLI experiment, not this recipe.',
+  [],function(text){return fheMaskReference(text);});
+
 /* SnapSafe v4.2.0: passive SECV v1 layout inspection, not decryption.
    Source: SecureCamera/SecureCameraAndroid @ 826bf51357c8ca81bad9e81c045107fd6671e633,
    SecvFileFormat.kt and ChunkedStreamingEncryptor.kt; see docs/2600-public-software-review-2026-11-17.md. */
@@ -34274,7 +34315,7 @@ RECIPE_PACKS["Full Coverage — Calculator"] = [["calc",{}],["convert",{}],["wor
 RECIPE_PACKS["Full Coverage — Classical"] = [["caesar",{}],["vigenere",{}],["gronsfeld",{}],["vic",{}],["atbash",{}],["rot13",{}],["railfence",{}],["coltrans",{}],["playfair",{}],["hill",{}],["a1z26",{}],["bacon",{}],["morse",{}],["porta",{}],["fourSquare",{}],["bifid",{}]];
 RECIPE_PACKS["Full Coverage — Coins"] = [["nanoAddr",{}],["sapling",{}],["solana",{}],["stellar",{}],["algorand",{}],["polkadot",{}],["monero",{}],["ripple",{}],["bch",{}],["kaspa",{}],["tezos",{}]];
 RECIPE_PACKS["Full Coverage — Data"] = [["snapSafeSecv",{}],["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
-RECIPE_PACKS["Full Coverage — Educational"] = [["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
+RECIPE_PACKS["Full Coverage — Educational"] = [["fheMaskLab",{}],["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
 RECIPE_PACKS["Full Coverage — Electronics"] = [["icAND",{}],["icOR",{}],["icXOR",{}],["icNAND",{}],["icNOR",{}],["icXNOR",{}],["icNOT",{}],["icAdder",{}],["ic7seg",{}],["icTruth",{}]];
 RECIPE_PACKS["Full Coverage — Encoding"] = [["toEntities",{}],["fromEntities",{}],["reverse",{}]];
 RECIPE_PACKS["Full Coverage — Encryption"] = [["aesGcmFile",{}],["encryptLink",{}],["decryptLink",{}]];
@@ -34307,6 +34348,7 @@ RECIPE_PACKS["FHE Study — F17 arithmetic oracle (plaintext only)"] = [["fheKit
 RECIPE_PACKS["FHE Study — UTF-8 byte / F17 pair codec (not encryption)"] = [["fheKitchenLab",{mode:'bytePairs'}]];
 RECIPE_PACKS["FHE Study — Lancelot architecture case study"] = [["fheKitchenLab",{mode:'architecture'}]];
 RECIPE_PACKS["FHE Study — CKKS architecture profile (manual data only)"] = [["fheArchitectureLab",{}]];
+RECIPE_PACKS["FHE Study — Masked aggregation v2 (plaintext reference, BFV companion CLI)"] = [["fheMaskLab",{}]];
 // Public magazine listing / source-format trail, not repackaged magazine scans.
 RECIPE_PACKS["2600 — Code Wall binary to UTF-8 (43:3)"] = [["fromBinary",{}]];
 RECIPE_PACKS["2600 — DOS Hello World bytes (43:3, hex to static hexdump)"] = [["fromHexdump",{outfmt:"binstr"}],["toHexdump",{srcfmt:"binstr",width:"16"}]];

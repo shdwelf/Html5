@@ -213,7 +213,7 @@ s.eq("full registry is visible", $("topCoin").options.length, 500);
 $("topCoinSearch").value = "usdt-tether";
 $("topCoinSearch").dispatchEvent(new window.Event("input", { bubbles: true }));
 s.eq("asset IDs filter unambiguously", $("topCoin").value, "usdt-tether");
-s.eq("three explicit USDT networks", $("topCoinNetwork").options.length, 3);
+s.eq("three mainnet deployments plus four host-only test identities", $("topCoinNetwork").options.length, 7);
 click($("deriveTopCoin"));
 await settle(50);
 s.ok("token derivation also refuses a non-standard phrase", /valid standard BIP-39/.test($("topCoinNote").textContent));

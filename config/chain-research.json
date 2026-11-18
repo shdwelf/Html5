@@ -1,0 +1,1615 @@
+{
+  "schema": "html5-chain-research-v1",
+  "reviewed": "2026-11-17",
+  "catalogueCommit": "ced25e716d875bfb78361772e4415784af0f86f5",
+  "scope": "Offline research with explicit review gaps. No live fees, USD prices, balances, token deployment verification (except separate token-networks registry), or endpoint availability checks.",
+  "assetProfileOverrides": {
+    "xno-nano": "XNO"
+  },
+  "chains": {
+    "BTC": {
+      "name": "Bitcoin",
+      "family": "p2wpkh",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BTC",
+      "feeModel": "utxo",
+      "feeFormula": "Transaction vbytes × sat/vB; input/output scripts and fee market determine cost. No fixed per-transfer fee.",
+      "nativeAssetIds": [
+        "btc-bitcoin"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://developer.bitcoin.org/devguide/transactions.html"
+        },
+        {
+          "kind": "network",
+          "url": "https://github.com/bitcoin/bitcoin/blob/d55f55eda79a98ddaad7f7bec9faca8beb097b99/src/kernel/chainparams.cpp"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "bitcoin-testnet4",
+          "name": "Bitcoin testnet4",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "",
+          "source": "https://github.com/bitcoin/bitcoin/blob/d55f55eda79a98ddaad7f7bec9faca8beb097b99/src/kernel/chainparams.cpp",
+          "identityStatus": "primary-reviewed",
+          "addressChain": "BTC_TEST",
+          "slip44": 1
+        },
+        {
+          "id": "bitcoin-signet",
+          "name": "Bitcoin signet",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "",
+          "source": "https://github.com/bitcoin/bitcoin/blob/d55f55eda79a98ddaad7f7bec9faca8beb097b99/src/kernel/chainparams.cpp",
+          "identityStatus": "primary-reviewed",
+          "addressChain": "BTC_TEST",
+          "slip44": 1
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "ETH": {
+      "name": "Ethereum",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ETH",
+      "feeModel": "gas",
+      "feeFormula": "Gas charged × effective gas price; token/contract operations need their own gas estimate. No live quote.",
+      "nativeAssetIds": [
+        "eth-ethereum"
+      ],
+      "chainId": 1,
+      "rpc": "https://ethereum-rpc.publicnode.com",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-1.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://ethereum.org/en/developers/docs/networks/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://ethereum.org/en/developers/docs/gas/"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "ethereum-sepolia",
+          "name": "Ethereum Sepolia",
+          "environment": "testnet",
+          "chainId": 11155111,
+          "rpc": "https://ethereum-sepolia-rpc.publicnode.com",
+          "source": "https://ethereum.org/en/developers/docs/networks/",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "BSC": {
+      "name": "BNB Smart Chain",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BNB",
+      "feeModel": "gas",
+      "feeFormula": "Gas charged × effective gas price; token/contract operations need their own gas estimate. No live quote.",
+      "nativeAssetIds": [
+        "bnb-binance-coin"
+      ],
+      "chainId": 56,
+      "rpc": "https://bsc-dataseed.bnbchain.org",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-56.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.bnbchain.org/bnb-smart-chain/developers/wallet-configuration/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.bnbchain.org/bnb-smart-chain/developers/quick-guide/"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "bsc-testnet",
+          "name": "BSC testnet",
+          "environment": "testnet",
+          "chainId": 97,
+          "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
+          "source": "https://docs.bnbchain.org/bnb-smart-chain/developers/wallet-configuration/",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "XRP": {
+      "name": "XRP Ledger",
+      "family": "xrp",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XRP",
+      "feeModel": "load-scaled",
+      "feeFormula": "Standard minimum 10 drops; load and special transaction types change cost. Account reserves are separate.",
+      "nativeAssetIds": [
+        "xrp-xrp"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://xrpl.org/docs/concepts/transactions/transaction-cost"
+        },
+        {
+          "kind": "network",
+          "url": "https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "xrpl-testnet",
+          "name": "XRP Ledger Testnet",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "",
+          "source": "https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ],
+      "nativeBaseFee": "0.00001"
+    },
+    "SOL": {
+      "name": "Solana",
+      "family": "sol",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "SOL",
+      "feeModel": "base-priority",
+      "feeFormula": "5,000 lamports per signature + optional priority fee; account/rent deposits and token account creation are additional.",
+      "nativeAssetIds": [
+        "sol-solana"
+      ],
+      "chainId": null,
+      "rpc": "https://api.mainnet.solana.com",
+      "balanceAdapter": "solana",
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://solana.com/docs/core/fees"
+        },
+        {
+          "kind": "network",
+          "url": "https://solana.com/docs/references/clusters"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "solana-devnet",
+          "name": "Solana Devnet",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://api.devnet.solana.com",
+          "source": "https://solana.com/docs/references/clusters",
+          "identityStatus": "primary-reviewed",
+          "environmentLabel": "devnet"
+        },
+        {
+          "id": "solana-testnet",
+          "name": "Solana Testnet",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://api.testnet.solana.com",
+          "source": "https://solana.com/docs/references/clusters",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ],
+      "nativeBaseFee": "0.000005"
+    },
+    "TRX": {
+      "name": "TRON",
+      "family": "tron",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "TRX",
+      "feeModel": "resources",
+      "feeFormula": "Bandwidth for transaction bytes; smart contracts also consume Energy. Available resources can offset TRX burn; activation/special fees differ. Not an unconditional free transfer.",
+      "nativeAssetIds": [
+        "trx-tron"
+      ],
+      "chainId": null,
+      "rpc": "https://api.trongrid.io",
+      "balanceAdapter": "tron",
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://developers.tron.network/docs/resource-model"
+        },
+        {
+          "kind": "network",
+          "url": "https://developers.tron.network/docs/networks"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "tron-shasta",
+          "name": "TRON Shasta",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://api.shasta.trongrid.io",
+          "source": "https://developers.tron.network/docs/networks",
+          "identityStatus": "primary-reviewed"
+        },
+        {
+          "id": "tron-nile",
+          "name": "TRON Nile",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://nile.trongrid.io",
+          "source": "https://developers.tron.network/docs/networks",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "ZEC": {
+      "name": "ZEC",
+      "family": "zcash-t",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "zec-zcash"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "HYPE": {
+      "name": "HyperEVM (not HyperCore)",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "HYPE",
+      "feeModel": "gas",
+      "feeFormula": "Gas charged × effective gas price; token/contract operations need their own gas estimate. No live quote.",
+      "nativeAssetIds": [
+        "hype-hyperliquid"
+      ],
+      "chainId": 999,
+      "rpc": "https://rpc.hyperliquid.xyz/evm",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-999.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm"
+        },
+        {
+          "kind": "fees",
+          "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "hyperevm-testnet",
+          "name": "HyperEVM testnet",
+          "environment": "testnet",
+          "chainId": 998,
+          "rpc": "https://rpc.hyperliquid-testnet.xyz/evm",
+          "source": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "DOGE": {
+      "name": "DOGE",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "doge-dogecoin"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "XLM": {
+      "name": "Stellar",
+      "family": "stellar",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XLM",
+      "feeModel": "per-operation",
+      "feeFormula": "At least 100 stroops per operation; surge inclusion, smart-contract resource fees and minimum balances/rent are separate.",
+      "nativeAssetIds": [
+        "xlm-stellar"
+      ],
+      "chainId": null,
+      "rpc": "https://horizon.stellar.org",
+      "balanceAdapter": "stellar",
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering"
+        },
+        {
+          "kind": "network",
+          "url": "https://developers.stellar.org/docs/networks"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "stellar-testnet",
+          "name": "Stellar Testnet",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://horizon-testnet.stellar.org",
+          "source": "https://developers.stellar.org/docs/networks",
+          "identityStatus": "primary-reviewed",
+          "networkPassphrase": "Test SDF Network ; September 2015"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ],
+      "nativeBaseFee": "0.00001"
+    },
+    "BCH": {
+      "name": "BCH",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "bch-bitcoin-cash"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "LTC": {
+      "name": "LTC",
+      "family": "p2wpkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "ltc-litecoin"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "NEAR": {
+      "name": "NEAR Protocol (implicit account)",
+      "family": "near",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "near-near-protocol"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "network",
+          "url": "https://docs.near.org/protocol/network/networks"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "near-testnet",
+          "name": "NEAR Testnet (implicit account)",
+          "environment": "testnet",
+          "chainId": null,
+          "rpc": "https://rpc.testnet.near.org",
+          "source": "https://docs.near.org/protocol/network/networks",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "AVAX": {
+      "name": "Avalanche C-Chain (not X/P)",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "pending",
+      "feeAsset": "AVAX",
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "avax-avalanche"
+      ],
+      "chainId": 43114,
+      "rpc": "https://api.avax.network/ext/bc/C/rpc",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-43114.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://build.avax.network/docs/primary-network"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "avalanche-fuji",
+          "name": "Avalanche Fuji C-Chain",
+          "environment": "testnet",
+          "chainId": 43113,
+          "rpc": "https://api.avax-test.network/ext/bc/C/rpc",
+          "source": "https://build.avax.network/docs/primary-network",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "CRO": {
+      "name": "CRO",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "cro-cryptocom-chain"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "This row uses Cronos POS cosmos/cro encoding, not Cronos EVM chain 25."
+      ]
+    },
+    "FTM": {
+      "name": "Fantom Opera",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "ftm-fantom"
+      ],
+      "chainId": 250,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-250.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
+        "Historical Fantom Opera row; migration to Sonic does not make the networks interchangeable."
+      ]
+    },
+    "ETC": {
+      "name": "Ethereum Classic",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "etc-ethereum-classic"
+      ],
+      "chainId": 61,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-61.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "BASE": {
+      "name": "Base",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ETH",
+      "feeModel": "rollup",
+      "feeFormula": "Execution plus chain-specific data/L1 costs; do not rank using Ethereum 21,000-gas transfer alone.",
+      "nativeAssetIds": [],
+      "chainId": 8453,
+      "rpc": "https://mainnet.base.org",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-8453.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.base.org/get-started/connect-to-base"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.base.org/specifications/transactions/network-fees"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "base-sepolia",
+          "name": "Base Sepolia",
+          "environment": "testnet",
+          "chainId": 84532,
+          "rpc": "https://sepolia.base.org",
+          "source": "https://docs.base.org/get-started/connect-to-base",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "DASH": {
+      "name": "DASH",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "dash-dash"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "ATOM": {
+      "name": "ATOM",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "atom-cosmos"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "VET": {
+      "name": "VeChain",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "vet-vechain"
+      ],
+      "chainId": 100009,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-100009.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
+        "VET and VTHO are distinct; do not report VET as the fee asset without a current VeChain fee review."
+      ]
+    },
+    "INJ": {
+      "name": "INJ",
+      "family": "evm-cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "inj-injective-protocol"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "FLR": {
+      "name": "Flare",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "pending",
+      "feeAsset": "FLR",
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "flr-flare-network"
+      ],
+      "chainId": 14,
+      "rpc": "https://flare-api.flare.network/ext/C/rpc",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-14.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://dev.flare.network/"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "coston2",
+          "name": "Flare Coston2",
+          "environment": "testnet",
+          "chainId": 114,
+          "rpc": "https://coston2-api.flare.network/ext/C/rpc",
+          "source": "https://dev.flare.network/",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "LUNC": {
+      "name": "LUNC",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "luna-terra"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Terra Classic and Terra 2 are different networks; never merge balances or assume the same testnet."
+      ]
+    },
+    "XDC": {
+      "name": "XDC Network",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "xdc-xdc-network"
+      ],
+      "chainId": 50,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-50.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "BSV": {
+      "name": "BSV",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "bsv-bitcoin-sv"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "PLS": {
+      "name": "PulseChain",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [],
+      "chainId": 369,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-369.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "SEI": {
+      "name": "SEI",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "sei-sei"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "This row uses the Cosmos sei address path; an EVM address is a different view."
+      ]
+    },
+    "MON": {
+      "name": "Monad",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "MON",
+      "feeModel": "gas-limit",
+      "feeFormula": "Gas LIMIT × effective gas price (not Ethereum gasUsed). At the documented 100 MON-gwei floor with no priority fee, a 21,000-gas transfer is 0.0021 MON; this is not a live/all-in quote.",
+      "nativeAssetIds": [
+        "mon-monad"
+      ],
+      "chainId": 143,
+      "rpc": "https://rpc.monad.xyz",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-143.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.monad.xyz/developer-essentials/network-information"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.monad.xyz/developer-essentials/gas-pricing"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "monad-testnet",
+          "name": "Monad Testnet",
+          "environment": "testnet",
+          "chainId": 10143,
+          "rpc": "https://testnet-rpc.monad.xyz",
+          "source": "https://docs.monad.xyz/developer-essentials/testnet",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ],
+      "nativeBaseFee": "0.0021"
+    },
+    "TIA": {
+      "name": "TIA",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "tia-celestia"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "THETA": {
+      "name": "Theta Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "theta-theta-token"
+      ],
+      "chainId": 361,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-361.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
+        "THETA and TFUEL are distinct; do not use THETA balance as a TFUEL fee balance."
+      ]
+    },
+    "KAIA": {
+      "name": "Kaia Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "kaia-kaia"
+      ],
+      "chainId": 8217,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-8217.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "RUNE": {
+      "name": "RUNE",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "rune-thorchain"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "AKT": {
+      "name": "AKT",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "akt-akash-network"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "XEC": {
+      "name": "XEC",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "xec-ecash"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "QTUM": {
+      "name": "QTUM",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "qtum-qtum"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "S": {
+      "name": "Sonic",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "S",
+      "feeModel": "gas",
+      "feeFormula": "Gas charged × effective gas price; token/contract operations need their own gas estimate. No live quote.",
+      "nativeAssetIds": [
+        "s-sonic"
+      ],
+      "chainId": 146,
+      "rpc": "https://rpc.soniclabs.com",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-146.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.soniclabs.com/sonic/build-on-sonic/network-parameters"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.soniclabs.com/sonic/build-on-sonic/network-parameters"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "DGB": {
+      "name": "DGB",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "dgb-digibyte"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "DYDX": {
+      "name": "DYDX",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "dydx-dydx-chain"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "WEMIX": {
+      "name": "WEMIX3.0 Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "wemix-wemix-token"
+      ],
+      "chainId": 1111,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-1111.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "RSK": {
+      "name": "Rootstock Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [],
+      "chainId": 30,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-30.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "ARB": {
+      "name": "Arbitrum One",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ETH",
+      "feeModel": "rollup",
+      "feeFormula": "Execution plus chain-specific data/L1 costs; do not rank using Ethereum 21,000-gas transfer alone.",
+      "nativeAssetIds": [],
+      "chainId": 42161,
+      "rpc": "https://arb1.arbitrum.io/rpc",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-42161.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.arbitrum.io/chain-info"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.arbitrum.io/how-arbitrum-works/deep-dives/gas-and-fees"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "arbitrum-sepolia",
+          "name": "Arbitrum Sepolia",
+          "environment": "testnet",
+          "chainId": 421614,
+          "rpc": "https://sepolia-rollup.arbitrum.io/rpc",
+          "source": "https://docs.arbitrum.io/chain-info",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "ISLM": {
+      "name": "Haqq Network",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "islm-islamic-coin"
+      ],
+      "chainId": 11235,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-11235.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "KAVA": {
+      "name": "KAVA",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "kava-kava"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "PEAQ": {
+      "name": "peaq",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "peaq-peaq-network"
+      ],
+      "chainId": 3338,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-3338.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "KUB": {
+      "name": "KUB Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "kub-bitkub-coin"
+      ],
+      "chainId": 96,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-96.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "CELO": {
+      "name": "Celo",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "CELO",
+      "feeModel": "multi-currency",
+      "feeFormula": "Gas with CELO by default; allowlisted feeCurrency/adapters can pay in other tokens. Requires target-chain estimation; not a generic ETH transfer.",
+      "nativeAssetIds": [
+        "celo-celo"
+      ],
+      "chainId": 42220,
+      "rpc": "https://forno.celo.org",
+      "balanceAdapter": "evm",
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-42220.json"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.celo.org/learn/network/overview"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.celo.org/learn/network/overview"
+        }
+      ],
+      "testnets": [
+        {
+          "id": "celo-sepolia",
+          "name": "Celo Sepolia",
+          "environment": "testnet",
+          "chainId": 11142220,
+          "rpc": "https://forno.celo-sepolia.celo-testnet.org",
+          "source": "https://docs.celo.org/learn/network/overview",
+          "identityStatus": "primary-reviewed"
+        }
+      ],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "XVG": {
+      "name": "XVG",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "0G": {
+      "name": "0G Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "zero-gravity-0g"
+      ],
+      "chainId": 16661,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-16661.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "AXL": {
+      "name": "AXL",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "ico-axelar"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "RON": {
+      "name": "Ronin Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "ron-ronin-token"
+      ],
+      "chainId": 2020,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-2020.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "RVN": {
+      "name": "RVN",
+      "family": "p2pkh",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "rvn-ravencoin"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "BAND": {
+      "name": "BAND",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "band-band-protocol"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "LUNA": {
+      "name": "LUNA",
+      "family": "cosmos",
+      "identityStatus": "pending",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [
+        "luna-terra-v2"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+      ]
+    },
+    "MERLIN": {
+      "name": "Merlin Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [],
+      "chainId": 4200,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-4200.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ]
+    },
+    "HECO": {
+      "name": "Huobi ECO Chain Mainnet",
+      "family": "evm",
+      "identityStatus": "catalogue-only",
+      "feeStatus": "pending",
+      "feeAsset": null,
+      "feeModel": "unknown",
+      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "nativeAssetIds": [],
+      "chainId": 128,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "catalogue",
+          "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-128.json"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
+        "Historical HECO mapping; operational status and current testnets are unverified."
+      ]
+    },
+    "XNO": {
+      "name": "Nano",
+      "family": null,
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XNO",
+      "feeModel": "protocol-zero",
+      "feeFormula": "Zero protocol transaction fee; user-generated PoW consumes computing resources. Node/wallet/exchange services may impose costs.",
+      "nativeAssetIds": [
+        "xno-nano"
+      ],
+      "chainId": null,
+      "rpc": "",
+      "balanceAdapter": null,
+      "nativeBaseFee": "0",
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.nano.org/what-is-nano/overview/"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Address derivation remains unsupported; fee research does not enable the missing Nano codec."
+      ]
+    }
+  }
+}

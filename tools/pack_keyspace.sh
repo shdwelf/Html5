@@ -7,7 +7,7 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cd "$root"
 
-mkdir -p "$tmp/css" "$tmp/js" "$tmp/wasm" "$tmp/vendor" "$tmp/config"
+mkdir -p "$tmp/css" "$tmp/js" "$tmp/wasm" "$tmp/vendor" "$tmp/config" "$tmp/apps"
 cp keyspace.html "$tmp/index.html"
 cp webxdc.js "$tmp/"
 cp LICENSE "$tmp/"
@@ -18,12 +18,14 @@ cp js/viewer.js js/bip39.js js/bip39-en.js js/engine.js js/spacefill.js \
    js/formal.js js/lens-draw.js js/lens-3d.js js/syllables.js js/enso-id.js \
    js/wallet-derivatives.js js/coins.js js/bip32.js js/addrs.js js/codec.js \
    js/hash.js js/secp256k1.js js/ed25519.js js/key-stats.js \
-   js/galois.js js/galois-view.js js/coin-networks.js "$tmp/js/"
+   js/galois.js js/galois-view.js js/coin-networks.js js/coin-research.js \
+   js/coin-workbench.js js/wallet-investigation.js js/chain-read.js js/nft-viewer.js "$tmp/js/"
+cp apps/index3.html "$tmp/apps/"
 cp wasm/entropy.wasm "$tmp/wasm/"
 cp vendor/three.module.min.js vendor/OrbitControls.js "$tmp/vendor/"
 cp vendor/THREE_LICENSE "$tmp/vendor/"
 cp icon.png "$tmp/icon.png"
-cp config/coins-top500.json config/token-networks.json "$tmp/config/"
+cp config/coins-top500.json config/token-networks.json config/chain-research.json "$tmp/config/"
 
 cat > "$tmp/manifest.toml" <<'TOML'
 name = "Keyspace Viewer"

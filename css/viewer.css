@@ -715,3 +715,24 @@ input[type="number"] {
 .field-results dt { color: var(--muted); }
 .field-results dd { margin: 5px 0 0; overflow-wrap: anywhere; color: var(--ok); }
 .field-lab .plot { width: 100%; height: auto; }
+
+/* Coin evidence and read-only investigation deliberately keep unknowns visible. */
+.coin-workbench { margin-top: 14px; min-width: 0; }
+/* Keep these controls below the existing sticky math pager, not underneath it. */
+.coin-tabs { flex-wrap: wrap; gap: 4px; position: sticky; top: 56px; z-index: 3; background: var(--panel); padding: 4px 0; }
+.coin-tabs .seg-btn { flex: 1; min-width: 100px; min-height: 40px; white-space: normal; }
+.coin-workbench [role="tabpanel"] { padding-top: 10px; }
+.coin-workbench [hidden] { display: none; }
+.coin-workbench h3 { font-size: 12px; color: var(--accent); margin: 14px 0 8px; }
+.coin-report { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 24rem; overflow: auto; background: #080d14; border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: 11px/1.6 var(--mono); }
+.coin-links { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 8px 0 14px; font-size: 11px; }
+.coin-links a { color: var(--accent); }
+.coin-table-wrap { max-height: 28rem; overflow: auto; border: 1px solid var(--line); border-radius: 8px; margin-top: 10px; }
+.coin-table { border-collapse: collapse; width: 100%; font: 10px/1.6 var(--mono); }
+.coin-table th, .coin-table td { text-align: left; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--line); min-width: 120px; max-width: 260px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.coin-table th { position: sticky; top: 0; background: #111b27; color: var(--muted); z-index: 1; }
+.coin-table td:nth-child(2) { min-width: 180px; }
+.coin-consent { display: flex; align-items: flex-start; gap: 8px; font: 11px/1.6 var(--mono); }
+.coin-consent input { width: auto; flex: 0 0 auto; }
+.coin-metadata-frame { width: 100%; height: 650px; border: 1px solid var(--line); border-radius: 8px; background: #0b1020; }
+#coinFeeScenario { width: 100%; box-sizing: border-box; font: 11px/1.6 var(--mono); }

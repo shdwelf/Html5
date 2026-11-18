@@ -78,7 +78,9 @@ cp -R css js wasm vendor img src assets data models "$tmp/"
 # Keyspace's offline address selector needs the market snapshot and its separate
 # curated token-network identities. Do not sweep unrelated config into SITE-K.
 mkdir -p "$tmp/config"
-cp config/coins-top500.json config/token-networks.json "$tmp/config/"
+cp config/coins-top500.json config/token-networks.json config/chain-research.json "$tmp/config/"
+mkdir -p "$tmp/apps"
+cp apps/index3.html "$tmp/apps/"
 # Apply the shared privacy policy and cloud-reference preflight to the docs tree;
 # SITE-K must not re-expose Markdown excluded from the public Wiki bundle.
 node "$root/tools/wikiinajar/copy-public-docs.mjs" "$tmp/docs"

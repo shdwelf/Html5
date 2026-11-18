@@ -16,6 +16,26 @@ ch. XVI gaps & private prompts).
    (`js/greeran-subsurface-data.js` NODES) so chapters, apps, and the timeline
    can reference the same entity without drift.
 
+## Round 81 editorial handoff status (2026-11-17)
+
+A research index and separate public-safe technical / editorial working briefs
+were written to the connected Notion workspace, with a written handoff on the
+existing Agent instructions page. This is **not** an AI-agent invocation or a
+manuscript edit. The tool set does not expose agent execution or a sharing audit;
+no sensitive source material was copied into the permission-unverified briefs.
+Additional title searches did not locate an appropriate integration-visible
+manuscript page; a person profile is not a content destination. The named Drive
+backup folder contains an older backlog and a research note, not a confirmed
+Notion manuscript. Keep its private source content out of the public corpus.
+
+**Next gate:** the author must confirm/share the intended manuscript page and
+private editorial audience. Then apply the chronology-first, stable-register-ID
+and evidence-tier rules above to an approved source-gap table and chapter
+revision. The unresolved commencement date/venue is not promoted by this handoff.
+Do not synchronize invitations, phrase-like recovery TODOs, private recollections
+or unrelated source books. Public-safe and private are separate content lanes,
+not proof that Notion permissions have been configured.
+
 ## Future format ideas (author's list)
 
 - **Myst/Riven walk-through framing — phase 1 implemented** — the Greeran Book
