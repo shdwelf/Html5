@@ -37,9 +37,13 @@ Input:
 For `(2,1)`, the oracle reports `sum=3`, `difference=1`, `product=2`,
 `quotient=2`, `divisor_valid=true`, and `square=8`. For `(2,0)`, it reports
 `quotient=0` with `divisor_valid=false`; callers must reject that quotient.
-The square is `((x*y mod 17)+x+1)^2 mod 17`. The intermediary maxima are
-raw product/reduction index 256 and square-LUT index 33. These are exact
-plaintext reference computations—not results from encrypted evaluation.
+The square is `((x*y mod 17)+x+1)^2 mod 17`. The browser reference reports
+conservative maxima of 256 for the raw product/reduction index and 33 for the
+square-LUT index. These are exact plaintext reference computations—not results
+from encrypted evaluation. The current chunked Concrete implementation has the
+same field semantics but uses modular-reduction indices at most 33 and packed
+multivariate lookup inputs at most 7 bits; those compiler bounds are recorded
+in the [public circuit contract](../tools/he_concrete_spec.py).
 
 ## Research informed by the connected Drive
 

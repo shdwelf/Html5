@@ -37,21 +37,28 @@ modulus):
   output remains in `F_17`, so the basis is closed under composition. Division
   by zero returns placeholder quotient zero and encrypted `divisor_valid = 0`;
   the client must decrypt and check this flag before using the quotient.
-- Bounds are explicit and tested: raw `x*y ≤ 256`, reduction/LUT index `≤ 256`,
-  square LUT index `≤ 33`, and square output in `0..16`. Field operations are
-  exact modulo 17; this integer/LUT circuit has no approximate arithmetic
-  error term.
+- Bounds are explicit and tested: the semantic raw product is `x*y ≤ 256`,
+  but chunked modular multiplication keeps each modular-reduction index
+  `≤ 33` and each multivariate lookup's packed input width `≤ 7` bits. The
+  square LUT index is `≤ 33`, and the square output is in `0..16`. Field
+  semantics are exact modulo 17, not approximate CKKS arithmetic; encrypted
+  execution still has Concrete's explicitly configured correctness-error
+  probability (`p_error = 1.6e-6` per TLU).
 
 The stream demonstration compiles once, generates one client keyset, then
 evaluates every one of the 289 F_17 input pairs as an independent chunk with
 fresh encrypted inputs. The server function is passed only two ciphertext
-values and a deserialized **evaluation-only** keyset; it is not passed the
-`Client` object, plaintext inputs, or a decryptor. A separate depth-8 test feeds
-encrypted sum/product outputs into the same compiled circuit repeatedly and
-decrypts only the final output. This checks chaining through this circuit's
-compiled bootstraps; it is not a proof for arbitrary circuit families or
-unbounded resource use. The stream test does not extend one ciphertext
-indefinitely to represent an unbounded file.
+values and Concrete's **evaluation-only** view of the generated keyset; it is
+not passed the `Client` object, plaintext inputs, or a decryptor. The demo
+serializes and authenticates evaluation-key bytes, then releases that buffer
+instead of deserializing a second multi-GB keyset in the same process. A real
+client/server deployment would deserialize authenticated bytes in a separate
+server process. A separate depth-8 test feeds encrypted sum/product outputs
+into the same compiled circuit repeatedly and decrypts only the final output.
+This checks chaining through this circuit's compiled bootstraps; it is not a
+proof for arbitrary circuit families or unbounded resource use. The stream
+test does not extend one ciphertext indefinitely to represent an unbounded
+file.
 
 ## Randomization / known-plaintext smoke test
 
@@ -79,12 +86,26 @@ randomization is not message authentication or CCA protection.
 The Concrete wrapper also signs a canonical evaluation-key manifest with
 Ed25519. The signed manifest binds the serialized evaluation-key digest, a
 circuit ID, and the digest of the declared circuit/domain specification. The
-opt-in test tampers with the evaluation-key bytes, signature and circuit ID
-and requires rejection before key deserialization/evaluation. The demo creates
-an ephemeral signing key and pins its public key in-process solely to exercise
-this boundary. A real service must independently provision/pin an authorized
-client signing key and bind the manifest to the exact compiled artifact,
-compiler/runtime version and parameters; this demo is not that service.
+opt-in test tampers with evaluation-key bytes and the signature. It also
+creates **correctly signed** manifests for a wrong circuit ID and for a
+non-composable compiler contract, requiring rejection before server evaluation.
+The demo creates an ephemeral signing key and pins its public key in-process
+solely to exercise this boundary. A real service must independently
+provision/pin an authorized client signing key and bind the manifest to the
+exact compiled artifact, compiler/runtime version and parameters; this demo is
+not that service.
+
+The v6 specification now includes `composable: true`, which the v5 metadata
+omitted even though the compiler already enabled it. The shared
+[`tools/he_concrete_spec.py`](../tools/he_concrete_spec.py) provides the domain,
+compiler-setting constants, canonical specification bytes and digest without
+importing Concrete, Torch or cryptography. Running it prints the canonical
+specification plus one display newline; that newline is **not** part of the
+digest. The always-on Node test independently hashes those bytes and pins the
+v6 digest; the opt-in encrypted test checks that the runtime reports the same
+digest and composability setting. Old v5 manifests do not match this v6
+contract. This is a metadata-binding correction, not a new arithmetic circuit
+or a compiled-artifact attestation.
 
 ## What LT can and cannot do here
 
@@ -108,24 +129,36 @@ npm ci
 node --test tests/he-bfv.test.mjs
 npm run demo:bfv
 
+# Public contract only; Python standard library, no FHE evaluation:
+python3 -I -S tools/he_concrete_spec.py
+node --test tests/he-concrete.test.mjs
+
+# Real encrypted integration on CPython 3.11 x86-64 Linux:
 python3.11 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r tools/he-concrete-requirements.txt
-python tools/he-concrete-fhe-demo.py
-RUN_CONCRETE_FHE=1 node --test tests/he-concrete.test.mjs
+MALLOC_ARENA_MAX=2 RUN_CONCRETE_FHE=1 CONCRETE_FHE_TRACE=1 \
+  node --test tests/he-concrete.test.mjs
 ```
 
 The Concrete/Torch dependency environment is optional and large; default
-`npm test` skips the Concrete integration rather than faking it. Do not commit
-that environment, generated keys, key bundles or serialized ciphertexts. In
-this checkout the BFV test and CLI were run; the opt-in Concrete integration was
-not run because its Concrete/Torch environment is absent. Python syntax, the
-bounded lookup equations, and Ed25519 tamper cases were checked separately with
-a local test stub; that is **not** an encrypt/evaluate/decrypt integration run.
-Run the opt-in command above to make that claim for this revision. The Ed25519
-check authenticates a test manifest, not the quality of the FHE parameters.
-SEAL's reported security level is also a library parameter check, not
-independent cryptanalysis. Neither example is a production service.
+`npm test` runs the public-contract check and skips the encrypted integration
+rather than faking it. Do not commit that environment, generated keys, key
+bundles or serialized ciphertexts.
+
+The original audit only ran the BFV path and stubbed Python checks, not the
+Concrete integration. That execution gap has since been closed: merged PR #222
+verified the composable circuit, and [backlog round 79](backlog-execution-round-79-2026-11-17.md)
+reran the real integration for the v6 contract. Both tests passed with
+`RUN_CONCRETE_FHE=1`: the standard-library contract check and the real encrypted
+run covering all 289 pairs, depth-8 composition, fresh-encryption checks and
+signature/contract rejection. No FHE behavior was substituted with a test stub
+in that integration. The full default suite also passed (318 Vitest tests;
+1,057 Node tests passed, 14 optional cases skipped).
+
+The Ed25519 check authenticates a test manifest, not the quality of the FHE
+parameters. SEAL's reported security level is also a library parameter check,
+not independent cryptanalysis. Neither example is a production service.
 
 ## Source trail
 

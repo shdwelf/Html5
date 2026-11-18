@@ -44,79 +44,24 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from concrete import fhe
 from concrete.fhe.compilation.configuration import SecurityLevel
 
+from he_concrete_spec import (
+    CIRCUIT_ID,
+    CIRCUIT_SPEC,
+    CIRCUIT_SPEC_SHA256,
+    COMPILE_INPUTSET,
+    COMPOSABLE,
+    COMPRESS_EVALUATION_KEYS,
+    FHE_P_ERROR,
+    INPUTSET,
+    MAX_REDUCTION_INDEX,
+    MAX_SQUARE_INDEX,
+    MODULUS,
+    PLAINTEXT_MAX,
+    PLAINTEXT_MIN,
+    RAW_PRODUCT_MAX,
+)
 
-MODULUS = 17
-PLAINTEXT_MIN = 0
-PLAINTEXT_MAX = MODULUS - 1
-# Concrete keeps its 128-bit security default. This explicit per-TLU correctness
-# target is recorded in the circuit manifest and runtime report; it is not a
-# change to the cryptographic security level.
-FHE_P_ERROR = 1.6e-6
 
-# The real integration exhausts all 289 ordered field pairs after compilation.
-# For byte streams, b can be represented as (b // 17, b % 17), one pair of
-# field residues per chunk; this arithmetic circuit is not itself a codec.
-INPUTSET = [(x, y) for x in range(PLAINTEXT_MIN, PLAINTEXT_MAX + 1)
-            for y in range(PLAINTEXT_MIN, PLAINTEXT_MAX + 1)]
-
-# Use the complete domain as the compilation inputset so Concrete observes the
-# full range of every chunked intermediate, then exhaust it again under FHE.
-COMPILE_INPUTSET = INPUTSET
-
-# Conservative bounds for the small-width modular arithmetic circuit.
-RAW_PRODUCT_MAX = PLAINTEXT_MAX ** 2
-MAX_REDUCTION_INDEX = 2 * PLAINTEXT_MAX + 1
-MAX_SQUARE_INDEX = (MODULUS - 1) + PLAINTEXT_MAX + 1
-MULTIPLICATION_CHUNK_WIDTHS = (2, 2, 1)
-MAX_MULTIVARIATE_INPUT_BITS = 5 + max(MULTIPLICATION_CHUNK_WIDTHS)
-
-assert {value for pair in COMPILE_INPUTSET for value in pair} == set(range(MODULUS))
-assert len(COMPILE_INPUTSET) == MODULUS * MODULUS
-assert max(x * y for x, y in COMPILE_INPUTSET) == RAW_PRODUCT_MAX
-assert max(x + y for x, y in COMPILE_INPUTSET) == 2 * PLAINTEXT_MAX
-assert max(x - y + MODULUS for x, y in COMPILE_INPUTSET) == MAX_REDUCTION_INDEX
-assert max((x * y % MODULUS) + x + 1 for x, y in COMPILE_INPUTSET) == MAX_SQUARE_INDEX
-assert MAX_MULTIVARIATE_INPUT_BITS == 7
-
-CIRCUIT_ID = "f17-complete-field-arithmetic-v5"
-CIRCUIT_SPEC = {
-    "schema": "arena-fhe-circuit-manifest-v1",
-    "circuit_id": CIRCUIT_ID,
-    "frontend": "concrete-python==2.11.0",
-    "arithmetic_modulus": MODULUS,
-    "security_level_bits": 128,
-    "target_p_error_per_tlu": FHE_P_ERROR,
-    "compress_evaluation_keys": True,
-    "input_domain": {"x": [PLAINTEXT_MIN, PLAINTEXT_MAX],
-                     "y": [PLAINTEXT_MIN, PLAINTEXT_MAX]},
-    "operations": [
-        "addition modulo 17",
-        "subtraction modulo 17",
-        "multiplication modulo 17",
-        "partial division modulo 17 with encrypted zero-divisor flag",
-        "square modulo 17 of (x*y mod 17)+x+1",
-    ],
-    "outputs": [
-        "square_mod_17", "sum_mod_17", "difference_mod_17", "product_mod_17",
-        "quotient_mod_17", "divisor_valid",
-    ],
-    "table_index_bounds": {
-        "modular_reduction_inclusive_max": MAX_REDUCTION_INDEX,
-        "square_lookup_inclusive_max": MAX_SQUARE_INDEX,
-        "multivariate_packed_input_bit_width_max": MAX_MULTIVARIATE_INPUT_BITS,
-    },
-    "lookup_implementation": "chunked double-and-add modular multiplication",
-    "multiplication_chunk_widths": list(MULTIPLICATION_CHUNK_WIDTHS),
-    "semantic_intermediate_bounds": {
-        "raw_product_max": RAW_PRODUCT_MAX,
-        "reduction_index_max": MAX_REDUCTION_INDEX,
-        "square_index_max": MAX_SQUARE_INDEX,
-    },
-}
-CIRCUIT_SPEC_BYTES = json.dumps(
-    CIRCUIT_SPEC, sort_keys=True, separators=(",", ":")
-).encode("utf-8")
-CIRCUIT_SPEC_SHA256 = hashlib.sha256(CIRCUIT_SPEC_BYTES).hexdigest()
 KEY_MANIFEST_DOMAIN = b"ARENA-CONCRETE-EVALUATION-KEY-MANIFEST\x00v1\x00"
 
 def expected_outputs(x, y):
@@ -409,8 +354,8 @@ def run_demo():
         loop_parallelize=False,
         dataflow_parallelize=False,
         auto_parallelize=False,
-        compress_evaluation_keys=True,
-        composable=True,
+        compress_evaluation_keys=COMPRESS_EVALUATION_KEYS,
+        composable=COMPOSABLE,
         security_level=SecurityLevel.SECURITY_128_BITS,
         p_error=FHE_P_ERROR,
     )
@@ -474,15 +419,38 @@ def run_demo():
         wrong_circuit_bytes = json.dumps(
             wrong_circuit_manifest, sort_keys=True, separators=(",", ":")
         ).encode("utf-8")
+        wrong_circuit_signature = signing_key.sign(KEY_MANIFEST_DOMAIN + wrong_circuit_bytes)
         wrong_circuit_rejected = _rejected(lambda: verify_evaluation_key_manifest(
             wrong_circuit_bytes,
-            signature,
+            wrong_circuit_signature,
             evaluation_key_bytes,
             trusted_signer_public_key,
         ))
-        if not (tampered_key_rejected and tampered_signature_rejected and wrong_circuit_rejected):
+        # A valid signature must not authorize a different compiler contract.
+        # Keep the same circuit ID and key bytes to isolate the composability bit.
+        wrong_spec_bytes = json.dumps(
+            {**CIRCUIT_SPEC, "composable": False}, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        wrong_configuration_manifest = json.loads(manifest_bytes)
+        wrong_configuration_manifest["circuit_spec_sha256"] = hashlib.sha256(
+            wrong_spec_bytes
+        ).hexdigest()
+        wrong_configuration_bytes = json.dumps(
+            wrong_configuration_manifest, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        wrong_configuration_signature = signing_key.sign(
+            KEY_MANIFEST_DOMAIN + wrong_configuration_bytes
+        )
+        wrong_configuration_rejected = _rejected(lambda: verify_evaluation_key_manifest(
+            wrong_configuration_bytes,
+            wrong_configuration_signature,
+            evaluation_key_bytes,
+            trusted_signer_public_key,
+        ))
+        if not all((tampered_key_rejected, tampered_signature_rejected,
+                    wrong_circuit_rejected, wrong_configuration_rejected)):
             raise AssertionError("Evaluation-key provenance failure cases were not rejected")
-        _trace("tampered key, signature, and circuit binding all rejected")
+        _trace("tampered key/signature and wrong circuit/configuration all rejected")
 
         _trace("selecting the generated evaluation-only server keyset")
         server_evaluation_keys = client.evaluation_keys
@@ -552,6 +520,7 @@ def run_demo():
                 "square_modulus": MODULUS,
             },
             "security_level_bits": 128,
+            "composable": configuration.composable,
             "probability_of_error": {
                 "target_per_tlu": FHE_P_ERROR,
                 "actual_per_tlu": server.p_error,
@@ -564,6 +533,7 @@ def run_demo():
             "tampered_evaluation_key_rejected": tampered_key_rejected,
             "tampered_evaluation_key_signature_rejected": tampered_signature_rejected,
             "wrong_circuit_binding_rejected": wrong_circuit_rejected,
+            "wrong_configuration_binding_rejected": wrong_configuration_rejected,
             "out_of_range_input_rejected": out_of_range_rejected,
             "randomization_audit": randomization_audit,
             "composition_audit": composition_audit,
