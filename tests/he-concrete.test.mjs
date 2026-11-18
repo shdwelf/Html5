@@ -21,6 +21,8 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
     plaintext_min: plaintextMin,
     plaintext_max: plaintextMax,
     bounds,
+    security_level_bits: securityLevelBits,
+    probability_of_error: probabilityOfError,
     programmable_bootstraps: bootstraps,
     evaluation_key_provenance_verified: provenanceVerified,
     tampered_evaluation_key_rejected: tamperedKeyRejected,
@@ -37,11 +39,16 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
   assert.equal(plaintextMax, 16);
   assert.deepEqual(bounds, {
     raw_product_max: 256,
-    reduction_index_max: 256,
+    reduction_index_max: 33,
     square_index_max: 33,
     square_modulus: 17,
   });
   assert.ok(bootstraps > 0, "compiled circuit must contain programmable bootstrapping");
+  assert.equal(securityLevelBits, 128);
+  assert.equal(probabilityOfError.target_per_tlu, 1.6e-6);
+  assert.ok(probabilityOfError.actual_per_tlu > 0);
+  assert.ok(probabilityOfError.actual_per_tlu <= probabilityOfError.target_per_tlu);
+  assert.ok(probabilityOfError.global_per_invocation >= probabilityOfError.actual_per_tlu);
   assert.match(demo.circuit_spec_sha256, /^[a-f0-9]{64}$/);
   assert.equal(provenanceVerified, true);
   assert.equal(tamperedKeyRejected, true);

@@ -30,41 +30,63 @@ production service, general-purpose arbitrary-software FHE API, security
 review, or proof about arbitrary software.
 """
 
+import ctypes
+import gc
 import hashlib
 import json
+import os
+import sys
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from concrete import fhe
+from concrete.fhe.compilation.configuration import SecurityLevel
 
 
 MODULUS = 17
 PLAINTEXT_MIN = 0
 PLAINTEXT_MAX = MODULUS - 1
+# Concrete keeps its 128-bit security default. This explicit per-TLU correctness
+# target is recorded in the circuit manifest and runtime report; it is not a
+# change to the cryptographic security level.
+FHE_P_ERROR = 1.6e-6
 
-# Exhaust the complete finite-field pair domain when validating the compiled
-# circuit. For byte streams, a byte b can be represented as (b // 17, b % 17),
-# one pair of field residues per chunk. The arithmetic result is not a codec.
+# The real integration exhausts all 289 ordered field pairs after compilation.
+# For byte streams, b can be represented as (b // 17, b % 17), one pair of
+# field residues per chunk; this arithmetic circuit is not itself a codec.
 INPUTSET = [(x, y) for x in range(PLAINTEXT_MIN, PLAINTEXT_MAX + 1)
             for y in range(PLAINTEXT_MIN, PLAINTEXT_MAX + 1)]
 
-# Conservative upper bounds for all intermediate lookup indices.
-RAW_PRODUCT_MAX = PLAINTEXT_MAX ** 2
-MAX_REDUCTION_INDEX = max(
-    RAW_PRODUCT_MAX,
-    PLAINTEXT_MAX * (MODULUS - 1),  # x * inverse(y)
-    2 * PLAINTEXT_MAX,               # x + y
-)
-MAX_SQUARE_INDEX = (MODULUS - 1) + PLAINTEXT_MAX + 1
+# Use the complete domain as the compilation inputset so Concrete observes the
+# full range of every chunked intermediate, then exhaust it again under FHE.
+COMPILE_INPUTSET = INPUTSET
 
-CIRCUIT_ID = "f17-complete-field-arithmetic-v3"
+# Conservative bounds for the small-width modular arithmetic circuit.
+RAW_PRODUCT_MAX = PLAINTEXT_MAX ** 2
+MAX_REDUCTION_INDEX = 2 * PLAINTEXT_MAX + 1
+MAX_SQUARE_INDEX = (MODULUS - 1) + PLAINTEXT_MAX + 1
+MULTIPLICATION_CHUNK_WIDTHS = (2, 2, 1)
+MAX_MULTIVARIATE_INPUT_BITS = 5 + max(MULTIPLICATION_CHUNK_WIDTHS)
+
+assert {value for pair in COMPILE_INPUTSET for value in pair} == set(range(MODULUS))
+assert len(COMPILE_INPUTSET) == MODULUS * MODULUS
+assert max(x * y for x, y in COMPILE_INPUTSET) == RAW_PRODUCT_MAX
+assert max(x + y for x, y in COMPILE_INPUTSET) == 2 * PLAINTEXT_MAX
+assert max(x - y + MODULUS for x, y in COMPILE_INPUTSET) == MAX_REDUCTION_INDEX
+assert max((x * y % MODULUS) + x + 1 for x, y in COMPILE_INPUTSET) == MAX_SQUARE_INDEX
+assert MAX_MULTIVARIATE_INPUT_BITS == 7
+
+CIRCUIT_ID = "f17-complete-field-arithmetic-v5"
 CIRCUIT_SPEC = {
     "schema": "arena-fhe-circuit-manifest-v1",
     "circuit_id": CIRCUIT_ID,
     "frontend": "concrete-python==2.11.0",
     "arithmetic_modulus": MODULUS,
+    "security_level_bits": 128,
+    "target_p_error_per_tlu": FHE_P_ERROR,
+    "compress_evaluation_keys": True,
     "input_domain": {"x": [PLAINTEXT_MIN, PLAINTEXT_MAX],
                      "y": [PLAINTEXT_MIN, PLAINTEXT_MAX]},
     "operations": [
@@ -79,8 +101,16 @@ CIRCUIT_SPEC = {
         "quotient_mod_17", "divisor_valid",
     ],
     "table_index_bounds": {
-        "reduction_inclusive_max": MAX_REDUCTION_INDEX,
-        "square_inclusive_max": MAX_SQUARE_INDEX,
+        "modular_reduction_inclusive_max": MAX_REDUCTION_INDEX,
+        "square_lookup_inclusive_max": MAX_SQUARE_INDEX,
+        "multivariate_packed_input_bit_width_max": MAX_MULTIVARIATE_INPUT_BITS,
+    },
+    "lookup_implementation": "chunked double-and-add modular multiplication",
+    "multiplication_chunk_widths": list(MULTIPLICATION_CHUNK_WIDTHS),
+    "semantic_intermediate_bounds": {
+        "raw_product_max": RAW_PRODUCT_MAX,
+        "reduction_index_max": MAX_REDUCTION_INDEX,
+        "square_index_max": MAX_SQUARE_INDEX,
     },
 }
 CIRCUIT_SPEC_BYTES = json.dumps(
@@ -89,26 +119,63 @@ CIRCUIT_SPEC_BYTES = json.dumps(
 CIRCUIT_SPEC_SHA256 = hashlib.sha256(CIRCUIT_SPEC_BYTES).hexdigest()
 KEY_MANIFEST_DOMAIN = b"ARENA-CONCRETE-EVALUATION-KEY-MANIFEST\x00v1\x00"
 
-SQUARES_MOD_17 = fhe.LookupTable(
-    [(n * n) % MODULUS for n in range(MAX_SQUARE_INDEX + 1)]
+def expected_outputs(x, y):
+    """Plaintext oracle for F_17, used only by client-side tests."""
+    product = (x * y) % MODULUS
+    quotient = (x * pow(y, -1, MODULUS)) % MODULUS if y != 0 else 0
+    square = (product + x + 1) ** 2 % MODULUS
+    return (
+        square,
+        (x + y) % MODULUS,
+        (x - y) % MODULUS,
+        product,
+        quotient,
+        int(y != 0),
+    )
+
+
+REDUCE_MOD_17 = fhe.LookupTable([value % MODULUS for value in range(MAX_REDUCTION_INDEX + 1)])
+SQUARES_MOD_17 = fhe.LookupTable([value * value % MODULUS for value in range(MAX_SQUARE_INDEX + 1)])
+INVERSES_MOD_17 = fhe.LookupTable(
+    [0] + [pow(value, -1, MODULUS) for value in range(1, MODULUS)]
 )
-INVERSES = fhe.LookupTable(
-    [0] + [pow(y, -1, MODULUS) for y in range(1, PLAINTEXT_MAX + 1)]
-)
-REDUCE = fhe.LookupTable([n % MODULUS for n in range(MAX_REDUCTION_INDEX + 1)])
-DIVISOR_VALID = fhe.LookupTable(
-    [int(value != 0) for value in range(PLAINTEXT_MIN, PLAINTEXT_MAX + 1)]
-)
+DIVISOR_VALID = fhe.LookupTable([int(value != 0) for value in range(MODULUS)])
+
+# Decompose the multiplier into two-bit chunks, so each multivariate table packs
+# at most a five-bit residue and a two-bit chunk instead of a nine-bit product.
+Y_CHUNK_LOW = fhe.LookupTable([value & 0b11 for value in range(MODULUS)])
+Y_CHUNK_MIDDLE = fhe.LookupTable([(value >> 2) & 0b11 for value in range(MODULUS)])
+Y_CHUNK_HIGH = fhe.LookupTable([value >> 4 for value in range(MODULUS)])
+
+
+def _weighted_modular_product(weight):
+    @fhe.multivariate
+    def lookup(value, chunk):
+        return (value * chunk * weight) % MODULUS
+
+    return lookup
+
+
+MULTIPLY_BY_LOW_CHUNK = _weighted_modular_product(1)
+MULTIPLY_BY_MIDDLE_CHUNK = _weighted_modular_product(4)
+MULTIPLY_BY_HIGH_CHUNK = _weighted_modular_product(16)
+
+
+def modular_multiply_f17(value, multiplier):
+    """Multiply residues with three multivariate TLUs of at most seven input bits."""
+    low = MULTIPLY_BY_LOW_CHUNK(value, Y_CHUNK_LOW[multiplier])
+    middle = MULTIPLY_BY_MIDDLE_CHUNK(value, Y_CHUNK_MIDDLE[multiplier])
+    high = MULTIPLY_BY_HIGH_CHUNK(value, Y_CHUNK_HIGH[multiplier])
+    return REDUCE_MOD_17[REDUCE_MOD_17[low + middle] + high]
 
 
 def encrypted_function(x, y):
-    """Return F_17 arithmetic plus a divisor-valid flag, all encrypted."""
-    product = REDUCE[x * y]
-    total = REDUCE[x + y]
-    difference = REDUCE[x - y + MODULUS]
-    # y's encrypted inverse is obtained only through this LUT. y=0 maps to 0,
-    # but that placeholder is not a quotient: divisor_valid must be checked.
-    quotient = REDUCE[x * INVERSES[y]]
+    """Evaluate complete F_17 arithmetic with at most seven-bit LUT inputs."""
+    product = modular_multiply_f17(x, y)
+    total = REDUCE_MOD_17[x + y]
+    difference = REDUCE_MOD_17[x - y + MODULUS]
+    inverse = INVERSES_MOD_17[y]  # y=0 maps to placeholder 0, guarded by the flag
+    quotient = modular_multiply_f17(x, inverse)
     square = SQUARES_MOD_17[product + x + 1]
     divisor_valid = DIVISOR_VALID[y]
     return square, total, difference, product, quotient, divisor_valid
@@ -150,21 +217,6 @@ def evaluate_on_server(server, encrypted_inputs, evaluation_keys):
     if len(result) != 6 or not all(isinstance(value, fhe.Value) for value in result):
         raise AssertionError("The server did not return six encrypted outputs")
     return result
-
-
-def expected_outputs(x, y):
-    """Plaintext oracle for F_17, used only by client-side tests."""
-    product = (x * y) % MODULUS
-    quotient = (x * pow(y, -1, MODULUS)) % MODULUS if y != 0 else 0
-    square = (product + x + 1) ** 2 % MODULUS
-    return (
-        square,
-        (x + y) % MODULUS,
-        (x - y) % MODULUS,
-        product,
-        quotient,
-        int(y != 0),
-    )
 
 
 def _public_key_bytes(public_key):
@@ -263,9 +315,11 @@ def _known_plaintext_randomization_audit(client, server, server_evaluation_keys)
     """Compare two known examples plus a fresh repeat of the first under one key."""
     first_plaintext = (2, 1)
     second_plaintext = (2, 0)  # zero-divisor control vector
+    _trace("encrypting known randomization audit inputs")
     first_ciphertexts = encrypt_client_inputs(client, *first_plaintext)
     repeated_ciphertexts = encrypt_client_inputs(client, *first_plaintext)
     second_ciphertexts = encrypt_client_inputs(client, *second_plaintext)
+    _trace("known randomization audit inputs encrypted")
 
     first_wire = tuple(value.serialize() for value in first_ciphertexts)
     repeated_wire = tuple(value.serialize() for value in repeated_ciphertexts)
@@ -281,15 +335,19 @@ def _known_plaintext_randomization_audit(client, server, server_evaluation_keys)
     if not different_example_ciphertexts_differ:
         raise AssertionError("Ciphertexts for the two known examples unexpectedly matched")
 
+    _trace("evaluating first known randomization audit input")
     first_result = evaluate_on_server(
         server, _transport_values(first_ciphertexts), server_evaluation_keys
     )
+    _trace("evaluating repeated known randomization audit input")
     repeated_result = evaluate_on_server(
         server, _transport_values(repeated_ciphertexts), server_evaluation_keys
     )
+    _trace("evaluating zero-divisor randomization audit input")
     second_result = evaluate_on_server(
         server, _transport_values(second_ciphertexts), server_evaluation_keys
     )
+    _trace("decrypting known randomization audit outputs")
     first_decrypted = tuple(int(value) for value in client.decrypt(first_result))
     repeated_decrypted = tuple(int(value) for value in client.decrypt(repeated_result))
     second_decrypted = tuple(int(value) for value in client.decrypt(second_result))
@@ -317,10 +375,51 @@ def _known_plaintext_randomization_audit(client, server, server_evaluation_keys)
     }
 
 
+def _trim_memory():
+    """Collect Python garbage and return free glibc heap pages when supported."""
+    gc.collect()
+    try:
+        malloc_trim = ctypes.CDLL(None).malloc_trim
+        malloc_trim.argtypes = [ctypes.c_size_t]
+        malloc_trim.restype = ctypes.c_int
+        return malloc_trim(0)
+    except (AttributeError, OSError):  # pragma: no cover - non-glibc platforms
+        return 0
+
+
+def _trace(stage):
+    """Optional phase markers and RSS snapshots for constrained integration runs."""
+    if os.environ.get("CONCRETE_FHE_TRACE") == "1":
+        rss = ""
+        try:
+            with open("/proc/self/status", encoding="utf-8") as status:
+                rss = next(
+                    (line.split()[1] for line in status if line.startswith("VmRSS:")),
+                    "",
+                )
+        except OSError:  # pragma: no cover - non-Linux platforms
+            pass
+        suffix = f" (VmRSS={rss} kB)" if rss else ""
+        print(f"[concrete-fhe] {stage}{suffix}", file=sys.stderr, flush=True)
+
+
 def run_demo():
     compiler = fhe.Compiler(encrypted_function, {"x": "encrypted", "y": "encrypted"})
-    circuit = compiler.compile(INPUTSET)
+    configuration = fhe.Configuration(
+        loop_parallelize=False,
+        dataflow_parallelize=False,
+        auto_parallelize=False,
+        compress_evaluation_keys=True,
+        composable=True,
+        security_level=SecurityLevel.SECURITY_128_BITS,
+        p_error=FHE_P_ERROR,
+    )
+    _trace(f"compiling circuit with {len(COMPILE_INPUTSET)} range-covering samples")
+    circuit = compiler.compile(COMPILE_INPUTSET, configuration=configuration)
+    del compiler
+    _trim_memory()
     bootstraps = circuit.programmable_bootstrap_count
+    _trace(f"compiled circuit; programmable bootstraps={bootstraps}")
     if bootstraps < 1:
         raise AssertionError("Compiled circuit did not contain programmable bootstrapping")
 
@@ -328,13 +427,19 @@ def run_demo():
         # Client owns the FHE secret key. The server boundary below never receives
         # this Client or any decrypted input/output.
         client, server = circuit.client, circuit.server
+        _trace("generating client and evaluation keys")
         client.keygen()  # Concrete uses OS CSPRNG seeds when no explicit seed is supplied
+        _trace("key generation complete")
+        _trim_memory()
 
-        # Authenticate the exact evaluation-key bytes and bind them to this circuit
-        # description. The server consumes a deserialized evaluation-only keyset.
-        # In a real deployment trusted_signer_public_key must be pinned/configured
-        # independently; this isolated demo establishes it at process setup only.
+        # Authenticate the exact serialized evaluation-key bytes and bind them to
+        # this circuit description. To stay within this runner's memory budget,
+        # Server.run receives Concrete's evaluation-only view of the generated
+        # keyset rather than a second deserialized multi-GB copy. A deployed server
+        # should deserialize the authenticated transport bytes in its own process.
+        # The demo's signer is ephemeral; a deployment must pin it independently.
         evaluation_key_bytes = client.evaluation_keys.serialize()
+        _trace(f"serialized evaluation keys ({len(evaluation_key_bytes)} bytes)")
         signing_key = Ed25519PrivateKey.generate()
         trusted_signer_public_key = signing_key.public_key()
         manifest_bytes = _evaluation_key_manifest(
@@ -349,6 +454,7 @@ def run_demo():
         )
         if not provenance_verified:
             raise AssertionError("Evaluation-key provenance was not authenticated")
+        _trace("evaluation-key manifest signature verified")
 
         tampered_key_rejected = _rejected(lambda: verify_evaluation_key_manifest(
             manifest_bytes,
@@ -376,11 +482,18 @@ def run_demo():
         ))
         if not (tampered_key_rejected and tampered_signature_rejected and wrong_circuit_rejected):
             raise AssertionError("Evaluation-key provenance failure cases were not rejected")
+        _trace("tampered key, signature, and circuit binding all rejected")
 
-        server_evaluation_keys = fhe.EvaluationKeys.deserialize(evaluation_key_bytes)
+        _trace("selecting the generated evaluation-only server keyset")
+        server_evaluation_keys = client.evaluation_keys
+        del evaluation_key_bytes
+        _trim_memory()
+        _trace("released serialized evaluation-key buffer")
+        _trace("running known-plaintext randomization audit")
         randomization_audit = _known_plaintext_randomization_audit(
             client, server, server_evaluation_keys
         )
+        _trace("running depth-8 bootstrapped composition audit")
         composition_audit = _bootstrapped_composition_audit(
             client, server, server_evaluation_keys, depth=8
         )
@@ -390,6 +503,8 @@ def run_demo():
         # accumulated indefinitely or noise-refreshed by an outer transport code.
         results = []
         for sequence, (x, y) in enumerate(INPUTSET):
+            if sequence % 32 == 0:
+                _trace(f"exhaustive encrypted field-pair check {sequence + 1}/{len(INPUTSET)}")
             decrypted = _evaluate_and_decrypt(
                 client, server, server_evaluation_keys, x, y
             )
@@ -418,6 +533,7 @@ def run_demo():
                 "quotient": decrypted[4],
                 "divisor_valid": divisor_valid,
             })
+        _trace("exhaustive encrypted field-pair check complete")
 
         out_of_range_rejected = _rejected(
             lambda: encrypt_client_inputs(client, PLAINTEXT_MAX + 1, 0)
@@ -434,6 +550,12 @@ def run_demo():
                 "reduction_index_max": MAX_REDUCTION_INDEX,
                 "square_index_max": MAX_SQUARE_INDEX,
                 "square_modulus": MODULUS,
+            },
+            "security_level_bits": 128,
+            "probability_of_error": {
+                "target_per_tlu": FHE_P_ERROR,
+                "actual_per_tlu": server.p_error,
+                "global_per_invocation": server.global_p_error,
             },
             "programmable_bootstraps": bootstraps,
             "circuit_id": CIRCUIT_ID,
