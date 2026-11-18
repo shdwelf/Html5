@@ -15,7 +15,7 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // T3.1 added the Game Genie family on top of the list above: gameGenieNes,
 // gameGenieSnes, gameGenieGb, and gameGenieGenesis (merged via PR #134).
 // The 2026-11-07 multiplicative ElGamal demo added one more operation.
-const expectedCount = report.counts.mergedRuntime + 45; // +2: GRASP readers (2026-11-13); +1: F17/codec/Lancelot FHE lab; +1: CKKS architecture profile (2026-11-17)
+const expectedCount = report.counts.mergedRuntime + 46; // +2: GRASP readers; +1: FHE lab; +1: CKKS profile; +1: passive SnapSafe SECV header (round 80)
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {

@@ -234,6 +234,27 @@
         <p class="legend lens-predict" id="lensPredict"></p>
       </div>
 
+      <details class="field-lab" open>
+        <summary>Galois-field explorer · exact arithmetic</summary>
+        <label for="fieldPreset">Field / polynomial basis</label>
+        <select id="fieldPreset" aria-describedby="fieldBasis"></select>
+        <p class="legend" id="fieldBasis"></p>
+        <div class="row">
+          <label>a <input id="fieldA" type="text" value="0x57" spellcheck="false" autocomplete="off" aria-label="Field element a, decimal or hex" /></label>
+          <label>b <input id="fieldB" type="text" value="0x83" spellcheck="false" autocomplete="off" aria-label="Field element b, decimal or hex" /></label>
+        </div>
+        <button class="act" id="fieldFromEntropy" type="button">Inspect first two entropy bytes</button>
+        <dl class="field-results" aria-live="polite">
+          <div><dt>a + b</dt><dd id="fieldSum">—</dd></div>
+          <div><dt>a × b</dt><dd id="fieldProduct">—</dd></div>
+          <div><dt>a⁻¹</dt><dd id="fieldInverse">—</dd></div>
+          <div><dt>a / b</dt><dd id="fieldDivision">—</dd></div>
+        </dl>
+        <canvas id="fieldPlot" class="plot" width="352" height="288" aria-label="Multiplication by a over all elements of the selected finite field"></canvas>
+        <p class="legend" id="fieldStatus" role="status"></p>
+        <p class="legend">A view only: this does not alter entropy, the mnemonic or 2^ENT keyspace. BIP-39 uses a SHA-256 checksum, not this arithmetic. These small fields are not secp256k1's coordinate or scalar field. Never use this educational calculator for secret-key operations.</p>
+      </details>
+
       <h2 class="step">13 · Seed haiku identity</h2>
       <div class="seed-identity">
         <canvas id="seedEnso" width="320" height="320" aria-label="Deterministic ensō fingerprint for the loaded entropy"></canvas>
@@ -261,15 +282,20 @@
           <button class="act" id="clearWallet" type="button" disabled>Clear</button>
         </div>
         <div id="walletStatus" class="legend">Derivation is explicit and only accepts standard 12/15/18/21/24-word phrases with valid checksums.</div>
-        <label for="topCoin">Top 50 asset address</label>
+        <label for="topCoinSearch">Asset address · full 500-asset snapshot</label>
+        <input id="topCoinSearch" type="search" placeholder="Filter by name, symbol or asset ID" autocomplete="off" aria-label="Filter offline asset registry" disabled />
+        <label for="topCoin">Asset · historical market rank, not live data</label>
+        <select id="topCoin" disabled><option>Loading registry…</option></select>
+        <label for="topCoinNetwork">Network / token standard</label>
         <div class="row">
-          <select id="topCoin" disabled><option>Loading registry…</option></select>
-          <button class="act" id="deriveTopCoin" type="button" disabled>Derive selected</button>
+          <select id="topCoinNetwork" disabled><option>Select an asset first</option></select>
+          <button class="act" id="deriveTopCoin" type="button" disabled>Derive receive address</button>
         </div>
-        <p id="topCoinNote" class="legend">Market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
+        <div id="topCoinNetworkInfo" class="legend" aria-live="polite"></div>
+        <p id="topCoinNote" class="legend" role="status">Offline market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
         <div id="topCoinOutput" class="top-coin-output" hidden>
           <div class="wallet-kv"><span id="topCoinLabel">Selected asset</span><code id="topCoinPath">—</code></div>
-          <div class="wallet-kv"><span>Address</span><code id="topCoinAddress">—</code></div>
+          <div class="wallet-kv"><span>Holder receive address · NOT the token contract</span><code id="topCoinAddress">—</code></div>
           <div class="wallet-kv"><span>Public key</span><code id="topCoinPublic">—</code></div>
         </div>
         <div id="walletOutput" hidden>

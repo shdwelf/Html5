@@ -1,7 +1,7 @@
 /* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
    visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v45`;
+const CACHE = `${CACHE_PREFIX}v46`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -158,6 +158,15 @@ const PRECACHE = [
   "./js/stx-plot.js",
   "./js/ca-plot.js",
   "./js/viewer.js",
+  // Keyspace's complete local module/registry graph, including the explicit
+  // token-network choices and finite-field explorer. No wallet RPC is used.
+  "./js/engine.js", "./js/spacefill.js", "./js/entropy-live.js", "./js/lexicon.js",
+  "./js/mathvis.js", "./js/forms3d.js", "./js/hdtopo.js", "./js/formal.js",
+  "./js/lens-draw.js", "./js/lens-3d.js", "./js/syllables.js", "./js/enso-id.js",
+  "./js/wallet-derivatives.js", "./js/coins.js", "./js/bip32.js", "./js/addrs.js",
+  "./js/codec.js", "./js/hash.js", "./js/secp256k1.js", "./js/ed25519.js",
+  "./js/key-stats.js", "./js/galois.js", "./js/galois-view.js", "./js/coin-networks.js",
+  "./config/coins-top500.json", "./config/token-networks.json",
   "./js/validator.js",
   "./js/viruslab.js",
   "./js/flash-decompiler.js",

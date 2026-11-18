@@ -242,7 +242,10 @@ function build(slip) {
   const derived = assets.filter((a) => a.derive).length;
   const meta = {
     source: "market-top500.json + slip44.json",
-    built: new Date().toISOString().slice(0, 10),
+    // Source provenance, not the current build clock: --check must keep
+    // succeeding tomorrow without pretending the historical ranks refreshed.
+    marketSnapshot: market._meta.fetched,
+    slip44Snapshot: slip._meta.fetched,
     assets: assets.length, derivable: derived,
     slip44Sha: slip._meta.sha, slip44Entries: slip._meta.entries,
   };

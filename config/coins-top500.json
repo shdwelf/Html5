@@ -1,7 +1,8 @@
 {
  "_meta": {
   "source": "market-top500.json + slip44.json",
-  "built": "2026-11-16",
+  "marketSnapshot": "2026-09-11",
+  "slip44Snapshot": "2026-09-11",
   "assets": 500,
   "derivable": 347,
   "slip44Sha": "e9f91569f53b8c6506f869d102b22f5680314a70",

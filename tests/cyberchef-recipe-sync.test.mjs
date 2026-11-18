@@ -92,6 +92,8 @@ const POST_MERGE_OPS = [
   // separate manual CKKS architecture-profile calculator.
   "fheKitchenLab",
   "fheArchitectureLab",
+  // Round 80: bounded, passive SnapSafe SECV v1 structural inspector.
+  "snapSafeSecv",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

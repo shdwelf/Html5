@@ -46,7 +46,7 @@ phrase still fits the WASM engine's index/path buffers and a full ∂Φ flip swe
 stays interactive (suite 06 measures it). Above the ladder the checksum is a
 *smaller* fraction of the entropy, so the generalised lengths are not
 "stronger BIP-39" — the status line, the layout note and the menu group all say
-which rule produced the phrase, and the wallet / top-50 derivations in §14 keep
+which rule produced the phrase, and the wallet / asset derivations in §14 keep
 refusing anything that is not a standard 12/15/18/21/24-word phrase.
 
 ## Invert keyspace A ↔ B
@@ -115,6 +115,37 @@ Measurement-backed examples:
 - **Ricci** — computes the contraction and reports the honest answer: the
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
+
+### Selectable Galois-field explorer
+
+Below the rack, an independent exact-arithmetic explorer (`js/galois.js` /
+`js/galois-view.js`) offers four vetted fields; it does not change the rack's
+72-lens count:
+
+| Field | Representation / modulus |
+| --- | --- |
+| GF(2⁴) | polynomial bits, x⁴ + x + 1 (`0x13`) |
+| GF(2⁸), AES basis | x⁸ + x⁴ + x³ + x + 1 (`0x11b`) |
+| GF(2⁸), Reed–Solomon basis | x⁸ + x⁴ + x³ + x² + 1 (`0x11d`) |
+| GF(17) | integers modulo the prime 17 |
+
+Enter decimal or `0x`-prefixed hex elements to view addition, multiplication,
+inversion and division. The grid displays multiplication by `a` over every
+field element in row-major order, with `b` highlighted. A nonzero multiplier
+permutes all outputs; zero collapses them. Different polynomial bases of order
+256 are isomorphic fields but the same byte labels need not multiply identically.
+Both zero inversion and division by zero are explicitly **undefined**, including
+in the existing AES entropy lens and its 2-D table.
+
+**Inspect first two entropy bytes** is an explicit, local-only action. Reducing
+bytes modulo a smaller field's order is a lossy display projection, not an
+entropy generator or a change to the mnemonic. BIP-39's checksum is a SHA-256
+prefix, not a field-linear checksum; the `2^ENT` keyspace is unchanged. These
+small fields are not secp256k1's coordinate or scalar field, and the calculator
+is not constant-time wallet cryptography. No arbitrary reducible moduli are
+accepted. Tests cover every pairwise product and every nonzero inverse in all
+four presets, compare binary multiplication with independent polynomial long
+division, and exercise zero/error/UI behaviour.
 
 ## Statistical views and measured 3-D layers
 
@@ -186,14 +217,40 @@ passphrase clears derived output; **Clear** also clears the passphrase. JavaScri
 cannot guarantee physical memory erasure, so the warning against real-fund
 mnemonics remains prominent.
 
-The same panel exposes the first 50 rows of the committed market/SLIP-0044
-registry. It derives one selected asset on demand—never all 50 at once—and shows
-its configured path, address and public key. EVM tokens correctly reuse their
-host-chain address; supported Bitcoin-family, XRP, Solana, Stellar, NEAR,
-Cosmos, TRON and transparent-Zcash families use their registered codecs.
-Unsupported top-50 rows remain visible and show the registry's reason instead
-of inventing an address. This selector displays no additional private material;
-BTC WIFs remain in the explicitly blurred BIP-44/49/84 table.
+The same panel now exposes **all 500 rows** of the committed market/SLIP-0044
+snapshot, with name/symbol/ID filtering, rather than truncating the selector at
+50. There are **347 derivable historical asset rows**; unsupported rows remain
+visible with a reason, not an invented address. One selected receive address is
+derived on demand, never all 500 at once. Bitcoin-family, XRP, Solana, Stellar,
+NEAR, Cosmos, TRON and transparent-Zcash families retain their existing codecs.
+The rank snapshot is historical (2026-09-11), not a current market listing.
+The generator now records source snapshot dates rather than today's wall clock,
+so `node tools/build_coins.mjs --check` remains meaningful on a different day.
+
+USDT has an additional explicit network selector, backed by
+`config/token-networks.json` / `js/coin-networks.js`, separate from the market
+ranking so one token does not acquire invented rank rows:
+
+| Network | Standard / identity | Default holder path | Decimals |
+| --- | --- | --- | ---: |
+| Ethereum, chain ID 1 | USDT ERC-20 | `m/44'/60'/0'/0/0` | 6 |
+| BNB Smart Chain, chain ID 56 | Binance-Peg USDT / BSC-USD, BEP-20 | `m/44'/60'/0'/0/0` | 18 |
+| TRON | USDT TRC-20 | `m/44'/195'/0'/0/0` | 6 |
+
+Each choice displays its pinned contract identifier, decimals, fee asset and
+network warning. **The derived address belongs to the holder, not the token
+contract.** The BSC representation is pegged, not native Ethereum USDT; no backing
+or redemption guarantee is made. A shared EVM receive address is not a bridge
+and does not make different chains interchangeable. BSC uses the deployed coin-
+type-60 convention, not Beacon Chain's 714; chain IDs are metadata, not HD coin
+types. Other assets retain their registry-default network rather than claiming
+uncatalogued token contracts. See [the standards survey](docs/bip-standards.md)
+for the pinned GitHub sources and independent implementation comparisons.
+
+Changing asset/network/phrase/passphrase clears stale output and cancels queued
+address derivation. This selector displays no additional private material and
+makes no RPC calls, balance checks, transfers or signatures; BTC WIFs remain in
+the explicitly blurred BIP-44/49/84 table. Do not fund educational test phrases.
 
 Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly were researched
 but not copied because they do not improve the keyspace model. The existing

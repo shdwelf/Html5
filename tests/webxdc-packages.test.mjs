@@ -453,9 +453,9 @@ test("Keyspace Viewer archive carries the exact offline app and its licenses", (
   const files = archive("keyspace.xdc");
   for (const file of [
     "index.html", "manifest.toml", "LICENSE", "webxdc.js", "css/viewer.css",
-    "config/coins-top500.json", "wasm/entropy.wasm", "vendor/three.module.min.js",
+    "config/coins-top500.json", "config/token-networks.json", "wasm/entropy.wasm", "vendor/three.module.min.js",
     "vendor/OrbitControls.js", "vendor/THREE_LICENSE", "js/bip39.js", "js/bip39-en.js",
-    "js/engine.js", "js/viewer.js",
+    "js/engine.js", "js/viewer.js", "js/galois.js", "js/galois-view.js", "js/coin-networks.js",
   ]) text(files, file);
   assert.equal(text(files, "index.html"), source("keyspace.html"));
   assert.equal(text(files, "LICENSE"), source("LICENSE"));
@@ -472,6 +472,32 @@ test("Keyspace Viewer archive carries the exact offline app and its licenses", (
       `${relative} is stale in keyspace.xdc`,
     );
   }
+});
+
+test("Keyspace's full module/registry graph is fresh in both archives and precached by SITE-K", () => {
+  const keyspace = archive("keyspace.xdc"), sitek = archive("sitek.xdc");
+  const worker = source("sw.js");
+  const seen = new Set();
+  function visit(file) {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const current = source(file);
+    assert.equal(text(keyspace, file), current, `stale Keyspace module: ${file}`);
+    assert.equal(text(sitek, file), current, `stale SITE-K module: ${file}`);
+    assert.ok(worker.includes(`"./${file}"`), `${file} is not precached`);
+    for (const match of current.matchAll(/\bimport\s+(?:[^'";]*?\s+from\s*)?["']([^"']+)["']/g)) {
+      assert.ok(match[1].startsWith("."), `external import in offline module ${file}`);
+      visit(path.posix.normalize(path.posix.join(path.posix.dirname(file), match[1])));
+    }
+  }
+  visit("js/viewer.js");
+  for (const file of ["config/coins-top500.json", "config/token-networks.json"]) {
+    assert.equal(text(keyspace, file), source(file));
+    assert.equal(text(sitek, file), source(file));
+    assert.ok(worker.includes(`"./${file}"`));
+  }
+  assert.equal(text(sitek, "keyspace.html"), source("keyspace.html"));
+  assert.equal(text(sitek, "css/viewer.css"), source("css/viewer.css"));
 });
 
 test("merged CyberChef archive is current and self-contained", () => {

@@ -154,6 +154,47 @@ try {
   check("stage rasterised", stage.lit > 2000, `${stage.lit}/${stage.w * stage.h} lit px (${stage.w}x${stage.h})`);
   await page.screenshot({ path: "/tmp/keyspace-1-boot.png" });
 
+  /* Network-aware token addresses and finite fields in the real browser. */
+  await page.waitForFunction(() => document.getElementById("topCoin").options.length === 500, { timeout: 30000 });
+  await page.evaluate(() => {
+    document.getElementById("phrase").value = "abandon ".repeat(11) + "about";
+    document.getElementById("apply").click();
+  });
+  await page.waitForFunction(() => document.getElementById("hex").textContent === "0".repeat(32));
+  await page.$eval("#topCoinSearch", (el) => { el.value = "usdt-tether"; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  await page.select("#topCoinNetwork", "bsc");
+  await page.click("#deriveTopCoin");
+  await page.waitForFunction(() => !document.getElementById("topCoinOutput").hidden, { timeout: 60000 });
+  const bsc = await page.evaluate(() => ({
+    address: document.getElementById("topCoinAddress").textContent,
+    path: document.getElementById("topCoinPath").textContent,
+    info: document.getElementById("topCoinNetworkInfo").textContent,
+    networks: document.getElementById("topCoinNetwork").options.length,
+  }));
+  check("USDT has three explicit networks", bsc.networks === 3, bsc.networks);
+  check("BEP-20 holder matches known address", bsc.address === "0x9858EfFD232B4033E47d90003D41EC34EcaEda94", bsc.address);
+  check("BEP-20 uses coin type 60 and chain ID 56", bsc.path === "m/44'/60'/0'/0/0" && /chain ID 56/.test(bsc.info), bsc.path);
+  await page.select("#fieldPreset", "f17");
+  await page.evaluate(() => {
+    document.getElementById("fieldA").value = "16";
+    document.getElementById("fieldB").value = "2";
+    document.getElementById("fieldA").dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  const field = await page.evaluate(() => {
+    const c = document.getElementById("fieldPlot"), data = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    let lit = 0; for (let i = 0; i < data.length; i += 4) if (data[i] + data[i + 1] + data[i + 2] > 60) lit++;
+    return { product: document.getElementById("fieldProduct").textContent, lit, phrase: document.getElementById("phrase").value };
+  });
+  check("GF(17) arithmetic is exact", field.product === "15", field.product);
+  check("finite-field grid rasterised", field.lit > 2000, field.lit);
+  check("field arithmetic leaves mnemonic unchanged", field.phrase === "abandon ".repeat(11) + "about");
+  await page.click("#fieldFromEntropy");
+  const zero = await page.$eval("#fieldInverse", (el) => el.textContent);
+  check("zero has no inverse in browser", /undefined/.test(zero), zero);
+  await page.select("#topCoinNetwork", "tron");
+  const clearedNetwork = await page.$eval("#topCoinOutput", (el) => el.hidden);
+  check("network change clears old address", clearedNetwork);
+
   /* generalised 25-word length */
   await page.select("#wc", "25");
   await page.evaluate(() => document.getElementById("wc").dispatchEvent(new Event("change", { bubbles: true })));
