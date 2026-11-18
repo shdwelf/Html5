@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 521 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 523 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -25658,6 +25658,198 @@ addOp('elgamalMulDemo','ElGamal multiplicative demo (not FHE)','Public Key',
     },null,2);
   });
 
+/* ============================================================
+   FHE STUDY LAB — plaintext teaching aids, not an HE implementation
+============================================================ */
+function fheKitchenParsePairs(text){
+  const rows=[];
+  const lines=String(text??'').split(/\r?\n/);
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i].trim();
+    if(!line||line.startsWith('#'))continue;
+    const match=line.match(/^([0-9]+)(?:\s*,\s*|\s+)([0-9]+)$/);
+    if(!match)throw new Error('Line '+(i+1)+': enter two non-negative integers as x,y (one pair per line); comments may start with #');
+    const x=Number(match[1]),y=Number(match[2]);
+    if(!Number.isSafeInteger(x)||x>16)throw new Error('Line '+(i+1)+': x must be an integer in 0..16');
+    if(!Number.isSafeInteger(y)||y>16)throw new Error('Line '+(i+1)+': y must be an integer in 0..16');
+    rows.push({x,y});
+    if(rows.length>289)throw new Error('At most 289 input pairs are allowed per bake');
+  }
+  if(!rows.length)throw new Error('Enter at least one F17 input pair as x,y');
+  return rows;
+}
+function fheKitchenF17Oracle(text){
+  const rows=fheKitchenParsePairs(text);
+  const inverse=y=>{
+    for(let n=1;n<17;n++)if((y*n)%17===1)return n;
+    throw new Error('No inverse exists for nonzero divisor '+y+' in F17');
+  };
+  const results=rows.map(({x,y},sequence)=>{
+    const rawProduct=x*y;
+    const product=rawProduct%17;
+    const squareIndex=product+x+1;
+    const divisorValid=y!==0;
+    return {
+      sequence,x,y,
+      sum:(x+y)%17,
+      difference:((x-y)%17+17)%17,
+      product,
+      quotient:divisorValid?(x*inverse(y))%17:0,
+      divisor_valid:divisorValid,
+      square:(squareIndex*squareIndex)%17,
+      intermediates:{raw_product:rawProduct,reduction_index:rawProduct,square_lut_index:squareIndex}
+    };
+  });
+  return JSON.stringify({
+    scope:'Plaintext reference oracle only. No keys, ciphertexts, encryption, encrypted evaluation, or noise refresh are performed.',
+    field:{name:'F17',modulus:17,plaintext_range:[0,16]},
+    input_contract:{format:'one x,y integer pair per line; blank lines and # comments are ignored',maximum_pairs:289},
+    circuit:{
+      outputs:['sum=(x+y) mod 17','difference=(x-y) mod 17','product=(x*y) mod 17','quotient=x/y when y is nonzero','divisor_valid','square=((x*y mod 17)+x+1)^2 mod 17'],
+      bounds:{raw_product_max:256,reduction_index_max:256,square_index_max:33},
+      division:'When y=0, quotient is the placeholder 0 and divisor_valid=false. A real client must check the decrypted validity flag before using the quotient.'
+    },
+    results
+  },null,2);
+}
+function fheKitchenBytePairs(text){
+  const bytes=Array.from(utf8Encode(String(text??'')));
+  if(bytes.length>4096)throw new Error('The teaching codec is limited to 4096 UTF-8 bytes per bake');
+  const pairs=bytes.map((byte,index)=>{
+    const x=Math.floor(byte/17),y=byte%17;
+    return {index,byte,pair:[x,y],reconstructed_byte:x*17+y};
+  });
+  return JSON.stringify({
+    scope:'Deterministic UTF-8 representation only: not encryption, authentication, FHE, or noise refresh.',
+    encoding:'b -> [floor(b/17), b mod 17]',
+    input_utf8_bytes:bytes.length,
+    pair_count:pairs.length,
+    round_trip_exact:pairs.every(row=>row.reconstructed_byte===row.byte),
+    preserves_order:true,
+    transport_note:'A field pair is a representation of one byte here, not a ciphertext. Preserve chunk order/length and authenticate the serialized stream separately.',
+    pairs
+  },null,2);
+}
+function fheKitchenArchitectureCard(){
+  return JSON.stringify({
+    scope:'Source-grounded architecture study card; not a protocol implementation or a security evaluation.',
+    case_study:'Lancelot: Byzantine-robust federated learning with FHE',
+    source:{authors:'Siyang Jiang, Hao Yang, Qipeng Xie, Chuan Ma, Sen Wang, Zhe Liu, Tao Xiang, and Guoliang Xing',title:'Towards compute-efficient Byzantine-robust federated learning with fully homomorphic encryption',journal:'Nature Machine Intelligence 7 (2025), 1657–1668',doi:'10.1038/s42256-025-01107-6',url:'https://doi.org/10.1038/s42256-025-01107-6'},
+    source_review_limit:'The available Drive text extraction was truncated. This card summarizes only the accessible excerpt and is not a full paper, threat-model, or security review; reported performance was not independently reproduced.',
+    roles:[
+      {role:'Clients',responsibility:'Keep local training data and encrypt model updates before sending them.'},
+      {role:'Server',responsibility:'Compute supported distances and aggregation steps on ciphertexts.'},
+      {role:'Trusted key-generation centre',responsibility:'Provision key material; in the paper’s interactive workflow, decrypt and sort encrypted distances, return an encrypted selection mask, then decrypt the final aggregate.'}
+    ],
+    workflow:['Clients encrypt and send model updates.','The server computes encrypted distances.','The encrypted distance list goes to the trusted centre for decryption and sorting.','The centre encrypts a mask identifying selected clients and returns it.','The server applies the mask to encrypted updates and aggregates.','The centre decrypts the aggregate for distribution.'],
+    engineering:'The paper discusses lazy relinearization, dynamic hoisting, and GPU acceleration; it reports a 20-fold processing-speed improvement in its evaluated setup. That result is not a general FHE speedup guarantee.',
+    security_and_scope:[
+      'FHE confidentiality alone does not prevent poisoned inputs or guarantee Byzantine robustness; robust aggregation is a separate protocol goal.',
+      'The trusted centre’s decrypt-and-sort step is an explicit trust boundary. Do not describe this workflow as server-only, non-interactive evaluation.',
+      'Depth, ciphertext comparisons, compute, communication, parameter selection, and the threat model remain finite and application-specific.'
+    ]
+  },null,2);
+}
+addOp('fheKitchenLab','FHE Study Lab (plaintext only)','Educational',
+  'Three bounded study modes: an F17 plaintext oracle, a UTF-8/base-17 pair codec, and a source-grounded Lancelot architecture card. None encrypts, evaluates ciphertexts, generates keys, or refreshes noise.',
+  [{key:'mode',label:'Study mode',type:'select',default:'oracle',options:[['oracle','F17 plaintext circuit oracle'],['bytePairs','UTF-8 byte ↔ F17 pair codec'],['architecture','Lancelot architecture card']]}],
+  function(text,args){
+    if(args.mode==='oracle')return fheKitchenF17Oracle(text);
+    if(args.mode==='bytePairs')return fheKitchenBytePairs(text);
+    if(args.mode==='architecture')return fheKitchenArchitectureCard();
+    throw new Error('Unknown FHE study mode');
+  });
+
+// Manual, bounded measurements only. This deliberately does not inspect ciphertexts,
+// run an HE library, estimate scheme noise/precision, or infer hardware limits.
+function fheArchitectureProfile(text){
+  const input=String(text??'');
+  if(utf8Encode(input).length>65536)throw new Error('FHE profile JSON is limited to 65536 UTF-8 bytes');
+  let profile;
+  try{profile=JSON.parse(input);}catch(_){throw new Error('Enter one valid JSON FHE profile');}
+  if(!profile||typeof profile!=='object'||Array.isArray(profile))throw new Error('FHE profile must be a JSON object');
+  if(profile.schema!==1)throw new Error('FHE profile schema must be 1');
+  const label=(value,name,max=120)=>{
+    if(typeof value!=='string'||!value.trim()||value.trim().length>max)throw new Error(name+' must be a non-empty string of at most '+max+' characters');
+    return value.trim();
+  };
+  const metric=(value,name,{integer=false,positive=false}={})=>{
+    if(typeof value!=='number'||!Number.isFinite(value)||value>Number.MAX_SAFE_INTEGER||(positive?value<1e-9:value<0)||(integer&&!Number.isSafeInteger(value)))
+      throw new Error(name+' must be a '+(positive?'positive (at least 1e-9)':'non-negative')+' finite '+(integer?'safe integer':'number within the safe numeric range'));
+    return value;
+  };
+  const workload=label(profile.workload,'workload');
+  const scheme=label(profile.scheme,'scheme',24);
+  const platform=label(profile.platform,'platform');
+  if(!['serial','overlapping'].includes(profile.timing_model))throw new Error('timing_model must be "serial" or "overlapping"');
+  if(!Array.isArray(profile.stages)||profile.stages.length<1||profile.stages.length>128)throw new Error('stages must contain 1 to 128 measured stages');
+  const stages=profile.stages.map((stage,index)=>{
+    const prefix='stages['+index+'] ';
+    if(!stage||typeof stage!=='object'||Array.isArray(stage))throw new Error(prefix+'must be an object');
+    const name=label(stage.name,prefix+'name');
+    const wallMs=metric(stage.wall_ms,prefix+'wall_ms',{positive:true});
+    const gpuEventMs=stage.gpu_event_ms==null?null:metric(stage.gpu_event_ms,prefix+'gpu_event_ms');
+    const hostAllocationMs=stage.host_allocation_ms==null?null:metric(stage.host_allocation_ms,prefix+'host_allocation_ms');
+    const readBytes=stage.read_bytes==null?null:metric(stage.read_bytes,prefix+'read_bytes',{integer:true});
+    const writtenBytes=stage.written_bytes==null?null:metric(stage.written_bytes,prefix+'written_bytes',{integer:true});
+    if((readBytes===null)!==(writtenBytes===null))throw new Error(prefix+'read_bytes and written_bytes must both be supplied together');
+    let ioBytes=null;
+    if(readBytes!==null&&writtenBytes!==null){
+      ioBytes=readBytes+writtenBytes;
+      if(!Number.isSafeInteger(ioBytes))throw new Error(prefix+'read_bytes + written_bytes exceeds the safe-integer limit');
+    }
+    const workCount=stage.work_count==null?null:metric(stage.work_count,prefix+'work_count',{integer:true});
+    const workUnit=stage.work_unit==null?null:label(stage.work_unit,prefix+'work_unit',40);
+    if((workCount===null)!==(workUnit===null))throw new Error(prefix+'work_count and work_unit must be supplied together');
+    return {
+      name,wall_ms:wallMs,
+      gpu_event_ms:gpuEventMs,
+      host_allocation_ms:hostAllocationMs,
+      host_allocation_wall_ratio_percent:hostAllocationMs===null?null:(hostAllocationMs/wallMs)*100,
+      read_bytes:readBytes,written_bytes:writtenBytes,io_bytes:ioBytes,
+      apparent_io_GB_per_second:ioBytes===null?null:ioBytes/(wallMs*1000000),
+      work_count:workCount,work_unit:workUnit,
+      work_units_per_io_byte:workCount===null||ioBytes===null||ioBytes===0?null:workCount/ioBytes,
+      serial_wall_share_percent:profile.timing_model==='serial'?null:undefined
+    };
+  });
+  const serial=profile.timing_model==='serial';
+  const stageWallSumMs=serial?stages.reduce((sum,stage)=>sum+stage.wall_ms,0):null;
+  if(serial&&(!Number.isFinite(stageWallSumMs)||stageWallSumMs>Number.MAX_SAFE_INTEGER))throw new Error('Sequential stage-wall sum exceeds the safe numeric range');
+  for(const stage of stages){
+    if(serial)stage.serial_wall_share_percent=stageWallSumMs>0?(stage.wall_ms/stageWallSumMs)*100:null;
+    else delete stage.serial_wall_share_percent;
+  }
+  const largestStage=stages.reduce((largest,stage)=>stage.wall_ms>largest.wall_ms?stage:largest,stages[0]);
+  return JSON.stringify({
+    scope:'Manual profile calculator only. No encryption, ciphertext evaluation, key generation, bootstrapping, parameter selection, noise/precision estimate, or security evaluation is performed.',
+    measurement_origin:'Every measurement is supplied by the user; this operation runs no benchmark and verifies no hardware counter.',
+    workload,scheme,platform,timing_model:profile.timing_model,
+    stage_wall_sum_ms:stageWallSumMs,
+    stage_wall_sum_note:serial?'Sum of the entered sequential, non-overlapping stage wall times only; it is not an end-to-end total unless the supplied stages cover the whole path.':null,
+    largest_wall_measurement:{name:largestStage.name,wall_ms:largestStage.wall_ms},
+    stages,
+    metric_notes:[
+      'apparent_io_GB_per_second uses decimal GB and the supplied read_bytes + written_bytes divided by wall_ms. It is not DRAM bandwidth unless the byte counts are measured physical memory traffic.',
+      'work_units_per_io_byte is the supplied work_count divided by supplied I/O bytes; it is not a standardized roofline FLOP intensity.',
+      'gpu_event_ms, wall_ms, and host_allocation_ms are reported separately. GPU event times may be nested in asynchronous wall time; do not add overlapping intervals. The host-allocation/wall ratio is descriptive, not necessarily an additive share when measurements overlap.',
+      'No latency, memory, precision, noise budget, bootstrapping cost, or supported-circuit bound is inferred beyond the values entered.'
+    ],
+    research_context:[
+      'Agrawal and Joshi (2023) describe CKKS client-side encoding/encryption/decryption/decoding separately from server-side evaluation and report their profiled CKKS workloads and bootstrapping as memory-bound.',
+      'Lyashevsky, Titov, Qiu, and Zhai (2023) describe a SYCL/Microsoft SEAL CKKS GPU backend, with whole-pipeline, allocation, asynchronous execution, and kernel considerations; their performance study uses two experimental, non-production Intel GPUs and is not a hardware-selection guarantee.'
+    ],
+    sources:[
+      {title:'On Architecting Fully Homomorphic Encryption-based Computing Systems',authors:'Rashmi Agrawal and Ajay Joshi',year:2023,doi:'10.1007/978-3-031-31754-5',url:'https://doi.org/10.1007/978-3-031-31754-5'},
+      {title:'XeHE: An Intel GPU Accelerated Fully Homomorphic Encryption Library',authors:'Alexander Lyashevsky, Alexey Titov, Yiqin Qiu, and Yujia Zhai',year:2023,isbn:'979-8-88638-001-9',license:'CC BY 4.0'}
+    ]
+  },null,2);
+}
+addOp('fheArchitectureLab','FHE Architecture Profile (manual measurements only)','Educational',
+  'Analyze bounded user-supplied stage measurements using a source-grounded CKKS profiling checklist. It runs no benchmark and performs no encryption, ciphertext evaluation, noise refresh, or security assessment.',
+  [],
+  function(text){return fheArchitectureProfile(text);});
+
 /* ---- OpenPGP string-to-key needs a hash inside the page: the iterated count may
    reach 65,011,712 octets (count byte 0xFF), so SHA-1 and SHA-256 are streamed in
    64 KiB chunks and the repeated salt+phrase is never materialised. Both cores are
@@ -34024,7 +34216,7 @@ RECIPE_PACKS["Full Coverage — Calculator"] = [["calc",{}],["convert",{}],["wor
 RECIPE_PACKS["Full Coverage — Classical"] = [["caesar",{}],["vigenere",{}],["gronsfeld",{}],["vic",{}],["atbash",{}],["rot13",{}],["railfence",{}],["coltrans",{}],["playfair",{}],["hill",{}],["a1z26",{}],["bacon",{}],["morse",{}],["porta",{}],["fourSquare",{}],["bifid",{}]];
 RECIPE_PACKS["Full Coverage — Coins"] = [["nanoAddr",{}],["sapling",{}],["solana",{}],["stellar",{}],["algorand",{}],["polkadot",{}],["monero",{}],["ripple",{}],["bch",{}],["kaspa",{}],["tezos",{}]];
 RECIPE_PACKS["Full Coverage — Data"] = [["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
-RECIPE_PACKS["Full Coverage — Educational"] = [["hashtheory",{}],["turingcomplete",{}]];
+RECIPE_PACKS["Full Coverage — Educational"] = [["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
 RECIPE_PACKS["Full Coverage — Electronics"] = [["icAND",{}],["icOR",{}],["icXOR",{}],["icNAND",{}],["icNOR",{}],["icXNOR",{}],["icNOT",{}],["icAdder",{}],["ic7seg",{}],["icTruth",{}]];
 RECIPE_PACKS["Full Coverage — Encoding"] = [["toEntities",{}],["fromEntities",{}],["reverse",{}]];
 RECIPE_PACKS["Full Coverage — Encryption"] = [["aesGcmFile",{}],["encryptLink",{}],["decryptLink",{}]];
@@ -34053,6 +34245,10 @@ RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [
 // Based on Wu's ElGamal example in XRDSFHE.pdf: multiplication only, explicitly
 // not FHE. The toy operation ships with an independently checked worked vector.
 RECIPE_PACKS["ElGamal Multiplicative Homomorphism (not FHE)"] = [["elgamalMulDemo",{}]];
+RECIPE_PACKS["FHE Study — F17 arithmetic oracle (plaintext only)"] = [["fheKitchenLab",{mode:'oracle'}]];
+RECIPE_PACKS["FHE Study — UTF-8 byte / F17 pair codec (not encryption)"] = [["fheKitchenLab",{mode:'bytePairs'}]];
+RECIPE_PACKS["FHE Study — Lancelot architecture case study"] = [["fheKitchenLab",{mode:'architecture'}]];
+RECIPE_PACKS["FHE Study — CKKS architecture profile (manual data only)"] = [["fheArchitectureLab",{}]];
 RECIPE_PACKS["Munitions T-Shirt — Perl RSA & Free Speech"] = [["munitionsTshirt",{}]];
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.

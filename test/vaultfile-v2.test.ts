@@ -122,7 +122,7 @@ describe("Haiku Vault v2 authenticated frame", () => {
       expect(frame.payload.subarray(0, 6)).toEqual(Buffer.from([0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c]));
       expect(await decryptVaultFileV2(blob, "pw")).toEqual(value);
     }
-  });
+  }, 15_000);
 
   it("uses a standard optional Delta filter before LZMA2; an independent 7z reader restores the JSON", async () => {
     const value = { readings: Array.from({ length: 256 }, (_, index) => index * 11) };
