@@ -117,18 +117,120 @@ validate SnapSafe or another Android application. A new push still requires
 matching-head Android and DOSBox checks; the final GitHub merge result is not
 inferred from earlier-head success.
 
+## Bounded continuation on `arena/0ebdf4ca-html5`
+
+Reviewed the primary Avalanche Builder Hub transaction-fee guide and recorded
+its C-Chain (not X/P-Chain) fee mechanics in `config/chain-research.json`:
+EIP-1559-style cap/tip pricing, AVAX burning, Helicon charged-gas floor, and a
+mutable validator-voted minimum. The docs report the floor at 5 nAVAX in late
+September 2026; this is preserved as dated context only, not a hardcoded current
+value. `eth_baseFee` is a worst-case bound since Helicon; this review did not
+query RPC or validate live fee parameters. The host's fee status moves from
+pending to primary-reviewed, updating the inventory to **15 reviewed / 42
+pending**; this does not independently review AVAX assets or token contracts.
+
+The local, user-supplied fee scenario now accepts AVAX gas inputs for native and
+token arithmetic. Those are explicit assumptions (charged gas units, effective
+gwei price and optional fee-asset USD price), not quotes, transaction
+simulation, fee-cap recommendations, or forecasts. Parent-data rollup behavior
+remains excluded. Regression coverage tests native and token arithmetic and
+labels the result as user-entered. Detailed qualifications are in the [coin
+fee report](coin-fees-and-investigation-2026-11-17.md).
+
+A second bounded item reviewed Litecoin Core fee handling at pinned upstream
+commit `9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343`. Wallet fee rate × serialized
+bytes is constrained by the wallet's estimator/fallback and relay/mempool floors;
+MWEB adds a weight-based component. Marked the **fee model** primary-reviewed,
+while keeping Litecoin host identity pending as a separate evidence question.
+The generic BTC vbyte scenario is deliberately not applied to LTC: no Litecoin
+transaction estimator or live mempool quote was added. Inventory now records
+**16 reviewed / 41 pending** host fee models. Tests assert both the separated
+identity status and that BTC-only assumptions yield no LTC estimate.
+
+A third bounded host-fee item reviewed Dogecoin Core v1.14.9. Its maintained fee
+guide (last updated for v1.14.6) distinguishes the 0.01 DOGE/kB wallet/miner
+recommendation from the 0.001 DOGE/kB default relay minimum; source code also
+applies dust-related fees. Recorded those as configurable software policy, not
+consensus requirements or a live estimate. DOGE identity remains pending, and
+no Dogecoin calculator or Bitcoin vbyte fallback was introduced. The inventory
+now has **17 reviewed / 40 pending** host fee models; the regression guards
+against accidentally using BTC scenario fields for DOGE.
+
+For the read-adapter/identity gate, added a Solana `getGenesisHash` preflight for
+curated Mainnet, Devnet and Testnet hashes. A mismatch stops before the selected
+account address is sent; a cluster without an expected hash is unsupported. This
+checks accidental endpoint/cluster mismatch, not a malicious provider: no
+second-provider quorum, consensus proof, Stellar/TRON identity proof, or new
+balance reader was added. Mock tests assert request order, fail-closed mismatch,
+and that the address is not disclosed before the hash matches.
+
+### Continuation validation and package refresh
+
+- Targeted fee/read/UI regression: **26/26 passed**.
+- Full `npm test`: Vitest **318/318 passed**; Node **1,110 passed, 12 optional
+  skipped, 0 failed** (1,122 total). The run exposed stale tracked Keyspace/SITE-K
+  packages; both were rebuilt and their two archive freshness tests then passed.
+- `npm run check:coin-research` and `git diff --check` passed.
+
+| Refreshed tracked archive | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `keyspace.xdc` | 491,864 | `6a65d496ad10a0713626d2e722bb02fefe4acb9461e84a9425a427cbcd45fe34` |
+| `sitek.xdc` | 15,979,680 | `348596c3b040ffc265b523447e39289289f4572edbb6037e44cd385261223f34` |
+
+## Lancelot FHE benchmark lane (selected; reconnaissance only)
+
+The user selected Lancelot for the next benchmark lane. Identified the 2025
+Nature Machine Intelligence paper and its public Zenodo software archive, and
+recorded a bounded source/evidence review, environment blocker, and reproduction
+plan in [the Lancelot benchmark note](lancelot-fhe-benchmark-2026-11-15.md).
+This workspace has no `nvidia-smi`, `nvcc`, or CMake, so CUDA build and benchmark
+execution were not possible. No paper result is claimed as reproduced. The
+acceptance item remains open pending a suitable GPU host, exact artifact
+checksum/source inspection, and logged reproduction.
+
+## Stellar mainnet/testnet read preflight
+
+Added a Stellar Horizon-root `network_passphrase` check using official Stellar
+Mainnet/Testnet passphrases, before the adapter sends an account ID to the
+`/accounts/{id}` endpoint. Missing curated identity is unsupported, a mismatch
+fails closed, and returned results mark provider identity matched but not
+independently verified. The passphrase values are from Stellar's primary network
+documentation; the root-response field shape is supported by a community CAIP-2
+resolution reference and is labelled as such. A provider can lie about both the
+passphrase and account response; this is not a second-provider or consensus
+check. TRON identity remains unverified. Added catalog propagation and tests for
+Mainnet/Testnet values, call order, mismatch-before-disclosure, missing identity,
+and absent-vs-zero accounts. Focused Node tests **21/21 passed**, inventory check
+fresh, and `git diff --check` passed. After refreshing generated archives, full
+`npm test` passed: Vitest suite passed; Node **1,110 passed, 12 optional skipped,
+0 failed** (1,122 total). The generated `wikiinajar` bundle was rebuilt after the
+new Markdown source changed the approved corpus count; its privacy preflight
+passed. Keyspace and SITE-K archives were refreshed and archive-freshness tests
+passed.
+
+| Refreshed tracked archive | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `keyspace.xdc` | 492,274 | `8d85edfdc71e7ddaf57693fdceb839d0e3252000c7a5306fcc6c2407b0d611fe` |
+
+`sitek.xdc` and `wikiinajar.xdc` were also regenerated and checked. Their
+hashes are intentionally not embedded in this Markdown: these packages contain
+this report/corpus, so embedding their own hashes would be self-referential.
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/
-   decimals for every token, and the 43 pending host fee models. Pending and
+   decimals for every token, and the 40 pending host fee models. Pending and
    catalogue-only evidence remains visibly unverified; no arbitrary live USD
    free-to-expensive table is invented.
 2. Expand supported read adapters and independent non-EVM chain checks before
    treating provider identity as established. Live endpoint availability and
    funded-wallet recovery/security audit are not covered by synthetic tests.
-3. Confirm the Notion manuscript destination and sharing; then synchronize only
-   author-approved private notes and prepare a separately redacted public lane.
-   A written brief is not completed agent execution or manuscript editing.
+3. Notion remains blocked: a fresh integration-visible search found the private
+   editorial workflow/gate page, not an editable manuscript destination. The page
+   explicitly requests the author's intended page and private-audience
+   confirmation. Until the author supplies those, do not sync private notes or
+   create a public-lane rewrite. A written brief is not agent execution or
+   manuscript editing.
 4. Full cryptographic application/protocol security and actual reproduced
    Lancelot / vehicular-control / XeHE benchmarking are outside this small
    BFV mask experiment; do not relabel plaintext aids as FHE.

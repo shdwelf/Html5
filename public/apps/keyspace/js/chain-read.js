@@ -2,7 +2,7 @@
 import { base58Decode, base58CheckDecode, stellarDecode, toHex } from "./codec.js";
 
 const MAX_BYTES = 1024 * 1024;
-const READ_METHODS = new Set(["eth_chainId", "eth_blockNumber", "eth_getBalance", "eth_getCode", "eth_call", "getAccountInfo"]);
+const READ_METHODS = new Set(["eth_chainId", "eth_blockNumber", "eth_getBalance", "eth_getCode", "eth_call", "getGenesisHash", "getAccountInfo"]);
 const checkAbort = (signal) => {
   if (signal?.aborted) throw new DOMException("Read cancelled or timed out", "AbortError");
 };
@@ -163,23 +163,40 @@ export async function queryHolding({ coin, network, address, endpoint, consent }
   if (!native) return { ...base, status: "unsupported", reason: "Token balance adapter not implemented for this network" };
   if (adapter === "solana") {
     if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address) || base58Decode(address).length !== 32) throw new Error("Invalid Solana public address");
+    const expectedGenesisHash = network.expectedGenesisHash;
+    if (typeof expectedGenesisHash !== "string" || !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(expectedGenesisHash)) {
+      return { ...base, status: "unsupported", reason: "No reviewed expected genesis hash for this Solana cluster; no RPC query was sent", clusterIdentityMatched: false, independentlyVerified: false };
+    }
+    const genesisHash = await rpcRead(endpoint, "getGenesisHash", [], options);
+    if (genesisHash !== expectedGenesisHash) throw new Error("Solana genesis hash mismatch; no address/account lookup was sent");
     // getBalance returns zero even for a missing account. Read the account with
     // a zero-byte data slice to distinguish an uncreated account from zero.
     const result = await rpcRead(endpoint, "getAccountInfo", [address, { commitment: "finalized", encoding: "base64", dataSlice: { offset: 0, length: 0 } }], options);
+    const identity = { clusterIdentityMatched: true, genesisHash, independentlyVerified: false };
     if (!Number.isSafeInteger(result?.context?.slot) || result.context.slot < 0 || !Object.hasOwn(result, "value")) throw new Error("Malformed Solana account response");
-    if (result.value === null) return { ...base, status: "unavailable", reason: "Account not found/created at the reported slot; not a verified zero", slot: result.context.slot, chainIdMatched: false, independentlyVerified: false };
+    if (result.value === null) return { ...base, status: "unavailable", reason: "Account not found/created at the reported slot; not a verified zero", slot: result.context.slot, chainIdMatched: false, ...identity };
     if (!Number.isSafeInteger(result.value?.lamports) || result.value.lamports < 0) throw new Error("Unsafe/malformed lamport balance");
-    return balanceResult(BigInt(result.value.lamports), 9, { ...base, slot: result.context.slot, chainIdMatched: false, independentlyVerified: false });
+    return balanceResult(BigInt(result.value.lamports), 9, { ...base, slot: result.context.slot, chainIdMatched: false, ...identity });
   }
   if (adapter === "stellar") {
     if (!/^G[A-Z2-7]{55}$/.test(address)) throw new Error("Invalid Stellar public address");
     stellarDecode(address); // checksum, not just an alphabet/length check
+    const expectedNetworkPassphrase = network.expectedNetworkPassphrase;
+    if (typeof expectedNetworkPassphrase !== "string" || expectedNetworkPassphrase.length < 10 || expectedNetworkPassphrase.length > 128) {
+      return { ...base, status: "unsupported", reason: "No reviewed expected Stellar network passphrase; no Horizon query was sent", clusterIdentityMatched: false, independentlyVerified: false };
+    }
+    // Horizon's root advertises its network passphrase. Check it before sending
+    // an account identifier; this is a mismatch guard, not proof against a
+    // malicious provider or independently verified consensus.
+    const root = await readJson(endpoint.replace(/\/$/, "") + "/", options);
+    if (root?.network_passphrase !== expectedNetworkPassphrase) throw new Error("Stellar network passphrase mismatch; no account lookup was sent");
     const data = await readJson(endpoint.replace(/\/$/, "") + "/accounts/" + address, { ...options, allowNotFound: true });
-    if (!data) return { ...base, status: "unavailable", reason: "Account not found/created; not a verified zero or whole-wallet result" };
+    const identity = { networkPassphraseMatched: true, clusterIdentityMatched: true, independentlyVerified: false };
+    if (!data) return { ...base, status: "unavailable", reason: "Account not found/created; not a verified zero or whole-wallet result", ...identity };
     if (data.account_id !== address || !Array.isArray(data.balances)) throw new Error("Mismatched/malformed Stellar account response");
     const amount = data.balances.find((item) => item?.asset_type === "native")?.balance;
     if (typeof amount !== "string" || amount.length > 40 || !/^\d+\.\d{7}$/.test(amount)) throw new Error("Malformed Stellar native balance");
-    return balanceResult(BigInt(amount.replace(".", "")), 7, { ...base, ledger: data.last_modified_ledger ?? null, chainIdMatched: false, independentlyVerified: false });
+    return balanceResult(BigInt(amount.replace(".", "")), 7, { ...base, ledger: data.last_modified_ledger ?? null, chainIdMatched: false, ...identity });
   }
   if (adapter === "tron") {
     if (!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address)) throw new Error("Invalid TRON public address");

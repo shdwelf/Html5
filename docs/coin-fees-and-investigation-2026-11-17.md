@@ -10,8 +10,8 @@ asset rows are retained; no ticker is silently treated as a verified contract.
 
 The deterministic [per-asset coverage inventory](coin-research-inventory-2026-11-17.md)
 records every defined asset and its gaps. This is **not 500 completed independent
-asset reviews**. The research overlay has 57 host profiles, 14 primary-reviewed
-fee models and 43 pending fee models. Only USDT's three existing mainnet contract
+asset reviews**. The research overlay has 57 host profiles, 17 primary-reviewed
+fee models and 40 pending fee models. Only USDT's three existing mainnet contract
 identities are catalogued. Most token deployments still need issuer/contract,
 wrapped/migration, decimals and transfer-behaviour verification. Historical
 SLIP-44/host mappings are not proofs of a token's current deployment.
@@ -30,9 +30,19 @@ it still has user-generated PoW/resource and possible service costs, and this
 app does not support Nano derivation.
 
 The JSON scenario accepts bounded, finite `prices` in USD per **fee asset**,
-`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE,
-`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. Nothing is fetched
-or saved. An explicit user-entered zero is labeled a scenario, not an inferred
+`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE/AVAX,
+`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. Litecoin's
+reviewed policy is documented separately; the BTC-only vbyte scenario is not
+silently reused because Litecoin Core's reviewed `GetTotalFee` also accounts
+for MWEB weight. Dogecoin's documented policy is also reviewed, but no DOGE
+scenario calculator is enabled; its recommended/minimum relay rates are policy
+settings, not transaction-specific quotes. For Avalanche,
+`tokenGas` / native gas units must represent charged gas (including the Helicon
+`max(gasUsed, gasLimit / 2)` floor); the manually supplied gwei price is an
+assumption, not an RPC quote. This simple arithmetic omits transaction fee-cap
+selection, changing base fee, inclusion timing, and any protocol-specific limits.
+Nothing is fetched or saved. An explicit user-entered zero is labeled a scenario,
+not an inferred
 free transaction. Rollups do not receive an Ethereum-only fee estimate that
 silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 
@@ -46,12 +56,15 @@ silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 | BSC | Gas paid in BNB; BEP-20 execution cost differs from native transfer |
 | TRON | Bandwidth/Energy and possible TRX burn; not an unconditional free-transfer promise |
 | HyperEVM | HYPE, EIP-1559-style gas, base/priority fees burned; distinct from HyperCore |
+| Avalanche C-Chain | AVAX; dynamic EIP-1559-style effective price `min(gasFeeCap, baseFee + gasTipCap)`, with base and priority fees burned. Since Helicon, charged gas is `max(gasUsed, gasLimit / 2)`; the base fee is a worst-case bound and the validator-voted minimum can change. No fixed minimum is assumed here. |
 | Base | L2 execution + L1 security/data charge; minimum execution fee is not total cost |
 | Arbitrum One | Child-chain execution and parent-chain poster/data components |
 | Monad | **Gas limit** × effective MON gas price, not gas used; documented 100 MON-gwei floor implies 0.0021 MON for 21,000 gas, excluding priority/load changes |
 | Sonic | EVM gas in S, published network parameters; no live gas-price measurement |
 | Celo | CELO/default and allowlisted alternative fee currencies/adapters; not an all-token gas exemption |
 | Bitcoin | Transaction vsize × selected sat/vB; inputs/outputs and congestion matter |
+| Litecoin | Litecoin Core selects/configures a litoshi-per-kilobyte fee rate over serialized bytes, subject to wallet estimator/fallback and relay/mempool minima; MWEB adds 100 litoshis per MWEB weight unit in the pinned source. No single fixed transfer fee. |
+| Dogecoin | Dogecoin Core v1.14.9 recommends 0.01 DOGE/kB for wallet/miner inclusion and documents a 0.001 DOGE/kB default relay minimum; exact transaction size determines rate-based cost, while local settings/miner policy and sub-dust outputs can change it. Defaults are policy, not consensus or a live quote. |
 
 For example, 21,000 × 12 gwei = 0.000252 ETH is only an illustrative execution
 scenario. A token call needs its own gas assumption/estimate. Fees can exclude
@@ -111,9 +124,19 @@ expected ID and pins reads to one reported block. That is **not independent
 network verification or a proof against a malicious provider**.
 
 Readers cover native EVM, catalogued mainnet EVM ERC-20, native Solana, native
-Stellar and native TRON. The non-EVM network identity is **not independently
-verified**; the user selects/trusts the documented endpoint. Other token/chain
-readers are unsupported. The endpoint receives one selected public address,
+Stellar and native TRON. Before a Solana address is sent, the selected provider's
+`getGenesisHash` response must match the catalogued Mainnet, Devnet or Testnet
+hash. Missing expected hashes are unsupported; a mismatch stops before the
+account request. This is a useful endpoint/cluster mismatch guard, **not
+independent verification**: one provider can lie about both the hash and account
+response, and no second provider, gossip quorum or light-client proof is used.
+The Stellar reader now checks the provider's Horizon root `network_passphrase`
+against the curated Mainnet or Testnet passphrase before sending the account ID;
+a mismatch stops before the account request. Passphrases are documented by
+Stellar, while the Horizon-root field shape is referenced in the community
+CAIP-2 resolution specification. This remains a single-provider assertion, not
+independent consensus proof; TRON still has no network identity preflight. Other
+token/chain readers are unsupported. The endpoint receives one selected public address,
 any necessary catalogued contract, and the user's IP; it may correlate/log
 requests. No automatic batch lookup is performed. Consent is explicit and
 one-shot. Revoking it aborts the pending read, clears its pending UI and ignores
@@ -173,12 +196,17 @@ statuses are in `config/chain-research.json`.
 
 - https://docs.nano.org/what-is-nano/overview/
 - https://solana.com/docs/core/fees and https://solana.com/docs/references/clusters
+- Solana cluster identity: [`getGenesisHash` RPC](https://solana.com/docs/rpc/http/getgenesishash), [Mainnet hash in official x402 network documentation](https://solana.com/docs/payments/agentic-payments/x402), and [Testnet validator `--expected-genesis-hash` setup](https://docs.solana.com/validator/get-started/setup-a-validator)
 - https://ethereum.org/developers/docs/gas/ and https://ethereum.org/developers/docs/networks/
 - https://ethereum.org/en/developers/docs/apis/json-rpc/
 - https://docs.bnbchain.org/bnb-smart-chain/developers/quick-guide/
 - https://developers.tron.network/docs/resource-model and https://developers.tron.network/docs/networks
+- https://build.avax.network/docs/rpcs/other/guides/txn-fees (C-Chain fee mechanics; Helicon/ACP-194 and validator-voted minimum/ACP-283)
+- Litecoin Core at pinned commit [`9fe73a4`](https://github.com/litecoin-project/litecoin/tree/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343): [wallet/fees.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/wallet/fees.cpp), [policy/feerate.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp) and [policy/feerate.h](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.h)
+- Dogecoin Core v1.14.9: [fee recommendation](https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/doc/fee-recommendation.md), [fee implementation](https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/src/dogecoin-fees.cpp), and [release notes](https://github.com/dogecoin/dogecoin/releases/tag/v1.14.9). The fee guide says it was last updated for v1.14.6.
 - https://xrpl.org/docs/concepts/transactions/transaction-cost and https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks
-- https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks
+- https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks (official fee rules and Mainnet/Testnet passphrases)
+- https://namespaces.chainagnostic.org/stellar/caip2 (community CAIP-2 reference for retrieving Horizon root `network_passphrase`; not primary authority)
 - https://docs.base.org/specifications/transactions/network-fees
 - https://docs.arbitrum.io/how-arbitrum-works/deep-dives/gas-and-fees and https://docs.arbitrum.io/chain-info
 - https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm
