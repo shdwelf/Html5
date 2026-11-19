@@ -199,6 +199,8 @@
         "sol-solana"
       ],
       "chainId": null,
+      "genesisHash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "genesisHashSource": "https://solana.com/docs/payments/agentic-payments/x402",
       "rpc": "https://api.mainnet.solana.com",
       "balanceAdapter": "solana",
       "sources": [
@@ -209,9 +211,18 @@
         {
           "kind": "network",
           "url": "https://solana.com/docs/references/clusters"
+        },
+        {
+          "kind": "mainnet-genesis-hash",
+          "url": "https://solana.com/docs/payments/agentic-payments/x402"
+        },
+        {
+          "kind": "genesis-hash RPC",
+          "url": "https://solana.com/docs/rpc/http/getgenesishash"
         }
       ],
       "testnets": [
+
         {
           "id": "solana-devnet",
           "name": "Solana Devnet",
@@ -220,7 +231,9 @@
           "rpc": "https://api.devnet.solana.com",
           "source": "https://solana.com/docs/references/clusters",
           "identityStatus": "primary-reviewed",
-          "environmentLabel": "devnet"
+          "environmentLabel": "devnet",
+          "genesisHash": "GH7ome3EiwEr7tu9JuTh2dpYWBJK3z69Xm1ZE3MEE6JC",
+          "genesisHashSource": "https://solana.com/docs/rpc/http/getgenesishash"
         },
         {
           "id": "solana-testnet",
@@ -229,11 +242,14 @@
           "chainId": null,
           "rpc": "https://api.testnet.solana.com",
           "source": "https://solana.com/docs/references/clusters",
-          "identityStatus": "primary-reviewed"
+          "identityStatus": "primary-reviewed",
+          "genesisHash": "4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY",
+          "genesisHashSource": "https://docs.solana.com/validator/get-started/setup-a-validator"
         }
       ],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The selected Solana RPC must return the curated cluster genesis hash before the app sends an address query. This catches endpoint/cluster mismatch but is a claim from one provider, not independent proof or a consensus/light-client verification."
       ],
       "nativeBaseFee": "0.000005"
     },

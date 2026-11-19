@@ -62,6 +62,7 @@ export function initCoinWorkbench(document, { coins, networks, research, getPhra
     $("coinResearchSummary").textContent = [
       `${coin.name} (${coin.symbol}) · ${coin.id}`,
       `Host: ${record.chain || "unmapped"} · ${network.environment} · identity: ${record.identityStatus}`,
+      ...(record.expectedGenesisHash ? [`Solana RPC identity preflight: getGenesisHash must match ${record.expectedGenesisHash}; one provider can still lie.`] : []),
       `Derivation: ${record.derivation}`,
       `Fee asset: ${record.feeAsset || "unknown"} · model: ${record.group} · fee review: ${record.feeStatus}`,
       record.feeFormula, record.assetReview,
@@ -91,7 +92,7 @@ export function initCoinWorkbench(document, { coins, networks, research, getPhra
   }
   function renderProbe() {
     $("coinProbeDisclosure").textContent = derived
-      ? `Selected ${selected.coin.symbol} on ${selected.network.name}: ${derived.address}. ONLY this public address (and catalogued contract, if applicable) will be sent to the endpoint below. No automatic batch queries. Non-EVM providers are selected by URL, not independently chain-verified.`
+      ? `Selected ${selected.coin.symbol} on ${selected.network.name}: ${derived.address}. ONLY this public address (and catalogued contract, if applicable) will be sent to the endpoint below. No automatic batch queries. Solana endpoints are checked against a curated genesis hash but can still lie; Stellar and TRON endpoints are not cluster-verified.`
       : "Derive or inspect one public address first. No balance has been queried.";
     $("querySelectedCoin").disabled = !probeReady() || !$("coinProbeConsent").checked;
     if (derived && !probeReady()) $("coinProbeResult").textContent = "unsupported: no read adapter or no verified token deployment; this is NOT a zero balance";

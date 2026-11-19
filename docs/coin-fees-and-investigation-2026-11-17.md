@@ -124,9 +124,14 @@ expected ID and pins reads to one reported block. That is **not independent
 network verification or a proof against a malicious provider**.
 
 Readers cover native EVM, catalogued mainnet EVM ERC-20, native Solana, native
-Stellar and native TRON. The non-EVM network identity is **not independently
-verified**; the user selects/trusts the documented endpoint. Other token/chain
-readers are unsupported. The endpoint receives one selected public address,
+Stellar and native TRON. Before a Solana address is sent, the selected provider's
+`getGenesisHash` response must match the catalogued Mainnet, Devnet or Testnet
+hash. Missing expected hashes are unsupported; a mismatch stops before the
+account request. This is a useful endpoint/cluster mismatch guard, **not
+independent verification**: one provider can lie about both the hash and account
+response, and no second provider, gossip quorum or light-client proof is used.
+Stellar and TRON identity still depends on the user-selected endpoint. Other
+token/chain readers are unsupported. The endpoint receives one selected public address,
 any necessary catalogued contract, and the user's IP; it may correlate/log
 requests. No automatic batch lookup is performed. Consent is explicit and
 one-shot. Revoking it aborts the pending read, clears its pending UI and ignores
@@ -186,6 +191,7 @@ statuses are in `config/chain-research.json`.
 
 - https://docs.nano.org/what-is-nano/overview/
 - https://solana.com/docs/core/fees and https://solana.com/docs/references/clusters
+- Solana cluster identity: [`getGenesisHash` RPC](https://solana.com/docs/rpc/http/getgenesishash), [Mainnet hash in official x402 network documentation](https://solana.com/docs/payments/agentic-payments/x402), and [Testnet validator `--expected-genesis-hash` setup](https://docs.solana.com/validator/get-started/setup-a-validator)
 - https://ethereum.org/developers/docs/gas/ and https://ethereum.org/developers/docs/networks/
 - https://ethereum.org/en/developers/docs/apis/json-rpc/
 - https://docs.bnbchain.org/bnb-smart-chain/developers/quick-guide/

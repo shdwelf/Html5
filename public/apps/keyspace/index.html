@@ -317,7 +317,7 @@
               <p class="legend">Different native units cannot be ranked against each other. Enter fee-asset USD prices and transaction assumptions below; they are manual scenarios, never market data. Token gas is not the 21,000-gas native transfer. Unknowns stay unranked; test funds are not free mainnet funds. Base/minimum fees exclude deposits, rent, activation, priority, data and service costs.</p>
               <label for="coinFeeScenario">Scenario JSON (local only; prices in USD per fee asset)</label>
               <textarea id="coinFeeScenario" rows="7" spellcheck="false">{"prices":{},"gasGwei":{},"tokenGas":{},"nativeFees":{}}</textarea>
-              <p class="legend">Keys: prices by fee symbol; gasGwei by ETH/BSC/HYPE; tokenGas by asset ID; nativeFees by asset ID or assetID@networkID. Bitcoin also accepts vbytes and satPerVbyte. No values are fetched or stored.</p>
+              <p class="legend">Keys: prices by fee symbol; gasGwei by reviewed gas host (for example ETH/BSC/HYPE/AVAX); tokenGas by asset ID; nativeFees by asset ID or assetID@networkID. For Avalanche, enter the transaction's charged gas units (including its Helicon gas-limit floor) and an assumed effective gwei price; this is not an RPC quote or base-fee forecast. Bitcoin also accepts vbytes and satPerVbyte. No values are fetched or stored.</p>
               <button id="applyCoinFeeScenario" class="act" type="button">Apply scenario</button>
               <p id="coinFeeStatus" class="legend" role="status">No USD prices supplied. Only a documented zero protocol fee can rank without one.</p>
             </details>

@@ -110,16 +110,32 @@ test("bounded JSON and cancellation reject oversized, invalid UTF-8 and stale re
   await assert.rejects(reading, { name: "AbortError" });
 });
 
-test("Solana distinguishes absent account from provider-reported zero and rejects unsafe integers", async () => {
-  const network = { ...native, chainId: null, balanceAdapter: "solana" }, address = "11111111111111111111111111111111";
-  const run = (value) => queryHolding({ ...input, network, address }, rpcMock(({ method, params }) => {
-    assert.equal(method, "getAccountInfo"); assert.equal(params[1].dataSlice.length, 0);
-    return { context: { slot: 1 }, value };
-  }));
-  assert.equal((await run(null)).status, "unavailable");
-  assert.equal((await run({ lamports: 0 })).status, "observed-zero");
-  assert.equal((await run({ lamports: 1e9 })).amount, "1");
+test("Solana checks curated cluster genesis hash before the address read, and distinguishes missing from zero", async () => {
+  const genesisHash = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
+  const network = { ...native, chainId: null, balanceAdapter: "solana", expectedGenesisHash: genesisHash }, address = "11111111111111111111111111111111";
+  const run = (value) => {
+    const mock = rpcMock(({ method, params }) => {
+      if (method === "getGenesisHash") { assert.deepEqual(params, []); return genesisHash; }
+      assert.equal(method, "getAccountInfo"); assert.equal(params[1].dataSlice.length, 0);
+      return { context: { slot: 1 }, value };
+    });
+    return queryHolding({ ...input, network, address }, mock).then((result) => ({ result, mock }));
+  };
+  const absent = await run(null);
+  assert.equal(absent.result.status, "unavailable");
+  assert.deepEqual(absent.mock.calls.map((call) => call.method), ["getGenesisHash", "getAccountInfo"]);
+  assert.equal(absent.result.clusterIdentityMatched, true); assert.equal(absent.result.independentlyVerified, false);
+  const zero = await run({ lamports: 0 }); assert.equal(zero.result.status, "observed-zero");
+  assert.equal((await run({ lamports: 1e9 })).result.amount, "1");
   await assert.rejects(run({ lamports: Number.MAX_SAFE_INTEGER + 1 }));
+
+  const mismatch = rpcMock(() => "wrong-genesis");
+  await assert.rejects(queryHolding({ ...input, network, address }, mismatch), /genesis hash mismatch/);
+  assert.deepEqual(mismatch.calls.map((call) => call.method), ["getGenesisHash"]);
+  assert.ok(!mismatch.calls[0].init.body.includes(address));
+  const unreviewed = rpcMock(() => { throw new Error("must not query"); });
+  assert.equal((await queryHolding({ ...input, network: { ...network, expectedGenesisHash: null }, address }, unreviewed)).status, "unsupported");
+  assert.equal(unreviewed.calls.length, 0);
 });
 
 test("Stellar missing account is unavailable, while returned account identity must match", async () => {

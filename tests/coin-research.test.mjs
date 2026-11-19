@@ -62,6 +62,10 @@ test("reviewed host test identities never inherit a mainnet token contract", () 
   assert.equal(original.assets["usdt-tether"].length, 3, "input registry was not mutated");
   const mon = networksForCoin(networks, coin("MON")).find((n) => n.id === "monad-testnet");
   assert.equal(mon.chainId, 10143);
+  const sol = networksForCoin(networks, coin("SOL"));
+  assert.equal(main(coin("SOL")).expectedGenesisHash, "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d");
+  assert.equal(sol.find((n) => n.id === "solana-devnet").expectedGenesisHash, "GH7ome3EiwEr7tu9JuTh2dpYWBJK3z69Xm1ZE3MEE6JC");
+  assert.equal(sol.find((n) => n.id === "solana-testnet").expectedGenesisHash, "4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY");
 });
 
 test("Bitcoin testnet4 and signet use coin type 1 / tb while mainnet is unchanged", () => {

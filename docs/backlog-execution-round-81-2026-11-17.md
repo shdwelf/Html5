@@ -156,18 +156,42 @@ no Dogecoin calculator or Bitcoin vbyte fallback was introduced. The inventory
 now has **17 reviewed / 40 pending** host fee models; the regression guards
 against accidentally using BTC scenario fields for DOGE.
 
+For the read-adapter/identity gate, added a Solana `getGenesisHash` preflight for
+curated Mainnet, Devnet and Testnet hashes. A mismatch stops before the selected
+account address is sent; a cluster without an expected hash is unsupported. This
+checks accidental endpoint/cluster mismatch, not a malicious provider: no
+second-provider quorum, consensus proof, Stellar/TRON identity proof, or new
+balance reader was added. Mock tests assert request order, fail-closed mismatch,
+and that the address is not disclosed before the hash matches.
+
+### Continuation validation and package refresh
+
+- Targeted fee/read/UI regression: **26/26 passed**.
+- Full `npm test`: Vitest **318/318 passed**; Node **1,110 passed, 12 optional
+  skipped, 0 failed** (1,122 total). The run exposed stale tracked Keyspace/SITE-K
+  packages; both were rebuilt and their two archive freshness tests then passed.
+- `npm run check:coin-research` and `git diff --check` passed.
+
+| Refreshed tracked archive | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `keyspace.xdc` | 491,864 | `6a65d496ad10a0713626d2e722bb02fefe4acb9461e84a9425a427cbcd45fe34` |
+| `sitek.xdc` | 15,979,680 | `348596c3b040ffc265b523447e39289289f4572edbb6037e44cd385261223f34` |
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/
-   decimals for every token, and the 43 pending host fee models. Pending and
+   decimals for every token, and the 40 pending host fee models. Pending and
    catalogue-only evidence remains visibly unverified; no arbitrary live USD
    free-to-expensive table is invented.
 2. Expand supported read adapters and independent non-EVM chain checks before
    treating provider identity as established. Live endpoint availability and
    funded-wallet recovery/security audit are not covered by synthetic tests.
-3. Confirm the Notion manuscript destination and sharing; then synchronize only
-   author-approved private notes and prepare a separately redacted public lane.
-   A written brief is not completed agent execution or manuscript editing.
+3. Notion remains blocked: a fresh integration-visible search found the private
+   editorial workflow/gate page, not an editable manuscript destination. The page
+   explicitly requests the author's intended page and private-audience
+   confirmation. Until the author supplies those, do not sync private notes or
+   create a public-lane rewrite. A written brief is not agent execution or
+   manuscript editing.
 4. Full cryptographic application/protocol security and actual reproduced
    Lancelot / vehicular-control / XeHE benchmarking are outside this small
    BFV mask experiment; do not relabel plaintext aids as FHE.

@@ -22,6 +22,7 @@ export function researchedNetworks(coins, tokenRegistry, research) {
         ...network, hostChain: key, environment: "mainnet",
         chainId: network.chainId ?? profile?.chainId ?? null,
         feeAsset: network.feeAsset ?? profile?.feeAsset ?? null,
+        expectedGenesisHash: network.expectedGenesisHash ?? profile?.genesisHash ?? null,
         rpc: profile?.rpc || "", balanceAdapter: profile?.balanceAdapter || null,
         identityStatus: profile?.identityStatus || "pending",
         assetKind: isNativeAsset(profile, coin) ? "native" : "token-or-unverified",
@@ -38,6 +39,7 @@ export function researchedNetworks(coins, tokenRegistry, research) {
         const native = isNativeAsset(profile, coin);
         tests.push({
           ...main, ...testnet,
+          expectedGenesisHash: testnet.genesisHash ?? null,
           chain: testnet.addressChain || main.chain,
           slip44: testnet.slip44 ?? main.slip44,
           name: `${testnet.name} · ${native ? "test asset" : "host only; token unverified"}`,
@@ -71,6 +73,7 @@ export function researchRecord(research, coin, network) {
     identityStatus: profile?.identityStatus || "pending",
     feeStatus: profile?.feeStatus || "pending",
     feeAsset: network?.feeAsset || profile?.feeAsset || null,
+    expectedGenesisHash: network?.expectedGenesisHash || null,
     feeFormula: profile?.feeFormula || "Host identity/fees not verified; no cost estimate.",
     assetReview: native ? "Native candidate curated by stable asset ID; host identity and fee review are separate evidence fields, not 500 independent asset reviews."
       : network?.contract ? "This network's contract is catalogued; backing, current code and transfers are not verified."
@@ -121,7 +124,7 @@ export function feeEstimate(research, coin, network, scenario = parseFeeScenario
   } else if (record.native && profile?.nativeBaseFee !== undefined) {
     result.amount = Number(profile.nativeBaseFee);
     result.basis = profile.feeModel === "protocol-zero" ? "zero protocol fee; PoW/service costs excluded" : "documented native base/minimum only; extras excluded";
-  } else if (["ETH", "BSC", "HYPE"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
+  } else if (["ETH", "BSC", "HYPE", "AVAX"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
     const gasPrice = own(scenario.gasGwei, network?.hostChain || coin.chain);
     const units = record.native ? 21000 : own(scenario.tokenGas, coin.id);
     if (gasPrice !== undefined && units !== undefined) {
