@@ -147,6 +147,15 @@ transaction estimator or live mempool quote was added. Inventory now records
 **16 reviewed / 41 pending** host fee models. Tests assert both the separated
 identity status and that BTC-only assumptions yield no LTC estimate.
 
+A third bounded host-fee item reviewed Dogecoin Core v1.14.9. Its maintained fee
+guide (last updated for v1.14.6) distinguishes the 0.01 DOGE/kB wallet/miner
+recommendation from the 0.001 DOGE/kB default relay minimum; source code also
+applies dust-related fees. Recorded those as configurable software policy, not
+consensus requirements or a live estimate. DOGE identity remains pending, and
+no Dogecoin calculator or Bitcoin vbyte fallback was introduced. The inventory
+now has **17 reviewed / 40 pending** host fee models; the regression guards
+against accidentally using BTC scenario fields for DOGE.
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/

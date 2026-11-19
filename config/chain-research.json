@@ -353,20 +353,34 @@
       "name": "DOGE",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "DOGE",
+      "feeModel": "utxo",
+      "feeFormula": "Dogecoin Core v1.14.9 documents a recommended 0.01 DOGE/kB wallet/miner rate, applied to exact serialized transaction bytes since v1.14.5; default relay minimum is 0.001 DOGE/kB. Node/miner policy and wallet settings can differ; sub-dust outputs can add fees. Not a fixed consensus fee or live quote.",
       "nativeAssetIds": [
         "doge-dogecoin"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fee-recommendation",
+          "url": "https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/doc/fee-recommendation.md"
+        },
+        {
+          "kind": "fee-implementation",
+          "url": "https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/src/dogecoin-fees.cpp"
+        },
+        {
+          "kind": "release",
+          "url": "https://github.com/dogecoin/dogecoin/releases/tag/v1.14.9"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Primary Dogecoin Core v1.14.9 release/repository evidence. The fee-recommendation document states it was last updated for v1.14.6; the 0.01 DOGE/kB recommendation and 0.001 DOGE/kB default relay minimum are policy defaults, not consensus rules, and operators may configure policy.",
+        "Host/chain identity remains pending separately; fee-model review does not independently confirm registry identity or address conventions."
       ]
     },
     "XLM": {

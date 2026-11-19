@@ -6,7 +6,7 @@ This is **a review inventory, not 500 completed independent asset investigations
 The source market ranks are historical, not present-day prices or endorsements.
 
 - Assets: 500; local default-leaf derivation supported: 347; unsupported: 153.
-- Host profiles: 57; primary-reviewed fee models: 16; fee models pending: 41.
+- Host profiles: 57; primary-reviewed fee models: 17; fee models pending: 40.
 - Primary-reviewed test-network identities: 18. No testnet token contract is inferred from a mainnet contract.
 - Assets with any catalogued mainnet contract: 1. Other token deployment reviews remain open.
 - Rows with no mapped host: 152. Unknown is not free, absent, or a zero balance.
@@ -41,7 +41,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 9 | steth-lido-staked-ether · STETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 10 | zec-zcash · ZEC | ZEC | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
 | 11 | hype-hyperliquid · HYPE | HYPE | curated ID; see evidence | primary-reviewed | HYPE / gas / primary-reviewed | not verified | one curated path, local |
-| 12 | doge-dogecoin · DOGE | DOGE | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
+| 12 | doge-dogecoin · DOGE | DOGE | curated ID; see evidence | pending | DOGE / utxo / primary-reviewed | not verified | one curated path, local |
 | 13 | wsteth-wrapped-liquid-staked-ether-20 · WSTETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 14 | rain-rain-protocol · RAIN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 15 | usds-usds · USDS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
