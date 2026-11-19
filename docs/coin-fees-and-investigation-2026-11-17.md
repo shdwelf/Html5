@@ -10,8 +10,8 @@ asset rows are retained; no ticker is silently treated as a verified contract.
 
 The deterministic [per-asset coverage inventory](coin-research-inventory-2026-11-17.md)
 records every defined asset and its gaps. This is **not 500 completed independent
-asset reviews**. The research overlay has 57 host profiles, 14 primary-reviewed
-fee models and 43 pending fee models. Only USDT's three existing mainnet contract
+asset reviews**. The research overlay has 57 host profiles, 15 primary-reviewed
+fee models and 42 pending fee models. Only USDT's three existing mainnet contract
 identities are catalogued. Most token deployments still need issuer/contract,
 wrapped/migration, decimals and transfer-behaviour verification. Historical
 SLIP-44/host mappings are not proofs of a token's current deployment.
@@ -30,9 +30,14 @@ it still has user-generated PoW/resource and possible service costs, and this
 app does not support Nano derivation.
 
 The JSON scenario accepts bounded, finite `prices` in USD per **fee asset**,
-`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE,
-`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. Nothing is fetched
-or saved. An explicit user-entered zero is labeled a scenario, not an inferred
+`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE/AVAX,
+`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. For Avalanche,
+`tokenGas` / native gas units must represent charged gas (including the Helicon
+`max(gasUsed, gasLimit / 2)` floor); the manually supplied gwei price is an
+assumption, not an RPC quote. This simple arithmetic omits transaction fee-cap
+selection, changing base fee, inclusion timing, and any protocol-specific limits.
+Nothing is fetched or saved. An explicit user-entered zero is labeled a scenario,
+not an inferred
 free transaction. Rollups do not receive an Ethereum-only fee estimate that
 silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 
@@ -46,6 +51,7 @@ silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 | BSC | Gas paid in BNB; BEP-20 execution cost differs from native transfer |
 | TRON | Bandwidth/Energy and possible TRX burn; not an unconditional free-transfer promise |
 | HyperEVM | HYPE, EIP-1559-style gas, base/priority fees burned; distinct from HyperCore |
+| Avalanche C-Chain | AVAX; dynamic EIP-1559-style effective price `min(gasFeeCap, baseFee + gasTipCap)`, with base and priority fees burned. Since Helicon, charged gas is `max(gasUsed, gasLimit / 2)`; the base fee is a worst-case bound and the validator-voted minimum can change. No fixed minimum is assumed here. |
 | Base | L2 execution + L1 security/data charge; minimum execution fee is not total cost |
 | Arbitrum One | Child-chain execution and parent-chain poster/data components |
 | Monad | **Gas limit** × effective MON gas price, not gas used; documented 100 MON-gwei floor implies 0.0021 MON for 21,000 gas, excluding priority/load changes |
@@ -177,6 +183,7 @@ statuses are in `config/chain-research.json`.
 - https://ethereum.org/en/developers/docs/apis/json-rpc/
 - https://docs.bnbchain.org/bnb-smart-chain/developers/quick-guide/
 - https://developers.tron.network/docs/resource-model and https://developers.tron.network/docs/networks
+- https://build.avax.network/docs/rpcs/other/guides/txn-fees (C-Chain fee mechanics; Helicon/ACP-194 and validator-voted minimum/ACP-283)
 - https://xrpl.org/docs/concepts/transactions/transaction-cost and https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks
 - https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks
 - https://docs.base.org/specifications/transactions/network-fees

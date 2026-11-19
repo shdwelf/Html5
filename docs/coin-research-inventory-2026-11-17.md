@@ -6,7 +6,7 @@ This is **a review inventory, not 500 completed independent asset investigations
 The source market ranks are historical, not present-day prices or endorsements.
 
 - Assets: 500; local default-leaf derivation supported: 347; unsupported: 153.
-- Host profiles: 57; primary-reviewed fee models: 14; fee models pending: 43.
+- Host profiles: 57; primary-reviewed fee models: 15; fee models pending: 42.
 - Primary-reviewed test-network identities: 18. No testnet token contract is inferred from a mainnet contract.
 - Assets with any catalogued mainnet contract: 1. Other token deployment reviews remain open.
 - Rows with no mapped host: 152. Unknown is not free, absent, or a zero balance.
@@ -67,7 +67,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 35 | near-near-protocol · NEAR | NEAR | curated ID; see evidence | primary-reviewed | unknown / unknown / pending | not verified | one curated path, local |
 | 36 | usdg-global-dollar · USDG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 37 | hbar-hedera-hashgraph · HBAR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 38 | avax-avalanche · AVAX | AVAX | curated ID; see evidence | primary-reviewed | AVAX / unknown / pending | not verified | one curated path, local |
+| 38 | avax-avalanche · AVAX | AVAX | curated ID; see evidence | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |
 | 39 | shib-shiba-inu · SHIB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 40 | sui-sui · SUI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 41 | pyusd-paypal-usd · PYUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
@@ -123,7 +123,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 91 | rndr-render-token · RENDER | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
 | 92 | dash-dash · DASH | DASH | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
 | 93 | cake-pancakeswap · CAKE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 94 | usdce-usd-coine · USDC.e | AVAX | token/asset deployment pending | primary-reviewed | AVAX / unknown / pending | not verified | one curated path, local |
+| 94 | usdce-usd-coine · USDC.e | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |
 | 95 | ethfi-etherfi · ETHFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 96 | fil-filecoin · FIL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 97 | jupsol-jupiter-staked-sol · JUPSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
@@ -161,7 +161,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 129 | stkaave-staked-aave · STKAAVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 130 | usdtb-usdtb · USDTB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 130 | night-midnight2 · NIGHT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 132 | btcb-bitcoin-avalanche-bridged-btcb · BTC.B | AVAX | token/asset deployment pending | primary-reviewed | AVAX / unknown / pending | not verified | one curated path, local |
+| 132 | btcb-bitcoin-avalanche-bridged-btcb · BTC.B | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |
 | 133 | luna-terra · LUNC | LUNC | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
 | 134 | xdc-xdc-network · XDC | XDC | curated ID; see evidence | catalogue-only | unknown / unknown / pending | not verified | one curated path, local |
 | 135 | pendle-pendle · PENDLE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
@@ -459,7 +459,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 427 | pci-payprotocol-paycoin · PCI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 428 | ausd-agora-dollar · AUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 429 | ico-axelar · AXL | AXL | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
-| 430 | wavax-wrapped-avax-wormhole · WAVAX | AVAX | token/asset deployment pending | primary-reviewed | AVAX / unknown / pending | not verified | one curated path, local |
+| 430 | wavax-wrapped-avax-wormhole · WAVAX | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |
 | 431 | ltc-litecoin-token · LTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 432 | req-request-network · REQ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 433 | jett-jett-crypto · JETT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
@@ -512,7 +512,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 481 | xsgd-xsgd · XSGD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 482 | spk-spark · SPK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 483 | api3-api3 · API3 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 483 | wbtce-wrapped-btc-avalanche · WBTC.E | AVAX | token/asset deployment pending | primary-reviewed | AVAX / unknown / pending | not verified | one curated path, local |
+| 483 | wbtce-wrapped-btc-avalanche · WBTC.E | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |
 | 484 | wal-walrus · WAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 485 | band-band-protocol · BAND | BAND | curated ID; see evidence | pending | unknown / unknown / pending | not verified | one curated path, local |
 | 486 | coti-coti · COTI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |

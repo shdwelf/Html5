@@ -117,6 +117,26 @@ validate SnapSafe or another Android application. A new push still requires
 matching-head Android and DOSBox checks; the final GitHub merge result is not
 inferred from earlier-head success.
 
+## Bounded continuation on `arena/0ebdf4ca-html5`
+
+Reviewed the primary Avalanche Builder Hub transaction-fee guide and recorded
+its C-Chain (not X/P-Chain) fee mechanics in `config/chain-research.json`:
+EIP-1559-style cap/tip pricing, AVAX burning, Helicon charged-gas floor, and a
+mutable validator-voted minimum. The docs report the floor at 5 nAVAX in late
+September 2026; this is preserved as dated context only, not a hardcoded current
+value. `eth_baseFee` is a worst-case bound since Helicon; this review did not
+query RPC or validate live fee parameters. The host's fee status moves from
+pending to primary-reviewed, updating the inventory to **15 reviewed / 42
+pending**; this does not independently review AVAX assets or token contracts.
+
+The local, user-supplied fee scenario now accepts AVAX gas inputs for native and
+token arithmetic. Those are explicit assumptions (charged gas units, effective
+gwei price and optional fee-asset USD price), not quotes, transaction
+simulation, fee-cap recommendations, or forecasts. Parent-data rollup behavior
+remains excluded. Regression coverage tests native and token arithmetic and
+labels the result as user-entered. Detailed qualifications are in the [coin
+fee report](coin-fees-and-investigation-2026-11-17.md).
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/

@@ -121,7 +121,7 @@ export function feeEstimate(research, coin, network, scenario = parseFeeScenario
   } else if (record.native && profile?.nativeBaseFee !== undefined) {
     result.amount = Number(profile.nativeBaseFee);
     result.basis = profile.feeModel === "protocol-zero" ? "zero protocol fee; PoW/service costs excluded" : "documented native base/minimum only; extras excluded";
-  } else if (["ETH", "BSC", "HYPE"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
+  } else if (["ETH", "BSC", "HYPE", "AVAX"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
     const gasPrice = own(scenario.gasGwei, network?.hostChain || coin.chain);
     const units = record.native ? 21000 : own(scenario.tokenGas, coin.id);
     if (gasPrice !== undefined && units !== undefined) {

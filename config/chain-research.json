@@ -489,10 +489,10 @@
       "name": "Avalanche C-Chain (not X/P)",
       "family": "evm",
       "identityStatus": "primary-reviewed",
-      "feeStatus": "pending",
+      "feeStatus": "primary-reviewed",
       "feeAsset": "AVAX",
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeModel": "gas",
+      "feeFormula": "C-Chain dynamic fee: gasCharged × min(gasFeeCap, baseFee + gasTipCap); Helicon defines gasCharged = max(gasUsed, gasLimit / 2). Fees are paid and burned in AVAX. Base fee is a changing validator-voted minimum with no protocol upper bound; no live quote.",
       "nativeAssetIds": [
         "avax-avalanche"
       ],
@@ -507,6 +507,18 @@
         {
           "kind": "network",
           "url": "https://build.avax.network/docs/primary-network"
+        },
+        {
+          "kind": "fees",
+          "url": "https://build.avax.network/docs/rpcs/other/guides/txn-fees"
+        },
+        {
+          "kind": "upgrade",
+          "url": "https://build.avax.network/docs/acps/194-continuous-execution"
+        },
+        {
+          "kind": "upgrade",
+          "url": "https://build.avax.network/docs/acps/283-dynamic-minimum-gas-price"
         }
       ],
       "testnets": [
@@ -522,7 +534,8 @@
       ],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+        "Pinned community chain catalogue, not a live RPC check; primary-reviewed fee mechanics are protocol description, not a live quote or transaction estimate.",
+        "Avalanche docs report Helicon/ACP-283 activated on Mainnet September 22, 2026; the validator-voted minimum was reported at 5 nAVAX in late September 2026. The floor is mutable; do not hardcode it as a current fee. eth_baseFee is a worst-case bound since Helicon, while actual charged gas also reflects the gas-limit floor."
       ]
     },
     "CRO": {
