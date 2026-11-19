@@ -21,7 +21,7 @@ const ABANDON = "abandon ".repeat(11) + "about";
 test("all 500 historical assets have explicit evidence gaps, never fabricated free costs", () => {
   assert.equal(coins.length, 500);
   assert.equal(Object.keys(evidence.chains).length, 57);
-  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 15);
+  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 16);
   const ids = new Set(coins.map((row) => row.id));
   for (const profile of Object.values(evidence.chains)) for (const id of profile.nativeAssetIds) assert.ok(ids.has(id), id);
   for (const row of coins) {
@@ -34,6 +34,9 @@ test("all 500 historical assets have explicit evidence gaps, never fabricated fr
     if (!profileForCoin(evidence, row)) assert.equal(cost.amount, null);
   }
   assert.equal(estimate("XNO").amount, 0);
+  assert.equal(estimate("LTC", '{"vbytes":140,"satPerVbyte":2}').amount, null, "Litecoin does not reuse Bitcoin's vbyte scenario without a dedicated model");
+  assert.equal(researchRecord(evidence, coin("LTC"), main(coin("LTC"))).feeAsset, "LTC");
+  assert.equal(researchRecord(evidence, coin("LTC"), main(coin("LTC"))).identityStatus, "pending", "fee mechanics review is separate from chain identity review");
   assert.match(estimate("XNO").basis, /PoW\/service costs excluded/);
   assert.equal(coin("XNO").derive, false, "feeless does not enable an unsupported derivation");
   assert.equal(researchRecord(evidence, coin("usdt-tether"), main(coin("usdt-tether"))).native, false);

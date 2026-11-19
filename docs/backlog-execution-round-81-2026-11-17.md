@@ -137,6 +137,16 @@ remains excluded. Regression coverage tests native and token arithmetic and
 labels the result as user-entered. Detailed qualifications are in the [coin
 fee report](coin-fees-and-investigation-2026-11-17.md).
 
+A second bounded item reviewed Litecoin Core fee handling at pinned upstream
+commit `9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343`. Wallet fee rate × serialized
+bytes is constrained by the wallet's estimator/fallback and relay/mempool floors;
+MWEB adds a weight-based component. Marked the **fee model** primary-reviewed,
+while keeping Litecoin host identity pending as a separate evidence question.
+The generic BTC vbyte scenario is deliberately not applied to LTC: no Litecoin
+transaction estimator or live mempool quote was added. Inventory now records
+**16 reviewed / 41 pending** host fee models. Tests assert both the separated
+identity status and that BTC-only assumptions yield no LTC estimate.
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/

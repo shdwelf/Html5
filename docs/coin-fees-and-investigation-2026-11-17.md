@@ -10,8 +10,8 @@ asset rows are retained; no ticker is silently treated as a verified contract.
 
 The deterministic [per-asset coverage inventory](coin-research-inventory-2026-11-17.md)
 records every defined asset and its gaps. This is **not 500 completed independent
-asset reviews**. The research overlay has 57 host profiles, 15 primary-reviewed
-fee models and 42 pending fee models. Only USDT's three existing mainnet contract
+asset reviews**. The research overlay has 57 host profiles, 16 primary-reviewed
+fee models and 41 pending fee models. Only USDT's three existing mainnet contract
 identities are catalogued. Most token deployments still need issuer/contract,
 wrapped/migration, decimals and transfer-behaviour verification. Historical
 SLIP-44/host mappings are not proofs of a token's current deployment.
@@ -31,7 +31,10 @@ app does not support Nano derivation.
 
 The JSON scenario accepts bounded, finite `prices` in USD per **fee asset**,
 `nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE/AVAX,
-`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. For Avalanche,
+`tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. Litecoin's
+reviewed policy is documented separately; the BTC-only vbyte scenario is not
+silently reused because Litecoin Core's reviewed `GetTotalFee` also accounts
+for MWEB weight. For Avalanche,
 `tokenGas` / native gas units must represent charged gas (including the Helicon
 `max(gasUsed, gasLimit / 2)` floor); the manually supplied gwei price is an
 assumption, not an RPC quote. This simple arithmetic omits transaction fee-cap
@@ -58,6 +61,7 @@ silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 | Sonic | EVM gas in S, published network parameters; no live gas-price measurement |
 | Celo | CELO/default and allowlisted alternative fee currencies/adapters; not an all-token gas exemption |
 | Bitcoin | Transaction vsize × selected sat/vB; inputs/outputs and congestion matter |
+| Litecoin | Litecoin Core selects/configures a litoshi-per-kilobyte fee rate over serialized bytes, subject to wallet estimator/fallback and relay/mempool minima; MWEB adds 100 litoshis per MWEB weight unit in the pinned source. No single fixed transfer fee. |
 
 For example, 21,000 × 12 gwei = 0.000252 ETH is only an illustrative execution
 scenario. A token call needs its own gas assumption/estimate. Fees can exclude
@@ -184,6 +188,7 @@ statuses are in `config/chain-research.json`.
 - https://docs.bnbchain.org/bnb-smart-chain/developers/quick-guide/
 - https://developers.tron.network/docs/resource-model and https://developers.tron.network/docs/networks
 - https://build.avax.network/docs/rpcs/other/guides/txn-fees (C-Chain fee mechanics; Helicon/ACP-194 and validator-voted minimum/ACP-283)
+- Litecoin Core at pinned commit [`9fe73a4`](https://github.com/litecoin-project/litecoin/tree/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343): [wallet/fees.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/wallet/fees.cpp), [policy/feerate.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp) and [policy/feerate.h](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.h)
 - https://xrpl.org/docs/concepts/transactions/transaction-cost and https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks
 - https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks
 - https://docs.base.org/specifications/transactions/network-fees

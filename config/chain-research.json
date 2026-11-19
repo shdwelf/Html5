@@ -434,20 +434,34 @@
       "name": "LTC",
       "family": "p2wpkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "LTC",
+      "feeModel": "utxo",
+      "feeFormula": "Litecoin Core wallet fee is selected-rate × serialized transaction bytes (rate in litoshis per 1,000 bytes), subject to wallet/mempool/relay minima and estimator/fallback policy; MWEB transactions also add 100 litoshis per MWEB weight unit in the reviewed source. No universal fixed fee or live quote.",
       "nativeAssetIds": [
         "ltc-litecoin"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/wallet/fees.cpp"
+        },
+        {
+          "kind": "fee-units-and-mweb",
+          "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp"
+        },
+        {
+          "kind": "fee-units",
+          "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.h"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Litecoin Core fee implementation reviewed at pinned repository commit 9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343; wallet estimates/fallbacks and relay/mempool policy are node/wallet state, not a constant network fee. This is not a live mempool quote.",
+        "Host/chain identity remains pending separately; fee-model review does not independently confirm registry identity, address conventions or current deployments."
       ]
     },
     "NEAR": {
