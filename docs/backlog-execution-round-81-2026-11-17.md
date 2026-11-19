@@ -177,6 +177,17 @@ and that the address is not disclosed before the hash matches.
 | `keyspace.xdc` | 491,864 | `6a65d496ad10a0713626d2e722bb02fefe4acb9461e84a9425a427cbcd45fe34` |
 | `sitek.xdc` | 15,979,680 | `348596c3b040ffc265b523447e39289289f4572edbb6037e44cd385261223f34` |
 
+## Lancelot FHE benchmark lane (selected; reconnaissance only)
+
+The user selected Lancelot for the next benchmark lane. Identified the 2025
+Nature Machine Intelligence paper and its public Zenodo software archive, and
+recorded a bounded source/evidence review, environment blocker, and reproduction
+plan in [the Lancelot benchmark note](lancelot-fhe-benchmark-2026-11-15.md).
+This workspace has no `nvidia-smi`, `nvcc`, or CMake, so CUDA build and benchmark
+execution were not possible. No paper result is claimed as reproduced. The
+acceptance item remains open pending a suitable GPU host, exact artifact
+checksum/source inspection, and logged reproduction.
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/
