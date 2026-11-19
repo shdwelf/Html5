@@ -54,7 +54,11 @@ globalThis.addEventListener = () => {};
 globalThis.visualViewport = undefined;
 globalThis.fetch = async (u) => {
   const buf = readFileSync(ROOT + String(u).replace(/^\.\//, ""));
-  return { ok: true, arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) };
+  return {
+    ok: true,
+    arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength),
+    json: async () => JSON.parse(buf.toString("utf8")),
+  };
 };
 
 const errors = [];
@@ -204,7 +208,50 @@ await settle(80);
 s.ok("generate refuses an invalid length", /Pick a valid length/.test($("status").textContent), $("status").textContent.slice(0, 60));
 s.eq("phrase unchanged", $("chips").querySelectorAll(".chip").length, 40);
 
-console.log("\n[13] no uncaught errors during the run");
+console.log("\n[13] full offline registry and explicit token-network derivation");
+s.eq("full registry is visible", $("topCoin").options.length, 500);
+$("topCoinSearch").value = "usdt-tether";
+$("topCoinSearch").dispatchEvent(new window.Event("input", { bubbles: true }));
+s.eq("asset IDs filter unambiguously", $("topCoin").value, "usdt-tether");
+s.eq("three mainnet deployments plus four host-only test identities", $("topCoinNetwork").options.length, 7);
+click($("deriveTopCoin"));
+await settle(50);
+s.ok("token derivation also refuses a non-standard phrase", /valid standard BIP-39/.test($("topCoinNote").textContent));
+$("phrase").value = "abandon ".repeat(11) + "about";
+click($("apply"));
+await until(() => $("hex").textContent === "0".repeat(32) && /Checksum valid/.test($("status").textContent), 10000, "standard zero-entropy phrase");
+$("topCoinNetwork").value = "bsc";
+$("topCoinNetwork").dispatchEvent(new window.Event("change", { bubbles: true }));
+s.ok("BEP-20 identity includes distinct chain ID, contract and decimals", /chain ID 56/.test($("topCoinNetworkInfo").textContent) && /18/.test($("topCoinNetworkInfo").textContent) && /NOT receive address/.test($("topCoinNetworkInfo").textContent));
+click($("deriveTopCoin"));
+await until(() => !$("topCoinOutput").hidden, 15000, "BEP-20 holder address");
+s.eq("BEP-20 uses the ETH convention, not 714", $("topCoinPath").textContent, "m/44'/60'/0'/0/0");
+s.eq("BEP-20 known receive address", $("topCoinAddress").textContent, "0x9858EfFD232B4033E47d90003D41EC34EcaEda94");
+// Invalidate a queued derivation before its next task runs.
+click($("deriveTopCoin"));
+$("topCoinNetwork").value = "tron";
+$("topCoinNetwork").dispatchEvent(new window.Event("change", { bubbles: true }));
+await settle(50);
+s.ok("network change cancels queued stale output", $("topCoinOutput").hidden);
+click($("deriveTopCoin"));
+await until(() => !$("topCoinOutput").hidden, 15000, "TRC-20 holder address");
+s.eq("TRC-20 holder address", $("topCoinAddress").textContent, "TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH");
+$("topCoinSearch").value = "ada-cardano";
+$("topCoinSearch").dispatchEvent(new window.Event("input", { bubbles: true }));
+s.ok("unsupported rows remain visible with reasons and disabled derivation", $("topCoin").value === "ada-cardano" && $("deriveTopCoin").disabled && /unsupported:/.test($("topCoinNote").textContent));
+$("topCoinSearch").value = "no-such-offline-asset";
+$("topCoinSearch").dispatchEvent(new window.Event("input", { bubbles: true }));
+s.ok("empty search clears stale output and disables derivation", $("topCoinOutput").hidden && $("deriveTopCoin").disabled && $("topCoinNetwork").disabled);
+
+console.log("\n[14] field explorer is independent of phrase generation");
+s.eq("four vetted field choices", $("fieldPreset").options.length, 4);
+s.eq("AES worked multiplication", $("fieldProduct").textContent, "0xc1");
+const phraseBeforeField = $("phrase").value;
+click($("fieldFromEntropy"));
+s.ok("all-zero entropy does not acquire an inverse", /undefined/.test($("fieldInverse").textContent));
+s.eq("field sampling leaves phrase unchanged", $("phrase").value, phraseBeforeField);
+
+console.log("\n[15] no uncaught errors during the run");
 s.ok("errors: " + (errors[0] ?? "none"), errors.length === 0, errors.slice(0, 2).join(" | "));
 
 process.exit(s.done() || errors.length ? 1 : 0);

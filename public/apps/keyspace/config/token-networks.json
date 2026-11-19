@@ -1,0 +1,56 @@
+{
+  "schema": "html5-token-networks-v1",
+  "reviewed": "2026-11-17",
+  "note": "Curated offline network identities, not a live token list or proof of backing. Contracts are identifiers, never the user's receive address. BNB Smart Chain is not BNB Beacon Chain.",
+  "sources": {
+    "walletCore": "https://github.com/trustwallet/wallet-core/blob/7a21615fad32edd8dc0b040d845de3973cde2c5a/registry.json",
+    "assetsCommit": "5c8eba81275e50843ef7df1899161c8b65852dba",
+    "bep20": "https://github.com/bnb-chain/BEPs/blob/aad6b1bd65605ae2d6d268b176f009386862d6ca/BEPs/BEP20.md"
+  },
+  "assets": {
+    "usdt-tether": [
+      {
+        "id": "ethereum",
+        "name": "Ethereum · USDT · ERC-20",
+        "chain": "ETH",
+        "chainId": 1,
+        "family": "evm",
+        "slip44": 60,
+        "standard": "ERC-20",
+        "contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "decimals": 6,
+        "feeAsset": "ETH",
+        "source": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/info.json",
+        "warning": "Ethereum mainnet only. Identical EVM receive addresses do not make networks interchangeable."
+      },
+      {
+        "id": "bsc",
+        "name": "BNB Smart Chain · Binance-Peg USDT · BEP-20",
+        "chain": "BSC",
+        "chainId": 56,
+        "family": "evm",
+        "slip44": 60,
+        "standard": "BEP-20",
+        "contract": "0x55d398326f99059fF775485246999027B3197955",
+        "decimals": 18,
+        "feeAsset": "BNB",
+        "source": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/smartchain/assets/0x55d398326f99059fF775485246999027B3197955/info.json",
+        "warning": "Binance-Peg BSC-USD, commonly labelled USDT; this is a pegged representation, not Ethereum USDT. Verify backing and recipient network independently. Uses the Ethereum-path convention (60), not Beacon Chain's 714."
+      },
+      {
+        "id": "tron",
+        "name": "TRON · USDT · TRC-20",
+        "chain": "TRX",
+        "chainId": null,
+        "family": "tron",
+        "slip44": 195,
+        "standard": "TRC-20",
+        "contract": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+        "decimals": 6,
+        "feeAsset": "TRX (energy/bandwidth)",
+        "source": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/tron/assets/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/info.json",
+        "warning": "TRON mainnet, not an EVM network. No Ethereum-style chain ID is assigned here."
+      }
+    ]
+  }
+}

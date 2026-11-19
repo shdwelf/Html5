@@ -60,8 +60,22 @@ export function deriveCoin(coins, mnemonic, sel, opts = {}) {
     ? findCoin(coins, sel) : findCoin(coins, sel);
   if (!coin) throw new Error("unknown coin: " + JSON.stringify(sel));
   if (!coin.derive) throw new Error(`${coin.symbol} (${coin.id}): ${coin.reason || "derivation unsupported"}`);
-  const { account = 0, change = 0, index = 0, passphrase = "", purpose, path } = opts;
-  const seed = mnemonicToSeed(mnemonic, passphrase);
+  const seed = mnemonicToSeed(mnemonic, opts.passphrase || "");
+  try {
+    return deriveCoinFromSeed(coin, seed, opts);
+  } finally {
+    seed.fill(0); // best effort only; JavaScript cannot guarantee secret erasure
+  }
+}
+
+/** Shared local batch boundary: caller owns and clears the BIP-39 seed. Public output only. */
+export function deriveCoinFromSeed(coin, seed, opts = {}) {
+  if (!coin?.derive) throw new Error(coin?.reason || "Asset derivation unsupported");
+  if (!(seed instanceof Uint8Array) || seed.length !== 64) throw new Error("Expected a 64-byte BIP-39 seed");
+  const { account = 0, change = 0, index = 0, purpose, path } = opts;
+  for (const [name, value] of Object.entries({ account, change, index })) {
+    if (!Number.isInteger(value) || value < 0 || value >= 0x80000000) throw new RangeError(`${name} must be an unhardened 31-bit index`);
+  }
   let usePath = path;
   if (!usePath) {
     if (purpose !== undefined && ED_FAMILIES.has(coin.family))

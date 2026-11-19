@@ -1,6 +1,47 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { test } from "node:test";
+
+function readPublicCircuitSpec() {
+  // -I -S disables user/site packages: this contract check must not need
+  // Concrete, Torch, or cryptography (and does not pretend to evaluate FHE).
+  const run = spawnSync("python3", ["-I", "-S", "tools/he_concrete_spec.py"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8",
+    timeout: 10_000,
+  });
+  assert.ifError(run.error);
+  assert.equal(run.status, 0, run.stderr);
+  assert.equal(run.stderr, "");
+  assert.ok(run.stdout.endsWith("\n"));
+  const canonical = run.stdout.replace(/\r?\n$/, ""); // omit the CLI's display newline
+  return {
+    spec: JSON.parse(canonical),
+    sha256: createHash("sha256").update(canonical, "utf8").digest("hex"),
+  };
+}
+
+test("Concrete's public circuit contract binds composability without optional runtime packages", () => {
+  const { spec, sha256 } = readPublicCircuitSpec();
+  assert.equal(spec.circuit_id, "f17-complete-field-arithmetic-v6");
+  assert.equal(spec.schema, "arena-fhe-circuit-manifest-v1");
+  assert.equal(spec.frontend, "concrete-python==2.11.0");
+  assert.equal(spec.composable, true);
+  assert.equal(spec.compress_evaluation_keys, true);
+  assert.equal(spec.security_level_bits, 128);
+  assert.equal(spec.target_p_error_per_tlu, 1.6e-6);
+  assert.equal(spec.arithmetic_modulus, 17);
+  assert.deepEqual(spec.input_domain, { x: [0, 16], y: [0, 16] });
+  assert.deepEqual(spec.multiplication_chunk_widths, [2, 2, 1]);
+  assert.deepEqual(spec.table_index_bounds, {
+    modular_reduction_inclusive_max: 33,
+    multivariate_packed_input_bit_width_max: 7,
+    square_lookup_inclusive_max: 33,
+  });
+  // Known-answer hash of the canonical v6 contract, not a compiled binary.
+  assert.equal(sha256, "71c5c1366bc27b6df892154422b7bdaff6cc8f38de8d76851044eed532802235");
+});
 
 // Concrete (and Torch) are optional, multi-GB dependencies. Enable explicitly
 // after installing tools/he-concrete-requirements.txt in CPython 3.11.
@@ -22,12 +63,14 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
     plaintext_max: plaintextMax,
     bounds,
     security_level_bits: securityLevelBits,
+    composable,
     probability_of_error: probabilityOfError,
     programmable_bootstraps: bootstraps,
     evaluation_key_provenance_verified: provenanceVerified,
     tampered_evaluation_key_rejected: tamperedKeyRejected,
     tampered_evaluation_key_signature_rejected: tamperedSignatureRejected,
     wrong_circuit_binding_rejected: wrongCircuitRejected,
+    wrong_configuration_binding_rejected: wrongConfigurationRejected,
     out_of_range_input_rejected: outOfRangeRejected,
     randomization_audit: randomizationAudit,
     composition_audit: compositionAudit,
@@ -45,6 +88,10 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
   });
   assert.ok(bootstraps > 0, "compiled circuit must contain programmable bootstrapping");
   assert.equal(securityLevelBits, 128);
+  const declared = readPublicCircuitSpec();
+  assert.equal(composable, declared.spec.composable);
+  assert.equal(demo.circuit_id, declared.spec.circuit_id);
+  assert.equal(demo.circuit_spec_sha256, declared.sha256);
   assert.equal(probabilityOfError.target_per_tlu, 1.6e-6);
   assert.ok(probabilityOfError.actual_per_tlu > 0);
   assert.ok(probabilityOfError.actual_per_tlu <= probabilityOfError.target_per_tlu);
@@ -54,6 +101,7 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
   assert.equal(tamperedKeyRejected, true);
   assert.equal(tamperedSignatureRejected, true);
   assert.equal(wrongCircuitRejected, true);
+  assert.equal(wrongConfigurationRejected, true);
   assert.equal(outOfRangeRejected, true);
   assert.deepEqual(compositionAudit, {
     depth: 8,

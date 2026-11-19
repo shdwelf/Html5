@@ -20,6 +20,9 @@ import { taprootOutputKey } from "./secp256k1.js";
  */
 export const COIN_PARAMS = {
   BTC:  { p2pkh: [0x00],       p2sh: [0x05],       hrp: "bc" },
+  // Bitcoin Core d55f55eda79a98ddaad7f7bec9faca8beb097b99: testnet4/signet.
+  // This encoding is selected explicitly; mainnet rows and paths do not change.
+  BTC_TEST: { p2pkh: [0x6f], p2sh: [0xc4], hrp: "tb" },
   LTC:  { p2pkh: [0x30],       p2sh: [0x32],       hrp: "ltc" },
   DOGE: { p2pkh: [0x1e],       p2sh: [0x16],       hrp: null },
   BCH:  { p2pkh: [0x00],       p2sh: [0x05],       hrp: null }, // legacy only; cashaddr out of scope

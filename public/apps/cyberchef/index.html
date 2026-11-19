@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 523 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 525 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -25850,6 +25850,105 @@ addOp('fheArchitectureLab','FHE Architecture Profile (manual measurements only)'
   [],
   function(text){return fheArchitectureProfile(text);});
 
+/* FHE follow-up v2: exact plaintext reference for a real, separate BFV experiment. */
+function fheMaskReference(text){
+  const input=String(text??'');
+  if(utf8Encode(input).length>16384)throw new Error('Mask workload JSON is limited to 16384 UTF-8 bytes');
+  let data;
+  try{data=JSON.parse(input);}catch(_){throw new Error('Enter valid mask workload JSON: {"schema":1,"updates":[[2,3],[10,20],[4,5]],"selection":[1,0,1]}');}
+  if(!data||typeof data!=='object'||Array.isArray(data)||data.schema!==1)throw new Error('Mask workload schema must be 1');
+  if(Object.keys(data).some(key=>!['schema','updates','selection'].includes(key)))throw new Error('Unknown mask workload key');
+  const updates=data.updates,selection=data.selection;
+  if(!Array.isArray(updates)||updates.length<1||updates.length>16)throw new Error('updates must have 1 to 16 clients');
+  const width=updates[0]&&updates[0].length;
+  if(!Number.isInteger(width)||width<1||width>32)throw new Error('updates must have 1 to 32 features');
+  if(!Array.isArray(selection)||selection.length!==updates.length||selection.some(bit=>bit!==0&&bit!==1))throw new Error('selection must contain one 0/1 bit per client');
+  if(updates.some(row=>!Array.isArray(row)||row.length!==width||row.some(n=>!Number.isInteger(n)||n<0||n>100)))throw new Error('updates must be rectangular integer rows in 0..100');
+  const selectedCount=selection.reduce((sum,bit)=>sum+bit,0);
+  const selectedSum=updates[0].map((_,feature)=>updates.reduce((sum,row,client)=>sum+row[feature]*selection[client],0));
+  return JSON.stringify({
+    scope:'Plaintext reference only: this recipe performs NO encryption, ciphertext evaluation, key generation, decryption, sorting or bootstrapping.',
+    workload_version:2,
+    dimensions:{clients:updates.length,features:width,input_range:[0,100],maximum_possible_sum:updates.length*100},
+    selectedSum,selectedCount,
+    meanOutsideCiphertextEvaluation:selectedCount?selectedSum.map(sum=>sum/selectedCount):null,
+    empty_selection:selectedCount===0,
+    operations_in_separate_bfv_experiment:{ciphertextMultiplications:updates.length,ciphertextAdditions:updates.length-1,relinearizations:1,multiplicativeDepth:1,bootstraps:0},
+    separate_backend:'tools/he-bfv-mask-demo.mjs uses node-seal 7.0.0 / Microsoft SEAL 4.1.2 for actual finite-depth BFV encryption and evaluation. The browser recipe does not load that backend.',
+    trust_boundaries:[
+      'Lancelot uses an interactive trusted key-generation centre to decrypt and sort distances, then encrypt a client-selection mask. The server applies that encrypted mask to encrypted updates. This reference starts AFTER selection; it implements no distances, encrypted comparisons, Krum, Multi-Krum or Byzantine-robust training.',
+      'The separate BFV experiment co-locates client/selector/evaluator/owner roles in one local process. Its evaluator receives ciphertexts and a relinearization key, not a secret key or plaintext selection. This is not a deployed multi-party protocol.',
+      'The selected count and mean are outside ciphertext evaluation; division and zero-selection handling are not encrypted here. A zero selected count yields null, not a valid zero average.',
+      'No range/bit proofs, authenticated transport, key lifecycle, differential privacy or output-privacy guarantee. Aggregation and a ledger of usage do not by themselves prove computation correctness or prevent data leakage.'
+    ],
+    research_sources:[
+      {doi:'10.1038/s42256-025-01107-6',title:'Towards compute-efficient Byzantine-robust federated learning with fully homomorphic encryption',review:'Accessible introduction and system-model excerpt, including the trusted-centre encrypted-mask workflow; not a full security or benchmark reproduction.'},
+      {doi:'10.1109/CVCI51460.2020.9338620',title:'The Data Protection of Intelligent Connected Vehicles Cloud Control Framework Using Fully Homomorphic Encryption',review:'Accessible opening excerpt motivates separating encrypted computation from a consortium-ledger usage trail. No vehicle-control, CKKS or Hyperledger benchmark was reproduced.'}
+    ]
+  },null,2);
+}
+addOp('fheMaskLab','FHE Masked Aggregation v2 (plaintext reference)','Educational',
+  'Bounded synthetic update vectors and explicit selection bits: compute exact sums/count/mean and audit the trusted-selector boundary. Plaintext only; actual finite-depth BFV is a separate local CLI experiment, not this recipe.',
+  [],function(text){return fheMaskReference(text);});
+
+/* SnapSafe v4.2.0: passive SECV v1 layout inspection, not decryption.
+   Source: SecureCamera/SecureCameraAndroid @ 826bf51357c8ca81bad9e81c045107fd6671e633,
+   SecvFileFormat.kt and ChunkedStreamingEncryptor.kt; see docs/2600-public-software-review-2026-11-17.md. */
+function snapSafeSecvHeader(text,args){
+  const mode=args.mode||'header';
+  if(!['header','file'].includes(mode))throw new Error('Unknown SECV inspection mode');
+  const input=String(text||'');
+  if(input.length>3145728)throw new Error('SECV inspection is limited to 1 MiB of decoded bytes');
+  if(!/^[0-9a-f\s]*$/i.test(input))throw new Error('Give plain hex bytes with optional whitespace, not a hexdump or plaintext');
+  const hex=input.replace(/\s/g,'');
+  if(hex.length%2)throw new Error('SECV hex must contain complete bytes');
+  if(hex.length/2>1048576)throw new Error('SECV inspection is limited to 1 MiB of decoded bytes');
+  if(hex.length<128)throw new Error('SECV needs a complete 64-byte header');
+  if(mode==='header'&&hex.length!==128)throw new Error('Header mode needs exactly 64 bytes; use small-file mode to check the payload length');
+  const bytes=Uint8Array.from(hex.match(/../g),x=>parseInt(x,16));
+  if(String.fromCharCode(...bytes.slice(0,4))!=='SECV')throw new Error('Invalid SECV magic');
+  const le=(offset,width)=>{let value=0n;for(let i=width-1;i>=0;i--)value=(value<<8n)|BigInt(bytes[offset+i]);return value;};
+  const version=Number(le(4,2));
+  if(version!==1)throw new Error('Unsupported SECV version: '+version);
+  const chunkSize=le(6,4),totalChunks=le(10,8),originalSize=le(18,8),finalSize=le(26,4);
+  const maxLong=(1n<<63n)-1n;
+  // The source docs call these unsigned; Kotlin uses Int/Long and requires
+  // positive sizes/seek offsets in practice. Do not accept signed overflows.
+  if(chunkSize<1n||chunkSize>2147483647n)throw new Error('SECV chunk size is outside the positive Kotlin Int range');
+  if(totalChunks>maxLong||originalSize>maxLong)throw new Error('SECV count/size exceeds the nonnegative Kotlin Long range');
+  if(totalChunks===0n){
+    if(originalSize!==0n||finalSize!==0n)throw new Error('Empty SECV must have zero chunks, original size and final size');
+  }else{
+    if(finalSize<1n||finalSize>chunkSize)throw new Error('SECV final chunk must contain 1..chunk_size plaintext bytes');
+    if(originalSize!==(totalChunks-1n)*chunkSize+finalSize)throw new Error('SECV chunk count, original size and final size are inconsistent');
+  }
+  const expected=64n+originalSize+28n*totalChunks;
+  if(expected>maxLong)throw new Error('SECV layout exceeds the signed file-offset range');
+  if(mode==='file'&&expected!==BigInt(bytes.length))throw new Error('SECV payload length mismatch: expected '+expected+' bytes, received '+bytes.length);
+  const reservedNonzero=bytes.slice(30,64).some(x=>x!==0);
+  return JSON.stringify({
+    scope:'Passive SECV v1 structure inspection only. No decryption, PIN/password guessing, AES-GCM tag verification, or proof of secure deletion.',
+    source:{release:'v4.2.0',commit:'826bf51357c8ca81bad9e81c045107fd6671e633',url:'https://github.com/SecureCamera/SecureCameraAndroid/blob/826bf51357c8ca81bad9e81c045107fd6671e633/app/src/main/kotlin/com/darkrockstudios/app/securecamera/security/streaming/SecvFileFormat.kt'},
+    mode,version,byte_order:'little-endian',header_bytes:64,
+    chunk_size_bytes:Number(chunkSize),total_chunks:totalChunks.toString(),
+    original_size_bytes:originalSize.toString(),final_chunk_plaintext_bytes:Number(finalSize),
+    iv_bytes:12,tag_bytes:16,expected_file_bytes:expected.toString(),
+    first_chunk_offset:totalChunks?'64':null,
+    last_chunk_offset:totalChunks?(64n+(totalChunks-1n)*(chunkSize+28n)).toString():null,
+    provided_bytes:bytes.length,payload_length_checked:mode==='file',authentication_verified:false,
+    reserved_nonzero:reservedNonzero,
+    warnings:[
+      'All header values are untrusted. Layout consistency and matching lengths do not authenticate a file or its chunks.',
+      'This parser reads positive Kotlin Int/Long size ranges; exact large counts and offsets are decimal strings, never rounded JavaScript Numbers.',
+      'SnapSafe video recording uses a temporary unencrypted MP4 before post-recording encryption; deleting it is not proof of flash erasure.'
+    ].concat(reservedNonzero?['Reserved header bytes are nonzero; the v1 writer normally zeroes them.']:[])
+  },null,2);
+}
+addOp('snapSafeSecv','SnapSafe SECV v1 header (passive only)','Data',
+  'Inspect a 64-byte little-endian SnapSafe v4.2.0 video header in hex, or validate layout length of a small complete file (up to 1 MiB). Exact uint64-sized metadata is reported as decimal strings. No keys, decryption, PIN guessing, GCM verification or secure-deletion claim.',
+  [{key:'mode',label:'Input scope',type:'select',default:'header',options:[['header','64-byte header only'],['file','Complete small file: length check only']]}],
+  function(text,args){return snapSafeSecvHeader(text,args);});
+
 /* ---- OpenPGP string-to-key needs a hash inside the page: the iterated count may
    reach 65,011,712 octets (count byte 0xFF), so SHA-1 and SHA-256 are streamed in
    64 KiB chunks and the repeated salt+phrase is never materialised. Both cores are
@@ -34215,8 +34314,8 @@ RECIPE_PACKS["Full Coverage — Boxentriq"] = [["doubleTransposition",{}],["homo
 RECIPE_PACKS["Full Coverage — Calculator"] = [["calc",{}],["convert",{}],["worldclock",{}]];
 RECIPE_PACKS["Full Coverage — Classical"] = [["caesar",{}],["vigenere",{}],["gronsfeld",{}],["vic",{}],["atbash",{}],["rot13",{}],["railfence",{}],["coltrans",{}],["playfair",{}],["hill",{}],["a1z26",{}],["bacon",{}],["morse",{}],["porta",{}],["fourSquare",{}],["bifid",{}]];
 RECIPE_PACKS["Full Coverage — Coins"] = [["nanoAddr",{}],["sapling",{}],["solana",{}],["stellar",{}],["algorand",{}],["polkadot",{}],["monero",{}],["ripple",{}],["bch",{}],["kaspa",{}],["tezos",{}]];
-RECIPE_PACKS["Full Coverage — Data"] = [["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
-RECIPE_PACKS["Full Coverage — Educational"] = [["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
+RECIPE_PACKS["Full Coverage — Data"] = [["snapSafeSecv",{}],["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
+RECIPE_PACKS["Full Coverage — Educational"] = [["fheMaskLab",{}],["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
 RECIPE_PACKS["Full Coverage — Electronics"] = [["icAND",{}],["icOR",{}],["icXOR",{}],["icNAND",{}],["icNOR",{}],["icXNOR",{}],["icNOT",{}],["icAdder",{}],["ic7seg",{}],["icTruth",{}]];
 RECIPE_PACKS["Full Coverage — Encoding"] = [["toEntities",{}],["fromEntities",{}],["reverse",{}]];
 RECIPE_PACKS["Full Coverage — Encryption"] = [["aesGcmFile",{}],["encryptLink",{}],["decryptLink",{}]];
@@ -34249,6 +34348,11 @@ RECIPE_PACKS["FHE Study — F17 arithmetic oracle (plaintext only)"] = [["fheKit
 RECIPE_PACKS["FHE Study — UTF-8 byte / F17 pair codec (not encryption)"] = [["fheKitchenLab",{mode:'bytePairs'}]];
 RECIPE_PACKS["FHE Study — Lancelot architecture case study"] = [["fheKitchenLab",{mode:'architecture'}]];
 RECIPE_PACKS["FHE Study — CKKS architecture profile (manual data only)"] = [["fheArchitectureLab",{}]];
+RECIPE_PACKS["FHE Study — Masked aggregation v2 (plaintext reference, BFV companion CLI)"] = [["fheMaskLab",{}]];
+// Public magazine listing / source-format trail, not repackaged magazine scans.
+RECIPE_PACKS["2600 — Code Wall binary to UTF-8 (43:3)"] = [["fromBinary",{}]];
+RECIPE_PACKS["2600 — DOS Hello World bytes (43:3, hex to static hexdump)"] = [["fromHexdump",{outfmt:"binstr"}],["toHexdump",{srcfmt:"binstr",width:"16"}]];
+RECIPE_PACKS["2600 — SnapSafe SECV v1 header (42:4, passive only)"] = [["snapSafeSecv",{mode:"header"}]];
 RECIPE_PACKS["Munitions T-Shirt — Perl RSA & Free Speech"] = [["munitionsTshirt",{}]];
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.
@@ -34557,7 +34661,7 @@ addOp('gf256','GF(2^8) field math (AES)','Math',
     switch (a.op) {
       case 'add': return 'add: '+hx(A)+' + '+hx(B)+' = '+hx(A^B);
       case 'mul': return 'mul: '+hx(A)+' * '+hx(B)+' = '+hx(mul(A,B));
-      case 'inv': return 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
+      case 'inv': return A===0 ? 'inv: 00^-1 is undefined (zero has no multiplicative inverse)' : 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
       case 'pow': {
         let r=1, base=A, e=B; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; }
         return 'pow: '+hx(A)+'^'+B+' = '+hx(r);

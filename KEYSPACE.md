@@ -3,9 +3,11 @@
 `keyspace.html` · `js/viewer.js` · `js/formal.js` · `js/lens-draw.js` · `js/lens-3d.js`
 
 Open `keyspace.html` in a browser, or load `keyspace.xdc` into a messenger that
-speaks webxdc. Offline, keyless, no build step. Everything below is computed
-from the loaded key in the tab — nothing is fetched, nothing is estimated where
-it can be measured.
+speaks webxdc. Offline-first, no build step. Entropy, lenses and derivations
+are local. Section 14 also offers explicitly consented read-only public-address /
+contract queries and separately consented off-chain JSON; nothing is queried
+automatically, and phrases/private keys never enter those requests. Fee estimates
+are labeled manual scenarios or documented minima, not live quotes.
 
 ## Word counts: the generalised checksum rule
 
@@ -46,7 +48,7 @@ phrase still fits the WASM engine's index/path buffers and a full ∂Φ flip swe
 stays interactive (suite 06 measures it). Above the ladder the checksum is a
 *smaller* fraction of the entropy, so the generalised lengths are not
 "stronger BIP-39" — the status line, the layout note and the menu group all say
-which rule produced the phrase, and the wallet / top-50 derivations in §14 keep
+which rule produced the phrase, and the wallet / asset derivations in §14 keep
 refusing anything that is not a standard 12/15/18/21/24-word phrase.
 
 ## Invert keyspace A ↔ B
@@ -115,6 +117,37 @@ Measurement-backed examples:
 - **Ricci** — computes the contraction and reports the honest answer: the
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
+
+### Selectable Galois-field explorer
+
+Below the rack, an independent exact-arithmetic explorer (`js/galois.js` /
+`js/galois-view.js`) offers four vetted fields; it does not change the rack's
+72-lens count:
+
+| Field | Representation / modulus |
+| --- | --- |
+| GF(2⁴) | polynomial bits, x⁴ + x + 1 (`0x13`) |
+| GF(2⁸), AES basis | x⁸ + x⁴ + x³ + x + 1 (`0x11b`) |
+| GF(2⁸), Reed–Solomon basis | x⁸ + x⁴ + x³ + x² + 1 (`0x11d`) |
+| GF(17) | integers modulo the prime 17 |
+
+Enter decimal or `0x`-prefixed hex elements to view addition, multiplication,
+inversion and division. The grid displays multiplication by `a` over every
+field element in row-major order, with `b` highlighted. A nonzero multiplier
+permutes all outputs; zero collapses them. Different polynomial bases of order
+256 are isomorphic fields but the same byte labels need not multiply identically.
+Both zero inversion and division by zero are explicitly **undefined**, including
+in the existing AES entropy lens and its 2-D table.
+
+**Inspect first two entropy bytes** is an explicit, local-only action. Reducing
+bytes modulo a smaller field's order is a lossy display projection, not an
+entropy generator or a change to the mnemonic. BIP-39's checksum is a SHA-256
+prefix, not a field-linear checksum; the `2^ENT` keyspace is unchanged. These
+small fields are not secp256k1's coordinate or scalar field, and the calculator
+is not constant-time wallet cryptography. No arbitrary reducible moduli are
+accepted. Tests cover every pairwise product and every nonzero inverse in all
+four presets, compare binary multiplication with independent polynomial long
+division, and exercise zero/error/UI behaviour.
 
 ## Statistical views and measured 3-D layers
 
@@ -186,19 +219,83 @@ passphrase clears derived output; **Clear** also clears the passphrase. JavaScri
 cannot guarantee physical memory erasure, so the warning against real-fund
 mnemonics remains prominent.
 
-The same panel exposes the first 50 rows of the committed market/SLIP-0044
-registry. It derives one selected asset on demand—never all 50 at once—and shows
-its configured path, address and public key. EVM tokens correctly reuse their
-host-chain address; supported Bitcoin-family, XRP, Solana, Stellar, NEAR,
-Cosmos, TRON and transparent-Zcash families use their registered codecs.
-Unsupported top-50 rows remain visible and show the registry's reason instead
-of inventing an address. This selector displays no additional private material;
-BTC WIFs remain in the explicitly blurred BIP-44/49/84 table.
+The same panel now exposes **all 500 rows** of the committed market/SLIP-0044
+snapshot, with name/symbol/ID filtering, rather than truncating the selector at
+50. There are **347 derivable historical asset rows**; unsupported rows remain
+visible with a reason, not an invented address. One selected receive address is
+derived on demand. The new investigation tab can explicitly derive all supported
+**default leaves locally**, sharing one seed/host-path cache; it never performs
+automatic batch network lookups. Bitcoin-family, XRP, Solana, Stellar, NEAR,
+Cosmos, TRON and transparent-Zcash families retain their existing codecs.
+The rank snapshot is historical (2026-09-11), not a current market listing.
+The generator now records source snapshot dates rather than today's wall clock,
+so `node tools/build_coins.mjs --check` remains meaningful on a different day.
 
-Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly were researched
-but not copied because they do not improve the keyspace model. The existing
-repository workbench and art studio remain the appropriate homes for those
-capabilities.
+USDT has an additional explicit network selector, backed by
+`config/token-networks.json` / `js/coin-networks.js`, separate from the market
+ranking so one token does not acquire invented rank rows:
+
+| Network | Standard / identity | Default holder path | Decimals |
+| --- | --- | --- | ---: |
+| Ethereum, chain ID 1 | USDT ERC-20 | `m/44'/60'/0'/0/0` | 6 |
+| BNB Smart Chain, chain ID 56 | Binance-Peg USDT / BSC-USD, BEP-20 | `m/44'/60'/0'/0/0` | 18 |
+| TRON | USDT TRC-20 | `m/44'/195'/0'/0/0` | 6 |
+
+Each choice displays its pinned contract identifier, decimals, fee asset and
+network warning. **The derived address belongs to the holder, not the token
+contract.** The BSC representation is pegged, not native Ethereum USDT; no backing
+or redemption guarantee is made. A shared EVM receive address is not a bridge
+and does not make different chains interchangeable. BSC uses the deployed coin-
+type-60 convention, not Beacon Chain's 714; chain IDs are metadata, not HD coin
+types. A separate research overlay enriches host identities and adds reviewed
+host test networks without inventing token deployments. The underlying
+historical registry and its support flags are unchanged. See [the standards
+survey](docs/bip-standards.md) for pinned GitHub sources and independent
+implementation comparisons.
+
+Changing asset/network/phrase/passphrase clears stale selected output and
+cancels queued address derivation; phrase/passphrase edits also cancel/clear the
+whole local investigation. Dirty/unapplied phrases cannot be used. BTC WIFs
+remain only in the explicitly blurred BIP-44/49/84 table. Do not fund educational
+test phrases or enter real recovery mnemonics in this educational app.
+
+### Coin evidence, local investigation and the existing metadata viewer
+
+- **Fees & networks:** 57 host profiles, 14 reviewed fee models / 43 pending,
+  18 reviewed host test identities. Sort only documented protocol zero or priced
+  USD scenarios; unknown/unpriced is never free. Native gas, token execution,
+  rollup data and resource/storage/service costs are distinguished. Each of all
+  500 asset rows retains an explicit evidence gap and discovery links; this is
+  not 500 independently verified contracts. [Inventory](docs/coin-research-inventory-2026-11-17.md).
+- **Wallet investigation:** one account-0/default receive leaf per supported
+  asset, local/checksum-valid BIP-39 only. Public address, public key, host and
+  path rows start with `unqueried` holdings. Alternate paths, accounts, imported
+  keys, contract wallets and exhaustive recovery/gap-limit scanning are out of
+  scope. No private material is returned by this helper.
+- **Read selected balance once:** requires explicit one-address disclosure
+  consent and an editable HTTPS provider. EVM expected chain ID is checked
+  before address/contract requests; balances are pinned to one reported block.
+  Non-EVM network identities are not independently verified. Results distinguish
+  error/unsupported/unavailable accounts from provider-observed zero/nonzero;
+  no reader proves whole-wallet emptiness, ownership, spendability or honesty of
+  the provider. Native EVM/Solana/Stellar/TRON and catalogued mainnet EVM ERC-20
+  reads are implemented, other adapters/deployments are unsupported. No signing,
+  connection, broadcasting or automatic batch query exists.
+- **NFT / token metadata:** embeds the original `apps/index3.html`, now a local
+  module-based read-only ERC-721/1155/ERC-20 inspector. Contract read consent and
+  off-chain JSON consent are separate. tokenURI is a pointer, not proof JSON
+  or media is on-chain; external images/animations/HTML/SVG are never loaded or
+  executed automatically. The iframe receives no mnemonic or derived address.
+
+Requests omit credentials/referrer/cache, reject redirects/obvious local URLs,
+limit replies to 1 MiB and time out each read at 12 seconds. Browser URL checks
+cannot rule out DNS rebinding/private DNS answers, so this must not become an
+unrestricted server proxy. All provider tests use synthetic data, not live
+holdings. [Detailed evidence, safety limits and sources](docs/coin-fees-and-investigation-2026-11-17.md).
+
+Game of Life, NFT **art generation**, a catalog, 50 themes and CryptoMonopoly
+were researched but not copied. The new metadata tab is inspection of the
+repository's existing viewer, not an art/game or wallet-transfer surface.
 
 ## Checks
 
@@ -214,9 +311,9 @@ npm i --no-save wabt jsdom puppeteer-core @sparticuz/chromium
 | 02 | every lens `compute()` on a real 25-word key, plus known-answer maths (Grünwald–Letnikov coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism, AES field multiply, GF(2) rank, spherical excess, cross-ratio invariance, Parseval) and the differential prediction checked against the real hash | 148 |
 | 03 | every 2-D renderer (all 72 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 140 |
 | 04 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism, null-not-throw with no key | 20 |
-| 05 | the real `js/viewer.js` booted in jsdom: 72 rack rows, the 25-word switch, invert invariants through the buttons, the 264-bit flip sweep, card behaviour, toggle-vs-focus, custom bit length, the menu listing every count 25…512, a 512-word phrase end to end (chips, tape, hole plates, 1406 hex nibbles, flip slider), the wallet refusing it, a custom 40-word count and the 513 rejection | 62 |
+| 05 | the real `js/viewer.js` booted in jsdom: 72 rack rows, invert/flip/card/lens behaviour, custom lengths through 512 words and the 513 rejection, exact finite-field UI, all 500 historical asset choices, network-aware public vectors and stale-derivation clearing | 77 |
 | 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 72 lenses computing *and* drawing without NaN | 151 |
-| 07 | the real thing: headless Chromium (from `@sparticuz/chromium`, whose tarball supplies the browser *and* the three NSS libs this sandbox lacks) with SwiftShader for WebGL, driving the live page — boot, 25-word switch, invert invariants, the measured flip sweep, and pixel-decoded proof that the stage rasterises | 20 |
+| 07 | real headless Chromium/SwiftShader and pixel-decoded WebGL/finite-field rasters; 25- and 512-word phrases, invert/flip/lens behaviour, known network holder vector, 500 local investigation rows (347 derived / 153 unsupported), consent gate, unknown-last fee ordering, integrated NFT page and no automatic external requests | 46 |
 | 08 | the syllable counter and 5-7-5 layout the workbench shares (`tools/blink_contract.mjs` is unrelated; this one predates it) | 12 |
 | 09 | the DOM stand-ins measured against Blink itself — `getContext`'s accepted ids, the memoised-context and wrong-type rules, `[PermissiveDictionaryConversion]`, the canvas size gates, `bufferData`/`texImage2D` overload arity, the WebAssembly-shaped buffer ceiling, and `getElementById` returning `Element?` | 56 |
 | 10 | the WebAssembly rasteriser: `wasm/lens3d.wat` assembled and validated, its projection checked against `js/spacefill.js`, bit-exact parity with the JS shadow on vertices *and* texture, geometry invariants, overflow/NaN/viewport guards, and a real-Chromium boot of `lens3d-wasm.html` | 72 |

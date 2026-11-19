@@ -9,6 +9,13 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
+## Current round 81 · evidence and investigation
+
+- [Coin fees, network evidence and opt-in wallet investigation](coin-fees-and-investigation-2026-11-17.md) — local default leaves, explicit read-only consent, expected-chain guard and the existing NFT/ERC-20 metadata viewer.
+- [All 500 asset coverage rows and explicit research gaps](coin-research-inventory-2026-11-17.md) — 57 host profiles, 14 reviewed fee models / 43 pending; not 500 independently verified token contracts.
+- [FHE Masked Aggregation v2](cyberchef-fhe-masked-aggregation-2026-11-17.md) — distinct plaintext Kitchen oracle plus separate actual finite-depth BFV encrypted-mask companion; no bootstrapping/paper speedup claim.
+- [Round 81 execution and remaining gates](backlog-execution-round-81-2026-11-17.md).
+
 ## MIME quick reference
 
 *Full study: [`mime-types-deep-dive-2026-10-21.md`](mime-types-deep-dive-2026-10-21.md).
@@ -101,10 +108,13 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-76-2026-11-15.md](backlog-execution-round-76-2026-11-15.md) — LCS35 alternate source, BFV/TOTP boundaries, GitHub TOTP code review, FindCrypt/recipe cross-check, GRASP decoding record, wiki server catalog, and Keyspace Viewer status
 - [backlog-execution-round-77-2026-11-15.md](backlog-execution-round-77-2026-11-15.md) — seven-design CAD registry/test alignment, EAGLE net-class and connectivity corrections, generated coins freshness, and full-suite verification
 - [backlog-execution-round-78-2026-11-16.md](backlog-execution-round-78-2026-11-16.md) — restore the pinned TiddlyWiki dependency, build the separate workspace, back up portable outputs, and review conversion warnings
+- [backlog-execution-round-79-2026-11-17.md](backlog-execution-round-79-2026-11-17.md) — bind Concrete composability in the signed circuit contract, add a dependency-free metadata check, and verify real encrypted evaluation and provenance rejection
+- [backlog-execution-round-80-2026-11-17.md](backlog-execution-round-80-2026-11-17.md) — selectable Galois fields, full offline coin selector and USDT BEP-20/TRC-20 identities, deterministic registry generation, 2600 software builds and passive SnapSafe recipes
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
 ## Research deep dives (the “ghirdra” line)
 
+- [2600-public-software-review-2026-11-17.md](2600-public-software-review-2026-11-17.md) — sampled historical code inventory and 31-byte NASM build, SnapSafe SECV source/recipe review, Neuron Edition simulation boundary, and HOPE_16 follow-ups
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
 - [algorithm-engineering-guidance-2026-11-05.md](algorithm-engineering-guidance-2026-11-05.md) — algorithm-engineering checklist informed by public Springer references
 - [age-pgpony-local-recipe-review-2026-11-07.md](age-pgpony-local-recipe-review-2026-11-07.md) — AGE v1.3.2/spec capability check, PGPony source scope, and local recipe-registry audit

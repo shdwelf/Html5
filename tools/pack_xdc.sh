@@ -75,6 +75,12 @@ TOML
 # local three.js modules; the viewers need their offline Gazetteer and terrain
 # modules. Omitting any of these leaves tabs blank in a network-restricted host.
 cp -R css js wasm vendor img src assets data models "$tmp/"
+# Keyspace's offline address selector needs the market snapshot and its separate
+# curated token-network identities. Do not sweep unrelated config into SITE-K.
+mkdir -p "$tmp/config"
+cp config/coins-top500.json config/token-networks.json config/chain-research.json "$tmp/config/"
+mkdir -p "$tmp/apps"
+cp apps/index3.html "$tmp/apps/"
 # Apply the shared privacy policy and cloud-reference preflight to the docs tree;
 # SITE-K must not re-expose Markdown excluded from the public Wiki bundle.
 node "$root/tools/wikiinajar/copy-public-docs.mjs" "$tmp/docs"
@@ -89,6 +95,10 @@ mkdir -p "$root/dist"
 cp "$out" "$dist"
 unzip -t "$out" > /dev/null
 echo "wrote $out ($(wc -c < "$out") bytes)"
+
+# Set SITEK_ONLY=1 when only shell/Keyspace assets changed; avoid churning the
+# independent companion archives. Default behaviour still rebuilds them all.
+if [ "${SITEK_ONLY:-0}" = 1 ]; then exit 0; fi
 
 # Keep the separately installable companions in sync with the multi-site shell.
 "$root/tools/pack_los_alamos_xdc.sh"

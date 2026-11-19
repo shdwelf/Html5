@@ -1207,8 +1207,9 @@ export function permutationCycles(p) {
   return { cycles, order, sign, transpositions: cycles.reduce((t, c) => t + c.length - 1, 0) };
 }
 
-/** Rank over GF(2) of a matrix given as an array of bigint row bitmasks. */
+/** AES-polynomial byte arithmetic used by the legacy entropy lens. */
 export function gf256Mul(a, b) { let r = 0; a &= 255; b &= 255; while (b) { if (b & 1) r ^= a; a <<= 1; if (a & 256) a ^= 0x11b; b >>= 1; } return r & 255; }
+/** Internal zero sentinel is NOT an inverse; renderers must label it undefined. */
 export function gf256Inv(a) { let r = 1, base = a & 255, e = 254; while (e) { if (e & 1) r = gf256Mul(r, base); base = gf256Mul(base, base); e >>= 1; } return a ? r : 0; }
 
 /** Real DFT amplitude spectrum of a numeric sequence. */
@@ -2771,13 +2772,13 @@ export const LENSES = [
           ["field", "GF(2^8), x^8+x^4+x^3+x+1"],
           ["characteristic", 2],
           ["order", 256],
-          [`a = 0x${first.toString(16)}`, `a⁻¹ = 0x${inv.toString(16)}`],
-          ["a·a⁻¹", `0x${gf256Mul(first, inv).toString(16)} (=1)`],
+          [`a = 0x${first.toString(16)}`, first ? `a⁻¹ = 0x${inv.toString(16)}` : "undefined: zero has no inverse"],
+          ["a·a⁻¹", first ? `0x${gf256Mul(first, inv).toString(16)} (=1)` : "undefined"],
           ["additive group", `(Z/2)^8, byte ⊕ byte`],
         ],
         describe: `Treat each entropy byte as an element of the field with 256 elements; addition is XOR, multiplication is polynomial multiplication mod the AES polynomial.`,
-        explain: `A field needs every nonzero element invertible; exponentiation a^254 gives the inverse by Fermat. The additive group is elementary abelian — that is exactly why byte XOR is the checksum's natural addition.`,
-        predict: `a·a⁻¹ = 1 for the first nonzero byte: got 0x${gf256Mul(first, inv).toString(16)}.`,
+        explain: `Every nonzero element has an inverse a^254. Zero has none. This polynomial-basis interpretation does not alter the entropy: BIP-39's checksum is a SHA-256 prefix, not a field-linear checksum.`,
+        predict: first ? `a·a⁻¹ = 1 for the first nonzero byte: got 0x${gf256Mul(first, inv).toString(16)}.` : "All entropy bytes are zero; there is no nonzero byte to invert.",
       };
     },
   },

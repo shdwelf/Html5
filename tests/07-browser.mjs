@@ -118,6 +118,10 @@ try {
   page.on("console", (m) => { if (m.type() === "error") errors.push(`console.error: ${m.text()}`); });
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("requestfailed", (r) => errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText ?? ""}`));
+  const externalRequests = [];
+  page.on("request", (r) => {
+    if (/^https?:/.test(r.url()) && new URL(r.url()).host !== new URL(URL_TARGET).host) externalRequests.push(r.url());
+  });
 
   await page.goto(URL_TARGET, { waitUntil: "networkidle2", timeout: 60000 });
   await page.waitForFunction(
@@ -153,6 +157,47 @@ try {
   const stage = pngLitPixels(stageShot);
   check("stage rasterised", stage.lit > 2000, `${stage.lit}/${stage.w * stage.h} lit px (${stage.w}x${stage.h})`);
   await page.screenshot({ path: "/tmp/keyspace-1-boot.png" });
+
+  /* Network-aware token addresses and finite fields in the real browser. */
+  await page.waitForFunction(() => document.getElementById("topCoin").options.length === 500, { timeout: 30000 });
+  await page.evaluate(() => {
+    document.getElementById("phrase").value = "abandon ".repeat(11) + "about";
+    document.getElementById("apply").click();
+  });
+  await page.waitForFunction(() => document.getElementById("hex").textContent === "0".repeat(32));
+  await page.$eval("#topCoinSearch", (el) => { el.value = "usdt-tether"; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  await page.select("#topCoinNetwork", "bsc");
+  await page.click("#deriveTopCoin");
+  await page.waitForFunction(() => !document.getElementById("topCoinOutput").hidden, { timeout: 60000 });
+  const bsc = await page.evaluate(() => ({
+    address: document.getElementById("topCoinAddress").textContent,
+    path: document.getElementById("topCoinPath").textContent,
+    info: document.getElementById("topCoinNetworkInfo").textContent,
+    networks: document.getElementById("topCoinNetwork").options.length,
+  }));
+  check("USDT has three mainnet deployments + four host-only test identities", bsc.networks === 7, bsc.networks);
+  check("BEP-20 holder matches known address", bsc.address === "0x9858EfFD232B4033E47d90003D41EC34EcaEda94", bsc.address);
+  check("BEP-20 uses coin type 60 and chain ID 56", bsc.path === "m/44'/60'/0'/0/0" && /chain ID 56/.test(bsc.info), bsc.path);
+  await page.select("#fieldPreset", "f17");
+  await page.evaluate(() => {
+    document.getElementById("fieldA").value = "16";
+    document.getElementById("fieldB").value = "2";
+    document.getElementById("fieldA").dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  const field = await page.evaluate(() => {
+    const c = document.getElementById("fieldPlot"), data = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    let lit = 0; for (let i = 0; i < data.length; i += 4) if (data[i] + data[i + 1] + data[i + 2] > 60) lit++;
+    return { product: document.getElementById("fieldProduct").textContent, lit, phrase: document.getElementById("phrase").value };
+  });
+  check("GF(17) arithmetic is exact", field.product === "15", field.product);
+  check("finite-field grid rasterised", field.lit > 2000, field.lit);
+  check("field arithmetic leaves mnemonic unchanged", field.phrase === "abandon ".repeat(11) + "about");
+  await page.click("#fieldFromEntropy");
+  const zero = await page.$eval("#fieldInverse", (el) => el.textContent);
+  check("zero has no inverse in browser", /undefined/.test(zero), zero);
+  await page.select("#topCoinNetwork", "tron");
+  const clearedNetwork = await page.$eval("#topCoinOutput", (el) => el.hidden);
+  check("network change clears old address", clearedNetwork);
 
   /* generalised 25-word length */
   await page.select("#wc", "25");
@@ -249,6 +294,39 @@ try {
   await page.waitForFunction(() => /standard 12\/15\/18\/21\/24-word/.test(document.getElementById("walletStatus").textContent), { timeout: 10000 });
   check("wallet refuses the 512-word phrase", true);
   await page.screenshot({ path: "/tmp/keyspace-4-512.png" });
+
+  /* Public BIP-39 vector only: all default leaves stay local and unqueried. */
+  await page.evaluate(() => {
+    document.getElementById("phrase").value = "abandon ".repeat(11) + "about";
+    document.getElementById("apply").click();
+  });
+  await page.waitForFunction(() => document.getElementById("hex").textContent === "0".repeat(32));
+  await page.locator("#coinTabInvestigate").click();
+  await page.waitForFunction(() => !document.getElementById("coinInvestigatePanel").hidden);
+  await page.locator("#deriveAllCoinsLocal").click();
+  await page.waitForFunction(() => /All holdings UNQUERIED/.test(document.getElementById("coinInvestigationStatus").textContent), { timeout: 90000 });
+  const investigation = await page.evaluate(() => ({
+    count: document.getElementById("coinInvestigationRows").children.length,
+    status: document.getElementById("coinInvestigationStatus").textContent,
+    queried: document.querySelectorAll("#coinInvestigationRows tr").length && /holdings: observed/.test(document.getElementById("coinInvestigationRows").textContent),
+  }));
+  check("all 500 default-leaf results rendered", investigation.count === 500, investigation.count);
+  check("347 derived / 153 unsupported, holdings unqueried", /347 default leaves derived · 153 unsupported · 0 errors/.test(investigation.status) && !investigation.queried, investigation.status.slice(0, 105));
+  await page.locator('[data-inspect-coin="eth-ethereum"]').click();
+  check("inspection displays a public address without lookup", await page.$eval("#coinProbeDisclosure", (el) => el.textContent.includes("0x9858EfFD232B4033E47d90003D41EC34EcaEda94")));
+  check("balance read is disabled without consent", await page.$eval("#querySelectedCoin", (el) => el.disabled));
+  await page.select("#topCoinOrder", "fee");
+  check("documented zero first, unknowns not free", await page.$eval("#topCoin", (el) => el.options[0].value === "xno-nano"));
+  await page.locator("#coinTabMetadata").click();
+  const iframeElement = await page.$("#coinMetadataFrame"), metadataFrame = await iframeElement.contentFrame();
+  await metadataFrame.waitForFunction(() => /Not queried/.test(document.getElementById("status")?.textContent || ""), { timeout: 15000 });
+  check("existing NFT viewer loads as a local integrated module", await metadataFrame.$eval("#metadataBtn", (el) => el.disabled));
+  check("no automatic external RPC/metadata/media request", externalRequests.length === 0, externalRequests.join(" | "));
+  await page.evaluate(() => {
+    const p = document.getElementById("phrase"); p.value = "test ".repeat(11) + "junk";
+    p.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  check("phrase edit clears batch and selected balance state", await page.evaluate(() => document.getElementById("coinInvestigationRows").children.length === 0 && document.getElementById("coinProbeResult").textContent === "unqueried"));
 } finally {
   await browser.close();
 }

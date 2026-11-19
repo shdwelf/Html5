@@ -210,6 +210,16 @@
     <p class="status">Status: <span class="badge b-edu">Educational</span> — no keys, ciphertext evaluation, noise refresh, CKKS precision/noise estimate, BFV noise budget, or security assessment. The FHE profile calculator is not a benchmark runner or a production service.</p>
   </div>
 
+  <!-- Distinct round-81 workload: plaintext oracle, actual BFV lives in CLI only. -->
+  <div class="card">
+    <div class="cat">Homomorphic Encryption &middot; encrypted-mask trust boundary</div>
+    <h3>FHE Masked Aggregation v2 <span class="badge b-edu">Plaintext reference</span></h3>
+    <p><span class="kbd">fheMaskLab</span> takes bounded JSON update vectors and explicit 0/1 client-selection bits. For <span class="kbd">{"schema":1,"updates":[[2,3],[10,20],[4,5]],"selection":[1,0,1]}</span> the selected sum is [6,8], count 2 and mean [3,4]. An empty selection has a null mean. This browser recipe performs <b>no encryption</b>.</p>
+    <p>The separate <span class="kbd">tools/he-bfv-mask-demo.mjs</span> really encrypts both updates and masks with node-seal 7.0.0 / SEAL 4.1.2 BFV, multiplies ciphertexts, sums and lazily relinearizes once before local owner decryption. This is finite-depth leveled BFV, <b>no bootstrapping</b>. Roles are co-located in a test process, not a deployed trust separation.</p>
+    <p>Lancelot's trusted-centre decrypt/sort/encrypt-mask workflow motivates the boundary, not a claim to reproduce robust federated learning or its reported 20-fold speedup. The vehicular cloud-control paper's verification uses CKKS/SEAL and Hyperledger Fabric; a ledger usage trail is not proof of ciphertext computation correctness. Only accessible, explicitly truncated opening excerpts were reviewed. Sources: <a href="https://doi.org/10.1038/s42256-025-01107-6" target="_blank" rel="noopener noreferrer">Lancelot</a>; <a href="https://doi.org/10.1109/CVCI51460.2020.9338620" target="_blank" rel="noopener noreferrer">vehicular cloud-control data protection</a>.</p>
+    <p class="status">Status: <span class="badge b-edu">Educational</span> — synthetic exact oracle plus a separate checked real BFV experiment. No encrypted sorting/distances, CKKS, Krum, bit/range proofs, production protocol, ledger or output-privacy guarantee.</p>
+  </div>
+
   <!-- ECC -->
   <div class="card">
     <div class="cat">Asymmetric · Elliptic Curves</div>
@@ -1966,7 +1976,7 @@
     <div class="cat">Packaging &middot; SFX recipe packs</div>
     <h3>Full-coverage recipe packs</h3>
     <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only), the ElGamal multiplicative teaching demo (not FHE), the F17/byte-pair/Lancelot FHE study modes, a separate CKKS architecture profile calculator, and the two GRASP 4.00d protected-library readers (<span class="kbd">graspGlTable</span>, <span class="kbd">graspGlDirectory</span>) recovered from the Sneakers press kit; each is included in the offline recipe packs.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 523 operations and SFX select-all loads 523 of 523; tests fail if any operation is ever left out of every pack again.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 525 operations and SFX select-all loads 525 of 525; tests fail if any operation is ever left out of every pack again.</p>
   </div>
 
   <hr class="hr">

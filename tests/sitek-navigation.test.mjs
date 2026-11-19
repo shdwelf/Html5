@@ -125,6 +125,7 @@ test("all standalone app modes share one shell visibility rule", () => {
   assert.match(wmCss, /body\[data-shell-view="frame"\] \.wm-desk/);
   assert.match(app, /syncSitekDockLink\(a, mode\)/);
   assert.match(worker, /"\.\/wasm\/ghidra\/ghidra_decompiler\.wasm"/);
-  assert.match(worker, /CACHE_PREFIX\}v45/);
+  assert.match(worker, /CACHE_PREFIX\}v47/);
+  assert.match(worker, /req\.cache === "no-store"/, "read-only balance/metadata responses must bypass the SW cache");
   assert.match(worker, /"\.\/vendor\/fflate\/browser\.mjs"/, "offline ZIP exports precache their browser codec");
 });
