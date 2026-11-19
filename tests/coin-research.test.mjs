@@ -66,6 +66,9 @@ test("reviewed host test identities never inherit a mainnet token contract", () 
   assert.equal(main(coin("SOL")).expectedGenesisHash, "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d");
   assert.equal(sol.find((n) => n.id === "solana-devnet").expectedGenesisHash, "GH7ome3EiwEr7tu9JuTh2dpYWBJK3z69Xm1ZE3MEE6JC");
   assert.equal(sol.find((n) => n.id === "solana-testnet").expectedGenesisHash, "4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY");
+  const stellar = networksForCoin(networks, coin("XLM"));
+  assert.equal(main(coin("XLM")).expectedNetworkPassphrase, "Public Global Stellar Network ; September 2015");
+  assert.equal(stellar.find((n) => n.id === "stellar-testnet").expectedNetworkPassphrase, "Test SDF Network ; September 2015");
 });
 
 test("Bitcoin testnet4 and signet use coin type 1 / tb while mainnet is unchanged", () => {

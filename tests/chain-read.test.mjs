@@ -138,13 +138,35 @@ test("Solana checks curated cluster genesis hash before the address read, and di
   assert.equal(unreviewed.calls.length, 0);
 });
 
-test("Stellar missing account is unavailable, while returned account identity must match", async () => {
-  const address = stellarEncode(48, new Uint8Array(32)), network = { ...native, balanceAdapter: "stellar" };
-  assert.equal((await queryHolding({ ...input, address, network }, { fetchImpl: async () => new Response("{}", { status: 404 }) })).status, "unavailable");
-  const response = (account_id, balance) => ({ fetchImpl: async (url) => { assert.ok(url.endsWith("/accounts/" + address)); return Response.json({ account_id, balances: [{ asset_type: "native", balance }] }); } });
-  assert.equal((await queryHolding({ ...input, address, network }, response(address, "0.0000000"))).status, "observed-zero");
+test("Stellar checks Horizon network passphrase before account disclosure and distinguishes missing from zero", async () => {
+  const address = stellarEncode(48, new Uint8Array(32));
+  const passphrase = "Public Global Stellar Network ; September 2015";
+  const network = { ...native, balanceAdapter: "stellar", expectedNetworkPassphrase: passphrase };
+  const mock = (accountResponse) => {
+    const calls = [];
+    return { calls, fetchImpl: async (url) => {
+      calls.push(url);
+      if (url === ENDPOINT + "/") return Response.json({ network_passphrase: passphrase });
+      assert.equal(url, ENDPOINT + "/accounts/" + address);
+      return accountResponse;
+    } };
+  };
+  const absent = mock(new Response("{}", { status: 404 }));
+  const missing = await queryHolding({ ...input, address, network }, absent);
+  assert.equal(missing.status, "unavailable"); assert.equal(missing.clusterIdentityMatched, true);
+  assert.deepEqual(absent.calls, [ENDPOINT + "/", ENDPOINT + "/accounts/" + address]);
+  const response = (account_id, balance) => mock(Response.json({ account_id, balances: [{ asset_type: "native", balance }] }));
+  const zero = response(address, "0.0000000");
+  const result = await queryHolding({ ...input, address, network }, zero);
+  assert.equal(result.status, "observed-zero"); assert.equal(result.networkPassphraseMatched, true);
   await assert.rejects(queryHolding({ ...input, address, network }, response("other", "0.0000000")), /Mismatched/);
   await assert.rejects(queryHolding({ ...input, address, network }, response(address, "0")), /Malformed/);
+
+  const mismatchCalls = [];
+  const mismatch = { fetchImpl: async (url) => { mismatchCalls.push(url); return Response.json({ network_passphrase: "Test SDF Network ; September 2015" }); } };
+  await assert.rejects(queryHolding({ ...input, address, network }, mismatch), /network passphrase mismatch/);
+  assert.deepEqual(mismatchCalls, [ENDPOINT + "/"]);
+  assert.equal((await queryHolding({ ...input, address, network: { ...network, expectedNetworkPassphrase: null } }, { fetchImpl: () => { throw new Error("must not query"); } })).status, "unsupported");
 });
 
 test("TRON distinguishes unactivated from returned zero and refuses another account", async () => {

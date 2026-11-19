@@ -23,6 +23,7 @@ export function researchedNetworks(coins, tokenRegistry, research) {
         chainId: network.chainId ?? profile?.chainId ?? null,
         feeAsset: network.feeAsset ?? profile?.feeAsset ?? null,
         expectedGenesisHash: network.expectedGenesisHash ?? profile?.genesisHash ?? null,
+        expectedNetworkPassphrase: profile?.expectedNetworkPassphrase ?? null,
         rpc: profile?.rpc || "", balanceAdapter: profile?.balanceAdapter || null,
         identityStatus: profile?.identityStatus || "pending",
         assetKind: isNativeAsset(profile, coin) ? "native" : "token-or-unverified",

@@ -413,6 +413,7 @@
       "chainId": null,
       "rpc": "https://horizon.stellar.org",
       "balanceAdapter": "stellar",
+      "expectedNetworkPassphrase": "Public Global Stellar Network ; September 2015",
       "sources": [
         {
           "kind": "fees",
@@ -421,6 +422,10 @@
         {
           "kind": "network",
           "url": "https://developers.stellar.org/docs/networks"
+        },
+        {
+          "kind": "horizon-root-network-field (CAIP-2 reference; community specification)",
+          "url": "https://namespaces.chainagnostic.org/stellar/caip2"
         }
       ],
       "testnets": [
@@ -432,11 +437,13 @@
           "rpc": "https://horizon-testnet.stellar.org",
           "source": "https://developers.stellar.org/docs/networks",
           "identityStatus": "primary-reviewed",
-          "networkPassphrase": "Test SDF Network ; September 2015"
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "expectedNetworkPassphrase": "Test SDF Network ; September 2015"
         }
       ],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The read adapter checks Horizon root network_passphrase against the curated network value before sending an account ID. This is a single-provider mismatch guard, not independent consensus or protection against a malicious endpoint."
       ],
       "nativeBaseFee": "0.00001"
     },

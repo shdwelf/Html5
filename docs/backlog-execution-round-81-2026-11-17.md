@@ -188,6 +188,34 @@ execution were not possible. No paper result is claimed as reproduced. The
 acceptance item remains open pending a suitable GPU host, exact artifact
 checksum/source inspection, and logged reproduction.
 
+## Stellar mainnet/testnet read preflight
+
+Added a Stellar Horizon-root `network_passphrase` check using official Stellar
+Mainnet/Testnet passphrases, before the adapter sends an account ID to the
+`/accounts/{id}` endpoint. Missing curated identity is unsupported, a mismatch
+fails closed, and returned results mark provider identity matched but not
+independently verified. The passphrase values are from Stellar's primary network
+documentation; the root-response field shape is supported by a community CAIP-2
+resolution reference and is labelled as such. A provider can lie about both the
+passphrase and account response; this is not a second-provider or consensus
+check. TRON identity remains unverified. Added catalog propagation and tests for
+Mainnet/Testnet values, call order, mismatch-before-disclosure, missing identity,
+and absent-vs-zero accounts. Focused Node tests **21/21 passed**, inventory check
+fresh, and `git diff --check` passed. After refreshing generated archives, full
+`npm test` passed: Vitest suite passed; Node **1,110 passed, 12 optional skipped,
+0 failed** (1,122 total). The generated `wikiinajar` bundle was rebuilt after the
+new Markdown source changed the approved corpus count; its privacy preflight
+passed. Keyspace and SITE-K archives were refreshed and archive-freshness tests
+passed.
+
+| Refreshed tracked archive | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `keyspace.xdc` | 492,274 | `8d85edfdc71e7ddaf57693fdceb839d0e3252000c7a5306fcc6c2407b0d611fe` |
+
+`sitek.xdc` and `wikiinajar.xdc` were also regenerated and checked. Their
+hashes are intentionally not embedded in this Markdown: these packages contain
+this report/corpus, so embedding their own hashes would be self-referential.
+
 ## Remaining acceptance work
 
 1. Independently research the issuer/current host/contract or mint/migrations/

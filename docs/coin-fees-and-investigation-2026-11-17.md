@@ -130,7 +130,12 @@ hash. Missing expected hashes are unsupported; a mismatch stops before the
 account request. This is a useful endpoint/cluster mismatch guard, **not
 independent verification**: one provider can lie about both the hash and account
 response, and no second provider, gossip quorum or light-client proof is used.
-Stellar and TRON identity still depends on the user-selected endpoint. Other
+The Stellar reader now checks the provider's Horizon root `network_passphrase`
+against the curated Mainnet or Testnet passphrase before sending the account ID;
+a mismatch stops before the account request. Passphrases are documented by
+Stellar, while the Horizon-root field shape is referenced in the community
+CAIP-2 resolution specification. This remains a single-provider assertion, not
+independent consensus proof; TRON still has no network identity preflight. Other
 token/chain readers are unsupported. The endpoint receives one selected public address,
 any necessary catalogued contract, and the user's IP; it may correlate/log
 requests. No automatic batch lookup is performed. Consent is explicit and
@@ -200,7 +205,8 @@ statuses are in `config/chain-research.json`.
 - Litecoin Core at pinned commit [`9fe73a4`](https://github.com/litecoin-project/litecoin/tree/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343): [wallet/fees.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/wallet/fees.cpp), [policy/feerate.cpp](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp) and [policy/feerate.h](https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.h)
 - Dogecoin Core v1.14.9: [fee recommendation](https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/doc/fee-recommendation.md), [fee implementation](https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/src/dogecoin-fees.cpp), and [release notes](https://github.com/dogecoin/dogecoin/releases/tag/v1.14.9). The fee guide says it was last updated for v1.14.6.
 - https://xrpl.org/docs/concepts/transactions/transaction-cost and https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks
-- https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks
+- https://developers.stellar.org/docs/learn/fundamentals/fees-resource-limits-metering and https://developers.stellar.org/docs/networks (official fee rules and Mainnet/Testnet passphrases)
+- https://namespaces.chainagnostic.org/stellar/caip2 (community CAIP-2 reference for retrieving Horizon root `network_passphrase`; not primary authority)
 - https://docs.base.org/specifications/transactions/network-fees
 - https://docs.arbitrum.io/how-arbitrum-works/deep-dives/gas-and-fees and https://docs.arbitrum.io/chain-info
 - https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm
