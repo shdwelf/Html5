@@ -1,5 +1,7 @@
 # 4DWM × FHE research note: encrypted squared-error aggregate (2026-11-15)
 
+Follow-up: [production-readiness review and library comparison](fhe-production-readiness-2026-11-15.md).
+
 ## Research question and formula
 
 A practical next formula for a terrain/data-quality workflow is the exact
