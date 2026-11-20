@@ -32,9 +32,9 @@ html, body {
 #globeStage[hidden] { display: none; }
 #globeStage:active { cursor: grabbing; }
 #pcgPanel {
-  position: fixed; inset: 64px 16px 48px 16px; z-index: 7; overflow: auto;
-  background: var(--bg); border: 1px solid rgba(92,214,255,0.35); border-radius: 10px;
-  padding: 16px 20px;
+  position: fixed; top: 150px; left: 16px; bottom: 56px; width: min(48vw, 560px); z-index: 7; overflow: auto;
+  background: rgba(7, 13, 18, 0.92); border: 1px solid rgba(92,214,255,0.55); border-radius: 10px;
+  padding: 16px 20px; backdrop-filter: blur(8px);
 }
 #pcgPanel h2 { margin: 0 0 6px; font-size: 15px; letter-spacing: 0.08em; }
 #pcgPanel h3 { margin: 18px 0 6px; font-size: 12px; letter-spacing: 0.08em; color: var(--warn, #ffb020); }
@@ -42,6 +42,11 @@ html, body {
 #pcgBody .cols { columns: 3; column-gap: 28px; font-size: 11px; line-height: 1.5; }
 #pcgBody .rec { margin: 0 0 8px; font-size: 11px; line-height: 1.5; break-inside: avoid; }
 #pcgBody .rec b { color: var(--warn, #ffb020); }
+.pcg-places { display: grid; gap: 4px; }
+.pcg-place { width: 100%; text-align: left; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; }
+.pcg-place b, .pcg-place small { display: block; }
+.pcg-place small { margin-top: 3px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.zoom-controls { display: inline-flex; gap: 4px; }
 #labels { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
 #labels .lbl {
   position: absolute; left: 0; top: 0;
@@ -247,7 +252,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  #pcgPanel { inset: var(--mobile-ui-top) 8px 60px; padding: 12px; }
+  #pcgPanel { inset: calc(var(--mobile-ui-top) + 5px) 8px 60px auto; width: min(92vw, 480px); padding: 12px; }
   #pcgBody .cols { columns: 1; }
 }
 

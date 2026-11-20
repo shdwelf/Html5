@@ -122,6 +122,24 @@ test("country viewer helpers and page wiring", async () => {
   assert.ok(lawrence?.verified && lawrence.gnis, "official GNIS result is searchable and keeps its ID");
   const atlanta = searchGazetteerPoints("Atlanta").find((p) => p.name === "Atlanta");
   assert.ok(atlanta && !atlanta.verified && !atlanta.gnis, "reference rows are not mislabeled as GNIS IDs");
+  const tasmania = searchGazetteerPoints("Tasmania").find((p) => p.name === "Tasmania");
+  assert.ok(tasmania, "Tasmania is searchable as an island place, not a separate country profile");
+  assert.deepEqual([tasmania.lat, tasmania.lon], [-42.0409059, 146.8087322]);
+  assert.equal(tasmania.gnis, null, "USGS GNIS is not applied to Australia");
+  assert.match(tasmania.note, /approximate geographic-centre reference/i);
+  const guamIsland = searchGazetteerPoints("Guam").find((p) => p.name === "Guam" && p.gnis === "1389704");
+  assert.ok(guamIsland?.verified, "territorial island record is directly verified from the retained USGS GNIS register");
+  assert.match(guamIsland.note, /GNIS primary point/);
+  const tutuila = searchGazetteerPoints("Tutuila Island").find((p) => p.name === "Tutuila Island");
+  assert.equal(tutuila.gnis, "1389316");
+  assert.equal(tutuila.verified, true);
+  const botanyBay = searchGazetteerPoints("Botany Bay Island").find((p) => p.name === "Botany Bay Island");
+  assert.ok(botanyBay && botanyBay.gnis === "1220903" && !botanyBay.verified,
+    "secondary GNIS cross-reference is visible but not promoted to directly verified");
+  const oakIsland = searchGazetteerPoints("Oak Island").find((p) => p.name === "Oak Island" && p.county.includes("South Carolina"));
+  assert.deepEqual([oakIsland.lat, oakIsland.lon], [32.4243591, -80.5967729]);
+  const keys = searchGazetteerPoints("Florida Keys").find((p) => p.name === "Florida Keys");
+  assert.ok(keys && !keys.gnis && /generalized/i.test(keys.note));
   const boraBora = searchGazetteerPoints("Bora Bora").find((p) => p.name === "Bora Bora");
   assert.ok(boraBora && boraBora.fclass === "Locality", "Bora Bora is indexed as a place, not a country");
   assert.equal(boraBora.county, "French Polynesia");
@@ -143,6 +161,8 @@ test("country viewer helpers and page wiring", async () => {
   assert.match(html, /id="gazSearch"/, "the country viewer exposes Gazetteer search");
   assert.match(html, /id="gazResults"/, "Gazetteer search results are present");
   assert.match(html, /id="gazDetail"/, "a selected Gazetteer point has an inspector");
+  assert.match(html, /id="zoomPlace"/, "a selected island/reference place can be zoomed into");
+  assert.match(html, /GNIS is a US domestic\/associated-area gazetteer, not a global island inventory/);
   assert.match(html, /Bora Bora is a place in French Polynesia, not a separate country/);
   assert.match(html, /Only rows marked GNIS/, "non-GNIS reference coordinates stay clearly labeled");
   assert.match(html, /id="sourcepin"/, "page must surface the source pin");
@@ -241,6 +261,7 @@ test("country viewer Webxdc bundle carries the offline app and outline license",
     "js/country-data.js",
     "js/country-map.js",
     "js/country-viewer.js",
+    "js/country-viewer-islands.js",
     "js/country-viewer-search.js",
     "js/country-iso-crosswalk.js",
     "js/country-iana-cctlds.js",

@@ -4,6 +4,12 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Country / planet viewer and research continuation (2026-11-15)
+
+- [Island/place coverage update](research/island-place-coverage-2026-11-15.md) — Tasmania and named island examples, coordinate/source caveats, and GNIS geographic scope.
+- [Black Sheep Squadron / Boyington continuation](research/black-sheep-squadron-boyington-2026-11-15.md) — source-led VMF-214 chronology, kill-count distinctions, and remaining TV-production research.
+- [4DWM × FHE squared-error experiment](research/4dwm-fhe-squared-error-2026-11-15.md) — encrypted exact-integer SSE prototype, command, tested bounds, and node-seal/Microsoft SEAL security caveat.
+
 *Conventions:* deep dives carry provenance inline (F3 — external hosts are
 link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the

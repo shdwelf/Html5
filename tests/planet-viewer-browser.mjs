@@ -71,6 +71,16 @@ try {
     assert.ok(farther > closer, `wheel down should zoom out: ${closer} -> ${farther}`);
   });
 
+  await test("explicit zoom buttons adjust terrain camera distance", async () => {
+    await page.click('[data-plate="chey"]');
+    const before = await page.$eval("#stage", (canvas) => Number(canvas.dataset.cameraDistance));
+    await page.click("#btnZoomIn");
+    await page.waitForFunction((distance) => Number(document.getElementById("stage")?.dataset.cameraDistance) < distance, {}, before);
+    const closer = await page.$eval("#stage", (canvas) => Number(canvas.dataset.cameraDistance));
+    await page.click("#btnZoomOut");
+    await page.waitForFunction((distance) => Number(document.getElementById("stage")?.dataset.cameraDistance) > distance, {}, closer);
+  });
+
   await test("WebGL is live and the terrain draws", async () => {
     const info = await page.evaluate(() => {
       const c = document.getElementById("stage");
@@ -226,6 +236,33 @@ try {
     assert.equal(await page.$eval("#pcgPanel", (panel) => panel.hidden), true);
     assert.equal(await page.$eval("#stage", (canvas) => canvas.dataset.gazetteerMarker), "active",
       "leaving the PC Globe overlay restores the selected point marker on terrain");
+  });
+
+  await test("PC Globe feature label exact-matches an independent point and exposes coordinates/zoom", async () => {
+    await page.click('[data-plate="pcg"]');
+    await page.$eval("#pcgSearch", (input) => {
+      input.value = "Tasmania";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForSelector("#pcgBody .pcg-place");
+    assert.equal(await page.$eval("#globeStage", (canvas) => canvas.hidden), false,
+      "the index plate displays the globe behind searchable labels");
+    await page.click("#pcgBody .pcg-place");
+    const state = await page.evaluate(() => ({
+      label: document.getElementById("infoTitle").textContent,
+      body: document.getElementById("infoBody").textContent,
+      zoom: Number(document.getElementById("globeStage").dataset.zoom),
+      panelHidden: document.getElementById("pcgPanel").hidden,
+    }));
+    assert.equal(state.label, "Tasmania");
+    assert.match(state.body, /-42\.04091, 146\.80873/);
+    assert.ok(state.zoom > 1, `selection should zoom globe, got ${state.zoom}`);
+    assert.equal(state.panelHidden, false, "the PC Globe index remains available while the point is focused");
+    const zoomBefore = state.zoom;
+    await page.click("#btnZoomIn");
+    await page.waitForFunction((zoom) => Number(document.getElementById("globeStage")?.dataset.zoom) > zoom, {}, zoomBefore);
+    await page.click("#btnReset");
+    await page.click('[data-plate="globe"]');
   });
 
   await test("S5 imports a local-only dated snapshot and lets the globe filter, inspect, and clear it", async () => {

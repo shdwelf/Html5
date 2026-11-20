@@ -51,7 +51,12 @@ tiles.
 
 The offline name index combines the Cheyenne/Pikes Peak register, the synced
 SoCal register, five city datasets (Atlanta, Buffalo, Kansas City, Lawrence,
-Toronto), and the Bora Bora name-only locality — `js/planet-viewer-gazetteer.js`.
+Toronto), the Bora Bora name-only locality, and a mixed-source curated island/
+territory subset — `js/planet-viewer-gazetteer.js`. Seven territory island
+points reuse the verified GNIS subset documented in
+`resources/city-subsurface/gnis-territory-source-register-2026-10-22.json`;
+Tasmania, Flinders Island, Florida Keys context, Botany Bay Island and Oak
+Island carry distinct point/source caveats in `js/country-viewer-islands.js`.
 Search uses the trigram model from `js/city-gazetteer.js`. Each terrain plate
 has in-bounds local names, but this remains a limited offline place-name index,
 not a complete GNIS query or address service. Source coordinates and
