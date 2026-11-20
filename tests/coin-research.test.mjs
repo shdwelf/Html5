@@ -21,7 +21,7 @@ const ABANDON = "abandon ".repeat(11) + "about";
 test("all 500 historical assets have explicit evidence gaps, never fabricated free costs", () => {
   assert.equal(coins.length, 500);
   assert.equal(Object.keys(evidence.chains).length, 57);
-  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 17);
+  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 18);
   const ids = new Set(coins.map((row) => row.id));
   for (const profile of Object.values(evidence.chains)) for (const id of profile.nativeAssetIds) assert.ok(ids.has(id), id);
   for (const row of coins) {
@@ -40,6 +40,17 @@ test("all 500 historical assets have explicit evidence gaps, never fabricated fr
   assert.equal(researchRecord(evidence, coin("DOGE"), main(coin("DOGE"))).identityStatus, "pending");
   assert.equal(researchRecord(evidence, coin("LTC"), main(coin("LTC"))).feeAsset, "LTC");
   assert.equal(researchRecord(evidence, coin("LTC"), main(coin("LTC"))).identityStatus, "pending", "fee mechanics review is separate from chain identity review");
+  const nearRecord = researchRecord(evidence, coin("NEAR"), main(coin("NEAR")));
+  assert.equal(nearRecord.feeStatus, "primary-reviewed");
+  assert.equal(nearRecord.feeAsset, "NEAR");
+  assert.equal(nearRecord.identityStatus, "primary-reviewed");
+  assert.match(nearRecord.feeFormula, /gas burned.*gas price/i);
+  assert.match(nearRecord.feeFormula, /storage staking is separate/i);
+  assert.equal(estimate("NEAR").amount, null, "reviewed formula is not a transaction-specific fee quote");
+  const nearManual = feeEstimate(evidence, coin("NEAR"), main(coin("NEAR")), parseFeeScenario('{"nativeFees":{"near-near-protocol":0.0004}}'));
+  assert.equal(nearManual.amount, 0.0004);
+  assert.equal(nearManual.live, false);
+  assert.match(nearManual.basis, /user-entered/);
   assert.match(estimate("XNO").basis, /PoW\/service costs excluded/);
   assert.equal(coin("XNO").derive, false, "feeless does not enable an unsupported derivation");
   assert.equal(researchRecord(evidence, coin("usdt-tether"), main(coin("usdt-tether"))).native, false);
