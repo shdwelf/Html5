@@ -9,7 +9,7 @@ import { buildPlates, PLATE_ORDER } from "./planet-viewer-data.js";
 import { runChecks } from "./planet-viewer-checks.js";
 import { COUNTRIES } from "./country-data.js";
 import { globeMarkers, visibleMarkers, graticule, coastlineRings, projectSegments, projectOrthographic } from "./planet-globe.js";
-import { locateGazetteerPoint } from "./planet-viewer-search.js";
+import { locateGazetteerPoint, matchPcGlobeFeatureCoordinates } from "./planet-viewer-search.js";
 import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
 import { filterIncidentFeatures, MAX_SNAPSHOT_BYTES, parseIncidentSnapshot } from "./incident-snapshot.js";
 
@@ -44,8 +44,9 @@ let gazIndex = null;
 
 // Globe plate state (S4 tail): the Red October orthographic globe, reused.
 let globeOn = false;
-let pcgOn = false; // PC Globe index plate (index-only; nothing plotted)
+let pcgOn = false; // PC Globe labels plus independently sourced exact-name coordinate matches
 let globeCentre = { lat: 20, lon: 10 };
+let globeZoom = 1;
 let globeData = null; // { markers, skipped } from js/planet-globe.js
 let globeRings = null; // coastline rings from vendor/world/countries.geo.json
 let selectedGazetteer = null; // the most recently focused offline place
@@ -214,7 +215,8 @@ function drawGlobe() {
   ctx.clearRect(0, 0, w, h);
   const cx = w / 2;
   const cy = h / 2;
-  const R = Math.min(w, h) * 0.42;
+  const R = Math.min(w, h) * 0.42 * globeZoom;
+  cv.dataset.zoom = globeZoom.toFixed(2);
   const { lat: cLat, lon: cLon } = globeCentre;
   const toPx = (p) => [cx + p.x * R, cy - p.y * R];
 
@@ -420,7 +422,7 @@ function focusIncident(feature) {
 function pickIncidentAt(clientX, clientY) {
   const cv = $("globeStage");
   const rect = cv.getBoundingClientRect();
-  const radius = Math.min(rect.width, rect.height) * 0.42;
+  const radius = Math.min(rect.width, rect.height) * 0.42 * globeZoom;
   let closest = null;
   let distance = 12 ** 2;
   for (const feature of visibleMarkers(
@@ -486,7 +488,24 @@ function renderPcGlobe(filter) {
   const names = PCGLOBE_COUNTRY_NAMES.filter((n) => !q || n.toLowerCase().includes(q));
   const records = PCGLOBE_COUNTRY_RECORDS.filter((r) =>
     !q || r.features.some((f) => f.toLowerCase().includes(q)) || `${r.file} ${r.index}`.toLowerCase().includes(q));
+  const featureLabels = [...new Set(records.flatMap((r) => r.features))];
+  const located = matchPcGlobeFeatureCoordinates(featureLabels, PLANET_GAZ_ROWS);
+  const locatedMarkup = located.length
+    ? located.map(({ label, point }, i) => {
+      const row = Array.isArray(point) ? point : null;
+      const lat = row ? row[4] : point.lat;
+      const lon = row ? row[5] : point.lon;
+      const area = row ? row[3] : point.county;
+      const provenance = row ? row[9] : point.note;
+      return `<button type="button" class="pcg-place" data-pcg-place="${i}"><b>${esc(label)}</b>` +
+        `<small>${lat.toFixed(5)}, ${lon.toFixed(5)} · ${esc(area || "area not recorded")}</small>` +
+        `<small>${esc(provenance || "Independent offline Gazetteer exact-name match; not PC Globe coordinates.")}</small></button>`;
+    }).join("")
+    : `<p class="small dim">No exact-name match in the viewer's limited offline coordinate register for this filter. PC Globe's own map coordinates remain undecoded; no position is inferred.</p>`;
   host.innerHTML =
+    `<h3>Decoded PC Globe labels matched to independent offline coordinates — ${located.length}</h3>` +
+    `<p class="small dim">A selectable point is an exact-name match to a separate Gazetteer/country reference, not a recovered PC Globe coordinate. Only these matches are plotted; source tier and point basis are shown.</p>` +
+    `<div class="pcg-places">${locatedMarkup}</div>` +
     `<h3>NAMES.DAT country index — ${names.length} of ${PCGLOBE_INDEX_META.countryNameCount} names</h3>` +
     `<div class="cols">${names.map((n) => esc(n)).join("<br>")}</div>` +
     `<h3>COUNTRY1.DAT / COUNTRY2.DAT records — ${records.length} of ${PCGLOBE_INDEX_META.countryRecordCount} records · ${PCGLOBE_INDEX_META.featureCount} decoded feature labels</h3>` +
@@ -497,13 +516,32 @@ function renderPcGlobe(filter) {
     `${esc(PCGLOBE_INDEX_META.cityNameRun.first)} … ${esc(PCGLOBE_INDEX_META.cityNameRun.last)}) and a currency run ` +
     `(${PCGLOBE_INDEX_META.currencyRun.count}, ${esc(PCGLOBE_INDEX_META.currencyRun.first)} … ${esc(PCGLOBE_INDEX_META.currencyRun.last)}); ` +
     `only their counts were decoded, so they are reported, not listed.</p>`;
+  host.querySelectorAll("[data-pcg-place]").forEach((button) => button.addEventListener("click", () => {
+    const { label, point } = located[Number(button.dataset.pcgPlace)];
+    const row = Array.isArray(point) ? point : null;
+    const lat = row ? row[4] : point.lat;
+    const lon = row ? row[5] : point.lon;
+    selectedGazetteer = row ? { name: row[0], fclass: row[1], county: row[3], lat, lon, gnis: row[7], verified: Boolean(row[8]), note: row[9], source: row[10] } : point;
+    globeCentre = { lat, lon };
+    globeZoom = 2.4;
+    const title = $("infoTitle");
+    const body = $("infoBody");
+    if (title) title.textContent = label;
+    if (body) body.innerHTML = `<p class="small">${lat.toFixed(5)}, ${lon.toFixed(5)} · independent Gazetteer coordinate match; not decoded PC Globe coordinates.</p>` +
+      `<p class="tiny dim">${esc(selectedGazetteer.note || "")}</p>`;
+    drawGlobe();
+    announce(`PC Globe label ${label} · exact-name match · ${lat.toFixed(5)}, ${lon.toFixed(5)} · independent source`);
+  }));
 }
 
 function setPcGlobe(on) {
   pcgOn = on;
+  globeOn = on;
   syncGazetteerMarker();
   const panel = $("pcgPanel");
+  const globeCanvas = $("globeStage");
   if (panel) panel.hidden = !on;
+  if (globeCanvas) globeCanvas.hidden = !on;
   if (terrainGroup) terrainGroup.visible = !on && !globeOn;
   if (on) {
     setActivePlate("pcg");
@@ -517,7 +555,8 @@ function setPcGlobe(on) {
     const sh = $("statPlate");
     if (sh) sh.textContent = "plate: pcglobe index";
     renderPcGlobe($("pcgSearch")?.value || "");
-    announce("PC Globe index plate · decoded names and labels only — coordinates undecoded, nothing plotted");
+    drawGlobe();
+    announce("PC Globe labels · exact-name matches to independent Gazetteer coordinates only; PC Globe map coordinates remain undecoded");
   }
 }
 
@@ -571,6 +610,7 @@ function selectPlate(id) {
 function frame() {
   if (globeOn) {
     globeCentre = { lat: 20, lon: 10 };
+    globeZoom = 1;
     drawGlobe();
     return;
   }
@@ -892,6 +932,11 @@ function bind() {
 
   const gc = $("globeStage");
   if (gc) {
+    gc.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      globeZoom = Math.max(0.75, Math.min(4, globeZoom * (event.deltaY < 0 ? 1.18 : 1 / 1.18)));
+      drawGlobe();
+    }, { passive: false });
     let drag = null;
     gc.addEventListener("pointerdown", (e) => {
       drag = { x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, moved: false };
@@ -932,6 +977,23 @@ function bind() {
     else syncLabels();
   });
   $("btnReset")?.addEventListener("click", frame);
+  const zoomViewer = (direction) => {
+    if (globeOn) {
+      globeZoom = Math.max(0.75, Math.min(4, globeZoom * (direction > 0 ? 1.25 : 0.8)));
+      drawGlobe();
+      announce(`globe zoom · ${globeZoom.toFixed(2)}×`);
+      return;
+    }
+    const offset = camera.position.clone().sub(controls.target);
+    offset.multiplyScalar(direction > 0 ? 0.78 : 1 / 0.78);
+    const distance = Math.max(0.2, Math.min(plates[plate.id].world.w * 20, offset.length()));
+    offset.setLength(distance);
+    camera.position.copy(controls.target).add(offset);
+    controls.update();
+    announce(`${plate.name} terrain zoom · ${distance.toFixed(1)} km camera range`);
+  };
+  $("btnZoomIn")?.addEventListener("click", () => zoomViewer(1));
+  $("btnZoomOut")?.addEventListener("click", () => zoomViewer(-1));
   $("btnVrml")?.addEventListener("click", exportVrml);
   $("vertExag")?.addEventListener("input", (e) => {
     exag = Number(e.target.value);
@@ -996,6 +1058,9 @@ function init() {
   camera = new THREE.PerspectiveCamera(46, 1, 0.1, 6000);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
+  controls.zoomSpeed = 1.6;
+  controls.minDistance = 0.2;
+  controls.maxDistance = 12000;
 
   scene.add(new THREE.AmbientLight(0xbfd4dd, 0.8));
   const sun = new THREE.DirectionalLight(0xfff2dd, 1.6);

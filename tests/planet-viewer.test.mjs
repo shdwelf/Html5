@@ -7,6 +7,8 @@ import { DEM as lawrenceSource } from "../js/city-dem-grid-lawrence.js";
 import { runChecks } from "../js/planet-viewer-checks.js";
 import { PLANET_GAZ_ROWS, PLANET_GAZETTEER_META } from "../js/planet-viewer-gazetteer.js";
 import { demToVrml } from "../js/vrml-export.js";
+import { matchPcGlobeFeatureCoordinates } from "../js/planet-viewer-search.js";
+import { ISLAND_REFERENCE_ROWS } from "../js/country-viewer-islands.js";
 
 /* ======================================================================
    data adapter
@@ -144,7 +146,7 @@ test("the page wires every control the viewer binds", () => {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const b of ["chey", "ange", "lawrence", "globe", "pcg"]) assert.ok(html.includes(`data-plate="${b}"`));
-  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody", "controlsPanel", "inspectorPanel", "btnControls", "btnInspector"]) {
+  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody", "controlsPanel", "inspectorPanel", "btnControls", "btnInspector", "btnZoomIn", "btnZoomOut"]) {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const m of ["relief", "wire", "xray"]) assert.ok(html.includes(`data-mode="${m}"`));
@@ -247,6 +249,19 @@ import {
   PCGLOBE_COUNTRY_RECORDS,
 } from "../js/pcglobe-index-data.js";
 
+test("PC Globe feature labels only gain coordinates from exact independent gazetteer matches", () => {
+  const planetTasmania = PLANET_GAZ_ROWS.find(([name]) => name === "Tasmania");
+  assert.deepEqual([planetTasmania?.[4], planetTasmania?.[5]], [-42.0409059, 146.8087322],
+    "the same island point powers Planet Viewer search and PC Globe feature matching");
+  const match = matchPcGlobeFeatureCoordinates(["Tasmania", "Mystery Mountain", "oak island"], ISLAND_REFERENCE_ROWS);
+  assert.equal(match.length, 2, "matching is exact apart from case; unmatched labels receive no fabricated point");
+  assert.equal(match[0].label, "Tasmania");
+  assert.deepEqual([match[0].point[4], match[0].point[5]], [-42.0409059, 146.8087322]);
+  assert.equal(match[1].label, "oak island");
+  assert.equal(match[1].point[7], "1225123");
+  assert.equal(match[1].point[8], 0, "cross-referenced GNIS id is not asserted verified");
+});
+
 test("PC Globe index carries the decoded registers at full count", () => {
   assert.equal(PCGLOBE_COUNTRY_NAMES.length, 216);
   assert.equal(PCGLOBE_COUNTRY_NAMES[0], "AFGHANISTAN");
@@ -279,7 +294,8 @@ test("PC Globe index plate wiring is honest and complete", () => {
   }
   assert.match(app, /index-only/i);
   const html = readFileSync(new URL("../planet-viewer-4dwm.html", import.meta.url), "utf8");
-  assert.match(html, /nothing from PC Globe is plotted/);
+  assert.match(html, /no PC Globe map coordinates are plotted/);
+  assert.match(html, /Exact-name label matches can be selected using/);
   // The checks runner reports the index as a consistency check.
   const plates = buildPlates(32, 24);
   const check = runChecks(plates).find((c) => c.id === "pcglobe/index");

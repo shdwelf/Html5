@@ -63,7 +63,7 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
     "css/planet-viewer-4dwm.css", "js/sitek-modes.js", "js/flash-coordinates.js",
     "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
     "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js", "js/country-map.js",
-    "js/country-data.js", "js/city-gazetteer.js", "js/city-gazetteer-data.js",
+    "js/country-data.js", "js/country-viewer-islands.js", "js/city-gazetteer.js", "js/city-gazetteer-data.js",
     "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
     "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
     "js/city-gazetteer-data-toronto.js", "js/sanborn-restaurant-manifest.js", "apps/red-october-command-viewer/core.js",
@@ -87,7 +87,7 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   assert.ok(worker.includes('"./vendor/fflate/browser.mjs"'), "ZIP compressor is precached for offline exports");
   assert.ok(worker.includes('"./js/sanborn-restaurant-manifest.js"'), "Sanborn's local parser is precached for first offline launch");
   for (const file of [
-    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js", "js/country-map.js",
+    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js", "js/country-viewer-islands.js", "js/country-map.js",
     "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
     "js/planet-viewer-data.js", "js/planet-globe.js", "js/city-gazetteer.js",
     "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",

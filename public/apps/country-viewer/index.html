@@ -61,7 +61,7 @@
       <p class="note">Search names, ISO codes, and offline IANA ccTLD aliases such as <code>.ca</code> or <code>.uk</code>. Shared TLD aliases can return multiple entries; this is a pinned snapshot, not a live IANA lookup.</p>
       <section class="gaz-box" aria-labelledby="gazHeading">
         <h2 id="gazHeading">OFFLINE PLACE SEARCH</h2>
-        <p class="note">A limited five-city Gazetteer plus one Bora Bora name-only locality record. Only rows marked GNIS carry an official GNIS ID. Bora Bora is a place in French Polynesia, not a separate country; no coordinates are included. This is not a complete or live lookup.</p>
+        <p class="note">A limited offline Gazetteer plus curated island examples. GNIS is a US domestic/associated-area gazetteer, not a global island inventory; Tasmania and Flinders Island use Australian references. Verified GNIS island points also cover Guam, American Samoa, the U.S. Virgin Islands and Midway. Other examples include Florida Keys context, Botany Bay Island and Oak Island, SC. Bora Bora is a place in French Polynesia, not a separate country; its coordinates are not included. Only rows marked GNIS carry a GNIS ID; secondary-source GNIS ID matches remain explicitly unverified. This is not a complete or live lookup.</p>
         <label for="gazSearch" class="note">Search place names</label>
         <input id="gazSearch" type="search" placeholder="Search offline place names (2+ letters)…" autocomplete="off" aria-label="Search offline place names" />
         <div id="gazResults" aria-live="polite"></div>
@@ -75,7 +75,8 @@
         <button type="button" data-map-view="europe" aria-pressed="false">Europe</button>
         <button type="button" data-map-view="caribbean" aria-pressed="false">Caribbean</button>
         <button type="button" data-map-view="pacific" aria-pressed="false">Pacific</button>
-        <button type="button" id="zoomSelected" disabled>Zoom to selected</button>
+        <button type="button" id="zoomSelected" disabled>Zoom to selected country</button>
+        <button type="button" id="zoomPlace" disabled>Zoom to selected place</button>
       </div>
       <div class="map-legend" aria-label="Map legend">
         <span><i class="map-outline-key" aria-hidden="true"></i>country outlines</span>

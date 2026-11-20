@@ -222,7 +222,6 @@
         }
       ],
       "testnets": [
-
         {
           "id": "solana-devnet",
           "name": "Solana Devnet",
@@ -505,10 +504,10 @@
       "name": "NEAR Protocol (implicit account)",
       "family": "near",
       "identityStatus": "primary-reviewed",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "NEAR",
+      "feeModel": "near-gas",
+      "feeFormula": "Transaction gas is charged in NEAR based on gas burned × the applicable gas price. The gas price has a 0.0001 NEAR/Tgas floor and varies with load; execution gas is bought up front at no less than 0.001 NEAR/Tgas, with unused gas and the price difference refunded. Action/contract execution, attached deposits, and possible ~0.007 NEAR account-creation charge affect required balance; storage staking is separate. No transaction-specific amount without the action/receipt and price inputs.",
       "nativeAssetIds": [
         "near-near-protocol"
       ],
@@ -519,6 +518,18 @@
         {
           "kind": "network",
           "url": "https://docs.near.org/protocol/network/networks"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.near.org/integrations/exchange-integration#fees-and-required-balances"
+        },
+        {
+          "kind": "account-creation-and-required-balance",
+          "url": "https://docs.near.org/integrations/accounts"
+        },
+        {
+          "kind": "storage-staking",
+          "url": "https://docs.near.org/protocol/storage/storage-staking"
         }
       ],
       "testnets": [
@@ -533,7 +544,9 @@
         }
       ],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Primary NEAR docs describe transaction gas as action- and execution-dependent: gas is bought up front, actual burned gas is charged at the applicable price, and unused gas / the purchase-price difference are refunded. A live transaction estimate requires transaction-specific inputs or receipts; no default fee, live gas price, free-transfer assertion, or automatic estimator is provided.",
+        "The ~0.007 NEAR account-creation charge for a new account is an additional conditional cost through gas, not a universal transfer fee. Attached deposits are transferred value, not transaction fees. Storage staking (currently documented as 10^19 yoctoNEAR/byte) is a separate balance lock, not a gas fee.",
+        "Historical host mapping and derivation conventions are inventory, not proof of wallet compatibility or holdings. NEAR fee mechanics are reviewed independently of the pre-existing primary-reviewed network identity."
       ]
     },
     "AVAX": {

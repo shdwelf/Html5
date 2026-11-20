@@ -17,8 +17,8 @@
     <p class="small" id="pcgMeta">Decoded PC Globe index — names and label strings only.</p>
     <p class="small dim">Index only: PC Globe's binary map payload (feature coordinates and the name-to-record
       pointer table) is undecoded, so country records are listed by file position — not matched to country
-      names — and nothing from PC Globe is plotted on the terrain or globe plates. Globe markers are the
-      country viewer's Factbook capitals.</p>
+      names — and no PC Globe map coordinates are plotted. Exact-name label matches can be selected using
+      independent offline Gazetteer points; these are not recovered PC Globe coordinates. Globe markers also include the country viewer's Factbook capitals.</p>
     <input type="search" id="pcgSearch" aria-label="Filter PC Globe index names and records" placeholder="Filter names, records, features…" autocomplete="off" />
     <div id="pcgBody"></div>
   </section>
@@ -47,6 +47,10 @@
         <button type="button" data-mode="xray" aria-pressed="false">X-RAY</button>
       </div>
       <button type="button" id="btnLabels" class="active" aria-pressed="true">LABELS</button>
+      <div class="zoom-controls" role="group" aria-label="Map and terrain zoom">
+        <button type="button" id="btnZoomIn" aria-label="Zoom in">ZOOM +</button>
+        <button type="button" id="btnZoomOut" aria-label="Zoom out">ZOOM −</button>
+      </div>
       <button type="button" id="btnVrml" title="Export the current plate as a VRML 2.0 terrarium">VRML ↓</button>
       <button type="button" id="btnReset">RESET</button>
     </div>
@@ -59,7 +63,7 @@
         <input type="search" id="searchBox" aria-label="Search offline Gazetteer place names" placeholder="Search place names (2+ letters)…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
-      <p class="tiny">Search covers the Cheyenne/Pikes Peak register, the synced SoCal register for the San Gabriel plate, five city datasets, and a name-only Bora Bora locality in French Polynesia (not a country; no coordinates included). Select a mapped result to jump to terrain or the globe. GNIS identifiers are shown only where retained in the source register; this is not address lookup.</p>
+      <p class="tiny">Search covers the Cheyenne/Pikes Peak and SoCal registers, five city datasets, a name-only Bora Bora locality, and curated island/territory place points including Tasmania, Florida Keys context, Guam and Midway. The mixed-source island list is not complete; source tier, point basis and coordinate caveats remain visible. Select a mapped result to jump to terrain or the globe. GNIS identifiers are shown only where retained in the source register; this is not address lookup.</p>
       <div class="slider-row">
         <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
         <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
@@ -114,6 +118,11 @@
       <h2>Plates &amp; sources</h2>
       <div id="cardList" class="card-list"></div>
       <p class="tiny">Each opens its own 4Dwm window. DATUM NAVD 88; horizontal NAD83/EPSG:4326.</p>
+    </section>
+    <section class="card" aria-labelledby="fheDemHeading">
+      <h2 id="fheDemHeading">FHE · 4DWM formula experiment</h2>
+      <p class="small">Exact integer squared-error sum: <code>Σ(sample − reference)²</code>. Separate BFV CLI experiment on synthetic terrain-like values returned <b>175</b> for four pairs, with one multiplication layer and a positive noise budget.</p>
+      <p class="tiny">Not encrypted terrain, not connected to this browser viewer, and not a DEM accuracy claim. The experiment encrypts both inputs, evaluates one aggregate, and decrypts locally. Run <code>npm run demo:bfv-dem-sse</code>; see <code>docs/research/4dwm-fhe-squared-error-2026-11-15.md</code> for bounds, sources, and limits.</p>
     </section>
   </aside>
 

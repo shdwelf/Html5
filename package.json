@@ -46,6 +46,7 @@
     "check:sources": "node tools/check-source-check-bibliography.mjs",
     "demo:bfv": "node tools/he-bfv-demo.mjs",
     "demo:bfv-mask": "node tools/he-bfv-mask-demo.mjs",
+    "demo:bfv-dem-sse": "node tools/he-bfv-dem-sse-demo.mjs",
     "check:coin-research": "node tools/build-coin-research-inventory.mjs --check",
     "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
     "test": "vitest run && node --test tests/*.test.mjs",

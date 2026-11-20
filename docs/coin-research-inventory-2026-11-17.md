@@ -6,7 +6,7 @@ This is **a review inventory, not 500 completed independent asset investigations
 The source market ranks are historical, not present-day prices or endorsements.
 
 - Assets: 500; local default-leaf derivation supported: 347; unsupported: 153.
-- Host profiles: 57; primary-reviewed fee models: 17; fee models pending: 40.
+- Host profiles: 57; primary-reviewed fee models: 18; fee models pending: 39.
 - Primary-reviewed test-network identities: 18. No testnet token contract is inferred from a mainnet contract.
 - Assets with any catalogued mainnet contract: 1. Other token deployment reviews remain open.
 - Rows with no mapped host: 152. Unknown is not free, absent, or a zero balance.
@@ -64,7 +64,7 @@ with primary host links only where reviewed. No search snippet is a live quote.
 | 32 | cc-canton-network · CC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 33 | uni-uniswap · UNI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 34 | toncoin-the-open-network · GRAM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 35 | near-near-protocol · NEAR | NEAR | curated ID; see evidence | primary-reviewed | unknown / unknown / pending | not verified | one curated path, local |
+| 35 | near-near-protocol · NEAR | NEAR | curated ID; see evidence | primary-reviewed | NEAR / near-gas / primary-reviewed | not verified | one curated path, local |
 | 36 | usdg-global-dollar · USDG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
 | 37 | hbar-hedera-hashgraph · HBAR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
 | 38 | avax-avalanche · AVAX | AVAX | curated ID; see evidence | primary-reviewed | AVAX / gas / primary-reviewed | not verified | one curated path, local |

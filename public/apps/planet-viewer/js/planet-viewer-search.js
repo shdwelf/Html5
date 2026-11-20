@@ -6,6 +6,25 @@
  * valid point falls back to the orthographic globe instead of appearing to do
  * nothing. This module is deliberately DOM- and Three.js-free.
  */
+export function matchPcGlobeFeatureCoordinates(featureLabels, gazetteerRows) {
+  const key = (value) => String(value ?? "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").trim().toLocaleLowerCase();
+  const byName = new Map();
+  for (const row of gazetteerRows ?? []) {
+    const name = Array.isArray(row) ? row[0] : row?.name;
+    const lat = Array.isArray(row) ? row[4] : row?.lat;
+    const lon = Array.isArray(row) ? row[5] : row?.lon;
+    if (!name || !Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+    const k = key(name);
+    if (!byName.has(k)) byName.set(k, []);
+    byName.get(k).push(row);
+  }
+  const matches = [];
+  for (const label of featureLabels ?? []) {
+    for (const point of byName.get(key(label)) ?? []) matches.push({ label, point });
+  }
+  return matches;
+}
+
 export function locateGazetteerPoint(plates, plateOrder, point) {
   if (!point || !Number.isFinite(point.lat) || !Number.isFinite(point.lon)) return null;
 

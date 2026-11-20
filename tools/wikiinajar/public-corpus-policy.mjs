@@ -32,8 +32,9 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/backlog-execution-round-69-2026-11-11.md",
   // Round 73 discusses private backups; never copy it into public offline apps.
   "docs/backlog-execution-round-73-2026-11-13.md",
-  // Round 81 includes Notion/private editorial handoff and backup boundaries.
+  // Rounds 81–82 contain private handoff/backlog continuation context.
   "docs/backlog-execution-round-81-2026-11-17.md",
+  "docs/backlog-execution-round-82-2026-11-15.md",
   "docs/chipwright-restore-status-2026-10-22.md",
   "docs/drive-backup-2026-10-08.md",
   "docs/drive-backup-2026-10-17.md",

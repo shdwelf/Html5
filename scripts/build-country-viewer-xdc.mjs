@@ -2,7 +2,7 @@
  * Package the PC-Globe-style country viewer as a Webxdc bundle.
  *
  * A .xdc is a deflated ZIP rooted at index.html + manifest.toml. This stages
- * the Country Viewer plus its five-city offline Gazetteer engine/data into
+ * the Country Viewer plus its limited city/island offline Gazetteer engine/data into
  * public/apps/country-viewer/ as a flat bundle, then zips it deterministically
  * — same flow as build-cheyenne-xdc.mjs.
  *
@@ -23,7 +23,7 @@ const mtime = new Date("2026-10-02T00:00:00.000Z"); // reproducible builds
 
 const manifest = `name = "Country Viewer - Country Outlines + Factbook"
 source_code_url = "https://github.com/shdwelf/Html5"
-description = "Offline country and area profiles with reviewed ISO name/code and IANA ccTLD search crosswalks, Natural Earth outlines, regional map views, and a limited place-name index."
+description = "Offline country and area profiles with reviewed ISO name/code and IANA ccTLD search crosswalks, Natural Earth outlines, regional map views, and a limited city/island place-name index."
 `;
 
 await rm(appDir, { recursive: true, force: true });
@@ -38,7 +38,7 @@ html = html.replace(
 );
 await writeFile(path.join(appDir, "index.html"), html);
 for (const f of [
-  "country-viewer.js", "country-viewer-search.js", "country-iso-crosswalk.js", "country-iana-cctlds.js", "country-map.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
+  "country-viewer.js", "country-viewer-islands.js", "country-viewer-search.js", "country-iso-crosswalk.js", "country-iana-cctlds.js", "country-map.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
   "city-gazetteer-data-atlanta.js", "city-gazetteer-data-buffalo.js",
   "city-gazetteer-data-kansascity.js", "city-gazetteer-data-lawrence.js",
   "city-gazetteer-data-toronto.js", "city-gazetteer-data-polynesia.js",

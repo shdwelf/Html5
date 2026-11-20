@@ -22,11 +22,12 @@ import { GAZ_ROWS as kansasCityRows } from "./city-gazetteer-data-kansascity.js"
 import { GAZ_ROWS as lawrenceRows } from "./city-gazetteer-data-lawrence.js";
 import { GAZ_ROWS as torontoRows } from "./city-gazetteer-data-toronto.js";
 import { GAZ_ROWS as polynesiaRows } from "./city-gazetteer-data-polynesia.js";
+import { ISLAND_REFERENCE_ROWS, ISLAND_REFERENCE_META } from "./country-viewer-islands.js";
 
 export { countryDisplayName, countryIanaTlds, countryIsoCodes, filterCountries, findUnprofiledIsoEntries, isoIanaTlds, sortByName };
 
 const GAZETTEER_INDEX = makeGazetteerIndex([
-  ...atlantaRows, ...buffaloRows, ...kansasCityRows, ...lawrenceRows, ...torontoRows, ...polynesiaRows,
+  ...atlantaRows, ...buffaloRows, ...kansasCityRows, ...lawrenceRows, ...torontoRows, ...polynesiaRows, ...ISLAND_REFERENCE_ROWS,
 ]);
 
 export function searchGazetteerPoints(query, limit = 8) {
@@ -105,13 +106,16 @@ function renderGazetteerDetail(point) {
   }
   const hasCoords = Number.isFinite(point.lat) && Number.isFinite(point.lon);
   const identity = point.verified && point.gnis
-    ? `USGS GNIS ${esc(point.gnis)}`
-    : hasCoords
-      ? "reference point · no GNIS id claimed"
-      : "name-only record · no coordinates included";
+    ? `USGS GNIS ${esc(point.gnis)} · directly verified`
+    : point.gnis
+      ? `GNIS ID ${esc(point.gnis)} · secondary-source cross-reference, not directly verified`
+      : hasCoords
+        ? "reference point · no GNIS id claimed"
+        : "name-only record · no coordinates included";
   const coordinateText = hasCoords ? `${point.lat.toFixed(5)}, ${point.lon.toFixed(5)}` : "Coordinates not included";
+  const source = point.source ? `<br>Source: <code>${esc(point.source)}</code>` : "";
   host.innerHTML = `<b>${esc(point.name)}</b><br>${esc(point.fclass)} · ${esc(point.county || "area not recorded")}<br>` +
-    `${coordinateText}<br>${identity}<br><span class="note">${esc(point.note || "")}</span>`;
+    `${coordinateText}<br>${identity}${source}<br><span class="note">${esc(point.note || "")}</span>`;
 }
 
 export function capitalText(c) {
@@ -159,6 +163,7 @@ function main() {
   const canvas = el("world");
   const mapStatus = el("mapStatus");
   const zoomSelected = el("zoomSelected");
+  const zoomPlace = el("zoomPlace");
   let selected = null;
   let selectedGazetteer = null;
   let outlines = null;
@@ -203,6 +208,7 @@ function main() {
 
   function renderGazetteerSearch() {
     selectedGazetteer = null;
+    if (zoomPlace) zoomPlace.disabled = true;
     renderGazetteerDetail(null);
     const q = gazSearchEl.value.trim();
     if (q.length < 2) {
@@ -215,16 +221,20 @@ function main() {
       ? hits.map((point, i) => {
         const hasCoords = Number.isFinite(point.lat) && Number.isFinite(point.lon);
         const provenance = point.verified && point.gnis
-          ? `GNIS ${esc(point.gnis)}`
-          : hasCoords ? "reference point" : "name only · no coordinates";
+          ? `GNIS ${esc(point.gnis)} · directly verified`
+          : point.gnis ? `GNIS ${esc(point.gnis)} · cross-reference`
+            : hasCoords ? "reference point" : "name only · no coordinates";
         return `<button type="button" data-point="${i}" aria-label="${esc(point.name)}, ${esc(provenance)}">` +
           `${esc(point.name)}<small>${esc(point.fclass)} · ${esc(point.county || "county unknown")} · ${esc(provenance)}</small></button>`;
       }).join("")
       : '<p class="note">No match in the limited offline place-name index; this is not a live or complete lookup.</p>';
     gazResultsEl.querySelectorAll("button[data-point]").forEach((button) => button.addEventListener("click", () => {
       selectedGazetteer = hits[Number(button.dataset.point)] || null;
+      if (zoomPlace) zoomPlace.disabled = !(Number.isFinite(selectedGazetteer?.lat) && Number.isFinite(selectedGazetteer?.lon));
       renderGazetteerDetail(selectedGazetteer);
-      renderMap();
+      if (selectedGazetteer && Number.isFinite(selectedGazetteer.lat) && Number.isFinite(selectedGazetteer.lon)) {
+        focusMapPoint(selectedGazetteer, selectedGazetteer.name, 18);
+      } else renderMap();
     }));
     renderMap();
   }
@@ -242,15 +252,22 @@ function main() {
   document.querySelectorAll("[data-map-view]").forEach((button) => {
     button.addEventListener("click", () => setView(button.dataset.mapView));
   });
-  if (zoomSelected) zoomSelected.addEventListener("click", () => {
-    if (!selected) return;
-    const area = selected.areaTotalSqKm ?? 1_000_000;
-    const scale = area < 5_000 ? 12 : area < 50_000 ? 8 : area < 250_000 ? 5 : area < 1_000_000 ? 3.5 : 2.2;
-    view = { label: countryDisplayName(selected), centerLon: selected.lon, centerLat: selected.lat, scale };
+  function focusMapPoint(point, label, scale = 12) {
+    if (!point || !Number.isFinite(point.lat) || !Number.isFinite(point.lon)) return;
+    view = { label, centerLon: point.lon, centerLat: point.lat, scale };
     document.querySelectorAll("[data-map-view]").forEach((button) => {
       button.classList.remove("active"); button.setAttribute("aria-pressed", "false");
     });
     renderMap();
+  }
+  if (zoomSelected) zoomSelected.addEventListener("click", () => {
+    if (!selected) return;
+    const area = selected.areaTotalSqKm ?? 1_000_000;
+    const scale = area < 5_000 ? 12 : area < 50_000 ? 8 : area < 250_000 ? 5 : area < 1_000_000 ? 3.5 : 2.2;
+    focusMapPoint(selected, countryDisplayName(selected), scale);
+  });
+  if (zoomPlace) zoomPlace.addEventListener("click", () => {
+    if (selectedGazetteer) focusMapPoint(selectedGazetteer, selectedGazetteer.name, 18);
   });
   canvas.addEventListener("click", (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -266,7 +283,7 @@ function main() {
   searchEl.addEventListener("input", renderList);
   gazSearchEl.addEventListener("input", renderGazetteerSearch);
   el("sourcepin").textContent =
-    `${COUNTRY_DATA_META.source} · upstream ${COUNTRY_DATA_META.upstreamCommit.slice(0, 12)} · ` +
+    `Island examples: ${ISLAND_REFERENCE_META.coverage} ${ISLAND_REFERENCE_META.gnisScope} · ${COUNTRY_DATA_META.source} · upstream ${COUNTRY_DATA_META.upstreamCommit.slice(0, 12)} · ` +
     `${COUNTRY_DATA_META.count} seeded Factbook records · register: ${COUNTRY_DATA_META.register}. ` +
     `Search overlay: ${COUNTRY_ISO_REGISTER_META.source.package} ${COUNTRY_ISO_REGISTER_META.source.version} ` +
     `(MIT), reviewed ${COUNTRY_ISO_REGISTER_META.reviewDate}; ` +
@@ -279,6 +296,7 @@ function main() {
   renderList();
   renderGazetteerSearch();
   if (zoomSelected) zoomSelected.disabled = true;
+  if (zoomPlace) zoomPlace.disabled = true;
 
   fetch("./vendor/world/countries.geo.json")
     .then((response) => {

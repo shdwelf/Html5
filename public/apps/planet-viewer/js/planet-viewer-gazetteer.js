@@ -15,6 +15,7 @@ import { GAZ_ROWS as toronto } from "./city-gazetteer-data-toronto.js";
 import { GAZ_ROWS as polynesia } from "./city-gazetteer-data-polynesia.js";
 import { GAZ_ROWS as socal } from "./socal-gazetteer-data.js";
 import { GAZETTEER as cheyenne } from "./cheyenne-data.js";
+import { ISLAND_REFERENCE_ROWS } from "./country-viewer-islands.js";
 
 const FTT_FOR_CLASS = {
   Range: "phys.range",
@@ -78,13 +79,14 @@ export const PLANET_GAZ_ROWS = [
   ...withSource(lawrence, "js/city-gazetteer-data-lawrence.js"),
   ...withSource(toronto, "js/city-gazetteer-data-toronto.js"),
   ...withSource(polynesia, "js/city-gazetteer-data-polynesia.js"),
+  ...ISLAND_REFERENCE_ROWS,
 ];
 
 export const PLANET_GAZETTEER_META = Object.freeze({
   sources: Object.freeze([
     "Cheyenne/Pikes Peak USGS GNIS subset (js/cheyenne-data.js)",
     "Synced SoCal GNIS-oriented register (js/socal-gazetteer-data.js)",
-    "Five city registers and the Bora Bora name-only locality register",
+    "Five city registers, the Bora Bora name-only locality, and curated island/territory reference rows (js/country-viewer-islands.js)",
   ]),
   cheyenneGnisQueryDate: null, // unverified in the retained GNIS source notes
   cheyenneRows: cheyenne.chey.length,
