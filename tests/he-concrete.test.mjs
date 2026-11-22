@@ -44,11 +44,16 @@ test("Concrete's public circuit contract binds composability without optional ru
 });
 
 // Concrete (and Torch) are optional, multi-GB dependencies. Enable explicitly
-// after installing tools/he-concrete-requirements.txt in CPython 3.11.
-test("Concrete bootstraps complete F17 arithmetic with randomization, provenance and failure checks", {
-  skip: process.env.RUN_CONCRETE_FHE !== "1" && "set RUN_CONCRETE_FHE=1 after installing Concrete",
+// after installing tools/he-concrete-requirements.txt in CPython 3.11. The key
+// transport mode may temporarily duplicate a large keyset in this process.
+const runConcreteFhe = process.env.RUN_CONCRETE_FHE === "1";
+const runConcreteKeyTransport = process.env.RUN_CONCRETE_FHE_KEY_TRANSPORT === "1";
+test("Concrete bootstraps and key-switches complete F17 arithmetic with wire, randomization and provenance audits", {
+  skip: !runConcreteFhe && !runConcreteKeyTransport && "set RUN_CONCRETE_FHE=1 after installing Concrete",
 }, () => {
-  const run = spawnSync("python3", ["tools/he-concrete-fhe-demo.py"], {
+  const args = ["tools/he-concrete-fhe-demo.py"];
+  if (runConcreteKeyTransport) args.push("--roundtrip-evaluation-keys");
+  const run = spawnSync("python3", args, {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8",
     timeout: 900_000,
@@ -66,6 +71,11 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
     composable,
     probability_of_error: probabilityOfError,
     programmable_bootstraps: bootstraps,
+    key_switches: keySwitches,
+    packing_key_switches: packingKeySwitches,
+    evaluation_keys_serialized_bytes: evaluationKeysSerializedBytes,
+    evaluation_keys_deserialized_for_server: evaluationKeysDeserialized,
+    ciphertext_transport_roundtrips_verified: ciphertextTransportVerified,
     evaluation_key_provenance_verified: provenanceVerified,
     tampered_evaluation_key_rejected: tamperedKeyRejected,
     tampered_evaluation_key_signature_rejected: tamperedSignatureRejected,
@@ -87,6 +97,11 @@ test("Concrete bootstraps complete F17 arithmetic with randomization, provenance
     square_modulus: 17,
   });
   assert.ok(bootstraps > 0, "compiled circuit must contain programmable bootstrapping");
+  assert.ok(keySwitches > 0, "compiled circuit must contain key switching");
+  assert.ok(packingKeySwitches >= 0);
+  assert.ok(evaluationKeysSerializedBytes > 0, "client must serialize evaluation keys for provenance/transport");
+  assert.equal(evaluationKeysDeserialized, runConcreteKeyTransport);
+  assert.equal(ciphertextTransportVerified, true, "request and response ciphertexts cross wire serialization");
   assert.equal(securityLevelBits, 128);
   const declared = readPublicCircuitSpec();
   assert.equal(composable, declared.spec.composable);
