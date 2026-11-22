@@ -4,7 +4,9 @@
 Reproduce on CPython 3.11 x86-64 Linux:
     python3 -m pip install -r tools/he-concrete-requirements.txt
     python3 tools/he-concrete-fhe-demo.py
+    python3 tools/he-concrete-fhe-demo.py --roundtrip-evaluation-keys
     RUN_CONCRETE_FHE=1 node --test tests/he-concrete.test.mjs
+    RUN_CONCRETE_FHE_KEY_TRANSPORT=1 node --test tests/he-concrete.test.mjs
 
 The circuit's arithmetic plaintext domain is the complete field F_17: each
 encrypted input is a residue 0..16. Addition, subtraction, multiplication,
@@ -16,9 +18,14 @@ and check that flag before treating the quotient as a result.
 
 Each stream chunk is independently encrypted with Concrete's fresh CSPRNG
 randomness, evaluated by the server circuit (which compiles programmable
-bootstraps), then decrypted by the client. A repeated-plaintext known-input
-smoke test checks that two fresh serializations differ and decrypt/evaluate to
-the same result. It is a regression check, not an attack or a proof of IND-CPA.
+bootstraps and key switches), serialized across request/response boundaries,
+then decrypted by the client. The report requires nonzero bootstrap and key
+switch counts. A repeated-plaintext known-input smoke test checks that two fresh
+serializations differ and decrypt/evaluate to the same result. The optional
+`--roundtrip-evaluation-keys` path deserializes the authenticated evaluation-key
+wire bytes for server evaluation; because this temporarily duplicates a large
+keyset in the single-process demo, it is opt-in. These are regression checks,
+not an attack or a proof of IND-CPA.
 
 An Ed25519 signature binds the serialized evaluation-key digest to this
 circuit's canonical manifest. The demo generates an ephemeral signing key and
@@ -226,7 +233,10 @@ def _rejected(action):
 
 def _evaluate_and_decrypt(client, server, server_evaluation_keys, x, y):
     encrypted_inputs = _transport_values(encrypt_client_inputs(client, x, y))
-    encrypted_outputs = evaluate_on_server(server, encrypted_inputs, server_evaluation_keys)
+    server_outputs = evaluate_on_server(server, encrypted_inputs, server_evaluation_keys)
+    # Exercise the response wire format too; the client decrypts values restored
+    # from serialized bytes, not server-owned in-process objects.
+    encrypted_outputs = _transport_values(server_outputs)
     return tuple(int(value) for value in client.decrypt(encrypted_outputs))
 
 
@@ -237,14 +247,17 @@ def _bootstrapped_composition_audit(client, server, server_evaluation_keys, dept
     final_expected = None
     encrypted_outputs = None
     for _ in range(depth):
-        encrypted_outputs = evaluate_on_server(
+        server_outputs = evaluate_on_server(
             server, encrypted_inputs, server_evaluation_keys
         )
+        # Simulate server -> client -> server transport at each composition
+        # boundary. These encrypted values are never decrypted between rounds.
+        encrypted_outputs = _transport_values(server_outputs)
         final_expected = expected_outputs(x, y)
         # Sum and product are both encrypted F_17 residues and have the same
         # 5-bit domain as the circuit inputs. No intermediate result is decrypted.
         x, y = final_expected[1], final_expected[3]
-        encrypted_inputs = (encrypted_outputs[1], encrypted_outputs[3])
+        encrypted_inputs = _transport_values((encrypted_outputs[1], encrypted_outputs[3]))
 
     assert encrypted_outputs is not None and final_expected is not None
     decrypted = tuple(int(value) for value in client.decrypt(encrypted_outputs))
@@ -293,9 +306,9 @@ def _known_plaintext_randomization_audit(client, server, server_evaluation_keys)
         server, _transport_values(second_ciphertexts), server_evaluation_keys
     )
     _trace("decrypting known randomization audit outputs")
-    first_decrypted = tuple(int(value) for value in client.decrypt(first_result))
-    repeated_decrypted = tuple(int(value) for value in client.decrypt(repeated_result))
-    second_decrypted = tuple(int(value) for value in client.decrypt(second_result))
+    first_decrypted = tuple(int(value) for value in client.decrypt(_transport_values(first_result)))
+    repeated_decrypted = tuple(int(value) for value in client.decrypt(_transport_values(repeated_result)))
+    second_decrypted = tuple(int(value) for value in client.decrypt(_transport_values(second_result)))
 
     expected_first = expected_outputs(*first_plaintext)
     expected_second = expected_outputs(*second_plaintext)
@@ -348,7 +361,7 @@ def _trace(stage):
         print(f"[concrete-fhe] {stage}{suffix}", file=sys.stderr, flush=True)
 
 
-def run_demo():
+def run_demo(roundtrip_evaluation_keys=False):
     compiler = fhe.Compiler(encrypted_function, {"x": "encrypted", "y": "encrypted"})
     configuration = fhe.Configuration(
         loop_parallelize=False,
@@ -364,9 +377,17 @@ def run_demo():
     del compiler
     _trim_memory()
     bootstraps = circuit.programmable_bootstrap_count
-    _trace(f"compiled circuit; programmable bootstraps={bootstraps}")
+    key_switches = circuit.key_switch_count
+    packing_key_switches = circuit.packing_key_switch_count
+    _trace(
+        "compiled circuit; "
+        f"programmable bootstraps={bootstraps}, key switches={key_switches}, "
+        f"packing key switches={packing_key_switches}"
+    )
     if bootstraps < 1:
         raise AssertionError("Compiled circuit did not contain programmable bootstrapping")
+    if key_switches < 1:
+        raise AssertionError("Compiled circuit did not contain a key-switch operation")
 
     try:
         # Client owns the FHE secret key. The server boundary below never receives
@@ -378,13 +399,14 @@ def run_demo():
         _trim_memory()
 
         # Authenticate the exact serialized evaluation-key bytes and bind them to
-        # this circuit description. To stay within this runner's memory budget,
-        # Server.run receives Concrete's evaluation-only view of the generated
-        # keyset rather than a second deserialized multi-GB copy. A deployed server
-        # should deserialize the authenticated transport bytes in its own process.
-        # The demo's signer is ephemeral; a deployment must pin it independently.
+        # this circuit description. The normal mode uses Concrete's evaluation-only
+        # key view to avoid holding a second multi-GB copy in this single process.
+        # The opt-in transport mode deserializes the verified wire bytes as a real
+        # server would; run it only where memory permits. The demo signer is
+        # ephemeral; a deployment must pin its signer independently.
         evaluation_key_bytes = client.evaluation_keys.serialize()
-        _trace(f"serialized evaluation keys ({len(evaluation_key_bytes)} bytes)")
+        evaluation_keys_serialized_bytes = len(evaluation_key_bytes)
+        _trace(f"serialized evaluation keys ({evaluation_keys_serialized_bytes} bytes)")
         signing_key = Ed25519PrivateKey.generate()
         trusted_signer_public_key = signing_key.public_key()
         manifest_bytes = _evaluation_key_manifest(
@@ -452,8 +474,12 @@ def run_demo():
             raise AssertionError("Evaluation-key provenance failure cases were not rejected")
         _trace("tampered key/signature and wrong circuit/configuration all rejected")
 
-        _trace("selecting the generated evaluation-only server keyset")
-        server_evaluation_keys = client.evaluation_keys
+        if roundtrip_evaluation_keys:
+            _trace("deserializing authenticated evaluation keys for the server")
+            server_evaluation_keys = fhe.EvaluationKeys.deserialize(evaluation_key_bytes)
+        else:
+            _trace("selecting the generated evaluation-only server keyset (memory-safe mode)")
+            server_evaluation_keys = client.evaluation_keys
         del evaluation_key_bytes
         _trim_memory()
         _trace("released serialized evaluation-key buffer")
@@ -527,6 +553,11 @@ def run_demo():
                 "global_per_invocation": server.global_p_error,
             },
             "programmable_bootstraps": bootstraps,
+            "key_switches": key_switches,
+            "packing_key_switches": packing_key_switches,
+            "evaluation_keys_serialized_bytes": evaluation_keys_serialized_bytes,
+            "evaluation_keys_deserialized_for_server": roundtrip_evaluation_keys,
+            "ciphertext_transport_roundtrips_verified": True,
             "circuit_id": CIRCUIT_ID,
             "circuit_spec_sha256": CIRCUIT_SPEC_SHA256,
             "evaluation_key_provenance_verified": provenance_verified,
@@ -544,4 +575,16 @@ def run_demo():
 
 
 if __name__ == "__main__":
-    print(json.dumps(run_demo(), sort_keys=True))
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run the bounded Concrete TFHE prototype")
+    parser.add_argument(
+        "--roundtrip-evaluation-keys",
+        action="store_true",
+        help=(
+            "deserialize the authenticated evaluation-key wire bytes for server use; "
+            "this may temporarily duplicate a large keyset in memory"
+        ),
+    )
+    arguments = parser.parse_args()
+    print(json.dumps(run_demo(roundtrip_evaluation_keys=arguments.roundtrip_evaluation_keys), sort_keys=True))

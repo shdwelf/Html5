@@ -6,10 +6,11 @@
  * NSS libraries it lacks come from the @sparticuz/chromium npm tarball, whose
  * al2023.tar.br ships libnspr4/libnss3/libnssutil3 (plus SwiftShader).
  *
- *   npm i --no-save puppeteer-core @sparticuz/chromium
- *   node tests/07-browser.mjs [url]
+ *   npm ci
+ *   npm run test:browser
  *
- * Skips itself when those packages are absent. Screenshots land in /tmp.
+ * A direct invocation still skips if optional dependencies are absent; the
+ * dedicated runner preflights them and fails loudly instead. Screenshots land in /tmp.
  */
 import { brotliDecompressSync, inflateSync } from "zlib";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
@@ -123,7 +124,10 @@ try {
     if (/^https?:/.test(r.url()) && new URL(r.url()).host !== new URL(URL_TARGET).host) externalRequests.push(r.url());
   });
 
-  await page.goto(URL_TARGET, { waitUntil: "networkidle2", timeout: 60000 });
+  // The keyspace application may keep local worker/fetch activity alive; page
+  // readiness is asserted explicitly below, so network-idle is not a reliable
+  // navigation condition in CI.
+  await page.goto(URL_TARGET, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForFunction(
     () => /Checksum valid/.test(document.getElementById("status")?.textContent || ""),
     { timeout: 60000 }
