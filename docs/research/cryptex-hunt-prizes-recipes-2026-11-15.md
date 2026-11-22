@@ -26,6 +26,8 @@ The cover-and-barcode memory identifies the **2019 Cryptex Hunt**. The official 
 
 So the barcode was the entry trail, but it wasn't just a standalone barcode answer: the Morse-decoded URL led to a jigsaw, which yielded the ClueKeeper start code. The official page's `CXHUNT` was the separate code to find/register the hunt.
 
+The author now recalls figuring out the cover puzzle and, with a collaborator using the handle `psygirl601`, nearly finishing by the deadline. This remains the author's memory, not an independently verified finish or placement. The official [ClueKeeper results page](https://www.cluekeeper.com/public/hunt_leaders_old?hunt_key=ag9zfmNsdWVrZWVwZXJ3ZWJyFwsSCkNsdWVPckh1bnQYgICAnoPCqgkM) exposes a long static leaderboard, but the exact handle was not confirmed in the portions retrievable here; that does not disprove collaborative play under another registered account/team name. No exact finish time or completion status is inferred.
+
 ### Recipe puzzle: 2025 Word Salad
 
 The official 2025 solution PDF, [Puzzle 10: Word Salad](https://cryptexhunt.com/2025/solutions/CH2025-P10_Word_Salad_Solution.pdf), yields **OLIVIER**. The recipe clue describes a Russian salad with potato, carrot, cucumber, peas, egg, celeriac, onion, apple, and chicken. This is the hunt puzzle's recipe answer, not an official endorsed recipe with quantities or preparation steps.
@@ -49,7 +51,7 @@ Archive.org Advanced Search for the exact phrase “Cryptex Hunt” returned one
 
 - [Noble Collection Customer Service](https://noblecollection.com/c/Customer-Service)
 - [Noble Collection Da Vinci Code Cryptex product page](https://noblecollection.com/Item--i-PRP-DV-5120)
-- Official [2019 hunt page](https://cryptexhunt.com/2019/) and [2019 solution guide](https://cryptexhunt.com/2019/CH2019%20Solution%20Guide.pdf)
+- Official [2019 hunt page](https://cryptexhunt.com/2019/), [2019 solution guide](https://cryptexhunt.com/2019/CH2019%20Solution%20Guide.pdf), and [ClueKeeper static results page](https://www.cluekeeper.com/public/hunt_leaders_old?hunt_key=ag9zfmNsdWVrZWVwZXJ3ZWJyFwsSCkNsdWVPckh1bnQYgICAnoPCqgkM)
 - Official [2022](https://cryptexhunt.com/2022/), [2023](https://cryptexhunt.com/2023/), and [2025](https://cryptexhunt.com/2025/) edition pages
 - Official [previous-hunts index](https://hunt.cryptexhunt.com/previous-hunts/)
 - Official [2025 Word Salad solution PDF](https://cryptexhunt.com/2025/solutions/CH2025-P10_Word_Salad_Solution.pdf)
