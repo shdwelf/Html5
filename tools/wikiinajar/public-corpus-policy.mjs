@@ -19,6 +19,7 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/greeran-family-4dwm.md",
   "docs/greeran-family-tree-ebook-and-data-status.md",
   "docs/greeran-name-resources.md",
+  "docs/greeran-memoir-intake-2026-11-15.md",
   "docs/scouting-field-trip-research-2026-11-01.md",
   "docs/sgreeran-resume-chronology.md",
   "docs/ucsb-2001-first-quarter-research.md",

@@ -156,6 +156,17 @@ body.intro-active { overflow: hidden; }
   filter: blur(4px);
   background: radial-gradient(ellipse at 50% 80%, rgba(245,212,143,.66), rgba(185,150,91,.12) 36%, transparent 72%);
 }
+/* The open-book stage: a viewport-sized box (the "spread") that owns the
+   same perspective as .intro-world so the flight keeps its depth, with the
+   book itself hanging behind .intro-book-object (boxless, animation-neutral). */
+.intro-book-spread {
+  position: absolute;
+  inset: 0;
+  perspective: 1100px;
+}
+.intro-book-object {
+  display: contents;
+}
 .intro-book-flight {
   position: absolute;
   z-index: 1;
@@ -1031,16 +1042,20 @@ body[data-paper="postcard-stock"] .page {
       <div class="intro-ridge intro-ridge--near"></div>
       <div class="intro-water"></div>
       <div class="intro-light"></div>
-      <div class="intro-book-flight">
-        <div class="intro-book">
-          <div class="intro-book-block"></div>
-          <div class="intro-leaf intro-leaf--left"><span></span></div>
-          <div class="intro-leaf intro-leaf--right"><span></span></div>
-          <div class="intro-book-cover">
-            <span class="intro-cover-mark">S · T · G</span>
-            <span class="intro-cover-rule"></span>
-            <strong>THE LIFE FILE</strong>
-            <span class="intro-cover-name">STEVEN THOMAS GREERAN</span>
+      <div class="intro-book-spread">
+        <div class="intro-book-flight">
+          <div class="intro-book-object">
+            <div class="intro-book">
+              <div class="intro-book-block"></div>
+              <div class="intro-leaf intro-leaf--left"><span></span></div>
+              <div class="intro-leaf intro-leaf--right"><span></span></div>
+              <div class="intro-book-cover">
+                <span class="intro-cover-mark">S · T · G</span>
+                <span class="intro-cover-rule"></span>
+                <strong>THE LIFE FILE</strong>
+                <span class="intro-cover-name">STEVEN THOMAS GREERAN</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3049,10 +3064,21 @@ body[data-paper="postcard-stock"] .page {
         <h2>What remains outside the published edition</h2>
         <p>
           Several details requested for expansion — such as named dorm residents, apartment anecdotes, exact class schedules,
-          specific social stories, and many travel memories — were not verified in the public sources reviewed for this project.
-          Publishing them as fact would blur the line between biography and invention, and in some cases would identify third parties
-          who are not public figures.
+          specific social stories, and many travel memories — are personal recollections rather than independently verified public
+          facts. The author's newly supplied memories are preserved below in a clearly marked memory tier; their dates and sequence
+          remain open, as do spellings and some details. Publishing a recollection as established fact would blur the line between
+          biography and invention, and in some cases would identify third parties who are not public figures.
         </p>
+        <div class="warning-box">
+          <h3>Author-supplied recollections · memory tier · chronology unresolved</h3>
+          <p class="tiny">The following is the author's account, recorded as recalled, not independently verified. No dates or chronology are assigned here; the author expects to correct the sequence and some names/details later. Claims about other people are not treated as corroborated facts.</p>
+          <p><b>Sesame Tree and the first workbench.</b> The author remembers moving into Sesame Tree Apartments with Ryan Beck and Ashley Handlen. He shared the master bedroom with Ryan; Ashley had a single room. Chores were not getting done, so he placed a Craigslist sublet ad, and a Domino's delivery driver rented the front room. Mrs. Popper lived next door; the author remembers Gavriel “Gavi” Popper Keiser as a neighbor and friend. The recollection does not settle their relationship. The author remembers spending time with Gavi at a keyboard and later hiring him as his first employee. He recalls placing a newspaper DBA/FBN notice and using its draft to open a Wells Fargo business account. The exact dates, paperwork, tenancy details, and names remain to be checked against the author's records.</p>
+          <p><b>Santa Barbara and Sealtight.</b> The recollections place Cold Springs Tavern, a shooting range, and Knapp Castle full-moon gatherings; the author also recalls a hang-glider port there. He remembers Gavi building Flash work for the Sealtight Fastener website for B&amp;B Hardware under MacroJump. Larry Bogatz, his book, formed fasteners, a claimed Mars Rover connection, and trademark litigation are also part of the author's recollection. These are leads about another person's work and disputes, not findings or verified claims; confirm the exact roles, wording, dates, and records before any factual treatment. When the lease ended, the author remembers moving out and later visiting a garage with Gavi, Josh, Marc Mata, and Ryan Moore.</p>
+          <p><b>Trips and the water.</b> The author remembers a camping trip to Calico with Shae Ghoreshi and her boyfriend in the author's Toyota truck. At UCSB, he recalls a scuba class, certification dives, and a dive buddy whose name he remembers as Jennifer, while “Bridgette Klaib” is another uncertain name form in the recollection. He recalls losing a wallet and receiving a replacement certification card. A Yosemite trip with the Gomm family is remembered as involving Greyhound travel, a return through Ontario airport, and huckleberry candy. The author also remembers Catalina and Cherry Cove activities with ESP friends. Dates, routes, organizations, and the dive buddy's name need the author's later correction.</p>
+          <p><b>School, camp, and making things.</b> The childhood memories include a middle-school summer camp/daycare, Gordon Rowley's trails, wildlife and archery activities, and teachers/classroom scenes; elementary-school teachers, a speech impediment, violin lessons, and a cafeteria milk job; science-fair electronics and soldering with grandfather Fred; and fifth-grade Apple IIe programming. The author also remembers an Idyllwild astronomy trip and a snowball fight.</p>
+          <p><b>Lost papers.</b> The author recalls a diary and other papers being lost in the St. Croix rainforest. This remains a personal memory; no surviving copy or date is known.</p>
+          <p class="tiny">Editorial handling: retain as author-supplied memory until corrected; do not infer dates, resolve uncertain names by guesswork, or convert the Mars Rover, fastener, or litigation recollections into independently established statements.</p>
+        </div>
         <p>
           The family-history chapters show how promotion works when documents do arrive: the Seize Quartiers file left exactly two
           ancestral slots open — the Texas parents of Daisy Beatrice and the Morin parents of Biddeford, Maine — each with a named
