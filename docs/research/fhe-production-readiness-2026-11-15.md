@@ -1,6 +1,6 @@
 # Production-readiness review: FHE for encrypted terrain metrics
 
-**Reviewed:** 2026-11-15  
+**Reviewed:** 2026-11-15
 **Scope:** The existing `tools/he-bfv-dem-sse-demo.mjs` is a synthetic BFV squared-error-sum experiment. It is not connected to elevation data or a viewer and is not a production implementation.
 
 ## Executive conclusion

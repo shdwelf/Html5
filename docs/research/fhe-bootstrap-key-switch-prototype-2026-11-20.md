@@ -1,6 +1,6 @@
 # FHE prototype follow-up: programmable bootstrapping, key switching, and wire paths
 
-**Reviewed:** 2026-11-20  
+**Reviewed:** 2026-11-20
 **Status:** bounded educational prototype; not a deployment design or production recommendation.
 
 ## Scope distinction
