@@ -211,3 +211,9 @@ not proof that Notion permissions have been configured.
   `docs/greeran-commencement-research-2026-10-16.md`.
 - UC fee: current-era pages dominate; the primary source is the archived UC
   PATHWAYS applicant information (resolved Oct 2026 — $40 per campus).
+
+### Author-supplied memoir intake (15 November 2026)
+
+- `docs/greeran-memoir-intake-2026-11-15.md` holds the undated, correction-pending memory intake. Chapter XVI now includes a clearly labeled memory-tier summary with the same uncertainty and third-party-claim safeguards.
+- Do not create sorted `TIMELINE` rows until the author supplies event dates/order; an arbitrary sort value would imply chronology. Preserve the Jennifer / “Bridgette Klaib” uncertainty and do not infer an expansion for ESP.
+- Sealtight/Larry Bogatz/Mars Rover/formed-fastener/trademark recollections remain personal leads only, not independently verified public assertions. Retain this distinction if sources are pursued.

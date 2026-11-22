@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * Real, one-multiplication-depth BFV experiment of sum((sample-reference)^2).
- * Synthetic quantized 4DWM elevation-like values only. It is a separate CLI
- * experiment, not an encrypted/browser-integrated terrain viewer.
+ * Bounded quantized integer values. The default is synthetic; a separate
+ * adapter can ingest measured 3DEP values (with explicit caveats). This is a
+ * CLI experiment, not an encrypted/browser-integrated terrain viewer.
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -73,7 +74,7 @@ export async function runDemSseBfvDemo(value = DEM_SSE_EXAMPLE) {
     finally { plain.setZero(); decoded.fill(0n); }
     return {
       formula: "SSE = sum_i (sample_i - reference_i)^2",
-      scope: "Real leveled BFV exact-integer evaluation, multiplicative depth one, no bootstrapping; synthetic terrain-like inputs only.",
+      scope: "Leveled BFV exact-integer evaluation, multiplicative depth one, no bootstrapping; input provenance and meaning are supplied by the caller. Default CLI fixture is synthetic.",
       backend: "node-seal 7.0.0 / Microsoft SEAL 4.1.2",
       securityLevelBits: qualifiers.securityLevel.value,
       sampleCount: input.samples.length,
@@ -83,7 +84,7 @@ export async function runDemSseBfvDemo(value = DEM_SSE_EXAMPLE) {
       noiseBudgetBits,
       operations: { ciphertextSubtractions: input.samples.length, ciphertextMultiplications: input.samples.length, ciphertextAdditions: input.samples.length - 1, relinearizations: 1, multiplicativeDepth: 1, bootstraps: 0 },
       trustBoundary: "Both sample and reference values are encrypted. Evaluator receives paired ciphertexts plus relinearization keys; local owner decrypts one aggregate. Roles share a process in this demonstration.",
-      limits: ["No range proofs, authenticated input, malicious security, differential privacy or guarantee that the aggregate does not disclose information.", "Finite leveled BFV only; no bootstrap, rotations, encrypted division, production protocol or integration into the browser 4DWM viewer.", "The tested vectors are synthetic and do not assert a measured 3DEP/DEM residual or terrain accuracy."],
+      limits: ["No range proofs, authenticated input, malicious security, differential privacy or guarantee that the aggregate does not disclose information.", "Finite leveled BFV only; no bootstrap, rotations, encrypted division, production protocol or integration into the browser 4DWM viewer.", "The default example is synthetic; the measured-data adapter uses non-co-located neighboring rows and does not assert a same-location 3DEP/DEM residual or terrain accuracy."],
     };
   } finally {
     for (const resource of resources.reverse()) resource.delete();
