@@ -15,6 +15,17 @@ The requested [Customer Service page](https://noblecollection.com/c/Customer-Ser
 - The official [2025 page](https://cryptexhunt.com/2025/) says that edition had no prize other than bragging rights. Therefore “Cryptex Hunt has/has no prizes” is not a timeless statement; attach the claim to the year and the rules for that edition.
 - The historical Google Da Vinci Code Quest and the Cryptex Hunt are separate events. Columbia Pictures' [2006 press release](https://www.sony.com/content/sony/en/en_us/SCA/company-news/press-releases/columbia-pictures/2006/the-da-vinci-code-quest-on-google-challenges-fans-through-online-puzzle-adventure.html) said the first 10,000 eligible challengers completing 24 puzzles would be contacted for the final challenge and that selected finalists would receive a Cryptex replica. This is not evidence of a Cryptex Hunt prize or Noble Collection sponsorship.
 
+### Book-cover barcode start: 2019
+
+The cover-and-barcode memory identifies the **2019 Cryptex Hunt**. The official [2019 hunt page](https://cryptexhunt.com/2019/) says the hunt was found in ClueKeeper using hunt code `CXHUNT`, then started by viewing the magazine cover. The official [2019 solution guide](https://cryptexhunt.com/2019/CH2019%20Solution%20Guide.pdf) confirms that the cover was the hunt's starting puzzle:
+
+1. The barcode's printed numbers convert to **START HERE**, confirming that the solver is looking in the right place.
+2. The barcode's wide/narrow bars encode **Morse code**; the word “MORSE” is hidden in Justin's glasses as an extra hint.
+3. Decoding the bars produces **CRYPTEXHUNT.COM/CH19**, leading to a jigsaw and the next start step.
+4. The jigsaw's color-accented letters spell **ENGAGE**, the code for starting the hunt in the ClueKeeper app. The app's start information then supplied the magazine PDF URL and its password, **LOCKBOX**.
+
+So the barcode was the entry trail, but it wasn't just a standalone barcode answer: the Morse-decoded URL led to a jigsaw, which yielded the ClueKeeper start code. The official page's `CXHUNT` was the separate code to find/register the hunt.
+
 ### Recipe puzzle: 2025 Word Salad
 
 The official 2025 solution PDF, [Puzzle 10: Word Salad](https://cryptexhunt.com/2025/solutions/CH2025-P10_Word_Salad_Solution.pdf), yields **OLIVIER**. The recipe clue describes a Russian salad with potato, carrot, cucumber, peas, egg, celeriac, onion, apple, and chicken. This is the hunt puzzle's recipe answer, not an official endorsed recipe with quantities or preparation steps.
@@ -38,6 +49,7 @@ Archive.org Advanced Search for the exact phrase “Cryptex Hunt” returned one
 
 - [Noble Collection Customer Service](https://noblecollection.com/c/Customer-Service)
 - [Noble Collection Da Vinci Code Cryptex product page](https://noblecollection.com/Item--i-PRP-DV-5120)
+- Official [2019 hunt page](https://cryptexhunt.com/2019/) and [2019 solution guide](https://cryptexhunt.com/2019/CH2019%20Solution%20Guide.pdf)
 - Official [2022](https://cryptexhunt.com/2022/), [2023](https://cryptexhunt.com/2023/), and [2025](https://cryptexhunt.com/2025/) edition pages
 - Official [previous-hunts index](https://hunt.cryptexhunt.com/previous-hunts/)
 - Official [2025 Word Salad solution PDF](https://cryptexhunt.com/2025/solutions/CH2025-P10_Word_Salad_Solution.pdf)
