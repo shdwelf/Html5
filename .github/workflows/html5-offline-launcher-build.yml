@@ -307,12 +307,14 @@ jobs:
           ls -lh "$apk"
           sha256sum "$apk"
 
-      - name: Upload public APK (non-recipient builds only)
+      - name: Upload public and network APKs for backup (non-recipient builds only)
         if: ${{ inputs.recipient_public_key == '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: html5-offline-launcher-public-debug-apk
-          path: apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+          name: html5-offline-launcher-public-network-debug-apks
+          path: |
+            apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
           if-no-files-found: error
           retention-days: 30
 

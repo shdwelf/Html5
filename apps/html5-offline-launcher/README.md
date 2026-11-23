@@ -108,9 +108,12 @@ track startup, not acoustic capture quality. Device testing has a separate
 15-minute step bound; build artifacts are exported **before** it starts. An APK
 build/inventory check is not a WebView or live-provider test result.
 
-Normal CI uploads only the public APK as
-`html5-offline-launcher-public-debug-apk` (30 days). Neither the private nor the
-network APK is published as plaintext. To back up **all three profiles**, manually
+Normal CI uploads the public and opt-in network APKs as
+`html5-offline-launcher-public-network-debug-apks` (30 days), preserving main's
+network-package handoff. The network package retains all 94 approved public apps
+plus RadarScope and News Globe. The private APK is never published as plaintext.
+A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
+the three profiles separately. To back up **all three profiles**, manually
 dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:
 
 - `recipient_public_key`: exactly one armored OpenPGP **public** certificate;
