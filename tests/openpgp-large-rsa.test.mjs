@@ -158,5 +158,11 @@ for (const rsaBits of [8192, 16384]) {
       } finally { rmSync(directory, { recursive: true, force: true }); }
     }
     assert.equal(createPublicKeyring().list().length, 0, "synthetic keys never become app-global state");
+    if (rsaBits === 16384 && process.env.OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH) {
+      // Same-job PUBLIC-only handoff for actual Chromium import. No secret
+      // fixture, artifact upload or cross-job cache; isolated homes are gone.
+      assert.doesNotMatch(bundle.publicKey, /PRIVATE KEY/);
+      writeFileSync(process.env.OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH, bundle.publicKey, { mode: 0o600, flag: "wx" });
+    }
   });
 }

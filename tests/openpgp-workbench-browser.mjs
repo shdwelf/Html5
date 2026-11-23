@@ -191,6 +191,24 @@ try {
       assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 0);
       assert.equal(await page.$eval("#generated-public-output", (element) => element.value), "");
     });
+    await test("actual Chromium imports and exports the fresh native-generated 16384-bit PUBLIC control with valid certification", {
+      skip: !process.env.OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH && "same-job synthetic public control is required in the large-rsa CI lane; no private fixture is used",
+    }, async () => {
+      const armor = await readFile(process.env.OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH, "utf8");
+      assert.doesNotMatch(armor, /PRIVATE KEY/);
+      const control = await openpgp.readKey({ armoredKey: armor });
+      assert.equal(control.getAlgorithmInfo().bits, 16384); assert.equal(control.getKeys().length, 2);
+      assert.ok(control.getKeys().every(({ keyPacket }) => keyPacket.getAlgorithmInfo().bits === 16384));
+      await page.click("#keyring-tab");
+      await field("public-key-input", armor); await field("expected-fingerprint", control.getFingerprint());
+      await page.click("#import-public-keys"); await status("keyring-status", "success");
+      const rendered = await page.$eval("#keyring-list", (element) => element.textContent);
+      assert.match(rendered, /v4 RSA-16384/); assert.match(rendered, /valid at import time/);
+      const output = await page.$eval("#keyring-output", (element) => element.value);
+      assert.equal((await openpgp.readKey({ armoredKey: output })).getFingerprint(), control.getFingerprint());
+      assert.doesNotMatch(output, /PRIVATE KEY/);
+      await page.click("#clear-all");
+    });
     await test("mobile tabs fit, real keyboard navigation works and no page/external-request errors occurred", async () => {
       await page.setViewport({ width: 360, height: 800 });
       await page.focus("#encrypt-tab"); await page.keyboard.press("End");
