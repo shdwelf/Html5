@@ -29,6 +29,7 @@ const ANDROID_SMOKE_TEST = readFileSync(
   "utf8",
 );
 const ANDROID_WORKFLOW = readFileSync(join(ROOT, ".github", "workflows", "html5-offline-launcher-build.yml"), "utf8");
+const PRIVATE_APK_ENCRYPTOR = readFileSync(join(ROOT, "scripts", "encrypt-private-apk-openpgp.mjs"), "utf8");
 
 const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(ROOT, "public", "apps", entry.name, "index.html")))
@@ -179,11 +180,16 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps/);
   assert.match(ANDROID_WORKFLOW, /Encrypt private APK for supplied OpenPGP recipient/);
-  assert.match(ANDROID_WORKFLOW, /--encrypt --recipient/);
+  assert.match(ANDROID_WORKFLOW, /node scripts\/encrypt-private-apk-openpgp\.mjs/);
   assert.match(ANDROID_WORKFLOW, /apk=apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /inputs\.recipient_public_key/);
+  assert.match(PRIVATE_APK_ENCRYPTOR, /readKey\(\{ armoredKey \}\)/);
+  assert.match(PRIVATE_APK_ENCRYPTOR, /key\.getEncryptionKey\(\)/);
+  assert.match(PRIVATE_APK_ENCRYPTOR, /openpgp\.encrypt/);
+  assert.match(PRIVATE_APK_ENCRYPTOR, /key\.isPrivate\(\)/);
   const encryptedUploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload encrypted private APK only"));
-  assert.match(encryptedUploadStep, /app-private-debug\.apk\.gpg/);
+  assert.match(encryptedUploadStep, /encrypted-private-apks/);
+  assert.match(PRIVATE_APK_ENCRYPTOR, /app-private-debug-\$\{fingerprint\}\.apk\.asc/);
   assert.doesNotMatch(encryptedUploadStep, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk(?:\s|$)/);
   const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions\/upload-artifact@v4"));
   assert.match(uploadStep, /path: apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);

@@ -110,8 +110,10 @@ the private APK and the network APK, including their distinct permission and
 catalog inventories, but does not publish either APK as plaintext. For a
 private backup, manually dispatch the workflow with a recipient's armored
 OpenPGP **public** key. CI encrypts the private APK and uploads only the
-ciphertext as a seven-day artifact. Download the `.gpg` artifact, verify its
-`.sha256` file, and decrypt locally with `gpg --output app-private-debug.apk
---decrypt app-private-debug.apk.gpg`. The private key never leaves its owner.
+ciphertext as a seven-day artifact. Download the `.apk.asc` artifact, verify
+its entry in `SHA256SUMS.txt`, and decrypt locally with PGPony or another
+OpenPGP client (for example, `gpg --output app-private-debug.apk --decrypt
+app-private-debug-<subkey-fingerprint>.apk.asc`). The private key never leaves
+its owner.
 The sandbox itself has no local Java/Gradle/Android SDK, so Android APK
 verification and live-feed smoke testing remain CI/device follow-ups.
