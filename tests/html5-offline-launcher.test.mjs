@@ -180,8 +180,9 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /grep -Fq 'android\.permission\.MODIFY_AUDIO_SETTINGS'/);
   assert.match(ANDROID_WORKFLOW, /:app:connectedPublicDebugAndroidTest/);
   assert.match(ANDROID_WORKFLOW, /:app:assemblePrivateDebug/);
-  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-debug-apk/);
+  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-network-debug-apks/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps/);
   assert.match(ANDROID_WORKFLOW, /Encrypt private APK for supplied OpenPGP recipient/);
@@ -196,8 +197,11 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(encryptedUploadStep, /encrypted-private-apks/);
   assert.match(PRIVATE_APK_ENCRYPTOR, /app-private-debug-\$\{fingerprint\}\.apk\.asc/);
   assert.doesNotMatch(encryptedUploadStep, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk(?:\s|$)/);
-  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions\/upload-artifact@v4"));
-  assert.match(uploadStep, /path: apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  const uploadStep = ANDROID_WORKFLOW
+    .slice(ANDROID_WORKFLOW.indexOf("- name: Upload public and network APKs for backup"))
+    .split("\n\n      - name:")[0];
+  assert.match(uploadStep, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.match(uploadStep, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.doesNotMatch(uploadStep, /private-debug\.apk/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
   assert.match(README, /94\*\* HTML entrypoints/);
