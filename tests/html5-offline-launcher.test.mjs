@@ -8,6 +8,9 @@ const ROOT = resolve(new URL("..", import.meta.url).pathname);
 const PROJECT = join(ROOT, "apps", "html5-offline-launcher");
 const MANIFEST = readFileSync(join(PROJECT, "app/src/main/AndroidManifest.xml"), "utf8");
 const PRIVATE_MANIFEST = readFileSync(join(PROJECT, "app/src/private/AndroidManifest.xml"), "utf8");
+const NETWORK_MANIFEST = readFileSync(join(PROJECT, "app/src/network/AndroidManifest.xml"), "utf8");
+const NEWS_GLOBE = readFileSync(join(ROOT, "apps", "news-globe.html"), "utf8");
+const RADAR_SCOPE = readFileSync(join(ROOT, "apps", "ads-b-radar-scope"), "utf8");
 const GRADLE = readFileSync(join(PROJECT, "app/build.gradle"), "utf8");
 const CLIENT = readFileSync(
   join(PROJECT, "app/src/main/java/org/arena/html5launcher/OfflineAssetWebViewClient.java"),
@@ -60,6 +63,50 @@ test("private Android profile contains only its fixed two-app allowlist", () => 
   assert.match(PRIVATE_MANIFEST, /android\.permission\.MODIFY_AUDIO_SETTINGS[\s\S]*?tools:node="remove"/);
 });
 
+test("opt-in network profile adds RadarScope and News Globe without changing offline inventories", () => {
+  const network = buildCatalog("network");
+  assert.equal(network.length, 96);
+  assert.ok(network.some((app) => app.slug === "ads-b-radar-scope"));
+  assert.match(RADAR_SCOPE, /feed: 'combined'/);
+  assert.doesNotMatch(RADAR_SCOPE, /opensky-network\.org|OpenSky Network|feedOpenSky/);
+  assert.match(RADAR_SCOPE, /api\.adsb\.fi/);
+  assert.match(RADAR_SCOPE, /api\.airplanes\.live/);
+  assert.ok(network.some((app) => app.slug === "news-globe"));
+  assert.equal(buildCatalog("public").length, 94);
+  assert.deepEqual(buildCatalog("private").map((app) => app.slug).sort(), ["helios-observatory", "prime-viewer"]);
+  assert.match(GRADLE, /create\('network'\)/);
+  assert.match(GRADLE, /applicationIdSuffix '\.network'/);
+  assert.match(GRADLE, /buildConfigField 'boolean', 'NETWORK_ENABLED', 'true'/);
+  assert.match(NETWORK_MANIFEST, /android\.permission\.INTERNET/);
+  assert.doesNotMatch(MANIFEST, /android\.permission\.INTERNET/);
+  assert.doesNotMatch(PRIVATE_MANIFEST, /android\.permission\.INTERNET/);
+  assert.match(MAIN_ACTIVITY, /News Globe loads dynamic OPML and RSS URLs, so the set of feed hosts is not fixed/);
+  assert.match(NEWS_GLOBE, /function validateFeedUrl\(raw\)/);
+  assert.match(NEWS_GLOBE, /parsed\.protocol !== 'https:'/);
+  assert.match(NEWS_GLOBE, /Rejected invalid or non-HTTPS feed host/);
+  assert.match(NEWS_GLOBE, /async function fetchValidated/);
+  assert.doesNotMatch(NEWS_GLOBE, /api\.allorigins\.win|api\.cors\.lol|corsproxy\.io/);
+  const validatorSource = NEWS_GLOBE.match(/  function validateFeedUrl\(raw\) \{[\s\S]*?\n  \}/)?.[0];
+  assert.ok(validatorSource, "News Globe feed URL validator is extractable for policy tests");
+  const validateFeedUrl = new Function(`${validatorSource}; return validateFeedUrl;`)();
+  assert.equal(validateFeedUrl("https://news.example.org/rss"), "https://news.example.org/rss");
+  for (const rejected of [
+    "http://news.example.org/rss",
+    "https://127.0.0.1/feed.xml",
+    "https://localhost/feed.xml",
+    "https://feeds.example.org:8443/rss",
+    "https://user:pass@feeds.example.org/rss",
+    "javascript:alert(1)",
+  ]) {
+    assert.equal(validateFeedUrl(rejected), null, `expected URL to be rejected: ${rejected}`);
+  }
+  assert.match(CLIENT, /isValidExternalHttpsUri/);
+  assert.match(CLIENT, /IDN\.toASCII/);
+  assert.match(CLIENT, /Network mode allows only validated HTTPS hostnames/);
+  assert.match(ANDROID_WORKFLOW, /:app:assembleNetworkDebug/);
+  assert.match(ANDROID_WORKFLOW, /android\.permission\.INTERNET/);
+});
+
 test("every entrypoint has a unique synthetic origin, including case-only slug collisions", () => {
   const catalog = buildCatalog();
   const hosts = catalog.map((app) => app.host);
@@ -81,6 +128,8 @@ test("the bundled entrypoints have no direct remote resource tags; the launcher 
   assert.deepEqual(flagged, []);
   assert.match(CATALOG_HTML, /External links and network requests are blocked/);
   assert.match(CATALOG_JS, /Remote asset blocked/);
+  assert.match(CATALOG_JS, /catalog\.networkEnabled === true/);
+  assert.match(CATALOG_HTML, /id="mode-description"/);
   const anc = readFileSync(join(ROOT, "public", "apps", "anc-studio", "index.html"), "utf8");
   assert.match(anc, /href="\.\/tailwind\.css"/);
   assert.doesNotMatch(anc, /cdn\.jsdelivr\.net|fonts\.googleapis\.com/i);

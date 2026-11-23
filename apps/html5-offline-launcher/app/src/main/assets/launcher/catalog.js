@@ -6,7 +6,11 @@
   const empty = document.getElementById("empty-state");
   const error = document.getElementById("error-state");
   const clear = document.getElementById("clear-search");
+  const modeHeading = document.getElementById("mode-heading");
+  const modeDescription = document.getElementById("mode-description");
+  const footerMode = document.getElementById("footer-size");
   let apps = [];
+  let networkEnabled = false;
 
   const palette = [
     ["#dff4ef", "#087d6d"],
@@ -53,7 +57,7 @@
     if (app.hasRemoteResources) {
       const badge = document.createElement("span");
       badge.className = "remote-badge";
-      badge.textContent = "Remote asset blocked";
+      badge.textContent = networkEnabled ? "External HTTPS resource" : "Remote asset blocked";
       link.appendChild(badge);
     }
     return link;
@@ -96,6 +100,13 @@
         throw new Error("Unsupported local catalog format");
       }
       apps = catalog.apps;
+      networkEnabled = catalog.networkEnabled === true;
+      if (networkEnabled) {
+        document.title = "HTML5 Network Library";
+        modeHeading.textContent = "Network-enabled build.";
+        modeDescription.textContent = "This flavor can contact external HTTPS services after hostname validation. OPML/RSS feed hosts are dynamic and not fixed; RSS/CDN and provider availability is not guaranteed; RadarScope proxy fallbacks are third-party services.";
+        footerMode.textContent = "HTTPS ENABLED · HOSTS VALIDATED";
+      }
       count.textContent = String(apps.length);
       render();
     })
