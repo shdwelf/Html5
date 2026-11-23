@@ -4,7 +4,8 @@
   "catalogueCommit": "ced25e716d875bfb78361772e4415784af0f86f5",
   "scope": "Offline research with explicit review gaps. No live fees, USD prices, balances, token deployment verification (except separate token-networks registry), or endpoint availability checks.",
   "assetProfileOverrides": {
-    "xno-nano": "XNO"
+    "xno-nano": "XNO",
+    "vvs-vvs-finance": "CRONOS_EVM"
   },
   "chains": {
     "BTC": {
@@ -301,24 +302,42 @@
       ]
     },
     "ZEC": {
-      "name": "ZEC",
+      "name": "Zcash",
       "family": "zcash-t",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ZEC",
+      "feeModel": "logical-actions",
+      "feeFormula": "ZIP-317 conventional fee = marginal fee × max(2, logical actions), in zatoshis. The marginal fee and action pools depend on the applicable revision/height; this wallet policy is not a consensus minimum.",
       "nativeAssetIds": [
         "zec-zcash"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/zcash/zips/blob/c41951cc43d1f5074fc6821b892692a7f0d85e54/zips/zip-0317.rst"
+        },
+        {
+          "kind": "fees",
+          "url": "https://zips.z.cash/zip-0317"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "ZIP-317 snapshot labels revisions 0 and 1 active and revision 2 proposed. Do not silently treat the proposed 1000-zatoshi marginal fee as activated; expected mining height and wallet/miner policy must be checked.",
+        "Transparent-only address derivation does not implement shielded transactions, action counting or a Zcash fee estimator."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "HYPE": {
       "name": "HyperEVM (not HyperCore)",
@@ -365,13 +384,13 @@
       ]
     },
     "DOGE": {
-      "name": "DOGE",
+      "name": "Dogecoin",
       "family": "p2pkh",
       "identityStatus": "pending",
       "feeStatus": "primary-reviewed",
       "feeAsset": "DOGE",
-      "feeModel": "utxo",
-      "feeFormula": "Dogecoin Core v1.14.9 documents a recommended 0.01 DOGE/kB wallet/miner rate, applied to exact serialized transaction bytes since v1.14.5; default relay minimum is 0.001 DOGE/kB. Node/miner policy and wallet settings can differ; sub-dust outputs can add fees. Not a fixed consensus fee or live quote.",
+      "feeModel": "utxo-bytes",
+      "feeFormula": "Serialized transaction bytes × selected DOGE/kB rate / 1000; dust/change policies may add cost. No fixed fee per transfer.",
       "nativeAssetIds": [
         "doge-dogecoin"
       ],
@@ -379,6 +398,10 @@
       "rpc": "",
       "balanceAdapter": null,
       "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/dogecoin/dogecoin/blob/e7c9581519bea20a93d15b0e78b37e3e0905e589/doc/fee-recommendation.md"
+        },
         {
           "kind": "fee-recommendation",
           "url": "https://github.com/dogecoin/dogecoin/blob/e0a1c157791544e818c901bd9341896965afbf9d/doc/fee-recommendation.md"
@@ -394,9 +417,18 @@
       ],
       "testnets": [],
       "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned Core recommendation is 0.01 DOGE/kB with exact-size charging since 1.14.5, not whole-kilobyte rounding. Relay minimum and miner inclusion policy differ; recommendations are not live quotes.",
         "Primary Dogecoin Core v1.14.9 release/repository evidence. The fee-recommendation document states it was last updated for v1.14.6; the 0.01 DOGE/kB recommendation and 0.001 DOGE/kB default relay minimum are policy defaults, not consensus rules, and operators may configure policy.",
         "Host/chain identity remains pending separately; fee-model review does not independently confirm registry identity or address conventions."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "XLM": {
       "name": "Stellar",
@@ -447,33 +479,50 @@
       "nativeBaseFee": "0.00001"
     },
     "BCH": {
-      "name": "BCH",
+      "name": "Bitcoin Cash",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BCH",
+      "feeModel": "utxo-policy-size",
+      "feeFormula": "Fee = charged transaction size × chosen base-unit rate; BCHN fee-rate code supports integer/ceiling rounding and policy virtual size = max(serialized bytes, sigchecks × bytes-per-sigcheck).",
       "nativeAssetIds": [
         "bch-bitcoin-cash"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/bitcoin-cash-node/bitcoin-cash-node/blob/07576013c91ff4a3a74acd85f189c69121cdad1b/src/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/bitcoin-cash-node/bitcoin-cash-node/blob/07576013c91ff4a3a74acd85f189c69121cdad1b/src/policy/policy.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Do not substitute Bitcoin witness vbytes: BCH policy size can be sigcheck-adjusted. CashTokens, dust and selected inputs/outputs need their own estimate; no default rate is installed."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "LTC": {
-      "name": "LTC",
+      "name": "Litecoin",
       "family": "p2wpkh",
       "identityStatus": "pending",
       "feeStatus": "primary-reviewed",
       "feeAsset": "LTC",
-      "feeModel": "utxo",
-      "feeFormula": "Litecoin Core wallet fee is selected-rate × serialized transaction bytes (rate in litoshis per 1,000 bytes), subject to wallet/mempool/relay minima and estimator/fallback policy; MWEB transactions also add 100 litoshis per MWEB weight unit in the reviewed source. No universal fixed fee or live quote.",
+      "feeModel": "utxo-mweb",
+      "feeFormula": "Transparent fee = policy vsize × selected litoshi/vB rate, with integer rounding. MWEB additionally charges a separate weight-based component; total is byte fee + MWEB fee.",
       "nativeAssetIds": [
         "ltc-litecoin"
       ],
@@ -481,6 +530,14 @@
       "rpc": "",
       "balanceAdapter": null,
       "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/policy.cpp"
+        },
         {
           "kind": "fees",
           "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/wallet/fees.cpp"
@@ -496,9 +553,18 @@
       ],
       "testnets": [],
       "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned code exposes GetTotalFee and GetMWEBFeeForWeight separately. A transparent SegWit receive address does not implement MWEB or establish an all-Litecoin transfer price.",
         "Litecoin Core fee implementation reviewed at pinned repository commit 9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343; wallet estimates/fallbacks and relay/mempool policy are node/wallet state, not a constant network fee. This is not a live mempool quote.",
         "Host/chain identity remains pending separately; fee-model review does not independently confirm registry identity, address conventions or current deployments."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "NEAR": {
       "name": "NEAR Protocol (implicit account)",
@@ -507,7 +573,7 @@
       "feeStatus": "primary-reviewed",
       "feeAsset": "NEAR",
       "feeModel": "near-gas",
-      "feeFormula": "Transaction gas is charged in NEAR based on gas burned × the applicable gas price. The gas price has a 0.0001 NEAR/Tgas floor and varies with load; execution gas is bought up front at no less than 0.001 NEAR/Tgas, with unused gas and the price difference refunded. Action/contract execution, attached deposits, and possible ~0.007 NEAR account-creation charge affect required balance; storage staking is separate. No transaction-specific amount without the action/receipt and price inputs.",
+      "feeFormula": "Action/receipt gas burned × applicable gas price in NEAR, with execution gas prepaid at the purchase price and unused gas/price differences refunded. Account-creation charges and attached deposits affect required balance; storage staking is separate.",
       "nativeAssetIds": [
         "near-near-protocol"
       ],
@@ -518,6 +584,14 @@
         {
           "kind": "network",
           "url": "https://docs.near.org/protocol/network/networks"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/near/docs/blob/46247ba605e4f92a5b9849eeaa13779157253357/protocol/transactions/gas.mdx"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.near.org/integrations/exchange-integration"
         },
         {
           "kind": "fees",
@@ -544,19 +618,28 @@
         }
       ],
       "notes": [
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Purchase price and burn price differ; prepaid gas is not the final charge. Runtime parameters, receipt path, account creation and storage requirements must be checked; no live gas or account state was queried.",
         "Primary NEAR docs describe transaction gas as action- and execution-dependent: gas is bought up front, actual burned gas is charged at the applicable price, and unused gas / the purchase-price difference are refunded. A live transaction estimate requires transaction-specific inputs or receipts; no default fee, live gas price, free-transfer assertion, or automatic estimator is provided.",
         "The ~0.007 NEAR account-creation charge for a new account is an additional conditional cost through gas, not a universal transfer fee. Attached deposits are transferred value, not transaction fees. Storage staking (currently documented as 10^19 yoctoNEAR/byte) is a separate balance lock, not a gas fee.",
         "Historical host mapping and derivation conventions are inventory, not proof of wallet compatibility or holdings. NEAR fee mechanics are reviewed independently of the pre-existing primary-reviewed network identity."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "AVAX": {
-      "name": "Avalanche C-Chain (not X/P)",
+      "name": "Avalanche C-Chain",
       "family": "evm",
       "identityStatus": "primary-reviewed",
       "feeStatus": "primary-reviewed",
       "feeAsset": "AVAX",
-      "feeModel": "gas",
-      "feeFormula": "C-Chain dynamic fee: gasCharged × min(gasFeeCap, baseFee + gasTipCap); Helicon defines gasCharged = max(gasUsed, gasLimit / 2). Fees are paid and burned in AVAX. Base fee is a changing validator-voted minimum with no protocol upper bound; no live quote.",
+      "feeModel": "gas-charged-floor",
+      "feeFormula": "C-Chain non-atomic fee = charged gas × effective AVAX gas price (fee-cap bounded base + tip). Where Helicon is active, charged gas is at least max(gasUsed, gasLimit / 2).",
       "nativeAssetIds": [
         "avax-avalanche"
       ],
@@ -571,6 +654,10 @@
         {
           "kind": "network",
           "url": "https://build.avax.network/docs/primary-network"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/ava-labs/builders-hub/blob/1261bb8d23336f5c7c9a654aabd64ed66c639a06/content/docs/rpcs/other/guides/txn-fees.mdx"
         },
         {
           "kind": "fees",
@@ -598,39 +685,74 @@
       ],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "This EVM host is C-Chain, not X/P chains or arbitrary Avalanche L1s. Atomic import/export and other chains have distinct schedules.",
+        "Source documentation describes Helicon/ACP-194 and a validator-governed minimum price; header base fee is a worst-case bound. Do not reuse a stale 25/1 nAVAX floor or assume only gasUsed is billed. Activation/current parameters were not queried.",
         "Pinned community chain catalogue, not a live RPC check; primary-reviewed fee mechanics are protocol description, not a live quote or transaction estimate.",
         "Avalanche docs report Helicon/ACP-283 activated on Mainnet September 22, 2026; the validator-voted minimum was reported at 5 nAVAX in late September 2026. The floor is mutable; do not hardcode it as a current fee. eth_baseFee is a worst-case bound since Helicon, while actual charged gas also reflects the gas-limit floor."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "CRO": {
-      "name": "CRO",
+      "name": "Cronos POS Chain",
       "family": "cosmos",
-      "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "CRO",
+      "feeModel": "cosmos-gas",
+      "feeFormula": "Declared Cosmos fee budget = ceil(gasLimit × accepted gas price), paid in CRO/basecro; transaction simulation and node/network policy determine the required budget.",
       "nativeAssetIds": [
         "cro-cryptocom-chain"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.cronos-pos.org/cronos-pos-chain-protocol/chain-details/protocol-documentation"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.cronos-pos.org/for-users/wallets/multisig-account"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.cronos-pos.org/for-users/wallets/multisig-account"
+        }
+      ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "This row uses Cronos POS cosmos/cro encoding, not Cronos EVM chain 25."
-      ]
+        "This row uses Cronos POS cosmos/cro encoding, not Cronos EVM chain 25.",
+        "Cronos POS (crypto-org-chain-mainnet-1, cro1 addresses) is not Cronos EVM chain 25. The documented 5000basecro multisig fee is an example, not a universal fee.",
+        "The historical VVS row is EVM-family: its research host is separately overridden to CRONOS_EVM without claiming its token contract is verified."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "FTM": {
-      "name": "Fantom Opera",
+      "name": "Fantom Opera (historical FTM host)",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "FTM",
+      "feeModel": "gas",
+      "feeFormula": "Opera fee = gas used × FTM gas price; its demand-sensitive base fee/priority policy must be obtained for the selected transaction.",
       "nativeAssetIds": [
         "ftm-fantom"
       ],
@@ -641,23 +763,35 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-250.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://blog.fantom.foundation/understanding-fantom-transaction-fees/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
-        "Historical Fantom Opera row; migration to Sonic does not make the networks interchangeable."
-      ]
+        "Historical Fantom Opera row; migration to Sonic does not make the networks interchangeable.",
+        "Reviewed the original foundation fee explanation, not its historical USD comparison as a current quote. Opera/FTM remains distinct from Sonic/S; migration or an identically formatted address does not make the ledgers interchangeable.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "ETC": {
       "name": "Ethereum Classic",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ETC",
+      "feeModel": "gas",
+      "feeFormula": "Execution fee = charged gas × ETC gas price, after the refunds allowed by the active ETC fork rules; token calls require transaction-specific gas.",
       "nativeAssetIds": [
         "etc-ethereum-classic"
       ],
@@ -668,13 +802,29 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-61.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/etclabscore/core-geth/blob/4720ac33055e8e5482ce2fb6c5ff800aad8a5889/core/state_transition.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/etclabscore/core-geth/blob/4720ac33055e8e5482ce2fb6c5ff800aad8a5889/params/config_classic.go"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The primary Classic config identifies chain 61 and a partial London/Mystique fork, not Ethereum mainnet. Generic Core-Geth EIP branches do not prove EIP-1559 is active on Classic; no ETH burn/fee-floor claim is imported.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "BASE": {
       "name": "Base",
@@ -719,53 +869,83 @@
       ]
     },
     "DASH": {
-      "name": "DASH",
+      "name": "Dash",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "DASH",
+      "feeModel": "utxo-bytes",
+      "feeFormula": "Transaction byte size × chosen duff/byte rate, rounded upward by the pinned Core fee-rate implementation; transaction type and wallet policy can add costs.",
       "nativeAssetIds": [
         "dash-dash"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/dashpay/dash/blob/81e52fffb9489da6e1759d66717115e6debe32b2/src/policy/feerate.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Ordinary transfer fee arithmetic is not a quote for CoinJoin, special transactions, service fees or every wallet policy. No Bitcoin sat/vB assumption is reused."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "ATOM": {
-      "name": "ATOM",
+      "name": "Cosmos Hub",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ATOM",
+      "feeModel": "cosmos-feemarket",
+      "feeFormula": "Gas-priced ATOM/uatom transaction budget (gas limit × accepted price, integer rounding); Gaia wraps SDK deduction with FeeMarketCheckDecorator, so current fee-market policy and simulation must be consulted.",
       "nativeAssetIds": [
         "atom-cosmos"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/gaia/blob/c5a460ed482a25496d4dd831fec8f0a440757005/ante/ante.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/x/auth/ante/fee.go"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Fee-market and governance/node parameters are not measured here. A fixed validator example, generic SDK minimum or deprecated globalfee design is not a final Cosmos Hub quote."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "VET": {
-      "name": "VeChain",
+      "name": "VeChainThor",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "VTHO",
+      "feeModel": "vechain-clauses",
+      "feeFormula": "Gas = 5000 transaction overhead + sum of each clause type/data/VM gas. Fees are paid in VTHO: dynamic transactions use charged gas × fee-cap-bounded base-plus-priority price; legacy transactions use their coefficient-based price.",
       "nativeAssetIds": [
         "vet-vechain"
       ],
@@ -776,43 +956,72 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-100009.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.vechain.org/core-concepts/transactions/transaction-calculation"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
-        "VET and VTHO are distinct; do not report VET as the fee asset without a current VeChain fee review."
-      ]
+        "VET and VTHO are distinct; do not report VET as the fee asset without a current VeChain fee review.",
+        "VET is not the gas asset: VTHO pays fees. Single-clause transfer assumptions do not cover multi-clause or contract transactions. VIP-251 dynamic and legacy pricing must not be conflated; delegation changes who pays, not the existence of the fee.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "INJ": {
-      "name": "INJ",
+      "name": "Injective",
       "family": "evm-cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "INJ",
+      "feeModel": "cosmos-dynamic-gas",
+      "feeFormula": "Native transaction fee budget = ceil(gasLimit × INJ gas price in inj base units). Txfees enforces a minimum price and high-gas rules, and an adaptive base fee when Mempool1559Enabled is enabled.",
       "nativeAssetIds": [
         "inj-injective-protocol"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.injective.network/developers-native/injective/txfees"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.injective.network/developers-native/core/auth"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Module defaults are not observed governance values. inj uses 18 decimal places, not the micro-denomination assumed for many Cosmos chains. Trading/maker rebates and sponsorship do not imply arbitrary transfers are free; EVM and token-module operations need separate estimates."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "FLR": {
       "name": "Flare",
       "family": "evm",
       "identityStatus": "primary-reviewed",
-      "feeStatus": "pending",
+      "feeStatus": "primary-reviewed",
       "feeAsset": "FLR",
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeModel": "gas-charged-floor",
+      "feeFormula": "Fee = charged gas × FLR effective gas price (legacy gasPrice or fee-cap-bounded base + priority). Where Helicon is active, at least half the gas limit is charged even if execution uses less.",
       "nativeAssetIds": [
         "flr-flare-network"
       ],
@@ -827,6 +1036,10 @@
         {
           "kind": "network",
           "url": "https://dev.flare.network/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://dev.flare.network/network/overview"
         }
       ],
       "testnets": [
@@ -842,38 +1055,63 @@
       ],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Flare 14 / FLR is distinct from Songbird / SGB and Coston test assets. The source describes all transaction fees burned and Helicon minimum-gas charging; activation and live base fee were not queried.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "LUNC": {
-      "name": "LUNC",
+      "name": "Terra Classic",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "LUNC",
+      "feeModel": "cosmos-gas-tax",
+      "feeFormula": "Gas fee budget = ceil(gasLimit × effective gas price), plus applicable transfer/burn taxes under the Classic tax and exemption rules. Taxes can be covered by declared fees or reverse-charged through the message route.",
       "nativeAssetIds": [
         "luna-terra"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/classic-terra/core/blob/498e81a961d752bdcadbce36100227b9b461c477/custom/auth/ante/fee.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/classic-terra/core/blob/498e81a961d752bdcadbce36100227b9b461c477/custom/auth/ante/fee_tax.go"
+        }
+      ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Terra Classic and Terra 2 are different networks; never merge balances or assume the same testnet."
-      ]
+        "Terra Classic and Terra 2 are different networks; never merge balances or assume the same testnet.",
+        "Do not drop tax when quoting a bank/wasm/IBC-related action. Burn rate, exemptions, caps, fee denominations and charging path are state/message dependent and were not queried. Classic LUNC/columbus history is not Terra 2 LUNA, despite shared uluna naming."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "XDC": {
       "name": "XDC Network",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XDC",
+      "feeModel": "gas",
+      "feeFormula": "Transaction fee = charged gas × effective XDC gas price; native, XRC-20 and contract operations require their own estimates.",
       "nativeAssetIds": [
         "xdc-xdc-network"
       ],
@@ -884,42 +1122,67 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-50.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.xdc.network/learn/gas-fees/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Primary documentation supplies the formula; published 0.25-Gwei/USD/comparison tables are illustrations, not measured prices. No default 21000/35000 gas is installed for this host because examples and fork rules can differ.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "BSV": {
-      "name": "BSV",
+      "name": "Bitcoin SV",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BSV",
+      "feeModel": "utxo-bytes",
+      "feeFormula": "Serialized transaction bytes × negotiated/selected BSV base-unit fee rate, with node fee-rate integer rounding and miner/relay policy constraints.",
       "nativeAssetIds": [
         "bsv-bitcoin-sv"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/bitcoin-sv/bitcoin-sv/blob/6504a3aff65ba97c0f6c80962b033e35ecbfed4b/src/amount.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "A miner fee quote can distinguish data and standard bytes or service policy; the Core scalar fee-rate primitive is not proof of a universal miner rate or free data carriage."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "PLS": {
       "name": "PulseChain",
       "family": "evm",
-      "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "PLS",
+      "feeModel": "gas",
+      "feeFormula": "Charged execution gas × effective PLS gas price; type-2 price is min(feeCap, baseFee + tipCap), with active-fork refund/data-floor rules.",
       "nativeAssetIds": [],
       "chainId": 369,
       "rpc": "",
@@ -928,34 +1191,72 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-369.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://pulsechain.com/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://gitlab.com/pulsechaincom/go-pulse/-/raw/60db0c8ad721b778c4ddfd0d72c0e675f1bb472a/core/state_transition.go"
+        },
+        {
+          "kind": "network",
+          "url": "https://pulsechain.com/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Official network page identifies chain 369 / PLS; execution source was inspected at the named GitLab commit. Copied Ethereum token state, bridge assets, HEX, WPLS and PLSX are not thereby verified or native fee assets.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "SEI": {
-      "name": "SEI",
+      "name": "Sei (historical Cosmos/EVM host)",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "SEI",
+      "feeModel": "sei-dual-gas",
+      "feeFormula": "Gas-priced SEI fee budget: Cosmos-format transactions declare gas/fees; EVM charges use effective gas price and Sei-specific billed-gas/refund rules, not a universal Ethereum transfer assumption.",
       "nativeAssetIds": [
         "sei-sei"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.sei.io/evm/differences-with-ethereum"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+        }
+      ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "This row uses the Cosmos sei address path; an EVM address is a different view."
-      ]
+        "This row uses the Cosmos sei address path; an EVM address is a different view.",
+        "Primary docs say base fees are not burned, governance controls minimum prices and some excess gas limit may not be refunded. They also describe Cosmos/CosmWasm deprecation: the historical cosmos-family derivation is not proof every old operation remains enabled.",
+        "Do not apply a proposed Sei Giga three-part design as an observed mainnet fee model. No automatic estimator or EVM identity/read adapter is added."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "MON": {
       "name": "Monad",
@@ -1003,35 +1304,57 @@
       "nativeBaseFee": "0.0021"
     },
     "TIA": {
-      "name": "TIA",
+      "name": "Celestia",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "TIA",
+      "feeModel": "cosmos-blob-gas",
+      "feeFormula": "Declared TIA/utia fee = gasLimit × selected gas price (rounded to base units); PayForBlobs gas includes fixed/transaction overhead and sparse-share bytes × gas-per-blob-byte. Unused declared fee is not automatically refunded.",
       "nativeAssetIds": [
         "tia-celestia"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/celestiaorg/celestia-app/blob/bdbfea031687d040b76e68af4e9a2b17d0baefc1/app/ante/fee.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/celestiaorg/celestia-app/blob/bdbfea031687d040b76e68af4e9a2b17d0baefc1/specs/src/resource_pricing.md"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.celestia.org/learn/TIA/submit-data/"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The reviewed source enforces a governance-controlled network minimum as well as local mempool policy. Older documentation saying no consensus minimum is not current evidence. Blob sizes/share versions and runtime constants must be checked; no flat per-blob price is assumed."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "THETA": {
       "name": "Theta Mainnet",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "TFUEL",
+      "feeModel": "theta-dual",
+      "feeFormula": "Native Theta Send transactions declare a TFUEL fee subject to transaction-specific minimums; smart-contract transactions meter gas and pay in TFUEL. THETA and TFUEL are both native assets, but THETA does not pay gas.",
       "nativeAssetIds": [
-        "theta-theta-token"
+        "theta-theta-token",
+        "tfuel-theta-fuel"
       ],
       "chainId": 361,
       "rpc": "",
@@ -1040,23 +1363,39 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-361.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.thetatoken.org/docs/rpc-api-reference"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.thetatoken.org/docs/theta-js-sdk-contract"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
-        "THETA and TFUEL are distinct; do not use THETA balance as a TFUEL fee balance."
-      ]
+        "THETA and TFUEL are distinct; do not use THETA balance as a TFUEL fee balance.",
+        "A Theta Send and an Ethereum-format contract call do not have one universal gas rule. Do not use the old RPC sample fee as a current minimum. The two native stable IDs are curated separately from TNT token contracts.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "KAIA": {
-      "name": "Kaia Mainnet",
+      "name": "Kaia",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "KAIA",
+      "feeModel": "gas-delegated",
+      "feeFormula": "Fee = gas used × effective KAIA gas price. After the Kaia fork effective price = min(baseFee + tipCap, feeCap); historical Magma pricing and fee-delegated transaction types differ.",
       "nativeAssetIds": [
         "kaia-kaia"
       ],
@@ -1067,93 +1406,181 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-8217.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.kaia.io/learn/transaction-fees/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.kaia.io/learn/transactions/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Fee payer/ratio transactions can split sponsorship; this is not protocol-free execution. Consult active fork and governance parameters rather than hard-coding an old unit price or KLAY ticker.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "RUNE": {
-      "name": "RUNE",
+      "name": "THORChain",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "RUNE",
+      "feeModel": "thor-native-dynamic",
+      "feeFormula": "Native transfer/inbound fee is the network native_tx_fee_rune value / 10^8 RUNE; ADR-009 makes it USD-targeted and converted to RUNE, not generic Cosmos gas-limit multiplication. Swaps also have route-specific liquidity/affiliate/outbound fees.",
       "nativeAssetIds": [
         "rune-thorchain"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://dev.thorchain.org/concepts/sending-transactions.html"
+        },
+        {
+          "kind": "fees",
+          "url": "https://dev.thorchain.org/concepts/fees.html"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Primary pages conflict: the fee overview still mentions a fixed 0.02 RUNE, while the transaction guide requires reading the dynamic network value. Treat the numeric example as non-binding and require a fresh network quote/halting check; no zero-fee inference from amount: []."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "AKT": {
-      "name": "AKT",
+      "name": "Akash Network",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "AKT",
+      "feeModel": "cosmos-gas",
+      "feeFormula": "Declared native gas budget = ceil(gasLimit × selected AKT/uakt price), or an explicit fee amount; configured client/network floors and validator policy must be satisfied.",
       "nativeAssetIds": [
         "akt-akash-network"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://akash.network/docs/developers/akt/configuration/"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The akt configuration guide distinguishes gas auto (limit estimation), its configured price floor and an authoritative explicit --fees value. Deployment escrow, leases/compute pricing and fee grants are separate from a simple native transfer fee."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "XEC": {
-      "name": "XEC",
+      "name": "eCash",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XEC",
+      "feeModel": "utxo-policy-size",
+      "feeFormula": "Charged virtual transaction size × selected base-unit fee rate, rounded up by Bitcoin ABC EvaluateFeeUp. In XEC display mode, 100 internal satoshi units = 1 XEC (two decimal places); Bitcoin COIN = 10^8 is not the displayed XEC unit.",
       "nativeAssetIds": [
         "xec-ecash"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/policy/policy.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/consensus/amount.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
+        "Primary amount.cpp explicitly separates XEC (100 × SATOSHI, two decimals) from legacy BCHA (COIN, eight decimals), selected by -ecash. Check the RPC/client display mode before converting a fee quote. Fee rate, script/sigcheck policy, dust and transaction bytes remain transaction-specific.",
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "QTUM": {
-      "name": "QTUM",
+      "name": "Qtum",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "QTUM",
+      "feeModel": "utxo-contract-gas",
+      "feeFormula": "Ordinary UTXO transfer fee is policy-size × selected rate. Contract creation/calls additionally budget nGasFee; wallet coin selection includes both size fee and gas budget, and execution refunds require transaction-specific accounting.",
       "nativeAssetIds": [
         "qtum-qtum"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/qtumproject/qtum/blob/493ab77f64425887c8a806fe57bbcdbd8eebfac6/src/policy/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/qtumproject/qtum/blob/493ab77f64425887c8a806fe57bbcdbd8eebfac6/src/wallet/spend.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Qtum is a UTXO/EVM hybrid, not an Ethereum-style account-transfer fee for every operation. A token call cannot be estimated by the ordinary UTXO fee alone; no universal gas price or refund is installed."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "S": {
       "name": "Sonic",
@@ -1190,53 +1617,95 @@
       ]
     },
     "DGB": {
-      "name": "DGB",
+      "name": "DigiByte",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "DGB",
+      "feeModel": "utxo-vsize",
+      "feeFormula": "Policy virtual size × selected DGB base-unit/vB rate, with upward integer rounding; witness weight and sigop-adjusted policy size are accounted for by Core.",
       "nativeAssetIds": [
         "dgb-digibyte"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/DigiByte-Core/digibyte/blob/c5449487c59e09171847255213d2d7b90122207b/src/policy/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/DigiByte-Core/digibyte/blob/c5449487c59e09171847255213d2d7b90122207b/src/policy/policy.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The historical P2PKH default leaf is only one script type. A current Core source snapshot does not prove a minimum relay rate, DigiAsset fees or a particular transaction confirmation cost."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "DYDX": {
-      "name": "DYDX",
+      "name": "dYdX Chain",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "DYDX",
+      "feeModel": "cosmos-multi-fee",
+      "feeFormula": "Gas-bearing transactions declare a Cosmos-style fee budget in a supported fee asset (native DYDX or USDC). Trading/subaccount operations have distinct gas exemptions and trading fees; not every action is a paid bank transfer.",
       "nativeAssetIds": [
         "dydx-dydx-chain"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.dydx.xyz/concepts/onboarding-faqs"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.dydx.xyz/concepts/trading/accounts#subaccounts"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "USDC for gas must be in the main wallet, not locked in another subaccount. DYDX is the default fee-asset scenario label here; an alternative USDC quote must not be mislabeled DYDX. No automatic positive or zero quote is produced."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      },
+      "feeAssets": [
+        "DYDX",
+        "USDC"
       ]
     },
     "WEMIX": {
       "name": "WEMIX3.0 Mainnet",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "WEMIX",
+      "feeModel": "gas",
+      "feeFormula": "Charged gas × effective WEMIX price under its EIP-1559 variant: variable base fee plus configured priority policy, bounded by the transaction fee cap.",
       "nativeAssetIds": [
         "wemix-wemix-token"
       ],
@@ -1247,22 +1716,34 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-1111.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.wemix.com/en/design/eip1559"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The documented default priority fee and maximum base fee are governance-adjustable, not live values. WEMIX3.0 mainnet must not be confused with legacy/wrapped WEMIX token deployments.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "RSK": {
       "name": "Rootstock Mainnet",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "RBTC",
+      "feeModel": "gas",
+      "feeFormula": "Fee = total gas used × Rootstock RBTC gas price, subject to the block header minimumGasPrice and active execution rules.",
       "nativeAssetIds": [],
       "chainId": 30,
       "rpc": "",
@@ -1271,13 +1752,25 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-30.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://dev.rootstock.io/concepts/rbtc/gas/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "RBTC, not RIF or BTC on Bitcoin L1, pays gas. Negotiated minimum gas price changes by block. Peg-in/out, bridge and service costs are separate; experimental fiat-stable configuration is not a fixed network-wide USD charge.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "ARB": {
       "name": "Arbitrum One",
@@ -1322,13 +1815,13 @@
       ]
     },
     "ISLM": {
-      "name": "Haqq Network",
+      "name": "HAQQ L1 Network",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "ISLM",
+      "feeModel": "gas",
+      "feeFormula": "HAQQ L1 EVM fee = charged gas × effective ISLM price (aISLM base units), with fee-cap/base-fee validation. Cosmos-format transactions use separately checked declared fee budgets.",
       "nativeAssetIds": [
         "islm-islamic-coin"
       ],
@@ -1339,42 +1832,87 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-11235.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/x/evm/keeper/fees.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/app/ante/evm/fee_checker.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/app/ante/cosmos/fees.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.haqq.network/l1-network/modules/evm/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "This profile is HAQQ L1 chain 11235, not the separate Ethiq L2 and its L1-data fees. Active feemarket settings and refund rules require simulation; no unconditional EIP-1559/burn/zero-fee assumption is made.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "KAVA": {
-      "name": "KAVA",
+      "name": "Kava Cosmos co-chain",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "KAVA",
+      "feeModel": "cosmos-evm-gas",
+      "feeFormula": "Cosmos-format budget = ceil(gasLimit × accepted KAVA/ukava price); Ethereum-extension transactions route through separate EVM fee checking/accounting in akava.",
       "nativeAssetIds": [
         "kava-kava"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/Kava-Labs/kava/blob/917cc322eae208c29faeaac83d524a5b07b39d78/app/ante/ante.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/Kava-Labs/kava/blob/917cc322eae208c29faeaac83d524a5b07b39d78/app/ante/min_gas_filter.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.kava.io/docs/nodes-and-validators/node-setup-guide/"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The native Cosmos fee path filters the EVM denomination out of node minimum-price checks. ukava and akava are different unit scales; a single hard-coded Ethereum gas price must not be applied to both co-chains."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "PEAQ": {
-      "name": "peaq",
+      "name": "peaq (EVM and Substrate runtime)",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "PEAQ",
+      "feeModel": "substrate-evm-gas",
+      "feeFormula": "EVM charges gas at a runtime-derived PEAQ price using weight-per-gas and the congestion multiplier. Substrate extrinsics use base/length/adjusted-weight fees plus tip and EoT adjustment, with configured currency conversion where available.",
       "nativeAssetIds": [
         "peaq-peaq-network"
       ],
@@ -1385,22 +1923,38 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-3338.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/peaqnetwork/peaq-network-node/blob/9c18928975d96780a9fa1431e80589732a6388a8/runtime/peaq/src/lib.rs"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/peaqnetwork/peaq-network-node/blob/9c18928975d96780a9fa1431e80589732a6388a8/runtime/common/src/payment.rs"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The two transaction surfaces have different fee paths; the Substrate EoT/currency-swap adapter is not automatically an EVM fee exemption. Existential deposits, active runtime weights, accepted currencies and DEX conversion liquidity are separate requirements.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "KUB": {
-      "name": "KUB Mainnet",
+      "name": "KUB Mainnet (formerly Bitkub Chain)",
       "family": "evm",
-      "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "KUB",
+      "feeModel": "gas",
+      "feeFormula": "Execution fee = charged gas × effective KUB gas price; unused gas/refunds are handled by the selected fork rules, not a fixed total fee per transaction.",
       "nativeAssetIds": [
         "kub-bitkub-coin"
       ],
@@ -1411,13 +1965,37 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-96.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/kub-chain/bkc/blob/28cb5603e9c866a0ff67c5e0520274adf819402a/core/state_transition.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.kubchain.com/about-kub/connect-to-kub.md"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.kubchain.com/about-kub/glossary.md"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.kubchain.com/about-kub/connect-to-kub.md"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Primary docs identify L1 chain 96 / KUB; the KUB Layer 2 chain 9601 is distinct. Historical 5/25-Gwei descriptions are not a present quote; no constant gas price or L2 fee model is imported.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "CELO": {
       "name": "Celo",
@@ -1464,31 +2042,46 @@
       ]
     },
     "XVG": {
-      "name": "XVG",
+      "name": "Verge",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
-      "nativeAssetIds": [],
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "XVG",
+      "feeModel": "utxo-rounded-kb",
+      "feeFormula": "Pinned Verge fee-rate code charges nSatoshisPerK × ceil(serializedBytes / 999); its fee-paid constructor sets 10 × CENT (commented as 0.1 XVG) for non-empty size. Confirm wallet/relay policy before estimating.",
+      "nativeAssetIds": [
+        "xvg-verge"
+      ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/vergecurrency/verge/blob/6e9651d5ee0e19403007b8bbd83039fd3b3f8913/src/policy/feerate.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Unlike the exact-byte Bitcoin-like models, this source has a 999-byte rounding constant and a fixed-rate constructor. This is a source observation, not proof of all deployed versions or a live minimum. No generic BTC sat/vB estimate is used."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "0G": {
       "name": "0G Mainnet",
       "family": "evm",
-      "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "0G",
+      "feeModel": "gas-charged-floor",
+      "feeFormula": "Charged gas × effective native 0G price. In the pinned geth implementation, when restaking is active, billed gas is at least floor(gasLimit × 80 / 100), in addition to applicable data/refund rules.",
       "nativeAssetIds": [
         "zero-gravity-0g"
       ],
@@ -1499,42 +2092,87 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-16661.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/0gfoundation/0g-geth/blob/d5a7ee6f0148d08d3d5e542cdd749d647f69c44b/core/state_transition.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.0g.ai/introduction/how-to-get-0g"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.0g.ai/introduction/how-to-get-0g"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Official docs identify mainnet 16661 and native 0G without a token contract. Fork/activation state was not queried; storage/compute service fees and bridged/wrapped tokens are distinct. Overestimating the gas limit can increase the actual fee after the charging-floor activation.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "AXL": {
-      "name": "AXL",
+      "name": "Axelar",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "AXL",
+      "feeModel": "cosmos-allowlisted-gas",
+      "feeFormula": "Declared gas-priced fee budget = ceil(gasLimit × accepted price), normally AXL/uaxl. Reviewed ante code allows at most one governance-allowlisted fee denomination (default uaxl), then applies SDK fee deduction.",
       "nativeAssetIds": [
         "ico-axelar"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/ante/ante.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/ante/limit_fee_denom.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/feepolicy/types/params.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.axelar.dev/infrastructure/node/setup#cli-configuration"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Cross-chain GMP/gas-service delivery is not priced solely by the native AXL fee. An empty fee bypass in a denomination guard is not proof an ordinary transaction passes later minimum-fee checks or is free. Governance allowlist/current rates were not queried."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "RON": {
       "name": "Ronin Mainnet",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "RON",
+      "feeModel": "gas",
+      "feeFormula": "Charged gas × RON gas price; after EIP-1559 activation, effective price is bounded by maxFeePerGas and includes base fee + priority fee. Use active-fork fee data, not the old flat 20-Gwei suggestion.",
       "nativeAssetIds": [
         "ron-ronin-token"
       ],
@@ -1545,82 +2183,157 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-2020.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.roninchain.com/developers/network/eip-1559/"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "The primary guide describes an activation-height transition and a 20-Gwei priority floor plus variable base fee. It is not an independent current-state observation. Sponsored/free-transaction programs do not imply all Ronin transfers are free.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "RVN": {
-      "name": "RVN",
+      "name": "Ravencoin",
       "family": "p2pkh",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "RVN",
+      "feeModel": "utxo-asset-burn",
+      "feeFormula": "Ordinary fee = serialized size × chosen RVN base-unit/byte rate with Core rounding. Asset issuance/reissuance and other asset operations additionally require transaction-type-specific burns.",
       "nativeAssetIds": [
         "rvn-ravencoin"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/RavenProject/Ravencoin/blob/6d48ae0175b10283248146ae3080e2ba70966739/src/policy/feerate.cpp"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/RavenProject/Ravencoin/blob/6d48ae0175b10283248146ae3080e2ba70966739/src/chainparams.cpp"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Pinned mainnet config has separate issue/reissue/subasset/unique/restricted-asset burn amounts and addresses. Those burns are not the miner fee or a universal cost for sending existing RVN/assets."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "BAND": {
-      "name": "BAND",
+      "name": "BandChain",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BAND",
+      "feeModel": "cosmos-globalfee",
+      "feeFormula": "Declared fee = ceil(gasLimit × accepted BAND/uband price). The globalfee checker combines local and global price requirements during CheckTx; oracle requests also depend on script/data-source work.",
       "nativeAssetIds": [
         "band-band-protocol"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/bandprotocol/chain/blob/33998e8cb67a3d8c87ba080bc395517d57581fff/x/globalfee/feechecker/feechecker.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.bandchain.org/core-concepts/gas-and-fee"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.bandchain.org/develop/developer-tools/bandchain.js/getting-started"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Documentation gas tables are resource estimates, not token-denominated prices. Read current governance/node policy and account for oracle/data-provider charges; a zero fallback in a parameter helper is not a free-transfer promise."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "LUNA": {
-      "name": "LUNA",
+      "name": "Terra 2",
       "family": "cosmos",
       "identityStatus": "pending",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "LUNA",
+      "feeModel": "cosmos-gas",
+      "feeFormula": "Declared Cosmos fee budget = ceil(gasLimit × accepted LUNA/uluna gas price), with SDK deduction, simulation and message-specific execution/resource costs.",
       "nativeAssetIds": [
         "luna-terra-v2"
       ],
       "chainId": null,
       "rpc": "",
       "balanceAdapter": null,
-      "sources": [],
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://github.com/terra-money/core/blob/7dce06b225b2ef57ddd69f7ac729a98c6257e5a1/app/ante/ante.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/terra-money/core/blob/7dce06b225b2ef57ddd69f7ac729a98c6257e5a1/app/params/denoms.go"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.terra.money/develop/module-specifications/spec-feegrant/"
+        }
+      ],
       "testnets": [],
       "notes": [
-        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility."
-      ]
+        "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "Terra 2 LUNA is separate from Terra Classic LUNC. Shared denom text/Bech32 format is not identity proof; do not transplant Classic burn-tax policy to this host. Fee grants change payer, not the existence of fees."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "MERLIN": {
       "name": "Merlin Mainnet",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "BTC",
+      "feeModel": "rollup-gas",
+      "feeFormula": "Merlin L2 execution is gas-priced in native Merlin_BTC; obtain a transaction-specific L2 fee quote and separately account for applicable bridge/withdrawal or data-service charges. MERL-as-gas in AA wallets is a separate sponsored/conversion path.",
       "nativeAssetIds": [],
       "chainId": 4200,
       "rpc": "",
@@ -1629,22 +2342,38 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-4200.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.merlinchain.io/merlin-docs/user-quick-start/how-to/gas"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.merlinchain.io/merlin-docs/user-quick-start/how-to/staking-and-unstaking/unstaking/nft"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
+        "MERL is not the universal native fee asset. The primary gas guide does not establish an independently verified parent-data fee formula or a current subsidy; a plain Ethereum execution-only total would be incomplete. No automatic rollup estimate is added.",
         "Pinned community chain catalogue, not a live RPC check or primary fee review."
-      ]
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     },
     "HECO": {
-      "name": "Huobi ECO Chain Mainnet",
+      "name": "Huobi ECO Chain (historical)",
       "family": "evm",
       "identityStatus": "catalogue-only",
-      "feeStatus": "pending",
-      "feeAsset": null,
-      "feeModel": "unknown",
-      "feeFormula": "Not yet verified; no price or free-transfer claim.",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "HT",
+      "feeModel": "historical-gas",
+      "feeFormula": "Historical HECO execution fee = gas charged × HT gas price under the forked client rules; sponsored/meta-transaction arrangements change payer or subsidy, not a general zero fee.",
       "nativeAssetIds": [],
       "chainId": 128,
       "rpc": "",
@@ -1653,14 +2382,31 @@
         {
           "kind": "catalogue",
           "url": "https://github.com/ethereum-lists/chains/blob/ced25e716d875bfb78361772e4415784af0f86f5/_data/chains/eip155-128.json"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/stars-labs/heco-chain/blob/123ccb14caf0bb27a7563de7f55db54910d92fdd/README.md"
+        },
+        {
+          "kind": "fees",
+          "url": "https://github.com/stars-labs/heco-chain/blob/123ccb14caf0bb27a7563de7f55db54910d92fdd/core/state_transition.go"
         }
       ],
       "testnets": [],
       "notes": [
         "Historical host mapping and derivation conventions are inventory, not proof of a deployed token or wallet compatibility.",
-        "Pinned community chain catalogue, not a live RPC check or primary fee review.",
-        "Historical HECO mapping; operational status and current testnets are unverified."
-      ]
+        "Historical HECO mapping; operational status and current testnets are unverified.",
+        "Historical primary project source only. Operational status, shutdown/withdrawal availability, live RPCs, current token migrations and testnets remain unverified. No endpoint or balance adapter is enabled; do not send funds based on this archival profile.",
+        "Pinned community chain catalogue, not a live RPC check or primary fee review."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "historical source model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      },
+      "operationalStatus": "unverified-historical"
     },
     "XNO": {
       "name": "Nano",
@@ -1687,6 +2433,104 @@
       "notes": [
         "Address derivation remains unsupported; fee research does not enable the missing Nano codec."
       ]
+    },
+    "CRONOS_EVM": {
+      "name": "Cronos EVM",
+      "family": "evm",
+      "identityStatus": "primary-reviewed",
+      "feeStatus": "primary-reviewed",
+      "feeAsset": "CRO",
+      "feeModel": "gas",
+      "feeFormula": "EVM fee ≈ gas charged × min(baseFee + tipCap, feeCap), paid in CRO. Cronos feemarket parameters differ from Ethereum and are governance controlled.",
+      "nativeAssetIds": [],
+      "chainId": 25,
+      "rpc": "",
+      "balanceAdapter": null,
+      "sources": [
+        {
+          "kind": "fees",
+          "url": "https://docs.cronos.com/for-users/metamask"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.cronos.com/for-users/tips-and-faqs.md"
+        },
+        {
+          "kind": "fees",
+          "url": "https://docs.cronos.com/for-dapp-developers/cronos-evm-differences-from-ethereum/gas-mechanics.md"
+        },
+        {
+          "kind": "network",
+          "url": "https://docs.cronos.com/for-users/metamask"
+        }
+      ],
+      "testnets": [],
+      "notes": [
+        "Separate primary-documented chain 25 from Cronos POS/basecro. This extra profile corrects the historical VVS research mapping only; no VVS contract, decimals, transfer behaviour or holdings are verified.",
+        "No default gas/minimum, testnet token deployment, new RPC or balance adapter is enabled by the fee-model review."
+      ],
+      "feeReview": {
+        "batch": "round-83",
+        "reviewed": "2026-11-17",
+        "scope": "primary-source fee model",
+        "parameterState": "unqueried",
+        "transactionTested": false
+      }
     }
+  },
+  "feeReviewBatch": {
+    "id": "round-83",
+    "reviewed": "2026-11-17",
+    "previouslyPending": [
+      "ZEC",
+      "DOGE",
+      "BCH",
+      "LTC",
+      "NEAR",
+      "AVAX",
+      "CRO",
+      "FTM",
+      "ETC",
+      "DASH",
+      "ATOM",
+      "VET",
+      "INJ",
+      "FLR",
+      "LUNC",
+      "XDC",
+      "BSV",
+      "PLS",
+      "SEI",
+      "TIA",
+      "THETA",
+      "KAIA",
+      "RUNE",
+      "AKT",
+      "XEC",
+      "QTUM",
+      "DGB",
+      "DYDX",
+      "WEMIX",
+      "RSK",
+      "ISLM",
+      "KAVA",
+      "PEAQ",
+      "KUB",
+      "XVG",
+      "0G",
+      "AXL",
+      "RON",
+      "RVN",
+      "BAND",
+      "LUNA",
+      "MERLIN",
+      "HECO"
+    ],
+    "addedProfiles": [
+      "CRONOS_EVM"
+    ],
+    "report": "docs/chain-fee-model-review-round-83-2026-11-17.md",
+    "sourceManifest": "docs/research/chain-fee-source-manifest-2026-11-17.json",
+    "runtime": "No chain RPC, funded wallet, signing or broadcast performed; live parameters and operational status not certified."
   }
 }

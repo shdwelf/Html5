@@ -16,7 +16,12 @@ export function researchedNetworks(coins, tokenRegistry, research) {
   const assets = {};
   for (const coin of coins) {
     const mains = networksForCoin(tokenRegistry, coin).map((network) => {
-      const key = network.chain || profileKey(research, coin);
+      // Resolve ambiguous historical defaults (e.g. VVS on Cronos EVM vs CRO
+      // on POS) without overriding explicit alternate token networks or the
+      // historical chain/family/path fields used for address derivation.
+      const key = network.id === "registry"
+        ? profileKey(research, coin)
+        : network.chain || profileKey(research, coin);
       const profile = research.chains[key];
       return {
         ...network, hostChain: key, environment: "mainnet",
@@ -69,7 +74,7 @@ export function researchRecord(research, coin, network) {
   const profile = research.chains[network?.hostChain || profileKey(research, coin)];
   const native = isNativeAsset(profile, coin);
   return {
-    id: coin.id, symbol: coin.symbol, chain: network?.hostChain || coin.chain,
+    id: coin.id, symbol: coin.symbol, chain: network?.hostChain || profileKey(research, coin),
     group: profile?.feeModel || "unknown", native,
     identityStatus: profile?.identityStatus || "pending",
     feeStatus: profile?.feeStatus || "pending",
@@ -125,7 +130,7 @@ export function feeEstimate(research, coin, network, scenario = parseFeeScenario
   } else if (record.native && profile?.nativeBaseFee !== undefined) {
     result.amount = Number(profile.nativeBaseFee);
     result.basis = profile.feeModel === "protocol-zero" ? "zero protocol fee; PoW/service costs excluded" : "documented native base/minimum only; extras excluded";
-  } else if (["ETH", "BSC", "HYPE", "AVAX"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
+  } else if (["ETH", "BSC", "HYPE"].includes(network?.hostChain || coin.chain) && profile?.feeModel === "gas") {
     const gasPrice = own(scenario.gasGwei, network?.hostChain || coin.chain);
     const units = record.native ? 21000 : own(scenario.tokenGas, coin.id);
     if (gasPrice !== undefined && units !== undefined) {

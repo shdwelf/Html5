@@ -261,8 +261,10 @@ test phrases or enter real recovery mnemonics in this educational app.
 
 ### Coin evidence, local investigation and the existing metadata viewer
 
-- **Fees & networks:** 57 host profiles, 14 reviewed fee models / 43 pending,
-  18 reviewed host test identities. Sort only documented protocol zero or priced
+- **Fees & networks:** 58 host profiles, 58 source-reviewed fee models / 0 pending
+  host fee reviews, 18 reviewed host test identities. [Round 83 evidence](docs/chain-fee-model-review-round-83-2026-11-17.md)
+  completes the original 43 and separates Cronos POS from Cronos EVM; current
+  parameters and historical network operation remain unverified. Sort only documented protocol zero or priced
   USD scenarios; unknown/unpriced is never free. Native gas, token execution,
   rollup data and resource/storage/service costs are distinguished. Each of all
   500 asset rows retains an explicit evidence gap and discovery links; this is

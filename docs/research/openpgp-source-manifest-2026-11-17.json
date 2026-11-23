@@ -1,0 +1,608 @@
+{
+  "schema": "html5-openpgp-source-review-v1",
+  "reviewed": "2026-11-17",
+  "scope": "Targeted source inspection and fetched provenance, not a security audit, proof of a deployed binary or mobile/desktop runtime compatibility. Upstream source was not executed.",
+  "upstreams": [
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "license": null,
+      "branch": "master",
+      "truncated": false
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "license": "GPL-3.0",
+      "branch": "master",
+      "truncated": false
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "license": "Apache-2.0",
+      "branch": "main",
+      "truncated": false
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "license": "Apache-2.0",
+      "branch": "main",
+      "truncated": false
+    },
+    {
+      "repo": "ProtonVPN/android-app",
+      "commit": "416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "license": "GPL-3.0",
+      "branch": "master",
+      "truncated": false
+    },
+    {
+      "repo": "ProtonVPN/win-app",
+      "commit": "52b9967ae9b196117adce7a52774dc148672b72c",
+      "license": "GPL-3.0",
+      "branch": "master",
+      "truncated": false
+    },
+    {
+      "repo": "ProtonMail/gopenpgp",
+      "commit": "dcc4859aba4cd912c7562a534912fc8fc688e04b",
+      "license": "MIT",
+      "branch": "main",
+      "truncated": false
+    },
+    {
+      "repo": "h-nargesi/Photon-VPN",
+      "commit": "e9c672b018cb0075e81cacf7ffe04264efa8ce65",
+      "license": null,
+      "branch": "master",
+      "truncated": false
+    },
+    {
+      "repo": "gpg/gnupg",
+      "commit": "b4a6152796619e7f0ab93eb8141de2938989ed95",
+      "license": "GPL-3.0",
+      "branch": "master",
+      "truncated": false
+    }
+  ],
+  "files": [
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "path": "CMakeLists.txt",
+      "sha256": "2eb0535064a948ec1363d5906fe31dffda589e26f2ede2b0768d31388e4bc340",
+      "bytes": 9730,
+      "lines": 252,
+      "url": "https://github.com/KDE/kleopatra/blob/42c92dae2da5950e1da391b266fd209ce6ffcad7/CMakeLists.txt",
+      "reviewedSections": [
+        "Gpgmepp/QGpgmeQt6/KPim6Libkleo dependencies"
+      ]
+    },
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "path": "src/commands/exportsecretkeycommand.cpp",
+      "sha256": "1c1927208983e8755d08f8ecb3e419409a5c0cf1e32a581dec6837ed8703d5b1",
+      "bytes": 8722,
+      "lines": 314,
+      "url": "https://github.com/KDE/kleopatra/blob/42c92dae2da5950e1da391b266fd209ce6ffcad7/src/commands/exportsecretkeycommand.cpp",
+      "reviewedSections": [
+        "GPL-2.0-or-later SPDX header",
+        "startExportJob: secretKeyExportJob, full primaryFingerprint, armor/file naming",
+        "result/cancel/error handling"
+      ]
+    },
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "path": "src/commands/importcertificatefromfilecommand.cpp",
+      "sha256": "943f56c9d3b36815c1ce7921483d695b92d4ebb429e5cde8a5882c2169de670c",
+      "bytes": 5729,
+      "lines": 183,
+      "url": "https://github.com/KDE/kleopatra/blob/42c92dae2da5950e1da391b266fd209ce6ffcad7/src/commands/importcertificatefromfilecommand.cpp",
+      "reviewedSections": [
+        "doStart: local-file decoding and OpenPGP/CMS startImport",
+        "file-extension filters"
+      ]
+    },
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "path": "src/commands/newopenpgpcertificatecommand.cpp",
+      "sha256": "e83ea42b6e2e940dace731cf78bb28498a64438f4e3ca730b21171d46403b9b5",
+      "bytes": 12445,
+      "lines": 344,
+      "url": "https://github.com/KDE/kleopatra/blob/42c92dae2da5950e1da391b266fd209ce6ffcad7/src/commands/newopenpgpcertificatecommand.cpp",
+      "reviewedSections": [
+        "QGpgME::openpgp keyGenerationJob and generated fingerprint handling"
+      ]
+    },
+    {
+      "repo": "KDE/kleopatra",
+      "commit": "42c92dae2da5950e1da391b266fd209ce6ffcad7",
+      "path": "REUSE.toml",
+      "sha256": "0a95507ed1bbf9de52ec3f08fbb3a5e04e96ec9643843d8d2b70addfdde699e0",
+      "bytes": 709,
+      "lines": 19,
+      "url": "https://github.com/KDE/kleopatra/blob/42c92dae2da5950e1da391b266fd209ce6ffcad7/REUSE.toml",
+      "reviewedSections": [
+        "per-file SPDX annotations, upstream package URL"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "README.md",
+      "sha256": "d6fef39c100e877975ba2381a84ada982b49abcf5687f2f2195e9cf2ac6ab452",
+      "bytes": 9106,
+      "lines": 184,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/README.md",
+      "reviewedSections": [
+        "maintenance-only warning",
+        "Bouncy Castle/build/Android scope"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "LICENSE",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "bytes": 35147,
+      "lines": 674,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "OpenKeychain/build.gradle",
+      "sha256": "c776d2a880d4d29746bc5e3328334a22e344cfcb79a339bbb6cfeb5a83adf3c4",
+      "bytes": 9652,
+      "lines": 231,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/OpenKeychain/build.gradle",
+      "reviewedSections": [
+        "bcprov 1.77 and local BC pg dependency"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "OpenKeychain/src/main/java/org/sufficientlysecure/keychain/pgp/UncachedKeyRing.java",
+      "sha256": "0087a113701c3917a2912a8f1575eb58196724c83803356c685e2cf32f68f680",
+      "bytes": 66682,
+      "lines": 1401,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/OpenKeychain/src/main/java/org/sufficientlysecure/keychain/pgp/UncachedKeyRing.java",
+      "reviewedSections": [
+        "fromStream: armored/binary multi-ring iteration",
+        "decodeFromData single-ring guard",
+        "encodeArmored",
+        "known RSA algorithms and unverified public-ring status"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "OpenKeychain/src/main/java/org/sufficientlysecure/keychain/pgp/PgpKeyOperation.java",
+      "sha256": "55f2a1f72a55e2366126172546f652eeba3005d481c9718bfb06ec4e8a895e4b",
+      "bytes": 86811,
+      "lines": 1781,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/OpenKeychain/src/main/java/org/sufficientlysecure/keychain/pgp/PgpKeyOperation.java",
+      "reviewedSections": [
+        "RSA key-operation and secret-key protection call sites (targeted review, not entire file)"
+      ]
+    },
+    {
+      "repo": "open-keychain/open-keychain",
+      "commit": "8d0bd1f8537fb3a795fda8161f730a313ef7b01c",
+      "path": "OpenKeychain/src/main/java/org/sufficientlysecure/keychain/operations/BackupOperation.java",
+      "sha256": "c65c7592c25aa0a674ce0d86e86fa15be61596c4d2c6d40aeb42501e3da54a35",
+      "bytes": 14516,
+      "lines": 323,
+      "url": "https://github.com/open-keychain/open-keychain/blob/8d0bd1f8537fb3a795fda8161f730a313ef7b01c/OpenKeychain/src/main/java/org/sufficientlysecure/keychain/operations/BackupOperation.java",
+      "reviewedSections": [
+        "backup-specific framing versus transferable key export"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "README.md",
+      "sha256": "aa5c118be18d20ea7284d97c0b3ebf9108996d59c5cfa5eace0b6a027afa666d",
+      "bytes": 6204,
+      "lines": 156,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/README.md",
+      "reviewedSections": [
+        "OpenKeychain migration/backup distinction",
+        "release signature vs APK certificate vs signed source (operator claims, not reproduced)",
+        "platform and license"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "LICENSE",
+      "sha256": "f97855b0ef6df20653ec2d67ccee31be6cff445cc084415dd3081e61a4ca7825",
+      "bytes": 11367,
+      "lines": 203,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/build.gradle.kts",
+      "sha256": "177510b89f77f50518036a22c838ab850a127b3f6cdb130e7e3c59a8fccbae10",
+      "bytes": 39551,
+      "lines": 658,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/build.gradle.kts",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/src/main/java/com/pgpony/android/crypto/PGPCryptoService.kt",
+      "sha256": "8c683684bd6abb80b4fd72913cc82d1aa743b130b8d450cd90eadd2b002b64f5",
+      "bytes": 232281,
+      "lines": 4507,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/src/main/java/com/pgpony/android/crypto/PGPCryptoService.kt",
+      "reviewedSections": [
+        "buildRSAKeyRingGenerator",
+        "importArmoredKey secret/public routes and binding sanitization",
+        "explodeToArmoredKeys and S2kPolicy call sites"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/src/main/java/com/pgpony/android/crypto/S2kPolicy.kt",
+      "sha256": "482aa0ac67474db0b4e85291022ac078feb1e605e333d574fa0fd9f4198fdbc5",
+      "bytes": 2516,
+      "lines": 57,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/src/main/java/com/pgpony/android/crypto/S2kPolicy.kt",
+      "reviewedSections": [
+        "iterated SHA-256/AES-256",
+        "coded-count decode and 0xE0..0xFF calibration"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/src/main/java/com/pgpony/android/crypto/SecretKeyUnlock.kt",
+      "sha256": "fb18e2949b4f15078961fb929db71e4da6aaf6d9a731c63008e4e6e757743b2d",
+      "bytes": 3337,
+      "lines": 71,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/src/main/java/com/pgpony/android/crypto/SecretKeyUnlock.kt",
+      "reviewedSections": [
+        "Argon2 resource-policy guards around private-key extraction"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/src/main/java/com/pgpony/android/ui/keyring/ImportKeyScreen.kt",
+      "sha256": "23213560401e2ca28769cfd5b2cda4fa32601effff3ae02844acfcc70f9e9382",
+      "bytes": 50397,
+      "lines": 1104,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/src/main/java/com/pgpony/android/ui/keyring/ImportKeyScreen.kt",
+      "reviewedSections": [
+        "targeted multi-key import/confirmation UI markers, not whole file audit"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyAndroid",
+      "commit": "fe8545f2450ab9a8284646230678ab7c322e08ee",
+      "path": "app/src/test/kotlin/com/pgpony/android/crypto/MultiKeyImportRoutingTest.kt",
+      "sha256": "2516812660bd1ddcecc59001740224ba43a747e11f8787b07fb72b449fdd84f5",
+      "bytes": 8378,
+      "lines": 193,
+      "url": "https://github.com/norsehorse-dev/PGPonyAndroid/blob/fe8545f2450ab9a8284646230678ab7c322e08ee/app/src/test/kotlin/com/pgpony/android/crypto/MultiKeyImportRoutingTest.kt",
+      "reviewedSections": [
+        "single armor block with N certificates vs concatenated blocks",
+        "binary import and malformed-input routing (source read, tests not executed)"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "path": "README.md",
+      "sha256": "0f660c75370920a6c2ce4e1b90992b014137df5b0774302fb238e80d643e9ad6",
+      "bytes": 8393,
+      "lines": 124,
+      "url": "https://github.com/norsehorse-dev/PGPonyCore/blob/86d23e0abc05a7135e46c6eab5aa215fea2025d6/README.md",
+      "reviewedSections": [
+        "public Swift core vs closed application/orchestration",
+        "iOS/CoreNFC/build and access-level limits"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "path": "LICENSE",
+      "sha256": "cadfb062ea911cb5dfc82fb673ad092b0f8c2975fe9c03ad5979e8abc33b4469",
+      "bytes": 11340,
+      "lines": 201,
+      "url": "https://github.com/norsehorse-dev/PGPonyCore/blob/86d23e0abc05a7135e46c6eab5aa215fea2025d6/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "path": "Sources/PGPonyCore/Packet/OpenPGPPacketParser.swift",
+      "sha256": "c338a8ae8e5e81c776f48f8d5d433d91b84d03f8c7717945975f4ce349855a26",
+      "bytes": 186857,
+      "lines": 3970,
+      "url": "https://github.com/norsehorse-dev/PGPonyCore/blob/86d23e0abc05a7135e46c6eab5aa215fea2025d6/Sources/PGPonyCore/Packet/OpenPGPPacketParser.swift",
+      "reviewedSections": [
+        "targeted v4 RSA/PKESK handling and size/resource markers, not full parser audit"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "path": "Sources/PGPonyCore/Primitives/S2K.swift",
+      "sha256": "1f738ae308a5820f643967988a1f6e777892220b95ce9acb24cc2adb2c7325f4",
+      "bytes": 3584,
+      "lines": 95,
+      "url": "https://github.com/norsehorse-dev/PGPonyCore/blob/86d23e0abc05a7135e46c6eab5aa215fea2025d6/Sources/PGPonyCore/Primitives/S2K.swift",
+      "reviewedSections": [
+        "UTF-8 passphrase, iterated count and SHA-256/SHA-1 branches"
+      ]
+    },
+    {
+      "repo": "norsehorse-dev/PGPonyCore",
+      "commit": "86d23e0abc05a7135e46c6eab5aa215fea2025d6",
+      "path": "Sources/PGPonyCore/KeyOps/CertificateValidator.swift",
+      "sha256": "664c7596e5ee2d4071cab123e7cad0baf7a33973664d0efe972224f77491831d",
+      "bytes": 31887,
+      "lines": 580,
+      "url": "https://github.com/norsehorse-dev/PGPonyCore/blob/86d23e0abc05a7135e46c6eab5aa215fea2025d6/Sources/PGPonyCore/KeyOps/CertificateValidator.swift",
+      "reviewedSections": [
+        "fingerprint framing and binding/purpose separation",
+        "decrypt vs encrypt expiry policy"
+      ]
+    },
+    {
+      "repo": "ProtonVPN/android-app",
+      "commit": "416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "path": "README.md",
+      "sha256": "09491985cd2ff080d200760f11359daafe0c27bff2d69021e52dc42431d9e9b9",
+      "bytes": 3719,
+      "lines": 76,
+      "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/README.md",
+      "reviewedSections": [
+        "Android build/signing certificate identity and license"
+      ]
+    },
+    {
+      "repo": "ProtonVPN/android-app",
+      "commit": "416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "path": "LICENSE",
+      "sha256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+      "bytes": 35148,
+      "lines": 673,
+      "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "ProtonVPN/android-app",
+      "commit": "416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "path": "verify_apk_signature.sh",
+      "sha256": "f28a45ac15e924dcedcbbcb84d7e606ce18391ce603caf40eb0e683ff45a9040",
+      "bytes": 656,
+      "lines": 22,
+      "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/verify_apk_signature.sh",
+      "reviewedSections": [
+        "apksigner certificate SHA-256 comparison, not a user PGP ring"
+      ]
+    },
+    {
+      "repo": "ProtonVPN/win-app",
+      "commit": "52b9967ae9b196117adce7a52774dc148672b72c",
+      "path": "README.md",
+      "sha256": "5274fdfcf2e98b7e73114c92ad5d993c52b6859942c9c110c71bf973b8b7a245",
+      "bytes": 7060,
+      "lines": 162,
+      "url": "https://github.com/ProtonVPN/win-app/blob/52b9967ae9b196117adce7a52774dc148672b72c/README.md",
+      "reviewedSections": [
+        "Windows service/OpenVPN architecture and source boundaries"
+      ]
+    },
+    {
+      "repo": "ProtonVPN/win-app",
+      "commit": "52b9967ae9b196117adce7a52774dc148672b72c",
+      "path": "LICENSE",
+      "sha256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+      "bytes": 35148,
+      "lines": 673,
+      "url": "https://github.com/ProtonVPN/win-app/blob/52b9967ae9b196117adce7a52774dc148672b72c/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "ProtonMail/gopenpgp",
+      "commit": "dcc4859aba4cd912c7562a534912fc8fc688e04b",
+      "path": "README.md",
+      "sha256": "bdcaac1634a91dc0865a4667d81ec39939e675301013c40725201b8e65871515",
+      "bytes": 14046,
+      "lines": 439,
+      "url": "https://github.com/ProtonMail/gopenpgp/blob/dcc4859aba4cd912c7562a534912fc8fc688e04b/README.md",
+      "reviewedSections": [
+        "separate OpenPGP library identity/API, not proof of VPN integration"
+      ]
+    },
+    {
+      "repo": "ProtonMail/gopenpgp",
+      "commit": "dcc4859aba4cd912c7562a534912fc8fc688e04b",
+      "path": "LICENSE",
+      "sha256": "503bdcb689e2033376caa35eb66f170920221e96706da77be941804bc4f36422",
+      "bytes": 1085,
+      "lines": 21,
+      "url": "https://github.com/ProtonMail/gopenpgp/blob/dcc4859aba4cd912c7562a534912fc8fc688e04b/LICENSE",
+      "reviewedSections": [
+        "license/build metadata reference; not a full-file behaviour audit"
+      ]
+    },
+    {
+      "repo": "ProtonMail/gopenpgp",
+      "commit": "dcc4859aba4cd912c7562a534912fc8fc688e04b",
+      "path": "profile/preset.go",
+      "sha256": "852cc0e92e5b0701d42fe1c6668252a2778fe0172c0bb65de9638887ed01a0f9",
+      "bytes": 3191,
+      "lines": 118,
+      "url": "https://github.com/ProtonMail/gopenpgp/blob/dcc4859aba4cd912c7562a534912fc8fc688e04b/profile/preset.go",
+      "reviewedSections": [
+        "Default vs RFC4880 vs RFC9580/PQC profiles"
+      ]
+    },
+    {
+      "repo": "h-nargesi/Photon-VPN",
+      "commit": "e9c672b018cb0075e81cacf7ffe04264efa8ce65",
+      "path": "modeling/pages.md",
+      "sha256": "ebed8e1bcfaa1b8bf4fb4709e1d7abf4f5ddcd3cbff11647861dbe0fbe4648a1",
+      "bytes": 1005,
+      "lines": 58,
+      "url": "https://github.com/h-nargesi/Photon-VPN/blob/e9c672b018cb0075e81cacf7ffe04264efa8ce65/modeling/pages.md",
+      "reviewedSections": [
+        "web/admin account/plan sketches; unconfirmed product identity"
+      ]
+    },
+    {
+      "repo": "h-nargesi/Photon-VPN",
+      "commit": "e9c672b018cb0075e81cacf7ffe04264efa8ce65",
+      "path": "web-admin/Program.cs",
+      "sha256": "1dd547e6192777c5aaaa6fd693743643ae7c39d21a6d7f3c1c4f0829edd6d817",
+      "bytes": 864,
+      "lines": 29,
+      "url": "https://github.com/h-nargesi/Photon-VPN/blob/e9c672b018cb0075e81cacf7ffe04264efa8ce65/web-admin/Program.cs",
+      "reviewedSections": [
+        "ASP.NET project entry point (candidate only)"
+      ]
+    },
+    {
+      "repo": "h-nargesi/Photon-VPN",
+      "commit": "e9c672b018cb0075e81cacf7ffe04264efa8ce65",
+      "path": "web-admin/app/AuthMiddleware.cs",
+      "sha256": "6579ba97997e52fe66cce52bf743d99f0ed24e2e49846afb614a86671fb71fd6",
+      "bytes": 70,
+      "lines": 5,
+      "url": "https://github.com/h-nargesi/Photon-VPN/blob/e9c672b018cb0075e81cacf7ffe04264efa8ce65/web-admin/app/AuthMiddleware.cs",
+      "reviewedSections": [
+        "empty middleware class; not a security audit"
+      ]
+    },
+    {
+      "repo": "h-nargesi/Photon-VPN",
+      "commit": "e9c672b018cb0075e81cacf7ffe04264efa8ce65",
+      "path": "web-admin/web-admin.csproj",
+      "sha256": "57606433b6e962ada59943e303426fdce5740228cb7a961b3b8b786b726e53a4",
+      "bytes": 3413,
+      "lines": 64,
+      "url": "https://github.com/h-nargesi/Photon-VPN/blob/e9c672b018cb0075e81cacf7ffe04264efa8ce65/web-admin/web-admin.csproj",
+      "reviewedSections": [
+        "net6/web/MySQL/logging dependencies; no established PGP/keyring interface in inspected file"
+      ]
+    },
+    {
+      "repo": "gpg/gnupg",
+      "commit": "b4a6152796619e7f0ab93eb8141de2938989ed95",
+      "path": "README",
+      "sha256": "32a6fcc22259d212cbf03f771b784020f3185462414ec1c2e0cccaed964928a8",
+      "bytes": 13224,
+      "lines": 341,
+      "url": "https://github.com/gpg/gnupg/blob/b4a6152796619e7f0ab93eb8141de2938989ed95/README",
+      "reviewedSections": [
+        "project identity/source/build scope"
+      ]
+    },
+    {
+      "repo": "gpg/gnupg",
+      "commit": "b4a6152796619e7f0ab93eb8141de2938989ed95",
+      "path": "g10/parse-packet.c",
+      "sha256": "c047c78c1618207cadbb6a7a4563babb36c839b6a8369118e78ac3c69f8abfc8",
+      "bytes": 125386,
+      "lines": 4436,
+      "url": "https://github.com/gpg/gnupg/blob/b4a6152796619e7f0ab93eb8141de2938989ed95/g10/parse-packet.c",
+      "reviewedSections": [
+        "secret-key usage 254/255 and iterated S2K/hash/count parsing"
+      ]
+    },
+    {
+      "repo": "gpg/gnupg",
+      "commit": "b4a6152796619e7f0ab93eb8141de2938989ed95",
+      "path": "g10/import.c",
+      "sha256": "510bedb56727a136617d9f4b2bb1a53e33777070df405e40bd751e8ee73be096",
+      "bytes": 170290,
+      "lines": 5342,
+      "url": "https://github.com/gpg/gnupg/blob/b4a6152796619e7f0ab93eb8141de2938989ed95/g10/import.c",
+      "reviewedSections": [
+        "caller-enforced fingerprint requirement",
+        "public/secret import routes (targeted)"
+      ]
+    },
+    {
+      "repo": "gpg/gnupg",
+      "commit": "b4a6152796619e7f0ab93eb8141de2938989ed95",
+      "path": "doc/gpg.texi",
+      "sha256": "496e383732217070f3c7596e05e25f4ac9f11bbe22243e0283938f44cfc6e5e8",
+      "bytes": 202061,
+      "lines": 4960,
+      "url": "https://github.com/gpg/gnupg/blob/b4a6152796619e7f0ab93eb8141de2938989ed95/doc/gpg.texi",
+      "reviewedSections": [
+        "fingerprint/import/export documentation markers, not entire manual"
+      ]
+    }
+  ],
+  "dependency": {
+    "name": "openpgp",
+    "version": "6.3.2",
+    "npmIntegrity": "sha512-wcZTzHz41LV8Y48zH/JlD1JT8YdNmpWOuMAjQ/podvvCwsjBEU37K3znJh4UQcj3hksE5z9TzvhbUbwzsGvlLQ==",
+    "browserBundleSha256": "7d3285efa6dfedbb34a136d8b5ad21c28fb973269df0b2818dcb74dfb40b59d9",
+    "nodeDistributionSha256": "9274be7afb7fe902c39acb686066c379874e8a444b7d10fea3f5eab60596f95e",
+    "reviewedSections": [
+      "readKeys/readPrivateKeys certificate slicing",
+      "PacketList.fromBinary allowlist behaviour",
+      "generate/wrapKeyObject default algorithm preferences",
+      "SignaturePacket.sign and createSignaturePacket call convention",
+      "SecretKeyPacket.encrypt/clearPrivateParams"
+    ]
+  },
+  "discovery": [
+    {
+      "url": "https://baresearch.org/",
+      "role": "Discovery/search only; not compatibility evidence. Queried during this task before primary GitHub/source review."
+    },
+    {
+      "url": "https://libresearch.space/",
+      "role": "Discovery/search only; not compatibility evidence. Queried during this task before primary GitHub/source review."
+    },
+    {
+      "url": "https://utilibre.org/",
+      "role": "Discovery/search only; not compatibility evidence. Queried during this task before primary GitHub/source review."
+    },
+    {
+      "url": "https://search.utilibre.org/search",
+      "role": "Discovery/search only; not compatibility evidence. Queried during this task before primary GitHub/source review."
+    },
+    {
+      "url": "https://searx.space/",
+      "role": "Discovery/search only; not compatibility evidence. Queried during this task before primary GitHub/source review."
+    }
+  ],
+  "primaryPages": [
+    "https://apps.kde.org/kleopatra/",
+    "https://protonvpn.com/support/linux-vpn-debian-ubuntu"
+  ]
+}

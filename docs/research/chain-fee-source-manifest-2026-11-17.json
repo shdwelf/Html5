@@ -1,0 +1,435 @@
+{
+  "schema": "html5-chain-fee-sources-v1",
+  "reviewed": "2026-11-17",
+  "scope": "Selected upstream files inspected for fee-model logic; hashes identify fetched bytes, not a security audit, deployed binary or observed chain state. Live primary-document URLs may change. No upstream code executed.",
+  "files": [
+    {
+      "repo": "dogecoin/dogecoin",
+      "commit": "e7c9581519bea20a93d15b0e78b37e3e0905e589",
+      "path": "doc/fee-recommendation.md",
+      "sha256": "513188848cf4056e181e8417d902c3c052c8ffc6430d70b293d1f765ffd5972c",
+      "bytes": 3051,
+      "lines": 67,
+      "url": "https://github.com/dogecoin/dogecoin/blob/e7c9581519bea20a93d15b0e78b37e3e0905e589/doc/fee-recommendation.md"
+    },
+    {
+      "repo": "bitcoin-cash-node/bitcoin-cash-node",
+      "commit": "07576013c91ff4a3a74acd85f189c69121cdad1b",
+      "path": "src/feerate.cpp",
+      "sha256": "d9b6640170e18d7177227487dff270de8ecb253134420467a659ce33424c5b82",
+      "bytes": 1847,
+      "lines": 61,
+      "url": "https://github.com/bitcoin-cash-node/bitcoin-cash-node/blob/07576013c91ff4a3a74acd85f189c69121cdad1b/src/feerate.cpp"
+    },
+    {
+      "repo": "bitcoin-cash-node/bitcoin-cash-node",
+      "commit": "07576013c91ff4a3a74acd85f189c69121cdad1b",
+      "path": "src/policy/policy.cpp",
+      "sha256": "771db33c22000bc5554ed799722743cf0b3ede03469b33372c64d2ee6b49a339",
+      "bytes": 7593,
+      "lines": 197,
+      "url": "https://github.com/bitcoin-cash-node/bitcoin-cash-node/blob/07576013c91ff4a3a74acd85f189c69121cdad1b/src/policy/policy.cpp"
+    },
+    {
+      "repo": "litecoin-project/litecoin",
+      "commit": "9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "f7c9cce1a7618c2961a09506e31f9e0abe1d53c251832c689d710989341eef8e",
+      "bytes": 3330,
+      "lines": 104,
+      "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "litecoin-project/litecoin",
+      "commit": "9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343",
+      "path": "src/policy/policy.cpp",
+      "sha256": "226a413cdb078f9c086a46c2546dc13e5f3ec1040aff4da5d59360d04348f0c8",
+      "bytes": 12364,
+      "lines": 304,
+      "url": "https://github.com/litecoin-project/litecoin/blob/9fe73a4bd1433f9b90ee0ea5fc6e985b6702d343/src/policy/policy.cpp"
+    },
+    {
+      "repo": "dashpay/dash",
+      "commit": "81e52fffb9489da6e1759d66717115e6debe32b2",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "f7c5b24e5ff27b681d1962be5d70cf6efc1c283e3a79237afb8b3166d46c28ab",
+      "bytes": 1437,
+      "lines": 45,
+      "url": "https://github.com/dashpay/dash/blob/81e52fffb9489da6e1759d66717115e6debe32b2/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "bitcoin-sv/bitcoin-sv",
+      "commit": "6504a3aff65ba97c0f6c80962b033e35ecbfed4b",
+      "path": "src/amount.cpp",
+      "sha256": "bc590f87a4aebbd34e106bce7c91f76b8adb8032e76f47bffb652e7114b21026",
+      "bytes": 1466,
+      "lines": 50,
+      "url": "https://github.com/bitcoin-sv/bitcoin-sv/blob/6504a3aff65ba97c0f6c80962b033e35ecbfed4b/src/amount.cpp"
+    },
+    {
+      "repo": "Bitcoin-ABC/bitcoin-abc",
+      "commit": "dbf4a10663c28506ddc424e4cb274c7c910086f2",
+      "path": "src/feerate.cpp",
+      "sha256": "e10e3b11c4ca44bc398f6cdbee38944e27f2e0fe0bdc67690eeb77e7efbc46ed",
+      "bytes": 1731,
+      "lines": 50,
+      "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/feerate.cpp"
+    },
+    {
+      "repo": "qtumproject/qtum",
+      "commit": "493ab77f64425887c8a806fe57bbcdbd8eebfac6",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "83e44c2cc387cbb220e855b6da1448934ebbb1c2d338292281b0c7868f0c3e31",
+      "bytes": 1285,
+      "lines": 36,
+      "url": "https://github.com/qtumproject/qtum/blob/493ab77f64425887c8a806fe57bbcdbd8eebfac6/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "qtumproject/qtum",
+      "commit": "493ab77f64425887c8a806fe57bbcdbd8eebfac6",
+      "path": "src/wallet/spend.cpp",
+      "sha256": "5a13b2054d5b9b79f5ccc956faf7fc9536670654fef08a2b69ac954e78db79e6",
+      "bytes": 79068,
+      "lines": 1573,
+      "url": "https://github.com/qtumproject/qtum/blob/493ab77f64425887c8a806fe57bbcdbd8eebfac6/src/wallet/spend.cpp"
+    },
+    {
+      "repo": "DigiByte-Core/digibyte",
+      "commit": "c5449487c59e09171847255213d2d7b90122207b",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "5922814f2f1eea947796a09870993c99b7767cd33f502a5d939e3f1fa76d283a",
+      "bytes": 1493,
+      "lines": 44,
+      "url": "https://github.com/DigiByte-Core/digibyte/blob/c5449487c59e09171847255213d2d7b90122207b/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "vergecurrency/verge",
+      "commit": "6e9651d5ee0e19403007b8bbd83039fd3b3f8913",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "5779310ceb319a6e043e33f541b67625f7db68e6c889b624b955525b6a249bae",
+      "bytes": 1422,
+      "lines": 48,
+      "url": "https://github.com/vergecurrency/verge/blob/6e9651d5ee0e19403007b8bbd83039fd3b3f8913/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "RavenProject/Ravencoin",
+      "commit": "6d48ae0175b10283248146ae3080e2ba70966739",
+      "path": "src/policy/feerate.cpp",
+      "sha256": "02cc8b01a20b38c0186f91b35dd9922d7182d7317ce8971ab208b125a0462590",
+      "bytes": 1195,
+      "lines": 44,
+      "url": "https://github.com/RavenProject/Ravencoin/blob/6d48ae0175b10283248146ae3080e2ba70966739/src/policy/feerate.cpp"
+    },
+    {
+      "repo": "RavenProject/Ravencoin",
+      "commit": "6d48ae0175b10283248146ae3080e2ba70966739",
+      "path": "src/chainparams.cpp",
+      "sha256": "b44f07733bc29c068c7847e0c1bd55de671c811960f87e6ad29e3b157710471e",
+      "bytes": 38799,
+      "lines": 753,
+      "url": "https://github.com/RavenProject/Ravencoin/blob/6d48ae0175b10283248146ae3080e2ba70966739/src/chainparams.cpp"
+    },
+    {
+      "repo": "cosmos/cosmos-sdk",
+      "commit": "06a015222f13fe7b41bc3969504da7dee875ae5c",
+      "path": "docs/docs/learn/beginner/04-gas-fees.md",
+      "sha256": "599f1569ed5bd139c7c07560b73770b6f631e869ce7533f9f5b342c829674d68",
+      "bytes": 8728,
+      "lines": 101,
+      "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/docs/docs/learn/beginner/04-gas-fees.md"
+    },
+    {
+      "repo": "cosmos/cosmos-sdk",
+      "commit": "06a015222f13fe7b41bc3969504da7dee875ae5c",
+      "path": "x/auth/ante/fee.go",
+      "sha256": "b4d878e06e2724d4d47f6191dd4aaed1b8a281611aa4675b6ea5f96858dee3aa",
+      "bytes": 5259,
+      "lines": 164,
+      "url": "https://github.com/cosmos/cosmos-sdk/blob/06a015222f13fe7b41bc3969504da7dee875ae5c/x/auth/ante/fee.go"
+    },
+    {
+      "repo": "near/docs",
+      "commit": "46247ba605e4f92a5b9849eeaa13779157253357",
+      "path": "protocol/transactions/gas.mdx",
+      "sha256": "4bd6792d8e399cff471f5c994c221191846e52f869abd79a8d406bbc40accf66",
+      "bytes": 12637,
+      "lines": 205,
+      "url": "https://github.com/near/docs/blob/46247ba605e4f92a5b9849eeaa13779157253357/protocol/transactions/gas.mdx"
+    },
+    {
+      "repo": "ava-labs/builders-hub",
+      "commit": "1261bb8d23336f5c7c9a654aabd64ed66c639a06",
+      "path": "content/docs/rpcs/other/guides/txn-fees.mdx",
+      "sha256": "97bb2879b876e30d0a6d4b88d985cc14cbf783ea9b734fc01dbd5a1f9904c52a",
+      "bytes": 8980,
+      "lines": 123,
+      "url": "https://github.com/ava-labs/builders-hub/blob/1261bb8d23336f5c7c9a654aabd64ed66c639a06/content/docs/rpcs/other/guides/txn-fees.mdx"
+    },
+    {
+      "repo": "classic-terra/core",
+      "commit": "498e81a961d752bdcadbce36100227b9b461c477",
+      "path": "custom/auth/ante/fee.go",
+      "sha256": "ce9d3ee07806397886580584e4139c37b2e11b5a47b66dcc4e2168504281be16",
+      "bytes": 12278,
+      "lines": 349,
+      "url": "https://github.com/classic-terra/core/blob/498e81a961d752bdcadbce36100227b9b461c477/custom/auth/ante/fee.go"
+    },
+    {
+      "repo": "classic-terra/core",
+      "commit": "498e81a961d752bdcadbce36100227b9b461c477",
+      "path": "custom/auth/ante/fee_tax.go",
+      "sha256": "d4fea86cc56c68e14306445a973924a1f726b37acd3d5db08249759826aad726",
+      "bytes": 2788,
+      "lines": 77,
+      "url": "https://github.com/classic-terra/core/blob/498e81a961d752bdcadbce36100227b9b461c477/custom/auth/ante/fee_tax.go"
+    },
+    {
+      "repo": "Kava-Labs/kava",
+      "commit": "917cc322eae208c29faeaac83d524a5b07b39d78",
+      "path": "app/ante/ante.go",
+      "sha256": "51dd4da19ea455bae97e41a98e53bb22e2f2b730fa08ad60c7737e3b95cc4e70",
+      "bytes": 7433,
+      "lines": 197,
+      "url": "https://github.com/Kava-Labs/kava/blob/917cc322eae208c29faeaac83d524a5b07b39d78/app/ante/ante.go"
+    },
+    {
+      "repo": "Kava-Labs/kava",
+      "commit": "917cc322eae208c29faeaac83d524a5b07b39d78",
+      "path": "app/ante/min_gas_filter.go",
+      "sha256": "87f81713854dd91cff2a6363a77c2503665238bf93035a77f54fe6dd427e34b8",
+      "bytes": 1303,
+      "lines": 44,
+      "url": "https://github.com/Kava-Labs/kava/blob/917cc322eae208c29faeaac83d524a5b07b39d78/app/ante/min_gas_filter.go"
+    },
+    {
+      "repo": "axelarnetwork/axelar-core",
+      "commit": "707eee78e1071a8208acc539261ed4f4b4aed251",
+      "path": "x/ante/limit_fee_denom.go",
+      "sha256": "4c7ab7511665be23ae9665eff785a3a933eca6bc9af09142a515540cdfef6879",
+      "bytes": 1905,
+      "lines": 57,
+      "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/ante/limit_fee_denom.go"
+    },
+    {
+      "repo": "peaqnetwork/peaq-network-node",
+      "commit": "9c18928975d96780a9fa1431e80589732a6388a8",
+      "path": "runtime/common/src/payment.rs",
+      "sha256": "57f2fec1d7549c7d47cd2dfdb7fdb036879f81e1627bac7e13b65138da03f0cd",
+      "bytes": 11168,
+      "lines": 311,
+      "url": "https://github.com/peaqnetwork/peaq-network-node/blob/9c18928975d96780a9fa1431e80589732a6388a8/runtime/common/src/payment.rs"
+    },
+    {
+      "repo": "peaqnetwork/peaq-network-node",
+      "commit": "9c18928975d96780a9fa1431e80589732a6388a8",
+      "path": "runtime/peaq/src/lib.rs",
+      "sha256": "9b865fe1e82a5dd9d223db9a0c58a2f863d7800006a41acaf9ac271e64de4fdc",
+      "bytes": 82838,
+      "lines": 2382,
+      "url": "https://github.com/peaqnetwork/peaq-network-node/blob/9c18928975d96780a9fa1431e80589732a6388a8/runtime/peaq/src/lib.rs"
+    },
+    {
+      "repo": "cosmos/gaia",
+      "commit": "c5a460ed482a25496d4dd831fec8f0a440757005",
+      "path": "ante/ante.go",
+      "sha256": "17c51068fc201aee8637f2422351a40aaf01aa41467159144ff7092d7692048d",
+      "bytes": 4423,
+      "lines": 110,
+      "url": "https://github.com/cosmos/gaia/blob/c5a460ed482a25496d4dd831fec8f0a440757005/ante/ante.go"
+    },
+    {
+      "repo": "etclabscore/core-geth",
+      "commit": "4720ac33055e8e5482ce2fb6c5ff800aad8a5889",
+      "path": "core/state_transition.go",
+      "sha256": "4c3c63e3ef1592785d2230563d9a1a283518e1a7e0479133373b2ef3a4e57e61",
+      "bytes": 20027,
+      "lines": 530,
+      "url": "https://github.com/etclabscore/core-geth/blob/4720ac33055e8e5482ce2fb6c5ff800aad8a5889/core/state_transition.go"
+    },
+    {
+      "repo": "etclabscore/core-geth",
+      "commit": "4720ac33055e8e5482ce2fb6c5ff800aad8a5889",
+      "path": "params/config_classic.go",
+      "sha256": "f9ac798780e8305c0d2291ca978c80072614a9e18a062abcc781b3db4cf42a5f",
+      "bytes": 7098,
+      "lines": 194,
+      "url": "https://github.com/etclabscore/core-geth/blob/4720ac33055e8e5482ce2fb6c5ff800aad8a5889/params/config_classic.go"
+    },
+    {
+      "repo": "haqq-network/haqq",
+      "commit": "9c8401da06e2514e16f75fcd8177698dea04b5c7",
+      "path": "app/ante/evm/fee_checker.go",
+      "sha256": "9c98de93ed2d71bb3385a55e990394386d43572be4fd31f55548296b63ad3e29",
+      "bytes": 5616,
+      "lines": 159,
+      "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/app/ante/evm/fee_checker.go"
+    },
+    {
+      "repo": "haqq-network/haqq",
+      "commit": "9c8401da06e2514e16f75fcd8177698dea04b5c7",
+      "path": "app/ante/cosmos/fees.go",
+      "sha256": "d1dc7294d57b7dd45038b29a34ed8025402a5dec4dc6a7d71f0b9b06eff961da",
+      "bytes": 7726,
+      "lines": 227,
+      "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/app/ante/cosmos/fees.go"
+    },
+    {
+      "repo": "haqq-network/haqq",
+      "commit": "9c8401da06e2514e16f75fcd8177698dea04b5c7",
+      "path": "x/evm/keeper/fees.go",
+      "sha256": "f361535cbeea4ddaa78c46821e25920dc4d8f5e64a1aa1fa7274f1aa6360607b",
+      "bytes": 3482,
+      "lines": 114,
+      "url": "https://github.com/haqq-network/haqq/blob/9c8401da06e2514e16f75fcd8177698dea04b5c7/x/evm/keeper/fees.go"
+    },
+    {
+      "repo": "celestiaorg/celestia-app",
+      "commit": "bdbfea031687d040b76e68af4e9a2b17d0baefc1",
+      "path": "app/ante/fee.go",
+      "sha256": "b9d08f50e98192734023360106e8b3b08db223209de04faef7e52f0e2e25ffa9",
+      "bytes": 5014,
+      "lines": 135,
+      "url": "https://github.com/celestiaorg/celestia-app/blob/bdbfea031687d040b76e68af4e9a2b17d0baefc1/app/ante/fee.go"
+    },
+    {
+      "repo": "celestiaorg/celestia-app",
+      "commit": "bdbfea031687d040b76e68af4e9a2b17d0baefc1",
+      "path": "specs/src/resource_pricing.md",
+      "sha256": "069b511a5243370942521e4ff5cb9bc279310224b467af7ce55f0a6544167f68",
+      "bytes": 11409,
+      "lines": 254,
+      "url": "https://github.com/celestiaorg/celestia-app/blob/bdbfea031687d040b76e68af4e9a2b17d0baefc1/specs/src/resource_pricing.md"
+    },
+    {
+      "repo": "axelarnetwork/axelar-core",
+      "commit": "707eee78e1071a8208acc539261ed4f4b4aed251",
+      "path": "x/ante/ante.go",
+      "sha256": "d926824d7f583159e4186078ca4f17af2125113b34342d24557008c115ef55df",
+      "bytes": 2397,
+      "lines": 72,
+      "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/ante/ante.go"
+    },
+    {
+      "repo": "axelarnetwork/axelar-core",
+      "commit": "707eee78e1071a8208acc539261ed4f4b4aed251",
+      "path": "x/feepolicy/types/params.go",
+      "sha256": "94b4be44bec6abf0cf6195603a2db2efc5d21c381a2f5cd96c5ebb736ae40a09",
+      "bytes": 1551,
+      "lines": 60,
+      "url": "https://github.com/axelarnetwork/axelar-core/blob/707eee78e1071a8208acc539261ed4f4b4aed251/x/feepolicy/types/params.go"
+    },
+    {
+      "repo": "Bitcoin-ABC/bitcoin-abc",
+      "commit": "dbf4a10663c28506ddc424e4cb274c7c910086f2",
+      "path": "src/policy/policy.cpp",
+      "sha256": "833db41d8e5a1f36aeb61e758e99a76118161f30c808da42d27e6b0fa707113c",
+      "bytes": 6260,
+      "lines": 182,
+      "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/policy/policy.cpp"
+    },
+    {
+      "repo": "DigiByte-Core/digibyte",
+      "commit": "c5449487c59e09171847255213d2d7b90122207b",
+      "path": "src/policy/policy.cpp",
+      "sha256": "362cf2e231bbd86280a70eace40b52f671d7683720dc5d9bd7f7cf0881f0fd42",
+      "bytes": 14330,
+      "lines": 345,
+      "url": "https://github.com/DigiByte-Core/digibyte/blob/c5449487c59e09171847255213d2d7b90122207b/src/policy/policy.cpp"
+    },
+    {
+      "repo": "stars-labs/heco-chain",
+      "commit": "123ccb14caf0bb27a7563de7f55db54910d92fdd",
+      "path": "README.md",
+      "sha256": "75676b7de80069e8d804938673da1b0597c297122c5d76f74793b57ca74a3e49",
+      "bytes": 8887,
+      "lines": 154,
+      "url": "https://github.com/stars-labs/heco-chain/blob/123ccb14caf0bb27a7563de7f55db54910d92fdd/README.md"
+    },
+    {
+      "repo": "stars-labs/heco-chain",
+      "commit": "123ccb14caf0bb27a7563de7f55db54910d92fdd",
+      "path": "core/state_transition.go",
+      "sha256": "8ccc4bb11377969ab8cf7ddaf7b41752ac6ce87d1eaee1a75a1057b36b99d62a",
+      "bytes": 15574,
+      "lines": 446,
+      "url": "https://github.com/stars-labs/heco-chain/blob/123ccb14caf0bb27a7563de7f55db54910d92fdd/core/state_transition.go"
+    },
+    {
+      "repo": "0gfoundation/0g-geth",
+      "commit": "d5a7ee6f0148d08d3d5e542cdd749d647f69c44b",
+      "path": "core/state_transition.go",
+      "sha256": "3fc4bc4fc94340d0f3244f17df736db1f6ce79b496709e5dbd25c8427df14abb",
+      "bytes": 24900,
+      "lines": 676,
+      "url": "https://github.com/0gfoundation/0g-geth/blob/d5a7ee6f0148d08d3d5e542cdd749d647f69c44b/core/state_transition.go"
+    },
+    {
+      "repo": "bandprotocol/chain",
+      "commit": "33998e8cb67a3d8c87ba080bc395517d57581fff",
+      "path": "x/globalfee/feechecker/feechecker.go",
+      "sha256": "24317873b77855ca634bdb009844394c3b0c418879c0d32531e2eaa8f4ae8215",
+      "bytes": 2926,
+      "lines": 107,
+      "url": "https://github.com/bandprotocol/chain/blob/33998e8cb67a3d8c87ba080bc395517d57581fff/x/globalfee/feechecker/feechecker.go"
+    },
+    {
+      "repo": "terra-money/core",
+      "commit": "7dce06b225b2ef57ddd69f7ac729a98c6257e5a1",
+      "path": "app/ante/ante.go",
+      "sha256": "c514cc093d7c3c8dcc113bfa957bdc3f289b205e90da1fe2f6d5c61a7d57ca0a",
+      "bytes": 2963,
+      "lines": 73,
+      "url": "https://github.com/terra-money/core/blob/7dce06b225b2ef57ddd69f7ac729a98c6257e5a1/app/ante/ante.go"
+    },
+    {
+      "repo": "terra-money/core",
+      "commit": "7dce06b225b2ef57ddd69f7ac729a98c6257e5a1",
+      "path": "app/params/denoms.go",
+      "sha256": "d148783abc81a773dc18414a649a9aff9a312e2765ba290d3234e7d428edceae",
+      "bytes": 450,
+      "lines": 19,
+      "url": "https://github.com/terra-money/core/blob/7dce06b225b2ef57ddd69f7ac729a98c6257e5a1/app/params/denoms.go"
+    },
+    {
+      "repo": "kub-chain/bkc",
+      "commit": "28cb5603e9c866a0ff67c5e0520274adf819402a",
+      "path": "core/state_transition.go",
+      "sha256": "2bbddb55ea4c02acfaa115d6ce20b322fedc3a7384af2f519cc4770a5c806d3d",
+      "bytes": 13217,
+      "lines": 374,
+      "url": "https://github.com/kub-chain/bkc/blob/28cb5603e9c866a0ff67c5e0520274adf819402a/core/state_transition.go"
+    },
+    {
+      "repo": "zcash/zips",
+      "commit": "c41951cc43d1f5074fc6821b892692a7f0d85e54",
+      "path": "zips/zip-0317.rst",
+      "sha256": "2ad4085507b8dba45723dd11866d5640cbe35f8c0b64975dd68ddcb3fd596094",
+      "bytes": 30854,
+      "lines": 685,
+      "url": "https://github.com/zcash/zips/blob/c41951cc43d1f5074fc6821b892692a7f0d85e54/zips/zip-0317.rst"
+    },
+    {
+      "repo": "Bitcoin-ABC/bitcoin-abc",
+      "commit": "dbf4a10663c28506ddc424e4cb274c7c910086f2",
+      "path": "src/consensus/amount.cpp",
+      "url": "https://github.com/Bitcoin-ABC/bitcoin-abc/blob/dbf4a10663c28506ddc424e4cb274c7c910086f2/src/consensus/amount.cpp",
+      "sha256": "30ac64564ecc0a8afc1afa16a2f5135a4f509097d34a71f20f31b58b415dce29",
+      "bytes": 2026,
+      "lines": 59
+    }
+  ],
+  "externalCode": [
+    {
+      "repo": "https://gitlab.com/pulsechaincom/go-pulse",
+      "commit": "60db0c8ad721b778c4ddfd0d72c0e675f1bb472a",
+      "path": "core/state_transition.go",
+      "url": "https://gitlab.com/pulsechaincom/go-pulse/-/raw/60db0c8ad721b778c4ddfd0d72c0e675f1bb472a/core/state_transition.go",
+      "reviewedSections": [
+        "TransactionToMessage effective price",
+        "execution gas/refunds and price accounting"
+      ],
+      "sha256": null,
+      "note": "Inspected via page fetch; raw-byte digest not collected."
+    }
+  ]
+}

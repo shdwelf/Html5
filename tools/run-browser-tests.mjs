@@ -13,6 +13,7 @@ try {
   const suites = [
     ["tests/07-browser.mjs", `http://127.0.0.1:${port}/keyspace.html`],
     ["tests/10-lens3d-wasm.mjs"],
+    ["tests/openpgp-workbench-browser.mjs"],
     ["--test", "tests/subsurface-viewers-browser.test.mjs"],
   ];
   for (const args of suites) {
