@@ -107,7 +107,11 @@ emulator with a silent, local PulseAudio source; this verifies permission and
 track startup, not acoustic capture quality. CI uploads only the public APK as
 the `html5-offline-launcher-public-debug-apk` artifact. It builds and validates
 the private APK and the network APK, including their distinct permission and
-catalog inventories, but does not publish the network APK. Build the network
-flavor locally with `:app:assembleNetworkDebug` when needed. The sandbox itself
-has no local Java/Gradle/Android SDK, so Android APK verification and live-feed
-smoke testing remain CI/device follow-ups.
+catalog inventories, but does not publish either APK as plaintext. For a
+private backup, manually dispatch the workflow with a recipient's armored
+OpenPGP **public** key. CI encrypts the private APK and uploads only the
+ciphertext as a seven-day artifact. Download the `.gpg` artifact, verify its
+`.sha256` file, and decrypt locally with `gpg --output app-private-debug.apk
+--decrypt app-private-debug.apk.gpg`. The private key never leaves its owner.
+The sandbox itself has no local Java/Gradle/Android SDK, so Android APK
+verification and live-feed smoke testing remain CI/device follow-ups.

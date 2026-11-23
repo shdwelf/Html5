@@ -177,8 +177,14 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-debug-apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
-  assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps; it will not be uploaded/);
-  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions/upload-artifact@v4"));
+  assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps/);
+  assert.match(ANDROID_WORKFLOW, /Encrypt private APK for supplied OpenPGP recipient/);
+  assert.match(ANDROID_WORKFLOW, /--encrypt --recipient/);
+  assert.match(ANDROID_WORKFLOW, /inputs\.recipient_public_key/);
+  const encryptedUploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload encrypted private APK only"));
+  assert.match(encryptedUploadStep, /app-private-debug\.apk\.gpg/);
+  assert.doesNotMatch(encryptedUploadStep, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk(?:\s|$)/);
+  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.lastIndexOf("- uses: actions\/upload-artifact@v4"));
   assert.match(uploadStep, /path: apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
   assert.doesNotMatch(uploadStep, /private-debug\.apk/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
