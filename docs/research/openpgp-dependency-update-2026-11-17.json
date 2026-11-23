@@ -1,0 +1,136 @@
+{
+  "schema": "html5-openpgp-dependency-update-v1",
+  "reviewed": "2026-11-17",
+  "scope": "Targeted source/provenance and regression controls; not a security audit or mobile/desktop GUI certification. Publisher timestamp is recorded verbatim, not used as a local calendar assertion.",
+  "dependency": {
+    "name": "openpgp",
+    "version": "6.3.3",
+    "npmIntegrity": "sha512-W0foQI+Zb7/TCy7Z50gqZejYe3oJkiZJ9OSV4ImuRT8MmoKOJhtAMvRm6w9STlyYluLiuezG7+0Qdqbcmmx7ig==",
+    "browserBundleSha256": "5d63085d570ae5daf5541ea1fa862f49b051444f96650a03b640671fea739da7",
+    "nodeDistributionSha256": "160695307250f9ce035cdf3015dbfe1d9e4d58a6fa0aa10fbf6a0d8b80defca9",
+    "reviewedSections": [
+      "readKeys/readPrivateKeys certificate slicing",
+      "PacketList.fromBinary allowlist behaviour",
+      "generate/wrapKeyObject default algorithm preferences",
+      "SignaturePacket.sign and createSignaturePacket call convention",
+      "SecretKeyPacket.encrypt/clearPrivateParams"
+    ],
+    "previous": {
+      "version": "6.3.2",
+      "npmIntegrity": "sha512-wcZTzHz41LV8Y48zH/JlD1JT8YdNmpWOuMAjQ/podvvCwsjBEU37K3znJh4UQcj3hksE5z9TzvhbUbwzsGvlLQ==",
+      "browserBundleSha256": "7d3285efa6dfedbb34a136d8b5ad21c28fb973269df0b2818dcb74dfb40b59d9",
+      "nodeDistributionSha256": "9274be7afb7fe902c39acb686066c379874e8a444b7d10fea3f5eab60596f95e"
+    },
+    "updateReview": "docs/research/openpgp-dependency-update-2026-11-17.json"
+  },
+  "nodeHelper": {
+    "name": "eckey-utils",
+    "version": "0.7.14",
+    "resolved": "https://registry.npmjs.org/eckey-utils/-/eckey-utils-0.7.14.tgz",
+    "integrity": "sha512-s/mENS+mMnJjDSydy0muBQQHMTWJ1nPe8EiphANZrf+lv/1u35aP9WvWHTWqCBJ21blNIurGF7UoLjtaOpoCFw==",
+    "license": "ISC",
+    "installedEntrypoint": {
+      "path": "index.js",
+      "sha256": "e54b4b80ca05eeef0e6a6a5b9654ad9b240c387bea221ea68ddc01be83142cca",
+      "bytes": 19596
+    },
+    "registryGitHead": "2d9c0607f45ea54de46f910d1395745d4badf2f2",
+    "gitHeadLimitation": "The npm metadata gitHead was not retrievable from the stated GitHub repository (404). No GitHub byte-equivalence or independent signature verification is claimed. Exact npm SHA-512 integrity, installed entrypoint SHA-256, local source inspection and synthetic sign/verify regressions are retained; no incompatible helper-major override is made."
+  },
+  "release": {
+    "url": "https://github.com/openpgpjs/openpgpjs/releases/tag/v6.3.3",
+    "tag": "v6.3.3",
+    "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+    "publisherPublishedAt": "2026-11-20T16:36:19Z",
+    "comparison": "https://github.com/openpgpjs/openpgpjs/compare/v6.3.2...v6.3.3",
+    "fix": "Node dependency loading for ECDSA brainpool and secp256k1; eckey-utils is now a runtime dependency; build-time guard rejects undeclared nodeRequire modules.",
+    "tagSignature": "GitHub displayed verified signatures; no independent local tag-signature verification claimed."
+  },
+  "files": [
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "package.json",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/package.json",
+      "sha256": "a7fcc355f7ebeaf34fcc058836b8194f3eb7b66c77c47e71fcaece57b7e3b7df",
+      "bytes": 4838,
+      "reviewedSections": [
+        "Exact release and declared Node eckey-utils dependency"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "rollup.config.js",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/rollup.config.js",
+      "sha256": "dd9dce987e0de6bade22c4fed52554ada2be0a8999cc61ac74fa61d60fb59727",
+      "bytes": 7990,
+      "reviewedSections": [
+        "checkNodeRequireDependencies build-time guard",
+        "Node dependencies marked external; browser remains self-contained"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "src/crypto/public_key/elliptic/ecdsa.js",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/src/crypto/public_key/elliptic/ecdsa.js",
+      "sha256": "bf878ed6c0d12867108f1605fc644f55c7fcc7dd17983d84942c42ea679cf908",
+      "bytes": 10473,
+      "reviewedSections": [
+        "nodeSign/nodeVerify load eckey-utils via util.nodeRequire",
+        "Native PEM conversion only; not a new keyring profile"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "src/config.ts",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/src/config.ts",
+      "sha256": "8b9ef728da3fffbd26b2a40ad002ae283638675d799febcf23c3d1521dc8da18",
+      "bytes": 18214,
+      "reviewedSections": [
+        "rejectCurves default includes secp256k1",
+        "Classic v4/aeadProtect configuration remains explicit in wrapper"
+      ]
+    }
+  ],
+  "discovery": [
+    {
+      "url": "https://gnupg.org/download/index.html",
+      "role": "Canonical native GnuPG source/dependency discovery; native gpg/gpgconf/gpgv are separate distribution-maintained CI tools, never a browser JS substitute."
+    },
+    {
+      "url": "https://gitlab.com/sequoia-pgp/sequoia",
+      "pinnedCommit": "aed60989222991bc57ba83d773309b6f9695b3cd",
+      "role": "Official Rust OpenPGP alternative inspected on GitLab; not installed, not a JavaScript drop-in and no native/WASM port claimed."
+    },
+    {
+      "url": "https://gitlab.com/sequoia-pgp/sequoia/-/blob/aed60989222991bc57ba83d773309b6f9695b3cd/openpgp/Cargo.toml",
+      "role": "Pinned GitLab project page inspected; no complete Cargo dependency-body review or transitive build validation claimed."
+    },
+    {
+      "url": "https://archive.org/details/archlinux_pkg_gnupg",
+      "role": "Historical Arch GnuPG archive, not selected for a runtime downgrade or unauthenticated binary install."
+    },
+    {
+      "url": "https://archive.org/details/github.com-openpgpjs-openpgpjs_-_2018-03-13_07-34-52",
+      "role": "Historical 2018 GitHub mirror, provenance/discovery only; not installed as a security fix."
+    }
+  ],
+  "recipientPolicy": {
+    "publicProfiles": [
+      "v4 RSA 2048–4096",
+      "v4 legacy Ed25519 primary; Ed25519/Curve25519 subkeys"
+    ],
+    "generation": "Unchanged v4 RSA-3072 with AES-256 / iterated SHA-256 S2K private protection",
+    "backup": "One public certificate, exact full primary fingerprint, valid current primary and encryption key; one v3 PKESK and SEIPDv1/MDC envelope; no secret import, owner trust or signing claim",
+    "excluded": [
+      "v6 keys",
+      "NIST/brainpool/secp256k1 app keyring profiles",
+      "production private keys",
+      "personal User IDs",
+      "keyserver/network lookup"
+    ]
+  }
+}

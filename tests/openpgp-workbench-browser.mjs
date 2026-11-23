@@ -97,9 +97,21 @@ try {
       const output = await page.$eval("#keyring-output", (element) => element.value);
       assert.equal((output.match(/BEGIN PGP PUBLIC KEY BLOCK/g) || []).length, 2);
     });
+    await test("the actual browser keyring accepts a synthetic legacy Ed25519/Curve25519 recipient without exposing private packets", async () => {
+      const ecc = await openpgp.generateKey({ type: "ecc", curve: "curve25519Legacy", userIDs: [{ name: "Synthetic ECC browser import only" }], config: { v6Keys: false } });
+      const expected = (await openpgp.readKey({ armoredKey: ecc.publicKey })).getFingerprint();
+      await field("public-key-input", ecc.publicKey); await field("expected-fingerprint", expected);
+      await page.click("#import-public-keys"); await status("keyring-status", "success");
+      assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 3);
+      assert.match(await page.$eval("#keyring-list", (element) => element.textContent), /v4 Ed25519 \/ Curve25519/);
+      const exported = await page.$eval("#keyring-output", (element) => element.value);
+      assert.doesNotMatch(exported, /PRIVATE KEY/);
+      assert.equal((exported.match(/BEGIN PGP PUBLIC KEY BLOCK/g) || []).length, 3);
+      await field("expected-fingerprint", "");
+    });
     await test("a secret-key paste is refused atomically and clearing drops all generated/ring fields", async () => {
       await field("public-key-input", privateArmor); await page.click("#import-public-keys"); await status("keyring-status", "error");
-      assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 2);
+      assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 3);
       await page.click("#clear-all");
       assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 0);
       for (const id of ["generated-public-output", "public-key-input", "keyring-output", "key-passphrase", "backup-fingerprint"]) assert.equal(await page.$eval(`#${id}`, (element) => element.value), "");

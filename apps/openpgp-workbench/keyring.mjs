@@ -72,6 +72,29 @@ export function createOpenPgpKeyTools(library) {
     normalizeFingerprint(key.getFingerprint());
   }
 
+  // Public import is separate from the conservative RSA generator/private
+  // export policy. These are legacy v4 algorithm-22/18 packets, not v6 keys.
+  function publicProfile(key) {
+    const parts = key.getKeys();
+    const rsa = parts.every((part) => {
+      const { algorithm, bits } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && /^rsa/.test(algorithm) && bits >= 2048 && bits <= 4096;
+    });
+    if (rsa) return `v4 RSA-${key.getAlgorithmInfo().bits}`;
+    const ed25519 = (part) => {
+      const { algorithm, curve } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && algorithm === "eddsaLegacy" && curve === "ed25519Legacy";
+    };
+    const curve25519 = (part) => {
+      const { algorithm, curve } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && algorithm === "ecdh" && curve === "curve25519Legacy";
+    };
+    if (ed25519(key) && parts.every((part) => ed25519(part) || curve25519(part))) {
+      return "v4 Ed25519 / Curve25519 (legacy packets)";
+    }
+    throw new Error("Public imports accept only v4 RSA (2048–4096 bits) or v4 legacy Ed25519/Curve25519 certificates. Other profiles need a separate compatibility review.");
+  }
+
   function assertProtected(key) {
     assertRsaV4(key);
     if (!key.isPrivate() || key.getKeys().length !== 2 || !key.getKeys().every(({ keyPacket }) => (
@@ -215,7 +238,7 @@ export function createOpenPgpKeyTools(library) {
     const entries = [];
     for (const key of keys) {
       if (key.isPrivate()) throw new Error("Secret packets are never accepted into the public keyring.");
-      assertRsaV4(key);
+      const algorithm = publicProfile(key);
       if (key.getKeys().length > 16 || key.users.length > 32) throw new Error("Certificate has too many subkeys or User IDs for this workbench.");
       let selfCertification = "valid at import time; identity NOT verified";
       try { await key.verifyPrimaryKey(undefined, undefined, config); }
@@ -225,12 +248,35 @@ export function createOpenPgpKeyTools(library) {
         fingerprint: normalizeFingerprint(key.getFingerprint()),
         userIDs: Object.freeze(userIDs),
         created: key.getCreationTime().toISOString(),
-        algorithm: `v4 RSA-${key.getAlgorithmInfo().bits}`,
+        algorithm,
         selfCertification,
         armored: key.armor(config),
       }));
     }
     return entries;
+  }
+
+  /**
+   * Release encryption requires exactly one public certificate, a full primary
+   * fingerprint and a currently usable bound encryption key. No first-key
+   * selection from a bundle or use of archival-only entries is permitted.
+   */
+  async function readEncryptionRecipient(armored, expectedFingerprint) {
+    const expected = normalizeFingerprint(expectedFingerprint);
+    const entries = await parsePublicKeyring(armored);
+    if (entries.length !== 1 || entries[0].fingerprint !== expected) {
+      throw new Error("Recipient fingerprint mismatch, or multiple certificates supplied. Encryption refused.");
+    }
+    const key = await library.readKey({ armoredKey: entries[0].armored, config });
+    await key.verifyPrimaryKey(undefined, undefined, config);
+    const encryptionKey = await key.getEncryptionKey(undefined, undefined, undefined, config);
+    return Object.freeze({
+      key, encryptionKey,
+      fingerprint: expected,
+      encryptionFingerprint: normalizeFingerprint(encryptionKey.getFingerprint()),
+      encryptionKeyID: encryptionKey.getKeyID().toHex().toUpperCase(),
+      algorithm: entries[0].algorithm,
+    });
   }
 
   /** Memory-only public certificates. Batch imports commit atomically. */
@@ -269,7 +315,7 @@ export function createOpenPgpKeyTools(library) {
       clear() { revision++; entries.clear(); },
     });
   }
-  return Object.freeze({ config, generateCompatibilityKey, checkedPrivateDownload, parsePublicKeyring, createPublicKeyring });
+  return Object.freeze({ config, generateCompatibilityKey, checkedPrivateDownload, parsePublicKeyring, readEncryptionRecipient, createPublicKeyring });
 }
 
 const tools = createOpenPgpKeyTools(openpgp);
@@ -277,3 +323,4 @@ export const KEY_COMPATIBILITY_CONFIG = tools.config;
 export const generateCompatibilityKey = tools.generateCompatibilityKey;
 export const checkedPrivateDownload = tools.checkedPrivateDownload;
 export const createPublicKeyring = tools.createPublicKeyring;
+export const readEncryptionRecipient = tools.readEncryptionRecipient;

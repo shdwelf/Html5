@@ -9,7 +9,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDir = path.join(root, "apps", "openpgp-workbench");
 const outputDir = path.join(root, "public", "apps", "openpgp-workbench");
 const packageDir = path.join(root, "node_modules", "openpgp");
-const expectedVersion = "6.3.2";
+const expectedVersion = "6.3.3";
 
 const libraryPackage = JSON.parse(await readFile(path.join(packageDir, "package.json"), "utf8"));
 if (libraryPackage.version !== expectedVersion) {

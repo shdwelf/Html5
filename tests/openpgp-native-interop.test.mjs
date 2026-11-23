@@ -9,6 +9,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as openpgp from "openpgp";
+import { encryptBackup } from "../scripts/encrypt-openpgp-backup.mjs";
 import { generateCompatibilityKey, createPublicKeyring, KEY_COMPATIBILITY_CONFIG as config } from "../apps/openpgp-workbench/keyring.mjs";
 
 const gpg = process.env.OPENPGP_GPG || "gpg";
@@ -191,5 +192,35 @@ test("native GnuPG applies the separate synthetic revocation and exports an arch
     ring.remove(key.fingerprint);
     const [archival] = await ring.importKeys(revoked);
     assert.match(archival.selfCertification, /unusable: revoked.*archival export only/);
+  } finally { context.close(); }
+});
+
+
+test("native GnuPG decrypts the streaming release tool's legacy Ed25519/Curve25519 backup with its exact bound recipient", options, async (t) => {
+  requireTools(t);
+  const generated = await openpgp.generateKey({
+    type: "ecc", curve: "curve25519Legacy", passphrase,
+    userIDs: [{ name: "Synthetic ECC native backup — do not use", email: "ecc@example.invalid" }],
+    subkeys: [{ curve: "curve25519Legacy", sign: false }, { curve: "curve25519Legacy", sign: true }], config,
+  });
+  const key = await openpgp.readKey({ armoredKey: generated.publicKey });
+  const context = home();
+  try {
+    const input = context.file("synthetic.bin", Buffer.from(plaintext + "\0binary"));
+    const receipt = await encryptBackup({
+      inputPath: input, outputPath: context.path("synthetic.bin.gpg"),
+      recipientFile: context.file("public.asc", generated.publicKey),
+      expectedFingerprint: key.getFingerprint(), sourceRevision: "a".repeat(40),
+    });
+    assert.equal(receipt.encryptionFingerprint, key.subkeys[0].getFingerprint().toUpperCase());
+    context.run(["--import", context.file("synthetic-private.asc", generated.privateKey)], { secret: passphrase });
+    const decrypted = context.run(["--output", context.path("decrypted.bin"), "--decrypt", context.path("synthetic.bin.gpg")], { secret: passphrase });
+    assert.match(decrypted.stdout, /\[GNUPG:\] DECRYPTION_OKAY/);
+    assert.match(decrypted.stdout, /\[GNUPG:\] GOODMDC/);
+    assert.deepEqual(readFileSync(context.path("decrypted.bin")), readFileSync(input));
+    context.run(["--armor", "--output", context.path("reexport-public.asc"), "--export", key.getFingerprint()]);
+    const ring = createPublicKeyring();
+    await ring.importKeys(readFileSync(context.path("reexport-public.asc"), "utf8"), { expectedFingerprint: key.getFingerprint() });
+    assert.equal((await openpgp.readKey({ armoredKey: ring.exportKeys() })).getKeys().length, 3);
   } finally { context.close(); }
 });

@@ -8,6 +8,7 @@ on:
       - 'tests/openpgp-*'
       - 'tests/requirements/openpgp-*'
       - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/openpgp-interop.yml'
@@ -19,6 +20,7 @@ on:
       - 'tests/openpgp-*'
       - 'tests/requirements/openpgp-*'
       - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/openpgp-interop.yml'
@@ -50,6 +52,12 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
+      - name: Install distribution-maintained native readers
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends gnupg gpg-agent gpgconf gpgv
       - name: Require native tools (gpgv alone is insufficient)
         shell: bash
         run: |
@@ -68,7 +76,7 @@ jobs:
           python -m pip install --disable-pip-version-check --no-build-isolation --require-hashes -r tests/requirements/openpgp-interop.txt
           python -c 'import importlib.metadata; print("PGPy", importlib.metadata.version("PGPy")); print("cryptography", importlib.metadata.version("cryptography"))'
       - name: Check local app and vendored module freshness without modifying them
-        run: node --test tests/openpgp-interop-policy.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs
+        run: node --test tests/openpgp-interop-policy.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs tests/openpgp-recipient.test.mjs
       - name: Run mandatory GnuPG, gpgv, PGPy and existing symmetric controls
         # Test homes contain only random synthetic identities and are removed
         # in finally blocks, with each dedicated gpg-agent stopped first.

@@ -19,9 +19,9 @@ function missingToolRun(file, env, pattern) {
 test("native interop reports optional absence honestly and fails closed when required", () => {
   const env = { OPENPGP_GPG: "/nonexistent/html5-synthetic-gpg", OPENPGP_GPGCONF: "/nonexistent/html5-synthetic-gpgconf" };
   const optional = missingToolRun("tests/openpgp-native-interop.test.mjs", { ...env, REQUIRE_OPENPGP_NATIVE_INTEROP: "0" });
-  assert.equal(optional.status, 0, optional.stderr); assert.match(optional.stdout, /# skipped 3/);
+  assert.equal(optional.status, 0, optional.stderr); assert.match(optional.stdout, /# skipped 4/);
   const mandatory = missingToolRun("tests/openpgp-native-interop.test.mjs", { ...env, REQUIRE_OPENPGP_NATIVE_INTEROP: "1" });
-  assert.notEqual(mandatory.status, 0); assert.match(mandatory.stdout, /# fail 3/); assert.match(mandatory.stdout, /# skipped 0/);
+  assert.notEqual(mandatory.status, 0); assert.match(mandatory.stdout, /# fail 4/); assert.match(mandatory.stdout, /# skipped 0/);
   assert.match(mandatory.stdout, /must not silently skip/);
 });
 

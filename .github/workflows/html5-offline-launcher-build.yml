@@ -14,6 +14,12 @@ on:
       - 'resources/city-subsurface-template.html'
       - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'scripts/upload-encrypted-drive-backups.py'
+      - 'tests/drive-backup-upload*'
+      - 'apps/openpgp-workbench/keyring.mjs'
+      - 'package.json'
+      - 'package-lock.json'
       - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
@@ -29,22 +35,38 @@ on:
       - 'resources/city-subsurface-template.html'
       - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'scripts/upload-encrypted-drive-backups.py'
+      - 'tests/drive-backup-upload*'
+      - 'apps/openpgp-workbench/keyring.mjs'
+      - 'package.json'
+      - 'package-lock.json'
       - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   workflow_dispatch:
     inputs:
       recipient_public_key:
-        description: 'Optional armored OpenPGP public key to encrypt the private APK for; only ciphertext is uploaded as an artifact.'
+        description: 'Optional armored OpenPGP public key: encrypt public, network and private APKs; only ciphertext is exported on this dispatch.'
         required: false
         type: string
         default: ''
+      recipient_fingerprint:
+        description: 'Required with recipient_public_key: exact full 40-hex primary fingerprint, verified independently.'
+        required: false
+        type: string
+        default: ''
+      upload_to_drive:
+        description: 'Opt-in ciphertext-only transfer through three one-time Drive upload sessions held in HTML5_RELEASE_UPLOAD_SESSIONS; no account token.'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: html5-offline-launcher-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: html5-offline-launcher-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -63,6 +85,25 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate paired recipient inputs
+        shell: bash
+        env:
+          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+          UPLOAD_TO_DRIVE: ${{ inputs.upload_to_drive }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$RECIPIENT_PUBLIC_KEY" || -n "$RECIPIENT_FINGERPRINT" ]]; then
+            test -n "$RECIPIENT_PUBLIC_KEY"
+            [[ "$RECIPIENT_FINGERPRINT" =~ ^[A-Fa-f0-9]{40}$ ]]
+          fi
+          if [[ "$UPLOAD_TO_DRIVE" == "true" ]]; then
+            test -n "$RECIPIENT_PUBLIC_KEY"
+          fi
+
+      - name: Install locked OpenPGP encryption dependency
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
       - name: Install Android SDK platform 34
         shell: bash
         run: |
@@ -71,7 +112,7 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Test launcher inventory and offline policy
-        run: node --test tests/html5-offline-launcher.test.mjs
+        run: node --test tests/html5-offline-launcher.test.mjs tests/drive-backup-upload.test.mjs
 
       - name: Validate public app inventory
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
@@ -161,34 +202,6 @@ jobs:
           print("Private APK contains only the two allowlisted apps.")
           PY
 
-      - name: Encrypt private APK for supplied OpenPGP recipient
-        if: ${{ inputs.recipient_public_key != '' }}
-        shell: bash
-        env:
-          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
-        run: |
-          set -euo pipefail
-          export GNUPGHOME="$RUNNER_TEMP/apk-recipient-keyring"
-          install -d -m 700 "$GNUPGHOME"
-          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" | gpg --batch --quiet --import
-          fingerprint="$(gpg --batch --with-colons --list-keys | awk -F: '$1 == "fpr" { print $10; exit }')"
-          test -n "$fingerprint"
-          apk=app/build/outputs/apk/private/debug/app-private-debug.apk
-          encrypted="$RUNNER_TEMP/app-private-debug.apk.gpg"
-          gpg --batch --no-tty --trust-model always --output "$encrypted" --encrypt --recipient "$fingerprint" "$apk"
-          (cd "$RUNNER_TEMP" && sha256sum app-private-debug.apk.gpg > app-private-debug.apk.gpg.sha256)
-
-      - name: Upload encrypted private APK only
-        if: ${{ inputs.recipient_public_key != '' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: html5-offline-launcher-private-debug-apk-openpgp
-          path: |
-            ${{ runner.temp }}/app-private-debug.apk.gpg
-            ${{ runner.temp }}/app-private-debug.apk.gpg.sha256
-          if-no-files-found: error
-          retention-days: 7
-
       - name: Build opt-in network debug APK
         working-directory: apps/html5-offline-launcher
         run: ./gradlew --no-daemon --stacktrace :app:assembleNetworkDebug
@@ -220,8 +233,88 @@ jobs:
               for slug in expected:
                   if f"assets/apps/{slug}/index.html" not in apk.namelist():
                       raise SystemExit(f"Missing staged network entrypoint: {slug}")
-          print("Network APK contains both live-feed apps and declares INTERNET.")
+              # Bind the network build to the current reviewed registry and
+              # OpenPGP assets; do not ship a stale cached app tree.
+              from pathlib import Path
+              for name in ("coins-top500", "token-networks", "chain-research"):
+                  source = Path(f"config/{name}.json").read_bytes()
+                  if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
+                      raise SystemExit(f"Stale coin/network registry in network APK: {name}")
+              for name in ("keyring.mjs", "vendor/openpgp.min.mjs"):
+                  source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
+                  if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
+                      raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
+          print("Network APK contains both live-feed apps, current coin/OpenPGP assets and INTERNET.")
           PY
+
+      # Export verified builds before device tests. An emulator timeout must
+      # not discard successful build/encryption work or expose a private APK.
+      - name: Encrypt all three APK profiles for supplied OpenPGP recipient
+        if: ${{ inputs.recipient_public_key != '' }}
+        shell: bash
+        env:
+          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+        run: |
+          set -euo pipefail
+          umask 077
+          recipient="$RUNNER_TEMP/apk-recipient-public.asc"
+          trap 'rm -f "$recipient"' EXIT
+          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" > "$recipient"
+          for profile in public network private; do
+            apk="apps/html5-offline-launcher/app/build/outputs/apk/$profile/debug/app-$profile-debug.apk"
+            test -s "$apk"
+            node scripts/encrypt-openpgp-backup.mjs \
+              --input "$apk" \
+              --output "$RUNNER_TEMP/encrypted-apks/app-$profile-debug.apk.gpg" \
+              --recipient-file "$recipient" \
+              --expected-fingerprint "$RECIPIENT_FINGERPRINT" \
+              --source-revision "$GITHUB_SHA"
+          done
+          node --input-type=module <<'JS'
+          import { readFileSync } from "node:fs";
+          for (const profile of ["public", "network", "private"]) {
+            const receipt = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/encrypted-apks/app-${profile}-debug.apk.gpg.json`, "utf8"));
+            const safe = JSON.stringify({ profile, receipt }).replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+            console.log(`::notice title=Encrypted-APK-receipt::${safe}`);
+          }
+          JS
+
+      - name: Upload encrypted APKs only
+        if: ${{ inputs.recipient_public_key != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-encrypted-debug-apks
+          path: ${{ runner.temp }}/encrypted-apks/*.gpg*
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload ciphertext to one-time Drive sessions
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload_to_drive }}
+        shell: bash
+        env:
+          DRIVE_UPLOAD_SESSIONS_JSON: ${{ secrets.HTML5_RELEASE_UPLOAD_SESSIONS }}
+          ENCRYPTED_APK_DIRECTORY: ${{ runner.temp }}/encrypted-apks
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+        run: python3 scripts/upload-encrypted-drive-backups.py
+
+      - name: Report public APK size and SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+          test -s "$apk"
+          ls -lh "$apk"
+          sha256sum "$apk"
+
+      - name: Upload public APK (non-recipient builds only)
+        if: ${{ inputs.recipient_public_key == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-public-debug-apk
+          path: apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Install PulseAudio runtime for Android emulator microphone tests
         shell: bash
@@ -238,6 +331,7 @@ jobs:
 
       - name: Run Android WebView permission and Headline Harry smoke tests
         id: android-smoke-tests
+        timeout-minutes: 15
         uses: reactivecircus/android-emulator-runner@v2
         env:
           XDG_RUNTIME_DIR: ${{ runner.temp }}/pulse-runtime
@@ -377,19 +471,3 @@ jobs:
               safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::error title=Android-logcat-{chunk_index}::{safe}")
           PY
-
-      - name: Report public APK size and SHA-256
-        shell: bash
-        run: |
-          set -euo pipefail
-          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
-          test -s "$apk"
-          ls -lh "$apk"
-          sha256sum "$apk"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: html5-offline-launcher-public-debug-apk
-          path: apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
-          if-no-files-found: error
-          retention-days: 30
