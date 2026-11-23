@@ -71,7 +71,7 @@ OpenPGP.js is exactly pinned at 6.3.3, including its newly declared `eckey-utils
 
 ## Large RSA (advanced opt-in)
 
-Create key supports **3072 / 4096 / 6144 / 8192 / 12288 / 16384 bits** for both
+Create key offers **3072 / 4096 / 6144 / 8192 / 12288 / 16384 bits** for both
 packets. Public RSA imports accept 2048–16384 bits. Above 4096 bits, the UI
 requires a separate performance/compatibility acknowledgment. Large searches
 can take many minutes; Native Web Crypto work cannot be canceled once started. Clear discards that
@@ -82,6 +82,9 @@ Clear terminates this worker, which has a 20-minute resource cap. The normal
 vendored module remains upstream, while the separate worker is an explicitly
 modified local build with readable corresponding source and a pinned build
 receipt. See `THIRD_PARTY_NOTICES.md`; this is not a cryptographic security audit.
+**16384-bit browser generation is experimental**: a real trial hit that limit
+without completing; successful Node generation does not prove browser
+completion. Real 12288-bit worker generation did complete.
 The default stays 3072, unsupported sizes never silently downgrade, and very
 large keys are not a mobile/hardware-client compatibility guarantee.
 
@@ -90,5 +93,6 @@ saved generation size; the default parameter stays 3072 for existing callers.
 Both secret packets must match and retain the same original protection. The UI
 uses the saved bundle metadata, never a later selector value. See
 `docs/openpgp-large-rsa-2026-11-17.md` for bounds, caveats and the separate mandatory
-real 8192/16384-bit GnuPG lane. Fast local runs explicitly skip expensive prime
+real 8192/16384-bit native GnuPG lane and 8192/12288-bit completed Chromium
+generation controls (16384-bit browser worker cancellation is separate). Fast local runs explicitly skip expensive prime
 searches unless `RUN_OPENPGP_LARGE_RSA=1` is set.

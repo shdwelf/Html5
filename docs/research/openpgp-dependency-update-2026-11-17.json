@@ -28,7 +28,8 @@
       "inputSha256": "c6dcff139be7d67a65fabbc3a38437e94bfe8afbf1b06d6217b8c11b42d02778",
       "patch": "Only the RSA keygen Web Crypto dispatch condition adds bits <= 8192; existing upstream randomProbablePrime(..., 40) for larger browser generation",
       "scope": "Explicit 12288/16384-bit generation in a single-request, cancellable 20-minute worker; unchanged CSPRNG, prime tests, signatures and secret protection; no security audit or mobile certification claim",
-      "shippedBuildReceipt": "public/apps/openpgp-workbench/vendor/large-rsa-build.json"
+      "shippedBuildReceipt": "public/apps/openpgp-workbench/vendor/large-rsa-build.json",
+      "browser16384Limitation": "Experimental only: native Chromium rejects above 8192; the 16384-bit worker trial reached its 20-minute cap without completion. Completed browser prime-search control is 12288 bits; native Node 16384 and public import are separate evidence."
     }
   },
   "nodeHelper": {
@@ -100,6 +101,39 @@
       "reviewedSections": [
         "rejectCurves default includes secp256k1",
         "Classic v4/aeadProtect configuration remains explicit in wrapper"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "src/crypto/public_key/rsa.js",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/src/crypto/public_key/rsa.js",
+      "sha256": "a9b3ea18f43d8d878ce59961bedfbe2b8aa49c1e6d713acf3070032a25d0c1f6",
+      "bytes": 15431,
+      "reviewedSections": [
+        "Native dispatch and original randomProbablePrime(..., 40) fallback; only dispatch condition locally changed for the separate worker"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "src/crypto/public_key/prime.ts",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/src/crypto/public_key/prime.ts",
+      "sha256": "9477762a97a8c6a1e18c676bc2210d4e3d5a1d5fe9667073c6321e9d7c2f728a",
+      "bytes": 9878,
+      "reviewedSections": [
+        "Original division/Fermat/Miller-Rabin prime tests retained verbatim; no reduced rounds or custom arithmetic"
+      ]
+    },
+    {
+      "repo": "openpgpjs/openpgpjs",
+      "commit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+      "path": "src/crypto/random.js",
+      "url": "https://github.com/openpgpjs/openpgpjs/blob/804cf464668fa088e20f7d3fe4501e39aa4cd4e1/src/crypto/random.js",
+      "sha256": "97df8098201352705b53d453b7b0da3d6c0ddeb5a283421777cd573bc8c346dd",
+      "bytes": 2445,
+      "reviewedSections": [
+        "Native crypto.getRandomValues remains required; no global override or pseudo-random fallback"
       ]
     }
   ],

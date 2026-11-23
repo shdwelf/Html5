@@ -183,12 +183,12 @@
                 <option value="6144">6144 bits — large</option>
                 <option value="8192">8192 bits — large</option>
                 <option value="12288">12288 bits — very large</option>
-                <option value="16384">16384 bits — maximum</option>
+                <option value="16384">16384 bits — experimental browser generation</option>
               </select>
               <p id="key-rsa-size-help" class="field-hint">Larger is not automatically safer. Slow generation, larger files and client limits can outweigh the benefit. 16384 bits is a resource cap, not a compatibility guarantee.</p>
             </div>
             <div id="large-rsa-warning" class="notice notice-warning" role="note" hidden>
-              <strong>Large RSA is an advanced opt-in.</strong> Both key packets use the selected size. Generation can take many minutes, particularly on phones. Up to 8192 bits uses native Web Crypto, which cannot be stopped once started. Above 8192 uses a local isolated worker with the existing OpenPGP.js prime search enabled by a narrowly scoped dispatch patch, not native generation; Clear terminates that worker (20-minute resource limit). Your browser/client may refuse very large keys. Test with a synthetic identity before relying on them.
+              <strong>Large RSA is an advanced opt-in.</strong> Both key packets use the selected size. Generation can take many minutes, particularly on phones. Up to 8192 bits uses native Web Crypto, which cannot be stopped once started. Above 8192 uses a local isolated worker with the existing OpenPGP.js prime search enabled by a narrowly scoped dispatch patch, not native generation; Clear terminates that worker (20-minute resource limit). A real 16384-bit browser trial reached the 20-minute limit without completing; that generation choice is experimental, not verified successful browser generation. Public imports through 16384 bits and native Node generation are tested separately. Your client may refuse very large keys. Test with a synthetic identity before relying on them.
               <label class="check-row" for="key-large-ack"><input id="key-large-ack" type="checkbox"> I accept the performance and compatibility limits of RSA above 4096 bits.</label>
             </div>
             <div class="field expiry-field">

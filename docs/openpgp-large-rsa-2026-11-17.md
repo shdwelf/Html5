@@ -5,9 +5,11 @@
 | Operation | RSA sizes |
 | --- | --- |
 | Default generation | **3072 bits**, unchanged |
-| Explicit generation choices | 3072, 4096, **6144, 8192, 12288, 16384** bits |
+| Explicit generation choices | 3072, 4096, **6144, 8192, 12288**, and experimental browser **16384** bits |
 | Public certificate import | v4 RSA, **2048 through 16384 bits**, for the primary and every subkey |
 | Protected secret export | Exactly two RSA packets of the **saved selected generation size**, with the existing protection requirements |
+
+**Browser 16384-bit generation is experimental and has not completed successfully in the recorded browser trial:** it reached the 20-minute resource guard and retained no key. Do not mistake successful native Node generation or public import for successful browser generation at that size. The above-8192 completed browser control is **12288 bits**.
 
 The primary is for signing/certification and the same-size subkey is for encryption. A 16384-bit ceiling is an input/resource policy, not a claim that every OpenPGP implementation, phone, browser or hardware token supports that size. Legacy v4 Ed25519/Curve25519 public imports remain available; this change does not enable arbitrary ECC or v6 profiles.
 
@@ -65,8 +67,37 @@ Public import retains full packet preflight, the 1 MiB / 32-certificate limits, 
 
 - Fast controls reproduce the worker build and test worker abort/timeout/errors/malformed replies, exercise every selectable size, reject strings/fractions/unbounded or unsupported sizes before the expensive generator, check matching primary/subkey options, enforce mismatched-size export rejection, and reject above-cap public packet inputs.
 - DOM controls exercise large-size acknowledgment, reset, prevention of overlapping generation, and saved-size export binding after the selector changes.
-- Real Chromium controls exercise the advanced-size gate, actual native RSA-8192 and isolated-worker RSA-16384 generation/download workflows, ECC import, keyboard/mobile layout and absence of external requests. A size-selector-only test is not counted as a generated large key.
-- The separate **`large-rsa`** CI lane actually generates fresh synthetic **8192- and 16384-bit primary/subkey pairs**, checks their protection and selected-size exports, imports them using both the Node and shipped browser distributions, verifies signatures with independent **gpgv**, and requires full **GnuPG** cross-encryption with exact byte recovery. All synthetic secret material is temporary and is never uploaded or cached across jobs.
+- Real Chromium controls exercise the advanced-size gate, actual native RSA-8192 and isolated-worker RSA-12288 generation/download workflows, plus startup/cancellation of a real experimental RSA-16384 worker, ECC import, keyboard/mobile layout and absence of external requests. A size-selector-only or canceled-worker test is not counted as a generated large key. Exact recovery and independent gpgv verification exercise the actual browser-exported key, not a substituted Node fixture.
+- The separate **`large-rsa`** CI lane actually generates fresh synthetic **8192- and 16384-bit primary/subkey pairs**, checks their protection and selected-size exports, imports them using both the Node and shipped browser distributions, verifies signatures with independent **gpgv**, and requires full **GnuPG** cross-encryption with exact byte recovery. A further Chromium step requires completed **8192/12288-bit** generation and actual 16384-worker cancellation; it does **not** assert completed 16384-bit browser generation. All synthetic secret material is temporary and is never uploaded or cached across jobs.
 - The expensive lane has a 30-minute job limit and does not consume the fast native lane's 10-minute budget. Its real-generation tests are opt-in locally with `RUN_OPENPGP_LARGE_RSA=1`, not silently counted as executed when skipped. A timeout/failure remains a failure, not device compatibility evidence.
 
 Local full GnuPG, actual matching-head browser results, mobile OpenKeychain/PGPony clients and hardware-token limits remain separate runtime checks. Consult the actual matching-head CI result rather than treating the existence of a test or a source-level policy as a successful execution.
+
+## Recorded controls and limits
+
+- Native Node / browser-distribution-in-Node control: real synthetic 8192- and
+  16384-bit pairs, protected export, exact byte recovery and independent gpgv;
+  **4/4 passed, exit 0**. This is not browser prime-search evidence.
+- Real Chromium **8192-bit native**: **8/8 passed, exit 0**, including actual
+  protected/revocation downloads, import and clearing.
+- Real Chromium **12288-bit worker**: **8/8 passed, exit 0**; the two-key prime
+  search/protection took about **339 seconds** on this sandbox. This is an
+  observation, not a time or device-compatibility guarantee.
+- Real Chromium **16384-bit native**: refused with the native 8192-bit ceiling.
+  The worker trial then reached its **20-minute limit**, terminated and retained
+  no key. This is recorded as **not completed**, not passed generation.
+- The later default-size Chromium controls additionally verify actual
+  experimental-16384 worker creation/destruction by Clear, exact byte recovery
+  and independent gpgv verification: **9/9 passed, exit 0**.
+- Fast aggregate after the worker build and policy controls: **146 passed,
+  6 explicit skips** (4 missing full-native local controls and 2 opt-in expensive
+  generations), **0 failures, exit 0**. Mandatory CI does not allow missing
+  independent native readers to masquerade as successful interop.
+- Separate repository Vitest run: **318 passed / 36 files, exit 0**, resolving
+  the earlier unexplained nonzero run without claiming that earlier run passed.
+
+The later matching-head CI result remains the release gate. In particular,
+experimental 16384-bit browser completion, OpenKeychain/PGPony device imports,
+hardware-token support and the encrypted Drive transfer are **not** established
+by these controls. Encrypted Drive delivery remains blocked separately; a
+successful key test is not a cloud backup receipt.

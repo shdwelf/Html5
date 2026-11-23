@@ -207,7 +207,7 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
   assert.match(README, /94\*\* HTML entrypoints/);
   assert.match(README, /8,500\s+files/);
-  assert.match(README, /165,021,196 bytes uncompressed/);
+  assert.match(README, /165,024,166 bytes uncompressed/);
   assert.match(README, /ANC Studio microphone capture is opt-in/);
   assert.doesNotMatch(README, /still denies microphone permission/);
 });

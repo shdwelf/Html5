@@ -1,7 +1,8 @@
 /** Optional real Chromium + Web Crypto + actual download checks. Synthetic keys only. */
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -74,6 +75,30 @@ try {
       assert.equal(await page.$eval("#key-rsa-bits", (element) => element.value), "3072");
       assert.equal(await page.$eval("#key-large-ack", (element) => element.checked), false);
     });
+    await test("Clear terminates an actual experimental 16384-bit worker, keeps the page responsive and retains no key", async () => {
+      await page.select("#key-rsa-bits", "16384"); await page.click("#key-large-ack");
+      await field("key-name", "Synthetic cancellation control only");
+      await field("key-passphrase", passphrase); await field("key-confirm", passphrase);
+      const workerEvent = (name, predicate) => new Promise((resolve, reject) => {
+        const listener = (worker) => {
+          if (!predicate(worker)) return;
+          clearTimeout(timer); page.off(name, listener); resolve(worker);
+        };
+        const timer = setTimeout(() => { page.off(name, listener); reject(new Error(`Large-RSA ${name} event missing`)); }, 10000);
+        page.on(name, listener);
+      });
+      const created = workerEvent("workercreated", (worker) => worker.url().endsWith("/large-rsa-worker.bundle.mjs"));
+      try {
+        await page.click("#generate-key");
+        const worker = await created;
+        const terminated = workerEvent("workerdestroyed", (closed) => closed === worker);
+        await page.click("#clear-generated"); await terminated;
+      } finally { await page.click("#clear-generated"); }
+      await page.waitForFunction(() => !document.getElementById("generate-key").disabled);
+      assert.equal(await page.$eval("#generated-public-output", (element) => element.value), "");
+      assert.equal(await page.$eval("#key-rsa-bits", (element) => element.value), "3072");
+      assert.equal(await page.$eval("#download-private-key", (element) => element.disabled), true);
+    });
     await test(`real ${rsaBits > 8192 ? "isolated worker" : "Web Crypto"} generates the two RSA-${rsaBits} keys and displays only the public certificate`, async () => {
       await page.click("#keygen-tab");
       await page.select("#key-rsa-bits", String(rsaBits));
@@ -91,8 +116,8 @@ try {
       assert.doesNotMatch(fields, /BEGIN PGP PRIVATE KEY BLOCK/);
       assert.equal(await page.$eval("#download-private-key", (element) => element.disabled), true);
     });
-    assert.ok(fingerprint && publicArmor, "generation must succeed before dependent export/import checks");
-    await test("actual protected/private and revocation downloads require consent plus a matching full fingerprint", async () => {
+    if (!fingerprint || !publicArmor) return; // The generation test already failed; do not cascade misleading export failures.
+    await test("actual protected/private and revocation downloads require consent/full fingerprint and independently recover exact bytes", async (t) => {
       await page.click("#download-public-key");
       assert.equal(await downloaded(`${fingerprint}-PUBLIC.asc`), publicArmor);
       await page.click("#key-backup-ack"); await field("backup-fingerprint", "0".repeat(40));
@@ -104,7 +129,27 @@ try {
       assert.equal(encrypted.isDecrypted(), false); assert.equal(encrypted.getKeys().length, 2);
       assert.ok(encrypted.getKeys().every(({ keyPacket }) => keyPacket.s2k.c === 0xff && keyPacket.getAlgorithmInfo().bits === rsaBits));
       const unlocked = await openpgp.decryptKey({ privateKey: encrypted, passphrase });
-      try { assert.equal(unlocked.getFingerprint().toUpperCase(), fingerprint); } finally { unlocked.clearPrivateParams(); }
+      try {
+        assert.equal(unlocked.getFingerprint().toUpperCase(), fingerprint);
+        const plaintext = new TextEncoder().encode(`Synthetic browser RSA-${rsaBits} exact recovery.\0café 🔐\r\n`);
+        const publicKey = await openpgp.readKey({ armoredKey: publicArmor });
+        const message = await openpgp.createMessage({ binary: plaintext });
+        const ciphertext = await openpgp.encrypt({ message, encryptionKeys: publicKey });
+        const recovered = await openpgp.decrypt({ message: await openpgp.readMessage({ armoredMessage: ciphertext }), decryptionKeys: unlocked, format: "binary" });
+        assert.deepEqual(recovered.data, plaintext);
+        const signature = await openpgp.sign({ message, signingKeys: unlocked, detached: true });
+        const publicFile = join(directory, "synthetic-public.gpg"), signatureFile = join(directory, "synthetic-signature.asc"), dataFile = join(directory, "synthetic-data.bin");
+        await writeFile(publicFile, publicKey.write(), { mode: 0o600 });
+        await writeFile(signatureFile, signature, { mode: 0o600 }); await writeFile(dataFile, plaintext, { mode: 0o600 });
+        const verified = spawnSync("gpgv", ["--homedir", directory, "--keyring", publicFile, "--status-fd", "1", signatureFile, dataFile], { encoding: "utf8", timeout: 30000 });
+        if (verified.error?.code === "ENOENT" && process.env.REQUIRE_OPENPGP_NATIVE_INTEROP !== "1") {
+          t.diagnostic("Independent gpgv is unavailable locally; not claimed. Mandatory large-RSA CI requires it.");
+        } else {
+          assert.equal(verified.status, 0, verified.stderr);
+          assert.ok(verified.stdout.includes(`[GNUPG:] VALIDSIG ${fingerprint}`));
+          t.diagnostic(`Independent gpgv verified the actual browser-generated RSA-${rsaBits} signing key.`);
+        }
+      } finally { unlocked.clearPrivateParams(); }
       await page.click("#download-revocation");
       const revocation = await downloaded(`${fingerprint}-REVOCATION.asc`);
       const revoked = await openpgp.revokeKey({ key: await openpgp.readKey({ armoredKey: publicArmor }), revocationCertificate: revocation });

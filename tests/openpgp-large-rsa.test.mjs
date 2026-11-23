@@ -50,6 +50,8 @@ test("the UI and shipped mirror expose above-8192 sizes, a separate opt-in warni
   assert.match(source, /2048–16384 bits/);
   assert.match(source, /cannot be stopped once started/);
   assert.match(source, /dispatch patch/);
+  assert.match(source, /16384 bits — experimental browser generation/);
+  assert.match(source, /not verified successful browser generation/);
 });
 
 for (const rsaBits of [8192, 16384]) {

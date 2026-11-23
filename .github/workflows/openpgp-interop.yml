@@ -114,10 +114,10 @@ jobs:
       - name: Require real 8192 and 16384-bit generation and independent readers
         # Only ephemeral synthetic keys. Never upload/cross-job-cache them.
         run: node --test --test-concurrency=1 tests/openpgp-large-rsa.test.mjs
-      - name: Require real Chromium 8192 and 16384-bit generation and downloads
+      - name: Require real Chromium 8192 and 12288-bit generation plus 16384 worker cancellation
         shell: bash
         run: |
           set -euo pipefail
-          for bits in 8192 16384; do
+          for bits in 8192 12288; do
             OPENPGP_BROWSER_RSA_BITS="$bits" node tests/openpgp-workbench-browser.mjs
           done
