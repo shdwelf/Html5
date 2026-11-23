@@ -9,6 +9,7 @@ The source market ranks are historical, not present-day prices or endorsements.
 - Host profiles: 58; primary-reviewed fee models: 58; fee models pending: 0.
 - Primary-reviewed test-network identities: 18. No testnet token contract is inferred from a mainnet contract.
 - Assets with any catalogued mainnet contract: 1. Other token deployment reviews remain open.
+- Independent token source reviews started: 2 stable asset IDs / 4 mainnet tuples (3 existing catalogue, 1 research-only, not enabled); 0 complete token acceptance gates closed. [Scoped report](token-identity-review-round-84-2026-11-17.md).
 - Rows with no mapped host: 152. Unknown is not free, absent, or a zero balance.
 
 ## Reading each asset row
@@ -18,9 +19,13 @@ flag. This does not independently validate a pending host. For a token, a
 reviewed host fee formula is **not** a verified asset contract or token transfer
 estimate. A receive derivation is **not** proof of deployment or holdings.
 
-Identity evidence is one of primary-reviewed, catalogue-only (a pinned secondary
-EVM catalogue), or pending. Fee evidence is separate. Each pending/token row is
-an explicit per-asset research task: verify the issuer and host; find primary
+Host identity evidence is one of primary-reviewed, catalogue-only (a pinned
+secondary EVM catalogue), or pending. Fee evidence is separate. Independent
+token source reviews are a further evidence lane: a reviewed identifier, ABI or
+reference implementation does not establish deployed code, live transfer tax,
+reserves, redeemability or a verified test deployment. The separate offline
+ledger does not feed a balance reader or enable new runtime mappings. Each
+pending/token row is an explicit per-asset research task: verify the issuer and host; find primary
 contract/mint evidence and decimals; check migration/wrapped/backed identities;
 obtain a transaction-specific estimate; verify a separate test deployment or
 leave it unknown. The UI provides all four requested discovery routes per asset,
@@ -28,505 +33,505 @@ with primary host links only where reviewed. No search snippet is a live quote.
 
 ## All 500 defined assets
 
-| Historical rank | Asset ID / symbol | Host | Native candidate? | Host identity | Fee asset / model / review | Mainnet contract catalogue | Default-leaf support |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | btc-bitcoin · BTC | BTC | curated ID; see evidence | primary-reviewed | BTC / utxo / primary-reviewed | not verified | one curated path, local |
-| 2 | eth-ethereum · ETH | ETH | curated ID; see evidence | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 3 | usdt-tether · USDT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | Ethereum · USDT · ERC-20: 0xdAC17F958D2ee523a2206206994597C13D831ec7; BNB Smart Chain · Binance-Peg USDT · BEP-20: 0x55d398326f99059fF775485246999027B3197955; TRON · USDT · TRC-20: TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t | one curated path, local |
-| 4 | bnb-binance-coin · BNB | BSC | curated ID; see evidence | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 5 | xrp-xrp · XRP | XRP | curated ID; see evidence | primary-reviewed | XRP / load-scaled / primary-reviewed | not verified | one curated path, local |
-| 6 | usdc-usd-coin · USDC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 7 | sol-solana · SOL | SOL | curated ID; see evidence | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 8 | trx-tron · TRX | TRX | curated ID; see evidence | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 9 | steth-lido-staked-ether · STETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 10 | zec-zcash · ZEC | ZEC | curated ID; see evidence | pending | ZEC / logical-actions / primary-reviewed | not verified | one curated path, local |
-| 11 | hype-hyperliquid · HYPE | HYPE | curated ID; see evidence | primary-reviewed | HYPE / gas / primary-reviewed | not verified | one curated path, local |
-| 12 | doge-dogecoin · DOGE | DOGE | curated ID; see evidence | pending | DOGE / utxo-bytes / primary-reviewed | not verified | one curated path, local |
-| 13 | wsteth-wrapped-liquid-staked-ether-20 · WSTETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 14 | rain-rain-protocol · RAIN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 15 | usds-usds · USDS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 16 | xmr-monero · XMR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 17 | wbt-whitebit · WBT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 18 | wbtc-wrapped-bitcoin · WBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 19 | link-chainlink · LINK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 20 | leo-leo-token · LEO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 21 | ada-cardano · ADA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 22 | cbbtc-coinbase-wrapped-btc · CBBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 23 | xlm-stellar · XLM | XLM | curated ID; see evidence | primary-reviewed | XLM / per-operation / primary-reviewed | not verified | one curated path, local |
-| 24 | weeth-wrapped-eeth · WEETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 25 | weth-weth · WETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 26 | bch-bitcoin-cash · BCH | BCH | curated ID; see evidence | pending | BCH / utxo-policy-size / primary-reviewed | not verified | one curated path, local |
-| 27 | dai-dai · DAI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 28 | susds-susds · sUSDS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 29 | usd1-usd1 · USD1 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 30 | usde-ethena-usde · USDE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 31 | ltc-litecoin · LTC | LTC | curated ID; see evidence | pending | LTC / utxo-mweb / primary-reviewed | not verified | one curated path, local |
-| 32 | cc-canton-network · CC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 33 | uni-uniswap · UNI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 34 | toncoin-the-open-network · GRAM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 35 | near-near-protocol · NEAR | NEAR | curated ID; see evidence | primary-reviewed | NEAR / near-gas / primary-reviewed | not verified | one curated path, local |
-| 36 | usdg-global-dollar · USDG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 37 | hbar-hedera-hashgraph · HBAR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 38 | avax-avalanche · AVAX | AVAX | curated ID; see evidence | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 39 | shib-shiba-inu · SHIB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 40 | sui-sui · SUI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 41 | pyusd-paypal-usd · PYUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 42 | cro-cryptocom-chain · CRO | CRO | curated ID; see evidence | primary-reviewed | CRO / cosmos-gas / primary-reviewed | not verified | one curated path, local |
-| 43 | m-memecore · M | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 44 | okb-okb · OKB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 45 | tao-bittensor · TAO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 46 | mnt-mantle · MNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 47 | aave-new · AAVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 48 | paxg-pax-gold · PAXG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 49 | ondo-ondo · ONDO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 50 | wlfi-official-world-liberty-financial · WLFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 51 | icp-internet-computer · ICP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 52 | eth-ethereum-token · WETH | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 53 | wld-worldcoin · WLD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 54 | pump-pumpfun · PUMP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 55 | ena-ethena · ENA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 56 | pepe-pepe · PEPE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 57 | sky-sky · SKY | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 58 | bgb-bitget-token · BGB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 59 | ftm-fantom · FTM | FTM | curated ID; see evidence | catalogue-only | FTM / gas / primary-reviewed | not verified | one curated path, local |
-| 60 | usdf-falcon-finance · USDF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 61 | jitosol-jito-staked-sol · JITOSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 62 | bfusd-bfusd · BFUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 63 | susde-ethena-staked-usde · SUSDE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 64 | reth-rocket-pool-eth · RETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 65 | usdd-usdd · USDD | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 66 | syrupusdc-syrupusdc · SYRUPUSDC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 67 | etc-ethereum-classic · ETC | ETC | curated ID; see evidence | catalogue-only | ETC / gas / primary-reviewed | not verified | one curated path, local |
-| 68 | vvv-venice-token · VVV | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 69 | rseth-rseth · RSETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 70 | lit-lighter · LIT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 71 | wbnb-wrapped-bnb · WBNB | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 72 | khype-kinetiq-staked-hype · KHYPE | HYPE | token/asset deployment pending | primary-reviewed | HYPE / gas / primary-reviewed | not verified | one curated path, local |
-| 73 | aster-aster · ASTER | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 74 | gt-gatechain-token · GT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 75 | btw-bitway · BTW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 76 | xaut-tether-gold · XAUT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 77 | meth-meth · METH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 78 | pi2-pi-network · PI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 79 | pol-polygon-ecosystem-token · POL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 80 | jst-just · JST | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 81 | jlp-jupiter-perpetuals-liquidity-provider-token · JLP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 82 | kas-kaspa · KAS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 83 | kcs-kucoin-token · KCS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 84 | arb-arbitrum · ARB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 85 | lbtc-lombard-staked-btc · LBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 86 | algo-algorand · ALGO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 87 | jup-jupiter-exchange-token · JUP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 88 | bnsol-binance-staked-sol · BNSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 89 | lseth-liquid-staked-ethereum · LSETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 90 | qnt-quant · QNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 91 | rndr-render-token · RENDER | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 92 | dash-dash · DASH | DASH | curated ID; see evidence | pending | DASH / utxo-bytes / primary-reviewed | not verified | one curated path, local |
-| 93 | cake-pancakeswap · CAKE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 94 | usdce-usd-coine · USDC.e | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 95 | ethfi-etherfi · ETHFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 96 | fil-filecoin · FIL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 97 | jupsol-jupiter-staked-sol · JUPSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 98 | atom-cosmos · ATOM | ATOM | curated ID; see evidence | pending | ATOM / cosmos-feemarket / primary-reviewed | not verified | one curated path, local |
-| 99 | vet-vechain · VET | VET | curated ID; see evidence | catalogue-only | VTHO / vechain-clauses / primary-reviewed | not verified | one curated path, local |
-| 100 | bdx-beldex · BDX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 101 | gho-gho · GHO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 102 | aero-aerodrome-finance · AERO | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 103 | inj-injective-protocol · INJ | INJ | curated ID; see evidence | pending | INJ / cosmos-dynamic-gas / primary-reviewed | not verified | one curated path, local |
-| 104 | morpho-morpho · MORPHO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 105 | msol-marinade-staked-sol · MSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 106 | usd0-usual-usd · USD0 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 107 | flr-flare-network · FLR | FLR | curated ID; see evidence | primary-reviewed | FLR / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 108 | nexo-nexo · NEXO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 109 | crv-curve-dao-token · CRV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 110 | apt-aptos · APT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 111 | del-decimal · DEL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 112 | solvbtc-solv-protocol-solvbtc · SOLVBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 113 | tusd-trueusd · TUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 114 | stable-stable · STABLE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 115 | cbeth-coinbase-wrapped-staked-eth · CBETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 116 | bianrensheng-bianrensheng · 币安人生 | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 117 | trump-official-trump · TRUMP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 118 | stx-stacks · STX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 119 | spx-spx6900 · SPX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 120 | pengu-pudgy-penguins · PENGU | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 121 | wtrx-wrapped-trx · WTRX | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 122 | fetch-ai · FET | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 123 | ray-raydium · RAY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 124 | virtual-virtual-protocol · VIRTUAL | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 125 | pyth-pyth-network · PYTH | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 126 | tbtc-tbtc · TBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 127 | ff-falcon-finance · FF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 128 | ton-tontoken · TON | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 129 | stkaave-staked-aave · STKAAVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 130 | usdtb-usdtb · USDTB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 130 | night-midnight2 · NIGHT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 132 | btcb-bitcoin-avalanche-bridged-btcb · BTC.B | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 133 | luna-terra · LUNC | LUNC | curated ID; see evidence | pending | LUNC / cosmos-gas-tax / primary-reviewed | not verified | one curated path, local |
-| 134 | xdc-xdc-network · XDC | XDC | curated ID; see evidence | catalogue-only | XDC / gas / primary-reviewed | not verified | one curated path, local |
-| 135 | pendle-pendle · PENDLE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 136 | bsv-bitcoin-sv · BSV | BSV | curated ID; see evidence | pending | BSV / utxo-bytes / primary-reviewed | not verified | one curated path, local |
-| 137 | frxeth-frax-ether · FRXETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 138 | fdusd-first-digital-usd · FDUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 139 | ake-akedo · AKE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 140 | sun-sun · SUN | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 141 | ohmv2-olympus-v2 · OHMv2 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 142 | bttc-bittorrent-chain · BTT | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 143 | ub-unibase · UB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 144 | ldo-lido-dao · LDO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 145 | hex-hex-from-pulsechain · HEX | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | one curated path, local |
-| 146 | gno-gnosis · GNO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 147 | sei-sei · SEI | SEI | curated ID; see evidence | pending | SEI / sei-dual-gas / primary-reviewed | not verified | one curated path, local |
-| 148 | ethx-stader-ethx · ETHX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 149 | beth-binance-beacon-eth · BETH | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 150 | dcr-decred · DCR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 151 | xtz-tezos · XTZ | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 152 | euroc-euro-coin · EURC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 153 | syrup-syrup-token · SYRUP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 154 | mon-monad · MON | MON | curated ID; see evidence | primary-reviewed | MON / gas-limit / primary-reviewed | not verified | one curated path, local |
-| 155 | ebtc-etherfi-staked-btc · EBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 156 | sfrxeth-staked-frax-ether · SFRXETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 157 | eos-eos · EOS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 158 | alusd-alchemixusd · ALUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 159 | floki-floki-inu · FLOKI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 160 | useless-useless-coin · USELESS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 161 | twt-trust-wallet-token · TWT | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 162 | nft-apenft · NFT | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 163 | cfx-conflux-network · CFX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 164 | tia-celestia · TIA | TIA | curated ID; see evidence | pending | TIA / cosmos-blob-gas / primary-reviewed | not verified | one curated path, local |
-| 165 | plsx-pulsex · PLSX | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | one curated path, local |
-| 167 | op-optimism · OP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 167 | grass-grass · GRASS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 168 | frax-frax · FRAX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 169 | edge-edgex · EDGE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 170 | bonk-bonk · BONK | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 171 | strk-starknet · STRK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 172 | pieverse-pieverse · PIEVERSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 173 | cvx-convex-finance · CVX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 174 | ens-ethereum-name-service · ENS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 175 | jasmy-jasmycoin · JASMY | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 176 | kite-kite-ai · KITE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 177 | comp-compoundd · COMP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 178 | wif-dogwifcoin · WIF | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 179 | theta-theta-token · THETA | THETA | curated ID; see evidence | catalogue-only | TFUEL / theta-dual / primary-reviewed | not verified | one curated path, local |
-| 180 | usdai-usdai · USDAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 181 | kaia-kaia · KAIA | KAIA | curated ID; see evidence | catalogue-only | KAIA / gas-delegated / primary-reviewed | not verified | one curated path, local |
-| 182 | b-buildon · B | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 183 | tibbir-ribbita-by-virtuals · TIBBIR | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 184 | matic-polygon · MATIC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 185 | eth-reserve-protocol-eth-plus · ETH+ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 186 | cashcat-cash-cat · CASHCAT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 187 | rlusd-ripple-usd · RLUSD | XRP | token/asset deployment pending | primary-reviewed | XRP / load-scaled / primary-reviewed | not verified | one curated path, local |
-| 188 | vsol-the-vault-staked-sol · VSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 189 | ar-arweave · AR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 190 | rune-thorchain · RUNE | RUNE | curated ID; see evidence | pending | RUNE / thor-native-dynamic / primary-reviewed | not verified | one curated path, local |
-| 191 | miota-iota · IOTA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 192 | grt-the-graph · GRT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 193 | tel-telcoin · TEL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 194 | sato-atsuko-sato · SATO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 195 | chsb-swissborg · BORG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 196 | mx-mx-token · MX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 197 | ant-aragon · ANT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 198 | 2z-doublezero · 2Z | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 199 | xcn-chain · XCN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 200 | axs-axie-infinity · AXS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 201 | akt-akash-network · AKT | AKT | curated ID; see evidence | pending | AKT / cosmos-gas / primary-reviewed | not verified | one curated path, local |
-| 202 | btse-btse-token · BTSE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 203 | stg-stargatetoken · STG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 204 | uai-unifai-network · UAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 205 | xpl-plasma · XPL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 207 | susdai-staked-usdai · SUSDAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 207 | neo-neo · NEO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 208 | trac-origintrail · TRAC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 209 | shfl-shuffle · SHFL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 210 | npc-non-playable-coin · NPC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 211 | h-humanity · H | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 212 | fartcoin-fartcoin · FARTCOIN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 213 | xec-ecash · XEC | XEC | curated ID; see evidence | pending | XEC / utxo-policy-size / primary-reviewed | not verified | one curated path, local |
-| 214 | data-streamr-datacoin · DATA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 215 | chz-chiliz · CHZ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 216 | zbcn-zebec-network · ZBCN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 217 | vsn-vision · VSN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 218 | gmt-gomining-token · GOMINING | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 219 | oeth-origin-ether · OETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 220 | mana-decentraland · MANA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 221 | scnsol-socean-staked-sol · SCNSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 222 | zec-zcash-token · ZEC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 223 | egld-elrond · EGLD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 224 | -niu-lai · 牛来 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 224 | asbnb-astherus-staked-bnb · ASBNB | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 226 | mina-mina-protocol · MINA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 227 | met-meteora · MET | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 229 | laptop-hunter-bidens-laptop · LAPTOP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 229 | sfp-safepal-token · SFP | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 230 | jto-jito · JTO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 231 | 1inch-1inch · 1INCH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 232 | bbsol-bybit-staked-sol · BBSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 233 | rlb-rollbit-coin · RLB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 234 | mkr-maker · MKR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 235 | a-vaulta · A | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 236 | cash-cash · CASH | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 237 | crvusd-curvefi-usd-stablecoin · CRVUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 238 | awe-awe-network · AWE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 239 | ezeth-renzo-restaked-eth · EZETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 240 | onyc-onyc · ONYC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 241 | usdf-astherus-usdf · USDF | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 242 | dgai-dgrid-ai · DGAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 243 | zro-layerzero · ZRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 244 | sol-binance-peg-sol · SOL | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 245 | yzy-yzy · YZY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 246 | zbu-zeebu · ZBU | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 247 | bat-basic-attention-token · BAT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 248 | drv7-derive · DRV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 249 | zen-horizen · ZEN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 250 | goose-goose-token · GOOSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 250 | -doggotothemoon · DOG | BTC | token/asset deployment pending | primary-reviewed | BTC / utxo / primary-reviewed | not verified | one curated path, local |
-| 252 | glm-golem · GLM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 253 | flr-flare · FLR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 254 | vcnt-vicicoin · VCNT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 255 | cheems-cheems-cheemspet · CHEEMS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 256 | imx-immutable-x · IMX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 257 | ape-apecoin · APE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 258 | skr-seeker · SKR | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 259 | sent-sentient · SENT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 260 | uusd-unity-usd · UUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 261 | musd-metamask-usd · MUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 262 | chip-usdai · CHIP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 263 | form-four · FORM | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 264 | sand-the-sandbox · SAND | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 265 | superoeth-super-oeth · SUPEROETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 266 | zano-zano · ZANO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 267 | ath14-aethir · ATH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 268 | prom-prometeus · PROM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 269 | mag7ssi-mag7ssi · MAG7.SSI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 269 | aioz-aioz-network · AIOZ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 271 | hnt-helium · HNT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 272 | rsr-reserve-rights · RSR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 273 | wpls-wrapped-pulse · WPLS | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | one curated path, local |
-| 274 | uxlink-uxlink · UXLINK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 276 | orca-orca · ORCA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 276 | qtum-qtum · QTUM | QTUM | curated ID; see evidence | pending | QTUM / utxo-contract-gas / primary-reviewed | not verified | one curated path, local |
-| 277 | s-sonic · S | S | curated ID; see evidence | primary-reviewed | S / gas / primary-reviewed | not verified | one curated path, local |
-| 278 | dexe-dexe · DEXE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 279 | o-o1exchange · O | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 280 | dgb-digibyte · DGB | DGB | curated ID; see evidence | pending | DGB / utxo-vsize / primary-reviewed | not verified | one curated path, local |
-| 280 | ab-ab · AB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 281 | dydx-dydx-chain · DYDX | DYDX | curated ID; see evidence | pending | DYDX / cosmos-multi-fee / primary-reviewed | not verified | one curated path, local |
-| 284 | zrx-0x · ZRX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 284 | ordi-ordinals · ORDI | BTC | token/asset deployment pending | primary-reviewed | BTC / utxo / primary-reviewed | not verified | one curated path, local |
-| 285 | velo-velo · VELO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 286 | frxusd-frax-usd · FRXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 287 | beam-beam-eth · BEAM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 288 | tfuel-theta-fuel · TFUEL | THETA | curated ID; see evidence | catalogue-only | TFUEL / theta-dual / primary-reviewed | not verified | one curated path, local |
-| 289 | gas-gas · GAS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 290 | spcxb-spacex-tokenized-bstocks · SPCXB | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 291 | wemix-wemix-token · WEMIX | WEMIX | curated ID; see evidence | catalogue-only | WEMIX / gas / primary-reviewed | not verified | one curated path, local |
-| 292 | rif-rif-token · RIF | RSK | token/asset deployment pending | catalogue-only | RBTC / gas / primary-reviewed | not verified | one curated path, local |
-| 293 | gmx-gmx · GMX | ARB | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 294 | hay-hay · LISUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 295 | ultima-ultimaecosystem · ULTIMA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 296 | psol-phantom-staked-sol · PSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 297 | hsol-helius-staked-sol · HSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 298 | banana-banana-for-scale · BANANA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 299 | xpr-proton · XPR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 300 | safe-safe · SAFE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 301 | kaito-kaito · KAITO | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 302 | islm-islamic-coin · ISLM | ISLM | curated ID; see evidence | catalogue-only | ISLM / gas / primary-reviewed | not verified | one curated path, local |
-| 303 | yfi-yearnfinance · YFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 304 | arcsol-ai-rig-complex · ARC | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 305 | nmr-numeraire · NMR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 306 | tag-tagger · TAG | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 307 | kava-kava · KAVA | KAVA | curated ID; see evidence | pending | KAVA / cosmos-evm-gas / primary-reviewed | not verified | one curated path, local |
-| 308 | snx-synthetix-network-token · SNX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 309 | fbtc-ignition-fbtc · FBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 311 | re-re · RE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 311 | fun-funfair · FUN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 312 | geod-geodnet-token · GEOD | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 313 | ip-story · DATA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 314 | lpt-livepeer · LPT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 315 | ansem-the-black-bull · ANSEM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 316 | metal-metal-blockchain · METAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 317 | busd-binance-usd · BUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 318 | hot-holo · HOT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 319 | cap-cap-2 · CAP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 320 | purr4-hypurr · PURR | HYPE | token/asset deployment pending | primary-reviewed | HYPE / gas / primary-reviewed | not verified | one curated path, local |
-| 321 | bansol-comedian · BAN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 322 | gusd-gemini-dollar · GUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 323 | peaq-peaq-network · PEAQ | PEAQ | curated ID; see evidence | catalogue-only | PEAQ / substrate-evm-gas / primary-reviewed | not verified | one curated path, local |
-| 324 | turbo-turbo · TURBO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 325 | gala-gala · GALA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 326 | eurcv-eur-coinvertible · EURCV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 327 | buck-bucket-protocol-buck-stablecoin · BUCK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 328 | pros-pharos · PROS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 329 | zig-zigcoin · ZIG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 330 | wfi-wefi · WFI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 331 | w-wormhole · W | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 333 | babydoge-baby-doge-coin · BABYDOGE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 333 | usdm-megausd · USDM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 334 | nex-nexus · NEX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 335 | wnxm-wrapped-nxm · WNXM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 336 | cfg-centrifuge · CFG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 337 | bas-bnb-attestation-service · BAS | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 338 | mines-of-dalarnia-dar · DAR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 339 | nila-mindwavedao · NILA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 340 | fidd-fidelity-digital-dollar · FIDD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 341 | iusd-infinifi-usd · IUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 342 | omi-ecomi · OMI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 343 | bdca-bitdca · BDCA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 345 | cross-cross · ONE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 345 | lobster-lobster-2 · 龙虾 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 346 | reusd-resupply-usd · REUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 347 | coai-chainopera-ai · COAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 348 | 1mbabydoge-baby-doge-coin · 1MBABYDOGE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 348 | bome-book-of-meme · BOME | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 350 | arkm-arkham · ARKM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 351 | up-unitas · UP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 352 | xaum-matrixdock-gold · XAUM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 353 | rep-augur · REP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 354 | qu-qubic · QUBIC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 355 | jellyjelly-jelly-my-jelly · JELLYJELLY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 356 | blur-blur · BLUR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 356 | cow-cow-protocol-token · COW | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 358 | scrvusd-savings-crvusd · SCRVUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 359 | br-bedrock-dao · BR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 360 | mmt-memusic · MMT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 361 | zil-zilliqa · ZIL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 362 | super-superfarm · SUPER | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 363 | ctc-creditcoin · CTC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 364 | vtho-vethor-token · VTHO | VET | token/asset deployment pending | catalogue-only | VTHO / vechain-clauses / primary-reviewed | not verified | one curated path, local |
-| 365 | kub-bitkub-coin · KUB | KUB | curated ID; see evidence | primary-reviewed | KUB / gas / primary-reviewed | not verified | one curated path, local |
-| 366 | ezsol-renzo-restaked-sol · EZSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 367 | eigen-eigenlayer · EIGEN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 368 | ckb-nervos-network · CKB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 369 | cards-collector-crypt · CARDS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 370 | fxusd-fx-protocol-fxusd · FXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 371 | elg-escoin-token · ELG | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 372 | skyai-skyai · SKYAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 373 | amc-a-meme-coin · AMC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 374 | xvs-venus · XVS | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | one curated path, local |
-| 375 | enj-enjin-coin · ENJ | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 376 | io-ionet · IO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 377 | astr-astar · ASTR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 378 | troll-troll2 · TROLL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 379 | real-realfi · REAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 380 | ont-ontology · ONT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 381 | rave-ravedao · RAVE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 382 | cspr-casper-network · CSPR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 383 | b3-b3 · B3 | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 384 | elf-aelf · ELF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 385 | brett-brett-base · BRETT | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 386 | magma-magma-finance · MAGMA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 387 | xyo-xyo-network · XYO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 388 | sc-siacoin · SC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 389 | popcat-popcat · POPCAT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 390 | toshi-toshi · TOSHI | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | one curated path, local |
-| 391 | esp-espresso · ESP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 392 | t-threshold-network-token · T | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 393 | qrl-quantum-resistant-ledger · QRL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 394 | pnut-peanut-the-squirrel · PNUT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 395 | trb-tellor · TRB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 396 | flow-flow · FLOW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 397 | arrr-pirate · ARRR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 398 | inst-instadapp · FLUID | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 399 | celo-celo · CELO | CELO | curated ID; see evidence | primary-reviewed | CELO / multi-currency / primary-reviewed | not verified | one curated path, local |
-| 400 | sweth-swell-ethereum · SWETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 401 | xno-nano · XNO | XNO | curated ID; see evidence | primary-reviewed | XNO / protocol-zero / primary-reviewed | not verified | unsupported |
-| 402 | not-notcoin · NOT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 403 | rose-oasis-network · ROSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 404 | mask-mask-network · MASK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 405 | ern-ethernity-chain · ERN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 407 | q-quack-ai · Q | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 408 | allo-allora · ALLO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 408 | lsk-lisk · LSK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 409 | bard-lombard · BARD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 410 | xvg-verge · XVG | XVG | curated ID; see evidence | pending | XVG / utxo-rounded-kb / primary-reviewed | not verified | one curated path, local |
-| 411 | dusk-dusk-network · DUSK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 412 | mega-megaeth · MEGA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 412 | apr-apriori · APR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 413 | sfrxusd-staked-frax-usd · SFRXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 415 | aztec-aztec · AZTEC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 416 | sqd-sqd · SQD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 417 | sushi-sushi · SUSHI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 418 | ankr-ankr-network · ANKR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 419 | zero-gravity-0g · 0G | 0G | curated ID; see evidence | primary-reviewed | 0G / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 420 | vvs-vvs-finance · VVS | CRONOS_EVM | token/asset deployment pending | primary-reviewed | CRO / gas / primary-reviewed | not verified | one curated path, local |
-| 421 | bio-bio-protocol · BIO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 422 | dos-dappos · DOS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 423 | polyx-polymesh · POLYX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 424 | mog-mog-coin · MOG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 424 | huma-finance · HUMA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 426 | lusd-liquity-usd · LUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 427 | pci-payprotocol-paycoin · PCI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 428 | ausd-agora-dollar · AUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 429 | ico-axelar · AXL | AXL | curated ID; see evidence | pending | AXL / cosmos-allowlisted-gas / primary-reviewed | not verified | one curated path, local |
-| 430 | wavax-wrapped-avax-wormhole · WAVAX | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 431 | ltc-litecoin-token · LTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 432 | req-request-network · REQ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 433 | jett-jett-crypto · JETT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 434 | melania-melania-meme · MELANIA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 435 | linea-linea · LINEA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 436 | moodeng-moo-deng-moodengsolcom · MOODENG | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 437 | ron-ronin-token · RON | RON | curated ID; see evidence | catalogue-only | RON / gas / primary-reviewed | not verified | one curated path, local |
-| 438 | dydx-dydx · DYDX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 439 | people-constitutiondao · PEOPLE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 440 | gwei-ethgas-1 · GWEI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 441 | bnt-bancor · BNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 442 | deep-deepbook-protocol · DEEP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 443 | unp1-unipoly-coin · UNP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 444 | bfc-bifrost · BFC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 445 | rsweth-restaked-swell-eth · RSWETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 446 | mcoin-mcoin · MCOIN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 447 | win-winklink · WIN | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | one curated path, local |
-| 448 | amp-amp · AMP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 449 | aic1-ai-companions · AIC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 450 | hakimi-hakimi · 哈基米 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 451 | rvn-ravencoin · RVN | RVN | curated ID; see evidence | pending | RVN / utxo-asset-burn / primary-reviewed | not verified | one curated path, local |
-| 453 | prove-succinct · PROVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 454 | moca-moca · MOCA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 454 | kta-keeta · KTA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 455 | gohome-gohome · GOHOME | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 456 | move-movement · MOVE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 457 | ccd-concordium · CCD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 458 | rpl-rocket-pool · RPL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 459 | moolah-moolah · MOOLAH | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 460 | mew-cat-in-a-dogs-world · MEW | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 461 | pro-propy · PRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 462 | nkyc-nkyc · NKYC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 463 | cusd-celo-dollar · CUSD | CELO | token/asset deployment pending | primary-reviewed | CELO / multi-currency / primary-reviewed | not verified | one curated path, local |
-| 464 | red-redstone · RED | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 465 | zk-zksync · ZK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 466 | neiro-first-neiro-on-ethereum · NEIRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 467 | now-changenow · NOW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 468 | giggle-giggle-fund-1 · GIGGLE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 469 | nxpc-nexpace · NXPC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 470 | xaut0-tether-gold-tokens · XAUT0 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 471 | kmno-kamino-finance · KMNO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 472 | zerebro-zerebro · ZEREBRO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | one curated path, local |
-| 473 | snek-snek-crd · SNEK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 474 | at-apro · AT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 475 | debit-teller · DEBIT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 476 | soso-sosovalue · SOSO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 477 | folks-folks-finance · FOLKS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 478 | torn-tornado-cash · TORN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 479 | meme-memecoin · MEME | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 481 | xsgd-xsgd · XSGD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 482 | spk-spark · SPK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 483 | api3-api3 · API3 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 483 | wbtce-wrapped-btc-avalanche · WBTC.E | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | one curated path, local |
-| 484 | wal-walrus · WAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 485 | band-band-protocol · BAND | BAND | curated ID; see evidence | pending | BAND / cosmos-globalfee / primary-reviewed | not verified | one curated path, local |
-| 486 | coti-coti · COTI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 487 | bond-barnbridge · BOND | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 488 | iost-iost · IOST | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 489 | luna-terra-v2 · LUNA | LUNA | curated ID; see evidence | pending | LUNA / cosmos-gas / primary-reviewed | not verified | one curated path, local |
-| 490 | merl-merlin-chain · MERL | MERLIN | token/asset deployment pending | catalogue-only | BTC / rollup-gas / primary-reviewed | not verified | one curated path, local |
-| 491 | uma-uma · UMA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 492 | bill-billions-network · BILL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 493 | kgen-kgen · KGEN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 494 | mmt-momentum · MMT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 495 | ocean-ocean-protocol · OCEAN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 496 | orbs-orbs · ORBS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 497 | dpi-defi-pulse-index · DPI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 498 | waves-waves · WAVES | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | unsupported |
-| 498 | acx-across-protocol · ACX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | one curated path, local |
-| 499 | mdx-mdex-heco · MDX | HECO | token/asset deployment pending | catalogue-only | HT / historical-gas / primary-reviewed | not verified | one curated path, local |
+| Historical rank | Asset ID / symbol | Host | Native candidate? | Host identity | Fee asset / model / review | Mainnet contract catalogue | Independent token source review / acceptance | Default-leaf support |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | btc-bitcoin · BTC | BTC | curated ID; see evidence | primary-reviewed | BTC / utxo / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 2 | eth-ethereum · ETH | ETH | curated ID; see evidence | primary-reviewed | ETH / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 3 | usdt-tether · USDT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | Ethereum · USDT · ERC-20: 0xdAC17F958D2ee523a2206206994597C13D831ec7; BNB Smart Chain · Binance-Peg USDT · BEP-20: 0x55d398326f99059fF775485246999027B3197955; TRON · USDT · TRC-20: TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t | source-reviewed: 3 tuple(s); runtime/backing open | one curated path, local |
+| 4 | bnb-binance-coin · BNB | BSC | curated ID; see evidence | primary-reviewed | BNB / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 5 | xrp-xrp · XRP | XRP | curated ID; see evidence | primary-reviewed | XRP / load-scaled / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 6 | usdc-usd-coin · USDC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | source-reviewed: 1 tuple(s); 1 research-only, not enabled; runtime/backing open | one curated path, local |
+| 7 | sol-solana · SOL | SOL | curated ID; see evidence | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 8 | trx-tron · TRX | TRX | curated ID; see evidence | primary-reviewed | TRX / resources / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 9 | steth-lido-staked-ether · STETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 10 | zec-zcash · ZEC | ZEC | curated ID; see evidence | pending | ZEC / logical-actions / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 11 | hype-hyperliquid · HYPE | HYPE | curated ID; see evidence | primary-reviewed | HYPE / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 12 | doge-dogecoin · DOGE | DOGE | curated ID; see evidence | pending | DOGE / utxo-bytes / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 13 | wsteth-wrapped-liquid-staked-ether-20 · WSTETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 14 | rain-rain-protocol · RAIN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 15 | usds-usds · USDS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 16 | xmr-monero · XMR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 17 | wbt-whitebit · WBT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 18 | wbtc-wrapped-bitcoin · WBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 19 | link-chainlink · LINK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 20 | leo-leo-token · LEO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 21 | ada-cardano · ADA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 22 | cbbtc-coinbase-wrapped-btc · CBBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 23 | xlm-stellar · XLM | XLM | curated ID; see evidence | primary-reviewed | XLM / per-operation / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 24 | weeth-wrapped-eeth · WEETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 25 | weth-weth · WETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 26 | bch-bitcoin-cash · BCH | BCH | curated ID; see evidence | pending | BCH / utxo-policy-size / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 27 | dai-dai · DAI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 28 | susds-susds · sUSDS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 29 | usd1-usd1 · USD1 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 30 | usde-ethena-usde · USDE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 31 | ltc-litecoin · LTC | LTC | curated ID; see evidence | pending | LTC / utxo-mweb / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 32 | cc-canton-network · CC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 33 | uni-uniswap · UNI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 34 | toncoin-the-open-network · GRAM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 35 | near-near-protocol · NEAR | NEAR | curated ID; see evidence | primary-reviewed | NEAR / near-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 36 | usdg-global-dollar · USDG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 37 | hbar-hedera-hashgraph · HBAR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 38 | avax-avalanche · AVAX | AVAX | curated ID; see evidence | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 39 | shib-shiba-inu · SHIB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 40 | sui-sui · SUI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 41 | pyusd-paypal-usd · PYUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 42 | cro-cryptocom-chain · CRO | CRO | curated ID; see evidence | primary-reviewed | CRO / cosmos-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 43 | m-memecore · M | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 44 | okb-okb · OKB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 45 | tao-bittensor · TAO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 46 | mnt-mantle · MNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 47 | aave-new · AAVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 48 | paxg-pax-gold · PAXG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 49 | ondo-ondo · ONDO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 50 | wlfi-official-world-liberty-financial · WLFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 51 | icp-internet-computer · ICP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 52 | eth-ethereum-token · WETH | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 53 | wld-worldcoin · WLD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 54 | pump-pumpfun · PUMP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 55 | ena-ethena · ENA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 56 | pepe-pepe · PEPE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 57 | sky-sky · SKY | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 58 | bgb-bitget-token · BGB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 59 | ftm-fantom · FTM | FTM | curated ID; see evidence | catalogue-only | FTM / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 60 | usdf-falcon-finance · USDF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 61 | jitosol-jito-staked-sol · JITOSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 62 | bfusd-bfusd · BFUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 63 | susde-ethena-staked-usde · SUSDE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 64 | reth-rocket-pool-eth · RETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 65 | usdd-usdd · USDD | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 66 | syrupusdc-syrupusdc · SYRUPUSDC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 67 | etc-ethereum-classic · ETC | ETC | curated ID; see evidence | catalogue-only | ETC / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 68 | vvv-venice-token · VVV | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 69 | rseth-rseth · RSETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 70 | lit-lighter · LIT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 71 | wbnb-wrapped-bnb · WBNB | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 72 | khype-kinetiq-staked-hype · KHYPE | HYPE | token/asset deployment pending | primary-reviewed | HYPE / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 73 | aster-aster · ASTER | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 74 | gt-gatechain-token · GT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 75 | btw-bitway · BTW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 76 | xaut-tether-gold · XAUT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 77 | meth-meth · METH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 78 | pi2-pi-network · PI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 79 | pol-polygon-ecosystem-token · POL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 80 | jst-just · JST | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 81 | jlp-jupiter-perpetuals-liquidity-provider-token · JLP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 82 | kas-kaspa · KAS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 83 | kcs-kucoin-token · KCS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 84 | arb-arbitrum · ARB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 85 | lbtc-lombard-staked-btc · LBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 86 | algo-algorand · ALGO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 87 | jup-jupiter-exchange-token · JUP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 88 | bnsol-binance-staked-sol · BNSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 89 | lseth-liquid-staked-ethereum · LSETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 90 | qnt-quant · QNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 91 | rndr-render-token · RENDER | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 92 | dash-dash · DASH | DASH | curated ID; see evidence | pending | DASH / utxo-bytes / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 93 | cake-pancakeswap · CAKE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 94 | usdce-usd-coine · USDC.e | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | pending | one curated path, local |
+| 95 | ethfi-etherfi · ETHFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 96 | fil-filecoin · FIL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 97 | jupsol-jupiter-staked-sol · JUPSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 98 | atom-cosmos · ATOM | ATOM | curated ID; see evidence | pending | ATOM / cosmos-feemarket / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 99 | vet-vechain · VET | VET | curated ID; see evidence | catalogue-only | VTHO / vechain-clauses / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 100 | bdx-beldex · BDX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 101 | gho-gho · GHO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 102 | aero-aerodrome-finance · AERO | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 103 | inj-injective-protocol · INJ | INJ | curated ID; see evidence | pending | INJ / cosmos-dynamic-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 104 | morpho-morpho · MORPHO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 105 | msol-marinade-staked-sol · MSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 106 | usd0-usual-usd · USD0 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 107 | flr-flare-network · FLR | FLR | curated ID; see evidence | primary-reviewed | FLR / gas-charged-floor / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 108 | nexo-nexo · NEXO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 109 | crv-curve-dao-token · CRV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 110 | apt-aptos · APT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 111 | del-decimal · DEL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 112 | solvbtc-solv-protocol-solvbtc · SOLVBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 113 | tusd-trueusd · TUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 114 | stable-stable · STABLE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 115 | cbeth-coinbase-wrapped-staked-eth · CBETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 116 | bianrensheng-bianrensheng · 币安人生 | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 117 | trump-official-trump · TRUMP | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 118 | stx-stacks · STX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 119 | spx-spx6900 · SPX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 120 | pengu-pudgy-penguins · PENGU | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 121 | wtrx-wrapped-trx · WTRX | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 122 | fetch-ai · FET | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 123 | ray-raydium · RAY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 124 | virtual-virtual-protocol · VIRTUAL | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 125 | pyth-pyth-network · PYTH | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 126 | tbtc-tbtc · TBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 127 | ff-falcon-finance · FF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 128 | ton-tontoken · TON | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 129 | stkaave-staked-aave · STKAAVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 130 | usdtb-usdtb · USDTB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 130 | night-midnight2 · NIGHT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 132 | btcb-bitcoin-avalanche-bridged-btcb · BTC.B | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | pending | one curated path, local |
+| 133 | luna-terra · LUNC | LUNC | curated ID; see evidence | pending | LUNC / cosmos-gas-tax / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 134 | xdc-xdc-network · XDC | XDC | curated ID; see evidence | catalogue-only | XDC / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 135 | pendle-pendle · PENDLE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 136 | bsv-bitcoin-sv · BSV | BSV | curated ID; see evidence | pending | BSV / utxo-bytes / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 137 | frxeth-frax-ether · FRXETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 138 | fdusd-first-digital-usd · FDUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 139 | ake-akedo · AKE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 140 | sun-sun · SUN | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 141 | ohmv2-olympus-v2 · OHMv2 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 142 | bttc-bittorrent-chain · BTT | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 143 | ub-unibase · UB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 144 | ldo-lido-dao · LDO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 145 | hex-hex-from-pulsechain · HEX | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 146 | gno-gnosis · GNO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 147 | sei-sei · SEI | SEI | curated ID; see evidence | pending | SEI / sei-dual-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 148 | ethx-stader-ethx · ETHX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 149 | beth-binance-beacon-eth · BETH | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 150 | dcr-decred · DCR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 151 | xtz-tezos · XTZ | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 152 | euroc-euro-coin · EURC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 153 | syrup-syrup-token · SYRUP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 154 | mon-monad · MON | MON | curated ID; see evidence | primary-reviewed | MON / gas-limit / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 155 | ebtc-etherfi-staked-btc · EBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 156 | sfrxeth-staked-frax-ether · SFRXETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 157 | eos-eos · EOS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 158 | alusd-alchemixusd · ALUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 159 | floki-floki-inu · FLOKI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 160 | useless-useless-coin · USELESS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 161 | twt-trust-wallet-token · TWT | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 162 | nft-apenft · NFT | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 163 | cfx-conflux-network · CFX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 164 | tia-celestia · TIA | TIA | curated ID; see evidence | pending | TIA / cosmos-blob-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 165 | plsx-pulsex · PLSX | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 167 | op-optimism · OP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 167 | grass-grass · GRASS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 168 | frax-frax · FRAX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 169 | edge-edgex · EDGE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 170 | bonk-bonk · BONK | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 171 | strk-starknet · STRK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 172 | pieverse-pieverse · PIEVERSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 173 | cvx-convex-finance · CVX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 174 | ens-ethereum-name-service · ENS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 175 | jasmy-jasmycoin · JASMY | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 176 | kite-kite-ai · KITE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 177 | comp-compoundd · COMP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 178 | wif-dogwifcoin · WIF | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 179 | theta-theta-token · THETA | THETA | curated ID; see evidence | catalogue-only | TFUEL / theta-dual / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 180 | usdai-usdai · USDAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 181 | kaia-kaia · KAIA | KAIA | curated ID; see evidence | catalogue-only | KAIA / gas-delegated / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 182 | b-buildon · B | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 183 | tibbir-ribbita-by-virtuals · TIBBIR | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 184 | matic-polygon · MATIC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 185 | eth-reserve-protocol-eth-plus · ETH+ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 186 | cashcat-cash-cat · CASHCAT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 187 | rlusd-ripple-usd · RLUSD | XRP | token/asset deployment pending | primary-reviewed | XRP / load-scaled / primary-reviewed | not verified | pending | one curated path, local |
+| 188 | vsol-the-vault-staked-sol · VSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 189 | ar-arweave · AR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 190 | rune-thorchain · RUNE | RUNE | curated ID; see evidence | pending | RUNE / thor-native-dynamic / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 191 | miota-iota · IOTA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 192 | grt-the-graph · GRT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 193 | tel-telcoin · TEL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 194 | sato-atsuko-sato · SATO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 195 | chsb-swissborg · BORG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 196 | mx-mx-token · MX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 197 | ant-aragon · ANT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 198 | 2z-doublezero · 2Z | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 199 | xcn-chain · XCN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 200 | axs-axie-infinity · AXS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 201 | akt-akash-network · AKT | AKT | curated ID; see evidence | pending | AKT / cosmos-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 202 | btse-btse-token · BTSE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 203 | stg-stargatetoken · STG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 204 | uai-unifai-network · UAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 205 | xpl-plasma · XPL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 207 | susdai-staked-usdai · SUSDAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 207 | neo-neo · NEO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 208 | trac-origintrail · TRAC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 209 | shfl-shuffle · SHFL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 210 | npc-non-playable-coin · NPC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 211 | h-humanity · H | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 212 | fartcoin-fartcoin · FARTCOIN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 213 | xec-ecash · XEC | XEC | curated ID; see evidence | pending | XEC / utxo-policy-size / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 214 | data-streamr-datacoin · DATA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 215 | chz-chiliz · CHZ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 216 | zbcn-zebec-network · ZBCN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 217 | vsn-vision · VSN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 218 | gmt-gomining-token · GOMINING | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 219 | oeth-origin-ether · OETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 220 | mana-decentraland · MANA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 221 | scnsol-socean-staked-sol · SCNSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 222 | zec-zcash-token · ZEC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 223 | egld-elrond · EGLD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 224 | -niu-lai · 牛来 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 224 | asbnb-astherus-staked-bnb · ASBNB | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 226 | mina-mina-protocol · MINA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 227 | met-meteora · MET | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 229 | laptop-hunter-bidens-laptop · LAPTOP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 229 | sfp-safepal-token · SFP | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 230 | jto-jito · JTO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 231 | 1inch-1inch · 1INCH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 232 | bbsol-bybit-staked-sol · BBSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 233 | rlb-rollbit-coin · RLB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 234 | mkr-maker · MKR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 235 | a-vaulta · A | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 236 | cash-cash · CASH | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 237 | crvusd-curvefi-usd-stablecoin · CRVUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 238 | awe-awe-network · AWE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 239 | ezeth-renzo-restaked-eth · EZETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 240 | onyc-onyc · ONYC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 241 | usdf-astherus-usdf · USDF | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 242 | dgai-dgrid-ai · DGAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 243 | zro-layerzero · ZRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 244 | sol-binance-peg-sol · SOL | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 245 | yzy-yzy · YZY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 246 | zbu-zeebu · ZBU | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 247 | bat-basic-attention-token · BAT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 248 | drv7-derive · DRV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 249 | zen-horizen · ZEN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 250 | goose-goose-token · GOOSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 250 | -doggotothemoon · DOG | BTC | token/asset deployment pending | primary-reviewed | BTC / utxo / primary-reviewed | not verified | pending | one curated path, local |
+| 252 | glm-golem · GLM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 253 | flr-flare · FLR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 254 | vcnt-vicicoin · VCNT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 255 | cheems-cheems-cheemspet · CHEEMS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 256 | imx-immutable-x · IMX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 257 | ape-apecoin · APE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 258 | skr-seeker · SKR | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 259 | sent-sentient · SENT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 260 | uusd-unity-usd · UUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 261 | musd-metamask-usd · MUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 262 | chip-usdai · CHIP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 263 | form-four · FORM | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 264 | sand-the-sandbox · SAND | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 265 | superoeth-super-oeth · SUPEROETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 266 | zano-zano · ZANO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 267 | ath14-aethir · ATH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 268 | prom-prometeus · PROM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 269 | mag7ssi-mag7ssi · MAG7.SSI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 269 | aioz-aioz-network · AIOZ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 271 | hnt-helium · HNT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 272 | rsr-reserve-rights · RSR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 273 | wpls-wrapped-pulse · WPLS | PLS | token/asset deployment pending | primary-reviewed | PLS / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 274 | uxlink-uxlink · UXLINK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 276 | orca-orca · ORCA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 276 | qtum-qtum · QTUM | QTUM | curated ID; see evidence | pending | QTUM / utxo-contract-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 277 | s-sonic · S | S | curated ID; see evidence | primary-reviewed | S / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 278 | dexe-dexe · DEXE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 279 | o-o1exchange · O | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 280 | dgb-digibyte · DGB | DGB | curated ID; see evidence | pending | DGB / utxo-vsize / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 280 | ab-ab · AB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 281 | dydx-dydx-chain · DYDX | DYDX | curated ID; see evidence | pending | DYDX / cosmos-multi-fee / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 284 | zrx-0x · ZRX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 284 | ordi-ordinals · ORDI | BTC | token/asset deployment pending | primary-reviewed | BTC / utxo / primary-reviewed | not verified | pending | one curated path, local |
+| 285 | velo-velo · VELO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 286 | frxusd-frax-usd · FRXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 287 | beam-beam-eth · BEAM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 288 | tfuel-theta-fuel · TFUEL | THETA | curated ID; see evidence | catalogue-only | TFUEL / theta-dual / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 289 | gas-gas · GAS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 290 | spcxb-spacex-tokenized-bstocks · SPCXB | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 291 | wemix-wemix-token · WEMIX | WEMIX | curated ID; see evidence | catalogue-only | WEMIX / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 292 | rif-rif-token · RIF | RSK | token/asset deployment pending | catalogue-only | RBTC / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 293 | gmx-gmx · GMX | ARB | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 294 | hay-hay · LISUSD | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 295 | ultima-ultimaecosystem · ULTIMA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 296 | psol-phantom-staked-sol · PSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 297 | hsol-helius-staked-sol · HSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 298 | banana-banana-for-scale · BANANA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 299 | xpr-proton · XPR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 300 | safe-safe · SAFE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 301 | kaito-kaito · KAITO | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 302 | islm-islamic-coin · ISLM | ISLM | curated ID; see evidence | catalogue-only | ISLM / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 303 | yfi-yearnfinance · YFI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 304 | arcsol-ai-rig-complex · ARC | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 305 | nmr-numeraire · NMR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 306 | tag-tagger · TAG | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 307 | kava-kava · KAVA | KAVA | curated ID; see evidence | pending | KAVA / cosmos-evm-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 308 | snx-synthetix-network-token · SNX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 309 | fbtc-ignition-fbtc · FBTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 311 | re-re · RE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 311 | fun-funfair · FUN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 312 | geod-geodnet-token · GEOD | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 313 | ip-story · DATA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 314 | lpt-livepeer · LPT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 315 | ansem-the-black-bull · ANSEM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 316 | metal-metal-blockchain · METAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 317 | busd-binance-usd · BUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 318 | hot-holo · HOT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 319 | cap-cap-2 · CAP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 320 | purr4-hypurr · PURR | HYPE | token/asset deployment pending | primary-reviewed | HYPE / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 321 | bansol-comedian · BAN | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 322 | gusd-gemini-dollar · GUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 323 | peaq-peaq-network · PEAQ | PEAQ | curated ID; see evidence | catalogue-only | PEAQ / substrate-evm-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 324 | turbo-turbo · TURBO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 325 | gala-gala · GALA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 326 | eurcv-eur-coinvertible · EURCV | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 327 | buck-bucket-protocol-buck-stablecoin · BUCK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 328 | pros-pharos · PROS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 329 | zig-zigcoin · ZIG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 330 | wfi-wefi · WFI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 331 | w-wormhole · W | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 333 | babydoge-baby-doge-coin · BABYDOGE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 333 | usdm-megausd · USDM | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 334 | nex-nexus · NEX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 335 | wnxm-wrapped-nxm · WNXM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 336 | cfg-centrifuge · CFG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 337 | bas-bnb-attestation-service · BAS | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 338 | mines-of-dalarnia-dar · DAR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 339 | nila-mindwavedao · NILA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 340 | fidd-fidelity-digital-dollar · FIDD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 341 | iusd-infinifi-usd · IUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 342 | omi-ecomi · OMI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 343 | bdca-bitdca · BDCA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 345 | cross-cross · ONE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 345 | lobster-lobster-2 · 龙虾 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 346 | reusd-resupply-usd · REUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 347 | coai-chainopera-ai · COAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 348 | 1mbabydoge-baby-doge-coin · 1MBABYDOGE | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 348 | bome-book-of-meme · BOME | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 350 | arkm-arkham · ARKM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 351 | up-unitas · UP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 352 | xaum-matrixdock-gold · XAUM | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 353 | rep-augur · REP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 354 | qu-qubic · QUBIC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 355 | jellyjelly-jelly-my-jelly · JELLYJELLY | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 356 | blur-blur · BLUR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 356 | cow-cow-protocol-token · COW | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 358 | scrvusd-savings-crvusd · SCRVUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 359 | br-bedrock-dao · BR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 360 | mmt-memusic · MMT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 361 | zil-zilliqa · ZIL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 362 | super-superfarm · SUPER | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 363 | ctc-creditcoin · CTC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 364 | vtho-vethor-token · VTHO | VET | token/asset deployment pending | catalogue-only | VTHO / vechain-clauses / primary-reviewed | not verified | pending | one curated path, local |
+| 365 | kub-bitkub-coin · KUB | KUB | curated ID; see evidence | primary-reviewed | KUB / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 366 | ezsol-renzo-restaked-sol · EZSOL | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 367 | eigen-eigenlayer · EIGEN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 368 | ckb-nervos-network · CKB | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 369 | cards-collector-crypt · CARDS | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 370 | fxusd-fx-protocol-fxusd · FXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 371 | elg-escoin-token · ELG | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 372 | skyai-skyai · SKYAI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 373 | amc-a-meme-coin · AMC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 374 | xvs-venus · XVS | BSC | token/asset deployment pending | primary-reviewed | BNB / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 375 | enj-enjin-coin · ENJ | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 376 | io-ionet · IO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 377 | astr-astar · ASTR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 378 | troll-troll2 · TROLL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 379 | real-realfi · REAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 380 | ont-ontology · ONT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 381 | rave-ravedao · RAVE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 382 | cspr-casper-network · CSPR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 383 | b3-b3 · B3 | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 384 | elf-aelf · ELF | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 385 | brett-brett-base · BRETT | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 386 | magma-magma-finance · MAGMA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 387 | xyo-xyo-network · XYO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 388 | sc-siacoin · SC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 389 | popcat-popcat · POPCAT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 390 | toshi-toshi · TOSHI | BASE | token/asset deployment pending | primary-reviewed | ETH / rollup / primary-reviewed | not verified | pending | one curated path, local |
+| 391 | esp-espresso · ESP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 392 | t-threshold-network-token · T | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 393 | qrl-quantum-resistant-ledger · QRL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 394 | pnut-peanut-the-squirrel · PNUT | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 395 | trb-tellor · TRB | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 396 | flow-flow · FLOW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 397 | arrr-pirate · ARRR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 398 | inst-instadapp · FLUID | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 399 | celo-celo · CELO | CELO | curated ID; see evidence | primary-reviewed | CELO / multi-currency / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 400 | sweth-swell-ethereum · SWETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 401 | xno-nano · XNO | XNO | curated ID; see evidence | primary-reviewed | XNO / protocol-zero / primary-reviewed | not verified | native candidate; host evidence separate | unsupported |
+| 402 | not-notcoin · NOT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 403 | rose-oasis-network · ROSE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 404 | mask-mask-network · MASK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 405 | ern-ethernity-chain · ERN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 407 | q-quack-ai · Q | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 408 | allo-allora · ALLO | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 408 | lsk-lisk · LSK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 409 | bard-lombard · BARD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 410 | xvg-verge · XVG | XVG | curated ID; see evidence | pending | XVG / utxo-rounded-kb / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 411 | dusk-dusk-network · DUSK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 412 | mega-megaeth · MEGA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 412 | apr-apriori · APR | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 413 | sfrxusd-staked-frax-usd · SFRXUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 415 | aztec-aztec · AZTEC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 416 | sqd-sqd · SQD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 417 | sushi-sushi · SUSHI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 418 | ankr-ankr-network · ANKR | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 419 | zero-gravity-0g · 0G | 0G | curated ID; see evidence | primary-reviewed | 0G / gas-charged-floor / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 420 | vvs-vvs-finance · VVS | CRONOS_EVM | token/asset deployment pending | primary-reviewed | CRO / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 421 | bio-bio-protocol · BIO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 422 | dos-dappos · DOS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 423 | polyx-polymesh · POLYX | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 424 | mog-mog-coin · MOG | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 424 | huma-finance · HUMA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 426 | lusd-liquity-usd · LUSD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 427 | pci-payprotocol-paycoin · PCI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 428 | ausd-agora-dollar · AUSD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 429 | ico-axelar · AXL | AXL | curated ID; see evidence | pending | AXL / cosmos-allowlisted-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 430 | wavax-wrapped-avax-wormhole · WAVAX | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | pending | one curated path, local |
+| 431 | ltc-litecoin-token · LTC | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 432 | req-request-network · REQ | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 433 | jett-jett-crypto · JETT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 434 | melania-melania-meme · MELANIA | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 435 | linea-linea · LINEA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 436 | moodeng-moo-deng-moodengsolcom · MOODENG | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 437 | ron-ronin-token · RON | RON | curated ID; see evidence | catalogue-only | RON / gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 438 | dydx-dydx · DYDX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 439 | people-constitutiondao · PEOPLE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 440 | gwei-ethgas-1 · GWEI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 441 | bnt-bancor · BNT | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 442 | deep-deepbook-protocol · DEEP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 443 | unp1-unipoly-coin · UNP | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 444 | bfc-bifrost · BFC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 445 | rsweth-restaked-swell-eth · RSWETH | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 446 | mcoin-mcoin · MCOIN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 447 | win-winklink · WIN | TRX | token/asset deployment pending | primary-reviewed | TRX / resources / primary-reviewed | not verified | pending | one curated path, local |
+| 448 | amp-amp · AMP | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 449 | aic1-ai-companions · AIC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 450 | hakimi-hakimi · 哈基米 | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 451 | rvn-ravencoin · RVN | RVN | curated ID; see evidence | pending | RVN / utxo-asset-burn / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 453 | prove-succinct · PROVE | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 454 | moca-moca · MOCA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 454 | kta-keeta · KTA | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 455 | gohome-gohome · GOHOME | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 456 | move-movement · MOVE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 457 | ccd-concordium · CCD | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 458 | rpl-rocket-pool · RPL | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 459 | moolah-moolah · MOOLAH | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 460 | mew-cat-in-a-dogs-world · MEW | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 461 | pro-propy · PRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 462 | nkyc-nkyc · NKYC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 463 | cusd-celo-dollar · CUSD | CELO | token/asset deployment pending | primary-reviewed | CELO / multi-currency / primary-reviewed | not verified | pending | one curated path, local |
+| 464 | red-redstone · RED | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 465 | zk-zksync · ZK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 466 | neiro-first-neiro-on-ethereum · NEIRO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 467 | now-changenow · NOW | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 468 | giggle-giggle-fund-1 · GIGGLE | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 469 | nxpc-nexpace · NXPC | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 470 | xaut0-tether-gold-tokens · XAUT0 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 471 | kmno-kamino-finance · KMNO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 472 | zerebro-zerebro · ZEREBRO | SOL | token/asset deployment pending | primary-reviewed | SOL / base-priority / primary-reviewed | not verified | pending | one curated path, local |
+| 473 | snek-snek-crd · SNEK | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 474 | at-apro · AT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 475 | debit-teller · DEBIT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 476 | soso-sosovalue · SOSO | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 477 | folks-folks-finance · FOLKS | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 478 | torn-tornado-cash · TORN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 479 | meme-memecoin · MEME | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 481 | xsgd-xsgd · XSGD | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 482 | spk-spark · SPK | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 483 | api3-api3 · API3 | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 483 | wbtce-wrapped-btc-avalanche · WBTC.E | AVAX | token/asset deployment pending | primary-reviewed | AVAX / gas-charged-floor / primary-reviewed | not verified | pending | one curated path, local |
+| 484 | wal-walrus · WAL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 485 | band-band-protocol · BAND | BAND | curated ID; see evidence | pending | BAND / cosmos-globalfee / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 486 | coti-coti · COTI | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 487 | bond-barnbridge · BOND | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 488 | iost-iost · IOST | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 489 | luna-terra-v2 · LUNA | LUNA | curated ID; see evidence | pending | LUNA / cosmos-gas / primary-reviewed | not verified | native candidate; host evidence separate | one curated path, local |
+| 490 | merl-merlin-chain · MERL | MERLIN | token/asset deployment pending | catalogue-only | BTC / rollup-gas / primary-reviewed | not verified | pending | one curated path, local |
+| 491 | uma-uma · UMA | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 492 | bill-billions-network · BILL | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 493 | kgen-kgen · KGEN | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 494 | mmt-momentum · MMT | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 495 | ocean-ocean-protocol · OCEAN | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 496 | orbs-orbs · ORBS | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 497 | dpi-defi-pulse-index · DPI | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 498 | waves-waves · WAVES | unknown | token/asset deployment pending | pending | unknown / unknown / pending | not verified | pending | unsupported |
+| 498 | acx-across-protocol · ACX | ETH | token/asset deployment pending | primary-reviewed | ETH / gas / primary-reviewed | not verified | pending | one curated path, local |
+| 499 | mdx-mdex-heco · MDX | HECO | token/asset deployment pending | catalogue-only | HT / historical-gas / primary-reviewed | not verified | pending | one curated path, local |

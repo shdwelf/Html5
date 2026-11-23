@@ -10,6 +10,8 @@
 export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   "docs/agent-backlog-2026-10-21.json",
   "docs/drive-inventory-2026-10-04.json",
+  // Dependency/recipient release-operations manifest, not offline manual data.
+  "docs/research/openpgp-dependency-update-2026-11-17.json",
 ]);
 
 export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
@@ -36,8 +38,11 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   // Rounds 81–82 contain private handoff/backlog continuation context.
   "docs/backlog-execution-round-81-2026-11-17.md",
   "docs/backlog-execution-round-82-2026-11-15.md",
-  // Round 83 includes release operations and the remaining private handoff gates.
+  // Rounds 83–84 include release operations and private handoff acceptance gates.
   "docs/backlog-execution-round-83-2026-11-17.md",
+  "docs/backlog-execution-round-84-2026-11-17.md",
+  // Encrypted release handoff is operational, not public offline app content.
+  "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",
   "docs/drive-backup-2026-10-08.md",
   "docs/drive-backup-2026-10-17.md",

@@ -77,6 +77,7 @@ test("both generated secret packets unlock only with the test passphrase; downlo
     assert.equal(await checkedPrivateDownload(alice.privateKey, formatFingerprint(alice.fingerprint)), alice.privateKey);
     await assert.rejects(checkedPrivateDownload(unlocked.armor(), alice.fingerprint), /Refusing a private download/);
     await assert.rejects(checkedPrivateDownload(alice.privateKey, bob.fingerprint), /fingerprint mismatch/);
+    await assert.rejects(checkedPrivateDownload(alice.privateKey, alice.fingerprint, { rsaBits: 4096 }), /selected size/);
     await assert.rejects(checkedPrivateDownload(alice.privateKey + bob.privateKey, alice.fingerprint), /exactly one/);
     await assert.rejects(checkedPrivateDownload(alice.publicKey, alice.fingerprint), /exactly one/);
     const appended = concatenate([encrypted.write(), Uint8Array.of(0xfd, 0)]);
@@ -161,8 +162,17 @@ test("size/key-count/algorithm limits are enforced without changing the ring", a
   await assert.rejects(ring.importKeys("x".repeat(MAX_KEYRING_BYTES + 1)), /1,048,576-byte limit/);
   await assert.rejects(ring.importKeys("é".repeat(MAX_KEYRING_BYTES / 2 + 1)), /limit/);
   await assert.rejects(ring.importKeys(Array(MAX_PUBLIC_KEYS + 1).fill(alice.publicKey).join("\n")), /At most 32/);
-  const ecc = await openpgp.generateKey({ type: "ecc", curve: "curve25519Legacy", userIDs: [{ name: "Synthetic unsupported key" }] });
+  const ecc = await openpgp.generateKey({ type: "ecc", curve: "nistP256", userIDs: [{ name: "Synthetic unsupported key" }] });
   await assert.rejects(ring.importKeys(ecc.publicKey), /only v4 RSA/);
+  // Tampered, unsigned oversize moduli are policy-negative inputs, NOT
+  // usable-key fixtures. The cap must reject them before archival import.
+  for (const bits of [16385, 32768]) {
+    const oversized = await readPublic(alice.publicKey);
+    const modulus = new Uint8Array(Math.ceil(bits / 8));
+    modulus[0] = 1 << ((bits - 1) % 8); modulus[modulus.length - 1] = 1;
+    oversized.keyPacket.publicParams.n = modulus;
+    await assert.rejects(ring.importKeys(oversized.armor()), /2048–16384/);
+  }
   assert.equal(ring.list().length, 0);
 });
 
@@ -214,6 +224,15 @@ test("pinned source provenance is retained independently of ephemeral caches and
   const lock = JSON.parse(readFileSync(new URL("../package-lock.json", import.meta.url)));
   assert.equal(lock.packages["node_modules/openpgp"].version, manifest.dependency.version);
   assert.equal(lock.packages["node_modules/openpgp"].integrity, manifest.dependency.npmIntegrity);
+  const update = JSON.parse(readFileSync(new URL("../docs/research/openpgp-dependency-update-2026-11-17.json", import.meta.url)));
+  assert.equal(update.release.commit, "804cf464668fa088e20f7d3fe4501e39aa4cd4e1");
+  assert.equal(update.nodeHelper.version, lock.packages["node_modules/eckey-utils"].version);
+  assert.equal(update.nodeHelper.integrity, lock.packages["node_modules/eckey-utils"].integrity);
+  assert.equal(createHash("sha256").update(readFileSync(new URL("../node_modules/eckey-utils/index.js", import.meta.url))).digest("hex"), update.nodeHelper.installedEntrypoint.sha256);
+  for (const file of update.files) {
+    assert.equal(file.commit, update.release.commit); assert.match(file.sha256, /^[a-f0-9]{64}$/);
+    assert.ok(file.url.includes(`/blob/${file.commit}/${file.path}`) && file.bytes > 0 && file.reviewedSections.length);
+  }
   const bytes = readFileSync(new URL("../public/apps/openpgp-workbench/vendor/openpgp.min.mjs", import.meta.url));
   assert.equal(createHash("sha256").update(bytes).digest("hex"), manifest.dependency.browserBundleSha256);
 });

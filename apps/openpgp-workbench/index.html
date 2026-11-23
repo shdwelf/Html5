@@ -144,7 +144,7 @@
 
         <section id="keygen-panel" class="panel" role="tabpanel" aria-labelledby="keygen-tab" data-panel="keygen-panel" hidden>
           <h3>Create an exportable key</h3>
-          <p class="panel-intro">v4 RSA-3072 signing/certification primary + RSA-3072 encryption subkey. Both private packets are protected with AES-256 and iterated SHA-256 S2K (0xFF). No AEAD, v5/v6 or post-quantum output.</p>
+          <p class="panel-intro">v4 RSA signing/certification primary + same-size RSA encryption subkey. Default 3072 bits; opt-in sizes through 16384 bits. Both private packets are protected with AES-256 and iterated SHA-256 S2K (0xFF). No AEAD, v5/v6 or post-quantum output.</p>
           <div class="notice" role="note">Source-informed targets: OpenKeychain, PGPony Android/iOS and KDE Kleopatra/GnuPG. This browser tool is not a device compatibility certification. Prefer a dedicated reviewed client for high-value identities. Nothing is generated until you submit your own User ID and passphrase.</div>
           <form id="keygen-form" novalidate>
             <div class="two-column">
@@ -175,6 +175,22 @@
               </div>
             </div>
             <p class="field-hint">At least 12 characters; use a strong unique passphrase. No strength guarantee or passphrase recovery. The passphrase fields are cleared when generation starts.</p>
+            <div class="field expiry-field">
+              <label for="key-rsa-bits">RSA size for both key packets</label>
+              <select id="key-rsa-bits" name="rsa-bits" aria-describedby="key-rsa-size-help">
+                <option value="3072" selected>3072 bits — recommended default</option>
+                <option value="4096">4096 bits</option>
+                <option value="6144">6144 bits — large</option>
+                <option value="8192">8192 bits — large</option>
+                <option value="12288">12288 bits — very large</option>
+                <option value="16384">16384 bits — experimental browser generation</option>
+              </select>
+              <p id="key-rsa-size-help" class="field-hint">Larger is not automatically safer. Slow generation, larger files and client limits can outweigh the benefit. 16384 bits is a resource cap, not a compatibility guarantee.</p>
+            </div>
+            <div id="large-rsa-warning" class="notice notice-warning" role="note" hidden>
+              <strong>Large RSA is an advanced opt-in.</strong> Both key packets use the selected size. Generation can take many minutes, particularly on phones. Up to 8192 bits uses native Web Crypto, which cannot be stopped once started. Above 8192 uses a local isolated worker with the existing OpenPGP.js prime search enabled by a narrowly scoped dispatch patch, not native generation; Clear terminates that worker (20-minute resource limit). A real 16384-bit browser trial reached the 20-minute limit without completing; that generation choice is experimental, not verified successful browser generation. Public imports through 16384 bits and native Node generation are tested separately. Your client may refuse very large keys. Test with a synthetic identity before relying on them.
+              <label class="check-row" for="key-large-ack"><input id="key-large-ack" type="checkbox"> I accept the performance and compatibility limits of RSA above 4096 bits.</label>
+            </div>
             <div class="field expiry-field">
               <label for="key-expiry">Key expiry, days from creation</label>
               <input id="key-expiry" name="expiry" type="number" min="30" max="3650" step="1" value="730" inputmode="numeric" required>
@@ -214,7 +230,7 @@
 
         <section id="keyring-panel" class="panel" role="tabpanel" aria-labelledby="keyring-tab" data-panel="keyring-panel" hidden>
           <h3>Public-only keyring</h3>
-          <p class="panel-intro">Import v4 RSA public certificates (2048–4096 bits). Both concatenated armor blocks and multiple certificates in a single block are read. Limit: 1 MiB and 32 certificates. Secret packets, photo IDs, other algorithms, mixed content and unsupported packets are refused.</p>
+          <p class="panel-intro">Import v4 RSA public certificates (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates. Both concatenated armor blocks and multiple certificates in a single block are read. Limit: 1 MiB and 32 certificates. Secret packets, photo IDs, other profiles, mixed content and unsupported packets are refused.</p>
           <form id="keyring-import-form" novalidate>
             <div class="field">
               <label for="public-key-file">Load an ASCII-armored public key file (optional)</label>
@@ -269,7 +285,7 @@
     </main>
 
     <footer class="footer">
-      <span>OpenPGP.js 6.3.2 · locally vendored · LGPL-3.0+</span>
+      <span>OpenPGP.js 6.3.3 · locally vendored · LGPL-3.0+</span>
       <button id="clear-all" class="button button-quiet" type="button">Clear all tab data</button>
       <span class="footer-links"><a href="./vendor/openpgp.LICENSE">Library license</a><a href="./THIRD_PARTY_NOTICES.md">Third-party notices</a></span>
     </footer>

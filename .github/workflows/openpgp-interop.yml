@@ -1,0 +1,127 @@
+name: OpenPGP native interoperability
+
+on:
+  pull_request:
+    paths:
+      - 'apps/openpgp-workbench/**'
+      - 'public/apps/openpgp-workbench/**'
+      - 'tests/openpgp-*'
+      - 'tests/lib-browser.mjs'
+      - 'tests/requirements/openpgp-*'
+      - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/openpgp-large-rsa-build.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/openpgp-interop.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/openpgp-workbench/**'
+      - 'public/apps/openpgp-workbench/**'
+      - 'tests/openpgp-*'
+      - 'tests/lib-browser.mjs'
+      - 'tests/requirements/openpgp-*'
+      - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/openpgp-large-rsa-build.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/openpgp-interop.yml'
+  workflow_dispatch:
+
+# No APK build, emulator, production key, account login, keyserver, secret
+# input, write token, private material artifact upload or cross-job key cache.
+permissions:
+  contents: read
+
+concurrency:
+  group: openpgp-interop-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-gnupg:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REQUIRE_OPENPGP_INTEROP: '1'
+      REQUIRE_OPENPGP_NATIVE_INTEROP: '1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install distribution-maintained native readers
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends gnupg gpg-agent gpgconf gpgv
+      - name: Require native tools (gpgv alone is insufficient)
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v gpg gpgconf gpgv
+          gpg --version
+          gpgconf --version
+          gpgv --version
+      - name: Install locked JavaScript test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install hash-checked independent Python reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --require-hashes -r tests/requirements/openpgp-build.txt
+          python -m pip install --disable-pip-version-check --no-build-isolation --require-hashes -r tests/requirements/openpgp-interop.txt
+          python -c 'import importlib.metadata; print("PGPy", importlib.metadata.version("PGPy")); print("cryptography", importlib.metadata.version("cryptography"))'
+      - name: Check local app and vendored module freshness without modifying them
+        run: node --test tests/openpgp-interop-policy.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs tests/openpgp-recipient.test.mjs tests/openpgp-large-rsa.test.mjs tests/openpgp-large-rsa-worker.test.mjs
+      - name: Run mandatory GnuPG, gpgv, PGPy and existing symmetric controls
+        # Test homes contain only random synthetic identities and are removed
+        # in finally blocks, with each dedicated gpg-agent stopped first.
+        run: node --test tests/openpgp-native-interop.test.mjs tests/openpgp-key-interop.test.mjs tests/openpgp-workbench.test.mjs
+
+
+  large-rsa:
+    # Expensive random-prime searches must not monopolize the fast native gate.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RUN_OPENPGP_LARGE_RSA: '1'
+      REQUIRE_OPENPGP_NATIVE_INTEROP: '1'
+      REQUIRE_OPENPGP_BROWSER: '1'
+      OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH: .openpgp-synthetic-large-PUBLIC.asc
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - name: Install native readers for real large-RSA cross-encryption
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends gnupg gpg-agent gpgconf gpgv
+          command -v gpg gpgconf gpgv
+      - name: Install locked JavaScript dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Require real 8192 and 16384-bit generation and independent readers
+        # Only ephemeral synthetic keys. Never upload/cross-job-cache them.
+        run: node --test --test-concurrency=1 tests/openpgp-large-rsa.test.mjs
+      - name: Require real Chromium 8192 and 12288-bit generation plus 16384 worker cancellation
+        shell: bash
+        run: |
+          set -euo pipefail
+          for bits in 8192 12288; do
+            OPENPGP_BROWSER_RSA_BITS="$bits" node tests/openpgp-workbench-browser.mjs
+          done
+      - name: Remove same-job synthetic public import control
+        if: always()
+        run: rm -f -- "$OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH"

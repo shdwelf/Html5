@@ -2,7 +2,16 @@ import * as openpgp from "openpgp";
 
 export const MAX_KEYRING_BYTES = 1_048_576;
 export const MAX_PUBLIC_KEYS = 32;
-export const RSA_BITS = 3072;
+export const RSA_BITS = 3072; // Conservative default, not the import ceiling.
+export const MAX_RSA_BITS = 16384;
+export const RSA_GENERATION_SIZES = Object.freeze([3072, 4096, 6144, 8192, 12288, 16384]);
+
+export function checkedRsaBits(bits) {
+  if (!Number.isInteger(bits) || !RSA_GENERATION_SIZES.includes(bits)) {
+    throw new Error("Choose an explicit supported RSA size: 3072, 4096, 6144, 8192, 12288 or 16384 bits.");
+  }
+  return bits;
+}
 export const DEFAULT_EXPIRY_DAYS = 730;
 const utf8 = new TextEncoder();
 
@@ -25,6 +34,21 @@ export function normalizeFingerprint(value) {
 
 export function formatFingerprint(value) {
   return normalizeFingerprint(value).match(/.{4}/g).join(" ");
+}
+
+/** Shared preflight before either native generation or a worker message. */
+export function checkedGenerationOptions({ name = "", email = "", passphrase, expiryDays = DEFAULT_EXPIRY_DAYS, rsaBits = RSA_BITS } = {}) {
+  name = boundedText(name, "Name", 128).trim();
+  email = boundedText(email, "Email", 254).trim();
+  const controls = /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/;
+  if (controls.test(name + email) || /[<>]/.test(name)) throw new Error("User ID fields must not contain control characters, directional overrides or angle brackets.");
+  if (!name && !email) throw new Error("Supply a name or an email for the User ID; neither is inferred for you.");
+  if (email && !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(email)) throw new Error("Enter an email address or leave the email field empty.");
+  boundedText(passphrase, "Passphrase", 4096);
+  if ([...passphrase].length < 12 || !passphrase.trim()) throw new Error("Use a unique passphrase of at least 12 characters; length alone does not guarantee strength.");
+  if (!Number.isInteger(expiryDays) || expiryDays < 30 || expiryDays > 3650) throw new Error("Expiry must be a whole number of days between 30 and 3650.");
+  checkedRsaBits(rsaBits); // Fail before any expensive key generation.
+  return Object.freeze({ name, email, passphrase, expiryDays, rsaBits });
 }
 
 function assertNotAborted(signal) {
@@ -65,48 +89,64 @@ export function createOpenPgpKeyTools(library) {
   function assertRsaV4(key) {
     if (!key.getKeys().every((part) => {
       const { algorithm, bits } = part.getAlgorithmInfo();
-      return part.keyPacket.version === 4 && /^rsa/.test(algorithm) && bits >= 2048 && bits <= 4096;
+      return part.keyPacket.version === 4 && /^rsa/.test(algorithm) && bits >= 2048 && bits <= MAX_RSA_BITS;
     })) {
-      throw new Error("This compatibility keyring accepts only v4 RSA certificates with 2048–4096-bit keys. Other algorithms need a separate compatibility review.");
+      throw new Error("This compatibility keyring accepts only v4 RSA certificates with 2048–16384-bit keys. Other algorithms need a separate compatibility review.");
     }
     normalizeFingerprint(key.getFingerprint());
   }
 
-  function assertProtected(key) {
+  // Public import is separate from the conservative RSA generator/private
+  // export policy. These are legacy v4 algorithm-22/18 packets, not v6 keys.
+  function publicProfile(key) {
+    const parts = key.getKeys();
+    const rsa = parts.every((part) => {
+      const { algorithm, bits } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && /^rsa/.test(algorithm) && bits >= 2048 && bits <= MAX_RSA_BITS;
+    });
+    if (rsa) return `v4 RSA-${key.getAlgorithmInfo().bits}`;
+    const ed25519 = (part) => {
+      const { algorithm, curve } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && algorithm === "eddsaLegacy" && curve === "ed25519Legacy";
+    };
+    const curve25519 = (part) => {
+      const { algorithm, curve } = part.getAlgorithmInfo();
+      return part.keyPacket.version === 4 && algorithm === "ecdh" && curve === "curve25519Legacy";
+    };
+    if (ed25519(key) && parts.every((part) => ed25519(part) || curve25519(part))) {
+      return "v4 Ed25519 / Curve25519 (legacy packets)";
+    }
+    throw new Error("Public imports accept only v4 RSA (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates. Other profiles need a separate compatibility review.");
+  }
+
+  function assertProtected(key, rsaBits = RSA_BITS) {
+    checkedRsaBits(rsaBits);
     assertRsaV4(key);
     if (!key.isPrivate() || key.getKeys().length !== 2 || !key.getKeys().every(({ keyPacket }) => (
-      keyPacket.getAlgorithmInfo().bits === RSA_BITS &&
+      keyPacket.getAlgorithmInfo().bits === rsaBits &&
       keyPacket.isEncrypted === true && !keyPacket.isDecrypted() &&
       !keyPacket.isMissingSecretKeyMaterial() && keyPacket.privateParams === null &&
       keyPacket.s2kUsage === 254 && keyPacket.symmetric === library.enums.symmetric.aes256 &&
       keyPacket.s2k?.type === "iterated" && keyPacket.s2k.algorithm === library.enums.hash.sha256 &&
       keyPacket.s2k.c === 0xff
     ))) {
-      throw new Error("Refusing a private download: both RSA key packets must have the generated AES-256 / iterated SHA-256 S2K protection.");
+      throw new Error("Refusing a private download: both RSA key packets must match the selected size and generated AES-256 / iterated SHA-256 S2K protection.");
     }
   }
 
   /** User-supplied UID only. No account lookup, inferred identity or deterministic seed. */
-  async function generateCompatibilityKey({ name = "", email = "", passphrase, expiryDays = DEFAULT_EXPIRY_DAYS } = {}) {
-    name = boundedText(name, "Name", 128).trim();
-    email = boundedText(email, "Email", 254).trim();
-    const controls = /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/;
-    if (controls.test(name + email) || /[<>]/.test(name)) throw new Error("User ID fields must not contain control characters, directional overrides or angle brackets.");
-    if (!name && !email) throw new Error("Supply a name or an email for the User ID; neither is inferred for you.");
-    if (email && !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(email)) throw new Error("Enter an email address or leave the email field empty.");
-    boundedText(passphrase, "Passphrase", 4096);
-    if ([...passphrase].length < 12 || !passphrase.trim()) throw new Error("Use a unique passphrase of at least 12 characters; length alone does not guarantee strength.");
-    if (!Number.isInteger(expiryDays) || expiryDays < 30 || expiryDays > 3650) throw new Error("Expiry must be a whole number of days between 30 and 3650.");
+  async function generateCompatibilityKey(options = {}) {
+    const { name, email, passphrase, expiryDays, rsaBits } = checkedGenerationOptions(options);
     const userID = { ...(name ? { name } : {}), ...(email ? { email } : {}) };
     let generated;
     try {
       generated = await library.generateKey({
-        type: "rsa", rsaBits: RSA_BITS, userIDs: [userID],
+        type: "rsa", rsaBits, userIDs: [userID],
         passphrase, keyExpirationTime: expiryDays * 86400,
-        subkeys: [{ type: "rsa", rsaBits: RSA_BITS, sign: false }],
+        subkeys: [{ type: "rsa", rsaBits, sign: false }],
         format: "object", config,
       });
-      assertProtected(generated.privateKey);
+      assertProtected(generated.privateKey, rsaBits);
       // OpenPGP.js 6.3.2 adds SHA-3 IDs to generated preference lists even
       // with SHA-256 selected. PGPy 0.6.0 independently exposed that older
       // readers can refuse the WHOLE certificate. Build a fresh, narrow UID
@@ -138,12 +178,12 @@ export function createOpenPgpKeyTools(library) {
       generated.publicKey = await library.readKey({ armoredKey: publicKey, config });
       await generated.publicKey.verifyPrimaryKey(undefined, undefined, config);
       await generated.publicKey.getEncryptionKey(undefined, undefined, undefined, config);
-      assertProtected(generated.privateKey);
+      assertProtected(generated.privateKey, rsaBits);
       boundedText(publicKey, "Public certificate", MAX_KEYRING_BYTES);
       boundedText(privateKey, "Protected private key", MAX_KEYRING_BYTES);
       return Object.freeze({
         fingerprint: normalizeFingerprint(generated.publicKey.getFingerprint()),
-        publicKey, privateKey, revocationCertificate: generated.revocationCertificate,
+        rsaBits, publicKey, privateKey, revocationCertificate: generated.revocationCertificate,
         created: generated.publicKey.getCreationTime().toISOString(),
         expires: new Date(generated.publicKey.getCreationTime().getTime() + expiryDays * 86400000).toISOString(),
       });
@@ -156,9 +196,10 @@ export function createOpenPgpKeyTools(library) {
   }
 
   /** Defense in depth immediately before a generated private-key download. */
-  async function checkedPrivateDownload(armored, expectedFingerprint) {
+  async function checkedPrivateDownload(armored, expectedFingerprint, { rsaBits = RSA_BITS } = {}) {
     boundedText(armored, "Protected private key", MAX_KEYRING_BYTES);
     const expected = normalizeFingerprint(expectedFingerprint);
+    checkedRsaBits(rsaBits);
     const begin = "-----BEGIN PGP PRIVATE KEY BLOCK-----", end = "-----END PGP PRIVATE KEY BLOCK-----";
     const block = armored.trim();
     const inner = block.slice(begin.length, -end.length);
@@ -172,7 +213,7 @@ export function createOpenPgpKeyTools(library) {
       !packets.every((packet) => Object.hasOwn(allowed, packet.constructor.tag))) throw new Error("Invalid or unsupported generated private certificate.");
     const keys = await library.readPrivateKeys({ binaryKeys: data, config });
     if (keys.length !== 1) throw new Error("Expected exactly one private certificate, not a multi-key secret export.");
-    assertProtected(keys[0]);
+    assertProtected(keys[0], rsaBits);
     if (normalizeFingerprint(keys[0].getFingerprint()) !== expected) throw new Error("Private-key fingerprint mismatch. Nothing was downloaded.");
     return armored;
   }
@@ -215,7 +256,7 @@ export function createOpenPgpKeyTools(library) {
     const entries = [];
     for (const key of keys) {
       if (key.isPrivate()) throw new Error("Secret packets are never accepted into the public keyring.");
-      assertRsaV4(key);
+      const algorithm = publicProfile(key);
       if (key.getKeys().length > 16 || key.users.length > 32) throw new Error("Certificate has too many subkeys or User IDs for this workbench.");
       let selfCertification = "valid at import time; identity NOT verified";
       try { await key.verifyPrimaryKey(undefined, undefined, config); }
@@ -225,12 +266,35 @@ export function createOpenPgpKeyTools(library) {
         fingerprint: normalizeFingerprint(key.getFingerprint()),
         userIDs: Object.freeze(userIDs),
         created: key.getCreationTime().toISOString(),
-        algorithm: `v4 RSA-${key.getAlgorithmInfo().bits}`,
+        algorithm,
         selfCertification,
         armored: key.armor(config),
       }));
     }
     return entries;
+  }
+
+  /**
+   * Release encryption requires exactly one public certificate, a full primary
+   * fingerprint and a currently usable bound encryption key. No first-key
+   * selection from a bundle or use of archival-only entries is permitted.
+   */
+  async function readEncryptionRecipient(armored, expectedFingerprint) {
+    const expected = normalizeFingerprint(expectedFingerprint);
+    const entries = await parsePublicKeyring(armored);
+    if (entries.length !== 1 || entries[0].fingerprint !== expected) {
+      throw new Error("Recipient fingerprint mismatch, or multiple certificates supplied. Encryption refused.");
+    }
+    const key = await library.readKey({ armoredKey: entries[0].armored, config });
+    await key.verifyPrimaryKey(undefined, undefined, config);
+    const encryptionKey = await key.getEncryptionKey(undefined, undefined, undefined, config);
+    return Object.freeze({
+      key, encryptionKey,
+      fingerprint: expected,
+      encryptionFingerprint: normalizeFingerprint(encryptionKey.getFingerprint()),
+      encryptionKeyID: encryptionKey.getKeyID().toHex().toUpperCase(),
+      algorithm: entries[0].algorithm,
+    });
   }
 
   /** Memory-only public certificates. Batch imports commit atomically. */
@@ -269,7 +333,7 @@ export function createOpenPgpKeyTools(library) {
       clear() { revision++; entries.clear(); },
     });
   }
-  return Object.freeze({ config, generateCompatibilityKey, checkedPrivateDownload, parsePublicKeyring, createPublicKeyring });
+  return Object.freeze({ config, generateCompatibilityKey, checkedPrivateDownload, parsePublicKeyring, readEncryptionRecipient, createPublicKeyring });
 }
 
 const tools = createOpenPgpKeyTools(openpgp);
@@ -277,3 +341,4 @@ export const KEY_COMPATIBILITY_CONFIG = tools.config;
 export const generateCompatibilityKey = tools.generateCompatibilityKey;
 export const checkedPrivateDownload = tools.checkedPrivateDownload;
 export const createPublicKeyring = tools.createPublicKeyring;
+export const readEncryptionRecipient = tools.readEncryptionRecipient;

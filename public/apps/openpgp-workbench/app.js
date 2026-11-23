@@ -1,14 +1,16 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
+import { generateLargeRsaKey } from "./large-rsa.mjs";
 
 /** No globals holding key material; dependencies are injectable for race/UI tests. */
-export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto } = {}) {
+export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey } = {}) {
   const byId = (id) => doc.getElementById(id);
   const supported = view.isSecureContext && Boolean(view.crypto?.subtle) && typeof TextEncoder === "function";
   const ring = keyTools.createPublicKeyring();
   let generated = null; // Protected armor only. Never put private/revocation data in the DOM.
   let generationEpoch = 0;
   let generationBusy = false;
+  let generationController = null;
   let importEpoch = 0;
   let fileEpoch = 0;
   let importing = false;
@@ -117,6 +119,14 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     setStatus("decrypt-status", "Decrypted output cleared; any in-progress result will be discarded.");
   });
 
+  function rsaSizeControls() {
+    const large = Number(byId("key-rsa-bits").value) > 4096;
+    byId("large-rsa-warning").hidden = !large;
+    byId("key-large-ack").checked = false;
+  }
+  byId("key-rsa-bits").addEventListener("change", rsaSizeControls);
+  rsaSizeControls();
+
   function generationControls() {
     const ready = Boolean(generated);
     for (const id of ["download-public-key", "copy-public-key"]) byId(id).disabled = !ready;
@@ -125,46 +135,57 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   }
   function clearGenerated({ reset = true } = {}) {
     generationEpoch++;
+    generationController?.abort();
     generated = null;
     if (generatedImport) { importController?.abort(); importEpoch++; }
-    if (reset) resetForm(byId("keygen-form"));
+    if (reset) { resetForm(byId("keygen-form")); rsaSizeControls(); }
     byId("generated-public-output").value = "";
     byId("generated-fingerprint").textContent = "No key generated in this tab.";
     byId("generated-expiry").textContent = "";
     byId("backup-fingerprint").value = "";
     byId("key-backup-ack").checked = false;
     generationControls();
-    setStatus("keygen-status", generationBusy ? "Fields cleared. Running generation cannot be stopped; its result will be discarded." : "Generated material cleared from the page. Browser-memory erasure is not guaranteed.");
+    setStatus("keygen-status", generationBusy ? "Fields cleared. Any large-RSA worker is terminated; native Web Crypto cannot be stopped, but its result will be discarded." : "Generated material cleared from the page. Browser-memory erasure is not guaranteed.");
   }
   byId("keygen-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (generationBusy || !supported) return;
     const options = {
       name: byId("key-name").value, email: byId("key-email").value,
+      rsaBits: Number(byId("key-rsa-bits").value),
       passphrase: byId("key-passphrase").value, expiryDays: Number(byId("key-expiry").value),
     };
     const confirmation = byId("key-confirm").value;
     clearGenerated({ reset: false });
     if (options.passphrase !== confirmation) { setStatus("keygen-status", "The passphrases do not match. No key generated.", "error"); return; }
+    if (options.rsaBits > 4096 && !byId("key-large-ack").checked) {
+      setStatus("keygen-status", "Acknowledge the large-RSA performance and compatibility warning before generating above 4096 bits.", "error");
+      return;
+    }
     const epoch = generationEpoch;
+    const controller = new AbortController();
+    generationController = controller;
     generationBusy = true;
     const button = byId("generate-key");
     setBusy(button, true);
-    setStatus("keygen-status", "Generating two random RSA-3072 keys locally and protecting both private packets. This may take a while…");
+    setStatus("keygen-status", `Generating two random RSA-${options.rsaBits} keys locally and protecting both private packets. ${options.rsaBits > 8192 ? "Using the isolated OpenPGP.js prime-search worker; Clear terminates it. Limit: 20 minutes." : "Large keys can take many minutes; Clear discards the result but cannot stop native Web Crypto."}…`);
     // Values are handed to the crypto operation, never retained in form fields.
     byId("key-passphrase").value = "";
     byId("key-confirm").value = "";
     try {
-      const result = await keyTools.generateCompatibilityKey(options);
+      const result = await (options.rsaBits > 8192
+        ? largeKeyGenerator(options, { signal: controller.signal, WorkerClass: view.Worker })
+        : keyTools.generateCompatibilityKey(options));
       if (epoch !== generationEpoch) return;
       generated = result;
       byId("generated-public-output").value = result.publicKey;
       byId("generated-fingerprint").textContent = keyTools.formatFingerprint(result.fingerprint);
-      byId("generated-expiry").textContent = `Created ${result.created.slice(0, 10)} · expires ${result.expires.slice(0, 10)}. Compare this full fingerprint after importing into your other app.`;
+      byId("generated-expiry").textContent = `RSA-${result.rsaBits ?? keyTools.RSA_BITS} · created ${result.created.slice(0, 10)} · expires ${result.expires.slice(0, 10)}. Compare this full fingerprint after importing into your other app.`;
       setStatus("keygen-status", "Key generated. Nothing downloaded or published. Back up the protected private key AND revocation certificate explicitly; the passphrase cannot be recovered.", "success");
     } catch (error) {
       if (epoch === generationEpoch) setStatus("keygen-status", friendlyError(error), "error");
     } finally {
+      if (generationController === controller) generationController = null;
       generationBusy = false;
       setBusy(button, false);
       generationControls();
@@ -186,7 +207,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       try {
         const expected = keyTools.normalizeFingerprint(byId("backup-fingerprint").value);
         if (expected !== bundle.fingerprint) throw new Error("Full fingerprint mismatch. Nothing was downloaded.");
-        const privateArmor = await keyTools.checkedPrivateDownload(bundle.privateKey, expected);
+        const privateArmor = await keyTools.checkedPrivateDownload(bundle.privateKey, expected, { rsaBits: bundle.rsaBits });
         if (epoch !== generationEpoch || !byId("key-backup-ack").checked) return;
         const revocation = id === "download-revocation";
         download(revocation ? bundle.revocationCertificate : privateArmor, `${bundle.fingerprint}-${revocation ? "REVOCATION" : "SECRET"}.asc`, "application/pgp-keys");

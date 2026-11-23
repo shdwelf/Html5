@@ -1,3 +1,9 @@
+> **Follow-on size policy:** This source-review record describes the original
+> RSA-3072 generator / 4096-bit import ceiling. The later explicit user request
+> adds bounded large RSA through 16384 bits; see
+> [the current policy and real-generation gates](openpgp-large-rsa-2026-11-17.md).
+> Original upstream evidence and non-size compatibility caveats remain intact.
+
 # Local OpenPGP keyrings — source review and implementation
 
 ## Scope and identity decisions
@@ -210,6 +216,13 @@ LGPL-3.0+ license. Upstream app code was not vendored or executed.
   dedicated reviewed client for sensitive production identities.
 
 ## Validation matrix — do not conflate evidence levels
+
+**Continuation:** the table below records round 83. A later, separate mandatory
+[full-native-GnuPG CI lane passed](openpgp-native-interop-2026-11-17.md), adding
+synthetic private import/unlock, wrong-passphrase, bidirectional crypto, public
+ring and revocation execution. That closes only the tested command-line gate;
+Kleopatra GUI and Android/iOS app checks remain unperformed. Do not reinterpret
+the historical gpgv row as private-import evidence.
 
 | Target | Evidence obtained in this round | Not claimed |
 | --- | --- | --- |

@@ -3,10 +3,19 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { networksForCoin } from "../js/coin-networks.js";
 import { researchedNetworks, researchRecord } from "../js/coin-research.js";
+import { validateTokenResearch } from "./token-research-evidence.mjs";
 const root = new URL("../", import.meta.url);
 const json = (file) => JSON.parse(readFileSync(new URL(file, root), "utf8"));
 const coins = json("config/coins-top500.json").assets, evidence = json("config/chain-research.json");
-const networks = researchedNetworks(coins, json("config/token-networks.json"), evidence);
+const catalogue = json("config/token-networks.json"), tokens = json("config/token-research.json");
+const tokenCoverage = validateTokenResearch(tokens, json(tokens.sourceManifest), coins, catalogue, evidence);
+const networks = researchedNetworks(coins, catalogue, evidence);
+const tokenStatus = (coin, record) => {
+  const asset = tokens.assets[coin.id];
+  if (!asset) return record.native ? "native candidate; host evidence separate" : "pending";
+  const references = asset.deployments.filter((item) => item.catalogue === "research-only").length;
+  return `source-reviewed: ${asset.deployments.length} tuple(s)${references ? `; ${references} research-only, not enabled` : ""}; runtime/backing open`;
+};
 const profiles = Object.values(evidence.chains);
 const main = (coin) => networksForCoin(networks, coin).filter((n) => n.environment === "mainnet");
 const records = coins.map((coin) => ({ coin, networks: main(coin), record: researchRecord(evidence, coin, main(coin)[0]) }));
@@ -22,6 +31,7 @@ The source market ranks are historical, not present-day prices or endorsements.
 - Host profiles: ${profiles.length}; primary-reviewed fee models: ${profiles.filter((p) => p.feeStatus === "primary-reviewed").length}; fee models pending: ${profiles.filter((p) => p.feeStatus === "pending").length}.
 - Primary-reviewed test-network identities: ${profiles.flatMap((p) => p.testnets).length}. No testnet token contract is inferred from a mainnet contract.
 - Assets with any catalogued mainnet contract: ${records.filter((r) => r.networks.some((n) => n.contract)).length}. Other token deployment reviews remain open.
+- Independent token source reviews started: ${tokenCoverage.assetsStarted} stable asset IDs / ${tokenCoverage.deploymentTuples} mainnet tuples (${tokenCoverage.cataloguedTuples} existing catalogue, ${tokenCoverage.researchOnlyTuples} research-only, not enabled); ${tokenCoverage.acceptanceGatesClosed} complete token acceptance gates closed. [Scoped report](token-identity-review-round-84-2026-11-17.md).
 - Rows with no mapped host: ${records.filter((r) => !r.record.chain).length}. Unknown is not free, absent, or a zero balance.
 
 ## Reading each asset row
@@ -31,9 +41,13 @@ flag. This does not independently validate a pending host. For a token, a
 reviewed host fee formula is **not** a verified asset contract or token transfer
 estimate. A receive derivation is **not** proof of deployment or holdings.
 
-Identity evidence is one of primary-reviewed, catalogue-only (a pinned secondary
-EVM catalogue), or pending. Fee evidence is separate. Each pending/token row is
-an explicit per-asset research task: verify the issuer and host; find primary
+Host identity evidence is one of primary-reviewed, catalogue-only (a pinned
+secondary EVM catalogue), or pending. Fee evidence is separate. Independent
+token source reviews are a further evidence lane: a reviewed identifier, ABI or
+reference implementation does not establish deployed code, live transfer tax,
+reserves, redeemability or a verified test deployment. The separate offline
+ledger does not feed a balance reader or enable new runtime mappings. Each
+pending/token row is an explicit per-asset research task: verify the issuer and host; find primary
 contract/mint evidence and decimals; check migration/wrapped/backed identities;
 obtain a transaction-specific estimate; verify a separate test deployment or
 leave it unknown. The UI provides all four requested discovery routes per asset,
@@ -41,9 +55,9 @@ with primary host links only where reviewed. No search snippet is a live quote.
 
 ## All ${coins.length} defined assets
 
-| Historical rank | Asset ID / symbol | Host | Native candidate? | Host identity | Fee asset / model / review | Mainnet contract catalogue | Default-leaf support |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-${records.map(({ coin, networks, record }) => `| ${coin.rank} | ${escape(coin.id)} · ${escape(coin.symbol)} | ${escape(record.chain)} | ${record.native ? "curated ID; see evidence" : "token/asset deployment pending"} | ${record.identityStatus} | ${escape(record.feeAsset)} / ${record.group} / ${record.feeStatus} | ${networks.filter((n) => n.contract).map((n) => escape(n.name + ": " + n.contract)).join("; ") || "not verified"} | ${coin.derive ? "one curated path, local" : "unsupported"} |`).join("\n")}
+| Historical rank | Asset ID / symbol | Host | Native candidate? | Host identity | Fee asset / model / review | Mainnet contract catalogue | Independent token source review / acceptance | Default-leaf support |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${records.map(({ coin, networks, record }) => `| ${coin.rank} | ${escape(coin.id)} · ${escape(coin.symbol)} | ${escape(record.chain)} | ${record.native ? "curated ID; see evidence" : "token/asset deployment pending"} | ${record.identityStatus} | ${escape(record.feeAsset)} / ${record.group} / ${record.feeStatus} | ${networks.filter((n) => n.contract).map((n) => escape(n.name + ": " + n.contract)).join("; ") || "not verified"} | ${escape(tokenStatus(coin, record))} | ${coin.derive ? "one curated path, local" : "unsupported"} |`).join("\n")}
 `;
 const path = new URL("docs/coin-research-inventory-2026-11-17.md", root);
 if (process.argv.includes("--check")) {

@@ -29,7 +29,6 @@ const ANDROID_SMOKE_TEST = readFileSync(
   "utf8",
 );
 const ANDROID_WORKFLOW = readFileSync(join(ROOT, ".github", "workflows", "html5-offline-launcher-build.yml"), "utf8");
-const PRIVATE_APK_ENCRYPTOR = readFileSync(join(ROOT, "scripts", "encrypt-private-apk-openpgp.mjs"), "utf8");
 
 const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(ROOT, "public", "apps", entry.name, "index.html")))
@@ -185,28 +184,30 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /Private APK contains only the two allowlisted apps/);
-  assert.match(ANDROID_WORKFLOW, /Encrypt private APK for supplied OpenPGP recipient/);
-  assert.match(ANDROID_WORKFLOW, /node scripts\/encrypt-private-apk-openpgp\.mjs/);
-  assert.match(ANDROID_WORKFLOW, /apk=apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
+  assert.match(ANDROID_WORKFLOW, /Encrypt all three APK profiles for supplied OpenPGP recipient/);
+  assert.match(ANDROID_WORKFLOW, /for profile in public network private; do/);
+  assert.match(ANDROID_WORKFLOW, /node scripts\/encrypt-openpgp-backup\.mjs/);
+  assert.match(ANDROID_WORKFLOW, /--expected-fingerprint "\$RECIPIENT_FINGERPRINT"/);
   assert.match(ANDROID_WORKFLOW, /inputs\.recipient_public_key/);
-  assert.match(PRIVATE_APK_ENCRYPTOR, /readKey\(\{ armoredKey \}\)/);
-  assert.match(PRIVATE_APK_ENCRYPTOR, /key\.getEncryptionKey\(\)/);
-  assert.match(PRIVATE_APK_ENCRYPTOR, /openpgp\.encrypt/);
-  assert.match(PRIVATE_APK_ENCRYPTOR, /key\.isPrivate\(\)/);
-  const encryptedUploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload encrypted private APK only"));
-  assert.match(encryptedUploadStep, /encrypted-private-apks/);
-  assert.match(PRIVATE_APK_ENCRYPTOR, /app-private-debug-\$\{fingerprint\}\.apk\.asc/);
-  assert.doesNotMatch(encryptedUploadStep, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk(?:\s|$)/);
-  const uploadStep = ANDROID_WORKFLOW
-    .slice(ANDROID_WORKFLOW.indexOf("- name: Upload public and network APKs for backup"))
-    .split("\n\n      - name:")[0];
-  assert.match(uploadStep, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.match(ANDROID_WORKFLOW, /inputs\.recipient_fingerprint/);
+  assert.match(ANDROID_WORKFLOW, /apk="apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/\$profile\/debug\/app-\$profile-debug\.apk"/);
+  assert.doesNotMatch(ANDROID_WORKFLOW, /gpg --batch|--list-keys|awk -F:/);
+  const encryptedUploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload encrypted APKs only"), ANDROID_WORKFLOW.indexOf("- name: Report public APK"));
+  assert.match(encryptedUploadStep, /encrypted-apks\/\*\.gpg\*/);
+  assert.doesNotMatch(encryptedUploadStep, /path:.*(?:\.apk|\.asc)(?:\s|$)/);
+  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload public and network APKs for backup"), ANDROID_WORKFLOW.indexOf("- name: Install PulseAudio"));
+  assert.match(uploadStep, /apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
+  assert.match(uploadStep, /inputs\.recipient_public_key == ''/);
   assert.match(uploadStep, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.doesNotMatch(uploadStep, /private-debug\.apk/);
+  for (const name of ["- name: Upload encrypted APKs only", "- name: Upload public and network APKs for backup"]) {
+    assert.ok(ANDROID_WORKFLOW.indexOf(name) < ANDROID_WORKFLOW.indexOf("- name: Run Android WebView"), "build exports must not wait for emulator completion");
+  }
+  assert.match(ANDROID_WORKFLOW, /timeout-minutes: 15/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
   assert.match(README, /94\*\* HTML entrypoints/);
-  assert.match(README, /8,475\s+files/);
-  assert.match(README, /161,806,930 bytes uncompressed/);
+  assert.match(README, /8,500\s+files/);
+  assert.match(README, /165,024,166 bytes uncompressed/);
   assert.match(README, /ANC Studio microphone capture is opt-in/);
   assert.doesNotMatch(README, /still denies microphone permission/);
 });

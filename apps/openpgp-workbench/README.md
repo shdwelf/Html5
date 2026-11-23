@@ -15,10 +15,10 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 ## Current scope
 
 - **Encrypt / Decrypt:** the existing classic passphrase-only UTF-8 text tools. Up to 1 MiB plaintext, 2 MiB message armor and 4 KiB passphrase. v4/direct-S2K SKESK, iterated SHA-256 S2K (`0xFF`), AES-256 and SEIPD v1/MDC; no AEAD output. MDC does not authenticate the sender.
-- **Create key:** supply your own name/alias and/or optional email, strong unique passphrase and expiry. Random **v4 RSA-3072** signing/certification primary plus RSA-3072 encryption subkey, SHA-256 self-certification and classic SHA-2 preferences. Default expiry 730 days; allowed 30–3650. No identity is inferred, and no wallet seed or recovery phrase is used.
+- **Create key:** supply your own name/alias and/or optional email, strong unique passphrase and expiry. Random **v4 RSA-3072 by default** signing/certification primary plus same-size encryption subkey; selectable 3072/4096/6144/8192/12288/16384 bits, SHA-256 self-certification and classic SHA-2 preferences. Default expiry 730 days; allowed 30–3650. No identity is inferred, and no wallet seed or recovery phrase is used.
 - **Protected private export:** both packets use AES-256, iterated/salted SHA-256 S2K, count `0xFF` (65,011,712 octets). A minimum 12-character passphrase is required, but length is not a strength guarantee. Generated private armor never becomes a page field or clipboard item. Download requires explicit acknowledgement and the full matching fingerprint, with a packet-protection recheck.
 - **Revocation backup:** a separate, explicit **unencrypted sensitive certificate**. Anyone holding it can revoke the key. Keep it private/offline; never bundle it with the public certificate you share.
-- **Public keyring:** memory-only v4 RSA certificates (2048–4096 bits), 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted.
+- **Public keyring:** memory-only v4 RSA certificates (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted.
 - Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or subkey audit.
 
 No public-key **message** encryption/decryption, secret-key import, signing UI, attachments, modern AEAD writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or app-level persistent storage is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
@@ -41,16 +41,58 @@ Clear buttons and `pagehide` drop fields/references and suppress late async resu
 ```sh
 node --test tests/openpgp-workbench.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs
 node --test tests/openpgp-key-interop.test.mjs
-# Optional PGPy==0.6.0 in a separate environment; test detects/skips its absence:
-# PYTHONPATH=/path/to/pgpy/site-packages node --test tests/openpgp-key-interop.test.mjs
+# Full native GnuPG is separate from gpgv; requires gpg AND gpgconf:
+node --test tests/openpgp-native-interop.test.mjs
+# Optional Python reader: pin/hash-check build and runtime dependencies in an isolated environment:
+# python -m pip install --require-hashes -r tests/requirements/openpgp-build.txt
+# python -m pip install --no-build-isolation --require-hashes -r tests/requirements/openpgp-interop.txt
+# REQUIRE_OPENPGP_INTEROP=1 REQUIRE_OPENPGP_NATIVE_INTEROP=1 node --test tests/openpgp-key-interop.test.mjs tests/openpgp-native-interop.test.mjs
 # Optional existing Chromium harness dependencies:
 node tests/openpgp-workbench-browser.mjs
 ```
 
 Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, multi-key imports, reset and external-request observation. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.
 
+The separate native-GnuPG harness uses fresh private temporary homes, protected synthetic key files, passphrases through stdin (not argv/environment), and dedicated-agent shutdown before wrong-passphrase checks and cleanup. It covers both secret packets, exact fingerprints, bidirectional encryption/signatures, secret re-export, both public-keyring armor layouts and revocation. Missing tools/readers are explicit optional skips locally, but **fail** when the required flags above are set; the bounded `OpenPGP native interoperability` CI lane sets both flags. Its first mandatory [run passed](https://github.com/shdwelf/Html5/actions/runs/45229648748) for head `76078209ecd11f40b6cca8c47066184ea83e0bf1`; see the [exact evidence and remaining-runtime boundaries](../../docs/openpgp-native-interop-2026-11-17.md). This is not a Kleopatra GUI, OpenKeychain or PGPony device test. No synthetic private home, key, passphrase file or revocation artifact is uploaded.
+
 A PGPy failure exposed OpenPGP.js's default SHA-3 preference IDs in otherwise classic RSA keys. `keyring.mjs` now constructs a fresh narrow UID self-certification using the **library's exported signature API**, then reparses and verifies the result. It does not alter already-signed bytes or implement a cryptographic primitive. Regression checks cover those exact preferences and the bundled browser distribution.
 
 ## Third-party library
 
-OpenPGP.js **6.3.2**, `LGPL-3.0+`, remains pinned in the root manifest/lockfile. The unmodified browser distribution and full license are copied to `vendor/`. See `THIRD_PARTY_NOTICES.md`. No source from the reviewed native applications is shipped in this workbench.
+OpenPGP.js **6.3.3**, `LGPL-3.0+`, remains pinned in the root manifest/lockfile. The unmodified browser distribution and full license are copied to `vendor/`. See `THIRD_PARTY_NOTICES.md`. No source from the reviewed native applications is shipped in this workbench.
+
+## Recipient-encrypted release backups
+
+`scripts/encrypt-openpgp-backup.mjs` is a separate Node 22 release tool, not a new message UI or a bundled native GnuPG binary. It streams files to a **single** public recipient, requires the exact full primary fingerprint, and rejects secret/mixed certificates, ambiguous bundles, expired/revoked primaries and missing/invalid encryption keys. It supports the reviewed v4 RSA and legacy Ed25519/Curve25519 public profiles; it does not change the 3072-bit default or relax selected-size/protected-private-download checks.
+
+Outputs are exclusive-create, mode-0600 binary OpenPGP ciphertext plus a UID-free JSON receipt and SHA-256 sidecar. The actual envelope must contain one matching v3 PKESK and SEIPDv1/MDC. These unsigned backups protect confidentiality/integrity but do not authenticate a sender. The owner must perform final decryption with their own private key; do not send that key or its passphrase to CI. See `apps/html5-offline-launcher/README.md` for the three distinct APK profiles.
+
+OpenPGP.js is exactly pinned at 6.3.3, including its newly declared `eckey-utils` Node dependency in the lockfile. Node ECDSA dependency-loading regressions exercise brainpool and explicitly opted-in secp256k1; neither curve is newly accepted by the app keyring, and the library's default secp256k1 rejection stays intact. Native `gpg`, `gpgconf` and `gpgv` remain independent CI readers, not browser dependencies.
+
+## Large RSA (advanced opt-in)
+
+Create key offers **3072 / 4096 / 6144 / 8192 / 12288 / 16384 bits** for both
+packets. Public RSA imports accept 2048–16384 bits. Above 4096 bits, the UI
+requires a separate performance/compatibility acknowledgment. Large searches
+can take many minutes; Native Web Crypto work cannot be canceled once started. Clear discards that
+result but cannot stop native CPU work, and another job cannot overlap. Above
+8192 bits uses an isolated local worker with the existing OpenPGP.js prime-search
+fallback enabled by a one-condition dispatch patch, not native generation;
+Clear terminates this worker, which has a 20-minute resource cap. The normal
+vendored module remains upstream, while the separate worker is an explicitly
+modified local build with readable corresponding source and a pinned build
+receipt. See `THIRD_PARTY_NOTICES.md`; this is not a cryptographic security audit.
+**16384-bit browser generation is experimental**: a real trial hit that limit
+without completing; successful Node generation does not prove browser
+completion. Real 12288-bit worker generation did complete.
+The default stays 3072, unsupported sizes never silently downgrade, and very
+large keys are not a mobile/hardware-client compatibility guarantee.
+
+`checkedPrivateDownload(armor, fingerprint, { rsaBits })` requires the immutable
+saved generation size; the default parameter stays 3072 for existing callers.
+Both secret packets must match and retain the same original protection. The UI
+uses the saved bundle metadata, never a later selector value. See
+`docs/openpgp-large-rsa-2026-11-17.md` for bounds, caveats and the separate mandatory
+real 8192/16384-bit native GnuPG lane and 8192/12288-bit completed Chromium
+generation controls (16384-bit browser worker cancellation is separate). Fast local runs explicitly skip expensive prime
+searches unless `RUN_OPENPGP_LARGE_RSA=1` is set.
