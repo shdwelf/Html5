@@ -6,10 +6,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { browserDeps, serve, withBrowser, ROOT } from "./lib-browser.mjs";
-import { generateCompatibilityKey } from "../apps/openpgp-workbench/keyring.mjs";
+import { generateCompatibilityKey, RSA_GENERATION_SIZES } from "../apps/openpgp-workbench/keyring.mjs";
 import * as openpgp from "openpgp";
 
+const rsaBits = Number(process.env.OPENPGP_BROWSER_RSA_BITS || 3072);
+assert.ok(RSA_GENERATION_SIZES.includes(rsaBits), "browser test RSA size must be an explicit supported choice");
 const deps = await browserDeps();
+if (!deps && process.env.REQUIRE_OPENPGP_BROWSER === "1") throw new Error("Required OpenPGP Chromium runner is unavailable; refusing a silent skip.");
 if (!deps) { console.log("OpenPGP browser: SKIPPED (optional puppeteer-core and @sparticuz/chromium unavailable)"); process.exit(0); }
 const { server, port } = await serve(join(ROOT, "public"));
 const base = `http://127.0.0.1:${port}`;
@@ -39,7 +42,14 @@ try {
     await session.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: directory });
     let fingerprint, publicArmor, privateArmor;
     const field = async (id, value) => page.$eval(`#${id}`, (element, text) => { element.value = text; element.dispatchEvent(new Event("input", { bubbles: true })); }, value);
-    const status = (id, kind) => page.waitForFunction((target, expected) => document.getElementById(target).dataset.kind === expected, { timeout: 45000 }, id, kind);
+    const status = async (id, kind) => {
+      await page.waitForFunction((target, expected) => {
+        const state = document.getElementById(target).dataset.kind;
+        return state === expected || (expected === "success" && state === "error");
+      }, { timeout: id === "keygen-status" && rsaBits > 4096 ? 20 * 60 * 1000 : 45000 }, id, kind);
+      const actual = await page.$eval(`#${id}`, (element) => ({ kind: element.dataset.kind, message: element.textContent }));
+      assert.equal(actual.kind, kind, actual.message);
+    };
 
     await test("real Chromium loads the local module/importmap with Web Crypto and no inferred identity", async () => {
       await page.goto(`${base}/apps/openpgp-workbench/index.html`, { waitUntil: "networkidle0" });
@@ -50,8 +60,24 @@ try {
       assert.equal(await page.$eval("#download-private-key", (element) => element.disabled), true);
       assert.deepEqual(external, []);
     });
-    await test("real Web Crypto generates the two RSA-3072 keys and displays only the public certificate", async () => {
+    await test("real Chromium offers above-8192 sizes but refuses expensive generation without its separate opt-in", async () => {
       await page.click("#keygen-tab");
+      assert.equal(await page.$eval("#key-rsa-bits", (element) => element.value), "3072");
+      await page.select("#key-rsa-bits", "16384");
+      assert.equal(await page.$eval("#large-rsa-warning", (element) => element.hidden), false);
+      await field("key-name", "Synthetic large-size UI gate only");
+      await field("key-passphrase", passphrase); await field("key-confirm", passphrase);
+      await page.click("#generate-key"); await status("keygen-status", "error");
+      assert.match(await page.$eval("#keygen-status", (element) => element.textContent), /Acknowledge the large-RSA/);
+      assert.equal(await page.$eval("#generated-public-output", (element) => element.value), "");
+      await page.click("#clear-generated");
+      assert.equal(await page.$eval("#key-rsa-bits", (element) => element.value), "3072");
+      assert.equal(await page.$eval("#key-large-ack", (element) => element.checked), false);
+    });
+    await test(`real ${rsaBits > 8192 ? "isolated worker" : "Web Crypto"} generates the two RSA-${rsaBits} keys and displays only the public certificate`, async () => {
+      await page.click("#keygen-tab");
+      await page.select("#key-rsa-bits", String(rsaBits));
+      if (rsaBits > 4096) await page.click("#key-large-ack");
       await field("key-name", "Chromium synthetic test — do not use"); await field("key-email", "browser@example.invalid");
       await field("key-passphrase", passphrase); await field("key-confirm", passphrase); await field("key-expiry", "30");
       await page.click("#generate-key"); await status("keygen-status", "success");
@@ -65,6 +91,7 @@ try {
       assert.doesNotMatch(fields, /BEGIN PGP PRIVATE KEY BLOCK/);
       assert.equal(await page.$eval("#download-private-key", (element) => element.disabled), true);
     });
+    assert.ok(fingerprint && publicArmor, "generation must succeed before dependent export/import checks");
     await test("actual protected/private and revocation downloads require consent plus a matching full fingerprint", async () => {
       await page.click("#download-public-key");
       assert.equal(await downloaded(`${fingerprint}-PUBLIC.asc`), publicArmor);
@@ -75,7 +102,7 @@ try {
       privateArmor = await downloaded(`${fingerprint}-SECRET.asc`);
       const encrypted = await openpgp.readPrivateKey({ armoredKey: privateArmor });
       assert.equal(encrypted.isDecrypted(), false); assert.equal(encrypted.getKeys().length, 2);
-      assert.ok(encrypted.getKeys().every(({ keyPacket }) => keyPacket.s2k.c === 0xff && keyPacket.getAlgorithmInfo().bits === 3072));
+      assert.ok(encrypted.getKeys().every(({ keyPacket }) => keyPacket.s2k.c === 0xff && keyPacket.getAlgorithmInfo().bits === rsaBits));
       const unlocked = await openpgp.decryptKey({ privateKey: encrypted, passphrase });
       try { assert.equal(unlocked.getFingerprint().toUpperCase(), fingerprint); } finally { unlocked.clearPrivateParams(); }
       await page.click("#download-revocation");
@@ -128,5 +155,8 @@ try {
       await page.screenshot({ path: join(directory, "workbench-mobile.png"), fullPage: true });
       assert.deepEqual(pageErrors, []); assert.deepEqual(external, []);
     });
-  });
+  // Very large RSA can occupy a browser crypto/signing task beyond CDP's
+  // default 180-second RPC budget. Keep the same explicit 20-minute bound as
+  // this opt-in generation, without changing any other browser suite's default.
+  }, rsaBits > 4096 ? { protocolTimeout: 20 * 60 * 1000 } : {});
 } finally { server.close(); await rm(directory, { recursive: true, force: true }); }

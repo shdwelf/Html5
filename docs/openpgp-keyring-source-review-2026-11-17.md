@@ -1,3 +1,9 @@
+> **Follow-on size policy:** This source-review record describes the original
+> RSA-3072 generator / 4096-bit import ceiling. The later explicit user request
+> adds bounded large RSA through 16384 bits; see
+> [the current policy and real-generation gates](openpgp-large-rsa-2026-11-17.md).
+> Original upstream evidence and non-size compatibility caveats remain intact.
+
 # Local OpenPGP keyrings — source review and implementation
 
 ## Scope and identity decisions

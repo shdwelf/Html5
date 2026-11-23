@@ -3,8 +3,8 @@
 ## Changes
 
 - Pin OpenPGP.js **6.3.3**, regenerate the unmodified local browser distribution, and lock the newly declared Node dependency **eckey-utils 0.7.14**. The upstream release fixes Node loading of that helper for ECDSA brainpool/secp256k1; a Rollup guard now rejects undeclared runtime `nodeRequire` dependencies. This is not a claim that every cryptographic dependency has been audited.
-- Extend **public-only** certificate import to the narrowly reviewed **v4 legacy Ed25519 primary / Ed25519 or Curve25519 subkey** packet profile (algorithms 22/18). RSA imports remain v4, 2048–4096 bits. NIST, brainpool, secp256k1 and v6 app-keyring profiles are not added.
-- Leave the **generator and private-download checker unchanged**: two v4 RSA-3072 packets, AES-256 protected secret material, iterated SHA-256 S2K at coded count `0xFF`, explicit fingerprint and sensitive-backup acknowledgment. There is still no arbitrary secret-key importer or public-key message UI.
+- Extend **public-only** certificate import to the narrowly reviewed **v4 legacy Ed25519 primary / Ed25519 or Curve25519 subkey** packet profile (algorithms 22/18). RSA imports are v4, now extended to 2048–16384 bits by the follow-on large-RSA request. NIST, brainpool, secp256k1 and v6 app-keyring profiles are not added.
+- Preserve the **default generator and protected-download invariants**: two same-size v4 RSA packets (3072 by default; explicitly selectable through 16384), AES-256 protected secret material, iterated SHA-256 S2K at coded count `0xFF`, explicit fingerprint and sensitive-backup acknowledgment. There is still no arbitrary secret-key importer or public-key message UI.
 - Add `scripts/encrypt-openpgp-backup.mjs`: a separate Node 22 streaming release tool that does not require native GnuPG or an owner private key. It accepts exactly one public certificate and a separately supplied full primary fingerprint, verifies the primary and selects a currently valid bound encryption key. Ambiguous bundles, secret/mixed packets, incorrect fingerprints and unusable recipients are refused.
 - Fix the Android encrypted-export handoff: use repository-root APK paths, encrypt **public / network / private** builds separately, and export ciphertext before potentially slow emulator tests. A recipient dispatch requires both the certificate and full fingerprint and exports no plaintext APK. Normal CI retains only its public plaintext artifact. Device tests retain their assertions and have a 15-minute step bound; separate dispatch/PR concurrency groups prevent a backup dispatch canceling the PR gate.
 - Explicitly install distribution-maintained `gnupg`, `gpg-agent`, `gpgconf` and `gpgv` in native interop CI, then require all native readers. `gpgv` alone is not full GnuPG. No native GnuPG binary is embedded into a WebView or renamed as a JavaScript dependency.
@@ -54,3 +54,10 @@ the credential-bearing session URLs. Independent destination metadata/checksum
 verification and temporary-secret deletion remain release-operator duties.
 An uncertain/finalized upload must be inspected before retrying, never blindly
 replayed. This mode does not change cloud sharing or publish a private APK.
+
+The follow-on user request adds bounded large RSA generation/import, with
+separate advanced-size consent and saved-size private-export validation. See
+`openpgp-large-rsa-2026-11-17.md`; the earlier fixed-3072-only scope is superseded,
+not a claim that the new sizes have mobile-client certification. The Drive
+handoff remains blocked by the integration's HTTP 403 on Actions Secrets access;
+no temporary Actions secret has been created and no APK transfer is claimed.

@@ -16,7 +16,7 @@ async function until(predicate) {
   for (let i = 0; i < 400; i++) { if (predicate()) return; await delay(5); }
   assert.fail("UI condition did not settle");
 }
-function boot({ keyTools = {}, textTools, secure = true } = {}) {
+function boot({ keyTools = {}, textTools, largeKeyGenerator, secure = true } = {}) {
   const dom = new JSDOM(html, { url: "https://example.test/apps/openpgp-workbench/" });
   const { window } = dom;
   Object.defineProperty(window, "isSecureContext", { value: secure });
@@ -27,7 +27,7 @@ function boot({ keyTools = {}, textTools, secure = true } = {}) {
   window.HTMLAnchorElement.prototype.click = function () { downloads.push({ filename: this.download, blob: blobs.get(this.href) }); };
   Object.defineProperty(window.navigator, "clipboard", { value: { writeText: async (text) => { clipboard.push(text); } } });
   const tools = { ...keys, generateCompatibilityKey: async () => bundle, ...keyTools };
-  const api = mountWorkbench({ doc: window.document, view: window, keyTools: tools, ...(textTools ? { textTools } : {}) });
+  const api = mountWorkbench({ doc: window.document, view: window, keyTools: tools, ...(textTools ? { textTools } : {}), ...(largeKeyGenerator ? { largeKeyGenerator } : {}) });
   const get = (id) => window.document.getElementById(id);
   const submit = (id) => get(id).dispatchEvent(new window.Event("submit", { bubbles: true, cancelable: true }));
   const change = (id) => get(id).dispatchEvent(new window.Event("change", { bubbles: true }));
@@ -78,6 +78,58 @@ test("key generation is explicit; private/revocation exports require acknowledge
     assert.ok(!fields.includes(bundle.privateKey) && !fields.includes(bundle.revocationCertificate), "generated secrets never become DOM fields");
     ui.get("copy-public-key").click(); await until(() => ui.clipboard.length === 1);
     assert.deepEqual(ui.clipboard, [bundle.publicKey]);
+  } finally { ui.dom.window.close(); }
+});
+
+test("large-RSA consent is separate, selected sizes reach crypto, and private export stays bound to the generated size rather than a later selection", async () => {
+  const requested = [], downloads = [];
+  const ui = boot({ keyTools: {
+    // Synthetic UI routing only; real 8192/16384 crypto runs in the slow lane.
+    generateCompatibilityKey: async (options) => { requested.push(options); return { ...bundle, rsaBits: options.rsaBits }; },
+    checkedPrivateDownload: async (...args) => { downloads.push(args); return bundle.privateKey; },
+  } });
+  try {
+    assert.equal(ui.get("key-rsa-bits").value, "3072");
+    assert.equal(ui.get("large-rsa-warning").hidden, true);
+    ui.input("key-rsa-bits", "8192"); ui.change("key-rsa-bits");
+    assert.equal(ui.get("large-rsa-warning").hidden, false);
+    ui.generate(); assert.equal(requested.length, 0);
+    assert.match(ui.get("keygen-status").textContent, /Acknowledge the large-RSA/);
+    ui.get("key-large-ack").checked = true;
+    ui.generate(); await until(() => ui.get("keygen-status").dataset.kind === "success");
+    assert.equal(requested[0].rsaBits, 8192);
+    assert.match(ui.get("generated-expiry").textContent, /RSA-8192/);
+    assert.equal(ui.get("download-private-key").disabled, true, "large-generation consent is not export consent");
+    ui.input("key-rsa-bits", "16384"); ui.change("key-rsa-bits");
+    assert.equal(ui.get("key-large-ack").checked, false, "a different large size requires fresh consent");
+    ui.get("key-backup-ack").checked = true; ui.change("key-backup-ack");
+    ui.input("backup-fingerprint", bundle.fingerprint); ui.get("download-private-key").click();
+    await until(() => downloads.length === 1);
+    assert.deepEqual(downloads[0][2], { rsaBits: 8192 }, "export validates saved bundle metadata, not the new selector value");
+    ui.get("clear-generated").click();
+    assert.equal(ui.get("key-rsa-bits").value, "3072"); assert.equal(ui.get("large-rsa-warning").hidden, true);
+    assert.equal(ui.get("key-large-ack").checked, false);
+  } finally { ui.dom.window.close(); }
+});
+
+test("above-8192 generation routes only to the dedicated worker, and Clear aborts it without accepting a late result", async () => {
+  const pending = deferred(); let signal, calls = 0;
+  const ui = boot({
+    keyTools: { generateCompatibilityKey: async () => { assert.fail("native path must never be used above 8192 bits"); } },
+    largeKeyGenerator: (options, control) => { calls++; signal = control.signal; assert.equal(options.rsaBits, 16384); return pending.promise; },
+  });
+  try {
+    ui.input("key-rsa-bits", "16384"); ui.change("key-rsa-bits");
+    ui.get("key-large-ack").checked = true;
+    ui.generate(); assert.equal(calls, 1); assert.equal(signal.aborted, false);
+    assert.match(ui.get("keygen-status").textContent, /isolated OpenPGP.js/);
+    ui.get("clear-generated").click(); assert.equal(signal.aborted, true);
+    ui.generate(); assert.equal(calls, 1, "no overlap while cancellation unwinds");
+    pending.resolve({ ...bundle, rsaBits: 16384 });
+    await until(() => !ui.get("generate-key").disabled);
+    assert.equal(ui.get("generated-public-output").value, "");
+    assert.equal(ui.get("key-rsa-bits").value, "3072");
+    assert.equal(ui.downloads.length, 0);
   } finally { ui.dom.window.close(); }
 });
 

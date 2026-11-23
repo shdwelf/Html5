@@ -39,6 +39,11 @@ test("the bounded native CI lane requires all readers and never uploads or cache
   const workflow = read(".github/workflows/openpgp-interop.yml");
   assert.match(workflow, /contents: read/); assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /timeout-minutes: 10/);
+  assert.match(workflow, /large-rsa:[\s\S]*?timeout-minutes: 30/);
+  assert.match(workflow, /RUN_OPENPGP_LARGE_RSA: '1'/);
+  assert.match(workflow, /REQUIRE_OPENPGP_BROWSER: '1'/);
+  assert.match(workflow, /for bits in 8192 16384; do/);
+  assert.match(workflow, /node --test --test-concurrency=1 tests\/openpgp-large-rsa\.test\.mjs/);
   assert.match(workflow, /REQUIRE_OPENPGP_INTEROP: '1'/);
   assert.match(workflow, /REQUIRE_OPENPGP_NATIVE_INTEROP: '1'/);
   assert.match(workflow, /command -v gpg gpgconf gpgv/);
@@ -46,7 +51,7 @@ test("the bounded native CI lane requires all readers and never uploads or cache
   assert.match(workflow, /node --test tests\/openpgp-native-interop\.test\.mjs tests\/openpgp-key-interop\.test\.mjs/);
   assert.doesNotMatch(workflow, /pull_request_target|secrets\.|contents: write|upload-artifact|actions\/cache|continue-on-error|\|\| true/);
   const uses = [...workflow.matchAll(/uses:\s+([^\s#]+)/g)].map((match) => match[1]);
-  assert.equal(uses.length, 3);
+  assert.equal(uses.length, 5);
   for (const action of uses) assert.match(action, /^actions\/[a-z-]+@[a-f0-9]{40}$/);
 });
 

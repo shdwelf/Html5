@@ -77,6 +77,7 @@ test("both generated secret packets unlock only with the test passphrase; downlo
     assert.equal(await checkedPrivateDownload(alice.privateKey, formatFingerprint(alice.fingerprint)), alice.privateKey);
     await assert.rejects(checkedPrivateDownload(unlocked.armor(), alice.fingerprint), /Refusing a private download/);
     await assert.rejects(checkedPrivateDownload(alice.privateKey, bob.fingerprint), /fingerprint mismatch/);
+    await assert.rejects(checkedPrivateDownload(alice.privateKey, alice.fingerprint, { rsaBits: 4096 }), /selected size/);
     await assert.rejects(checkedPrivateDownload(alice.privateKey + bob.privateKey, alice.fingerprint), /exactly one/);
     await assert.rejects(checkedPrivateDownload(alice.publicKey, alice.fingerprint), /exactly one/);
     const appended = concatenate([encrypted.write(), Uint8Array.of(0xfd, 0)]);
@@ -163,6 +164,15 @@ test("size/key-count/algorithm limits are enforced without changing the ring", a
   await assert.rejects(ring.importKeys(Array(MAX_PUBLIC_KEYS + 1).fill(alice.publicKey).join("\n")), /At most 32/);
   const ecc = await openpgp.generateKey({ type: "ecc", curve: "nistP256", userIDs: [{ name: "Synthetic unsupported key" }] });
   await assert.rejects(ring.importKeys(ecc.publicKey), /only v4 RSA/);
+  // Tampered, unsigned oversize moduli are policy-negative inputs, NOT
+  // usable-key fixtures. The cap must reject them before archival import.
+  for (const bits of [16385, 32768]) {
+    const oversized = await readPublic(alice.publicKey);
+    const modulus = new Uint8Array(Math.ceil(bits / 8));
+    modulus[0] = 1 << ((bits - 1) % 8); modulus[modulus.length - 1] = 1;
+    oversized.keyPacket.publicParams.n = modulus;
+    await assert.rejects(ring.importKeys(oversized.armor()), /2048–16384/);
+  }
   assert.equal(ring.list().length, 0);
 });
 

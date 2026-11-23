@@ -1,0 +1,14 @@
+{
+  "schema": "html5-openpgp-large-rsa-worker-build-v1",
+  "upstreamVersion": "6.3.3",
+  "upstreamCommit": "804cf464668fa088e20f7d3fe4501e39aa4cd4e1",
+  "upstreamInput": "openpgp/dist/openpgp.mjs",
+  "upstreamInputSha256": "c6dcff139be7d67a65fabbc3a38437e94bfe8afbf1b06d6217b8c11b42d02778",
+  "patch": "Only the RSA keygen Web Crypto dispatch condition adds bits <= 8192; above this, the existing upstream 40-round prime search is used in a browser worker.",
+  "patchedInputSha256": "50f84fc1134667d3dd282affef11aba635782962cf2184d9004ff0c66374a27a",
+  "esbuildVersion": "0.28.2",
+  "compactSha256": "a4258d33913bd607b0fecc83e90b48b766f32b87e418b78226828efca3b9c6d2",
+  "readableSha256": "fee88c632a47710cf66d0fe5ba29f90b52f7b68ae1b3df8b3b501b6a650a4ea7",
+  "compactBytes": 406139,
+  "readableBytes": 846497
+}

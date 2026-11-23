@@ -31,7 +31,7 @@ body {
     linear-gradient(180deg, #0b1220 0%, #0d1726 47%, #0b1220 100%);
   color: var(--text);
 }
-button, input, textarea { font: inherit; }
+button, input, textarea, select { font: inherit; }
 button { color: inherit; }
 [hidden] { display: none !important; }
 
@@ -73,11 +73,11 @@ h1 span { color: #b4c6d8; font-weight: 480; }
 .field-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
 .field-heading label, .field > label { display: block; color: #d7e1ec; font-size: 12px; font-weight: 670; }
 .field-hint { color: var(--subtle); font-size: 11px; line-height: 1.5; }
-textarea, input { width: 100%; background: rgba(7, 16, 28, 0.78); border: 1px solid rgba(142, 166, 196, 0.2); border-radius: 11px; color: var(--text); outline: none; transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease; }
+textarea, input, select { width: 100%; background: rgba(7, 16, 28, 0.78); border: 1px solid rgba(142, 166, 196, 0.2); border-radius: 11px; color: var(--text); outline: none; transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease; }
 textarea { display: block; resize: vertical; min-height: 126px; padding: 14px 15px; line-height: 1.55; font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 textarea::placeholder, input::placeholder { color: #65768c; opacity: 1; }
-input { min-height: 43px; padding: 10px 12px; font-size: 13px; }
-textarea:focus, input:focus { border-color: rgba(134, 240, 212, 0.65); box-shadow: 0 0 0 3px rgba(46, 208, 174, 0.1); background: rgba(7, 16, 28, 0.96); }
+input, select { min-height: 43px; padding: 10px 12px; font-size: 13px; }
+textarea:focus, input:focus, select:focus { border-color: rgba(134, 240, 212, 0.65); box-shadow: 0 0 0 3px rgba(46, 208, 174, 0.1); background: rgba(7, 16, 28, 0.96); }
 textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
 #encrypted-output, #decrypted-output { min-height: 152px; }
 .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 19px; }

@@ -21,7 +21,15 @@
       "browserBundleSha256": "7d3285efa6dfedbb34a136d8b5ad21c28fb973269df0b2818dcb74dfb40b59d9",
       "nodeDistributionSha256": "9274be7afb7fe902c39acb686066c379874e8a444b7d10fea3f5eab60596f95e"
     },
-    "updateReview": "docs/research/openpgp-dependency-update-2026-11-17.json"
+    "updateReview": "docs/research/openpgp-dependency-update-2026-11-17.json",
+    "largeRsaWorker": {
+      "kind": "Separate locally modified worker build; normal browser and Node distributions unchanged",
+      "buildRecipe": "scripts/openpgp-large-rsa-build.mjs",
+      "inputSha256": "c6dcff139be7d67a65fabbc3a38437e94bfe8afbf1b06d6217b8c11b42d02778",
+      "patch": "Only the RSA keygen Web Crypto dispatch condition adds bits <= 8192; existing upstream randomProbablePrime(..., 40) for larger browser generation",
+      "scope": "Explicit 12288/16384-bit generation in a single-request, cancellable 20-minute worker; unchanged CSPRNG, prime tests, signatures and secret protection; no security audit or mobile certification claim",
+      "shippedBuildReceipt": "public/apps/openpgp-workbench/vendor/large-rsa-build.json"
+    }
   },
   "nodeHelper": {
     "name": "eckey-utils",
@@ -120,10 +128,10 @@
   ],
   "recipientPolicy": {
     "publicProfiles": [
-      "v4 RSA 2048–4096",
+      "v4 RSA 2048\u201316384",
       "v4 legacy Ed25519 primary; Ed25519/Curve25519 subkeys"
     ],
-    "generation": "Unchanged v4 RSA-3072 with AES-256 / iterated SHA-256 S2K private protection",
+    "generation": "Default v4 RSA-3072; explicit 3072/4096/6144/8192/12288/16384-bit equal-size primary/subkey pairs; unchanged AES-256 / iterated SHA-256 S2K secret protection and saved-size download validation",
     "backup": "One public certificate, exact full primary fingerprint, valid current primary and encryption key; one v3 PKESK and SEIPDv1/MDC envelope; no secret import, owner trust or signing claim",
     "excluded": [
       "v6 keys",
@@ -131,6 +139,7 @@
       "production private keys",
       "personal User IDs",
       "keyserver/network lookup"
-    ]
+    ],
+    "largeRsaReview": "docs/openpgp-large-rsa-2026-11-17.md"
   }
 }

@@ -106,7 +106,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "acorn": "^8.19.0",
-    "esbuild": "^0.28.2",
+    "esbuild": "0.28.2",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.3",
     "jsdom": "^30.0.1",

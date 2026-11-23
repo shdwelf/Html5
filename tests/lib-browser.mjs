@@ -75,11 +75,12 @@ export function serve(root = ROOT) {
   return new Promise((done) => server.listen(0, "127.0.0.1", () => done({ server, port: server.address().port })));
 }
 
-export async function withBrowser(deps, fn) {
+export async function withBrowser(deps, fn, { protocolTimeout } = {}) {
   const libDir = unpackLibs();
   const browser = await deps.puppeteer.launch({
     executablePath: await deps.chromium.executablePath(),
     headless: "new",
+    ...(protocolTimeout === undefined ? {} : { protocolTimeout }),
     env: { ...process.env, LD_LIBRARY_PATH: `${libDir}:${process.env.LD_LIBRARY_PATH ?? ""}` },
     args: [
       "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu-sandbox",
