@@ -73,7 +73,12 @@ test("opt-in network profile adds RadarScope and News Globe without changing off
   assert.match(RADAR_SCOPE, /api\.adsb\.fi/);
   assert.match(RADAR_SCOPE, /api\.airplanes\.live/);
   assert.ok(network.some((app) => app.slug === "news-globe"));
-  assert.equal(buildCatalog("public").length, 94);
+  const publicSlugs = buildCatalog("public").map((app) => app.slug);
+  const networkPublicSlugs = network
+    .filter((app) => !["ads-b-radar-scope", "news-globe"].includes(app.slug))
+    .map((app) => app.slug);
+  assert.equal(publicSlugs.length, 94);
+  assert.deepEqual(networkPublicSlugs, publicSlugs, "network profile retains every approved public app, including existing coin apps");
   assert.deepEqual(buildCatalog("private").map((app) => app.slug).sort(), ["helios-observatory", "prime-viewer"]);
   assert.match(GRADLE, /create\('network'\)/);
   assert.match(GRADLE, /applicationIdSuffix '\.network'/);
