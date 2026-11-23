@@ -6,6 +6,7 @@
  *
  *   node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
  *   node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+ *   node scripts/build-html5-offline-launcher-assets.mjs --check --profile network
  *   node scripts/build-html5-offline-launcher-assets.mjs --profile public --out-dir \
  *     apps/html5-offline-launcher/app/build/generated/html5-assets/public
  */
@@ -29,7 +30,22 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_APPS = join(ROOT, "public", "apps");
 const EXPECTED_ENTRYPOINTS = 94;
 export const PRIVATE_APP_SLUGS = Object.freeze(["helios-observatory", "prime-viewer"]);
+export const NETWORK_APP_SOURCES = Object.freeze([
+  {
+    slug: "ads-b-radar-scope",
+    sourcePath: join(ROOT, "apps", "ads-b-radar-scope"),
+    name: "ADS-B Radar Scope",
+    description: "Opt-in live aircraft radar from public ADS-B data providers.",
+  },
+  {
+    slug: "news-globe",
+    sourcePath: join(ROOT, "apps", "news-globe.html"),
+    name: "News Globe — Live RSS",
+    description: "Opt-in OPML/RSS news globe; feed hosts vary by the selected OPML sources.",
+  },
+]);
 const EXPECTED_PRIVATE_ENTRYPOINTS = PRIVATE_APP_SLUGS.length;
+const EXPECTED_NETWORK_ENTRYPOINTS = EXPECTED_ENTRYPOINTS + NETWORK_APP_SOURCES.length;
 const APP_SLUG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const HOST_LABEL_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const EXTERNAL_RESOURCE_PATTERN = /<(?:script|link|img|iframe|video|audio|source|object)\b[^>]*?\b(?:src|href)\s*=\s*(["'])https?:\/\//is;
@@ -136,6 +152,26 @@ export function discoverApps() {
 export function appsForProfile(profile = "public") {
   const apps = discoverApps();
   if (profile === "public") return apps;
+  if (profile === "network") {
+    const seen = new Set(apps.map((app) => app.slug));
+    const extras = NETWORK_APP_SOURCES.map((source) => {
+      checkAppSlug(source.slug);
+      if (seen.has(source.slug)) throw new Error(`Duplicate network app slug: ${source.slug}`);
+      seen.add(source.slug);
+      if (!existsSync(source.sourcePath)) throw new Error(`Network app source not found: ${source.sourcePath}`);
+      const index = readFileSync(source.sourcePath, "utf8");
+      return {
+        slug: source.slug,
+        sourceType: "file",
+        directory: source.sourcePath,
+        indexPath: source.sourcePath,
+        name: source.name || htmlTitle(index) || titleFromSlug(source.slug),
+        description: source.description || "",
+        hasRemoteResources: EXTERNAL_RESOURCE_PATTERN.test(index),
+      };
+    });
+    return [...apps, ...extras].sort((left, right) => left.slug.localeCompare(right.slug, "en"));
+  }
   if (profile !== "private") {
     throw new Error(`Unknown Android app profile: ${JSON.stringify(profile)}`);
   }
@@ -200,6 +236,7 @@ export function buildCatalog(profile = "public") {
 function expectedCount(profile) {
   if (profile === "public") return EXPECTED_ENTRYPOINTS;
   if (profile === "private") return EXPECTED_PRIVATE_ENTRYPOINTS;
+  if (profile === "network") return EXPECTED_NETWORK_ENTRYPOINTS;
   throw new Error(`Unknown Android app profile: ${JSON.stringify(profile)}`);
 }
 
@@ -226,6 +263,11 @@ function checkInventory(profile = "public") {
 }
 
 function stageAppSource(app, destination) {
+  if (app.sourceType === "file") {
+    mkdirSync(destination, { recursive: true });
+    cpSync(app.indexPath, join(destination, "index.html"), { dereference: true, force: true });
+    return;
+  }
   cpSync(app.directory, destination, { recursive: true, dereference: true, force: true });
 }
 
@@ -255,7 +297,7 @@ function writeStagedAssets(outDir, profile = "public") {
 
   writeFileSync(
     join(output, "launcher", "catalog.json"),
-    `${JSON.stringify({ version: 1, apps: catalog }, null, 2)}\n`,
+    `${JSON.stringify({ version: 1, networkEnabled: profile === "network", apps: catalog }, null, 2)}\n`,
     "utf8",
   );
   const fileCount = catalog.reduce((count, app) => {
@@ -285,8 +327,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const profileIndex = args.indexOf("--profile");
   const inlineProfile = args.find((argument) => argument.startsWith("--profile="));
   const profile = profileIndex >= 0 ? args[profileIndex + 1] : inlineProfile?.slice("--profile=".length) ?? "public";
-  if (profile !== "public" && profile !== "private") {
-    console.error(`Unknown profile ${JSON.stringify(profile)}. Use --profile public or --profile private.`);
+  if (profile !== "public" && profile !== "private" && profile !== "network") {
+    console.error(`Unknown profile ${JSON.stringify(profile)}. Use --profile public, private, or network.`);
     process.exitCode = 2;
   } else if (args.includes("--check")) {
     checkInventory(profile);
@@ -295,7 +337,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const inlineOut = args.find((argument) => argument.startsWith("--out-dir="));
     const outDir = outIndex >= 0 ? args[outIndex + 1] : inlineOut?.slice("--out-dir=".length);
     if (!outDir || outDir.startsWith("--")) {
-      console.error("Usage: build-html5-offline-launcher-assets.mjs [--profile public|private] --check | --out-dir <Gradle build path>");
+      console.error("Usage: build-html5-offline-launcher-assets.mjs [--profile public|private|network] --check | --out-dir <Gradle build path>");
       process.exitCode = 2;
     } else {
       writeStagedAssets(outDir, profile);

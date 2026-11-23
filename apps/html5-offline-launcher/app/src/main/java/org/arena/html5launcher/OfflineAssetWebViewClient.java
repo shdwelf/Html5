@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.IDN;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,17 +26,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-/** Serves only packaged assets and denies all non-local requests. */
+/** Serves packaged assets; external HTTPS is available only in the network flavor. */
 final class OfflineAssetWebViewClient extends WebViewClient {
     static final String HOME_URL = "https://catalog.invalid/index.html";
     private static final String CATALOG_HOST = "catalog.invalid";
     private static final String TAG = "Html5Offline";
 
     private final AssetManager assets;
+    private final boolean networkEnabled;
     private final Map<String, String> rootsByHost = new HashMap<>();
 
-    OfflineAssetWebViewClient(Context context) {
+    OfflineAssetWebViewClient(Context context, boolean networkEnabled) {
         assets = context.getApplicationContext().getAssets();
+        this.networkEnabled = networkEnabled;
         rootsByHost.put(CATALOG_HOST, "launcher");
         loadAppHosts();
     }
@@ -87,7 +90,10 @@ final class OfflineAssetWebViewClient extends WebViewClient {
         String host = uri.getHost();
         String root = host == null ? null : rootsByHost.get(host.toLowerCase(Locale.ROOT));
         if (!"https".equalsIgnoreCase(scheme) || root == null) {
-            return errorResponse(451, "Blocked", "Offline mode blocks external requests.");
+            if (networkEnabled && isValidExternalHttpsUri(uri)) return null;
+            return errorResponse(451, "Blocked", networkEnabled
+                    ? "Network mode allows only validated HTTPS hostnames."
+                    : "Offline mode blocks external requests.");
         }
 
         String assetPath = resolveAssetPath(root, uri.getPath());
@@ -106,6 +112,32 @@ final class OfflineAssetWebViewClient extends WebViewClient {
             Log.w(TAG, "Could not open local asset " + assetPath, error);
             return errorResponse(500, "Internal Server Error", "Local asset could not be read.");
         }
+    }
+
+    /** Host syntax policy for the network flavor's dynamic OPML/RSS destinations.
+     * This validates the URL and TLS transport, not the publisher or resolved IP address.
+     */
+    private static boolean isValidExternalHttpsUri(Uri uri) {
+        if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) ||
+                uri.getUserInfo() != null || (uri.getPort() != -1 && uri.getPort() != 443)) return false;
+        String rawHost = uri.getHost();
+        if (rawHost == null || rawHost.indexOf(':') >= 0) return false;
+        final String host;
+        try {
+            host = IDN.toASCII(rawHost, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
+        } catch (IllegalArgumentException invalidHost) {
+            return false;
+        }
+        if (host.length() > 253 || !host.contains(".") || host.matches("[0-9.]+") ||
+                host.matches("(?i)(?:0x[0-9a-f]+\\.?)+") || host.endsWith(".")) return false;
+        if (host.endsWith(".invalid") || host.endsWith(".localhost") || host.endsWith(".local") ||
+                host.endsWith(".internal") || host.endsWith(".home.arpa")) return false;
+        String[] labels = host.split("\\.", -1);
+        for (String label : labels) {
+            if (label.isEmpty() || label.length() > 63 ||
+                    !label.matches("[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) return false;
+        }
+        return true;
     }
 
     private static boolean isWebViewLocalScheme(String scheme) {
@@ -206,7 +238,10 @@ final class OfflineAssetWebViewClient extends WebViewClient {
 
         String host = uri.getHost();
         String normalizedHost = host == null ? "" : host.toLowerCase(Locale.ROOT);
-        if ("https".equalsIgnoreCase(scheme) && rootsByHost.containsKey(normalizedHost)) {
+        if ("https".equalsIgnoreCase(scheme) &&
+                (rootsByHost.containsKey(normalizedHost) ||
+                        (networkEnabled && isValidExternalHttpsUri(uri)))) {
+            if (!rootsByHost.containsKey(normalizedHost)) return false;
             String path = uri.getPath();
             if (!CATALOG_HOST.equals(normalizedHost) &&
                     ("/apps".equals(path) || "/apps/".equals(path))) {
@@ -216,7 +251,9 @@ final class OfflineAssetWebViewClient extends WebViewClient {
             return false;
         }
 
-        Toast.makeText(view.getContext(), "Offline mode: external links are disabled.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.getContext(), networkEnabled
+                ? "Network mode: only validated HTTPS hosts are allowed."
+                : "Offline mode: external links are disabled.", Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -228,7 +265,10 @@ final class OfflineAssetWebViewClient extends WebViewClient {
 
         String host = uri.getHost();
         String normalizedHost = host == null ? "" : host.toLowerCase(Locale.ROOT);
-        if ("https".equalsIgnoreCase(scheme) && rootsByHost.containsKey(normalizedHost)) {
+        if ("https".equalsIgnoreCase(scheme) &&
+                (rootsByHost.containsKey(normalizedHost) ||
+                        (networkEnabled && isValidExternalHttpsUri(uri)))) {
+            if (!rootsByHost.containsKey(normalizedHost)) return false;
             String path = uri.getPath();
             if (!CATALOG_HOST.equals(normalizedHost) &&
                     ("/apps".equals(path) || "/apps/".equals(path))) {
@@ -238,7 +278,9 @@ final class OfflineAssetWebViewClient extends WebViewClient {
             return false;
         }
 
-        Toast.makeText(view.getContext(), "Offline mode: external links are disabled.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.getContext(), networkEnabled
+                ? "Network mode: only validated HTTPS hosts are allowed."
+                : "Offline mode: external links are disabled.", Toast.LENGTH_SHORT).show();
         return true;
     }
 }

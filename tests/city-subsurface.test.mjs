@@ -245,6 +245,20 @@ test("California keeps curated rows separate from its per-ID GNIS extract", asyn
   const data = await import("../js/city-subsurface-data-california.js");
   const gaz = await import("../js/city-gazetteer-data-california.js");
   const register = JSON.parse(read("resources/city-subsurface/gnis-state-source-register-2026-10-22.json"));
+  const ucIds = [
+    "uc-berkeley-campus-life", "uc-davis-campus-life", "uc-irvine-campus-life",
+    "uc-los-angeles-campus-life", "uc-merced-campus-life", "uc-riverside-campus-life",
+    "uc-san-diego-campus-life", "uc-san-francisco-campus-life",
+    "uc-santa-barbara-campus-life", "uc-santa-cruz-campus-life",
+  ];
+  assert.ok(data.LAYERS.some((layer) => layer.id === "uc-network" && layer.kind === "node"));
+  const ucNodes = data.NODES.filter((node) => node.layer === "uc-network");
+  for (const id of ucIds) assert.ok(ucNodes.some((node) => node.id === id), `missing UC campus anchor ${id}`);
+  assert.ok(ucNodes.some((node) => node.id === "uc-archive-berkeley-student-societies" && node.tier === "community"));
+  assert.ok(ucNodes.some((node) => node.id === "uc-archive-ucla-student-organizations" && node.tier === "community"));
+  assert.ok(ucNodes.find((node) => node.id === "uc-archive-ucla-student-organizations").facts.join(" ").includes("not current Greek organizations"),
+    "archival organization references must not imply current status");
+  assert.ok(ucNodes.some((node) => node.id === "ucsb-ventura-center-closed"));
 
   assert.equal(data.CITY.id, "california");
   assert.equal(data.CITY.state, "CA");

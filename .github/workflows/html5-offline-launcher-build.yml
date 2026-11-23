@@ -5,6 +5,8 @@ on:
     branches: ['main']
     paths:
       - 'apps/html5-offline-launcher/**'
+      - 'apps/ads-b-radar-scope'
+      - 'apps/news-globe.html'
       - 'public/apps/**'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
@@ -18,6 +20,8 @@ on:
   pull_request:
     paths:
       - 'apps/html5-offline-launcher/**'
+      - 'apps/ads-b-radar-scope'
+      - 'apps/news-globe.html'
       - 'public/apps/**'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
@@ -73,6 +77,9 @@ jobs:
 
       - name: Validate private app allowlist
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+
+      - name: Validate network app inventory
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile network
 
       - name: Build public debug APK
         working-directory: apps/html5-offline-launcher
@@ -151,6 +158,40 @@ jobs:
               if slugs != expected or roots != expected:
                   raise SystemExit(f"Unexpected private APK app set: catalog={slugs}, assets={roots}")
           print("Private APK contains only the two allowlisted apps; it will not be uploaded.")
+          PY
+
+      - name: Build opt-in network debug APK
+        working-directory: apps/html5-offline-launcher
+        run: gradle --no-daemon --stacktrace :app:assembleNetworkDebug
+
+      - name: Verify network APK permission and app inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+          python3 - "$apk" <<'PY'
+          import json
+          import sys
+          import zipfile
+
+          with zipfile.ZipFile(sys.argv[1]) as apk:
+              catalog = json.loads(apk.read("assets/launcher/catalog.json"))
+              if catalog.get("networkEnabled") is not True:
+                  raise SystemExit("Network APK catalog is missing its network-enabled marker")
+              slugs = {app["slug"] for app in catalog["apps"]}
+              expected = {"ads-b-radar-scope", "news-globe"}
+              if len(slugs) != 96 or not expected.issubset(slugs):
+                  raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
+              for slug in expected:
+                  if f"assets/apps/{slug}/index.html" not in apk.namelist():
+                      raise SystemExit(f"Missing staged network entrypoint: {slug}")
+          print("Network APK contains both live-feed apps and declares INTERNET.")
           PY
 
       - name: Install PulseAudio runtime for Android emulator microphone tests

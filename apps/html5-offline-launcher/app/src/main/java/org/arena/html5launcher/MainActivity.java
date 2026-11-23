@@ -2,6 +2,7 @@ package org.arena.html5launcher;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -67,7 +68,9 @@ public final class MainActivity extends Activity {
         toolbar.addView(titleColumn, titleColumnParams);
 
         pageTitle = new TextView(this);
-        pageTitle.setText("HTML5 Offline Library");
+        pageTitle.setText(BuildConfig.NETWORK_ENABLED
+                ? "HTML5 Network Library"
+                : "HTML5 Offline Library");
         pageTitle.setTextColor(Color.WHITE);
         pageTitle.setTextSize(15);
         pageTitle.setSingleLine(true);
@@ -76,7 +79,9 @@ public final class MainActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView mode = new TextView(this);
-        mode.setText("LOCAL ONLY  ·  NO NETWORK ACCESS");
+        mode.setText(BuildConfig.NETWORK_ENABLED
+                ? "NETWORK ON  ·  HTTPS HOST VALIDATION"
+                : "LOCAL ONLY  ·  NO NETWORK ACCESS");
         mode.setTextColor(ACCENT);
         mode.setTextSize(9);
         mode.setLetterSpacing(0.08f);
@@ -111,7 +116,7 @@ public final class MainActivity extends Activity {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setLoadsImagesAutomatically(true);
 
-        webView.setWebViewClient(new OfflineAssetWebViewClient(this));
+        webView.setWebViewClient(new OfflineAssetWebViewClient(this, BuildConfig.NETWORK_ENABLED));
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -142,6 +147,15 @@ public final class MainActivity extends Activity {
         back.setOnClickListener(view -> goBack());
         catalog.setOnClickListener(view -> openCatalog());
         webView.loadUrl(OfflineAssetWebViewClient.HOME_URL);
+        if (BuildConfig.NETWORK_ENABLED) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Network-enabled apps")
+                    .setMessage("This separate build can contact external HTTPS services. News Globe loads dynamic OPML and RSS URLs, so the set of feed hosts is not fixed. Network destinations are checked for HTTPS and syntactically valid hostnames (literal IPs and local-only suffixes are rejected), but hostnames are not resolved or reputation-checked; this does not verify who operates a feed or guarantee its content is safe. Aircraft data providers, News Globe's RSS/CDN services, and RadarScope's configured proxy fallbacks may be unavailable or change their terms; proxy operators can observe proxied request URLs. The public and private offline APKs remain network-disabled.")
+                    .setCancelable(false)
+                    .setPositiveButton("Continue", (dialog, which) -> {})
+                    .setNegativeButton("Exit", (dialog, which) -> finish())
+                    .show();
+        }
     }
 
     // Package-private so the Android instrumentation suite can exercise the

@@ -4,7 +4,7 @@ plugins {
 
 def repoRoot = rootProject.projectDir.parentFile.parentFile
 def publicAppsDir = new File(repoRoot, 'public/apps')
-def assetProfiles = ['public', 'private']
+def assetProfiles = ['public', 'private', 'network']
 def generatedAssetsByProfile = assetProfiles.collectEntries { profile ->
     [(profile): layout.buildDirectory.dir("generated/html5-assets/${profile}")]
 }
@@ -22,15 +22,27 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     flavorDimensions 'catalog'
     productFlavors {
         create('public') {
             dimension 'catalog'
+            buildConfigField 'boolean', 'NETWORK_ENABLED', 'false'
         }
         create('private') {
             dimension 'catalog'
             applicationIdSuffix '.private'
             versionNameSuffix '-private'
+            buildConfigField 'boolean', 'NETWORK_ENABLED', 'false'
+        }
+        create('network') {
+            dimension 'catalog'
+            applicationIdSuffix '.network'
+            versionNameSuffix '-network'
+            buildConfigField 'boolean', 'NETWORK_ENABLED', 'true'
         }
     }
 
@@ -64,16 +76,17 @@ def registerHtmlAppsAssetsTask = { profile ->
                 '--profile', profile,
                 '--out-dir', outputDir.get().asFile.absolutePath
         inputs.dir(publicAppsDir)
+        inputs.file(new File(repoRoot, 'apps/ads-b-radar-scope'))
+        inputs.file(new File(repoRoot, 'apps/news-globe.html'))
         inputs.property('profile', profile)
         outputs.dir(outputDir)
     }
 }
 
-def publicAssetsTask = registerHtmlAppsAssetsTask('public')
-def privateAssetsTask = registerHtmlAppsAssetsTask('private')
+def assetTasks = assetProfiles.collect { profile -> registerHtmlAppsAssetsTask(profile) }
 
 tasks.named('preBuild').configure {
-    dependsOn(publicAssetsTask, privateAssetsTask)
+    dependsOn(assetTasks)
 }
 
 dependencies {

@@ -1,8 +1,9 @@
-# HTML5 Offline Library (Android)
+# HTML5 Library (Android)
 
 A separate Android WebView/catalog wrapper for every current
-`public/apps/<directory>/index.html` entrypoint. This does **not** repurpose the
-Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
+`public/apps/<directory>/index.html` entrypoint, with an additional, separately
+opt-in network flavor for live aircraft and RSS apps. This does **not** repurpose
+the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
 
 ## Scope and packaging
 
@@ -17,10 +18,14 @@ Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
   reserved `.invalid` suffix (`catalog.invalid` and one unique app host per
   entrypoint). Local paths are served from packaged APK assets by
   `OfflineAssetWebViewClient`.
-- The manifest deliberately has **no `INTERNET` permission**. Unknown hosts,
-  cleartext URLs, external links, popups, downloads, camera access, and
-  geolocation are blocked. The native app toolbar always provides Back and
-  Catalog controls.
+- The public and private manifests deliberately have **no `INTERNET`
+  permission**. Their unknown hosts, cleartext URLs, external links, popups,
+  downloads, camera access, and geolocation remain blocked. Only the separate
+  `network` flavor adds `INTERNET`; it allows HTTPS requests to syntactically
+  valid DNS hostnames on the usual HTTPS port and blocks literal IPs, reserved
+  local suffixes, user-info URLs, and cleartext. This hostname check does not
+  resolve or verify public IP addresses, publisher identity, or feed safety.
+  The native app toolbar always provides Back and Catalog controls.
 - ANC Studio microphone capture is opt-in. Only its dedicated app origin may
   request audio, and only after the user starts ANC or Smart Calibrate. The
   WebView permission is granted only after Android's `RECORD_AUDIO` runtime
@@ -32,6 +37,20 @@ Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
   Offline Library → Permissions, then retry. Other browser-only features may
   remain unavailable, and the static external-resource scan is a warning aid,
   not a complete runtime-dependency audit.
+- The `network` flavor stages the same public catalog plus two extra entrypoints:
+  RadarScope (`apps/ads-b-radar-scope`) and News Globe (`apps/news-globe.html`).
+  It displays a required startup warning that News Globe's OPML/RSS host set is
+  dynamic and not fixed. News Globe accepts only HTTPS feed URLs with valid
+  hostname syntax before sending them to its RSS service; this is not a trust,
+  DNS-reputation, or public-IP check. RadarScope and News Globe retain their
+  existing third-party API/CDN dependencies; News Globe uses direct OPML and
+  geocoding requests plus rss2json and does not use public CORS-proxy fallbacks.
+  RadarScope keeps its direct-first third-party proxy fallbacks and defaults to
+  its combined ADSB.fi/Airplanes.live sources. OpenSky is omitted because its
+  documented API requires OAuth credentials, which this app does not provide.
+  The remaining live services have not been verified by this build; provider
+  availability, CORS, proxy visibility, and terms may change. No API
+  credentials are packaged.
 
 ## Build and test the APK profiles
 
@@ -43,9 +62,11 @@ From the repository root:
 ```sh
 node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
 node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+node scripts/build-html5-offline-launcher-assets.mjs --check --profile network
 cd apps/html5-offline-launcher
 gradle --no-daemon :app:assemblePublicDebug
 gradle --no-daemon :app:assemblePrivateDebug
+gradle --no-daemon :app:assembleNetworkDebug
 # With an API 34 Android emulator running:
 gradle --no-daemon :app:connectedPublicDebugAndroidTest
 ```
@@ -54,14 +75,21 @@ The **public** profile packages all 94 approved local HTML entrypoints. The
 **private Android** profile is a separate, reduced build with a fixed two-app
 allowlist (Helios Observatory and Prime Viewer), a distinct application ID, and
 no audio permissions. This Android allowlist is separate from the four-app
-private browser bundle. Both Android profiles omit network permission and are
-debug-signed for sideloading/review; neither is a Play Store release build.
+private browser bundle. Both profiles omit network permission.
+
+The **network Android** profile keeps the same 94 public apps and adds
+RadarScope and News Globe (96 catalog entries total), with a distinct
+application ID and the only `INTERNET` permission. Build/install this APK only
+when the user wants live network access; its network warning must be accepted
+at startup. Public and private flavor behavior remains offline. All APKs are
+debug-signed for sideloading/review; none is a Play Store release build.
 
 APK outputs:
 
 ```text
 Public:  app/build/outputs/apk/public/debug/app-public-debug.apk
 Private: app/build/outputs/apk/private/debug/app-private-debug.apk
+Network: app/build/outputs/apk/network/debug/app-network-debug.apk
 ```
 
 The Android instrumentation suite exercises the ANC-only WebView permission
@@ -69,9 +97,9 @@ policy, requests a real `getUserMedia` audio track, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
 track startup, not acoustic capture quality. CI uploads only the public APK as
-the `html5-offline-launcher-public-debug-apk` artifact. It also builds and
-validates the private APK but does not retain or publish it as an artifact,
-because this repository is public. Build `privateDebug` locally and keep that
-APK in the authorized private delivery location. The sandbox itself has no
-local Java/Gradle/Android SDK, so a physical-device microphone check remains a
-useful follow-up.
+the `html5-offline-launcher-public-debug-apk` artifact. It builds and validates
+the private APK and the network APK, including their distinct permission and
+catalog inventories, but does not publish the network APK. Build the network
+flavor locally with `:app:assembleNetworkDebug` when needed. The sandbox itself
+has no local Java/Gradle/Android SDK, so Android APK verification and live-feed
+smoke testing remain CI/device follow-ups.
