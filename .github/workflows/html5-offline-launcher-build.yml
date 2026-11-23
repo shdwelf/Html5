@@ -57,11 +57,6 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Set up Gradle 8.7
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
-
       - name: Install Android SDK platform 34
         shell: bash
         run: |
@@ -83,7 +78,7 @@ jobs:
 
       - name: Build public debug APK
         working-directory: apps/html5-offline-launcher
-        run: gradle --no-daemon --stacktrace :app:assemblePublicDebug
+        run: ./gradlew --no-daemon --stacktrace :app:assemblePublicDebug
 
       - name: Verify public APK permissions
         shell: bash
@@ -105,7 +100,7 @@ jobs:
           set -euo pipefail
           log="$RUNNER_TEMP/private-apk-build.log"
           set +e
-          gradle --no-daemon --stacktrace :app:assemblePrivateDebug > "$log" 2>&1
+          ./gradlew --no-daemon --stacktrace :app:assemblePrivateDebug > "$log" 2>&1
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
@@ -162,7 +157,7 @@ jobs:
 
       - name: Build opt-in network debug APK
         working-directory: apps/html5-offline-launcher
-        run: gradle --no-daemon --stacktrace :app:assembleNetworkDebug
+        run: ./gradlew --no-daemon --stacktrace :app:assembleNetworkDebug
 
       - name: Verify network APK permission and app inventory
         shell: bash
@@ -226,7 +221,7 @@ jobs:
           pre-emulator-launch-script: >-
             { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
-            adb logcat -c || true; if gradle --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; then status=0; else status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; fi; cat app/build/android-webview-tests.log; exit "$status"
+            adb logcat -c || true; if ./gradlew --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; then status=0; else status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; fi; cat app/build/android-webview-tests.log; exit "$status"
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}

@@ -54,22 +54,30 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 
 ## Build and test the APK profiles
 
-Requirements: JDK 17, Gradle 8.7, Android SDK platform/build-tools 34, and Node
-22 (the Gradle asset-staging tasks run the repository's Node builder).
+Requirements: a JDK 17 distribution (Temurin, Zulu, or another OpenJDK 17 build),
+Android SDK platform/build-tools 34, and Node 22. A JRE alone is insufficient
+because Gradle and Android build tasks need the JDK compiler. The checked-in
+Gradle wrapper pins Gradle 8.7 and verifies the distribution SHA-256, so a
+separate system Gradle installation is not required.
 
-From the repository root:
+Install a JDK 17 and Android SDK with **platform 34** and **build-tools 34.0.0**;
+then set `JAVA_HOME` and `ANDROID_HOME` (or `ANDROID_SDK_ROOT`) to those
+installations. On Linux/macOS, accept Android SDK licenses and install packages
+with `sdkmanager "platforms;android-34" "build-tools;34.0.0"`. From the
+repository root:
 
 ```sh
 node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
 node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
 node scripts/build-html5-offline-launcher-assets.mjs --check --profile network
 cd apps/html5-offline-launcher
-gradle --no-daemon :app:assemblePublicDebug
-gradle --no-daemon :app:assemblePrivateDebug
-gradle --no-daemon :app:assembleNetworkDebug
+./gradlew --no-daemon :app:assemblePublicDebug :app:assemblePrivateDebug :app:assembleNetworkDebug
 # With an API 34 Android emulator running:
-gradle --no-daemon :app:connectedPublicDebugAndroidTest
+./gradlew --no-daemon :app:connectedPublicDebugAndroidTest
 ```
+
+On Windows, use `gradlew.bat` instead of `./gradlew`. The first wrapper run
+fetches the pinned Gradle 8.7 distribution and validates its SHA-256 before use.
 
 The **public** profile packages all 94 approved local HTML entrypoints. The
 **private Android** profile is a separate, reduced build with a fixed two-app
