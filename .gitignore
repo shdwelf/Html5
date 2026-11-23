@@ -50,3 +50,6 @@ public/vendor/7z-wasm/
 # Local-only research photo backups (user direction: store locally, not remotely)
 /research-assets/
 /image-search/
+
+# Same-job, synthetic PUBLIC-only OpenPGP browser import control (never a fixture).
+/.openpgp-synthetic-large-PUBLIC.asc

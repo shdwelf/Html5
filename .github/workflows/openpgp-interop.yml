@@ -95,7 +95,7 @@ jobs:
       RUN_OPENPGP_LARGE_RSA: '1'
       REQUIRE_OPENPGP_NATIVE_INTEROP: '1'
       REQUIRE_OPENPGP_BROWSER: '1'
-      OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH: ${{ runner.temp }}/openpgp-synthetic-large-PUBLIC.asc
+      OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH: .openpgp-synthetic-large-PUBLIC.asc
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
