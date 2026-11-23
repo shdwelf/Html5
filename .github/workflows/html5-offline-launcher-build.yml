@@ -33,6 +33,12 @@ on:
       - 'tests/html5-offline-launcher.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   workflow_dispatch:
+    inputs:
+      recipient_public_key:
+        description: 'Optional armored OpenPGP public key to encrypt the private APK for; only ciphertext is uploaded as an artifact.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -152,8 +158,36 @@ jobs:
               })
               if slugs != expected or roots != expected:
                   raise SystemExit(f"Unexpected private APK app set: catalog={slugs}, assets={roots}")
-          print("Private APK contains only the two allowlisted apps; it will not be uploaded.")
+          print("Private APK contains only the two allowlisted apps.")
           PY
+
+      - name: Encrypt private APK for supplied OpenPGP recipient
+        if: ${{ inputs.recipient_public_key != '' }}
+        shell: bash
+        env:
+          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
+        run: |
+          set -euo pipefail
+          export GNUPGHOME="$RUNNER_TEMP/apk-recipient-keyring"
+          install -d -m 700 "$GNUPGHOME"
+          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" | gpg --batch --quiet --import
+          fingerprint="$(gpg --batch --with-colons --list-keys | awk -F: '$1 == "fpr" { print $10; exit }')"
+          test -n "$fingerprint"
+          apk=app/build/outputs/apk/private/debug/app-private-debug.apk
+          encrypted="$RUNNER_TEMP/app-private-debug.apk.gpg"
+          gpg --batch --no-tty --trust-model always --output "$encrypted" --encrypt --recipient "$fingerprint" "$apk"
+          (cd "$RUNNER_TEMP" && sha256sum app-private-debug.apk.gpg > app-private-debug.apk.gpg.sha256)
+
+      - name: Upload encrypted private APK only
+        if: ${{ inputs.recipient_public_key != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-private-debug-apk-openpgp
+          path: |
+            ${{ runner.temp }}/app-private-debug.apk.gpg
+            ${{ runner.temp }}/app-private-debug.apk.gpg.sha256
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Build opt-in network debug APK
         working-directory: apps/html5-offline-launcher
