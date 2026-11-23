@@ -41,13 +41,19 @@ Clear buttons and `pagehide` drop fields/references and suppress late async resu
 ```sh
 node --test tests/openpgp-workbench.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs
 node --test tests/openpgp-key-interop.test.mjs
-# Optional PGPy==0.6.0 in a separate environment; test detects/skips its absence:
-# PYTHONPATH=/path/to/pgpy/site-packages node --test tests/openpgp-key-interop.test.mjs
+# Full native GnuPG is separate from gpgv; requires gpg AND gpgconf:
+node --test tests/openpgp-native-interop.test.mjs
+# Optional Python reader: pin/hash-check build and runtime dependencies in an isolated environment:
+# python -m pip install --require-hashes -r tests/requirements/openpgp-build.txt
+# python -m pip install --no-build-isolation --require-hashes -r tests/requirements/openpgp-interop.txt
+# REQUIRE_OPENPGP_INTEROP=1 REQUIRE_OPENPGP_NATIVE_INTEROP=1 node --test tests/openpgp-key-interop.test.mjs tests/openpgp-native-interop.test.mjs
 # Optional existing Chromium harness dependencies:
 node tests/openpgp-workbench-browser.mjs
 ```
 
 Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, multi-key imports, reset and external-request observation. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.
+
+The separate native-GnuPG harness uses fresh private temporary homes, protected synthetic key files, passphrases through stdin (not argv/environment), and dedicated-agent shutdown before wrong-passphrase checks and cleanup. It covers both secret packets, exact fingerprints, bidirectional encryption/signatures, secret re-export, both public-keyring armor layouts and revocation. Missing tools/readers are explicit optional skips locally, but **fail** when the required flags above are set; the bounded `OpenPGP native interoperability` CI lane sets both flags. A successful harness run is not a Kleopatra GUI, OpenKeychain or PGPony device test. No synthetic private home, key, passphrase file or revocation artifact is uploaded.
 
 A PGPy failure exposed OpenPGP.js's default SHA-3 preference IDs in otherwise classic RSA keys. `keyring.mjs` now constructs a fresh narrow UID self-certification using the **library's exported signature API**, then reparses and verifies the result. It does not alter already-signed bytes or implement a cryptographic primitive. Regression checks cover those exact preferences and the bundled browser distribution.
 

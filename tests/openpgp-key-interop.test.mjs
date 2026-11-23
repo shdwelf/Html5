@@ -13,6 +13,7 @@ const pyProbe = spawnSync(python, ["-c", "import pgpy, importlib.metadata; print
 const hasPgpy = pyProbe.status === 0 && pyProbe.stdout.trim() === "0.6.0";
 const gpgvProbe = spawnSync("gpgv", ["--version"], { encoding: "utf8", timeout: 10000 });
 const hasGpgv = gpgvProbe.status === 0;
+const required = process.env.REQUIRE_OPENPGP_INTEROP === "1";
 const plaintext = "Independent synthetic RSA-key control only.\nUnicode: café 🔐.\n";
 const passphrase = "independent control — synthetic use only";
 let control;
@@ -30,7 +31,8 @@ async function vector() {
   } finally { privateKey.clearPrivateParams(); }
 }
 
-test("independent GnuPG gpgv parses the exported public certificate and verifies the generated RSA signature", { skip: !hasGpgv && "gpgv unavailable (verification-only control)" }, async () => {
+test("independent GnuPG gpgv parses the exported public certificate and verifies the generated RSA signature", { skip: !hasGpgv && !required && "gpgv unavailable (verification-only control)" }, async () => {
+  assert.ok(hasGpgv, "This mandatory interop run requires gpgv, not a silent skip");
   const { bundle, signature } = await vector();
   const directory = mkdtempSync(join(tmpdir(), "html5-gpgv-control-"));
   try {
@@ -48,7 +50,8 @@ test("independent GnuPG gpgv parses the exported public certificate and verifies
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 
-test("independent PGPy unlocks both protected packets, checks fingerprints and cross-decrypts/signs in both directions", { skip: !hasPgpy && "optional PGPy==0.6.0 unavailable; install it separately and set PYTHONPATH" }, async () => {
+test("independent PGPy unlocks both protected packets, checks fingerprints and cross-decrypts/signs in both directions", { skip: !hasPgpy && !required && "optional PGPy==0.6.0 unavailable; install it separately and set PYTHONPATH" }, async () => {
+  assert.ok(hasPgpy, "This mandatory interop run requires PGPy==0.6.0, not a silent skip");
   const { bundle, signature, encrypted } = await vector();
   const independent = spawnSync(python, [fileURLToPath(new URL("./openpgp-key-interop.py", import.meta.url))], {
     input: JSON.stringify({ ...bundle, signature, encrypted, plaintext, passphrase }), encoding: "utf8", timeout: 30000, maxBuffer: 1_048_576,
