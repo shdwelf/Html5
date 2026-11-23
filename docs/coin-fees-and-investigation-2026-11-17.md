@@ -10,9 +10,13 @@ asset rows are retained; no ticker is silently treated as a verified contract.
 
 The deterministic [per-asset coverage inventory](coin-research-inventory-2026-11-17.md)
 records every defined asset and its gaps. This is **not 500 completed independent
-asset reviews**. The research overlay has 57 host profiles, 17 primary-reviewed
-fee models and 40 pending fee models. Only USDT's three existing mainnet contract
-identities are catalogued. Most token deployments still need issuer/contract,
+asset reviews**. After [round 83's 43 remaining host reviews](chain-fee-model-review-round-83-2026-11-17.md),
+the overlay has **58 host profiles / 58 source-reviewed fee models / 0 pending
+host fee models**. The extra profile separates Cronos EVM (VVS's historical host)
+from Cronos POS (native CRO's historical host), without altering derivation
+records. THETA and TFUEL are both native Theta assets; only TFUEL pays fees.
+This is not a live parameter/liveness check; historical HECO operation remains
+unverified. Only USDT's three existing mainnet contract identities are catalogued. Most token deployments still need issuer/contract,
 wrapped/migration, decimals and transfer-behaviour verification. Historical
 SLIP-44/host mappings are not proofs of a token's current deployment.
 
@@ -30,20 +34,20 @@ it still has user-generated PoW/resource and possible service costs, and this
 app does not support Nano derivation.
 
 The JSON scenario accepts bounded, finite `prices` in USD per **fee asset**,
-`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE/AVAX,
+`nativeFees` by asset ID or `assetID@networkID`, `gasGwei` by ETH/BSC/HYPE,
 `tokenGas` by asset ID, and Bitcoin `vbytes` / `satPerVbyte`. Litecoin's
 reviewed policy is documented separately; the BTC-only vbyte scenario is not
 silently reused because Litecoin Core's reviewed `GetTotalFee` also accounts
 for MWEB weight. Dogecoin's documented policy is also reviewed, but no DOGE
 scenario calculator is enabled; its recommended/minimum relay rates are policy
-settings, not transaction-specific quotes. For Avalanche,
-`tokenGas` / native gas units must represent charged gas (including the Helicon
-`max(gasUsed, gasLimit / 2)` floor); the manually supplied gwei price is an
-assumption, not an RPC quote. This simple arithmetic omits transaction fee-cap
-selection, changing base fee, inclusion timing, and any protocol-specific limits.
-Nothing is fetched or saved. An explicit user-entered zero is labeled a scenario,
-not an inferred
-free transaction. Rollups do not receive an Ethereum-only fee estimate that
+settings, not transaction-specific quotes. Avalanche's previously added generic
+21,000-gas shortcut is no longer applied: its gas-limit floor needs the actual
+transaction limit/usage and effective price, not just `gasGwei` or `tokenGas`.
+Use an explicitly entered transaction-specific **total** through `nativeFees`
+for Avalanche, Flare, 0G, other newly reviewed hosts and nontrivial transactions.
+This preserves manual scenarios without silently dropping protocol-specific
+charges or assigning a new automatic estimator. Nothing is fetched or saved.
+An explicit user-entered zero is labeled a scenario, not an inferred free transaction. Rollups do not receive an Ethereum-only fee estimate that
 silently omits their parent-data charge. Testnet rows have no mainnet ranking.
 
 | Reviewed model | Documented basis, not a live quote |

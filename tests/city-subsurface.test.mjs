@@ -57,7 +57,9 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
     if (data.CITY.requiresDem) {
       const demModule = `js/city-dem-grid-${city}.js`;
       assert.ok(existsSync(path.join(root, demModule)), `${city}: required DEM module is missing`);
-      assert.deepEqual(Buffer.from(files[demModule]), readFileSync(path.join(root, demModule)), `${city}: required DEM is stale or absent in the XDC`);
+      // Do not ask Node to format multi-megabyte byte-array diffs on a stale
+      // bundle; retain exact byte equality with a bounded diagnostic instead.
+      assert.ok(Buffer.from(files[demModule]).equals(readFileSync(path.join(root, demModule))), `${city}: required DEM is stale or absent in the XDC`);
     }
     const index = decoder.decode(files["index.html"]);
     assert.match(index, new RegExp(`data-city="${city}"`));
@@ -65,7 +67,7 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
     assert.match(decoder.decode(files["manifest.toml"]), new RegExp(data.CITY.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     for (const name of Object.keys(files).filter((n) => /^(?:js|css)\//.test(n))) {
       assert.ok(existsSync(path.join(root, name)), `${city}: archive has ${name} with no working-tree source`);
-      assert.deepEqual(Buffer.from(files[name]), readFileSync(path.join(root, name)), `${city}: ${name} is stale in the archive`);
+      assert.ok(Buffer.from(files[name]).equals(readFileSync(path.join(root, name))), `${city}: ${name} is stale in the archive`);
     }
   }
 });

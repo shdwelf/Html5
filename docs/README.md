@@ -15,10 +15,13 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
-## Current round 82 · NEAR fee research continuation
+## Current round 83 · host fees and local OpenPGP keyrings
 
+- [43 remaining host fee-model reviews](chain-fee-model-review-round-83-2026-11-17.md) — primary evidence, pinned source manifest, Cronos POS/EVM separation and TFUEL fee-asset correction. No live prices, activation or historical-network liveness certification.
+- [Local OpenPGP keyrings: source review and implementation](openpgp-keyring-source-review-2026-11-17.md) — nine pinned upstreams, conservative RSA key generation, public-only import/export, protected backups, independent controls and explicit Android/iOS/Kleopatra test gates; Photon and Proton VPN kept separate.
+- [Round 83 execution and validation](backlog-execution-round-83-2026-11-17.md).
 - [Coin fees, network evidence and opt-in wallet investigation](coin-fees-and-investigation-2026-11-17.md) — local default leaves, explicit read-only consent, expected-chain guard and the existing NFT/ERC-20 metadata viewer.
-- [All 500 asset coverage rows and explicit research gaps](coin-research-inventory-2026-11-17.md) — 57 host profiles, 18 reviewed fee models / 39 pending; not 500 independently verified token contracts.
+- [All 500 asset coverage rows and explicit research gaps](coin-research-inventory-2026-11-17.md) — 58 host profiles, 58 source-reviewed fee models / 0 pending; not 500 independently verified token contracts.
 - [FHE Masked Aggregation v2](cyberchef-fhe-masked-aggregation-2026-11-17.md) — distinct plaintext Kitchen oracle plus separate actual finite-depth BFV encrypted-mask companion; no bootstrapping/paper speedup claim.
 - [Round 81 execution and remaining gates](backlog-execution-round-81-2026-11-17.md).
 - [Round 82 — NEAR transaction-fee evidence](backlog-execution-round-82-2026-11-15.md) — one host fee model reviewed from primary documentation; no live quote or default estimate.

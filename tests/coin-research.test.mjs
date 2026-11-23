@@ -20,8 +20,9 @@ const ABANDON = "abandon ".repeat(11) + "about";
 
 test("all 500 historical assets have explicit evidence gaps, never fabricated free costs", () => {
   assert.equal(coins.length, 500);
-  assert.equal(Object.keys(evidence.chains).length, 57);
-  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 18);
+  assert.equal(Object.keys(evidence.chains).length, 58);
+  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "primary-reviewed").length, 58);
+  assert.equal(Object.values(evidence.chains).filter((p) => p.feeStatus === "pending").length, 0);
   const ids = new Set(coins.map((row) => row.id));
   for (const profile of Object.values(evidence.chains)) for (const id of profile.nativeAssetIds) assert.ok(ids.has(id), id);
   for (const row of coins) {
@@ -54,7 +55,76 @@ test("all 500 historical assets have explicit evidence gaps, never fabricated fr
   assert.match(estimate("XNO").basis, /PoW\/service costs excluded/);
   assert.equal(coin("XNO").derive, false, "feeless does not enable an unsupported derivation");
   assert.equal(researchRecord(evidence, coin("usdt-tether"), main(coin("usdt-tether"))).native, false);
-  assert.equal(researchRecord(evidence, coin("TFUEL"), main(coin("TFUEL"))).native, false, "same host != primary native transfer asset");
+  for (const id of ["THETA", "TFUEL"]) {
+    const record = researchRecord(evidence, coin(id), main(coin(id)));
+    assert.equal(record.native, true, "Theta has two native assets, distinct from TNT tokens");
+    assert.equal(record.feeAsset, "TFUEL");
+    assert.equal(estimate(id).amount, null, "native does not imply a fixed transfer fee");
+  }
+});
+
+test("round 83 closes exactly the 43 pending host models with reproducible evidence, not live quotes", () => {
+  const pending = "ZEC DOGE BCH LTC NEAR AVAX CRO FTM ETC DASH ATOM VET INJ FLR LUNC XDC BSV PLS SEI TIA THETA KAIA RUNE AKT XEC QTUM DGB DYDX WEMIX RSK ISLM KAVA PEAQ KUB XVG 0G AXL RON RVN BAND LUNA MERLIN HECO".split(" ");
+  assert.deepEqual(evidence.feeReviewBatch.previouslyPending, pending);
+  assert.deepEqual(evidence.feeReviewBatch.addedProfiles, ["CRONOS_EVM"]);
+  const report = readFileSync(new URL(`../${evidence.feeReviewBatch.report}`, import.meta.url), "utf8");
+  for (const [i, key] of pending.entries()) {
+    const profile = evidence.chains[key];
+    assert.match(report, new RegExp(`### ${i + 1}\\. ${key} —`));
+    assert.equal(profile.feeStatus, "primary-reviewed");
+    assert.notEqual(profile.feeModel, "unknown");
+    assert.ok(profile.feeAsset && profile.feeFormula);
+    assert.ok(profile.sources.some((s) => s.kind === "fees" && s.url.startsWith("https://")), key);
+    assert.equal(profile.feeReview.parameterState, "unqueried");
+    assert.equal(profile.feeReview.transactionTested, false);
+    assert.equal(profile.nativeBaseFee, undefined, "review does not invent a constant fee");
+    for (const row of coins.filter((c) => profileForCoin(evidence, c) === profile)) {
+      assert.equal(estimate(row.id).amount, null, `${key} must remain transaction-specific`);
+    }
+  }
+  const manifest = JSON.parse(readFileSync(new URL(`../${evidence.feeReviewBatch.sourceManifest}`, import.meta.url)));
+  assert.equal(manifest.files.length, 46);
+  for (const source of manifest.files) {
+    assert.match(source.commit, /^[0-9a-f]{40}$/);
+    assert.match(source.sha256, /^[0-9a-f]{64}$/);
+    assert.ok(source.url.includes(`/blob/${source.commit}/${source.path}`));
+    assert.ok(source.bytes > 0 && source.lines > 0);
+  }
+  assert.equal(evidence.chains.HECO.operationalStatus, "unverified-historical");
+});
+
+test("ambiguous CRO defaults get separate research profiles without rewriting paths or explicit token networks", () => {
+  const cro = coin("CRO"), vvs = coin("VVS");
+  assert.equal(main(cro).hostChain, "CRO"); assert.equal(main(cro).family, "cosmos");
+  assert.equal(main(cro).chainId, null);
+  assert.equal(main(vvs).hostChain, "CRONOS_EVM"); assert.equal(main(vvs).family, "evm");
+  assert.equal(main(vvs).chainId, 25);
+  assert.equal(main(vvs).chain, "CRO", "historical derivation host code remains unchanged");
+  assert.equal(vvs.path, "m/44'/60'/0'/0/0");
+  assert.equal(cro.path, "m/44'/394'/0'/0/0");
+  assert.equal(main(vvs).rpc, ""); assert.equal(main(vvs).balanceAdapter, null);
+  assert.equal(researchRecord(evidence, vvs, main(vvs)).native, false);
+  const explicit = { assets: { [vvs.id]: [{ ...main(vvs), id: "different-explicit-host", chain: "ETH" }] } };
+  assert.equal(researchedNetworks([vvs], explicit, evidence).assets[vvs.id][0].hostChain, "ETH");
+});
+
+test("non-universal fee rules retain their own model, asset, and limitations", () => {
+  assert.equal(evidence.chains.VET.feeAsset, "VTHO");
+  assert.equal(evidence.chains.RSK.feeAsset, "RBTC");
+  assert.equal(evidence.chains.MERLIN.feeAsset, "BTC");
+  assert.deepEqual(evidence.chains.DYDX.feeAssets, ["DYDX", "USDC"]);
+  for (const key of ["AVAX", "FLR", "0G"]) assert.equal(evidence.chains[key].feeModel, "gas-charged-floor");
+  assert.match(evidence.chains.AVAX.feeFormula, /gasLimit \/ 2/);
+  assert.match(evidence.chains["0G"].feeFormula, /80 \/ 100/);
+  assert.match(evidence.chains.XVG.feeFormula, /999/);
+  assert.match(evidence.chains.XEC.feeFormula, /100 internal satoshi units = 1 XEC/);
+  assert.ok(evidence.chains.XEC.sources.some((source) => source.url.endsWith('/src/consensus/amount.cpp')));
+  assert.match(evidence.chains.LUNC.feeFormula, /tax/);
+  assert.match(evidence.chains.QTUM.feeFormula, /nGasFee/);
+  assert.match(evidence.chains.RUNE.feeFormula, /native_tx_fee_rune/);
+  for (const id of ["AVAX", "FLR", "0G", "QTUM", "XVG", "VVS"]) {
+    assert.equal(estimate(id, JSON.stringify({ gasGwei: { [coin(id).chain]: 1 } })).amount, null, "no generic Ethereum gas shortcut");
+  }
 });
 
 test("reviewed host test identities never inherit a mainnet token contract", () => {
@@ -115,12 +185,15 @@ test("fee ranking compares USD scenarios, not SOL/XRP/ETH native magnitudes", ()
   assert.equal(eth.amount, 0.000252); assert.equal(eth.usd, 0.504);
   const avaxScenario = parseFeeScenario('{"prices":{"AVAX":40},"gasGwei":{"AVAX":30},"tokenGas":{"avax-avalanche":42000,"usdt-tether":42000}}');
   const avaxNative = feeEstimate(evidence, coin("AVAX"), main(coin("AVAX")), avaxScenario);
-  assert.equal(avaxNative.amount, 0.00063); assert.equal(avaxNative.usd, 0.0252);
-  assert.match(avaxNative.basis, /user-entered 30 gwei/);
+  assert.equal(avaxNative.amount, null, "gas price alone cannot determine charged gas or its protocol floor");
   const hypotheticalAvaxHost = { ...main(coin("usdt-tether")), id: "hypothetical-avax", hostChain: "AVAX", chain: "AVAX", feeAsset: "AVAX" };
-  const hypotheticalTokenCost = feeEstimate(evidence, coin("usdt-tether"), hypotheticalAvaxHost, avaxScenario);
+  assert.equal(feeEstimate(evidence, coin("usdt-tether"), hypotheticalAvaxHost, avaxScenario).amount, null, "tokenGas must not silently bypass a protocol floor model");
+  const chargedTotal = parseFeeScenario('{"prices":{"AVAX":40},"nativeFees":{"avax-avalanche":0.00126,"usdt-tether@hypothetical-avax":0.00126}}');
+  const explicitAvax = feeEstimate(evidence, coin("AVAX"), main(coin("AVAX")), chargedTotal);
+  assert.equal(explicitAvax.amount, 0.00126); assert.equal(explicitAvax.usd, 0.0504); assert.match(explicitAvax.basis, /user-entered/);
+  const hypotheticalTokenCost = feeEstimate(evidence, coin("usdt-tether"), hypotheticalAvaxHost, chargedTotal);
   assert.equal(hypotheticalTokenCost.amount, 0.00126); assert.equal(hypotheticalTokenCost.usd, 0.0504);
-  assert.equal(hypotheticalTokenCost.live, false, "arithmetic fixture is not evidence of an Avalanche USDT deployment");
+  assert.equal(hypotheticalTokenCost.live, false, "explicit-total fixture is not evidence of an Avalanche USDT deployment");
   assert.equal(feeEstimate(evidence, coin("usdt-tether"), main(coin("usdt-tether")), s).amount, 0.00078);
   assert.equal(feeEstimate(evidence, coin("BTC"), main(coin("BTC")), s).amount, 0.0000028);
   const sorted = ["ETH", "XNO", "BTC", "SOL", "XRP"].map((id) => ({ coin: coin(id), estimate: feeEstimate(evidence, coin(id), main(coin(id)), s) })).sort(compareFeeEstimates);
