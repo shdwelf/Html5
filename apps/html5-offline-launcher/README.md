@@ -104,16 +104,15 @@ The Android instrumentation suite exercises the ANC-only WebView permission
 policy, requests a real `getUserMedia` audio track, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
-track startup, not acoustic capture quality. CI uploads only the public APK as
-the `html5-offline-launcher-public-debug-apk` artifact. It builds and validates
-the private APK and the network APK, including their distinct permission and
-catalog inventories, but does not publish either APK as plaintext. For a
-private backup, manually dispatch the workflow with a recipient's armored
-OpenPGP **public** key. CI encrypts the private APK and uploads only the
-ciphertext as a seven-day artifact. Download the `.apk.asc` artifact, verify
-its entry in `SHA256SUMS.txt`, and decrypt locally with PGPony or another
-OpenPGP client (for example, `gpg --output app-private-debug.apk --decrypt
-app-private-debug-<subkey-fingerprint>.apk.asc`). The private key never leaves
-its owner.
-The sandbox itself has no local Java/Gradle/Android SDK, so Android APK
-verification and live-feed smoke testing remain CI/device follow-ups.
+track startup, not acoustic capture quality. After the permission and catalog
+checks pass, CI uploads the public and network APKs together as the
+`html5-offline-launcher-public-network-debug-apks` artifact (30-day retention).
+The network package contains all 94 approved public apps plus RadarScope and
+News Globe. CI builds and validates the separate private APK without publishing
+it as plaintext. For a private backup, manually dispatch the workflow with a
+recipient's armored OpenPGP **public** key. CI encrypts the private APK and
+uploads only the ciphertext as a seven-day artifact. Download the `.apk.asc`
+artifact, verify its entry in `SHA256SUMS.txt`, and decrypt locally with PGPony
+or another OpenPGP client (for example, `gpg --output app-private-debug.apk
+--decrypt app-private-debug-<subkey-fingerprint>.apk.asc`). The private key
+never leaves its owner.

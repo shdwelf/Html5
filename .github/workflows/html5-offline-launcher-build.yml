@@ -218,6 +218,16 @@ jobs:
           print("Network APK contains both live-feed apps and declares INTERNET.")
           PY
 
+      - name: Upload public and network APKs for backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-public-network-debug-apks
+          path: |
+            apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Install PulseAudio runtime for Android emulator microphone tests
         shell: bash
         run: |
@@ -381,10 +391,3 @@ jobs:
           test -s "$apk"
           ls -lh "$apk"
           sha256sum "$apk"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: html5-offline-launcher-public-debug-apk
-          path: apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
-          if-no-files-found: error
-          retention-days: 30
