@@ -168,16 +168,11 @@ jobs:
           RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
         run: |
           set -euo pipefail
-          export GNUPGHOME="$RUNNER_TEMP/apk-recipient-keyring"
-          install -d -m 700 "$GNUPGHOME"
-          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" | gpg --batch --quiet --import
-          fingerprint="$(gpg --batch --with-colons --list-keys | awk -F: '$1 == "fpr" { print $10; exit }')"
-          test -n "$fingerprint"
+          recipients="$RUNNER_TEMP/apk-recipient-public-keys.asc"
+          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" > "$recipients"
           apk=apps/html5-offline-launcher/app/build/outputs/apk/private/debug/app-private-debug.apk
           test -s "$apk"
-          encrypted="$RUNNER_TEMP/app-private-debug.apk.gpg"
-          gpg --batch --no-tty --trust-model always --output "$encrypted" --encrypt --recipient "$fingerprint" "$apk"
-          (cd "$RUNNER_TEMP" && sha256sum app-private-debug.apk.gpg > app-private-debug.apk.gpg.sha256)
+          node scripts/encrypt-private-apk-openpgp.mjs "$apk" "$recipients" "$RUNNER_TEMP/encrypted-private-apks"
 
       - name: Upload encrypted private APK only
         if: ${{ inputs.recipient_public_key != '' }}
@@ -185,8 +180,7 @@ jobs:
         with:
           name: html5-offline-launcher-private-debug-apk-openpgp
           path: |
-            ${{ runner.temp }}/app-private-debug.apk.gpg
-            ${{ runner.temp }}/app-private-debug.apk.gpg.sha256
+            ${{ runner.temp }}/encrypted-private-apks/
           if-no-files-found: error
           retention-days: 7
 
