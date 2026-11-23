@@ -1,0 +1,70 @@
+name: Token research evidence
+
+on:
+  pull_request:
+    paths:
+      - 'config/token-research.json'
+      - 'config/token-networks.json'
+      - 'config/chain-research.json'
+      - 'config/coins-top500.json'
+      - 'js/coin-networks.js'
+      - 'js/coin-research.js'
+      - 'tools/token-research-evidence.mjs'
+      - 'tools/build-coin-research-inventory.mjs'
+      - 'tests/token-research.test.mjs'
+      - 'tests/coin-networks.test.mjs'
+      - 'tests/coin-research.test.mjs'
+      - 'docs/coin-research-inventory-*.md'
+      - 'docs/token-identity-review-*.md'
+      - 'docs/research/token-identity-source-manifest-*.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/token-research-evidence.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'config/token-research.json'
+      - 'config/token-networks.json'
+      - 'config/chain-research.json'
+      - 'config/coins-top500.json'
+      - 'js/coin-networks.js'
+      - 'js/coin-research.js'
+      - 'tools/token-research-evidence.mjs'
+      - 'tools/build-coin-research-inventory.mjs'
+      - 'tests/token-research.test.mjs'
+      - 'tests/coin-networks.test.mjs'
+      - 'tests/coin-research.test.mjs'
+      - 'docs/coin-research-inventory-*.md'
+      - 'docs/token-identity-review-*.md'
+      - 'docs/research/token-identity-source-manifest-*.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/token-research-evidence.yml'
+  workflow_dispatch:
+
+# Offline source bookkeeping and mocked/local derivation tests only. No RPC,
+# wallet, cloud connector, reserve query, deployment, signing or transactions.
+permissions:
+  contents: read
+
+concurrency:
+  group: token-research-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evidence-ledger:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - name: Install locked test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Check evidence schema, references and generated inventory without rewriting it
+        run: npm run check:coin-research
+      - name: Check exact-tuple, no-promotion and existing host/network regressions
+        run: node --test tests/token-research.test.mjs tests/coin-research.test.mjs tests/coin-networks.test.mjs

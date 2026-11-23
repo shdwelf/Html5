@@ -211,6 +211,13 @@ LGPL-3.0+ license. Upstream app code was not vendored or executed.
 
 ## Validation matrix — do not conflate evidence levels
 
+**Continuation:** the table below records round 83. A later, separate mandatory
+[full-native-GnuPG CI lane passed](openpgp-native-interop-2026-11-17.md), adding
+synthetic private import/unlock, wrong-passphrase, bidirectional crypto, public
+ring and revocation execution. That closes only the tested command-line gate;
+Kleopatra GUI and Android/iOS app checks remain unperformed. Do not reinterpret
+the historical gpgv row as private-import evidence.
+
 | Target | Evidence obtained in this round | Not claimed |
 | --- | --- | --- |
 | OpenPGP.js Node and exact local browser bundle | Protected key/profile, fresh self-certification, key flags/expiry/fingerprint, multi-key and malformed/negative/atomicity tests | External security audit |

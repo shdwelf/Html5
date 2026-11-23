@@ -1,0 +1,140 @@
+{
+  "schema": "html5-openpgp-native-ci-evidence-v1",
+  "researchSnapshot": "2026-11-17",
+  "pullRequest": "https://github.com/shdwelf/Html5/pull/232",
+  "run": {
+    "url": "https://github.com/shdwelf/Html5/actions/runs/45229648748",
+    "headSha": "76078209ecd11f40b6cca8c47066184ea83e0bf1",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "job": {
+    "name": "native-gnupg",
+    "databaseId": 137885388301,
+    "url": "https://github.com/shdwelf/Html5/actions/runs/45229648748/job/137885388301",
+    "startedAt": "2026-11-23T17:37:20Z",
+    "completedAt": "2026-11-23T17:38:06Z",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "steps": [
+    {
+      "number": 1,
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 2,
+      "name": "Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 3,
+      "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 4,
+      "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 5,
+      "name": "Require native tools (gpgv alone is insufficient)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 6,
+      "name": "Install locked JavaScript test dependencies",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 7,
+      "name": "Install hash-checked independent Python reader",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 8,
+      "name": "Check local app and vendored module freshness without modifying them",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 9,
+      "name": "Run mandatory GnuPG, gpgv, PGPy and existing symmetric controls",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 16,
+      "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 17,
+      "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 18,
+      "name": "Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "number": 19,
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "testedHarnessFiles": [
+    {
+      "path": ".github/workflows/openpgp-interop.yml",
+      "sha256": "df8e5f4b1700afe8a6a7391b9b1c432478498471f48aba5b2234ef695e74b88b"
+    },
+    {
+      "path": "tests/openpgp-interop-policy.test.mjs",
+      "sha256": "bd4b2f2d583a89e4fa8259f562798bcdb0ba814e9de99585b32e7a3faf917354"
+    },
+    {
+      "path": "tests/openpgp-native-interop.test.mjs",
+      "sha256": "887f3d612803386985df832ea8f8c50870ae5c27f00a810c4170e0f21c8ccd60"
+    },
+    {
+      "path": "tests/openpgp-key-interop.test.mjs",
+      "sha256": "3da9f946e4327a45b43f0556b25af511a79ce7f6732d52f50274dc53b9fbb378"
+    },
+    {
+      "path": "tests/requirements/openpgp-build.txt",
+      "sha256": "3defe98224e010c1081db1e1da26bebfe84306cd7acd801deafd45a7f4fdc734"
+    },
+    {
+      "path": "tests/requirements/openpgp-interop.txt",
+      "sha256": "eb681546203ba4c43299abc43a800288edc2585e42a52f575ea7dc9c3fefd539"
+    }
+  ],
+  "localRun": {
+    "tests": 39,
+    "passed": 36,
+    "failed": 0,
+    "skipped": 3,
+    "skipReason": "Full gpg/gpgconf absent in sandbox; three native tests explicitly skipped. gpgv, PGPy and mandatory-policy negative controls executed."
+  },
+  "limitations": [
+    "Result obtained from gh run view --json (GitHub job/step metadata). Raw TAP/tool versions were not retrieved: log archive download redirected to an unreachable results-receiver host.",
+    "Native step requires full gpg, gpgconf, gpgv and PGPy; required flags do not allow an unavailable reader to silently skip.",
+    "GitHub-reported timestamps are preserved verbatim; the research snapshot filename is not a wall-clock execution assertion.",
+    "No Kleopatra GUI, OpenKeychain/PGPony Android, PGPony iOS, physical-device or production-key test is implied.",
+    "Synthetic key files and passphrases are neither included in this evidence nor uploaded as CI artifacts."
+  ]
+}
