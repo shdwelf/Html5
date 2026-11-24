@@ -1,10 +1,11 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
 import { generateLargeRsaKey } from "./large-rsa.mjs";
+import { mountPrivateKeyRecovery } from "./recovery-ui.mjs";
 import { readPublicSnapshot, writePublicSnapshot, forgetPublicSnapshot } from "./public-storage.mjs";
 
 /** No globals holding key material; dependencies are injectable for race/UI tests. */
-export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey } = {}) {
+export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey, recoveryTools } = {}) {
   const byId = (id) => doc.getElementById(id);
   const supported = view.isSecureContext && Boolean(view.crypto?.subtle) && typeof TextEncoder === "function";
   const ring = keyTools.createPublicKeyring();
@@ -215,7 +216,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       byId("generated-public-output").value = result.publicKey;
       byId("generated-fingerprint").textContent = keyTools.formatFingerprint(result.fingerprint);
       byId("generated-expiry").textContent = `RSA-${result.rsaBits ?? keyTools.RSA_BITS} · created ${result.created.slice(0, 10)} · expires ${result.expires.slice(0, 10)}. Compare this full fingerprint after importing into your other app.`;
-      setStatus("keygen-status", "Key generated. Nothing downloaded or published. Back up the protected private key AND revocation certificate explicitly; the passphrase cannot be recovered.", "success");
+      setStatus("keygen-status", "Key generated. Nothing downloaded or published. Back up the protected private key AND revocation certificate explicitly; the passphrase cannot be reset and recovery is not guaranteed.", "success");
     } catch (error) {
       if (epoch === generationEpoch) setStatus("keygen-status", friendlyError(error), "error");
     } finally {
@@ -423,7 +424,10 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     if (!value) { setStatus("encrypt-status", "There is no encrypted message to download yet.", "error"); return; }
     void download(value, button.dataset.filename, "application/pgp-encrypted;charset=utf-8", "encrypt-status", "Keep an independent backup of your encrypted research.");
   });
+  // Isolated recovery never receives the public ring, download helper or storage.
+  const recovery = mountPrivateKeyRecovery({ doc, view, supported, tools: recoveryTools });
   function clearAll({ forgetSaved = true } = {}) {
+    recovery.clear();
     clearText("encrypt"); clearText("decrypt"); clearGenerated(); clearRing({ forgetSaved });
     for (const url of objectURLs) view.URL.revokeObjectURL(url);
     objectURLs.clear();
@@ -431,11 +435,11 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   byId("clear-all").addEventListener("click", () => clearAll());
   view.addEventListener("pagehide", () => clearAll({ forgetSaved: false }));
   view.addEventListener("beforeunload", (event) => {
-    if (!generated && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
+    if (!generated && !recovery.hasSensitiveState() && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
     event.preventDefault(); event.returnValue = "";
   });
   if (!supported) byId("capability-warning").hidden = false;
-  for (const button of doc.querySelectorAll("[data-crypto-submit]")) button.disabled = !supported;
+  if (!supported) for (const button of doc.querySelectorAll("[data-crypto-submit]")) button.disabled = true;
   importControls(); renderRing();
   if (supported) {
     try {

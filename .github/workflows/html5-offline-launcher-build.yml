@@ -17,6 +17,9 @@ on:
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
       - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'scripts/run-html5-android-ci.sh'
+      - 'tests/html5-android-runner.test.mjs'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -48,6 +51,9 @@ on:
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
       - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'scripts/run-html5-android-ci.sh'
+      - 'tests/html5-android-runner.test.mjs'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -143,10 +149,10 @@ jobs:
         run: |
           set -euo pipefail
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+          bash scripts/run-html5-android-ci.sh apps/html5-offline-launcher/app/build/android-sdk-setup.log -- "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Test launcher inventory and offline policy
-        run: node --test tests/html5-offline-launcher.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
+        run: node --test tests/html5-offline-launcher.test.mjs tests/html5-android-runner.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
 
       - name: Validate restored sound snapshots and local export adapter
         run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
@@ -162,11 +168,11 @@ jobs:
 
       - name: Build public debug APK
         working-directory: apps/html5-offline-launcher
-        run: ./gradlew --no-daemon --stacktrace :app:assemblePublicDebug
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-public-build.log -- ./gradlew --no-daemon --stacktrace :app:assemblePublicDebug
 
       - name: Compile public and network WebView instrumentation
         working-directory: apps/html5-offline-launcher
-        run: ./gradlew --no-daemon --stacktrace :app:assemblePublicDebugAndroidTest :app:assembleNetworkDebugAndroidTest
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-instrumentation-compile.log -- ./gradlew --no-daemon --stacktrace :app:assemblePublicDebugAndroidTest :app:assembleNetworkDebugAndroidTest
 
       - name: Verify public APK permissions
         shell: bash
@@ -245,7 +251,7 @@ jobs:
 
       - name: Build opt-in network debug APK
         working-directory: apps/html5-offline-launcher
-        run: ./gradlew --no-daemon --stacktrace :app:assembleNetworkDebug
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-network-build.log -- ./gradlew --no-daemon --stacktrace :app:assembleNetworkDebug
 
       - name: Verify network APK permission and app inventory
         shell: bash
@@ -281,7 +287,7 @@ jobs:
                   source = Path(f"config/{name}.json").read_bytes()
                   if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
                       raise SystemExit(f"Stale coin/network registry in network APK: {name}")
-              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "vendor/openpgp.min.mjs"):
+              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
                   source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
@@ -409,7 +415,11 @@ jobs:
           profile: pixel_2
           emulator-boot-timeout: 300
           working-directory: apps/html5-offline-launcher
-          emulator-options: -no-window -gpu swiftshader_indirect -skin 720x1280 -memory 3072 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          # Bound the CI guest alongside Gradle/UTP and WASM compilation. This
+          # is a runner resource profile, not an app/device support guarantee.
+          # ANGLE software rendering: the legacy swiftshader_indirect backend
+          # lost the entire emulator during DOSBox boot. See the README sources.
+          emulator-options: -no-window -gpu swangle -skin 720x1280 -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           # Match density/skin before boot, not a high-resolution launcher resize
           # after startup. An unrelated Nexus launcher ANR can occlude all taps.
@@ -453,11 +463,13 @@ jobs:
           summary = json.dumps(result, separators=(",", ":")).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
           print("::notice title=Android-WebView-results::" + summary)
           PY
+          python3 scripts/report-html5-android-runner.py --require-complete apps/html5-offline-launcher/app/build/android-webview-summary.json
 
       - name: Surface Android instrumentation failure details
-        if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
+        if: ${{ failure() && steps.android-smoke-tests.outcome != 'skipped' }}
         shell: bash
         run: |
+          python3 scripts/report-html5-android-runner.py apps/html5-offline-launcher/app/build
           python3 - <<'PY'
           import glob
           import os

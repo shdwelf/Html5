@@ -238,7 +238,7 @@ test("pinned source provenance is retained independently of ephemeral caches and
 });
 
 test("generated public app mirrors the reviewed modules; no private material or app network/storage API is shipped", () => {
-  for (const file of ["index.html", "app.js", "crypto.mjs", "keyring.mjs", "public-storage.mjs", "styles.css"]) {
+  for (const file of ["index.html", "app.js", "crypto.mjs", "keyring.mjs", "public-storage.mjs", "large-rsa.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "styles.css"]) {
     const source = readFileSync(new URL(`../apps/openpgp-workbench/${file}`, import.meta.url), "utf8");
     assert.equal(readFileSync(new URL(`../public/apps/openpgp-workbench/${file}`, import.meta.url), "utf8"), source, `${file} stale; rebuild`);
     if (file.endsWith(".mjs") || file.endsWith(".js")) assert.doesNotMatch(source, /\b(?:fetch|XMLHttpRequest|WebSocket|sessionStorage|indexedDB|sendBeacon)\b/);

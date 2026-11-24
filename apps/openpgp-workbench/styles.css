@@ -169,6 +169,15 @@ textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
   .backup-box { padding: 14px; }
 }
 
+/* Guesses are sensitive and untrusted. Values are hidden until explicit reveal. */
+.recovery-candidates { max-height: 230px; overflow: auto; padding: 0 0 0 30px; margin: 12px 0; color: var(--muted); font: 12px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.recovery-candidates li { padding: 3px 8px 3px 2px; overflow-wrap: anywhere; }
+.recovery-candidate, #recovery-match { white-space: pre-wrap; unicode-bidi: isolate; }
+#recovery-progress { width: 100%; height: 16px; margin-top: 20px; accent-color: var(--mint-dark); }
+#recovery-key-file, #recovery-wordlist-file { padding: 12px; }
+#recovery-panel .field-hint { overflow-wrap: anywhere; }
+#recovery-panel input:disabled, #recovery-panel textarea:disabled, #recovery-panel select:disabled { opacity: 0.6; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }

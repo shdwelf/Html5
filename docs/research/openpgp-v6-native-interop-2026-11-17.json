@@ -1,0 +1,217 @@
+{
+  "schema": "html5-openpgp-v6-native-interop-v1",
+  "researchSnapshot": "2026-11-17",
+  "scope": "Executed synthetic v6 library/CLI interoperability for the exact files and profiles below; not an audit, GUI/device compatibility, protected-v6-secret export, real-owner recovery or APK delivery.",
+  "localRun": {
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "requiredReader": true,
+    "reader": {
+      "go": "go1.27.4",
+      "module": "v1.5.2",
+      "reader": "ProtonMail/go-crypto/openpgp/v2"
+    },
+    "node": "v22.22.3",
+    "platform": "linux",
+    "architecture": "x64",
+    "tapSha256": "fd04a42cd1db48d31fee378bef90ec65a6b7b7020dac306ea3b064d2fd0f45e9",
+    "modulesVerified": true,
+    "nativeFormatBuildVetPassed": true
+  },
+  "packetProfiles": {
+    "releaseHelperToGo": {
+      "pkeskVersion": 6,
+      "seipdVersion": 2,
+      "publicKeyAlgorithm": 25,
+      "cipherAlgorithm": 9,
+      "aeadAlgorithm": 2,
+      "aead": "OCB"
+    },
+    "goToBothJsReaders": {
+      "pkeskVersion": 6,
+      "seipdVersion": 2,
+      "publicKeyAlgorithm": 25,
+      "cipherAlgorithm": 9,
+      "aeadAlgorithm": 3,
+      "aead": "GCM"
+    },
+    "fullEncryptionFingerprintRequired": true
+  },
+  "dependencies": [
+    {
+      "module": "github.com/ProtonMail/go-crypto",
+      "version": "v1.5.2",
+      "repository": "https://github.com/ProtonMail/go-crypto",
+      "commit": "7537b30ff8aaf643512ce8bb78f5f92c44ffa6b4",
+      "sourceUrl": "https://github.com/ProtonMail/go-crypto/tree/7537b30ff8aaf643512ce8bb78f5f92c44ffa6b4",
+      "license": "BSD-3-Clause",
+      "licenseSha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+      "sum": "h1:cucYnvqcY7UOXVD//mSyjeaPY0SSN3v5cDkYPxumINk=",
+      "goModSum": "h1:/RaSu30DaKO4RY+XdV/ACcCcZkGr7AhUIduq5sjzzCo="
+    },
+    {
+      "module": "github.com/cloudflare/circl",
+      "version": "v1.6.3",
+      "repository": "https://github.com/cloudflare/circl",
+      "commit": "24ae53c5d6f7fe18203adc125ba3ed76a38703e1",
+      "sourceUrl": "https://github.com/cloudflare/circl/tree/24ae53c5d6f7fe18203adc125ba3ed76a38703e1",
+      "license": "BSD-3-Clause",
+      "licenseSha256": "b0da1764fe4d13d610b695536fc3f2ebc362482d053a1cd258e36975bc6b97a7",
+      "sum": "h1:9GPOhQGF9MCYUeXyMYlqTR6a5gTrgR/fBLXvUgtVcg8=",
+      "goModSum": "h1:2eXP6Qfat4O/Yhh8BznvKnJ+uzEoTQ6jVKJRn81BiS4="
+    },
+    {
+      "module": "golang.org/x/crypto",
+      "version": "v0.41.0",
+      "repository": "https://github.com/golang/crypto",
+      "commit": "ef5341b70697ceb55f904384bd982587224e8b0c",
+      "sourceUrl": "https://github.com/golang/crypto/tree/ef5341b70697ceb55f904384bd982587224e8b0c",
+      "license": "BSD-3-Clause",
+      "licenseSha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "sum": "h1:WKYxWedPGCTVVl5+WHSSrOBT0O8lx32+zxmHxijgXp4=",
+      "goModSum": "h1:pO5AFd7FA68rFak7rOAGVuygIISepHftHnr8dr6+sUc="
+    },
+    {
+      "module": "golang.org/x/sys",
+      "version": "v0.35.0",
+      "repository": "https://github.com/golang/sys",
+      "commit": "5b936e1f126baa13682eff91c2e4d5d9e3a0b71d",
+      "sourceUrl": "https://github.com/golang/sys/tree/5b936e1f126baa13682eff91c2e4d5d9e3a0b71d",
+      "license": "BSD-3-Clause",
+      "licenseSha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "sum": "h1:vz1N37gP5bs89s7He8XuIYXpyY0+QlsKmzipCbUtyxI=",
+      "goModSum": "h1:BJP2sWEmIv4KK5OTEluFJCKSidICx8ciO85XgH3Ak8k="
+    }
+  ],
+  "localToolchain": {
+    "version": "go1.27.4",
+    "distribution": "Third-party PyPI Go SDK repackaging, local tests only",
+    "package": "go-bin",
+    "packageVersion": "1.27.4",
+    "file": "go_bin-1.27.4-py3-none-manylinux_2_17_x86_64.whl",
+    "sha256": "d7e327a50c4f3ad8605420f0dbe7d20e7ad011de480d1c51804e207ae369ddf2",
+    "url": "https://files.pythonhosted.org/packages/0b/9b/9f2a265ccbc9b879c87ee944011f414e8192fe32b1e5b6650a08eb1f8134/go_bin-1.27.4-py3-none-manylinux_2_17_x86_64.whl",
+    "packagingSource": "https://github.com/jmelahman/go-bin/tree/6be232013f12d695c524cc326bc9da9364338e93",
+    "hashVerifiedBeforeExtraction": true,
+    "sourceToBinaryEquivalenceVerified": false,
+    "notes": "Official setup-go release-asset download redirected to an egress-blocked host. Local wheel was extracted without install/build hooks. Module code from pinned GitHub archives matched unchanged go.sum h1 locks through a local file proxy; automatic toolchain/VCS fallback disabled. CI does not use this wheel or file proxy."
+  },
+  "ci": {
+    "workflow": ".github/workflows/openpgp-v6-native.yml",
+    "goVersion": "1.26.9",
+    "nodeMajor": 22,
+    "requiredEnvironment": "REQUIRE_OPENPGP_V6_NATIVE=1",
+    "timeoutMinutes": 10,
+    "actions": [
+      {
+        "action": "actions/checkout",
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09"
+      },
+      {
+        "action": "actions/setup-node",
+        "commit": "249970729cb0ef3589644e2896645e5dc5ba9c38"
+      },
+      {
+        "action": "actions/setup-go",
+        "commit": "924ae3a1cded613372ab5595356fb5720e22ba16"
+      }
+    ],
+    "usesLocalToolchainPackage": false,
+    "uploadsArtifacts": false,
+    "persistentPrivateMaterialCache": false,
+    "run": null
+  },
+  "testedHarnessFiles": [
+    {
+      "path": ".github/workflows/openpgp-v6-native.yml",
+      "sha256": "17cb09178eee752f8ad0e47e05534f9e0fbef1b02050ddbcfd1dee1fc636f8bc"
+    },
+    {
+      "path": "tests/openpgp-v6-native-interop.test.mjs",
+      "sha256": "cef2e6bad0e51498721810e1579212633b966628531f9798d60cbc7d067a6b6a"
+    },
+    {
+      "path": "tests/openpgp-v6-native-policy.test.mjs",
+      "sha256": "eaf8c72f480f75d98742b8dcb84f32dbeafacce98d3e74a8ca77807507f84467"
+    },
+    {
+      "path": "tests/openpgp-v6-native/go.mod",
+      "sha256": "f295572917236d7f7eba5bd107c43d9fbdd3dcb286159aebc68c10951e06e261"
+    },
+    {
+      "path": "tests/openpgp-v6-native/go.sum",
+      "sha256": "cd90abf44eb519d62af5cfc97098ebc1712ca818b711fbf7a82fdd13a556ed5a"
+    },
+    {
+      "path": "tests/openpgp-v6-native/main.go",
+      "sha256": "ccf7f119c03e917e5447bc3aad64bf52ed0fa9b71c299635b342bec42bc36c08"
+    },
+    {
+      "path": "tests/openpgp-v6-native/packet-bytes.mjs",
+      "sha256": "3cf1742e3a82b836ccfea28fbee0d8f21e1a3920c7082a711c6bc5f1f8778bd1"
+    },
+    {
+      "path": "tests/openpgp-v6-native/report.mjs",
+      "sha256": "8b9749ea0aeffdff8e836633f8f6ac6fab7469dd4f9d594023d8516950d29e1d"
+    },
+    {
+      "path": "tests/openpgp-v6-native/README.md",
+      "sha256": "87b0f5d48ad15717759410bd98168f32be0ec0b586b0d5f33f15d0f27a29ada2"
+    }
+  ],
+  "limitations": [
+    "Both JS readers use OpenPGP.js 6.3.3 under Node in this native suite; they are independent of Go, not independent of each other. Actual Chromium coverage is separate.",
+    "Throwaway secret packets are intentionally unprotected in private temporary directories; no owner key, attachment, passphrase or cloud archive is an input. Removal is not guaranteed secure erasure.",
+    "The actual release-helper direction requires AES-256-OCB. This pinned high-level Go writer independently negotiates AES-256-GCM for fresh JS keys; signed preferences are not rewritten.",
+    "Dependency/package checksums bind selected bytes, not security, publisher authenticity, reproducible builds or every RFC 9580/PQC algorithm.",
+    "No GnuPG/PGPy v6, OpenKeychain/PGPony/Kleopatra GUI, physical-device, protected-v6-secret, owner decryption, new-recipient approval or encrypted APK delivery is inferred."
+  ],
+  "regressionRuns": {
+    "nativeAndPolicy": {
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "affectedOpenPgpAndCorpus": {
+      "tests": 131,
+      "passed": 124,
+      "failed": 0,
+      "skipped": 7,
+      "exitCode": 0,
+      "skipReason": "Optional PGPy absent (1), full gpg/gpgconf absent (4), opt-in expensive large-RSA generation not requested locally (2). All four new Go v6 cases executed."
+    },
+    "vitest": {
+      "files": 36,
+      "tests": 318,
+      "passed": 318,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "v6Chromium": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "releaseAndTokenGuards": {
+      "tests": 52,
+      "passed": 52,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "freshnessChecks": [
+      "coin research inventory",
+      "sound snapshots (2 apps / 3 complete snapshots / 9 files)",
+      "public browser catalog (96 approved HTML entrypoints)"
+    ],
+    "workflowSyntax": "New native-v6 and existing classic/large-RSA workflows parse as YAML 1.2 with unique keys."
+  }
+}

@@ -158,6 +158,34 @@ track startup, not acoustic capture quality. Device testing has a separate
 20-minute step bound; build artifacts are exported **before** it starts. An APK
 build/inventory check is not a WebView or live-provider test result.
 
+On failure, bounded synthetic diagnostics include suite-level `system-err` /
+`system-out`, native process/runner failures and the last real-touchscreen
+activation phases. An empty JUnit `<failure/>` or a partial testcase count is
+not a passing phase and does not establish an emulator-only root cause. These
+diagnostics do not change the tests, permission/save policies or time limits.
+CI additionally requires complete results: six public file/save cases, six
+network file/save cases, one audio-policy case and one game-boot case. All 14
+must pass with zero skips and all four phase exits zero; missing/partial runner
+output cannot yield a green device gate. The CI guest is limited to 2 GiB and
+connected-test Gradle invocations to a 1-GiB heap / one worker; normal APK build
+settings are unchanged. On failure the runner captures bounded host memory,
+cgroup counters, process **names** (not arguments), device state and matching
+kernel OOM/crash lines **before** emulator teardown. A disappearing emulator is
+not itself proof of a host OOM or an app assertion failure. No test is retried,
+removed, accepted as skipped or given a longer deadline by these controls.
+
+The CI emulator explicitly uses **`-gpu swangle`**, ANGLE with software drivers.
+[Android's graphics documentation](https://developer.android.com/studio/run/emulator-acceleration#command-gpu)
+lists `swiftshader_indirect` and `swangle_indirect` as deprecated since 36.4.9;
+`swangle` is the supported spelling used here. In PR239 the old renderer lost
+the entire emulator during DOSBox startup after real touchscreen injection
+returned, while the other 13 cases passed. Resource reduction alone did not fix
+it; the captured host snapshot had ample available memory and no matching OOM
+kernel evidence. A related external renderer-crash report [1](https://github.com/expo/eas-cli/issues/4928)
+is a discovery clue, not proof of our exact native crash or universal hardware
+compatibility. The renderer change must pass our same 14-case, zero-skip gate;
+no packaged game/WebView/app behavior or graphics-success assertion is changed.
+
 Normal CI uploads the public and opt-in network APKs as separate 30-day
 artifacts: `html5-offline-launcher-public-debug-apk` and
 `html5-offline-launcher-network-debug-apk`. Each includes its APK and SHA-256

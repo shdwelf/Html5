@@ -1,0 +1,98 @@
+name: OpenPGP independent native v6 interoperability
+
+on:
+  pull_request:
+    paths:
+      - 'apps/openpgp-workbench/**'
+      - 'public/apps/openpgp-workbench/**'
+      - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'tests/openpgp-v6-native/**'
+      - 'tests/openpgp-v6-native-*'
+      - 'docs/research/openpgp-v6-native-interop-*'
+      - 'docs/openpgp-v6-native-interop-*'
+      - 'docs/backlog-execution-round-86-*'
+      - 'tools/wikiinajar/public-corpus-policy.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/openpgp-v6-native.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/openpgp-workbench/**'
+      - 'public/apps/openpgp-workbench/**'
+      - 'scripts/build-openpgp-workbench.mjs'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'tests/openpgp-v6-native/**'
+      - 'tests/openpgp-v6-native-*'
+      - 'docs/research/openpgp-v6-native-interop-*'
+      - 'docs/openpgp-v6-native-interop-*'
+      - 'docs/backlog-execution-round-86-*'
+      - 'tools/wikiinajar/public-corpus-policy.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/openpgp-v6-native.yml'
+  workflow_dispatch:
+
+# Synthetic identities only. No owner key, secret input, APK/emulator dependency,
+# write permission, artifact upload or persistent private-material cache.
+permissions:
+  contents: read
+
+concurrency:
+  group: openpgp-v6-native-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  independent-v6-go:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GOTOOLCHAIN: local
+      GOFLAGS: '-mod=readonly'
+      CGO_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.26.9'
+          cache: false
+      - name: Install locked JS test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify exact Go modules and build the independent test-only reader
+        working-directory: tests/openpgp-v6-native
+        shell: bash
+        run: |
+          set -euo pipefail
+          go version
+          go mod download
+          go mod verify
+          go list -m github.com/ProtonMail/go-crypto github.com/cloudflare/circl golang.org/x/crypto golang.org/x/sys
+          go build -trimpath -mod=readonly -o "$RUNNER_TEMP/html5-openpgp-v6-interop" .
+          git diff --exit-code -- go.mod go.sum
+          unformatted="$(gofmt -l main.go)"
+          test -z "$unformatted"
+          go vet .
+          "$RUNNER_TEMP/html5-openpgp-v6-interop" --version
+      - name: Require honest reader-absence and no-secret/cache/upload policy
+        run: node --test tests/openpgp-v6-native-policy.test.mjs
+      - name: Require actual independent v6 key, release-encryption, two-way and tamper controls
+        env:
+          REQUIRE_OPENPGP_V6_NATIVE: '1'
+          OPENPGP_V6_GO_READER: ${{ runner.temp }}/html5-openpgp-v6-interop
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/openpgp-v6-native-synthetic.tap"
+          set +e
+          node --test tests/openpgp-v6-native-interop.test.mjs > "$log" 2>&1
+          status=$?
+          set -e
+          cat "$log"
+          node tests/openpgp-v6-native/report.mjs "$log" || status=1
+          exit "$status"
