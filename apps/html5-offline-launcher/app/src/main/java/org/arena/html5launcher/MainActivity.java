@@ -3,6 +3,7 @@ package org.arena.html5launcher;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,6 +12,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.JsPromptResult;
+import android.webkit.ValueCallback;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -25,10 +28,17 @@ public final class MainActivity extends Activity {
     private static final int INK = Color.rgb(20, 27, 38);
     private static final int ACCENT = Color.rgb(66, 214, 190);
     private static final int REQUEST_ANC_AUDIO = 4105;
-    private static final String ANC_AUDIO_HOST = "app-anc-studio.invalid";
+    private static final int REQUEST_OPEN_FILE = 4112;
+    private static final java.util.Set<String> AUDIO_HOSTS = new java.util.HashSet<>(java.util.Arrays.asList(
+            "app-anc-studio.invalid", "app-sound-sanctuary.invalid", "app-aura-sound-studio.invalid"));
     private WebView webView;
     private TextView pageTitle;
     private PermissionRequest pendingAudioRequest;
+    private ValueCallback<Uri[]> pendingFileInput;
+    private boolean filePickerOpen;
+    private LocalFileExports localFiles;
+    private OfflineAssetWebViewClient assetClient;
+    private String localFilesScript = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +125,28 @@ public final class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setLoadsImagesAutomatically(true);
+        settings.setUserAgentString(settings.getUserAgentString() + " Html5Library/" + BuildConfig.VERSION_NAME);
 
-        webView.setWebViewClient(new OfflineAssetWebViewClient(this, BuildConfig.NETWORK_ENABLED));
+        assetClient = new OfflineAssetWebViewClient(this, BuildConfig.NETWORK_ENABLED);
+        localFiles = new LocalFileExports(this, assetClient::isPackagedAppOrigin);
+        try (java.io.InputStream script = getAssets().open("launcher/local-files.js")) {
+            java.io.ByteArrayOutputStream output = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[4096]; int count;
+            while ((count = script.read(buffer)) != -1) output.write(buffer, 0, count);
+            localFilesScript = output.toString(java.nio.charset.StandardCharsets.UTF_8.name());
+        } catch (java.io.IOException failure) {
+            Toast.makeText(this, "Local save adapter is unavailable; no download is confirmed.", Toast.LENGTH_LONG).show();
+        }
+        assetClient.setPageLifecycle(new OfflineAssetWebViewClient.PageLifecycle() {
+            @Override public void started() { denyPendingAudioRequest(); cancelFileInput(); localFiles.cancel(); }
+            @Override public void finished(String url) {
+                if (assetClient.isPackagedAppOrigin(Uri.parse(url)) && url.equals(webView.getUrl())) {
+                    String origin = LocalFileExports.origin(Uri.parse(url));
+                    webView.evaluateJavascript("if (location.origin === " + org.json.JSONObject.quote(origin) + ") {" + localFilesScript + "}", null);
+                }
+            }
+        });
+        webView.setWebViewClient(assetClient);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -136,13 +166,44 @@ public final class MainActivity extends Activity {
             }
 
             @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+                return localFiles.handle(view.getUrl(), url, message, defaultValue, result);
+            }
+
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (!assetClient.isPackagedAppOrigin(Uri.parse(view.getUrl() == null ? "" : view.getUrl()))) {
+                    callback.onReceiveValue(null);
+                    return true;
+                }
+                if (filePickerOpen) {
+                    callback.onReceiveValue(null);
+                    return true;
+                }
+                cancelFileInput();
+                pendingFileInput = callback;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*"); // Apps validate their own bounded file format after selection.
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                filePickerOpen = true;
+                try { startActivityForResult(intent, REQUEST_OPEN_FILE); }
+                catch (android.content.ActivityNotFoundException missing) {
+                    filePickerOpen = false;
+                    cancelFileInput();
+                    Toast.makeText(MainActivity.this, "Install or enable an Android Files provider to import a file.", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+
+            @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture,
                                           android.os.Message resultMsg) {
                 return false;
             }
         });
         webView.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) ->
-                Toast.makeText(this, "Downloads are not handled by this offline viewer.", Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "No local save was confirmed. Use the app’s Save/Download export control, or open this link in a full browser.", Toast.LENGTH_SHORT).show());
 
         back.setOnClickListener(view -> goBack());
         catalog.setOnClickListener(view -> openCatalog());
@@ -161,7 +222,7 @@ public final class MainActivity extends Activity {
     // Package-private so the Android instrumentation suite can exercise the
     // same WebView permission policy with deterministic PermissionRequest fakes.
     void handleWebPermissionRequest(PermissionRequest request) {
-        if (request == null || !isAllowedAncAudioRequest(request)) {
+        if (request == null || !isAllowedAudioRequest(request)) {
             if (request != null) request.deny();
             return;
         }
@@ -176,25 +237,26 @@ public final class MainActivity extends Activity {
         pendingAudioRequest = request;
         if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
             Toast.makeText(this,
-                    "ANC microphone access is requested only after you press Start and stays on this device.",
+                    "Microphone access is available only to the three packaged audio labs after you enable their microphone mode.",
                     Toast.LENGTH_LONG).show();
         }
         requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, REQUEST_ANC_AUDIO);
     }
 
-    private boolean isAllowedAncAudioRequest(PermissionRequest request) {
-        if (webView == null || !isAncOrigin(request.getOrigin())) return false;
+    private boolean isAllowedAudioRequest(PermissionRequest request) {
+        if (webView == null || !isAudioOrigin(request.getOrigin())) return false;
         Uri currentPage = Uri.parse(webView.getUrl() == null ? "" : webView.getUrl());
-        if (!isAncOrigin(currentPage)) return false;
+        if (!isAudioOrigin(currentPage) || !LocalFileExports.origin(currentPage).equals(LocalFileExports.origin(request.getOrigin()))) return false;
         String[] resources = request.getResources();
         return resources != null && resources.length == 1 &&
                 PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resources[0]);
     }
 
-    private static boolean isAncOrigin(Uri uri) {
+    private static boolean isAudioOrigin(Uri uri) {
         return uri != null &&
                 "https".equalsIgnoreCase(uri.getScheme()) &&
-                ANC_AUDIO_HOST.equalsIgnoreCase(uri.getHost()) &&
+                uri.getUserInfo() == null &&
+                AUDIO_HOSTS.contains(uri.getHost() == null ? "" : uri.getHost().toLowerCase(java.util.Locale.ROOT)) &&
                 (uri.getPort() == -1 || uri.getPort() == 443);
     }
 
@@ -215,7 +277,7 @@ public final class MainActivity extends Activity {
                 grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
         if (request == null) return;
-        if (granted && isAllowedAncAudioRequest(request)) {
+        if (granted && isAllowedAudioRequest(request)) {
             request.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
         } else {
             request.deny();
@@ -225,6 +287,26 @@ public final class MainActivity extends Activity {
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void cancelFileInput() {
+        if (pendingFileInput != null) {
+            pendingFileInput.onReceiveValue(null);
+            pendingFileInput = null;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (localFiles.onActivityResult(requestCode, resultCode, data)) return;
+        if (requestCode != REQUEST_OPEN_FILE) return;
+        filePickerOpen = false;
+        ValueCallback<Uri[]> callback = pendingFileInput;
+        pendingFileInput = null;
+        if (callback == null) return;
+        Uri uri = resultCode == Activity.RESULT_OK && data != null ? data.getData() : null;
+        callback.onReceiveValue(uri != null && "content".equals(uri.getScheme()) ? new Uri[] { uri } : null);
     }
 
     private void goBack() {
@@ -260,6 +342,8 @@ public final class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         denyPendingAudioRequest();
+        cancelFileInput();
+        if (localFiles != null) localFiles.destroy();
         if (webView != null) {
             webView.loadUrl("about:blank");
             webView.stopLoading();

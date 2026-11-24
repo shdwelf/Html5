@@ -35,6 +35,26 @@ final class OfflineAssetWebViewClient extends WebViewClient {
     private final AssetManager assets;
     private final boolean networkEnabled;
     private final Map<String, String> rootsByHost = new HashMap<>();
+    interface PageLifecycle { void started(); void finished(String url); }
+    private PageLifecycle lifecycle;
+
+    void setPageLifecycle(PageLifecycle lifecycle) { this.lifecycle = lifecycle; }
+
+    boolean isPackagedAppOrigin(Uri uri) {
+        String origin = LocalFileExports.origin(uri);
+        return !origin.isEmpty() && !CATALOG_HOST.equalsIgnoreCase(uri.getHost()) &&
+                rootsByHost.containsKey(uri.getHost().toLowerCase(Locale.ROOT));
+    }
+
+    @Override public void onPageStarted(WebView view, String url, android.graphics.Bitmap icon) {
+        if (lifecycle != null) lifecycle.started();
+        super.onPageStarted(view, url, icon);
+    }
+
+    @Override public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+        if (lifecycle != null) lifecycle.finished(url);
+    }
 
     OfflineAssetWebViewClient(Context context, boolean networkEnabled) {
         assets = context.getApplicationContext().getAssets();
@@ -89,7 +109,7 @@ final class OfflineAssetWebViewClient extends WebViewClient {
 
         String host = uri.getHost();
         String root = host == null ? null : rootsByHost.get(host.toLowerCase(Locale.ROOT));
-        if (!"https".equalsIgnoreCase(scheme) || root == null) {
+        if (!"https".equalsIgnoreCase(scheme) || root == null || LocalFileExports.origin(uri).isEmpty()) {
             if (networkEnabled && isValidExternalHttpsUri(uri)) return null;
             return errorResponse(451, "Blocked", networkEnabled
                     ? "Network mode allows only validated HTTPS hostnames."
@@ -238,7 +258,7 @@ final class OfflineAssetWebViewClient extends WebViewClient {
 
         String host = uri.getHost();
         String normalizedHost = host == null ? "" : host.toLowerCase(Locale.ROOT);
-        if ("https".equalsIgnoreCase(scheme) &&
+        if ("https".equalsIgnoreCase(scheme) && !LocalFileExports.origin(uri).isEmpty() &&
                 (rootsByHost.containsKey(normalizedHost) ||
                         (networkEnabled && isValidExternalHttpsUri(uri)))) {
             if (!rootsByHost.containsKey(normalizedHost)) return false;
@@ -265,7 +285,7 @@ final class OfflineAssetWebViewClient extends WebViewClient {
 
         String host = uri.getHost();
         String normalizedHost = host == null ? "" : host.toLowerCase(Locale.ROOT);
-        if ("https".equalsIgnoreCase(scheme) &&
+        if ("https".equalsIgnoreCase(scheme) && !LocalFileExports.origin(uri).isEmpty() &&
                 (rootsByHost.containsKey(normalizedHost) ||
                         (networkEnabled && isValidExternalHttpsUri(uri)))) {
             if (!rootsByHost.containsKey(normalizedHost)) return false;

@@ -1,6 +1,7 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
 import { generateLargeRsaKey } from "./large-rsa.mjs";
+import { readPublicSnapshot, writePublicSnapshot, forgetPublicSnapshot } from "./public-storage.mjs";
 
 /** No globals holding key material; dependencies are injectable for race/UI tests. */
 export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey } = {}) {
@@ -14,10 +15,15 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   let importEpoch = 0;
   let fileEpoch = 0;
   let importing = false;
+  let publicVariantBusy = false;
   let importController = null;
   let generatedImport = false;
   const textEpochs = { encrypt: 0, decrypt: 0 };
   const objectURLs = new Set();
+  let rememberPublic = false;
+  let publicSnapshotCurrent = false;
+  let fileSaveBusy = false;
+  const saveEpochs = { "keygen-status": 0, "keyring-status": 0, "encrypt-status": 0 };
 
   function setStatus(id, message, kind = "info") {
     const status = byId(id);
@@ -31,16 +37,42 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   const friendlyError = (error) => (error instanceof Error ? error.message : String(error)).slice(0, 240) || "The OpenPGP operation could not be completed.";
   const statusFor = (button) => button.dataset.status || (button.dataset.copy === "decrypted-output" ? "decrypt-status" : "encrypt-status");
 
-  function download(value, filename, type) {
-    const url = view.URL.createObjectURL(new Blob([value], { type }));
-    objectURLs.add(url);
-    const anchor = doc.createElement("a");
-    anchor.href = url;
-    anchor.download = filename;
-    doc.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    view.setTimeout(() => { view.URL.revokeObjectURL(url); objectURLs.delete(url); }, 1000);
+  async function download(value, filename, type, status, requestedMessage) {
+    if (fileSaveBusy) { setStatus(status, "Another local save is pending. Finish or cancel it first.", "error"); return; }
+    const epoch = ++saveEpochs[status];
+    const blob = new Blob([value], { type });
+    if (view.Html5LocalFiles?.version === 1 && typeof view.Html5LocalFiles.save === "function") {
+      fileSaveBusy = true;
+      setStatus(status, "Choose a destination in Android Files. Save is not confirmed yet; do not close this page.");
+      try {
+        const receipt = await view.Html5LocalFiles.save(blob, filename);
+        if (epoch !== saveEpochs[status]) return;
+        if (receipt.status === "saved" && receipt.bytes === blob.size && /^[a-f0-9]{64}$/.test(receipt.sha256)) {
+          setStatus(status, `Saved ${receipt.bytes.toLocaleString()} bytes and read-back verified. SHA-256: ${receipt.sha256}. ${requestedMessage}`, "success");
+        } else if (receipt.status === "canceled") {
+          setStatus(status, "Save canceled. No completed save is confirmed; the export remains in this tab.");
+        } else { throw new Error("No valid read-back receipt was returned. Check the destination."); }
+      } catch (error) {
+        if (epoch === saveEpochs[status]) setStatus(status, `Save failed: ${friendlyError(error)} Keep this page open and retry.`, "error");
+      } finally { fileSaveBusy = false; }
+      return;
+    }
+    if (view.navigator.userAgent?.includes("Html5Library/")) {
+      setStatus(status, "Android local-save adapter is unavailable. Nothing was saved. Keep this page open, copy public/ciphertext output if appropriate, and reload/update the app before exporting sensitive backups.", "error");
+      return;
+    }
+    try {
+      const url = view.URL.createObjectURL(blob);
+      objectURLs.add(url);
+      const anchor = doc.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      doc.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      view.setTimeout(() => { view.URL.revokeObjectURL(url); objectURLs.delete(url); }, 60000);
+      setStatus(status, `Browser download requested, not verified saved. Check your Downloads folder. ${requestedMessage}`, "success");
+    } catch (error) { setStatus(status, `Download failed: ${friendlyError(error)} Keep this page open and retry.`, "error"); }
   }
 
   const tabs = [...doc.querySelectorAll("[data-tab]")];
@@ -107,6 +139,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     });
   }
   function clearText(kind) {
+    if (kind === "encrypt") saveEpochs["encrypt-status"]++;
     textEpochs[kind]++;
     resetForm(byId(`${kind}-form`));
     byId(kind === "encrypt" ? "encrypted-output" : "decrypted-output").value = "";
@@ -130,10 +163,11 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   function generationControls() {
     const ready = Boolean(generated);
     for (const id of ["download-public-key", "copy-public-key"]) byId(id).disabled = !ready;
-    byId("add-generated-public").disabled = !ready || importing || !supported;
+    byId("add-generated-public").disabled = !ready || importing || publicVariantBusy || !supported;
     for (const id of ["download-private-key", "download-revocation"]) byId(id).disabled = !ready || !supported || !byId("key-backup-ack").checked;
   }
   function clearGenerated({ reset = true } = {}) {
+    saveEpochs["keygen-status"]++;
     generationEpoch++;
     generationController?.abort();
     generated = null;
@@ -195,8 +229,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   byId("key-backup-ack").addEventListener("change", generationControls);
   byId("download-public-key").addEventListener("click", () => {
     if (!generated) return;
-    download(generated.publicKey, `${generated.fingerprint}-PUBLIC.asc`, "application/pgp-keys");
-    setStatus("keygen-status", "Public certificate download requested. It contains your User ID; review before sharing.", "success");
+    void download(generated.publicKey, `${generated.fingerprint}-PUBLIC.asc`, "application/pgp-keys", "keygen-status", "Public certificates contain your User ID; review before sharing.");
   });
   for (const id of ["download-private-key", "download-revocation"]) {
     byId(id).addEventListener("click", async () => {
@@ -210,8 +243,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
         const privateArmor = await keyTools.checkedPrivateDownload(bundle.privateKey, expected, { rsaBits: bundle.rsaBits });
         if (epoch !== generationEpoch || !byId("key-backup-ack").checked) return;
         const revocation = id === "download-revocation";
-        download(revocation ? bundle.revocationCertificate : privateArmor, `${bundle.fingerprint}-${revocation ? "REVOCATION" : "SECRET"}.asc`, "application/pgp-keys");
-        setStatus("keygen-status", revocation ? "Revocation certificate download requested. It is NOT encrypted; anyone with it can revoke this key. Keep it offline." : "Protected private-key download requested. Keep the .asc file and its strong passphrase private and backed up separately.", "success");
+        await download(revocation ? bundle.revocationCertificate : privateArmor, `${bundle.fingerprint}-${revocation ? "REVOCATION" : "SECRET"}.asc`, "application/pgp-keys", "keygen-status", revocation ? "Revocation certificate is NOT encrypted; anyone with it can revoke this key. Keep it offline." : "Keep the protected private .asc and its strong passphrase private and backed up separately.");
       } catch (error) {
         if (epoch === generationEpoch) setStatus("keygen-status", friendlyError(error), "error");
       } finally { button.setAttribute("aria-busy", "false"); generationControls(); }
@@ -232,13 +264,30 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       uid.textContent = entry.userIDs.join(" · ").replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, "�") || "No textual User ID";
       const state = doc.createElement("p");
       state.className = "field-hint";
-      state.textContent = `${entry.algorithm} · ${entry.selfCertification}. All User IDs are unverified claims; subkeys are not audited.`;
+      state.textContent = `${entry.algorithm} · ${entry.selfCertification}. All User IDs are unverified claims. ` +
+        (entry.encryptionFingerprint ? `Usable bound encryption key detected: ${keyTools.formatFingerprint(entry.encryptionFingerprint)}.` : "No currently usable bound encryption key detected; signing/authentication keys cannot decrypt messages.");
       const remove = doc.createElement("button");
       remove.type = "button";
       remove.className = "button button-quiet";
       remove.textContent = "Remove certificate";
-      remove.addEventListener("click", () => { ring.remove(entry.fingerprint); renderRing(); setStatus("keyring-status", "Public certificate removed from this tab, not from anyone else's keyring."); });
-      item.append(fingerprint, uid, state, remove);
+      remove.addEventListener("click", () => { ring.remove(entry.fingerprint); renderRing(); rememberRing(); setStatus("keyring-status", "Public certificate removed from this tab, not from anyone else's keyring."); });
+      const full = doc.createElement("button");
+      full.type = "button"; full.className = "button button-quiet"; full.textContent = "Export full PUBLIC .asc";
+      full.addEventListener("click", () => { void download(ring.exportCertificate(entry.fingerprint), `public-${entry.fingerprint}.asc`, "application/pgp-keys", "keyring-status", "Full public certificate; no secret key is included."); });
+      const reduced = doc.createElement("button");
+      reduced.type = "button"; reduced.className = "button button-quiet"; reduced.textContent = "Export one-encryption-subkey PUBLIC .asc";
+      reduced.disabled = !entry.encryptionFingerprint;
+      reduced.addEventListener("click", async () => {
+        const epoch = importEpoch;
+        try {
+          const variants = await keyTools.publicCertificateVariants(ring.exportCertificate(entry.fingerprint), entry.fingerprint, {
+            profile: entry.keyVersion === 6 ? "modern-v6" : "classic-v4", encryptionFingerprint: entry.encryptionFingerprint,
+          });
+          if (epoch !== importEpoch || !ring.list().some((item) => item.fingerprint === entry.fingerprint)) return;
+          await download(variants.reduced, `public-${entry.fingerprint}-one-encryption-subkey.asc`, "application/pgp-keys", "keyring-status", "Troubleshooting subset only, not a revocation or v6-to-v4 conversion. Keep the full certificate; previously encrypted files still require their original secret subkey.");
+        } catch (error) { if (epoch === importEpoch) setStatus("keyring-status", friendlyError(error), "error"); }
+      });
+      item.append(fingerprint, uid, state, remove, full, reduced);
       list.append(item);
     }
     byId("keyring-count").textContent = `${entries.length} / ${keyTools.MAX_PUBLIC_KEYS} public certificates`;
@@ -246,12 +295,41 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     byId("download-keyring").disabled = !entries.length;
     byId("copy-keyring").disabled = !entries.length;
   }
+  function rememberRing() {
+    publicSnapshotCurrent = false;
+    if (!rememberPublic) return;
+    try {
+      const saved = writePublicSnapshot(view.localStorage, ring, keyTools.MAX_KEYRING_BYTES);
+      publicSnapshotCurrent = saved;
+      setStatus("public-storage-status", saved ? "PUBLIC certificates remembered on this device and read-back checked. This is not a backup: browser/app data clearing or uninstall can remove them. Export a .asc copy too." : "No public certificates to remember yet. Future successful imports will be remembered; nothing else is stored.", "success");
+    } catch {
+      setStatus("public-storage-status", "Could not update the device copy (storage blocked/full). The previous copy may be stale. Export a .asc backup now; no private data was stored.", "error");
+    }
+  }
+  function forgetRememberedRing() {
+    rememberPublic = false;
+    publicSnapshotCurrent = false;
+    byId("remember-public-keyring").checked = false;
+    try {
+      forgetPublicSnapshot(view.localStorage);
+      setStatus("public-storage-status", "Remembering is off. Saved PUBLIC certificates removed from this origin; external backups are unchanged.");
+    } catch {
+      setStatus("public-storage-status", "Device storage could not be accessed; removal is NOT confirmed. Clear this app/site's storage in system settings if needed.", "error");
+    }
+  }
+  byId("remember-public-keyring").addEventListener("change", () => {
+    rememberPublic = byId("remember-public-keyring").checked;
+    if (rememberPublic) rememberRing(); else forgetRememberedRing();
+  });
+  byId("forget-public-keyring").addEventListener("click", forgetRememberedRing);
+
   function importControls() {
-    setBusy(byId("import-public-keys"), importing);
+    setBusy(byId("import-public-keys"), importing || publicVariantBusy);
+    for (const id of ["export-full-public-input", "export-reduced-public-input"]) byId(id).disabled = !supported || importing || publicVariantBusy;
     generationControls();
   }
-  async function importPublic(armored, expectedFingerprint, fromGenerated = false) {
-    if (importing || !supported) return;
+  async function importPublic(armored, expectedFingerprint, fromGenerated = false, restoring = false) {
+    if (importing || publicVariantBusy || !supported) return;
     importing = true;
     generatedImport = fromGenerated;
     importController = new AbortController();
@@ -262,10 +340,16 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       await ring.importKeys(armored, { expectedFingerprint, signal: importController.signal });
       if (epoch !== importEpoch) return;
       renderRing();
-      setStatus("keyring-status", "Public keyring updated in memory. Compare every full fingerprint independently; no identity or owner trust was assigned.", "success");
+      if (!restoring) rememberRing();
+      else publicSnapshotCurrent = rememberPublic;
+      setStatus("keyring-status", restoring ? "Remembered PUBLIC certificates restored after revalidation. No identity or owner trust was restored or assigned; compare full fingerprints independently." : "Public keyring updated in memory. Compare every full fingerprint independently; no identity or owner trust was assigned.", "success");
+      if (restoring) setStatus("public-storage-status", "Opt-in PUBLIC device copy restored. Private keys, revocations, messages and passphrases were not restored. Export a .asc backup too.", "success");
       if (fromGenerated && generation === generationEpoch) setStatus("keygen-status", "Public certificate added to the in-memory keyring; private material was not added.", "success");
     } catch (error) {
-      if (epoch === importEpoch) setStatus("keyring-status", friendlyError(error), "error");
+      if (epoch === importEpoch) {
+        setStatus("keyring-status", friendlyError(error), "error");
+        if (restoring) setStatus("public-storage-status", "Saved public certificates could not be revalidated. The old copy was not overwritten. Import an external .asc backup or explicitly forget the saved copy.", "error");
+      }
       if (fromGenerated && generation === generationEpoch) setStatus("keygen-status", "Public-key add failed or was cleared; inspect the Public keyring tab.", "error");
     } finally {
       importing = false;
@@ -274,9 +358,33 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       importControls();
     }
   }
+  async function exportPublicInput(reduced) {
+    if (importing || publicVariantBusy || !supported) return;
+    const epoch = importEpoch, file = fileEpoch;
+    publicVariantBusy = true; importControls();
+    setStatus("keyring-status", "Checking one PUBLIC certificate and its encryption binding. The input will not be modified or imported…");
+    try {
+      // The full expected fingerprint is mandatory for this explicit subset
+      // operation, including when the original has unsupported v6 subkeys.
+      const expected = keyTools.normalizePublicFingerprint(byId("expected-fingerprint").value);
+      const variants = await keyTools.publicCertificateVariants(byId("public-key-input").value, expected, {
+        profile: expected.length === 64 ? "modern-v6" : "classic-v4",
+      });
+      if (epoch !== importEpoch || file !== fileEpoch) return;
+      const omitted = variants.removedSubkeyFingerprints.length + variants.unsupportedSubkeys.length;
+      await download(reduced ? variants.reduced : variants.full,
+        `public-${expected}-${reduced ? "one-encryption-subkey" : "full-original"}.asc`, "application/pgp-keys", "keyring-status",
+        reduced ? `Explicit subset omits ${omitted} other subkey blocks, including ${variants.unsupportedSubkeys.length} unsupported algorithms. Keep the original. This is not a revocation, a v6-to-v4 conversion or proof that omitted keys are invalid; old ciphertext still needs its original secret subkey.` : "Original PUBLIC input preserved, including unsupported public algorithm packets. A usable bound encryption key was found in the supported subset; omitted algorithms were not validated. No secret key was exported.");
+    } catch (error) {
+      if (epoch === importEpoch && file === fileEpoch) setStatus("keyring-status", friendlyError(error), "error");
+    } finally { publicVariantBusy = false; importControls(); }
+  }
+  byId("export-full-public-input").addEventListener("click", () => { void exportPublicInput(false); });
+  byId("export-reduced-public-input").addEventListener("click", () => { void exportPublicInput(true); });
   byId("add-generated-public").addEventListener("click", () => { if (generated) void importPublic(generated.publicKey, generated.fingerprint, true); });
   byId("keyring-import-form").addEventListener("submit", (event) => { event.preventDefault(); void importPublic(byId("public-key-input").value, byId("expected-fingerprint").value); });
   byId("public-key-input").addEventListener("input", () => { fileEpoch++; });
+  byId("expected-fingerprint").addEventListener("input", () => { fileEpoch++; });
   byId("public-key-file").addEventListener("change", async (event) => {
     const epoch = ++fileEpoch, file = event.target.files?.[0];
     if (!file) return;
@@ -290,15 +398,17 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       if (epoch === fileEpoch) { byId("public-key-input").value = ""; setStatus("keyring-status", friendlyError(error), "error"); }
     }
   });
-  function clearRing() {
+  function clearRing({ forgetSaved = true } = {}) {
+    saveEpochs["keyring-status"]++;
+    if (forgetSaved) forgetRememberedRing();
     importEpoch++; fileEpoch++; importController?.abort(); ring.clear();
     resetForm(byId("keyring-import-form"));
     renderRing();
     setStatus("keyring-status", "Public keyring and import fields cleared. In-progress imports will not repopulate them.");
   }
-  byId("clear-keyring").addEventListener("click", clearRing);
+  byId("clear-keyring").addEventListener("click", () => clearRing());
   byId("download-keyring").addEventListener("click", () => {
-    try { download(ring.exportKeys(), "openpgp-PUBLIC-keyring.asc", "application/pgp-keys"); setStatus("keyring-status", "Public-only keyring download requested. Certificates contain unverified User ID claims.", "success"); }
+    try { void download(ring.exportKeys(), "openpgp-PUBLIC-keyring.asc", "application/pgp-keys", "keyring-status", "Certificates contain unverified User ID claims."); }
     catch (error) { setStatus("keyring-status", friendlyError(error), "error"); }
   });
 
@@ -311,19 +421,34 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   for (const button of doc.querySelectorAll("[data-download]")) button.addEventListener("click", () => {
     const value = byId(button.dataset.download).value;
     if (!value) { setStatus("encrypt-status", "There is no encrypted message to download yet.", "error"); return; }
-    download(value, button.dataset.filename, "application/pgp-encrypted;charset=utf-8");
-    setStatus("encrypt-status", "Download requested.", "success");
+    void download(value, button.dataset.filename, "application/pgp-encrypted;charset=utf-8", "encrypt-status", "Keep an independent backup of your encrypted research.");
   });
-  function clearAll() {
-    clearText("encrypt"); clearText("decrypt"); clearGenerated(); clearRing();
+  function clearAll({ forgetSaved = true } = {}) {
+    clearText("encrypt"); clearText("decrypt"); clearGenerated(); clearRing({ forgetSaved });
     for (const url of objectURLs) view.URL.revokeObjectURL(url);
     objectURLs.clear();
   }
-  byId("clear-all").addEventListener("click", clearAll);
-  view.addEventListener("pagehide", clearAll);
+  byId("clear-all").addEventListener("click", () => clearAll());
+  view.addEventListener("pagehide", () => clearAll({ forgetSaved: false }));
+  view.addEventListener("beforeunload", (event) => {
+    if (!generated && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
+    event.preventDefault(); event.returnValue = "";
+  });
   if (!supported) byId("capability-warning").hidden = false;
   for (const button of doc.querySelectorAll("[data-crypto-submit]")) button.disabled = !supported;
-  generationControls(); renderRing();
+  importControls(); renderRing();
+  if (supported) {
+    try {
+      const saved = readPublicSnapshot(view.localStorage, keyTools.MAX_KEYRING_BYTES);
+      if (saved !== null) {
+        rememberPublic = true;
+        byId("remember-public-keyring").checked = true;
+        void importPublic(saved, "", false, true);
+      }
+    } catch {
+      setStatus("public-storage-status", "Saved public keyring unavailable or malformed. It was not overwritten. Storage may be blocked; use an external .asc backup or explicitly forget the saved copy.", "error");
+    }
+  }
   return Object.freeze({ clearAll });
 }
 

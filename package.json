@@ -77,7 +77,12 @@
     "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-iso-crosswalk.mjs && node scripts/build-country-viewer-iana-cctlds.mjs && node scripts/build-country-viewer-xdc.mjs",
     "check:country-viewer-crosswalk": "node scripts/build-country-viewer-iso-crosswalk.mjs --check && node scripts/build-country-viewer-iana-cctlds.mjs --check",
     "build:keyviewer": "node scripts/build-keyviewer-xdc.mjs",
-    "build:keyspace": "sh tools/pack_keyspace.sh"
+    "build:keyspace": "sh tools/pack_keyspace.sh",
+    "build:sound-apps": "node scripts/build-sound-apps.mjs",
+    "check:sound-apps": "node scripts/build-sound-apps.mjs --check",
+    "audit:app-sources": "node scripts/audit-app-source-inventory.mjs",
+    "build:app-catalog": "node scripts/build-html5-browser-catalog.mjs",
+    "check:app-catalog": "node scripts/build-html5-browser-catalog.mjs --check"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",

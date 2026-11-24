@@ -122,6 +122,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-80-2026-11-17.md](backlog-execution-round-80-2026-11-17.md) — selectable Galois fields, full offline coin selector and USDT BEP-20/TRC-20 identities, deterministic registry generation, 2600 software builds and passive SnapSafe recipes
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
+- [backlog-execution-round-85-2026-11-17.md](backlog-execution-round-85-2026-11-17.md) — Android local saves, sound-app restoration, complete 96-app browser catalog, source audit and research-retention gates (PR #238)
+
 ## Research deep dives (the “ghirdra” line)
 
 - [2600-public-software-review-2026-11-17.md](2600-public-software-review-2026-11-17.md) — sampled historical code inventory and 31-byte NASM build, SnapSafe SECV source/recipe review, Neuron Edition simulation boundary, and HOPE_16 follow-ups

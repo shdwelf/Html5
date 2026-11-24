@@ -299,10 +299,20 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
+| `/apps/sound-sanctuary/` | Sound Sanctuary — complete local Noise Canceling Sanctuary snapshot; microphone opt-in, not hearing protection |
+| `/apps/aura-sound-studio/` | AURA Sound Studio — complete local DSP lab, with its alternate saved-settings snapshot; not certified branded processing |
+| `/apps/openpgp-workbench/` | Local OpenPGP tools, verified Android file saves and opt-in PUBLIC certificate remembering; no automatic secret storage |
 | `/apps/cyberchef/` | CyberChef Renovated Kitchen — 519 recipes after unioning the Html5 and Html5-sync-incoming recipe sets, plus file input and save. Includes QR/Aztec generation and image decoding, CueCat and postal barcode recipes, Avery LabelPro-style N-up labels, an educational multiplicative ElGamal demonstration (not FHE), and offline SFX support. See the [barcode notes](docs/cyberchef-aztec-cuecat.md), [SFX coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md), [field-cipher deep dive](docs/field-cipher-deep-dive-2026-10-14.md), and [recipe-sourcing notes](docs/recipe-sourcing-round-4-2026-10-14.md) and [round 5](docs/recipe-sourcing-round-5-2026-10-14.md) for the tested cryptography and historical recipes. |
 | `/apps/red-october-command-viewer/` | Offline fictionalized story-index globe and schematic profile viewer; exports VRML 2.0 and a Xena binary-preservation XML wrapper. No real submarine tracks or precise internal layouts. Ships as `red-october-command-viewer.xdc`. |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
+
+The complete browser catalog is generated with `npm run build:app-catalog` and
+contains the same 96 reviewed public entrypoints as the Android catalog, not
+only the highlights above. `npm run audit:app-sources` separately accounts for
+all 188 imported source documents without auto-publishing private research,
+wallet candidates or unbuilt shells. See the [Android save and data-retention
+notes](apps/html5-offline-launcher/README.md) before upgrading/reinstalling.
 
 The BBS shipped with a Cloudflare Insights beacon; it has been stripped so the
 page is fully self-contained and makes no external requests.
@@ -310,9 +320,10 @@ page is fully self-contained and makes no external requests.
 ### Why serving them matters
 
 `getUserMedia` is only available in a [secure context](https://developer.mozilla.org/docs/Web/Security/Secure_Contexts).
-A page opened from `file://` is not one, so the browser never offers the
-microphone prompt and ANC Studio can't start — nothing in the app is broken.
-Served from an `http://localhost` or `https://` origin the prompt appears.
+Local-file handling varies by browser and is not a reliable deployment path.
+Serve from HTTPS or an HTTP loopback development origin; microphone capture
+still requires your consent and appropriate OS permissions. This is not a
+claim of certified acoustic ANC or hearing protection.
 The same applies to the MonKey API: `file://` pages get a `null` origin, which
 CORS rejects.
 

@@ -26561,6 +26561,12 @@ function normalizeFingerprint(value) {
   if (!/^[0-9A-F]{40}$/.test(fingerprint)) throw new Error("Enter the full 40-hex-character v4 fingerprint, not a key ID.");
   return fingerprint;
 }
+function normalizePublicFingerprint(value) {
+  boundedText(value, "Fingerprint", 128);
+  const fingerprint = value.replace(/[ \t\r\n]/g, "").toUpperCase();
+  if (!/^(?:[0-9A-F]{40}|[0-9A-F]{64})$/.test(fingerprint)) throw new Error("Enter the full 40-hex v4 or 64-hex v6 fingerprint, not a key ID.");
+  return fingerprint;
+}
 function checkedGenerationOptions({ name = "", email = "", passphrase, expiryDays = DEFAULT_EXPIRY_DAYS, rsaBits = RSA_BITS } = {}) {
   name = boundedText(name, "Name", 128).trim();
   email = boundedText(email, "Email", 254).trim();
@@ -26631,7 +26637,10 @@ function createOpenPgpKeyTools(library) {
     if (ed25519(key) && parts.every((part) => ed25519(part) || curve25519(part))) {
       return "v4 Ed25519 / Curve25519 (legacy packets)";
     }
-    throw new Error("Public imports accept only v4 RSA (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates. Other profiles need a separate compatibility review.");
+    if (key.keyPacket.version === 6 && key.getAlgorithmInfo().algorithm === "ed25519" && parts.every((part) => part.keyPacket.version === 6 && ["ed25519", "x25519"].includes(part.getAlgorithmInfo().algorithm))) {
+      return "v6 Ed25519 / X25519 (modern clients required)";
+    }
+    throw new Error("Public imports accept only v4 RSA (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates. Other profiles need a separate compatibility review.");
   }
   function assertProtected(key, rsaBits = RSA_BITS) {
     checkedRsaBits(rsaBits);
@@ -26724,11 +26733,11 @@ function createOpenPgpKeyTools(library) {
     if (normalizeFingerprint(keys[0].getFingerprint()) !== expected) throw new Error("Private-key fingerprint mismatch. Nothing was downloaded.");
     return armored;
   }
-  async function parsePublicKeyring(armored) {
+  async function readPublicBlocks(armored) {
     boundedText(armored, "Public keyring", MAX_KEYRING_BYTES);
     const begin = "-----BEGIN PGP PUBLIC KEY BLOCK-----", end = "-----END PGP PUBLIC KEY BLOCK-----";
     let cursor = 0;
-    const keys = [];
+    const blocks = [];
     for (; ; ) {
       const start = armored.indexOf(begin, cursor);
       if (start < 0) break;
@@ -26739,13 +26748,26 @@ function createOpenPgpKeyTools(library) {
       cursor = finish + end.length;
       const { data, type } = await library.unarmor(armored.slice(start, cursor));
       if (type !== library.enums.armor.publicKey) throw new Error("A public key block is required.");
-      const packets = await library.PacketList.fromBinary(data, allowedPublicPackets, config2);
+      blocks.push({ data, armored: armored.slice(start, cursor) });
+      if (blocks.length > MAX_PUBLIC_KEYS) throw new Error(`At most ${MAX_PUBLIC_KEYS} public certificates are allowed.`);
+    }
+    if (!blocks.length || armored.slice(cursor).trim()) throw new Error("Public keyrings only: provide complete ASCII-armored public certificates without extra text.");
+    return blocks;
+  }
+  async function parsePublicKeyring(armored) {
+    const keys = [];
+    for (const { data } of await readPublicBlocks(armored)) {
+      let packets;
+      try {
+        packets = await library.PacketList.fromBinary(data, allowedPublicPackets, config2);
+      } catch (error) {
+        if (error.name === "UnsupportedError") throw new Error("Unsupported public packet or subkey algorithm. Nothing was imported. For a v6 certificate, an explicit public subset export can omit unsupported subkeys after you check the full primary fingerprint; the original must be kept.");
+        throw error;
+      }
       if (packets.length > 2048 || packets[0]?.constructor.tag !== library.enums.packet.publicKey || !packets.every((packet) => Object.hasOwn(allowedPublicPackets, packet.constructor.tag))) throw new Error("Invalid, unsupported or excessively complex public keyring.");
-      const parsed = await library.readKeys({ binaryKeys: data, config: config2 });
-      keys.push(...parsed);
+      keys.push(...await library.readKeys({ binaryKeys: data, config: config2 }));
       if (keys.length > MAX_PUBLIC_KEYS) throw new Error(`At most ${MAX_PUBLIC_KEYS} public certificates are allowed.`);
     }
-    if (!keys.length || armored.slice(cursor).trim()) throw new Error("Public keyrings only: provide complete ASCII-armored public certificates without extra text.");
     const entries = [];
     for (const key of keys) {
       if (key.isPrivate()) throw new Error("Secret packets are never accepted into the public keyring.");
@@ -26757,9 +26779,19 @@ function createOpenPgpKeyTools(library) {
       } catch {
         selfCertification = "unusable: revoked, expired or invalid self-certification; archival export only";
       }
+      let encryptionFingerprint = null;
+      if (!selfCertification.startsWith("unusable:")) {
+        try {
+          encryptionFingerprint = normalizePublicFingerprint((await key.getEncryptionKey(void 0, void 0, void 0, config2)).getFingerprint());
+        } catch {
+        }
+      }
       const userIDs = key.getUserIDs().map((uid) => boundedText(uid, "User ID", 2048));
       entries.push(Object.freeze({
-        fingerprint: normalizeFingerprint(key.getFingerprint()),
+        fingerprint: normalizePublicFingerprint(key.getFingerprint()),
+        keyVersion: key.keyPacket.version,
+        subkeyCount: key.subkeys.length,
+        encryptionFingerprint,
         userIDs: Object.freeze(userIDs),
         created: key.getCreationTime().toISOString(),
         algorithm,
@@ -26769,22 +26801,86 @@ function createOpenPgpKeyTools(library) {
     }
     return entries;
   }
-  async function readEncryptionRecipient2(armored, expectedFingerprint) {
-    const expected = normalizeFingerprint(expectedFingerprint);
+  async function readEncryptionRecipient2(armored, expectedFingerprint, { profile = "classic-v4", encryptionFingerprint = "" } = {}) {
+    if (!["classic-v4", "modern-v6"].includes(profile)) throw new Error("Choose an explicit classic-v4 or modern-v6 recipient profile.");
+    const expected = normalizePublicFingerprint(expectedFingerprint);
     const entries = await parsePublicKeyring(armored);
     if (entries.length !== 1 || entries[0].fingerprint !== expected) {
       throw new Error("Recipient fingerprint mismatch, or multiple certificates supplied. Encryption refused.");
     }
     const key = await library.readKey({ armoredKey: entries[0].armored, config: config2 });
+    if (key.keyPacket.version !== (profile === "modern-v6" ? 6 : 4)) throw new Error("Recipient version does not match the explicit backup profile; v6 needs modern-v6, not a v4 downgrade.");
     await key.verifyPrimaryKey(void 0, void 0, config2);
-    const encryptionKey = await key.getEncryptionKey(void 0, void 0, void 0, config2);
+    const selectedFingerprint = encryptionFingerprint ? normalizePublicFingerprint(encryptionFingerprint) : null;
+    const selected = selectedFingerprint ? key.getKeys().find((part) => normalizePublicFingerprint(part.getFingerprint()) === selectedFingerprint) : null;
+    if (selectedFingerprint && !selected) throw new Error("Selected encryption fingerprint is not in this certificate.");
+    const encryptionKey = await key.getEncryptionKey(selected?.getKeyID(), void 0, void 0, config2);
+    const actualEncryptionFingerprint = normalizePublicFingerprint(encryptionKey.getFingerprint());
+    if (selectedFingerprint && actualEncryptionFingerprint !== selectedFingerprint) throw new Error("Selected subkey is not a currently usable bound encryption key.");
     return Object.freeze({
       key,
       encryptionKey,
+      profile,
       fingerprint: expected,
-      encryptionFingerprint: normalizeFingerprint(encryptionKey.getFingerprint()),
+      encryptionFingerprint: actualEncryptionFingerprint,
       encryptionKeyID: encryptionKey.getKeyID().toHex().toUpperCase(),
       algorithm: entries[0].algorithm
+    });
+  }
+  async function publicCertificateVariants2(armored, expectedFingerprint, options = {}) {
+    const expected = normalizePublicFingerprint(expectedFingerprint);
+    const blocks = await readPublicBlocks(armored);
+    if (blocks.length !== 1) throw new Error("Exactly one public certificate is required for an explicit subset export.");
+    const packets = await library.PacketList.fromBinary(blocks[0].data, allowedPublicPackets, { ...config2, ignoreUnsupportedPackets: true });
+    if (packets.length > 2048 || packets[0]?.constructor.tag !== library.enums.packet.publicKey || packets.filter((packet) => packet.constructor.tag === library.enums.packet.publicKey).length !== 1) throw new Error("Expected one bounded public certificate, not a bundle.");
+    const supported = new library.PacketList(), unsupportedSubkeys = [];
+    let omitting = false, sawSubkey = false, subkeys = 0, users = 0;
+    for (const [index2, packet] of packets.entries()) {
+      const tag = packet.constructor.tag ?? packet.tag;
+      if (!Object.hasOwn(allowedPublicPackets, tag)) throw new Error("Only public key, public subkey, User ID and signature packets can be exported.");
+      if (tag === library.enums.packet.publicSubkey) {
+        sawSubkey = true;
+        if (++subkeys > 15) throw new Error("Certificate has too many subkeys for an explicit subset export.");
+        omitting = packet.constructor.tag === void 0;
+        if (omitting) {
+          if (packets[0].version !== 6 || packet.rawContent?.[0] !== 6) throw new Error("Only unsupported v6 public subkeys may be omitted explicitly.");
+          unsupportedSubkeys.push(Object.freeze({ packet: index2, version: 6, algorithm: packet.rawContent[5] }));
+        }
+      } else if (tag === library.enums.packet.userID) {
+        if (sawSubkey || ++users > 32) throw new Error("Unsupported public certificate ordering or too many User IDs.");
+      } else if (tag === library.enums.packet.publicKey && index2 !== 0) {
+        throw new Error("Multiple public certificates cannot be reduced together.");
+      }
+      if (omitting && tag === library.enums.packet.publicSubkey) continue;
+      if (omitting && tag === library.enums.packet.signature) {
+        const signatureType = packet.signatureType ?? (packet.rawContent?.[0] === 6 ? packet.rawContent[1] : void 0);
+        if ([library.enums.signature.subkeyBinding, library.enums.signature.subkeyRevocation].includes(signatureType)) continue;
+        if (packet.constructor.tag === void 0 || ![library.enums.signature.keyRevocation, library.enums.signature.key].includes(signatureType)) {
+          throw new Error("Cannot omit an unsupported or ambiguously placed global/User ID signature.");
+        }
+      }
+      if (packet.constructor.tag === void 0) throw new Error("An unsupported packet outside an omitted public subkey block cannot be exported as a subset.");
+      supported.push(packet);
+    }
+    const recipient = await readEncryptionRecipient2(library.armor(library.enums.armor.publicKey, supported.write()), expected, options);
+    const reducedKey = recipient.key;
+    const removedSubkeyFingerprints = reducedKey.subkeys.filter((part) => normalizePublicFingerprint(part.getFingerprint()) !== recipient.encryptionFingerprint).map((part) => normalizePublicFingerprint(part.getFingerprint()));
+    reducedKey.subkeys = reducedKey.subkeys.filter((part) => normalizePublicFingerprint(part.getFingerprint()) === recipient.encryptionFingerprint);
+    const reduced = reducedKey.armor(config2);
+    const checked = await readEncryptionRecipient2(reduced, recipient.fingerprint, {
+      profile: recipient.profile,
+      encryptionFingerprint: recipient.encryptionFingerprint
+    });
+    if (checked.key.keyPacket.version !== recipient.key.keyPacket.version || checked.key.subkeys.length !== (recipient.encryptionFingerprint === recipient.fingerprint ? 0 : 1)) throw new Error("Reduced certificate postcondition failed.");
+    return Object.freeze({
+      full: armored,
+      reduced,
+      fingerprint: recipient.fingerprint,
+      encryptionFingerprint: recipient.encryptionFingerprint,
+      keyVersion: recipient.key.keyPacket.version,
+      profile: recipient.profile,
+      removedSubkeyFingerprints: Object.freeze(removedSubkeyFingerprints),
+      unsupportedSubkeys: Object.freeze(unsupportedSubkeys)
     });
   }
   function createPublicKeyring2() {
@@ -26796,7 +26892,7 @@ function createOpenPgpKeyTools(library) {
       async importKeys(armored, { expectedFingerprint = "", signal } = {}) {
         const startRevision = revision;
         assertNotAborted(signal);
-        const expected = expectedFingerprint ? normalizeFingerprint(expectedFingerprint) : null;
+        const expected = expectedFingerprint ? normalizePublicFingerprint(expectedFingerprint) : null;
         const incoming = await parsePublicKeyring(armored);
         if (expected && (incoming.length !== 1 || incoming[0].fingerprint !== expected)) throw new Error("Fingerprint mismatch, or multiple certificates supplied for a single expected fingerprint. Nothing was imported.");
         const updated = new Map(entries);
@@ -26818,9 +26914,14 @@ function createOpenPgpKeyTools(library) {
         if (!entries.size) throw new Error("The public keyring is empty.");
         return [...entries.values()].map((entry) => entry.armored).join("\n");
       },
+      exportCertificate(fingerprint) {
+        const entry = entries.get(normalizePublicFingerprint(fingerprint));
+        if (!entry) throw new Error("Public certificate is not in this keyring.");
+        return entry.armored;
+      },
       remove(fingerprint) {
         revision++;
-        return entries.delete(normalizeFingerprint(fingerprint));
+        return entries.delete(normalizePublicFingerprint(fingerprint));
       },
       clear() {
         revision++;
@@ -26828,7 +26929,7 @@ function createOpenPgpKeyTools(library) {
       }
     });
   }
-  return Object.freeze({ config: config2, generateCompatibilityKey: generateCompatibilityKey2, checkedPrivateDownload: checkedPrivateDownload2, parsePublicKeyring, readEncryptionRecipient: readEncryptionRecipient2, createPublicKeyring: createPublicKeyring2 });
+  return Object.freeze({ config: config2, generateCompatibilityKey: generateCompatibilityKey2, checkedPrivateDownload: checkedPrivateDownload2, parsePublicKeyring, readEncryptionRecipient: readEncryptionRecipient2, publicCertificateVariants: publicCertificateVariants2, createPublicKeyring: createPublicKeyring2 });
 }
 var tools = createOpenPgpKeyTools(openpgp_6_3_exports);
 var KEY_COMPATIBILITY_CONFIG = tools.config;
@@ -26836,6 +26937,7 @@ var generateCompatibilityKey = tools.generateCompatibilityKey;
 var checkedPrivateDownload = tools.checkedPrivateDownload;
 var createPublicKeyring = tools.createPublicKeyring;
 var readEncryptionRecipient = tools.readEncryptionRecipient;
+var publicCertificateVariants = tools.publicCertificateVariants;
 
 // apps/openpgp-workbench/large-rsa-worker.mjs
 var started = false;

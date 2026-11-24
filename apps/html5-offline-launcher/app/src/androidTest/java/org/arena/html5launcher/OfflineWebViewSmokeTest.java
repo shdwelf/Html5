@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import android.Manifest;
 import android.app.Instrumentation;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
@@ -47,12 +48,16 @@ public final class OfflineWebViewSmokeTest {
     public final ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class, false, false);
 
-    @Test
+    @Test(timeout = 105000)
     public void microphoneCaptureWorksOnlyForAncOriginAndAudioResource() throws Exception {
         MainActivity activity = activityRule.launchActivity(null);
         WebView webView = findWebView(activity.getWindow().getDecorView());
         assertNotNull("launcher must host one packaged WebView", webView);
         loadAndWait(webView, ANC_URL);
+        assertEquals("Android microphone runtime permission must be granted by the synthetic test rule", PackageManager.PERMISSION_GRANTED,
+                activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO));
+        Log.i("Html5Offline", "synthetic mic policy probe: current=" + evaluateString(webView, "location.href") +
+                "; permission=" + activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO));
 
         RecordingPermissionRequest allowed = new RecordingPermissionRequest(
                 Uri.parse("https://app-anc-studio.invalid"),
@@ -77,6 +82,19 @@ public final class OfflineWebViewSmokeTest {
         assertTrue("ANC is audio-only; camera requests must be denied", cameraRequest.denied);
         assertFalse(cameraRequest.granted);
 
+        for (String host : new String[] { "app-sound-sanctuary.invalid", "app-aura-sound-studio.invalid" }) {
+            loadAndWait(webView, "https://" + host + "/index.html");
+            RecordingPermissionRequest same = new RecordingPermissionRequest(Uri.parse("https://" + host),
+                    new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            InstrumentationRegistryAccess.runOnMainSync(() -> activity.handleWebPermissionRequest(same));
+            assertTrue("restored packaged sound origin must support explicit microphone mode: " + host, same.granted);
+            RecordingPermissionRequest otherLab = new RecordingPermissionRequest(Uri.parse("https://app-anc-studio.invalid"),
+                    new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            InstrumentationRegistryAccess.runOnMainSync(() -> activity.handleWebPermissionRequest(otherLab));
+            assertTrue("one allowlisted lab must not grant another origin's frame microphone access", otherLab.denied);
+        }
+        loadAndWait(webView, ANC_URL);
+
         // Exercise Chromium WebView's actual getUserMedia -> WebChromeClient ->
         // Android permission grant chain with the permission pre-approved above.
         evaluate(webView,
@@ -92,7 +110,7 @@ public final class OfflineWebViewSmokeTest {
                 result.matches("granted:[1-9][0-9]*"));
     }
 
-    @Test
+    @Test(timeout = 105000)
     public void headlineHarryStartControlBootsBundledDosProgramInAndroidWebView() throws Exception {
         MainActivity activity = activityRule.launchActivity(null);
         WebView webView = findWebView(activity.getWindow().getDecorView());
@@ -117,8 +135,9 @@ public final class OfflineWebViewSmokeTest {
                 "record(level + ': ' + detail); return original.apply(console, arguments); }; }); " +
                 "return 'diagnostics-installed'; })()");
         Log.i(HARRY_LOG_TAG, "invoking packaged start control");
-        evaluate(webView,
-                "document.getElementById('start').click(); 'start-clicked'");
+        // Real touchscreen activation, not an untrusted JavaScript click,
+        // also exercises the page's actual user-gesture audio policy.
+        WebViewTestInput.tapElement(InstrumentationRegistryAccess.INSTRUMENTATION, webView, "start");
         long deadline = SystemClock.uptimeMillis() + GAME_BOOT_TIMEOUT_MS;
         String status = "";
         String lastLoggedStatus = null;
@@ -167,7 +186,7 @@ public final class OfflineWebViewSmokeTest {
     }
 
     private static void loadAndWait(WebView webView, String url) throws Exception {
-        InstrumentationRegistryAccess.runOnMainSync(() -> webView.loadUrl(url));
+        webView.post(() -> webView.loadUrl(url));
         long deadline = SystemClock.uptimeMillis() + PAGE_TIMEOUT_MS;
         String state = "";
         String lastLoggedState = null;
@@ -204,7 +223,7 @@ public final class OfflineWebViewSmokeTest {
     private static String evaluate(WebView webView, String expression) throws Exception {
         CountDownLatch completed = new CountDownLatch(1);
         AtomicReference<String> value = new AtomicReference<>();
-        InstrumentationRegistryAccess.runOnMainSync(() -> webView.evaluateJavascript(expression,
+        webView.post(() -> webView.evaluateJavascript(expression,
                 result -> {
                     value.set(result);
                     completed.countDown();

@@ -189,3 +189,19 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `wiki-in-a-jar-browser-wiki-irc-pim-enso-haiku-wall` | Wiki-in-a-Jar | Browser Wiki · IRC · PIM · Enso · Haiku Wallet · Waves | 0 KB | _(from `index (7).html`)_ |
 | `wiki-in-a-jar-ens-vault-haiku-wallet` | Wiki-in-a-Jar · Ensō Vault · Haiku Wallet | 0 KB | _(from `index (8).html`)_ |
 | `zip_offline_viewer.html` | HTML5 Offline ZIP Audit & Repair Viewer | 48 KB |  |
+
+## Restored sound apps and source audit
+
+The Android public/network catalog now includes the full **Sound Sanctuary** and
+**AURA Sound Studio** builds under `public/apps/`, with both complete AURA
+snapshots linked from its banner. Run `npm run build:sound-apps` or
+`npm run check:sound-apps`; originals in this archive are preserved unchanged.
+The tiny extensionless AURA `/src/main.tsx` shell is not the working application.
+
+Run `npm run audit:app-sources` to account for every imported HTML source and its
+packaging/review disposition. The complete inventory can be written only to an
+ignored local directory (`-- --out .cache/app-source-inventory.json`). Personal
+research, wallet tools, unbuilt shells and unresolved dependencies are not
+silently copied into a public APK. No unreviewed source is deleted. A private
+backup must be encrypted to the user's independently verified exact recipient;
+public catalog membership is not cloud-sharing permission.

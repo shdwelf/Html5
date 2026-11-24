@@ -3,10 +3,10 @@
 ## Changes
 
 - Pin OpenPGP.js **6.3.3**, regenerate the unmodified local browser distribution, and lock the newly declared Node dependency **eckey-utils 0.7.14**. The upstream release fixes Node loading of that helper for ECDSA brainpool/secp256k1; a Rollup guard now rejects undeclared runtime `nodeRequire` dependencies. This is not a claim that every cryptographic dependency has been audited.
-- Extend **public-only** certificate import to the narrowly reviewed **v4 legacy Ed25519 primary / Ed25519 or Curve25519 subkey** packet profile (algorithms 22/18). RSA imports are v4, now extended to 2048–16384 bits by the follow-on large-RSA request. NIST, brainpool, secp256k1 and v6 app-keyring profiles are not added.
+- Extend **public-only** certificate import to the narrowly reviewed **v4 legacy Ed25519 primary / Ed25519 or Curve25519 subkey** packet profile (algorithms 22/18). RSA imports are v4, now extended to 2048–16384 bits by the follow-on large-RSA request. NIST, brainpool and secp256k1 app-keyring profiles are not added. The later explicitly scoped v6 addition is described below.
 - Preserve the **default generator and protected-download invariants**: two same-size v4 RSA packets (3072 by default; explicitly selectable through 16384), AES-256 protected secret material, iterated SHA-256 S2K at coded count `0xFF`, explicit fingerprint and sensitive-backup acknowledgment. There is still no arbitrary secret-key importer or public-key message UI.
 - Add `scripts/encrypt-openpgp-backup.mjs`: a separate Node 22 streaming release tool that does not require native GnuPG or an owner private key. It accepts exactly one public certificate and a separately supplied full primary fingerprint, verifies the primary and selects a currently valid bound encryption key. Ambiguous bundles, secret/mixed packets, incorrect fingerprints and unusable recipients are refused.
-- Fix the Android encrypted-export handoff: use repository-root APK paths, encrypt **public / network / private** builds separately, and export ciphertext before potentially slow emulator tests. A recipient dispatch requires both the certificate and full fingerprint and exports no plaintext APK. Normal CI retains main's public + opt-in network plaintext artifact; the private APK is never published as plaintext. Device tests retain their assertions and have a 15-minute step bound; separate dispatch/PR concurrency groups prevent a backup dispatch canceling the PR gate.
+- Fix the Android encrypted-export handoff: use repository-root APK paths, encrypt **public / network / private** builds separately, and export ciphertext before potentially slow emulator tests. A recipient dispatch requires both the certificate and full fingerprint and exports no plaintext APK. Normal CI retains main's public + opt-in network plaintext artifact; the private APK is never published as plaintext. Device tests retain their assertions and have a 20-minute step bound; separate dispatch/PR concurrency groups prevent a backup dispatch canceling the PR gate.
 - Explicitly install distribution-maintained `gnupg`, `gpg-agent`, `gpgconf` and `gpgv` in native interop CI, then require all native readers. `gpgv` alone is not full GnuPG. No native GnuPG binary is embedded into a WebView or renamed as a JavaScript dependency.
 
 ## Encryption boundaries
@@ -61,3 +61,32 @@ separate advanced-size consent and saved-size private-export validation. See
 not a claim that the new sizes have mobile-client certification. The Drive
 handoff remains blocked by the integration's HTTP 403 on Actions Secrets access;
 no temporary Actions secret has been created and no APK transfer is claimed.
+
+## Explicit modern-v6 follow-up
+
+Public-only import/fingerprint handling now separately accepts v6 Ed25519/X25519
+and full 64-hex primary fingerprints. Default generation, sensitive export and
+classic passphrase tools remain v4. Modern release encryption requires the
+explicit `modern-v6` profile and verifies a single v6 PKESK (full selected
+subkey fingerprint) plus SEIPDv2/AEAD, not a v3/MDC downgrade. The three-flavor
+manual workflow and ciphertext-only Drive uploader accept 40/64-hex recipients;
+source revisions remain exactly 40 lowercase hexadecimal characters.
+
+A lower-level packet scan exposed unsupported PUBLIC algorithms hidden by the
+library's default high-level key reader. Strict import/encryption still rejects
+them. An explicit, fingerprint-gated PUBLIC subset export can omit unsupported
+v6 subkey blocks while preserving a byte-identical full original separately.
+It verifies the retained primary/encryption binding, does not modify signed
+fields or issue signatures, and preserves global revocations even if located
+after an omitted subkey. Omitted algorithms are not declared malformed, and
+removing them does not convert v6 to v4 or decrypt already-encrypted material.
+Recipient identity, complete key files and approvals remain in ignored private
+delivery files, not this report or the bundled app.
+
+New synthetic controls cover Node and the actual shipped browser distribution,
+secret/malformed/unsupported-packet refusal, signing-only/unbound/expired/revoked
+keys, revocation-position stripping, binary AEAD tampering and immutable outputs.
+Actual Chromium covers both PUBLIC downloads, v6 restore and Web Crypto recovery.
+Those two distributions share OpenPGP.js; this is not independent native v6
+interop or owner-key decryption evidence. Android now separately exercises v6
+full/subset saves and PUBLIC remembering; matching-head CI remains the gate.
