@@ -369,3 +369,40 @@ test("an Android build without its native adapter fails visibly instead of reque
     assert.match(ui.get("keygen-status").textContent, /Nothing was saved/);
   } finally { ui.dom.window.close(); }
 });
+
+
+test("explicit full/reduced public input exports require a full fingerprint, preserve the input and do not automatically import", async () => {
+  const ui = boot();
+  try {
+    ui.input("public-key-input", bundle.publicKey); ui.get("export-reduced-public-input").click();
+    await until(() => ui.get("keyring-status").dataset.kind === "error");
+    assert.equal(ui.downloads.length, 0); assert.match(ui.get("keyring-status").textContent, /full 40-hex v4 or 64-hex v6/);
+    ui.input("expected-fingerprint", bundle.fingerprint); ui.get("export-full-public-input").click();
+    await until(() => ui.downloads.length === 1);
+    assert.equal(await ui.downloads[0].blob.text(), bundle.publicKey);
+    assert.match(ui.downloads[0].filename, /full-original\.asc$/);
+    await until(() => !ui.get("export-reduced-public-input").disabled);
+    ui.get("export-reduced-public-input").click(); await until(() => ui.downloads.length === 2);
+    assert.match(ui.downloads[1].filename, /one-encryption-subkey\.asc$/);
+    assert.equal((await keys.createPublicKeyring().importKeys(await ui.downloads[1].blob.text()))[0].fingerprint, bundle.fingerprint);
+    assert.equal(ui.get("keyring-list").children.length, 0);
+    assert.equal(ui.get("public-key-input").value, bundle.publicKey);
+    assert.match(ui.get("keyring-status").textContent, /not a revocation, a v6-to-v4 conversion/);
+  } finally { ui.dom.window.close(); }
+});
+
+test("a cleared or edited public subset request cannot create a late download", async () => {
+  for (const action of ["clear", "edit"]) {
+    const pending = deferred();
+    const ui = boot({ keyTools: { publicCertificateVariants: () => pending.promise } });
+    try {
+      ui.input("public-key-input", bundle.publicKey); ui.input("expected-fingerprint", bundle.fingerprint);
+      ui.get("export-reduced-public-input").click();
+      if (action === "clear") ui.get("clear-keyring").click(); else ui.input("public-key-input", "newer public input");
+      pending.resolve({ full: bundle.publicKey, reduced: bundle.publicKey, unsupportedSubkeys: [], removedSubkeyFingerprints: [] });
+      await until(() => !ui.get("export-reduced-public-input").disabled);
+      assert.equal(ui.downloads.length, 0);
+      assert.equal(ui.get("keyring-list").children.length, 0);
+    } finally { ui.dom.window.close(); }
+  }
+});

@@ -37,7 +37,7 @@ def digests(path: Path) -> dict:
 
 
 def prepare(raw: str, directory: Path, revision: str, fingerprint: str) -> list:
-    if not re.fullmatch(r"[a-f0-9]{40}", revision) or not re.fullmatch(r"[A-F0-9]{40}", fingerprint):
+    if not re.fullmatch(r"[a-f0-9]{40}", revision) or not re.fullmatch(r"(?:[A-F0-9]{40}|[A-F0-9]{64})", fingerprint):
         raise ValueError("Exact source revision and primary fingerprint are required.")
     sessions = json.loads(raw)
     if sessions.get("schema") != 1 or sessions.get("sourceRevision") != revision or set(sessions.get("profiles", {})) != set(PROFILES):

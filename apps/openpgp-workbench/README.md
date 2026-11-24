@@ -18,8 +18,8 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 - **Create key:** supply your own name/alias and/or optional email, strong unique passphrase and expiry. Random **v4 RSA-3072 by default** signing/certification primary plus same-size encryption subkey; selectable 3072/4096/6144/8192/12288/16384 bits, SHA-256 self-certification and classic SHA-2 preferences. Default expiry 730 days; allowed 30–3650. No identity is inferred, and no wallet seed or recovery phrase is used.
 - **Protected private export:** both packets use AES-256, iterated/salted SHA-256 S2K, count `0xFF` (65,011,712 octets). A minimum 12-character passphrase is required, but length is not a strength guarantee. Generated private armor never becomes a page field or clipboard item. Download requires explicit acknowledgement and the full matching fingerprint, with a packet-protection recheck.
 - **Revocation backup:** a separate, explicit **unencrypted sensitive certificate**. Anyone holding it can revoke the key. Keep it private/offline; never bundle it with the public certificate you share.
-- **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted.
-- Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or subkey audit.
+- **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits) v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted. Public fingerprints are 40 hex characters for v4 and 64 for v6; v6 still requires a modern destination client.
+- Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or blanket subkey audit. The display separately detects a currently usable bound encryption key; signing/authentication-only subkeys are not encryption keys.
 
 No public-key **message** encryption/decryption, secret-key import, signing UI, attachments, modern AEAD writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
 
@@ -31,6 +31,32 @@ No public-key **message** encryption/decryption, secret-key import, signing UI, 
 4. Compare the **full 40-hex fingerprint**, UID, key/subkey sizes and expiry in the destination. Test wrong/correct passphrases, two-way throwaway encryption and signature verification before relying on the combination. Do not import the revocation certificate as an ordinary setup step.
 
 Targets are **source-informed** OpenKeychain, PGPony Android/iOS and official KDE Kleopatra/GnuPG. Android, iOS and Kleopatra runtime import/unlock checks remain **not performed**. Proton VPN release signing and the unresolved Photon VPN candidate are separate topics, not PGP keyring integrations. See the [source review](../../docs/openpgp-keyring-source-review-2026-11-17.md) and its pinned manifest.
+
+## Explicit v6 public certificate subsets
+
+Strict imports never silently discard unsupported algorithms. Some full v6
+certificates contain additional public algorithms that OpenPGP.js cannot read;
+the library's default high-level `readKey` can skip those blocks. Workbench
+instead fails the import and leaves existing data unchanged.
+
+For **one** certificate, enter the independently checked full primary fingerprint
+and use the two explicit public input exports:
+
+- **Full original PUBLIC .asc** preserves the input byte-for-byte, including
+  unsupported PUBLIC subkey algorithm packets. This is the archival copy.
+- **One-encryption-subkey PUBLIC .asc** retains the primary, User IDs, global
+  signatures/revocations, and one usable bound encryption subkey with its binding
+  and revocation material. It omits other subkey blocks, including unsupported
+  v6 subkeys and their associated subkey signatures. A primary revocation cannot
+  be stripped based on packet position. Malformed/mixed/secret/ambiguous material
+  still fails closed; unsupported signatures outside omitted blocks are refused.
+
+Exports do not edit signed fields, generate replacement signatures, silently
+import a certificate, assign trust, revoke omitted keys or turn v6 into v4.
+Omitted algorithms have **not** been judged invalid. Keep the full original:
+old ciphertext may require a different secret subkey. Public material alone
+cannot decrypt an archive. The v4 RSA generator and protected secret-export
+fingerprint/protection checks are unchanged.
 
 ## Reliable local saves and opt-in PUBLIC remembering
 
@@ -74,6 +100,8 @@ node --test tests/openpgp-native-interop.test.mjs
 # REQUIRE_OPENPGP_INTEROP=1 REQUIRE_OPENPGP_NATIVE_INTEROP=1 node --test tests/openpgp-key-interop.test.mjs tests/openpgp-native-interop.test.mjs
 # Optional existing Chromium harness dependencies:
 node tests/openpgp-workbench-browser.mjs
+node --test tests/openpgp-v6.test.mjs
+node tests/openpgp-v6-browser.mjs
 ```
 
 Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, public remembering/restore, multi-key imports, reset and external-request observation. Real Android WebView file-save coverage is separate from Chromium downloads. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.
@@ -88,9 +116,9 @@ OpenPGP.js **6.3.3**, `LGPL-3.0+`, remains pinned in the root manifest/lockfile.
 
 ## Recipient-encrypted release backups
 
-`scripts/encrypt-openpgp-backup.mjs` is a separate Node 22 release tool, not a new message UI or a bundled native GnuPG binary. It streams files to a **single** public recipient, requires the exact full primary fingerprint, and rejects secret/mixed certificates, ambiguous bundles, expired/revoked primaries and missing/invalid encryption keys. It supports the reviewed v4 RSA and legacy Ed25519/Curve25519 public profiles; it does not change the 3072-bit default or relax selected-size/protected-private-download checks.
+`scripts/encrypt-openpgp-backup.mjs` is a separate Node 22 release tool, not a new message UI or a bundled native GnuPG binary. It streams files to a **single** public recipient, requires the exact full primary fingerprint, and rejects secret/mixed certificates, ambiguous bundles, expired/revoked primaries and missing/invalid encryption keys. It defaults to the reviewed v4 RSA and legacy Ed25519/Curve25519 public profiles. An explicit `--profile modern-v6` accepts only a v6 Ed25519/X25519 recipient; it does not change the 3072-bit default or relax selected-size/protected-private-download checks.
 
-Outputs are exclusive-create, mode-0600 binary OpenPGP ciphertext plus a UID-free JSON receipt and SHA-256 sidecar. The actual envelope must contain one matching v3 PKESK and SEIPDv1/MDC. These unsigned backups protect confidentiality/integrity but do not authenticate a sender. The owner must perform final decryption with their own private key; do not send that key or its passphrase to CI. See `apps/html5-offline-launcher/README.md` for the three distinct APK profiles.
+Outputs are exclusive-create, mode-0600 binary OpenPGP ciphertext plus a UID-free JSON receipt and SHA-256 sidecar. The default `classic-v4` envelope must contain one matching v3 PKESK and SEIPDv1/MDC. Explicit `modern-v6` instead requires one v6 PKESK containing the complete selected subkey fingerprint and SEIPDv2/AEAD; the actual cipher/AEAD IDs are recorded. A version/profile mismatch is an error, not an automatic downgrade. Use the checked reduced certificate if the full original has unsupported subkeys; encryption never strips them implicitly. These unsigned backups protect confidentiality/integrity but do not authenticate a sender. The owner must perform final decryption with their own private key; do not send that key or its passphrase to CI. See `apps/html5-offline-launcher/README.md` for the three distinct APK profiles.
 
 OpenPGP.js is exactly pinned at 6.3.3, including its newly declared `eckey-utils` Node dependency in the lockfile. Node ECDSA dependency-loading regressions exercise brainpool and explicitly opted-in secp256k1; neither curve is newly accepted by the app keyring, and the library's default secp256k1 rejection stays intact. Native `gpg`, `gpgconf` and `gpgv` remain independent CI readers, not browser dependencies.
 
@@ -121,3 +149,9 @@ uses the saved bundle metadata, never a later selector value. See
 real 8192/16384-bit native GnuPG lane and 8192/12288-bit completed Chromium
 generation controls (16384-bit browser worker cancellation is separate). Fast local runs explicitly skip expensive prime
 searches unless `RUN_OPENPGP_LARGE_RSA=1` is set.
+
+Modern v6 tests cover the Node and shipped browser distributions, actual Chromium
+Web Crypto, explicit full/subset downloads, public reload and synthetic exact-byte
+recovery/tamper rejection. Both JS distributions use OpenPGP.js: this is **not**
+independent GnuPG/PGPy v6 or OpenKeychain/PGPony/Kleopatra GUI certification.
+Owner decryption with a real key remains a separate local acceptance check.

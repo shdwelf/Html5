@@ -163,6 +163,55 @@ Immediate follow-through: matching-head Android save/import/device checks and
 review, final inventories/registries, then merge the new PR as requested. Next
 app candidates include the other ANC variants and older cancellation app, whose
 remote CSS/icon dependencies still need localization and runtime review. Keep
-the other backlog gates: independent per-deployment token evidence (next stETH /
-wstETH, no runtime promotion), actual target-client interop, stable owner Android
+the other backlog gates: finish independent per-deployment USDT/USDC evidence before
+stETH/wstETH (no runtime promotion), actual target-client interop, stable owner Android
 signing/recovery strategy, and author-approved private manuscript destination.
+
+## Follow-up — explicit v6 compatibility and current Android gate
+
+The owner subsequently authorized one exact v6 primary for **new** encrypted
+copies and full/reduced PUBLIC exports, with all existing v4 copies retained.
+The previous v4 approval/history is not overwritten. A packet-level check
+corrected the initial high-level inspection: the selected full v6 file has nine
+subkeys, of which OpenPGP.js exposes five and silently skips four unsupported
+public algorithm blocks (IDs 35, 30, 36, 31). This establishes parser
+incompatibility, **not** that those omitted keys are malformed or revoked.
+The explicit reduced copy retains one validated X25519 encryption subkey and
+its binding; the full original is preserved byte-for-byte. Exact identities,
+export digests and the approval stay in the ignored delivery workspace.
+
+Workbench now offers explicit full/subset PUBLIC exports and narrowly scoped
+v6 Ed25519/X25519 public imports with full 64-hex fingerprint comparison and
+usable-bound-encryption detection. Strict import does not silently omit unknown
+algorithms. The subset operation preserves global revocations, refuses secret /
+mixed / malformed / ambiguous packets and never edits signed fields or converts
+v6 into v4. The release tool/three-profile Actions path separately offers
+`modern-v6` (v6 PKESK + SEIPDv2/AEAD); the default classic-v4 recipient profile,
+RSA generation/private-export gates and browser passphrase message UI remain
+unchanged. Public keys cannot decrypt the existing Drive archives.
+
+Fresh local affected Node run: **108 total / 101 passed / 7 explicit optional
+skips / 0 failed**. Actual v6 Chromium: **5 passed**, including both real .asc
+downloads, original retention, reduced import/encryption detection, PUBLIC reload
+and synthetic v6 Web Crypto exact recovery, with zero uncaught errors or external
+requests. Both changed workflow YAML files parse, and all five embedded Python
+blocks compile. Native/GUI v6 client compatibility and real owner decryption
+are not inferred from same-library JS tests.
+
+The last pre-v6 Android run at `d736dc6` **failed**: public/network local-file
+phases each passed four of five, audio passed, and Headline Harry failed with an
+empty JUnit failure element. The PUBLIC fixture generated v4; that result is not
+proof of a v6 defect. The reload helper could observe the old complete document
+at the same URL. It now marks the old document and awaits a new document plus
+completed restore status; the assertion is retained. A separate v6 test covers
+the two native .asc saves and remembered subset. The game's dedicated captured
+logcat now precedes Gradle stack noise within GitHub's per-step annotation cap;
+no game assertion is skipped or relabeled. The old diagnostic download/log
+redirects are unavailable through the sandbox's permitted egress hosts.
+All three APK builds/permission checks had passed independently of device tests.
+
+The earlier manual encrypted Actions dispatch was refused with integration 403;
+this is unrelated to subkey parsing. Manual recipient inputs exist, while
+automatic PR builds do not solicit them. New profile inputs reach the web UI
+once on the default branch. Matching-head Android/native checks, encrypted APK
+delivery and PR #238's ready/merge decision remain separate pending gates.

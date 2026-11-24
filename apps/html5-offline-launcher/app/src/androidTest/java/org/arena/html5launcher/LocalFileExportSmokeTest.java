@@ -203,9 +203,66 @@ public final class LocalFileExportSmokeTest {
         assertFalse(snapshot.contains("passphrase"));
         load(web, PGP_URL);
         await(web, "String(document.querySelectorAll('#keyring-list li').length)", "1");
+        // Entry count and same-URL readyState alone can refer to the PREVIOUS
+        // document. Await the new document's completed restore, not a sleep.
+        await(web, "document.getElementById('keyring-status').dataset.kind + '|' + document.getElementById('keyring-status').textContent", "success|Remembered PUBLIC certificates restored after revalidation");
         assertTrue(evaluate(web, "document.getElementById('keyring-status').textContent").contains("revalidation"));
         assertEquals("", evaluate(web, "document.getElementById('key-passphrase').value"));
         assertEquals("", evaluate(web, "document.getElementById('generated-public-output').value"));
+        evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+        assertEquals("true", evaluate(web, "String(localStorage.getItem('openpgp-workbench.public-keyring.v1') === null)"));
+    }
+
+    @Test(timeout = 90000)
+    public void v6PublicSubsetExportsSaveTwoPublicFilesAndRememberOnlyTheValidatedSubset() throws Exception {
+        MainActivity activity = activityRule.launchActivity(null);
+        acceptNetworkWarning();
+        WebView web = find(activity.getWindow().getDecorView());
+        load(web, PGP_URL);
+        evaluate(web, "document.getElementById('clear-all').click(); document.getElementById('keyring-tab').click();" +
+                "(async () => { const pgp = await import('openpgp');" +
+                "const generated = await pgp.generateKey({type:'curve25519',userIDs:[{name:'Synthetic Android v6 PUBLIC export only'}]," +
+                "subkeys:[{sign:false},{sign:true},{sign:false}],config:{v6Keys:true,aeadProtect:true}});" +
+                "const key=await pgp.readKey({armoredKey:generated.publicKey}), packets=key.toPacketList();" +
+                // Unsupported PUBLIC-only negative fixture, not a valid extra key.
+                "packets.push({constructor:{tag:14},write:()=>Uint8Array.of(6,0,0,0,1,35,0,0,0,4,1,2,3,4)},key.subkeys[0].bindingSignatures[0]);" +
+                "document.getElementById('public-key-input').value=pgp.armor(pgp.enums.armor.publicKey,packets.write());" +
+                "document.getElementById('expected-fingerprint').value=key.getFingerprint().toUpperCase();" +
+                "window.__syntheticV6Ready=true; })(); 'started'");
+        await(web, "String(window.__syntheticV6Ready)", "true");
+        String full = evaluate(web, "document.getElementById('public-key-input').value");
+        String fingerprint = evaluate(web, "document.getElementById('expected-fingerprint').value");
+        assertTrue("v6 primary needs its entire 64-hex fingerprint", fingerprint.matches("[A-F0-9]{64}"));
+        for (boolean reduced : new boolean[] { false, true }) {
+            Uri destination = document(reduced ? "v6-reduced.asc" : "v6-full.asc");
+            Instrumentation.ActivityMonitor saving = picker(Intent.ACTION_CREATE_DOCUMENT, Activity.RESULT_OK, destination);
+            try {
+                evaluate(web, "document.getElementById('" + (reduced ? "export-reduced-public-input" : "export-full-public-input") + "').click(); 'requested'");
+                await(web, "document.getElementById('keyring-status').textContent", "Saved ");
+                assertEquals("exactly one system save per explicit export", 1, saving.getHits());
+                String saved = new String(read(destination), StandardCharsets.UTF_8);
+                assertTrue(saved.startsWith("-----BEGIN PGP PUBLIC KEY BLOCK-----"));
+                assertFalse(saved.contains("PRIVATE KEY"));
+                assertEquals("subset export must not overwrite the original input", full, evaluate(web, "document.getElementById('public-key-input').value"));
+                if (!reduced) assertEquals(full, saved);
+                else {
+                    evaluate(web, "document.getElementById('public-key-input').value=" + JSONObject.quote(saved) + ";" +
+                            "document.getElementById('keyring-import-form').requestSubmit(); 'imported'");
+                    await(web, "document.getElementById('keyring-status').dataset.kind || ''", "success");
+                    assertEquals("1", evaluate(web, "String(document.querySelectorAll('#keyring-list li').length)"));
+                    assertTrue(evaluate(web, "document.getElementById('keyring-list').textContent").contains("Usable bound encryption key detected"));
+                }
+            } finally {
+                instrumentation.removeMonitor(saving);
+                activity.getContentResolver().delete(destination, null, null);
+            }
+        }
+        evaluate(web, "document.getElementById('remember-public-keyring').click(); 'remembered'");
+        load(web, PGP_URL);
+        await(web, "document.getElementById('keyring-status').textContent", "Remembered PUBLIC certificates restored after revalidation");
+        assertEquals("1", evaluate(web, "String(document.querySelectorAll('#keyring-list li').length)"));
+        assertTrue(evaluate(web, "document.getElementById('keyring-list').textContent").contains("v6 Ed25519 / X25519"));
+        assertEquals("", evaluate(web, "document.getElementById('key-passphrase').value"));
         evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
         assertEquals("true", evaluate(web, "String(localStorage.getItem('openpgp-workbench.public-keyring.v1') === null)"));
     }
@@ -243,8 +300,12 @@ public final class LocalFileExportSmokeTest {
     }
     private void load(WebView web, String url) throws Exception {
         assertNotNull(web);
+        // loadUrl schedules navigation; a same-URL reload can still report
+        // the old complete document. Mark it and wait until that mark is gone.
+        String token = java.util.UUID.randomUUID().toString();
+        evaluate(web, "window.__syntheticOldDocument=" + JSONObject.quote(token) + "; 'marked'");
         instrumentation.runOnMainSync(() -> web.loadUrl(url));
-        await(web, "document.readyState + '|' + location.href + '|' + typeof Html5LocalFiles", "complete|" + url + "|object");
+        await(web, "window.__syntheticOldDocument === " + JSONObject.quote(token) + " ? 'previous-document' : document.readyState + '|' + location.href + '|' + typeof Html5LocalFiles", "complete|" + url + "|object");
     }
     private String await(WebView web, String expression, String prefix) throws Exception {
         long deadline = SystemClock.uptimeMillis() + 30000; String value = "";

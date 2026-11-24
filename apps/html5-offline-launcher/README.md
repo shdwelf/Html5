@@ -155,7 +155,7 @@ real WebView callbacks and a test document provider, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
 track startup, not acoustic capture quality. Device testing has a separate
-15-minute step bound; build artifacts are exported **before** it starts. An APK
+20-minute step bound; build artifacts are exported **before** it starts. An APK
 build/inventory check is not a WebView or live-provider test result.
 
 Normal CI uploads the public and opt-in network APKs as
@@ -167,20 +167,28 @@ the three profiles separately. To back up **all three profiles**, manually
 dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:
 
 - `recipient_public_key`: exactly one armored OpenPGP **public** certificate;
-- `recipient_fingerprint`: its independently checked, full 40-hex primary
-  fingerprint, not a short ID or the encryption subkey fingerprint.
+- `recipient_fingerprint`: its independently checked, full 40-hex v4 or 64-hex v6
+  primary fingerprint, not a short ID or the encryption subkey fingerprint;
+- `recipient_profile`: `classic-v4` (default) or explicit `modern-v6` matching
+  that certificate. The v6 path accepts Ed25519/X25519 and requires a modern
+  decryption client. If the full original has unsupported public subkeys, first
+  create the checked reduced PUBLIC export in Workbench; keep the original.
 
 This dispatch uploads **only encrypted APKs** and UID-free checksums/receipts in
 `html5-offline-launcher-encrypted-debug-apks` (seven days). The locked Node 22 /
 OpenPGP.js 6.3.3 release script works without a native `gpg` install. It validates
 the public certificate and usable encryption key, refuses ambiguous/secret or
 expired/revoked recipients, uses correct repository-root APK paths and checks the
-actual one-recipient classic integrity-protected envelope. RSA v4 and legacy v4
-Ed25519/Curve25519 recipients are supported. No private key/passphrase is needed
+actual one-recipient integrity-protected envelope. RSA v4 and legacy v4
+Ed25519/Curve25519 use v3 PKESK + SEIPDv1/MDC. Explicit v6 Ed25519/X25519 uses
+v6 PKESK + SEIPDv2/AEAD with the full encryption-subkey fingerprint checked.
+There is no v6-to-v4 downgrade and no implicit subkey removal. No private key/passphrase is needed
 for encryption, and no key is embedded in an APK or committed to the repository.
 
 Download the `.gpg`, `.gpg.sha256` and `.gpg.json` files. Check the ciphertext,
-then decrypt **locally**, substituting the selected profile:
+then decrypt **locally with a client supporting the chosen certificate and
+packet versions**, substituting the selected profile (older GnuPG may not read
+v6/AEAD):
 
 ```sh
 sha256sum --check app-network-debug.apk.gpg.sha256
@@ -192,6 +200,15 @@ releases. A checksum is not a signature. Only the recipient can perform the
 final owner-key decryption test; keep that private key and passphrase out of CI.
 Drive backup copies must retain private sharing settings even for the profile
 called “public”; this label describes its app inventory, not cloud sharing.
+
+Automatic pull-request/main builds do not ask for a key. In GitHub Actions,
+choose **Run workflow** for a manual recipient dispatch; new input definitions
+appear in the web UI only once they are on the default branch. Every run still
+builds public, network and private regardless of recipient inputs. A 403
+“Resource not accessible by integration” is a GitHub connection/permission issue,
+not a subkey parsing error: reconnect the GitHub integration in Arena rather
+than supplying a private key, access token or passphrase in chat. Build success,
+device-test success, artifact upload and owner decryption are separate results.
 
 ### Coin/network coverage in this build
 

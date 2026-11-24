@@ -15,6 +15,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   let importEpoch = 0;
   let fileEpoch = 0;
   let importing = false;
+  let publicVariantBusy = false;
   let importController = null;
   let generatedImport = false;
   const textEpochs = { encrypt: 0, decrypt: 0 };
@@ -162,7 +163,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   function generationControls() {
     const ready = Boolean(generated);
     for (const id of ["download-public-key", "copy-public-key"]) byId(id).disabled = !ready;
-    byId("add-generated-public").disabled = !ready || importing || !supported;
+    byId("add-generated-public").disabled = !ready || importing || publicVariantBusy || !supported;
     for (const id of ["download-private-key", "download-revocation"]) byId(id).disabled = !ready || !supported || !byId("key-backup-ack").checked;
   }
   function clearGenerated({ reset = true } = {}) {
@@ -263,13 +264,30 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       uid.textContent = entry.userIDs.join(" · ").replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, "�") || "No textual User ID";
       const state = doc.createElement("p");
       state.className = "field-hint";
-      state.textContent = `${entry.algorithm} · ${entry.selfCertification}. All User IDs are unverified claims; subkeys are not audited.`;
+      state.textContent = `${entry.algorithm} · ${entry.selfCertification}. All User IDs are unverified claims. ` +
+        (entry.encryptionFingerprint ? `Usable bound encryption key detected: ${keyTools.formatFingerprint(entry.encryptionFingerprint)}.` : "No currently usable bound encryption key detected; signing/authentication keys cannot decrypt messages.");
       const remove = doc.createElement("button");
       remove.type = "button";
       remove.className = "button button-quiet";
       remove.textContent = "Remove certificate";
       remove.addEventListener("click", () => { ring.remove(entry.fingerprint); renderRing(); rememberRing(); setStatus("keyring-status", "Public certificate removed from this tab, not from anyone else's keyring."); });
-      item.append(fingerprint, uid, state, remove);
+      const full = doc.createElement("button");
+      full.type = "button"; full.className = "button button-quiet"; full.textContent = "Export full PUBLIC .asc";
+      full.addEventListener("click", () => { void download(ring.exportCertificate(entry.fingerprint), `public-${entry.fingerprint}.asc`, "application/pgp-keys", "keyring-status", "Full public certificate; no secret key is included."); });
+      const reduced = doc.createElement("button");
+      reduced.type = "button"; reduced.className = "button button-quiet"; reduced.textContent = "Export one-encryption-subkey PUBLIC .asc";
+      reduced.disabled = !entry.encryptionFingerprint;
+      reduced.addEventListener("click", async () => {
+        const epoch = importEpoch;
+        try {
+          const variants = await keyTools.publicCertificateVariants(ring.exportCertificate(entry.fingerprint), entry.fingerprint, {
+            profile: entry.keyVersion === 6 ? "modern-v6" : "classic-v4", encryptionFingerprint: entry.encryptionFingerprint,
+          });
+          if (epoch !== importEpoch || !ring.list().some((item) => item.fingerprint === entry.fingerprint)) return;
+          await download(variants.reduced, `public-${entry.fingerprint}-one-encryption-subkey.asc`, "application/pgp-keys", "keyring-status", "Troubleshooting subset only, not a revocation or v6-to-v4 conversion. Keep the full certificate; previously encrypted files still require their original secret subkey.");
+        } catch (error) { if (epoch === importEpoch) setStatus("keyring-status", friendlyError(error), "error"); }
+      });
+      item.append(fingerprint, uid, state, remove, full, reduced);
       list.append(item);
     }
     byId("keyring-count").textContent = `${entries.length} / ${keyTools.MAX_PUBLIC_KEYS} public certificates`;
@@ -306,11 +324,12 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   byId("forget-public-keyring").addEventListener("click", forgetRememberedRing);
 
   function importControls() {
-    setBusy(byId("import-public-keys"), importing);
+    setBusy(byId("import-public-keys"), importing || publicVariantBusy);
+    for (const id of ["export-full-public-input", "export-reduced-public-input"]) byId(id).disabled = !supported || importing || publicVariantBusy;
     generationControls();
   }
   async function importPublic(armored, expectedFingerprint, fromGenerated = false, restoring = false) {
-    if (importing || !supported) return;
+    if (importing || publicVariantBusy || !supported) return;
     importing = true;
     generatedImport = fromGenerated;
     importController = new AbortController();
@@ -339,9 +358,33 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       importControls();
     }
   }
+  async function exportPublicInput(reduced) {
+    if (importing || publicVariantBusy || !supported) return;
+    const epoch = importEpoch, file = fileEpoch;
+    publicVariantBusy = true; importControls();
+    setStatus("keyring-status", "Checking one PUBLIC certificate and its encryption binding. The input will not be modified or imported…");
+    try {
+      // The full expected fingerprint is mandatory for this explicit subset
+      // operation, including when the original has unsupported v6 subkeys.
+      const expected = keyTools.normalizePublicFingerprint(byId("expected-fingerprint").value);
+      const variants = await keyTools.publicCertificateVariants(byId("public-key-input").value, expected, {
+        profile: expected.length === 64 ? "modern-v6" : "classic-v4",
+      });
+      if (epoch !== importEpoch || file !== fileEpoch) return;
+      const omitted = variants.removedSubkeyFingerprints.length + variants.unsupportedSubkeys.length;
+      await download(reduced ? variants.reduced : variants.full,
+        `public-${expected}-${reduced ? "one-encryption-subkey" : "full-original"}.asc`, "application/pgp-keys", "keyring-status",
+        reduced ? `Explicit subset omits ${omitted} other subkey blocks, including ${variants.unsupportedSubkeys.length} unsupported algorithms. Keep the original. This is not a revocation, a v6-to-v4 conversion or proof that omitted keys are invalid; old ciphertext still needs its original secret subkey.` : "Original PUBLIC input preserved, including unsupported public algorithm packets. A usable bound encryption key was found in the supported subset; omitted algorithms were not validated. No secret key was exported.");
+    } catch (error) {
+      if (epoch === importEpoch && file === fileEpoch) setStatus("keyring-status", friendlyError(error), "error");
+    } finally { publicVariantBusy = false; importControls(); }
+  }
+  byId("export-full-public-input").addEventListener("click", () => { void exportPublicInput(false); });
+  byId("export-reduced-public-input").addEventListener("click", () => { void exportPublicInput(true); });
   byId("add-generated-public").addEventListener("click", () => { if (generated) void importPublic(generated.publicKey, generated.fingerprint, true); });
   byId("keyring-import-form").addEventListener("submit", (event) => { event.preventDefault(); void importPublic(byId("public-key-input").value, byId("expected-fingerprint").value); });
   byId("public-key-input").addEventListener("input", () => { fileEpoch++; });
+  byId("expected-fingerprint").addEventListener("input", () => { fileEpoch++; });
   byId("public-key-file").addEventListener("change", async (event) => {
     const epoch = ++fileEpoch, file = event.target.files?.[0];
     if (!file) return;
@@ -393,7 +436,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   });
   if (!supported) byId("capability-warning").hidden = false;
   for (const button of doc.querySelectorAll("[data-crypto-submit]")) button.disabled = !supported;
-  generationControls(); renderRing();
+  importControls(); renderRing();
   if (supported) {
     try {
       const saved = readPublicSnapshot(view.localStorage, keyTools.MAX_KEYRING_BYTES);

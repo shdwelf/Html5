@@ -97,6 +97,26 @@ class Controls(unittest.TestCase):
             with self.assertRaises(ValueError):
                 upload.prepare(json.dumps(sessions), root, REVISION, FINGERPRINT)
 
+    def test_v6_full_recipient_fingerprint_is_supported_without_relaxing_revision_or_digest_checks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, fingerprint = Path(directory), "B" * 64
+            sessions = {"schema": 1, "sourceRevision": REVISION, "profiles": {}}
+            for profile in upload.PROFILES:
+                path = root / f"app-{profile}-debug.apk.gpg"
+                path.write_bytes(b"synthetic v6 ciphertext transport control only")
+                receipt = {"sourceRevision": REVISION, "recipientFingerprint": fingerprint, "file": path.name, "ciphertext": upload.digests(path)}
+                Path(f"{path}.json").write_text(json.dumps(receipt))
+                sessions["profiles"][profile] = {"fileName": f"html5-{profile}-debug.apk.gpg", "sessionUri": f"https://www.googleapis.com/upload/drive/v3/files?upload_id=synthetic_{profile}"}
+            self.assertEqual(len(upload.prepare(json.dumps(sessions), root, REVISION, fingerprint)), 3)
+            for invalid in ["B" * 16, "B" * 63, "B" * 65, "G" * 64, "b" * 64]:
+                with self.assertRaises(ValueError):
+                    upload.prepare(json.dumps(sessions), root, REVISION, invalid)
+            with self.assertRaises(ValueError):
+                upload.prepare(json.dumps(sessions), root, "a" * 64, fingerprint)
+            (root / "app-private-debug.apk.gpg").write_bytes(b"changed")
+            with self.assertRaises(ValueError):
+                upload.prepare(json.dumps(sessions), root, REVISION, fingerprint)
+
     def test_redirects_are_never_followed(self):
         with self.assertRaises(RuntimeError):
             upload.NoRedirect().redirect_request(None, None, 302, "redirect", {}, "https://evil.invalid/")
