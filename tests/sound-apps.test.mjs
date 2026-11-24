@@ -54,3 +54,12 @@ test("source audit accounts for every imported app without silently publishing p
   assert.equal(report.entries.find((entry) => entry.source === "apps/ads-b-radar-scope")?.disposition, "network-only");
   assert.match(report.inventorySha256, /^[a-f0-9]{64}$/);
 });
+
+test("the browser catalog lists the same complete public inventory as Android, not only handpicked highlights", async () => {
+  const { browserCatalog, buildBrowserCatalog } = await import("../scripts/build-html5-browser-catalog.mjs");
+  assert.equal(buildBrowserCatalog({ check: true }), 96);
+  const catalog = browserCatalog();
+  assert.deepEqual(catalog.apps.map((app) => app.slug), buildCatalog("public").map((app) => app.slug));
+  assert.ok(catalog.apps.every((app) => app.href === `./${encodeURIComponent(app.slug)}/index.html`));
+  assert.equal(catalog.apps.some((app) => app.slug === "news-globe"), false, "do not silently enable network-only apps in the public browser index");
+});

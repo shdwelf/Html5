@@ -8,7 +8,7 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 ## Scope and packaging
 
 - The current builder discovers **96** HTML entrypoints and packages **8,510
-  files** (166,317,455 bytes uncompressed) inside those app directories. It
+  files** (166,320,108 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
@@ -132,6 +132,14 @@ application ID and the only `INTERNET` permission. Build/install this APK only
 when the user wants live network access; its network warning must be accepted
 at startup. Public and private flavor behavior remains offline. All APKs are
 debug-signed for sideloading/review; none is a Play Store release build.
+
+**Do not uninstall an existing copy to work around a signing mismatch before
+exporting and verifying your research.** Uninstall erases its WebView storage.
+CI debug signing keys are not a promised stable update identity; production
+in-place updates require an owner-controlled stable Android signing key.
+Version 1.1.0 increments the version code but does not bypass Android's
+same-signing-certificate requirement or migrate data across the three distinct
+application IDs. Device remembering is not a substitute for an exported backup.
 
 APK outputs:
 

@@ -20,6 +20,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   const textEpochs = { encrypt: 0, decrypt: 0 };
   const objectURLs = new Set();
   let rememberPublic = false;
+  let publicSnapshotCurrent = false;
   let fileSaveBusy = false;
   const saveEpochs = { "keygen-status": 0, "keyring-status": 0, "encrypt-status": 0 };
 
@@ -55,16 +56,22 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       } finally { fileSaveBusy = false; }
       return;
     }
-    const url = view.URL.createObjectURL(blob);
-    objectURLs.add(url);
-    const anchor = doc.createElement("a");
-    anchor.href = url;
-    anchor.download = filename;
-    doc.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    view.setTimeout(() => { view.URL.revokeObjectURL(url); objectURLs.delete(url); }, 60000);
-    setStatus(status, `Browser download requested, not verified saved. Check your Downloads folder. ${requestedMessage}`, "success");
+    if (view.navigator.userAgent?.includes("Html5Library/")) {
+      setStatus(status, "Android local-save adapter is unavailable. Nothing was saved. Keep this page open, copy public/ciphertext output if appropriate, and reload/update the app before exporting sensitive backups.", "error");
+      return;
+    }
+    try {
+      const url = view.URL.createObjectURL(blob);
+      objectURLs.add(url);
+      const anchor = doc.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      doc.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      view.setTimeout(() => { view.URL.revokeObjectURL(url); objectURLs.delete(url); }, 60000);
+      setStatus(status, `Browser download requested, not verified saved. Check your Downloads folder. ${requestedMessage}`, "success");
+    } catch (error) { setStatus(status, `Download failed: ${friendlyError(error)} Keep this page open and retry.`, "error"); }
   }
 
   const tabs = [...doc.querySelectorAll("[data-tab]")];
@@ -271,9 +278,11 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     byId("copy-keyring").disabled = !entries.length;
   }
   function rememberRing() {
+    publicSnapshotCurrent = false;
     if (!rememberPublic) return;
     try {
       const saved = writePublicSnapshot(view.localStorage, ring, keyTools.MAX_KEYRING_BYTES);
+      publicSnapshotCurrent = saved;
       setStatus("public-storage-status", saved ? "PUBLIC certificates remembered on this device and read-back checked. This is not a backup: browser/app data clearing or uninstall can remove them. Export a .asc copy too." : "No public certificates to remember yet. Future successful imports will be remembered; nothing else is stored.", "success");
     } catch {
       setStatus("public-storage-status", "Could not update the device copy (storage blocked/full). The previous copy may be stale. Export a .asc backup now; no private data was stored.", "error");
@@ -281,6 +290,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   }
   function forgetRememberedRing() {
     rememberPublic = false;
+    publicSnapshotCurrent = false;
     byId("remember-public-keyring").checked = false;
     try {
       forgetPublicSnapshot(view.localStorage);
@@ -312,6 +322,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
       if (epoch !== importEpoch) return;
       renderRing();
       if (!restoring) rememberRing();
+      else publicSnapshotCurrent = rememberPublic;
       setStatus("keyring-status", restoring ? "Remembered PUBLIC certificates restored after revalidation. No identity or owner trust was restored or assigned; compare full fingerprints independently." : "Public keyring updated in memory. Compare every full fingerprint independently; no identity or owner trust was assigned.", "success");
       if (restoring) setStatus("public-storage-status", "Opt-in PUBLIC device copy restored. Private keys, revocations, messages and passphrases were not restored. Export a .asc backup too.", "success");
       if (fromGenerated && generation === generationEpoch) setStatus("keygen-status", "Public certificate added to the in-memory keyring; private material was not added.", "success");
@@ -377,7 +388,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   byId("clear-all").addEventListener("click", () => clearAll());
   view.addEventListener("pagehide", () => clearAll({ forgetSaved: false }));
   view.addEventListener("beforeunload", (event) => {
-    if (!generated && !byId("encrypted-output").value && !(ring.list().length && !rememberPublic)) return;
+    if (!generated && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
     event.preventDefault(); event.returnValue = "";
   });
   if (!supported) byId("capability-warning").hidden = false;

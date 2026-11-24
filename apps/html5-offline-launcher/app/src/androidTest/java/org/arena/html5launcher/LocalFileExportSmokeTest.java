@@ -134,6 +134,35 @@ public final class LocalFileExportSmokeTest {
         activity.getContentResolver().delete(destination, null, null);
     }
 
+    @Test(timeout = 90000)
+    public void androidPublicRememberingSurvivesReloadAndExplicitClearForgetsIt() throws Exception {
+        MainActivity activity = activityRule.launchActivity(null);
+        acceptNetworkWarning();
+        WebView web = find(activity.getWindow().getDecorView());
+        load(web, PGP_URL);
+        evaluate(web, "document.getElementById('clear-all').click(); document.getElementById('keyring-tab').click();" +
+                "(async () => { const pgp = await import('openpgp');" +
+                "const generated = await pgp.generateKey({type:'ecc',curve:'curve25519Legacy'," +
+                "userIDs:[{name:'Synthetic Android PUBLIC remembering only'}]," +
+                "passphrase:'synthetic Android key passphrase only',config:{v6Keys:false}});" +
+                "document.getElementById('public-key-input').value=generated.publicKey;" +
+                "document.getElementById('keyring-import-form').requestSubmit(); })(); 'started'");
+        await(web, "String(document.querySelectorAll('#keyring-list li').length)", "1");
+        assertEquals("0", evaluate(web, "String(localStorage.length)"));
+        evaluate(web, "document.getElementById('remember-public-keyring').click(); 'remembered'");
+        String snapshot = evaluate(web, "localStorage.getItem('openpgp-workbench.public-keyring.v1')");
+        assertTrue(snapshot.contains("BEGIN PGP PUBLIC KEY BLOCK"));
+        assertFalse(snapshot.contains("PRIVATE KEY"));
+        assertFalse(snapshot.contains("passphrase"));
+        load(web, PGP_URL);
+        await(web, "String(document.querySelectorAll('#keyring-list li').length)", "1");
+        assertTrue(evaluate(web, "document.getElementById('keyring-status').textContent").contains("revalidation"));
+        assertEquals("", evaluate(web, "document.getElementById('key-passphrase').value"));
+        assertEquals("", evaluate(web, "document.getElementById('generated-public-output').value"));
+        evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+        assertEquals("true", evaluate(web, "String(localStorage.getItem('openpgp-workbench.public-keyring.v1') === null)"));
+    }
+
     private Uri document(String name) throws Exception {
         android.content.Context context = instrumentation.getContext();
         ProviderInfo provider = context.getPackageManager().getProviderInfo(new ComponentName(context, SyntheticDocumentProvider.class), 0);

@@ -80,7 +80,9 @@
     "build:keyspace": "sh tools/pack_keyspace.sh",
     "build:sound-apps": "node scripts/build-sound-apps.mjs",
     "check:sound-apps": "node scripts/build-sound-apps.mjs --check",
-    "audit:app-sources": "node scripts/audit-app-source-inventory.mjs"
+    "audit:app-sources": "node scripts/audit-app-source-inventory.mjs",
+    "build:app-catalog": "node scripts/build-html5-browser-catalog.mjs",
+    "check:app-catalog": "node scripts/build-html5-browser-catalog.mjs --check"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",

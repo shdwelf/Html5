@@ -181,10 +181,28 @@ try {
       assert.equal((exported.match(/BEGIN PGP PUBLIC KEY BLOCK/g) || []).length, 3);
       await field("expected-fingerprint", "");
     });
+    await test("real browser PUBLIC remembering is opt-in, survives reload with revalidation and restores no secrets", async () => {
+      assert.equal(await page.evaluate(() => localStorage.length), 0);
+      await page.click("#remember-public-keyring");
+      const remembered = await page.evaluate(() => localStorage.getItem("openpgp-workbench.public-keyring.v1"));
+      assert.doesNotMatch(remembered, /PRIVATE KEY|REVOCATION/);
+      assert.ok(!remembered.includes(passphrase));
+      assert.equal(Object.keys(JSON.parse(remembered)).length, 2);
+      const consent = (dialog) => { if (dialog.type() === "beforeunload") void dialog.accept(); else void dialog.dismiss(); };
+      page.on("dialog", consent);
+      try { await page.reload({ waitUntil: "networkidle0" }); }
+      finally { page.off("dialog", consent); }
+      await page.waitForFunction(() => document.querySelectorAll("#keyring-list li").length === 3);
+      assert.equal(await page.$eval("#remember-public-keyring", (element) => element.checked), true);
+      assert.match(await page.$eval("#keyring-status", (element) => element.textContent), /revalidation/);
+      for (const id of ["generated-public-output", "key-passphrase", "backup-fingerprint", "plaintext", "encrypted-output", "decrypted-output"]) assert.equal(await page.$eval(`#${id}`, (element) => element.value), "");
+      await page.click("#keyring-tab");
+    });
     await test("a secret-key paste is refused atomically and clearing drops all generated/ring fields", async () => {
       await field("public-key-input", privateArmor); await page.click("#import-public-keys"); await status("keyring-status", "error");
       assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 3);
       await page.click("#clear-all");
+      assert.equal(await page.evaluate(() => localStorage.getItem("openpgp-workbench.public-keyring.v1")), null);
       assert.equal(await page.$$eval("#keyring-list li", (elements) => elements.length), 0);
       for (const id of ["generated-public-output", "public-key-input", "keyring-output", "key-passphrase", "backup-fingerprint"]) assert.equal(await page.$eval(`#${id}`, (element) => element.value), "");
       await page.reload({ waitUntil: "networkidle0" });

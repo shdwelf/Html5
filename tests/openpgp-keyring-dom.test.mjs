@@ -336,3 +336,36 @@ test("Android export waits for the save receipt, reports cancellation/errors hon
     } finally { failed.dom.window.close(); }
   }
 });
+
+test("empty PUBLIC opt-in is not a storage failure; unsaved text and failed remembered snapshots still warn on navigation", async () => {
+  const empty = boot();
+  try {
+    empty.get("remember-public-keyring").checked = true; empty.change("remember-public-keyring");
+    assert.equal(empty.get("public-storage-status").dataset.kind, "success");
+    assert.match(empty.get("public-storage-status").textContent, /Future successful imports/);
+    empty.input("plaintext", "unsaved synthetic research input");
+    const leaving = new empty.window.Event("beforeunload", { cancelable: true });
+    empty.window.dispatchEvent(leaving); assert.equal(leaving.defaultPrevented, true);
+  } finally { empty.dom.window.close(); }
+  const denied = boot({ storage: { getItem: () => null, setItem: () => { throw new Error("quota"); }, removeItem: () => {} } });
+  try {
+    denied.get("remember-public-keyring").checked = true; denied.change("remember-public-keyring");
+    denied.input("public-key-input", bundle.publicKey); denied.submit("keyring-import-form");
+    await until(() => denied.get("keyring-list").children.length === 1);
+    assert.equal(denied.get("public-storage-status").dataset.kind, "error");
+    const leaving = new denied.window.Event("beforeunload", { cancelable: true });
+    denied.window.dispatchEvent(leaving); assert.equal(leaving.defaultPrevented, true, "opt-in is not proof that the current public ring was saved");
+  } finally { denied.dom.window.close(); }
+});
+
+test("an Android build without its native adapter fails visibly instead of requesting a known-unhandled browser download", async () => {
+  const ui = boot();
+  try {
+    Object.defineProperty(ui.window.navigator, "userAgent", { value: "Synthetic Html5Library/1.1.0-network" });
+    ui.generate(); await until(() => ui.get("keygen-status").dataset.kind === "success");
+    ui.get("download-public-key").click();
+    assert.equal(ui.downloads.length, 0);
+    assert.equal(ui.get("keygen-status").dataset.kind, "error");
+    assert.match(ui.get("keygen-status").textContent, /Nothing was saved/);
+  } finally { ui.dom.window.close(); }
+});

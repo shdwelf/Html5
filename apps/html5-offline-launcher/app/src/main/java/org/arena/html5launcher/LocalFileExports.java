@@ -113,6 +113,7 @@ final class LocalFileExports {
             intent.setType(current.mime); intent.putExtra(Intent.EXTRA_TITLE, current.name);
             activity.startActivityForResult(intent, REQUEST_SAVE);
         } catch (Exception invalid) {
+            if (pending != null && pending.result == result) pending.result = null;
             cancel();
             reply(result, "error", "Local save was refused or could not start. No successful save is claimed.");
         }

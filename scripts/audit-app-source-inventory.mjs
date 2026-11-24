@@ -30,7 +30,7 @@ export function auditAppSources() {
     if (!(parts.length === 2 || (parts.length === 3 && parts[2] === "index.html"))) continue;
     const bytes = readFileSync(join(ROOT, source));
     const html = bytes.toString("utf8");
-    if (!/^\s*(?:<!doctype\s+html|<html)\b/i.test(html) && !source.endsWith(".html")) continue;
+    if (!/(?:<!doctype\s+html|<html)\b/i.test(html.slice(0, 4096)) && !source.endsWith(".html")) continue;
     const title = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "";
     let disposition = "review-required", reason = "Preserved source; privacy, completeness and runtime dependencies are not approved for public packaging.";
     let packaged;

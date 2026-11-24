@@ -41,6 +41,8 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   // Rounds 83–84 include release operations and private handoff acceptance gates.
   "docs/backlog-execution-round-83-2026-11-17.md",
   "docs/backlog-execution-round-84-2026-11-17.md",
+  // Round 85 includes release operations and the private backup recovery gate.
+  "docs/backlog-execution-round-85-2026-11-17.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

@@ -124,6 +124,7 @@ public final class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setLoadsImagesAutomatically(true);
+        settings.setUserAgentString(settings.getUserAgentString() + " Html5Library/" + BuildConfig.VERSION_NAME);
 
         assetClient = new OfflineAssetWebViewClient(this, BuildConfig.NETWORK_ENABLED);
         localFiles = new LocalFileExports(this, assetClient::isPackagedAppOrigin);
@@ -139,7 +140,8 @@ public final class MainActivity extends Activity {
             @Override public void started() { denyPendingAudioRequest(); cancelFileInput(); localFiles.cancel(); }
             @Override public void finished(String url) {
                 if (assetClient.isPackagedAppOrigin(Uri.parse(url)) && url.equals(webView.getUrl())) {
-                    webView.evaluateJavascript(localFilesScript, null);
+                    String origin = LocalFileExports.origin(Uri.parse(url));
+                    webView.evaluateJavascript("if (location.origin === " + org.json.JSONObject.quote(origin) + ") {" + localFilesScript + "}", null);
                 }
             }
         });

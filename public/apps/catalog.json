@@ -1,0 +1,582 @@
+{
+  "version": 1,
+  "profile": "public",
+  "apps": [
+    {
+      "slug": "alabama-subsurface",
+      "name": "ALABAMA SUBSURFACE 4Dwm",
+      "description": "Appalachian foothills · Black Belt prairie · Mobile Bay — statewide frame, Alabama. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./alabama-subsurface/index.html"
+    },
+    {
+      "slug": "alaska-subsurface",
+      "name": "Alaska SUBSURFACE 4Dwm",
+      "description": "Alaska STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./alaska-subsurface/index.html"
+    },
+    {
+      "slug": "americansamoa-subsurface",
+      "name": "AMERICAN SAMOA SUBSURFACE 4Dwm",
+      "description": "Tutuila · Aunuʻu · Manuʻa Islands — territory frame; Swains Island and Rose Atoll omitted. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./americansamoa-subsurface/index.html"
+    },
+    {
+      "slug": "anc-studio",
+      "name": "ANC Studio Ultra - HTML5 Active Noise Control Lab",
+      "description": "",
+      "href": "./anc-studio/index.html"
+    },
+    {
+      "slug": "arizona-subsurface",
+      "name": "ARIZONA SUBSURFACE 4Dwm",
+      "description": "Colorado Plateau · Sonoran Desert · Gila and Salt Rivers — statewide frame, Arizona. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./arizona-subsurface/index.html"
+    },
+    {
+      "slug": "arkansas-subsurface",
+      "name": "ARKANSAS SUBSURFACE 4Dwm",
+      "description": "ARKANSAS STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./arkansas-subsurface/index.html"
+    },
+    {
+      "slug": "atlanta-subsurface",
+      "name": "ATLANTA SUBSURFACE 4Dwm",
+      "description": "Chattahoochee · South River · Midtown / Downtown — Fulton County, Georgia. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./atlanta-subsurface/index.html"
+    },
+    {
+      "slug": "aura-sound-studio",
+      "name": "AURA Sound Studio",
+      "description": "Self-contained experimental audio lab. Local presets/HTML exports; microphone opt-in. Not certified ANC or hearing protection.",
+      "href": "./aura-sound-studio/index.html"
+    },
+    {
+      "slug": "bbs-viewer",
+      "name": "BBS viewer",
+      "description": "",
+      "href": "./bbs-viewer/index.html"
+    },
+    {
+      "slug": "buffalo-subsurface",
+      "name": "BUFFALO SUBSURFACE 4Dwm",
+      "description": "Lake Erie · Niagara River · Erie Canal · Downtown — Erie County, New York. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./buffalo-subsurface/index.html"
+    },
+    {
+      "slug": "california-subsurface",
+      "name": "CALIFORNIA SUBSURFACE 4Dwm",
+      "description": "Sierra Nevada · Central Valley · Pacific Coast — statewide frame, California. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./california-subsurface/index.html"
+    },
+    {
+      "slug": "cheyenne",
+      "name": "Cheyenne / Angeles 4Dwm",
+      "description": "Two-plate Three.js theater: Cheyenne Mountain (NORAD) and the Pikes Peak massif in Colorado beside the Angeles National Forest",
+      "href": "./cheyenne/index.html"
+    },
+    {
+      "slug": "cia-museum",
+      "name": "CIA Museum · Interactive VRML Campus",
+      "description": "An interactive public-source study of the CIA Museum, Headquarters landscape, eleven official online exhibits, Camp Peary, Camp X, and the repository",
+      "href": "./cia-museum/index.html"
+    },
+    {
+      "slug": "colorado-subsurface",
+      "name": "COLORADO SUBSURFACE 4Dwm",
+      "description": "Front Range · Southern Rocky Mountains · High Plains — statewide frame, Colorado. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./colorado-subsurface/index.html"
+    },
+    {
+      "slug": "connecticut-subsurface",
+      "name": "Connecticut SUBSURFACE 4Dwm",
+      "description": "Connecticut STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./connecticut-subsurface/index.html"
+    },
+    {
+      "slug": "country-viewer",
+      "name": "Country Viewer - Country Outlines + Factbook",
+      "description": "Offline country and area profiles with reviewed ISO name/code and IANA ccTLD search crosswalks, Natural Earth outlines, regional map views, and a limited city/island place-name index.",
+      "href": "./country-viewer/index.html"
+    },
+    {
+      "slug": "cookbook",
+      "name": "Crypto Cookbook — Block, Stream, Asymmetric, MAC, PQC",
+      "description": "",
+      "href": "./cookbook/index.html"
+    },
+    {
+      "slug": "cryptofountain-bbs",
+      "name": "CryptoFountain BBS — P2P Microblogging with Erasure Codes & On-Chain Sync",
+      "description": "",
+      "href": "./cryptofountain-bbs/index.html"
+    },
+    {
+      "slug": "cyberchef",
+      "name": "CyberChef — HTML5 (Renovated Kitchen)",
+      "description": "",
+      "href": "./cyberchef/index.html"
+    },
+    {
+      "slug": "cyberchef-merged",
+      "name": "CyberChef Kitchen (Html5 merged)",
+      "description": "Offline HTML5 CyberChef build — 525 operations after the Html5 / Html5-sync-incoming recipe merge.",
+      "href": "./cyberchef-merged/index.html"
+    },
+    {
+      "slug": "dalton-race-4dwm",
+      "name": "Dalton Race 4Dwm",
+      "description": "",
+      "href": "./dalton-race-4dwm/index.html"
+    },
+    {
+      "slug": "delaware-subsurface",
+      "name": "Delaware SUBSURFACE 4Dwm",
+      "description": "Delaware STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./delaware-subsurface/index.html"
+    },
+    {
+      "slug": "esgvrop-4dwm",
+      "name": "ESGVROP 4Dwm",
+      "description": "The ESGVROP deep-dive viewer: the Del Norte Campus (West Covina) and Sunflower Campus (Glendora) of the East San Gabriel Valley Regional Occupational Program & Technical Center, built from the archived esgvrop.org record, with the summer-2001 first-boss register as evidence-tiere",
+      "href": "./esgvrop-4dwm/index.html"
+    },
+    {
+      "slug": "florida-subsurface",
+      "name": "FLORIDA SUBSURFACE 4Dwm",
+      "description": "FLORIDA STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./florida-subsurface/index.html"
+    },
+    {
+      "slug": "four-corners",
+      "name": "Four Corners 4Dwm",
+      "description": "Three.js theater of the AZ/CO/NM/UT quadripoint country: Navajo volcanic field necks, San Juan Basin energy sites, the uranium legacy ring, Ancestral Puebloan parks, and a curated GNIS gazetteer.",
+      "href": "./four-corners/index.html"
+    },
+    {
+      "slug": "georgia-subsurface",
+      "name": "GEORGIA SUBSURFACE 4Dwm",
+      "description": "Blue Ridge summits · Piedmont fall line · Atlantic sea islands — statewide frame, Georgia. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./georgia-subsurface/index.html"
+    },
+    {
+      "slug": "Georgia-subsurface",
+      "name": "Georgia Subsurface 4Dwm",
+      "description": "Georgia SUBSURFACE 4Dwm — Georgia STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and geocache source tier.",
+      "href": "./Georgia-subsurface/index.html"
+    },
+    {
+      "slug": "glendora-high-4dwm",
+      "name": "Glendora High 4Dwm",
+      "description": "The 4Dwm window-manager treatment of the Glendora High School campus, framed for June 2001 and the Class of 2001. OSM building geometry (ODbL) with evidence-tiered Class-of-2001 memory pips.",
+      "href": "./glendora-high-4dwm/index.html"
+    },
+    {
+      "slug": "greeran-subsurface",
+      "name": "Greeran Subsurface 4Dwm",
+      "description": "The SOCAL SUBSURFACE 4Dwm engine re-aimed at one biography: the Glendora→Goleta transect, the ESGVROP summer, UCSB fall 2001, and the Amgen years on GMR — era layers, evidence tiers, and a master timeline.",
+      "href": "./greeran-subsurface/index.html"
+    },
+    {
+      "slug": "guam-subsurface",
+      "name": "GUAM SUBSURFACE 4Dwm",
+      "description": "Hagåtña · Apra Harbor · Mount Lamlam — island frame, Guam. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./guam-subsurface/index.html"
+    },
+    {
+      "slug": "hawaii-subsurface",
+      "name": "Hawaii SUBSURFACE 4Dwm",
+      "description": "Hawaii STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./hawaii-subsurface/index.html"
+    },
+    {
+      "slug": "headline-harry",
+      "name": "Headline Harry (DOS·1991)",
+      "description": "",
+      "href": "./headline-harry/index.html"
+    },
+    {
+      "slug": "helios-observatory",
+      "name": "Helios Observatory",
+      "description": "",
+      "href": "./helios-observatory/index.html"
+    },
+    {
+      "slug": "idaho-subsurface",
+      "name": "IDAHO SUBSURFACE 4Dwm",
+      "description": "Snake River Plain · Sawtooths · Clearwater · Panhandle lakes — statewide frame, Idaho. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./idaho-subsurface/index.html"
+    },
+    {
+      "slug": "illinois-subsurface",
+      "name": "ILLINOIS SUBSURFACE 4Dwm",
+      "description": "Shawnee Hills · Driftless uplands · Illinois River · Chicago lake plain — statewide frame, Illinois. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./illinois-subsurface/index.html"
+    },
+    {
+      "slug": "indiana-subsurface",
+      "name": "INDIANA SUBSURFACE 4Dwm",
+      "description": "Hoosier Hill · Brown County hills · Wabash valley · Ohio River — statewide frame, Indiana. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./indiana-subsurface/index.html"
+    },
+    {
+      "slug": "ingress-intel",
+      "name": "Ingress Intel 4Dwm",
+      "description": "A Three.js intel map for Ingress portals, mind links and control fields: globe and Los Angeles basin stages, a documented attempt ladder against the live intel API, capture and IITC-import readers, and a webxdc peer channel for agents.",
+      "href": "./ingress-intel/index.html"
+    },
+    {
+      "slug": "iowa-subsurface",
+      "name": "IOWA SUBSURFACE 4Dwm",
+      "description": "Loess Hills · Des Moines Lobe · driftless northeast — statewide frame, Iowa. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./iowa-subsurface/index.html"
+    },
+    {
+      "slug": "kansascity-subsurface",
+      "name": "KANSAS CITY SUBSURFACE 4Dwm",
+      "description": "Missouri River · Kansas River · Kansas City metro — Missouri / Kansas. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./kansascity-subsurface/index.html"
+    },
+    {
+      "slug": "kansas-subsurface",
+      "name": "KANSAS SUBSURFACE 4Dwm",
+      "description": "Flint Hills · Smoky Hills · High Plains · Kansas River corridor — statewide frame, Kansas. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./kansas-subsurface/index.html"
+    },
+    {
+      "slug": "Kentucky-subsurface",
+      "name": "Kentucky SUBSURFACE 4Dwm",
+      "description": "Kentucky STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./Kentucky-subsurface/index.html"
+    },
+    {
+      "slug": "keyspace",
+      "name": "Keyspace Viewer",
+      "description": "",
+      "href": "./keyspace/index.html"
+    },
+    {
+      "slug": "keyviewer",
+      "name": "KeyViewer - Mathspace (trig, geometry, complex)",
+      "description": "Offline companion to the Keyspace Viewer: unit circle, triangle solver, a machine-verified trig-identity and geometry compendium, and a complex-plane (",
+      "href": "./keyviewer/index.html"
+    },
+    {
+      "slug": "kryptos-vrml",
+      "name": "Kryptos VRML — CIA Cryptographic Experience",
+      "description": "",
+      "href": "./kryptos-vrml/index.html"
+    },
+    {
+      "slug": "lawrence-subsurface",
+      "name": "LAWRENCE SUBSURFACE 4Dwm",
+      "description": "Kansas River · Wakarusa River · Douglas County, Kansas. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./lawrence-subsurface/index.html"
+    },
+    {
+      "slug": "louisiana-subsurface",
+      "name": "LOUISIANA SUBSURFACE 4Dwm",
+      "description": "Mississippi and Atchafalaya delta · coastal prairie · Red River hills — statewide frame, Louisiana. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./louisiana-subsurface/index.html"
+    },
+    {
+      "slug": "Maryland-subsurface",
+      "name": "Maryland SUBSURFACE 4Dwm",
+      "description": "Maryland STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./Maryland-subsurface/index.html"
+    },
+    {
+      "slug": "massachusetts-subsurface",
+      "name": "Massachusetts SUBSURFACE 4Dwm",
+      "description": "Massachusetts STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./massachusetts-subsurface/index.html"
+    },
+    {
+      "slug": "michigan-subsurface",
+      "name": "MICHIGAN SUBSURFACE 4Dwm",
+      "description": "Huron Mountains · Keweenaw · Grand Traverse Bay · Saginaw Bay — statewide frame, Michigan. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./michigan-subsurface/index.html"
+    },
+    {
+      "slug": "midway-subsurface",
+      "name": "MIDWAY SUBSURFACE 4Dwm",
+      "description": "Sand Island · Eastern Island · Welles Harbor — Midway Atoll, U.S. Minor Outlying Islands. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./midway-subsurface/index.html"
+    },
+    {
+      "slug": "minnesota-subsurface",
+      "name": "MINNESOTA SUBSURFACE 4Dwm",
+      "description": "Arrowhead highlands · Red River valley · Minnesota and Mississippi headwaters — statewide frame, Minnesota. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./minnesota-subsurface/index.html"
+    },
+    {
+      "slug": "mississippi-subsurface",
+      "name": "MISSISSIPPI SUBSURFACE 4Dwm",
+      "description": "Mississippi Delta · Piney Woods · Gulf coast — statewide frame, Mississippi. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./mississippi-subsurface/index.html"
+    },
+    {
+      "slug": "missouri-subsurface",
+      "name": "MISSOURI SUBSURFACE 4Dwm",
+      "description": "Ozarks · northern plains · Missouri and Mississippi confluence — statewide frame, Missouri. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./missouri-subsurface/index.html"
+    },
+    {
+      "slug": "montana-subsurface",
+      "name": "MONTANA SUBSURFACE 4Dwm",
+      "description": "Rocky Mountain Front · Glacier high country · Great Plains · Missouri and Yellowstone headwaters — statewide frame, Montana. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./montana-subsurface/index.html"
+    },
+    {
+      "slug": "nebraska-subsurface",
+      "name": "NEBRASKA SUBSURFACE 4Dwm",
+      "description": "Platte corridor · Sandhills · Pine Ridge · Missouri bluffs — statewide frame, Nebraska. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./nebraska-subsurface/index.html"
+    },
+    {
+      "slug": "nevada-subsurface",
+      "name": "NEVADA SUBSURFACE 4Dwm",
+      "description": "Great Basin · Sierra Nevada Front · Colorado River — statewide frame, Nevada. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./nevada-subsurface/index.html"
+    },
+    {
+      "slug": "newhampshire-subsurface",
+      "name": "New Hampshire SUBSURFACE 4Dwm",
+      "description": "New Hampshire STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./newhampshire-subsurface/index.html"
+    },
+    {
+      "slug": "newjersey-subsurface",
+      "name": "New Jersey SUBSURFACE 4Dwm",
+      "description": "New Jersey STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./newjersey-subsurface/index.html"
+    },
+    {
+      "slug": "newmexico-subsurface",
+      "name": "NEW MEXICO SUBSURFACE 4Dwm",
+      "description": "Rio Grande Rift · Sangre de Cristo · Llano Estacado — statewide frame, New Mexico. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./newmexico-subsurface/index.html"
+    },
+    {
+      "slug": "newyork-subsurface",
+      "name": "NEW YORK SUBSURFACE 4Dwm",
+      "description": "Adirondacks · Catskills · Great Lakes · Hudson Valley — statewide frame, New York. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./newyork-subsurface/index.html"
+    },
+    {
+      "slug": "northcarolina-subsurface",
+      "name": "NORTH CAROLINA SUBSURFACE 4Dwm",
+      "description": "NORTH CAROLINA STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./northcarolina-subsurface/index.html"
+    },
+    {
+      "slug": "northdakota-subsurface",
+      "name": "NORTH DAKOTA SUBSURFACE 4Dwm",
+      "description": "Red River Valley · Missouri Plateau · Missouri River and Lake Sakakawea — statewide frame, North Dakota. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./northdakota-subsurface/index.html"
+    },
+    {
+      "slug": "ohio-subsurface",
+      "name": "OHIO SUBSURFACE 4Dwm",
+      "description": "Appalachian Plateau · Lake Erie shore · Scioto and Maumee corridors — statewide frame, Ohio. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./ohio-subsurface/index.html"
+    },
+    {
+      "slug": "oklahoma-subsurface",
+      "name": "OKLAHOMA SUBSURFACE 4Dwm",
+      "description": "Red Bed plains · Wichita Mountains · Ozarks and Ouachitas — statewide frame, Oklahoma. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./oklahoma-subsurface/index.html"
+    },
+    {
+      "slug": "openpgp-workbench",
+      "name": "OpenPGP Workbench",
+      "description": "Local OpenPGP text tools, conservative RSA key generation and a public-only keyring.",
+      "href": "./openpgp-workbench/index.html"
+    },
+    {
+      "slug": "oregon-subsurface",
+      "name": "OREGON SUBSURFACE 4Dwm",
+      "description": "Willamette Valley · Cascades · Columbia River · high desert — statewide frame, Oregon. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./oregon-subsurface/index.html"
+    },
+    {
+      "slug": "pennsylvania-subsurface",
+      "name": "PENNSYLVANIA SUBSURFACE 4Dwm",
+      "description": "Allegheny Plateau · Laurel Highlands · Poconos · Three Rivers — statewide frame, Pennsylvania. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./pennsylvania-subsurface/index.html"
+    },
+    {
+      "slug": "planet-viewer",
+      "name": "Planet Viewer · 4DWM",
+      "description": "Offline 3DEP terrain plates with local Cheyenne and SoCal place-name registers, five city Gazetteers, a country globe, and PC Globe index. The viewer is schematic, not a survey product.",
+      "href": "./planet-viewer/index.html"
+    },
+    {
+      "slug": "prime-viewer",
+      "name": "Prime Viewer",
+      "description": "",
+      "href": "./prime-viewer/index.html"
+    },
+    {
+      "slug": "red-october-command-viewer",
+      "name": "Red October 4D Command Theater",
+      "description": "Offline fictionalized story-index globe and schematic profile viewer. No real submarine track data or detailed internal layout.",
+      "href": "./red-october-command-viewer/index.html"
+    },
+    {
+      "slug": "rhodeisland-subsurface",
+      "name": "Rhode Island SUBSURFACE 4Dwm",
+      "description": "Rhode Island STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./rhodeisland-subsurface/index.html"
+    },
+    {
+      "slug": "sanborn-codex",
+      "name": "Sanborn Codex — The Encrypted Art of Jim Sanborn",
+      "description": "",
+      "href": "./sanborn-codex/index.html"
+    },
+    {
+      "slug": "sanborn-suite",
+      "name": "Sanborn Installations — Complete Suite",
+      "description": "",
+      "href": "./sanborn-suite/index.html"
+    },
+    {
+      "slug": "sanborn-restaurant-4dwm",
+      "name": "Sanborn Restaurant Study — 4Dwm VRML Viewer",
+      "description": "",
+      "href": "./sanborn-restaurant-4dwm/index.html"
+    },
+    {
+      "slug": "socal-subsurface",
+      "name": "SoCal Subsurface 4Dwm",
+      "description": "Offline Three.js theater of Southern California infrastructure with an offline USGS GNIS gazetteer and optional local GPX geocaches.",
+      "href": "./socal-subsurface/index.html"
+    },
+    {
+      "slug": "socal-subsurface-inlined",
+      "name": "SoCal Subsurface 4Dwm (Inlined)",
+      "description": "Offline Three.js theater of Southern California infrastructure with an offline USGS GNIS gazetteer and optional local GPX geocaches.",
+      "href": "./socal-subsurface-inlined/index.html"
+    },
+    {
+      "slug": "sound-sanctuary",
+      "name": "Sound Sanctuary",
+      "description": "Self-contained experimental audio lab. Local presets/HTML exports; microphone opt-in. Not certified ANC or hearing protection.",
+      "href": "./sound-sanctuary/index.html"
+    },
+    {
+      "slug": "southcarolina-subsurface",
+      "name": "SOUTH CAROLINA SUBSURFACE 4Dwm",
+      "description": "SOUTH CAROLINA STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./southcarolina-subsurface/index.html"
+    },
+    {
+      "slug": "southdakota-subsurface",
+      "name": "SOUTH DAKOTA SUBSURFACE 4Dwm",
+      "description": "Black Hills · Missouri River · James River lowland · Prairie Coteau — statewide frame, South Dakota. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./southdakota-subsurface/index.html"
+    },
+    {
+      "slug": "maine-subsurface",
+      "name": "SUBSURFACE 4Dwm",
+      "description": "SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./maine-subsurface/index.html"
+    },
+    {
+      "slug": "tennessee-subsurface",
+      "name": "Tennessee SUBSURFACE 4Dwm",
+      "description": "Tennessee STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./tennessee-subsurface/index.html"
+    },
+    {
+      "slug": "texas-subsurface",
+      "name": "TEXAS SUBSURFACE 4Dwm",
+      "description": "Balcones and Edwards Plateau · Southern High Plains · Trans-Pecos · Gulf Coast — statewide frame, Texas. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./texas-subsurface/index.html"
+    },
+    {
+      "slug": "tiny-dino",
+      "name": "tiny-dino",
+      "description": "",
+      "href": "./tiny-dino/index.html"
+    },
+    {
+      "slug": "toronto-subsurface",
+      "name": "TORONTO SUBSURFACE 4Dwm",
+      "description": "Lake Ontario · PATH underground · Don Valley — Toronto, Ontario, Canada 🍁. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./toronto-subsurface/index.html"
+    },
+    {
+      "slug": "renga-camouflage",
+      "name": "Two Voices at Harvest — a renga haibun",
+      "description": "A complete story camouflaged as tan-renga. The verses are the whole of it.",
+      "href": "./renga-camouflage/index.html"
+    },
+    {
+      "slug": "usvirginislands-subsurface",
+      "name": "U.S. VIRGIN ISLANDS SUBSURFACE 4Dwm",
+      "description": "Saint Thomas · Saint John · Saint Croix — territory frame, U.S. Virgin Islands. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./usvirginislands-subsurface/index.html"
+    },
+    {
+      "slug": "ufopaedia",
+      "name": "UFOPAEDIA — Software Protection & the Crack Scene",
+      "description": "An X-COM UFOpaedia-styled encyclopedia of DOS-era software protection, executable packers, and the archived crack/keygen scene — every claim sourced to a primary capture.",
+      "href": "./ufopaedia/index.html"
+    },
+    {
+      "slug": "utah-subsurface",
+      "name": "UTAH SUBSURFACE 4Dwm",
+      "description": "Wasatch Front · Great Salt Lake · Colorado Plateau — statewide frame, Utah. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./utah-subsurface/index.html"
+    },
+    {
+      "slug": "vermont-subsurface",
+      "name": "Vermont SUBSURFACE 4Dwm",
+      "description": "Vermont STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D Window MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./vermont-subsurface/index.html"
+    },
+    {
+      "slug": "virginia-subsurface",
+      "name": "Virginia SUBSURFACE 4Dwm",
+      "description": "Virginia STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./virginia-subsurface/index.html"
+    },
+    {
+      "slug": "washington-subsurface",
+      "name": "WASHINGTON SUBSURFACE 4Dwm",
+      "description": "Puget Sound · Cascades · Columbia Basin · Spokane — statewide frame, Washington. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./washington-subsurface/index.html"
+    },
+    {
+      "slug": "westvirginia-subsurface",
+      "name": "West Virginia SUBSURFACE 4Dwm",
+      "description": "West Virginia STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./westvirginia-subsurface/index.html"
+    },
+    {
+      "slug": "wikiinajar",
+      "name": "Wiki in a Jar",
+      "description": "Wiki in a Jar — the 2008 USB-stick personal wiki (wikiinajar 0.8) rebuilt as an offline HTML5 / webxdc app. Same wikitext namespaces (wiki, img, image, djvu, tags, tagtree, vcard, sidebar), same .wiki pages, no server: pages live in this browser and sync through the chat when run",
+      "href": "./wikiinajar/index.html"
+    },
+    {
+      "slug": "wisconsin-subsurface",
+      "name": "WISCONSIN SUBSURFACE 4Dwm",
+      "description": "Apostle Islands · Baraboo Range · Driftless · Lake Winnebago — statewide frame, Wisconsin. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./wisconsin-subsurface/index.html"
+    },
+    {
+      "slug": "wyoming-subsurface",
+      "name": "WYOMING SUBSURFACE 4Dwm",
+      "description": "Teton and Yellowstone high country · Wind River · Wyoming Range · High Plains — statewide frame, Wyoming. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",
+      "href": "./wyoming-subsurface/index.html"
+    },
+    {
+      "slug": "yubnub",
+      "name": "Yubnub",
+      "description": "Yubnub — a (social) command line for the web, rebuilt as an offline HTML5 / webxdc app. Type",
+      "href": "./yubnub/index.html"
+    }
+  ]
+}
