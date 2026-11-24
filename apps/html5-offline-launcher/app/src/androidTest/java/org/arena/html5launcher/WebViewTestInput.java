@@ -3,10 +3,13 @@ package org.arena.html5launcher;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Instrumentation;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.webkit.WebView;
+
+import androidx.test.uiautomator.UiDevice;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,16 +22,34 @@ import java.util.concurrent.atomic.AtomicReference;
 /** Real touchscreen activation for user-gesture-gated WebView controls. Test APK only. */
 final class WebViewTestInput {
     static void tapElement(Instrumentation instrumentation, WebView web, String id) throws Exception {
-        evaluate(web, "document.getElementById(" + JSONObject.quote(id) + ").scrollIntoView({block:'center'}); 'scrolled'");
+        // Page JS can be ready while another Android window is foreground.
+        // Instrumentation correctly refuses an injection into another UID.
+        // Wait for our own visible, focused window; never tap through system
+        // alerts or replace a user gesture with a synthetic JavaScript click.
+        UiDevice device = UiDevice.getInstance(instrumentation);
+        String targetPackage = instrumentation.getTargetContext().getPackageName();
+        long deadline = SystemClock.uptimeMillis() + 15000;
+        boolean[] focused = new boolean[1];
+        do {
+            instrumentation.runOnMainSync(() -> focused[0] = web.isShown() && web.hasWindowFocus());
+            if (focused[0] && targetPackage.equals(device.getCurrentPackageName())) break;
+            SystemClock.sleep(100);
+        } while (SystemClock.uptimeMillis() < deadline);
+        assertTrue("gesture requires the target app's foreground window; current=" + device.getCurrentPackageName(),
+                focused[0] && targetPackage.equals(device.getCurrentPackageName()));
+        evaluate(web, "document.getElementById(" + JSONObject.quote(id) + ").scrollIntoView({behavior:'instant',block:'center',inline:'center'}); 'scrolled'");
         JSONArray point = new JSONArray(evaluate(web,
                 "JSON.stringify((() => { const r=document.getElementById(" + JSONObject.quote(id) + ").getBoundingClientRect();" +
                 "return [r.left + Math.min(r.width / 2, 24), r.top + r.height / 2, innerWidth, r.width, r.height]; })())"));
         assertTrue("gesture target must be visible and nonempty", point.getDouble(3) > 0 && point.getDouble(4) > 0);
         int[] location = new int[2];
-        instrumentation.runOnMainSync(() -> web.getLocationOnScreen(location));
+        Rect visible = new Rect();
+        instrumentation.runOnMainSync(() -> { web.getLocationOnScreen(location); web.getGlobalVisibleRect(visible); });
         float scale = web.getWidth() / (float) point.getDouble(2);
         float x = location[0] + (float) point.getDouble(0) * scale;
         float y = location[1] + (float) point.getDouble(1) * scale;
+        assertTrue("gesture point must be inside the visible app WebView, not a status/navigation bar: " + x + "," + y + " within " + visible,
+                visible.contains(Math.round(x), Math.round(y)));
         long now = SystemClock.uptimeMillis();
         MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0);
         MotionEvent up = MotionEvent.obtain(now, now + 80, MotionEvent.ACTION_UP, x, y, 0);

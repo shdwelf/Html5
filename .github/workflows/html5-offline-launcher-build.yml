@@ -385,14 +385,16 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          profile: pixel_7_pro
+          profile: pixel_2
           emulator-boot-timeout: 300
           working-directory: apps/html5-offline-launcher
-          emulator-options: -no-window -gpu swiftshader_indirect -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          emulator-options: -no-window -gpu swiftshader_indirect -skin 720x1280 -memory 3072 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
+          # Match density/skin before boot, not a high-resolution launcher resize
+          # after startup. An unrelated Nexus launcher ANR can occlude all taps.
           # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
           pre-emulator-launch-script: >-
-            { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
+            { set -e; sed -i '/^hw[.]lcd[.]density=/d' "$ANDROID_AVD_HOME/test.avd/config.ini"; printf '\nhw.lcd.density=280\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: bash ../../scripts/test-html5-android-webview.sh
 
       - name: Surface per-phase Android WebView results
@@ -410,6 +412,7 @@ jobs:
           for label in ["public-local-files", "network-local-files", "public-audio-policy", "public-headline-harry"]:
               exits = re.findall(r"=== " + re.escape(label) + r" exit=(\d+) ===", log)
               cases = {}
+              failure_details = []
               for path in glob.glob(base + "/instrumentation-reports/" + label + "/**/*.xml", recursive=True):
                   try:
                       suite = ET.parse(path).getroot()
@@ -418,11 +421,16 @@ jobs:
                   for case in suite.iter("testcase"):
                       name = case.get("classname", "") + "." + case.get("name", "")
                       cases[name] = "failed" if case.find("failure") is not None or case.find("error") is not None else "skipped" if case.find("skipped") is not None else "passed"
-              phases.append({"phase": label, "exit": int(exits[-1]) if exits else None, "tests": len(cases), "passed": list(cases.values()).count("passed"), "failed": list(cases.values()).count("failed"), "skipped": list(cases.values()).count("skipped")})
+                      for result in list(case.findall("failure")) + list(case.findall("error")):
+                          detail = " ".join(list(result.attrib.values()) + list(result.itertext()))
+                          if detail.strip():
+                              failure_details.append(re.sub(r"\s+", " ", detail).strip()[:650])
+              phases.append({"phase": label, "exit": int(exits[-1]) if exits else None, "tests": len(cases), "passed": list(cases.values()).count("passed"), "failed": list(cases.values()).count("failed"), "skipped": list(cases.values()).count("skipped"), "firstFailure": failure_details[0] if failure_details else None})
           result = {"schema": 1, "phases": phases}
           os.makedirs(base, exist_ok=True)
           open(base + "/android-webview-summary.json", "w", encoding="utf-8").write(json.dumps(result, indent=2) + "\n")
-          print("::notice title=Android-WebView-results::" + json.dumps(result, separators=(",", ":")))
+          summary = json.dumps(result, separators=(",", ":")).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print("::notice title=Android-WebView-results::" + summary)
           PY
 
       - name: Surface Android instrumentation failure details
@@ -491,7 +499,8 @@ jobs:
           # WebView compositor lines. These are synthetic tests, not user data.
           important = [line for line in logcat if re.search(r"HeadlineHarrySmoke|FATAL EXCEPTION|SIGSEGV|ANR in|crash_dump", line)]
           recent = [line for line in logcat if logcat_pattern.search(line)][-30:]
-          relevant_logcat = list(dict.fromkeys(important[-35:] + recent))
+          game_probe = [line for line in logcat if "HeadlineHarrySmoke" in line]
+          relevant_logcat = list(dict.fromkeys(game_probe[-15:] + important[-15:] + recent))
           if not relevant_logcat:
               relevant_logcat = ["No matching Android/WebView crash or Headline Harry logcat lines."]
           logcat_text = "\n".join(relevant_logcat)[:9000]

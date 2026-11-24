@@ -21,7 +21,8 @@ public final class SyntheticDocumentProvider extends ContentProvider {
     private File document(Uri uri) throws FileNotFoundException {
         String name = uri.getLastPathSegment();
         if (!"export.asc".equals(name) && !"import.asc".equals(name) &&
-                !"corrupt.asc".equals(name) && !"denied.asc".equals(name)) throw new FileNotFoundException();
+                !"corrupt.asc".equals(name) && !"denied.asc".equals(name) &&
+                !"v6-full.asc".equals(name) && !"v6-reduced.asc".equals(name)) throw new FileNotFoundException();
         File directory = new File(getContext().getCacheDir(), "synthetic-picker-documents");
         if (!directory.isDirectory() && !directory.mkdirs()) throw new FileNotFoundException();
         return new File(directory, name);

@@ -215,3 +215,41 @@ this is unrelated to subkey parsing. Manual recipient inputs exist, while
 automatic PR builds do not solicit them. New profile inputs reach the web UI
 once on the default branch. Matching-head Android/native checks, encrypted APK
 delivery and PR #238's ready/merge decision remain separate pending gates.
+
+### d20fcdc device result and next bounded correction
+
+The new head built all three profiles and passed both native/large-RSA crypto
+jobs, including the required real v6 Chromium suite. Full local Vitest was
+rerun: **318 passed / 36 files**. The separate token/coin guard tranche passed
+**27 tests** without promoting new runtime mappings or closing financial gates.
+
+Android `45357811641` still failed: public local files **4/6**, network local
+files **0/6**, audio **1/1**, Harry **0/1**. The public v4 reload assertion now
+passes; the new v6 save fixture used two filenames missing from the synthetic
+provider's deliberately fixed allowlist. They are now added explicitly, not by
+relaxing production file access or save/read-back checks. Actual failure details
+also establish that file-input/Harry touchscreen injections were directed at a
+non-target window, while the emulator recorded a Nexus launcher ANR. This does
+not establish a DOSBox or OpenPGP v6 cryptographic failure.
+
+The next harness waits for the target app's visible/focused foreground window
+and checks coordinates inside its visible WebView before injecting a real
+touch. The emulator uses a smaller boot-time skin, matching density and more
+RAM rather than reflowing a 1440p Pixel 7 launcher after boot. Native network
+warning consent, real file input gesture, read-back verification and the actual
+DOSBox-ready assertion are retained. Per-phase notices now include their own
+first failure so one flavor's repeated stacks cannot hide another's error.
+No app assertion or crash condition is converted to a skip or success.
+
+Two PUBLIC .asc versions and four **new v6-encrypted d20fcdc** source/browser
+copies were delivered into a new owner-only Drive child folder. Each payload's
+bytes, SHA-256, MD5, parent/non-trashed state and one-user-owner-only permissions
+were independently re-fetched and matched. The current source checkpoint has
+**1,548 tracked files**, including tests/workflows/config and all **188** audited
+app entries. Only the maintained OpenPGP entrypoint changed from the original
+inventory; imported research originals and all five prior v4 ciphertext hashes
+are unchanged. Portable browser catalogs remain **96 / 98 / private 4**, versus
+Android private **2**. None of these four ciphertexts is an APK or live-state
+backup, and no real owner decryption is claimed. The newly attempted manual
+v6 Actions dispatch also received integration **403**; reconnect is still
+required for that separate encrypted-APK delivery path.
