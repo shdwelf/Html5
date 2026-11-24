@@ -177,6 +177,8 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.ok(smokeRunner.indexOf("run_tests public-local-files") < smokeRunner.indexOf("run_tests public-headline-harry"));
   assert.match(smokeRunner, /trap finish EXIT/);
   assert.match(ANDROID_WORKFLOW, /Preserve bounded synthetic WebView diagnostics/);
+  assert.match(ANDROID_WORKFLOW, /python3 scripts\/report-html5-android-runner\.py apps\/html5-offline-launcher\/app\/build/);
+  assert.match(ANDROID_WORKFLOW, /tests\/html5-android-runner\.test\.mjs/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
   assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);

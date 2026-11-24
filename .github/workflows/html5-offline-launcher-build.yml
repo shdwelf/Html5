@@ -17,6 +17,8 @@ on:
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
       - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'tests/html5-android-runner.test.mjs'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -48,6 +50,8 @@ on:
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
       - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'tests/html5-android-runner.test.mjs'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -146,7 +150,7 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Test launcher inventory and offline policy
-        run: node --test tests/html5-offline-launcher.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
+        run: node --test tests/html5-offline-launcher.test.mjs tests/html5-android-runner.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
 
       - name: Validate restored sound snapshots and local export adapter
         run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
@@ -437,6 +441,7 @@ jobs:
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
         shell: bash
         run: |
+          python3 scripts/report-html5-android-runner.py apps/html5-offline-launcher/app/build
           python3 - <<'PY'
           import glob
           import os

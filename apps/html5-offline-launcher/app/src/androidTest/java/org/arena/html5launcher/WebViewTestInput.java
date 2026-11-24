@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import android.app.Instrumentation;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.webkit.WebView;
@@ -26,6 +27,8 @@ final class WebViewTestInput {
         // Instrumentation correctly refuses an injection into another UID.
         // Wait for our own visible, focused window; never tap through system
         // alerts or replace a user gesture with a synthetic JavaScript click.
+        // Phase-only diagnostics: never log page values, keys or passphrases.
+        Log.i("Html5GestureSmoke", id + ": waiting for the focused app window");
         UiDevice device = UiDevice.getInstance(instrumentation);
         String targetPackage = instrumentation.getTargetContext().getPackageName();
         long deadline = SystemClock.uptimeMillis() + 15000;
@@ -37,6 +40,7 @@ final class WebViewTestInput {
         } while (SystemClock.uptimeMillis() < deadline);
         assertTrue("gesture requires the target app's foreground window; current=" + device.getCurrentPackageName(),
                 focused[0] && targetPackage.equals(device.getCurrentPackageName()));
+        Log.i("Html5GestureSmoke", id + ": focused; scrolling and measuring the visible HTML control");
         evaluate(web, "document.getElementById(" + JSONObject.quote(id) + ").scrollIntoView({behavior:'instant',block:'center',inline:'center'}); 'scrolled'");
         JSONArray point = new JSONArray(evaluate(web,
                 "JSON.stringify((() => { const r=document.getElementById(" + JSONObject.quote(id) + ").getBoundingClientRect();" +
@@ -55,7 +59,11 @@ final class WebViewTestInput {
         MotionEvent up = MotionEvent.obtain(now, now + 80, MotionEvent.ACTION_UP, x, y, 0);
         try {
             down.setSource(InputDevice.SOURCE_TOUCHSCREEN); up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-            instrumentation.sendPointerSync(down); instrumentation.sendPointerSync(up);
+            Log.i("Html5GestureSmoke", id + ": injecting ACTION_DOWN");
+            instrumentation.sendPointerSync(down);
+            Log.i("Html5GestureSmoke", id + ": injecting ACTION_UP");
+            instrumentation.sendPointerSync(up);
+            Log.i("Html5GestureSmoke", id + ": touchscreen injection returned");
         } finally { down.recycle(); up.recycle(); }
     }
 

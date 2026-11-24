@@ -158,6 +158,12 @@ track startup, not acoustic capture quality. Device testing has a separate
 20-minute step bound; build artifacts are exported **before** it starts. An APK
 build/inventory check is not a WebView or live-provider test result.
 
+On failure, bounded synthetic diagnostics include suite-level `system-err` /
+`system-out`, native process/runner failures and the last real-touchscreen
+activation phases. An empty JUnit `<failure/>` or a partial testcase count is
+not a passing phase and does not establish an emulator-only root cause. These
+diagnostics do not change the tests, permission/save policies or time limits.
+
 Normal CI uploads the public and opt-in network APKs as
 `html5-offline-launcher-public-network-debug-apks` (30 days), preserving main's
 network-package handoff. The network package retains all 96 approved public apps

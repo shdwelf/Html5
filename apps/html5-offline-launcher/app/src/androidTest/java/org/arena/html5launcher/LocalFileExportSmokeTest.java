@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.ProviderInfo;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -300,12 +301,14 @@ public final class LocalFileExportSmokeTest {
     }
     private void load(WebView web, String url) throws Exception {
         assertNotNull(web);
+        Log.i("Html5LocalFileSmoke", "loading synthetic packaged page " + url);
         // loadUrl schedules navigation; a same-URL reload can still report
         // the old complete document. Mark it and wait until that mark is gone.
         String token = java.util.UUID.randomUUID().toString();
         evaluate(web, "window.__syntheticOldDocument=" + JSONObject.quote(token) + "; 'marked'");
         instrumentation.runOnMainSync(() -> web.loadUrl(url));
         await(web, "window.__syntheticOldDocument === " + JSONObject.quote(token) + " ? 'previous-document' : document.readyState + '|' + location.href + '|' + typeof Html5LocalFiles", "complete|" + url + "|object");
+        Log.i("Html5LocalFileSmoke", "loaded synthetic packaged page " + url);
     }
     private String await(WebView web, String expression, String prefix) throws Exception {
         long deadline = SystemClock.uptimeMillis() + 30000; String value = "";
