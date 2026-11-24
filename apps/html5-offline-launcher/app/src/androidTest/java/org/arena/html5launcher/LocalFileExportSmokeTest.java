@@ -55,6 +55,10 @@ public final class LocalFileExportSmokeTest {
         await(web, "document.getElementById('encrypt-status').dataset.kind || ''", "success");
         String armor = evaluate(web, "document.getElementById('encrypted-output').value");
         assertTrue(armor.startsWith("-----BEGIN PGP MESSAGE-----"));
+        // HTML textareas normalize CRLF to LF before encryption. Verify the
+        // exact submitted value, not the Java string before the HTML control.
+        String submitted = evaluate(web, "document.getElementById('plaintext').value");
+        assertEquals(plaintext.replace("\r\n", "\n"), submitted);
         Uri destination = document("export.asc");
         Instrumentation.ActivityMonitor picker = picker(Intent.ACTION_CREATE_DOCUMENT, Activity.RESULT_OK, destination);
         try {
@@ -68,7 +72,7 @@ public final class LocalFileExportSmokeTest {
                     "document.getElementById('decrypt-passphrase').value='synthetic Android passphrase only';" +
                     "document.getElementById('decrypt-form').requestSubmit(); 'started'");
             await(web, "document.getElementById('decrypt-status').dataset.kind || ''", "success");
-            assertEquals(plaintext, evaluate(web, "document.getElementById('decrypted-output').value"));
+            assertEquals(submitted, evaluate(web, "document.getElementById('decrypted-output').value"));
         } finally {
             instrumentation.removeMonitor(picker);
             activity.getContentResolver().delete(destination, null, null);
@@ -96,9 +100,14 @@ public final class LocalFileExportSmokeTest {
         try (OutputStream output = activity.getContentResolver().openOutputStream(chosen, "wt")) { output.write(synthetic); }
         Instrumentation.ActivityMonitor opening = picker(Intent.ACTION_OPEN_DOCUMENT, Activity.RESULT_OK, chosen);
         try {
-            evaluate(web, "document.getElementById('keyring-tab').click(); document.getElementById('public-key-file').click(); 'requested'");
-            await(web, "document.getElementById('public-key-input').value", "SYNTHETIC NOT-A-KEY");
-            assertEquals(1, opening.getHits());
+            evaluate(web, "document.getElementById('keyring-tab').click(); 'opened'");
+            // A programmatic file-input click has no transient user activation
+            // in Android WebView. Tap the real, visible HTML file control.
+            WebViewTestInput.tapElement(instrumentation, web, "public-key-file");
+            long pickerDeadline = SystemClock.uptimeMillis() + 10000;
+            while (opening.getHits() == 0 && SystemClock.uptimeMillis() < pickerDeadline) SystemClock.sleep(100);
+            assertEquals("a real input gesture must open ACTION_OPEN_DOCUMENT", 1, opening.getHits());
+            await(web, "document.getElementById('public-key-input').value + '|' + document.getElementById('keyring-status').textContent", "SYNTHETIC NOT-A-KEY");
             assertEquals("0", evaluate(web, "String(document.querySelectorAll('#keyring-list li').length)"));
             assertEquals(new String(synthetic, StandardCharsets.UTF_8), evaluate(web, "document.getElementById('public-key-input').value"));
         } finally {
@@ -106,6 +115,41 @@ public final class LocalFileExportSmokeTest {
             activity.getContentResolver().delete(chosen, null, null);
             evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
         }
+    }
+
+    @Test(timeout = 90000)
+    public void providerWriteRefusalAndReadbackMismatchNeverClaimSuccessAndRetryWorks() throws Exception {
+        MainActivity activity = activityRule.launchActivity(null);
+        acceptNetworkWarning();
+        WebView web = find(activity.getWindow().getDecorView());
+        load(web, PGP_URL);
+        String synthetic = "Synthetic provider failure/retry control — no private data";
+        for (String name : new String[] { "denied.asc", "corrupt.asc", "export.asc" }) {
+            Uri destination = document(name);
+            Instrumentation.ActivityMonitor saving = picker(Intent.ACTION_CREATE_DOCUMENT, Activity.RESULT_OK, destination);
+            try {
+                evaluate(web, "document.getElementById('encrypted-output').value=" + JSONObject.quote(synthetic) + ";" +
+                        "document.querySelector('[data-download]').click(); 'requested'");
+                boolean expectedSuccess = "export.asc".equals(name);
+                await(web, "document.getElementById('encrypt-status').dataset.kind || ''", expectedSuccess ? "success" : "error");
+                assertEquals(1, saving.getHits());
+                assertEquals(synthetic, evaluate(web, "document.getElementById('encrypted-output').value"));
+                if (expectedSuccess) {
+                    assertArrayEquals(synthetic.getBytes(StandardCharsets.UTF_8), read(destination));
+                    assertTrue(evaluate(web, "document.getElementById('encrypt-status').textContent").startsWith("Saved "));
+                } else {
+                    assertTrue(evaluate(web, "document.getElementById('encrypt-status').textContent").contains("Save failed"));
+                    assertFalse(evaluate(web, "document.getElementById('encrypt-status').textContent").contains("read-back verified"));
+                }
+                java.io.File staging = new java.io.File(activity.getCacheDir(), "local-file-exports");
+                String[] pending = staging.list();
+                assertTrue("failed and successful saves must clean the temporary staging file", pending == null || pending.length == 0);
+            } finally {
+                instrumentation.removeMonitor(saving);
+                activity.getContentResolver().delete(destination, null, null);
+            }
+        }
+        evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
     }
 
     @Test(timeout = 90000)
@@ -209,7 +253,7 @@ public final class LocalFileExportSmokeTest {
     }
     private String evaluate(WebView web, String expression) throws Exception {
         CountDownLatch complete = new CountDownLatch(1); AtomicReference<String> result = new AtomicReference<>();
-        instrumentation.runOnMainSync(() -> web.evaluateJavascript(expression, value -> { result.set(value); complete.countDown(); }));
+        web.post(() -> web.evaluateJavascript(expression, value -> { result.set(value); complete.countDown(); }));
         assertTrue("WebView callback must be bounded", complete.await(10, TimeUnit.SECONDS));
         Object parsed = new JSONTokener(result.get() == null ? "null" : result.get()).nextValue();
         return parsed == null || parsed == JSONObject.NULL ? "" : String.valueOf(parsed);

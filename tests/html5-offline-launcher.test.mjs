@@ -172,13 +172,18 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_SMOKE_TEST, /headlineDiagnostics/);
   assert.match(ANDROID_WORKFLOW, /android-webview-logcat\.log/);
   assert.match(ANDROID_WORKFLOW, /system-out/);
-  assert.match(ANDROID_WORKFLOW, /adb logcat -d -v threadtime/);
+  const smokeRunner = readFileSync(new URL("../scripts/test-html5-android-webview.sh", import.meta.url), "utf8");
+  assert.match(smokeRunner, /adb logcat -v threadtime/);
+  assert.ok(smokeRunner.indexOf("run_tests public-local-files") < smokeRunner.indexOf("run_tests public-headline-harry"));
+  assert.match(smokeRunner, /trap finish EXIT/);
+  assert.match(ANDROID_WORKFLOW, /Preserve bounded synthetic WebView diagnostics/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
   assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);
   assert.match(ANDROID_WORKFLOW, /pactl set-default-source ci_mic_bus\.monitor/);
   assert.match(ANDROID_WORKFLOW, /grep -Fq 'android\.permission\.MODIFY_AUDIO_SETTINGS'/);
-  assert.match(ANDROID_WORKFLOW, /:app:connectedPublicDebugAndroidTest/);
+  assert.match(smokeRunner, /:app:connectedPublicDebugAndroidTest/);
+  assert.match(smokeRunner, /:app:connectedNetworkDebugAndroidTest/);
   assert.match(ANDROID_WORKFLOW, /:app:assemblePrivateDebug/);
   assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-network-debug-apks/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
@@ -204,7 +209,7 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   for (const name of ["- name: Upload encrypted APKs only", "- name: Upload public and network APKs for backup"]) {
     assert.ok(ANDROID_WORKFLOW.indexOf(name) < ANDROID_WORKFLOW.indexOf("- name: Run Android WebView"), "build exports must not wait for emulator completion");
   }
-  assert.match(ANDROID_WORKFLOW, /timeout-minutes: 15/);
+  assert.match(ANDROID_WORKFLOW, /timeout-minutes: 20/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
   assert.match(README, /96\*\* HTML entrypoints/);
   assert.match(README, /Sound Sanctuary/);

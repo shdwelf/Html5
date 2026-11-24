@@ -93,9 +93,16 @@ repeated.
   also skips already-closed contexts rather than calling close twice. These
   failed harness attempts are not presented as passed runs.
 - Android instrumentation compiles, including a test-only synthetic document
-  provider. Tests exercise real WebView save/import callbacks and resolver I/O;
-  only the Files picker choice is stubbed. Public and network flavors have
-  separate execution. This is not an interactive human picker, physical phone,
+  provider. The first PR-head device run failed: a Java test compared CRLF
+  before the HTML textarea normalized it, the file test used a non-user
+  programmatic click, and Headline Harry/emulator diagnostics ended at timeout.
+  Follow-up tests compare the actual submitted text, tap real touchscreen
+  controls, and reject provider write/refetch corruption before checking retry.
+  Save and import callbacks also guard an outstanding external picker against
+  late results after navigation. Tests exercise real WebView callbacks and
+  resolver I/O; only the Files picker choice is stubbed. Public and network
+  flavors have separate execution, before independent audio and game runs.
+  A background logcat collector preserves diagnostics even if a game hangs. This is not an interactive human picker, physical phone,
   acoustic-quality, OpenKeychain, PGPony or Kleopatra GUI certification.
 - The prior PR #232/main Android runs really failed. New emulator subcommands
   have independent time bounds and preserve logs; neither APK compilation nor
@@ -104,14 +111,17 @@ repeated.
 
 ## Encrypted backup boundary and next actions
 
-The exact owner recipient remains required. Its public certificate bytes are
-absent from the restored checkout and were not recovered by the scoped backup
-lookup; a fingerprint alone cannot encrypt a backup. Asked for the PUBLIC
-certificate again, never the private key or passphrase. No substitute recipient,
-new plaintext private artifact, public cloud sharing, successful encrypted
-Drive delivery or recovery of already-lost in-memory research is claimed.
-The Drive connector now accepts a workspace-file upload, but that does not by
-itself supply a recipient or make a backup verified. Final delivery requires
+The original pinned public certificate was absent from the restored checkout;
+that gate was not bypassed using its fingerprint alone. The owner subsequently
+attached three different PUBLIC certificates and explicitly selected the
+compatible v4 certificate as the replacement for this backup. The exact
+selected primary/encryption fingerprints and approval are retained only in the
+ignored private delivery workspace, not the public app corpus. The other two
+v6 certificates are not substituted, and Workbench's compatibility policy is
+not loosened. No private key or passphrase was requested. No new plaintext
+private upload, public cloud sharing, completed encrypted delivery or recovery
+of already-lost in-memory research is claimed at this stage.
+The Drive connector now accepts a workspace-file upload; delivery still requires
 actual ciphertext bytes, independent size/digests/metadata and private sharing
 checks. APK artifacts and curated browser bundles remain distinct; the private
 Android two-app allowlist is not the private four-app browser bundle.

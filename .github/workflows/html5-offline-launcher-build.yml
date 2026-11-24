@@ -16,6 +16,7 @@ on:
       - 'scripts/build-html5-offline-launcher-assets.mjs'
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
+      - 'scripts/test-html5-android-webview.sh'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -45,6 +46,7 @@ on:
       - 'scripts/build-html5-offline-launcher-assets.mjs'
       - 'scripts/build-sound-apps.mjs'
       - 'scripts/build-html5-browser-catalog.mjs'
+      - 'scripts/test-html5-android-webview.sh'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -356,7 +358,7 @@ jobs:
 
       - name: Run Android WebView permission and Headline Harry smoke tests
         id: android-smoke-tests
-        timeout-minutes: 15
+        timeout-minutes: 20
         uses: reactivecircus/android-emulator-runner@v2
         env:
           XDG_RUNTIME_DIR: ${{ runner.temp }}/pulse-runtime
@@ -368,13 +370,12 @@ jobs:
           profile: pixel_7_pro
           emulator-boot-timeout: 300
           working-directory: apps/html5-offline-launcher
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          emulator-options: -no-window -gpu swiftshader_indirect -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
           pre-emulator-launch-script: >-
             { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
-          script: >-
-            adb logcat -c || true; status=0; timeout --kill-after=20s 5m ./gradlew --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.timeout_msec=120000 > app/build/android-webview-tests.log 2>&1 || status=$?; timeout --kill-after=20s 4m ./gradlew --no-daemon --stacktrace :app:connectedNetworkDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.arena.html5launcher.LocalFileExportSmokeTest -Pandroid.testInstrumentationRunnerArguments.timeout_msec=120000 >> app/build/android-webview-tests.log 2>&1 || status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; cat app/build/android-webview-tests.log; exit "$status"
+          script: bash ../../scripts/test-html5-android-webview.sh
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
@@ -387,7 +388,9 @@ jobs:
           import subprocess
           import xml.etree.ElementTree as ET
 
-          reports = glob.glob("apps/html5-offline-launcher/app/build/outputs/androidTest-results/**/*.xml", recursive=True)
+          reports = glob.glob("apps/html5-offline-launcher/app/build/instrumentation-reports/**/*.xml", recursive=True)
+          if not reports:
+              reports = glob.glob("apps/html5-offline-launcher/app/build/outputs/androidTest-results/**/*.xml", recursive=True)
           failures = []
           for report in reports:
               try:
@@ -496,3 +499,15 @@ jobs:
               safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::error title=Android-logcat-{chunk_index}::{safe}")
           PY
+
+      - name: Preserve bounded synthetic WebView diagnostics
+        if: ${{ always() && steps.android-smoke-tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-android-webview-diagnostics
+          path: |
+            apps/html5-offline-launcher/app/build/android-webview-*.log
+            apps/html5-offline-launcher/app/build/emulator-prelaunch.log
+            apps/html5-offline-launcher/app/build/instrumentation-reports/**/*.xml
+          if-no-files-found: warn
+          retention-days: 7

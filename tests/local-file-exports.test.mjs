@@ -123,3 +123,12 @@ test("Android export and import are system-picker-only, bounded and scoped to ma
   assert.match(java, /current\.file\.delete\(\)/);
   assert.doesNotMatch(activity + java, /addJavascriptInterface|DownloadManager|WRITE_EXTERNAL_STORAGE|MANAGE_EXTERNAL_STORAGE|takePersistableUriPermission/);
 });
+
+
+test("a picker result canceled by navigation cannot fulfill a newer origin's export or file input", () => {
+  assert.match(java, /pending != null \|\| pickerPending != null/);
+  assert.match(java, /Pending current = pickerPending;\s*pickerPending = null;/);
+  assert.match(java, /current == null \|\| current != pending \|\| current.canceled/);
+  assert.match(activity, /if \(filePickerOpen\) \{\s*callback.onReceiveValue\(null\)/);
+  assert.match(activity, /if \(requestCode != REQUEST_OPEN_FILE\) return;\s*filePickerOpen = false;/);
+});

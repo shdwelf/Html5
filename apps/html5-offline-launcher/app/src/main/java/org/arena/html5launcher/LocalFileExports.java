@@ -28,6 +28,9 @@ final class LocalFileExports {
     private final Predicate<Uri> trusted;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private Pending pending;
+    // A navigation may cancel JS while its external picker is still visible.
+    // Do not let that picker's later result fulfill a newer origin's request.
+    private Pending pickerPending;
 
     private static final class Pending {
         String id, name, mime, origin;
@@ -66,7 +69,7 @@ final class LocalFileExports {
             JSONObject data = new JSONObject(payload);
             String operation = data.getString("op");
             if ("begin".equals(operation)) {
-                if (pending != null) { reply(result, "error", "Another local save is pending."); return true; }
+                if (pending != null || pickerPending != null) { reply(result, "error", "Another local save or Files picker is pending."); return true; }
                 Object length = data.get("size");
                 if (!(length instanceof Number)) throw new Exception();
                 long size = ((Number) length).longValue();
@@ -111,7 +114,9 @@ final class LocalFileExports {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType(current.mime); intent.putExtra(Intent.EXTRA_TITLE, current.name);
-            activity.startActivityForResult(intent, REQUEST_SAVE);
+            pickerPending = current;
+            try { activity.startActivityForResult(intent, REQUEST_SAVE); }
+            catch (Exception unavailable) { pickerPending = null; throw unavailable; }
         } catch (Exception invalid) {
             if (pending != null && pending.result == result) pending.result = null;
             cancel();
@@ -122,8 +127,9 @@ final class LocalFileExports {
 
     boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != REQUEST_SAVE) return false;
-        Pending current = pending;
-        if (current == null) return true;
+        Pending current = pickerPending;
+        pickerPending = null;
+        if (current == null || current != pending || current.canceled) return true;
         if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null || !"content".equals(data.getData().getScheme())) {
             cancel(); return true;
         }
@@ -184,7 +190,9 @@ final class LocalFileExports {
 
     private static void reply(JsPromptResult result, String status, String message) {
         try { result.confirm(new JSONObject().put("status", status).put("message", message).toString()); }
-        catch (Exception ignored) { result.cancel(); }
+        catch (Exception ignored) {
+            try { result.cancel(); } catch (Exception alreadyCompleted) { /* Navigation may already have closed it. */ }
+        }
     }
 
     private static void cleanup(Pending current) {

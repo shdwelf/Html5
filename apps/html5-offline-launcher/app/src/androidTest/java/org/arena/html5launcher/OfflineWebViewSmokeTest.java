@@ -48,7 +48,7 @@ public final class OfflineWebViewSmokeTest {
     public final ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class, false, false);
 
-    @Test
+    @Test(timeout = 105000)
     public void microphoneCaptureWorksOnlyForAncOriginAndAudioResource() throws Exception {
         MainActivity activity = activityRule.launchActivity(null);
         WebView webView = findWebView(activity.getWindow().getDecorView());
@@ -110,7 +110,7 @@ public final class OfflineWebViewSmokeTest {
                 result.matches("granted:[1-9][0-9]*"));
     }
 
-    @Test
+    @Test(timeout = 105000)
     public void headlineHarryStartControlBootsBundledDosProgramInAndroidWebView() throws Exception {
         MainActivity activity = activityRule.launchActivity(null);
         WebView webView = findWebView(activity.getWindow().getDecorView());
@@ -135,8 +135,9 @@ public final class OfflineWebViewSmokeTest {
                 "record(level + ': ' + detail); return original.apply(console, arguments); }; }); " +
                 "return 'diagnostics-installed'; })()");
         Log.i(HARRY_LOG_TAG, "invoking packaged start control");
-        evaluate(webView,
-                "document.getElementById('start').click(); 'start-clicked'");
+        // Real touchscreen activation, not an untrusted JavaScript click,
+        // also exercises the page's actual user-gesture audio policy.
+        WebViewTestInput.tapElement(InstrumentationRegistryAccess.INSTRUMENTATION, webView, "start");
         long deadline = SystemClock.uptimeMillis() + GAME_BOOT_TIMEOUT_MS;
         String status = "";
         String lastLoggedStatus = null;
@@ -185,7 +186,7 @@ public final class OfflineWebViewSmokeTest {
     }
 
     private static void loadAndWait(WebView webView, String url) throws Exception {
-        InstrumentationRegistryAccess.runOnMainSync(() -> webView.loadUrl(url));
+        webView.post(() -> webView.loadUrl(url));
         long deadline = SystemClock.uptimeMillis() + PAGE_TIMEOUT_MS;
         String state = "";
         String lastLoggedState = null;
@@ -222,7 +223,7 @@ public final class OfflineWebViewSmokeTest {
     private static String evaluate(WebView webView, String expression) throws Exception {
         CountDownLatch completed = new CountDownLatch(1);
         AtomicReference<String> value = new AtomicReference<>();
-        InstrumentationRegistryAccess.runOnMainSync(() -> webView.evaluateJavascript(expression,
+        webView.post(() -> webView.evaluateJavascript(expression,
                 result -> {
                     value.set(result);
                     completed.countDown();

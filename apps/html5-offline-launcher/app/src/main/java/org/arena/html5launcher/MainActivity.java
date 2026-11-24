@@ -35,6 +35,7 @@ public final class MainActivity extends Activity {
     private TextView pageTitle;
     private PermissionRequest pendingAudioRequest;
     private ValueCallback<Uri[]> pendingFileInput;
+    private boolean filePickerOpen;
     private LocalFileExports localFiles;
     private OfflineAssetWebViewClient assetClient;
     private String localFilesScript = "";
@@ -175,14 +176,20 @@ public final class MainActivity extends Activity {
                     callback.onReceiveValue(null);
                     return true;
                 }
+                if (filePickerOpen) {
+                    callback.onReceiveValue(null);
+                    return true;
+                }
                 cancelFileInput();
                 pendingFileInput = callback;
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("*/*"); // Apps validate their own bounded file format after selection.
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                filePickerOpen = true;
                 try { startActivityForResult(intent, REQUEST_OPEN_FILE); }
                 catch (android.content.ActivityNotFoundException missing) {
+                    filePickerOpen = false;
                     cancelFileInput();
                     Toast.makeText(MainActivity.this, "Install or enable an Android Files provider to import a file.", Toast.LENGTH_LONG).show();
                 }
@@ -294,6 +301,7 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (localFiles.onActivityResult(requestCode, resultCode, data)) return;
         if (requestCode != REQUEST_OPEN_FILE) return;
+        filePickerOpen = false;
         ValueCallback<Uri[]> callback = pendingFileInput;
         pendingFileInput = null;
         if (callback == null) return;
