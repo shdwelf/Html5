@@ -152,6 +152,15 @@ searches unless `RUN_OPENPGP_LARGE_RSA=1` is set.
 
 Modern v6 tests cover the Node and shipped browser distributions, actual Chromium
 Web Crypto, explicit full/subset downloads, public reload and synthetic exact-byte
-recovery/tamper rejection. Both JS distributions use OpenPGP.js: this is **not**
-independent GnuPG/PGPy v6 or OpenKeychain/PGPony/Kleopatra GUI certification.
-Owner decryption with a real key remains a separate local acceptance check.
+recovery/tamper rejection. Both JS distributions use OpenPGP.js; those controls
+alone are not independent native evidence. A separate, test-only
+[Go v6 harness](../../tests/openpgp-v6-native/README.md) pins
+ProtonMail/go-crypto v1.5.2 and requires four real two-way/strictness/tamper
+controls in its own bounded CI lane. It recovers the actual streaming release
+helper's AES-256-OCB output independently and writes negotiated AES-256-GCM for
+both JS readers, with exact full fingerprints and authentication-before-output.
+See the [versions, evidence and limitations](../../docs/openpgp-v6-native-interop-2026-11-17.md).
+This is not GnuPG/PGPy v6, OpenKeychain/PGPony/Kleopatra GUI, protected-v6-secret
+export or owner-key recovery certification. Owner decryption with a real key
+remains a separate local acceptance check; no owner private key/passphrase is
+needed by these synthetic tests.

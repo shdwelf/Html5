@@ -15,7 +15,12 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
-## Current round 83 · host fees and local OpenPGP keyrings
+## Current round 86 · independent native OpenPGP v6
+
+- [Independent native v6 interoperability](openpgp-v6-native-interop-2026-11-17.md) — four actual mandatory Go/OpenPGP.js two-way, full-fingerprint, strictness and tamper controls; pinned test-only dependencies, per-direction OCB/GCM assertions and local/CI SDK distinction. Not owner recovery or mobile/GUI certification.
+- [Round 86 execution and remaining gates](backlog-execution-round-86-2026-11-17.md) — intact PUBLIC attachment inspection without a recipient change, unchanged backups, fail-closed native CI and remaining delivery/device/token-evidence gates.
+
+## Round 83 · host fees and local OpenPGP keyrings
 
 - [43 remaining host fee-model reviews](chain-fee-model-review-round-83-2026-11-17.md) — primary evidence, pinned source manifest, Cronos POS/EVM separation and TFUEL fee-asset correction. No live prices, activation or historical-network liveness certification.
 - [Local OpenPGP keyrings: source review and implementation](openpgp-keyring-source-review-2026-11-17.md) — nine pinned upstreams, conservative RSA key generation, public-only import/export, protected backups, independent controls and explicit Android/iOS/Kleopatra test gates; Photon and Proton VPN kept separate.
@@ -122,7 +127,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-80-2026-11-17.md](backlog-execution-round-80-2026-11-17.md) — selectable Galois fields, full offline coin selector and USDT BEP-20/TRC-20 identities, deterministic registry generation, 2600 software builds and passive SnapSafe recipes
 - [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
 
-- [backlog-execution-round-85-2026-11-17.md](backlog-execution-round-85-2026-11-17.md) — Android local saves, sound-app restoration, complete 96-app browser catalog, source audit and research-retention gates (PR #238)
+- [backlog-execution-round-85-2026-11-17.md](backlog-execution-round-85-2026-11-17.md) — Android local saves, sound-app restoration, complete 96-app browser catalog, source audit and research-retention gates (merged PR #238)
+- [backlog-execution-round-86-2026-11-17.md](backlog-execution-round-86-2026-11-17.md) — independent native v6 synthetic interoperability, pinned Go reader/mandatory CI and unchanged recipient/recovery boundaries
 
 ## Research deep dives (the “ghirdra” line)
 
