@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -60,4 +60,32 @@ test("suite diagnostics keep early cause and late context with bounded annotatio
     assert.match(line, /late context/);
     assert.match(line, /bounded middle omitted/);
   }
+});
+
+const buildWrapper = new URL("../scripts/run-html5-android-ci.sh", import.meta.url);
+function build(script) {
+  const dir = mkdtempSync(join(tmpdir(), "synthetic-android-build-"));
+  try {
+    const log = join(dir, "public-build.log");
+    const result = spawnSync("bash", [buildWrapper.pathname, log, "--", "bash", "-c", script], { encoding: "utf8", timeout: 10000 });
+    return { ...result, log: readFileSync(log, "utf8") };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("build wrapper preserves success and the original nonzero exit code without retries", () => {
+  const good = build("printf 'synthetic build succeeded\\n'");
+  assert.equal(good.status, 0); assert.match(good.stdout, /synthetic build succeeded/);
+  assert.doesNotMatch(good.stdout, /::error/);
+  const bad = build("printf 'FAILURE: synthetic build refused\\nCaused by: unavailable public dependency\\n' >&2; exit 23");
+  assert.equal(bad.status, 23); assert.match(bad.stdout, /command exited 23/);
+  assert.match(bad.stdout, /Caused by: unavailable public dependency/);
+  assert.equal(bad.log.split("FAILURE:").length, 2);
+});
+
+test("build failure annotations escape untrusted log data and retain early causes before long stack tails", () => {
+  const result = build("printf 'error: 50%% synthetic failure\\n::notice title=untrusted::not a command\\n'; for i in {1..1000}; do printf 'at synthetic.Gradle.task()\\n'; done; exit 1");
+  assert.equal(result.status, 1); assert.match(result.stdout, /50%25 synthetic failure/);
+  assert.match(result.stdout, /%0A::notice/);
+  assert.equal(result.stdout.split("\n").filter((line) => line.startsWith("::notice")).length, 0);
+  assert.ok(result.stdout.length < 13000);
 });
