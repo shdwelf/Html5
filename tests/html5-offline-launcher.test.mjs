@@ -187,7 +187,8 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(smokeRunner, /:app:connectedPublicDebugAndroidTest/);
   assert.match(smokeRunner, /:app:connectedNetworkDebugAndroidTest/);
   assert.match(ANDROID_WORKFLOW, /:app:assemblePrivateDebug/);
-  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-network-debug-apks/);
+  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-debug-apk/);
+  assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-network-debug-apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);
@@ -203,12 +204,25 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   const encryptedUploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload encrypted APKs only"), ANDROID_WORKFLOW.indexOf("- name: Report public APK"));
   assert.match(encryptedUploadStep, /encrypted-apks\/\*\.gpg\*/);
   assert.doesNotMatch(encryptedUploadStep, /path:.*(?:\.apk|\.asc)(?:\s|$)/);
-  const uploadStep = ANDROID_WORKFLOW.slice(ANDROID_WORKFLOW.indexOf("- name: Upload public and network APKs for backup"), ANDROID_WORKFLOW.indexOf("- name: Install PulseAudio"));
-  assert.match(uploadStep, /apps\/html5-offline-launcher\/app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
-  assert.match(uploadStep, /inputs\.recipient_public_key == ''/);
-  assert.match(uploadStep, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
-  assert.doesNotMatch(uploadStep, /private-debug\.apk/);
-  for (const name of ["- name: Upload encrypted APKs only", "- name: Upload public and network APKs for backup"]) {
+  const publicUploadStep = ANDROID_WORKFLOW.slice(
+    ANDROID_WORKFLOW.indexOf("- name: Upload public APK for backup"),
+    ANDROID_WORKFLOW.indexOf("- name: Upload network APK for backup"),
+  );
+  const networkUploadStep = ANDROID_WORKFLOW.slice(
+    ANDROID_WORKFLOW.indexOf("- name: Upload network APK for backup"),
+    ANDROID_WORKFLOW.indexOf("- name: Install PulseAudio"),
+  );
+  assert.match(publicUploadStep, /inputs\.recipient_public_key == ''/);
+  assert.match(publicUploadStep, /app-public-debug\.apk\.sha256/);
+  assert.doesNotMatch(publicUploadStep, /network-debug\.apk/);
+  assert.match(networkUploadStep, /inputs\.recipient_public_key == ''/);
+  assert.match(networkUploadStep, /app-network-debug\.apk\.sha256/);
+  assert.doesNotMatch(networkUploadStep, /private-debug\.apk/);
+  for (const name of [
+    "- name: Upload encrypted APKs only",
+    "- name: Upload public APK for backup",
+    "- name: Upload network APK for backup",
+  ]) {
     assert.ok(ANDROID_WORKFLOW.indexOf(name) < ANDROID_WORKFLOW.indexOf("- name: Run Android WebView"), "build exports must not wait for emulator completion");
   }
   assert.match(ANDROID_WORKFLOW, /timeout-minutes: 20/);

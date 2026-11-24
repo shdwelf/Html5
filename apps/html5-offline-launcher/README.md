@@ -164,10 +164,13 @@ activation phases. An empty JUnit `<failure/>` or a partial testcase count is
 not a passing phase and does not establish an emulator-only root cause. These
 diagnostics do not change the tests, permission/save policies or time limits.
 
-Normal CI uploads the public and opt-in network APKs as
-`html5-offline-launcher-public-network-debug-apks` (30 days), preserving main's
-network-package handoff. The network package retains all 96 approved public apps
-plus RadarScope and News Globe. The private APK is never published as plaintext.
+Normal CI uploads the public and opt-in network APKs as separate 30-day
+artifacts: `html5-offline-launcher-public-debug-apk` and
+`html5-offline-launcher-network-debug-apk`. Each includes its APK and SHA-256
+sidecar; check the individual archive size before sending it through a service
+with a per-file transfer cap. This avoids combining both profiles in one 120 MB
+handoff archive. The network package retains all 96 approved public apps plus
+RadarScope and News Globe. The private APK is never published as plaintext.
 A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
 the three profiles separately. To back up **all three profiles**, manually
 dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:

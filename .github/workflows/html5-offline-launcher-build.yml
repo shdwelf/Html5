@@ -356,14 +356,35 @@ jobs:
           ls -lh "$apk"
           sha256sum "$apk"
 
-      - name: Upload public and network APKs for backup (non-recipient builds only)
+      - name: Generate public and network APK checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          for profile in public network; do
+            apk="apps/html5-offline-launcher/app/build/outputs/apk/${profile}/debug/app-${profile}-debug.apk"
+            test -s "$apk"
+            sha256sum "$apk" > "${apk}.sha256"
+          done
+
+      - name: Upload public APK for backup (non-recipient builds only)
         if: ${{ inputs.recipient_public_key == '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: html5-offline-launcher-public-network-debug-apks
+          name: html5-offline-launcher-public-debug-apk
           path: |
             apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload network APK for backup (non-recipient builds only)
+        if: ${{ inputs.recipient_public_key == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-network-debug-apk
+          path: |
             apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk.sha256
           if-no-files-found: error
           retention-days: 30
 
