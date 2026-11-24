@@ -181,6 +181,8 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(smokeRunner, /host_evidence "\$label"/);
   assert.match(smokeRunner, /sudo -n dmesg --ctime/);
   assert.match(ANDROID_WORKFLOW, /-memory 2048 -cores 2/);
+  assert.match(ANDROID_WORKFLOW, /emulator-options: -no-window -gpu swangle /);
+  assert.doesNotMatch(ANDROID_WORKFLOW, /emulator-options:.*-gpu swiftshader_indirect/);
   assert.match(ANDROID_WORKFLOW, /Preserve bounded synthetic WebView diagnostics/);
   assert.match(ANDROID_WORKFLOW, /python3 scripts\/report-html5-android-runner\.py apps\/html5-offline-launcher\/app\/build/);
   assert.match(ANDROID_WORKFLOW, /tests\/html5-android-runner\.test\.mjs/);

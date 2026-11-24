@@ -174,6 +174,18 @@ kernel OOM/crash lines **before** emulator teardown. A disappearing emulator is
 not itself proof of a host OOM or an app assertion failure. No test is retried,
 removed, accepted as skipped or given a longer deadline by these controls.
 
+The CI emulator explicitly uses **`-gpu swangle`**, ANGLE with software drivers.
+[Android's graphics documentation](https://developer.android.com/studio/run/emulator-acceleration#command-gpu)
+lists `swiftshader_indirect` and `swangle_indirect` as deprecated since 36.4.9;
+`swangle` is the supported spelling used here. In PR239 the old renderer lost
+the entire emulator during DOSBox startup after real touchscreen injection
+returned, while the other 13 cases passed. Resource reduction alone did not fix
+it; the captured host snapshot had ample available memory and no matching OOM
+kernel evidence. A related external renderer-crash report [1](https://github.com/expo/eas-cli/issues/4928)
+is a discovery clue, not proof of our exact native crash or universal hardware
+compatibility. The renderer change must pass our same 14-case, zero-skip gate;
+no packaged game/WebView/app behavior or graphics-success assertion is changed.
+
 Normal CI uploads the public and opt-in network APKs as separate 30-day
 artifacts: `html5-offline-launcher-public-debug-apk` and
 `html5-offline-launcher-network-debug-apk`. Each includes its APK and SHA-256

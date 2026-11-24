@@ -417,7 +417,9 @@ jobs:
           working-directory: apps/html5-offline-launcher
           # Bound the CI guest alongside Gradle/UTP and WASM compilation. This
           # is a runner resource profile, not an app/device support guarantee.
-          emulator-options: -no-window -gpu swiftshader_indirect -skin 720x1280 -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          # ANGLE software rendering: the legacy swiftshader_indirect backend
+          # lost the entire emulator during DOSBox boot. See the README sources.
+          emulator-options: -no-window -gpu swangle -skin 720x1280 -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           # Match density/skin before boot, not a high-resolution launcher resize
           # after startup. An unrelated Nexus launcher ANR can occlude all taps.
