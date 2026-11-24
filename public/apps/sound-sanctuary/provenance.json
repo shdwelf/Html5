@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "transforms": [
+    "remove Google Fonts connections/styles",
+    "remove Cloudflare analytics beacon",
+    "add accurate title, safety and snapshot links"
+  ],
+  "snapshots": [
+    {
+      "source": "apps/noise-canceling-sanctuary (1) (1).html",
+      "sha256": "70d89f65244ccf981375929bc950ddc6b8fe197a0c9de7c88f82db979d3c618e",
+      "slug": "sound-sanctuary",
+      "output": "public/apps/sound-sanctuary/index.html",
+      "title": "Sound Sanctuary — Noise Canceling Sanctuary",
+      "outputSha256": "59bc4d1e6a9a54a7ac7d86b5a30f6734bffe5c3676aa62f47a679e93761c968e"
+    }
+  ]
+}

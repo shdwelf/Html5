@@ -6,6 +6,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { JSDOM } from "jsdom";
 import { mountWorkbench } from "../apps/openpgp-workbench/app.js";
 import * as keys from "../apps/openpgp-workbench/keyring.mjs";
+import { PUBLIC_STORAGE_KEY } from "../apps/openpgp-workbench/public-storage.mjs";
 
 const html = readFileSync(new URL("../apps/openpgp-workbench/index.html", import.meta.url), "utf8");
 const passphrase = "synthetic UI passphrase only";
@@ -16,7 +17,7 @@ async function until(predicate) {
   for (let i = 0; i < 400; i++) { if (predicate()) return; await delay(5); }
   assert.fail("UI condition did not settle");
 }
-function boot({ keyTools = {}, textTools, largeKeyGenerator, secure = true } = {}) {
+function boot({ keyTools = {}, textTools, largeKeyGenerator, secure = true, saved, storage, nativeSave } = {}) {
   const dom = new JSDOM(html, { url: "https://example.test/apps/openpgp-workbench/" });
   const { window } = dom;
   Object.defineProperty(window, "isSecureContext", { value: secure });
@@ -26,6 +27,9 @@ function boot({ keyTools = {}, textTools, largeKeyGenerator, secure = true } = {
   window.URL.revokeObjectURL = () => undefined;
   window.HTMLAnchorElement.prototype.click = function () { downloads.push({ filename: this.download, blob: blobs.get(this.href) }); };
   Object.defineProperty(window.navigator, "clipboard", { value: { writeText: async (text) => { clipboard.push(text); } } });
+  if (saved !== undefined) window.localStorage.setItem(PUBLIC_STORAGE_KEY, saved);
+  if (storage) Object.defineProperty(window, "localStorage", { value: storage });
+  if (nativeSave) Object.defineProperty(window, "Html5LocalFiles", { value: { version: 1, save: nativeSave } });
   const tools = { ...keys, generateCompatibilityKey: async () => bundle, ...keyTools };
   const api = mountWorkbench({ doc: window.document, view: window, keyTools: tools, ...(textTools ? { textTools } : {}), ...(largeKeyGenerator ? { largeKeyGenerator } : {}) });
   const get = (id) => window.document.getElementById(id);
@@ -105,6 +109,7 @@ test("large-RSA consent is separate, selected sizes reach crypto, and private ex
     ui.get("key-backup-ack").checked = true; ui.change("key-backup-ack");
     ui.input("backup-fingerprint", bundle.fingerprint); ui.get("download-private-key").click();
     await until(() => downloads.length === 1);
+    await until(() => ui.downloads.length === 1 && ui.get("download-private-key").getAttribute("aria-busy") === "false");
     assert.deepEqual(downloads[0][2], { rsaBits: 8192 }, "export validates saved bundle metadata, not the new selector value");
     ui.get("clear-generated").click();
     assert.equal(ui.get("key-rsa-bits").value, "3072"); assert.equal(ui.get("large-rsa-warning").hidden, true);
@@ -246,4 +251,88 @@ test("keyboard tabs remain accessible and insecure contexts cannot re-enable cry
     ui.get("clear-all").click();
     for (const button of ui.window.document.querySelectorAll("[data-crypto-submit]")) assert.equal(button.disabled, true);
   } finally { ui.dom.window.close(); }
+});
+
+test("PUBLIC remembering is opt-in, survives pagehide/reload, and never stores keys/passphrases/messages/revocations", async () => {
+  const ui = boot(); let snapshot;
+  try {
+    ui.generate(); await until(() => ui.get("keygen-status").dataset.kind === "success");
+    ui.get("add-generated-public").click(); await until(() => ui.get("keyring-list").children.length === 1);
+    assert.equal(ui.window.localStorage.length, 0, "memory-only is still the default");
+    ui.input("plaintext", "private synthetic research text"); ui.input("encrypt-passphrase", passphrase);
+    ui.get("remember-public-keyring").checked = true; ui.change("remember-public-keyring");
+    snapshot = ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY);
+    assert.equal(ui.window.localStorage.length, 1);
+    assert.deepEqual(Object.keys(JSON.parse(snapshot)).sort(), ["armored", "version"]);
+    assert.equal(JSON.parse(snapshot).armored, ui.get("keyring-output").value);
+    for (const secret of [bundle.privateKey, bundle.revocationCertificate, passphrase, "private synthetic research text"]) assert.ok(!snapshot.includes(secret));
+    ui.window.dispatchEvent(new ui.window.Event("pagehide"));
+    assert.equal(ui.get("keyring-list").children.length, 0);
+    assert.equal(ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY), snapshot, "navigation must not erase the opted-in PUBLIC snapshot");
+  } finally { ui.dom.window.close(); }
+  const restored = boot({ saved: snapshot });
+  try {
+    await until(() => restored.get("keyring-list").children.length === 1);
+    assert.equal(restored.get("remember-public-keyring").checked, true);
+    assert.equal(restored.get("generated-public-output").value, "");
+    assert.equal(restored.get("key-passphrase").value, "");
+    assert.match(restored.get("keyring-status").textContent, /revalidation/);
+    restored.get("clear-all").click();
+    assert.equal(restored.window.localStorage.getItem(PUBLIC_STORAGE_KEY), null);
+    assert.equal(restored.get("remember-public-keyring").checked, false);
+  } finally { restored.dom.window.close(); }
+});
+
+test("stored private/malformed/oversized certificates never restore or overwrite the saved copy; forgetting is explicit", async () => {
+  for (const saved of ["not JSON", JSON.stringify({ version: 1, armored: bundle.privateKey }), JSON.stringify({ version: 1, armored: "x".repeat(keys.MAX_KEYRING_BYTES + 1) })]) {
+    const ui = boot({ saved });
+    try {
+      await until(() => ui.get("public-storage-status").dataset.kind === "error");
+      assert.equal(ui.get("keyring-list").children.length, 0);
+      assert.equal(ui.get("keyring-output").value, "");
+      assert.equal(ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY), saved, "never silently destroy an unreadable saved copy");
+      ui.get("forget-public-keyring").click();
+      assert.equal(ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY), null);
+    } finally { ui.dom.window.close(); }
+  }
+});
+
+test("storage denial/quota failure is visible and leaves validated memory data exportable", async () => {
+  const ui = boot({ storage: { getItem: () => null, setItem: () => { throw new Error("quota exceeded"); }, removeItem: () => {} } });
+  try {
+    ui.generate(); await until(() => ui.get("keygen-status").dataset.kind === "success");
+    ui.get("add-generated-public").click(); await until(() => ui.get("keyring-list").children.length === 1);
+    ui.get("remember-public-keyring").checked = true; ui.change("remember-public-keyring");
+    assert.match(ui.get("public-storage-status").textContent, /storage blocked\/full/);
+    assert.equal(ui.get("public-storage-status").dataset.kind, "error");
+    assert.equal(ui.get("keyring-list").children.length, 1);
+    ui.get("download-keyring").click(); assert.equal(ui.downloads.length, 1);
+  } finally { ui.dom.window.close(); }
+});
+
+test("Android export waits for the save receipt, reports cancellation/errors honestly and keeps the export available", async () => {
+  const pending = deferred(); let saved;
+  const ui = boot({ nativeSave: (blob, filename) => { saved = { blob, filename }; return pending.promise; } });
+  try {
+    ui.generate(); await until(() => ui.get("keygen-status").dataset.kind === "success");
+    ui.get("download-public-key").click();
+    assert.match(ui.get("keygen-status").textContent, /Save is not confirmed yet/);
+    assert.equal(ui.get("keygen-status").dataset.kind, "info");
+    assert.equal(ui.downloads.length, 0, "Android does not use an unhandled Blob anchor download");
+    assert.equal(await saved.blob.text(), bundle.publicKey);
+    pending.resolve({ status: "saved", bytes: saved.blob.size, sha256: "a".repeat(64) });
+    await until(() => ui.get("keygen-status").dataset.kind === "success");
+    assert.match(ui.get("keygen-status").textContent, /read-back verified/);
+  } finally { ui.dom.window.close(); }
+  for (const outcome of ["cancel", "error"]) {
+    const failed = boot({ nativeSave: async () => { if (outcome === "error") throw new Error("synthetic provider failure"); return { status: "canceled" }; } });
+    try {
+      failed.generate(); await until(() => failed.get("keygen-status").dataset.kind === "success");
+      failed.get("download-public-key").click();
+      await until(() => !failed.get("keygen-status").textContent.includes("Choose a destination"));
+      assert.match(failed.get("keygen-status").textContent, outcome === "error" ? /Save failed/ : /Save canceled/);
+      assert.equal(failed.get("generated-public-output").value, bundle.publicKey);
+      assert.equal(failed.get("download-public-key").disabled, false);
+    } finally { failed.dom.window.close(); }
+  }
 });

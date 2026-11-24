@@ -18,10 +18,10 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 - **Create key:** supply your own name/alias and/or optional email, strong unique passphrase and expiry. Random **v4 RSA-3072 by default** signing/certification primary plus same-size encryption subkey; selectable 3072/4096/6144/8192/12288/16384 bits, SHA-256 self-certification and classic SHA-2 preferences. Default expiry 730 days; allowed 30–3650. No identity is inferred, and no wallet seed or recovery phrase is used.
 - **Protected private export:** both packets use AES-256, iterated/salted SHA-256 S2K, count `0xFF` (65,011,712 octets). A minimum 12-character passphrase is required, but length is not a strength guarantee. Generated private armor never becomes a page field or clipboard item. Download requires explicit acknowledgement and the full matching fingerprint, with a packet-protection recheck.
 - **Revocation backup:** a separate, explicit **unencrypted sensitive certificate**. Anyone holding it can revoke the key. Keep it private/offline; never bundle it with the public certificate you share.
-- **Public keyring:** memory-only v4 RSA certificates (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted.
+- **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits) or v4 legacy Ed25519/Curve25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted.
 - Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or subkey audit.
 
-No public-key **message** encryption/decryption, secret-key import, signing UI, attachments, modern AEAD writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or app-level persistent storage is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+No public-key **message** encryption/decryption, secret-key import, signing UI, attachments, modern AEAD writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
 
 ## Export to another client
 
@@ -32,9 +32,34 @@ No public-key **message** encryption/decryption, secret-key import, signing UI, 
 
 Targets are **source-informed** OpenKeychain, PGPony Android/iOS and official KDE Kleopatra/GnuPG. Android, iOS and Kleopatra runtime import/unlock checks remain **not performed**. Proton VPN release signing and the unresolved Photon VPN candidate are separate topics, not PGP keyring integrations. See the [source review](../../docs/openpgp-keyring-source-review-2026-11-17.md) and its pinned manifest.
 
+## Reliable local saves and opt-in PUBLIC remembering
+
+In Android public/network builds, exports now open the system Files picker.
+The old shell rejected all downloads; browser-only download tests did not cover
+that failure. Success is shown only after the selected document has been written
+and read-back checked for size/SHA-256. Cancel or a provider failure leaves the
+export available in the open tab; it is not reported as saved. Choose an on-device
+destination for local-only storage. A selected cloud provider may upload the
+file. Explicit exports are temporarily staged in app-private cache, bounded to
+64 MiB/file and cleaned on completion/cancel/navigation or next startup; neither
+process-kill cleanup nor secure disk erasure is guaranteed. Ordinary browsers
+still request downloads and explicitly tell you to check the Downloads folder;
+a download request is not proof of a successful save.
+
+“Remember PUBLIC certificates on this device” is off by default. It stores only
+the validated public model, rechecks its 1-MiB limit and revalidates certificates
+on reload. It never serializes forms/application state, private/revocation
+material, messages or passphrases. User IDs are public claims but can be
+personally identifying; the device copy is unencrypted and origin-scoped. It is
+not a backup: uninstall/data clearing/device loss can remove it. Storage
+quota/access failures are visible; unreadable saved copies are not silently
+overwritten. “Forget” and explicit Clear remove the opted-in public copy;
+navigation clears tab secrets without deleting that saved public copy. File
+import uses the user-selected system file picker and the existing bounded parser.
+
 ## Memory and security limits
 
-Clear buttons and `pagehide` drop fields/references and suppress late async results. They do **not** guarantee erasure of JavaScript/Web Crypto/engine copies, clipboard, browser/autofill state, extensions or OS download files. Reloading loses unsaved material; this app cannot recover your passphrase. A compromised origin/browser can steal keys while they are generated. This educational app does not replace an independently reviewed secure-messaging client.
+Clear buttons and `pagehide` drop fields/references and suppress late async results. They do **not** guarantee erasure of JavaScript/Web Crypto/engine copies, clipboard, browser/autofill state, extensions or OS download files. Reloading loses unsaved material other than the explicitly remembered PUBLIC keyring; this app cannot recover your passphrase. A compromised origin/browser can steal keys while they are generated. This educational app does not replace an independently reviewed secure-messaging client.
 
 ## Verification
 
@@ -51,7 +76,7 @@ node --test tests/openpgp-native-interop.test.mjs
 node tests/openpgp-workbench-browser.mjs
 ```
 
-Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, multi-key imports, reset and external-request observation. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.
+Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, public remembering/restore, multi-key imports, reset and external-request observation. Real Android WebView file-save coverage is separate from Chromium downloads. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.
 
 The separate native-GnuPG harness uses fresh private temporary homes, protected synthetic key files, passphrases through stdin (not argv/environment), and dedicated-agent shutdown before wrong-passphrase checks and cleanup. It covers both secret packets, exact fingerprints, bidirectional encryption/signatures, secret re-export, both public-keyring armor layouts and revocation. Missing tools/readers are explicit optional skips locally, but **fail** when the required flags above are set; the bounded `OpenPGP native interoperability` CI lane sets both flags. Its first mandatory [run passed](https://github.com/shdwelf/Html5/actions/runs/45229648748) for head `76078209ecd11f40b6cca8c47066184ea83e0bf1`; see the [exact evidence and remaining-runtime boundaries](../../docs/openpgp-native-interop-2026-11-17.md). This is not a Kleopatra GUI, OpenKeychain or PGPony device test. No synthetic private home, key, passphrase file or revocation artifact is uploaded.
 

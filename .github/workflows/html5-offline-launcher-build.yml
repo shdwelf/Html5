@@ -14,6 +14,9 @@ on:
       - 'resources/city-subsurface-template.html'
       - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/build-sound-apps.mjs'
+      - 'apps/AURA_SoundStudio_Quine*.html'
+      - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
       - 'scripts/upload-encrypted-drive-backups.py'
       - 'tests/drive-backup-upload*'
@@ -22,6 +25,8 @@ on:
       - 'package-lock.json'
       - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
+      - 'tests/local-file-exports.test.mjs'
+      - 'tests/sound-apps.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   pull_request:
     paths:
@@ -35,6 +40,9 @@ on:
       - 'resources/city-subsurface-template.html'
       - 'scripts/build-city-subsurface*.mjs'
       - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/build-sound-apps.mjs'
+      - 'apps/AURA_SoundStudio_Quine*.html'
+      - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
       - 'scripts/upload-encrypted-drive-backups.py'
       - 'tests/drive-backup-upload*'
@@ -43,6 +51,8 @@ on:
       - 'package-lock.json'
       - 'tests/city-subsurface.test.mjs'
       - 'tests/html5-offline-launcher.test.mjs'
+      - 'tests/local-file-exports.test.mjs'
+      - 'tests/sound-apps.test.mjs'
       - '.github/workflows/html5-offline-launcher-build.yml'
   workflow_dispatch:
     inputs:
@@ -114,6 +124,9 @@ jobs:
       - name: Test launcher inventory and offline policy
         run: node --test tests/html5-offline-launcher.test.mjs tests/drive-backup-upload.test.mjs
 
+      - name: Validate restored sound snapshots and local export adapter
+        run: node scripts/build-sound-apps.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs
+
       - name: Validate public app inventory
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
 
@@ -126,6 +139,10 @@ jobs:
       - name: Build public debug APK
         working-directory: apps/html5-offline-launcher
         run: ./gradlew --no-daemon --stacktrace :app:assemblePublicDebug
+
+      - name: Compile public and network WebView instrumentation
+        working-directory: apps/html5-offline-launcher
+        run: ./gradlew --no-daemon --stacktrace :app:assemblePublicDebugAndroidTest :app:assembleNetworkDebugAndroidTest
 
       - name: Verify public APK permissions
         shell: bash
@@ -227,8 +244,8 @@ jobs:
               if catalog.get("networkEnabled") is not True:
                   raise SystemExit("Network APK catalog is missing its network-enabled marker")
               slugs = {app["slug"] for app in catalog["apps"]}
-              expected = {"ads-b-radar-scope", "news-globe"}
-              if len(slugs) != 96 or not expected.issubset(slugs):
+              expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio"}
+              if len(slugs) != 98 or not expected.issubset(slugs):
                   raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
               for slug in expected:
                   if f"assets/apps/{slug}/index.html" not in apk.namelist():
@@ -240,7 +257,7 @@ jobs:
                   source = Path(f"config/{name}.json").read_bytes()
                   if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
                       raise SystemExit(f"Stale coin/network registry in network APK: {name}")
-              for name in ("keyring.mjs", "vendor/openpgp.min.mjs"):
+              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "vendor/openpgp.min.mjs"):
                   source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
@@ -351,7 +368,7 @@ jobs:
           pre-emulator-launch-script: >-
             { set -e; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
           script: >-
-            adb logcat -c || true; if ./gradlew --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest > app/build/android-webview-tests.log 2>&1; then status=0; else status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; fi; cat app/build/android-webview-tests.log; exit "$status"
+            adb logcat -c || true; status=0; timeout --kill-after=20s 5m ./gradlew --no-daemon --stacktrace :app:connectedPublicDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.timeout_msec=120000 > app/build/android-webview-tests.log 2>&1 || status=$?; timeout --kill-after=20s 4m ./gradlew --no-daemon --stacktrace :app:connectedNetworkDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.arena.html5launcher.LocalFileExportSmokeTest -Pandroid.testInstrumentationRunnerArguments.timeout_msec=120000 >> app/build/android-webview-tests.log 2>&1 || status=$?; adb logcat -d -v threadtime -t 4000 > app/build/android-webview-logcat.log 2>&1 || true; cat app/build/android-webview-tests.log; exit "$status"
 
       - name: Surface Android instrumentation failure details
         if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}

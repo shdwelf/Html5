@@ -7,8 +7,8 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 
 ## Scope and packaging
 
-- The current builder discovers **94** HTML entrypoints and packages **8,500
-  files** (165,024,166 bytes uncompressed) inside those app directories. It
+- The current builder discovers **96** HTML entrypoints and packages **8,510
+  files** (166,317,455 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
@@ -20,23 +20,44 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
   `OfflineAssetWebViewClient`.
 - The public and private manifests deliberately have **no `INTERNET`
   permission**. Their unknown hosts, cleartext URLs, external links, popups,
-  downloads, camera access, and geolocation remain blocked. Only the separate
+  arbitrary URL downloads, camera access, and geolocation remain blocked. Only the separate
   `network` flavor adds `INTERNET`; it allows HTTPS requests to syntactically
   valid DNS hostnames on the usual HTTPS port and blocks literal IPs, reserved
   local suffixes, user-info URLs, and cleartext. This hostname check does not
   resolve or verify public IP addresses, publisher identity, or feed safety.
   The native app toolbar always provides Back and Catalog controls.
-- ANC Studio microphone capture is opt-in. Only its dedicated app origin may
-  request audio, and only after the user starts ANC or Smart Calibrate. The
-  WebView permission is granted only after Android's `RECORD_AUDIO` runtime
-  permission is granted. The APK also declares Android's normal
-  `MODIFY_AUDIO_SETTINGS` permission, which WebView audio capture needs for
-  audio routing; all other apps and non-audio WebView resources are denied.
-  Captured audio stays on-device and is not saved or transmitted. If
-  permission is denied, enable Microphone under Android Settings → Apps → HTML5
-  Offline Library → Permissions, then retry. Other browser-only features may
-  remain unavailable, and the static external-resource scan is a warning aid,
-  not a complete runtime-dependency audit.
+- ANC Studio microphone capture is opt-in, as are **Sound Sanctuary** and
+  **AURA Sound Studio** microphone modes. Only these three packaged origins may
+  request audio, with an exact match to the current top-level app, and only
+  after Android's `RECORD_AUDIO` runtime permission. Camera, mixed resources,
+  other apps and arbitrary network origins are denied. `MODIFY_AUDIO_SETTINGS`
+  supports WebView audio routing. No microphone access is granted merely
+  because the network flavor has `INTERNET`. These experimental audio labs are
+  not certified branded DSP, reliable acoustic ANC or hearing protection.
+  Start at low volume; use headphones and stop if feedback occurs. If denied,
+  enable Microphone under Android Settings → Apps → HTML5 Offline Library →
+  Permissions. AURA's alternate complete saved-settings snapshot is available
+  from the main app's banner on the same origin. No original source was deleted.
+- Local Blob exports now use Android's **system Files picker** instead of the
+  formerly blanket-rejecting DownloadListener. The native write-only adapter
+  accepts only matching packaged HTTPS origins, ordered 32-KiB chunks and a
+  maximum 64 MiB/file. It stages only an explicitly requested export in the
+  app-private cache, then writes the user-selected `content:` URI and verifies
+  the bytes by SHA-256 read-back before confirming success. Cancel/failure is
+  not success; partial destination files may need manual removal. Temporary
+  files are removed on success/cancel/navigation/destruction and stale files
+  on next startup; secure physical erasure/OS process-kill cleanup is not
+  guaranteed. No broad storage permission, arbitrary file-read bridge,
+  persistent URI grant, DownloadManager or JavascriptInterface is added.
+  Choose an **on-device** Files destination for local-only storage: selecting a
+  cloud document provider may upload your export. Arbitrary HTTPS/data URL
+  downloads remain unsupported; open them in a full browser instead.
+- Public certificate and audio-file imports use **ACTION_OPEN_DOCUMENT**;
+  nothing is read automatically and apps still validate their input formats.
+  Workbench's optional remembered PUBLIC keyring is separate from file saves:
+  it revalidates on restore, includes public User IDs, and never remembers
+  secret keys, revocations, text or passphrases. It is not a backup, can be lost
+  on uninstall/data clearing, and remains separate for each app/site origin.
 - The `network` flavor stages the same public catalog plus two extra entrypoints:
   RadarScope (`apps/ads-b-radar-scope`) and News Globe (`apps/news-globe.html`).
   It displays a required startup warning that News Globe's OPML/RSS host set is
@@ -51,6 +72,26 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
   The remaining live services have not been verified by this build; provider
   availability, CORS, proxy visibility, and terms may change. No API
   credentials are packaged.
+
+## Restored apps and omission audit
+
+`npm run build:sound-apps` deterministically restores the full Sanctuary and
+both AURA snapshots. `npm run check:sound-apps` checks pinned source/output
+hashes. Remote Google Fonts and Cloudflare analytics are removed, inline
+runtime code is preserved, and the unbuilt 738-byte AURA shell is not shipped
+in place of a working app. Self-HTML export is not a guaranteed runtime-session
+backup; export preset JSON where available and verify the saved file.
+
+`npm run audit:app-sources` accounts for **188** tracked imported HTML sources,
+including extensionless imports and canonical directory entrypoints. It reports
+all unbuilt, dependency/security/privacy-review and other pending sources instead
+of silently treating the mixed `apps/` archive as public-ready. Run with
+`-- --out .cache/app-source-inventory.json` for the complete local inventory
+(paths, sizes, SHA-256, disposition and reason). The complete mixed/private
+inventory is ignored and is never put in a public APK/manual. Unreviewed sources
+are preserved, not deleted or falsely marked functional. Private research backup
+requires the exact supplied recipient certificate; a fingerprint alone cannot
+encrypt anything. No public sharing or unverified Drive delivery is implied.
 
 ## Build and test the APK profiles
 
@@ -79,14 +120,14 @@ cd apps/html5-offline-launcher
 On Windows, use `gradlew.bat` instead of `./gradlew`. The first wrapper run
 fetches the pinned Gradle 8.7 distribution and validates its SHA-256 before use.
 
-The **public** profile packages all 94 approved local HTML entrypoints. The
+The **public** profile packages all 96 approved local HTML entrypoints. The
 **private Android** profile is a separate, reduced build with a fixed two-app
 allowlist (Helios Observatory and Prime Viewer), a distinct application ID, and
 no audio permissions. This Android allowlist is separate from the four-app
 private browser bundle. Both profiles omit network permission.
 
-The **network Android** profile keeps the same 94 public apps and adds
-RadarScope and News Globe (96 catalog entries total), with a distinct
+The **network Android** profile keeps the same 96 public apps and adds
+RadarScope and News Globe (98 catalog entries total), with a distinct
 application ID and the only `INTERNET` permission. Build/install this APK only
 when the user wants live network access; its network warning must be accepted
 at startup. Public and private flavor behavior remains offline. All APKs are
@@ -100,8 +141,9 @@ Private: app/build/outputs/apk/private/debug/app-private-debug.apk
 Network: app/build/outputs/apk/network/debug/app-network-debug.apk
 ```
 
-The Android instrumentation suite exercises the ANC-only WebView permission
-policy, requests a real `getUserMedia` audio track, and boots the packaged
+The Android instrumentation suite exercises matching-origin microphone policy,
+requests a real `getUserMedia` audio track, saves/imports synthetic files through
+real WebView callbacks and a test document provider, and boots the packaged
 Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
 track startup, not acoustic capture quality. Device testing has a separate
@@ -110,7 +152,7 @@ build/inventory check is not a WebView or live-provider test result.
 
 Normal CI uploads the public and opt-in network APKs as
 `html5-offline-launcher-public-network-debug-apks` (30 days), preserving main's
-network-package handoff. The network package retains all 94 approved public apps
+network-package handoff. The network package retains all 96 approved public apps
 plus RadarScope and News Globe. The private APK is never published as plaintext.
 A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
 the three profiles separately. To back up **all three profiles**, manually

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Test APK only. Fixed synthetic filenames; never a production file provider. -->
+        <provider
+            android:name="org.arena.html5launcher.SyntheticDocumentProvider"
+            android:authorities="${applicationId}.synthetic.documents"
+            android:exported="true"
+            android:grantUriPermissions="true" />
+    </application>
+</manifest>

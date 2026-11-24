@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "transforms": [
+    "remove Google Fonts connections/styles",
+    "remove Cloudflare analytics beacon",
+    "add accurate title, safety and snapshot links"
+  ],
+  "snapshots": [
+    {
+      "source": "apps/AURA_SoundStudio_Quine_1783095741599.html",
+      "sha256": "0a99f6c1cad66da3901f73e82f8a2399aed8315db964e3bcfbec4fa193bf0fd6",
+      "slug": "aura-sound-studio",
+      "output": "public/apps/aura-sound-studio/index.html",
+      "title": "AURA Sound Studio — Experimental Audio Lab",
+      "outputSha256": "2db5588226ace4ca44c51f7552b67007b7c70fdab3d5ce59ceecb4ad065feae5"
+    },
+    {
+      "source": "apps/AURA_SoundStudio_Quine_Self_1783095663453.html",
+      "sha256": "cb9bac38bdae5048e5da9ff6d1fd957d2bd8698eb0240fb7507bd3ca2b9f6a11",
+      "slug": "aura-sound-studio",
+      "output": "public/apps/aura-sound-studio/saved-settings.html",
+      "title": "AURA Sound Studio — Alternate Saved-Settings Snapshot",
+      "outputSha256": "2513c89acc4aa6a53f81045ac1fbd4cf0c6c6b1d5a5b17fdcfbf96cc9d74f245"
+    }
+  ]
+}

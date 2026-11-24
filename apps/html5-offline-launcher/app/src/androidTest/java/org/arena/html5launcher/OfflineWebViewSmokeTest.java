@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import android.Manifest;
 import android.app.Instrumentation;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
@@ -53,6 +54,10 @@ public final class OfflineWebViewSmokeTest {
         WebView webView = findWebView(activity.getWindow().getDecorView());
         assertNotNull("launcher must host one packaged WebView", webView);
         loadAndWait(webView, ANC_URL);
+        assertEquals("Android microphone runtime permission must be granted by the synthetic test rule", PackageManager.PERMISSION_GRANTED,
+                activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO));
+        Log.i("Html5Offline", "synthetic mic policy probe: current=" + evaluateString(webView, "location.href") +
+                "; permission=" + activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO));
 
         RecordingPermissionRequest allowed = new RecordingPermissionRequest(
                 Uri.parse("https://app-anc-studio.invalid"),
@@ -76,6 +81,19 @@ public final class OfflineWebViewSmokeTest {
         InstrumentationRegistryAccess.runOnMainSync(() -> activity.handleWebPermissionRequest(cameraRequest));
         assertTrue("ANC is audio-only; camera requests must be denied", cameraRequest.denied);
         assertFalse(cameraRequest.granted);
+
+        for (String host : new String[] { "app-sound-sanctuary.invalid", "app-aura-sound-studio.invalid" }) {
+            loadAndWait(webView, "https://" + host + "/index.html");
+            RecordingPermissionRequest same = new RecordingPermissionRequest(Uri.parse("https://" + host),
+                    new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            InstrumentationRegistryAccess.runOnMainSync(() -> activity.handleWebPermissionRequest(same));
+            assertTrue("restored packaged sound origin must support explicit microphone mode: " + host, same.granted);
+            RecordingPermissionRequest otherLab = new RecordingPermissionRequest(Uri.parse("https://app-anc-studio.invalid"),
+                    new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            InstrumentationRegistryAccess.runOnMainSync(() -> activity.handleWebPermissionRequest(otherLab));
+            assertTrue("one allowlisted lab must not grant another origin's frame microphone access", otherLab.denied);
+        }
+        loadAndWait(webView, ANC_URL);
 
         // Exercise Chromium WebView's actual getUserMedia -> WebChromeClient ->
         // Android permission grant chain with the permission pre-approved above.

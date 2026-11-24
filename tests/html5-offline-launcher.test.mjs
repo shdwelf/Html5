@@ -39,10 +39,10 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 94);
+  assert.equal(expectedSlugs.length, 96);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 94);
+  assert.equal(catalog.length, 96);
   assert.ok(expectedSlugs.includes("newyork-subsurface"));
   assert.ok(expectedSlugs.includes("helios-observatory"));
   assert.ok(expectedSlugs.includes("prime-viewer"));
@@ -65,7 +65,7 @@ test("private Android profile contains only its fixed two-app allowlist", () => 
 
 test("opt-in network profile adds RadarScope and News Globe without changing offline inventories", () => {
   const network = buildCatalog("network");
-  assert.equal(network.length, 96);
+  assert.equal(network.length, 98);
   assert.ok(network.some((app) => app.slug === "ads-b-radar-scope"));
   assert.match(RADAR_SCOPE, /feed: 'combined'/);
   assert.doesNotMatch(RADAR_SCOPE, /opensky-network\.org|OpenSky Network|feedOpenSky/);
@@ -76,7 +76,7 @@ test("opt-in network profile adds RadarScope and News Globe without changing off
   const networkPublicSlugs = network
     .filter((app) => !["ads-b-radar-scope", "news-globe"].includes(app.slug))
     .map((app) => app.slug);
-  assert.equal(publicSlugs.length, 94);
+  assert.equal(publicSlugs.length, 96);
   assert.deepEqual(networkPublicSlugs, publicSlugs, "network profile retains every approved public app, including existing coin apps");
   assert.deepEqual(buildCatalog("private").map((app) => app.slug).sort(), ["helios-observatory", "prime-viewer"]);
   assert.match(GRADLE, /create\('network'\)/);
@@ -150,10 +150,11 @@ test("Android package has minSdk 24 and no network permission", () => {
   assert.match(MANIFEST, /android:allowBackup="false"/);
 });
 
-test("only ANC can request WebView audio after the Android runtime permission grant", () => {
-  assert.match(MAIN_ACTIVITY, /ANC_AUDIO_HOST\s*=\s*"app-anc-studio\.invalid"/);
+test("only the three packaged audio apps can request audio at their matching current origin", () => {
+  for (const host of ["app-anc-studio.invalid", "app-sound-sanctuary.invalid", "app-aura-sound-studio.invalid"]) assert.ok(MAIN_ACTIVITY.includes(`"${host}"`));
   assert.match(MAIN_ACTIVITY, /void handleWebPermissionRequest\(PermissionRequest request\)/);
-  assert.match(MAIN_ACTIVITY, /isAncOrigin\(request\.getOrigin\(\)\)/);
+  assert.match(MAIN_ACTIVITY, /isAudioOrigin\(request\.getOrigin\(\)\)/);
+  assert.match(MAIN_ACTIVITY, /LocalFileExports\.origin\(currentPage\)\.equals\(LocalFileExports\.origin\(request\.getOrigin\(\)\)\)/);
   assert.match(MAIN_ACTIVITY, /resources != null &&\s*resources\.length == 1/);
   assert.match(MAIN_ACTIVITY, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
   assert.match(MAIN_ACTIVITY, /requestPermissions\(new String\[\]\s*\{\s*Manifest\.permission\.RECORD_AUDIO\s*\}/);
@@ -205,9 +206,9 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   }
   assert.match(ANDROID_WORKFLOW, /timeout-minutes: 15/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
-  assert.match(README, /94\*\* HTML entrypoints/);
-  assert.match(README, /8,500\s+files/);
-  assert.match(README, /165,024,166 bytes uncompressed/);
+  assert.match(README, /96\*\* HTML entrypoints/);
+  assert.match(README, /Sound Sanctuary/);
+  assert.match(README, /AURA Sound Studio/);
   assert.match(README, /ANC Studio microphone capture is opt-in/);
   assert.doesNotMatch(README, /still denies microphone permission/);
 });

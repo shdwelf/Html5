@@ -33,7 +33,7 @@
       <section class="hero" aria-labelledby="page-title">
         <div class="eyebrow"><span class="eyebrow-line"></span> LOCAL MESSAGES &amp; KEYRINGS</div>
         <h1 id="page-title">Keep the message<br><span>between you and the passphrase.</span></h1>
-        <p class="hero-copy">Protect text with a passphrase, create a conservative RSA key, or assemble a public keyring. OpenPGP runs in this tab; there is no upload, keyserver, telemetry, or app-level storage.</p>
+        <p class="hero-copy">Protect text with a passphrase, create a conservative RSA key, or assemble a public keyring. OpenPGP runs in this tab; there is no upload, keyserver, telemetry, or automatic secret storage. Remembering PUBLIC certificates on this device is a separate opt-in.</p>
         <div id="capability-warning" class="notice notice-warning" role="alert" hidden>
           This browser needs Web Crypto in a secure context. Open the app over HTTPS or localhost, then reload.
         </div>
@@ -45,7 +45,7 @@
             <p class="section-kicker">OFFLINE WORKSPACE</p>
             <h2>Messages &amp; keyrings</h2>
           </div>
-          <span class="profile-chip"><span aria-hidden="true">◆</span> Classic profiles · memory only</span>
+          <span class="profile-chip"><span aria-hidden="true">◆</span> Classic profiles · explicit local saves</span>
         </div>
 
         <div class="tabs" role="tablist" aria-label="Choose an OpenPGP operation">
@@ -247,10 +247,16 @@
             <p class="field-hint">A matching fingerprint only compares bytes you supplied. Verify it over an independent trusted channel. Bulk imports without this field remain identity-unverified. Self-certification checks do not assign owner trust or audit every User ID/subkey.</p>
             <div class="form-actions">
               <button id="import-public-keys" class="button button-primary" type="submit" data-crypto-submit>Import public keys</button>
-              <button id="clear-keyring" class="button button-quiet" type="button">Clear keyring &amp; input</button>
+              <button id="clear-keyring" class="button button-quiet" type="button">Clear keyring, input &amp; saved public copy</button>
             </div>
-            <p class="status-message" id="keyring-status" role="status" aria-live="polite">Only public data is accepted. No keyserver lookup, publishing, private-key import or disk persistence.</p>
+            <p class="status-message" id="keyring-status" role="status" aria-live="polite">Only public data is accepted. No keyserver lookup, publishing or private-key import. Device remembering is off until you opt in.</p>
           </form>
+          <div class="notice" role="note">
+            <label class="check-row" for="remember-public-keyring"><input id="remember-public-keyring" type="checkbox"> Remember PUBLIC certificates on this device (opt-in)</label>
+            <p class="field-hint">Public certificates include User IDs; local storage is not encrypted and is separate for each app/site origin. Private keys, revocation certificates, research text and passphrases are NEVER remembered. This device copy can disappear on uninstall, browser-data clearing or device loss; also export a .asc backup.</p>
+            <button id="forget-public-keyring" type="button" class="button button-quiet">Forget saved public certificates</button>
+            <p id="public-storage-status" class="status-message" role="status" aria-live="polite">Device remembering is off. Public imports remain in memory until you opt in or export them.</p>
+          </div>
           <div class="output-block">
             <h3 id="keyring-count">0 / 32 public certificates</h3>
             <ul id="keyring-list" class="keyring-list" aria-label="Public certificates in memory"></ul>
@@ -280,13 +286,13 @@
 
       <section class="scope-note" aria-label="Version one scope">
         <span class="scope-mark" aria-hidden="true">i</span>
-        <p><strong>Scope:</strong> classic passphrase text tools plus export-only RSA key creation and a public-only keyring. Public-key message encryption/decryption, signing UI, attachments, secret-key import, hardware cards, owner trust and modern AEAD output are not included. Processing is local; no app-level upload or persistence. Clearing drops references, not a guaranteed memory/clipboard/disk erase. Page navigation clears this tab’s state.</p>
+        <p><strong>Scope:</strong> classic passphrase text tools plus export-only RSA key creation and a public-only keyring. Public-key message encryption/decryption, signing UI, attachments, secret-key import, hardware cards, owner trust and modern AEAD output are not included. Processing is local; no app-level upload. Only validated PUBLIC certificates may be remembered after explicit opt-in. Android Save opens the system Files picker and confirms success only after write/read-back verification; browser downloads are requests, not proof of a saved file. Choose “On this device” for a local-only destination: cloud document providers may upload what you select. Clearing drops references, not a guaranteed memory/clipboard/disk erase. Page navigation clears secrets and unsaved tab state, not an opted-in public device copy.</p>
       </section>
     </main>
 
     <footer class="footer">
       <span>OpenPGP.js 6.3.3 · locally vendored · LGPL-3.0+</span>
-      <button id="clear-all" class="button button-quiet" type="button">Clear all tab data</button>
+      <button id="clear-all" class="button button-quiet" type="button">Clear tab &amp; saved public data</button>
       <span class="footer-links"><a href="./vendor/openpgp.LICENSE">Library license</a><a href="./THIRD_PARTY_NOTICES.md">Third-party notices</a></span>
     </footer>
   </div>
