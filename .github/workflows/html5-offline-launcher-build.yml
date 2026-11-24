@@ -415,7 +415,9 @@ jobs:
           profile: pixel_2
           emulator-boot-timeout: 300
           working-directory: apps/html5-offline-launcher
-          emulator-options: -no-window -gpu swiftshader_indirect -skin 720x1280 -memory 3072 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          # Bound the CI guest alongside Gradle/UTP and WASM compilation. This
+          # is a runner resource profile, not an app/device support guarantee.
+          emulator-options: -no-window -gpu swiftshader_indirect -skin 720x1280 -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           # Match density/skin before boot, not a high-resolution launcher resize
           # after startup. An unrelated Nexus launcher ANR can occlude all taps.
@@ -459,9 +461,10 @@ jobs:
           summary = json.dumps(result, separators=(",", ":")).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
           print("::notice title=Android-WebView-results::" + summary)
           PY
+          python3 scripts/report-html5-android-runner.py --require-complete apps/html5-offline-launcher/app/build/android-webview-summary.json
 
       - name: Surface Android instrumentation failure details
-        if: ${{ failure() && steps.android-smoke-tests.outcome == 'failure' }}
+        if: ${{ failure() && steps.android-smoke-tests.outcome != 'skipped' }}
         shell: bash
         run: |
           python3 scripts/report-html5-android-runner.py apps/html5-offline-launcher/app/build

@@ -2,9 +2,11 @@
 """Bounded runner-level diagnostics for synthetic Android CI (no device access).
 
 AGP sometimes writes an empty testcase <failure/> while placing the real
-instrumentation/process failure in suite system-err or logcat. Never interpret
-that absence, partial test counts, or this reporter's exit code as test success.
+instrumentation/process failure in suite system-err or logcat. Diagnostic mode
+never confirms success. --require-complete rejects absent/partial/skipped phase
+results even when Gradle or a device runner reports exit zero.
 """
+import json
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -18,7 +20,8 @@ CRITICAL = re.compile(
     r"(?i)(fatal signal|fatal exception|abort message|sigabrt|sigsegv|anr in|"
     r"input dispatching timed out|testtimedoutexception|timeoutexception|"
     r"instrumentation_(?:result|failed|code)|process crashed|test run failed|"
-    r"process .* has died|lowmemorykiller|lmkd.*kill|monitoringinstr.*(?:error|fail)|"
+    r"process .* has died|(?:lowmemorykiller|lmkd).*(?:killed|killing|oom)|monitoringinstr.*(?:error|fail)|"
+    r"device .{0,80}not found|AdbCommandRejectedException|DeviceOfflineException|"
     r"runner finished with|test instrumentation process crashed)"
 )
 STAGES = re.compile(r"Html5GestureSmoke|Html5LocalFileSmoke|Html5CiPhase|TestRunner.*(?:started:|failed:|finished:)")
@@ -68,7 +71,36 @@ def collect(base):
     xml = [item for item in evidence if item[0] == "Android-runner-XML"]
     stages = [item for item in evidence if item[0] == "Android-runner-stages"]
     processes = [item for item in evidence if item[0] == "Android-runner-process"]
-    return (xml[:4] + stages + processes + xml[4:])[:MAX_ANNOTATIONS]
+    host = tail(base / "android-webview-host.log")
+    if len(host) > 2600:
+        host = host[:1200] + "\n[bounded middle omitted]\n" + host[-1200:]
+    hosts = [("Android-runner-host", host)] if host else []
+    return (xml[:4] + stages + hosts + processes + xml[4:])[:MAX_ANNOTATIONS]
+
+
+EXPECTED = {"public-local-files": 6, "network-local-files": 6,
+            "public-audio-policy": 1, "public-headline-harry": 1}
+
+
+def incomplete(summary):
+    """A zero Gradle exit without all 14 actual results must never turn green."""
+    if not isinstance(summary, dict) or type(summary.get("schema")) is not int or summary["schema"] != 1:
+        return ["Missing or unsupported Android WebView result schema."]
+    phases = summary.get("phases")
+    if not isinstance(phases, list) or len(phases) != len(EXPECTED):
+        return ["Exactly four Android WebView result phases are required."]
+    seen, errors = set(), []
+    for phase in phases:
+        if not isinstance(phase, dict) or not isinstance(phase.get("phase"), str):
+            return ["Malformed Android WebView result phase."]
+        label = phase["phase"]
+        if label not in EXPECTED or label in seen:
+            return ["Unknown or duplicate Android WebView result phase."]
+        seen.add(label)
+        required = {"exit": 0, "tests": EXPECTED[label], "passed": EXPECTED[label], "failed": 0, "skipped": 0}
+        if any(type(phase.get(key)) is not int or phase[key] != value for key, value in required.items()):
+            errors.append(label + ": require complete passing results with zero failures/skips and exit zero.")
+    return errors
 
 
 def annotation(title, text):
@@ -77,14 +109,28 @@ def annotation(title, text):
 
 
 def main():
+    if len(sys.argv) == 3 and sys.argv[1] == "--require-complete":
+        try:
+            path = Path(sys.argv[2])
+            if path.is_symlink() or path.stat().st_size > 65536:
+                raise ValueError("unsupported summary")
+            errors = incomplete(json.loads(path.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            errors = ["Android WebView summary missing, oversized or malformed; no passing result confirmed."]
+        for error in errors:
+            print(annotation("Android-WebView-incomplete", error))
+        if not errors:
+            print("All four Android WebView phases: 14 passed, zero failed/skipped, all exits zero.")
+        return 1 if errors else 0
     if len(sys.argv) != 2:
-        raise SystemExit("usage: report-html5-android-runner.py <synthetic app/build directory>")
+        raise SystemExit("usage: report-html5-android-runner.py <synthetic app/build directory> | --require-complete <summary.json>")
     evidence = collect(sys.argv[1])
     for title, text in evidence:
         print(annotation(title, text))
     if not evidence:
         print(annotation("Android-runner-evidence", "No bounded runner-level evidence found; this does not establish success or a root cause."))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

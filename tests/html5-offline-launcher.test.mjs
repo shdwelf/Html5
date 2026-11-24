@@ -176,9 +176,16 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(smokeRunner, /adb logcat -v threadtime/);
   assert.ok(smokeRunner.indexOf("run_tests public-local-files") < smokeRunner.indexOf("run_tests public-headline-harry"));
   assert.match(smokeRunner, /trap finish EXIT/);
+  assert.match(smokeRunner, /--max-workers=1/);
+  assert.match(smokeRunner, /org\.gradle\.jvmargs=-Xmx1024m/);
+  assert.match(smokeRunner, /host_evidence "\$label"/);
+  assert.match(smokeRunner, /sudo -n dmesg --ctime/);
+  assert.match(ANDROID_WORKFLOW, /-memory 2048 -cores 2/);
   assert.match(ANDROID_WORKFLOW, /Preserve bounded synthetic WebView diagnostics/);
   assert.match(ANDROID_WORKFLOW, /python3 scripts\/report-html5-android-runner\.py apps\/html5-offline-launcher\/app\/build/);
   assert.match(ANDROID_WORKFLOW, /tests\/html5-android-runner\.test\.mjs/);
+  assert.match(ANDROID_WORKFLOW, /report-html5-android-runner\.py --require-complete/);
+  assert.match(ANDROID_WORKFLOW, /run-html5-android-ci\.sh app\/build\/android-public-build\.log -- \.\/gradlew/);
   assert.match(ANDROID_WORKFLOW, /reactivecircus\/android-emulator-runner@v2/);
   assert.match(ANDROID_WORKFLOW, /apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils/);
   assert.match(ANDROID_WORKFLOW, /module-null-sink sink_name=ci_mic_bus/);

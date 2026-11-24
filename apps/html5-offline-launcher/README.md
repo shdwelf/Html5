@@ -163,6 +163,16 @@ On failure, bounded synthetic diagnostics include suite-level `system-err` /
 activation phases. An empty JUnit `<failure/>` or a partial testcase count is
 not a passing phase and does not establish an emulator-only root cause. These
 diagnostics do not change the tests, permission/save policies or time limits.
+CI additionally requires complete results: six public file/save cases, six
+network file/save cases, one audio-policy case and one game-boot case. All 14
+must pass with zero skips and all four phase exits zero; missing/partial runner
+output cannot yield a green device gate. The CI guest is limited to 2 GiB and
+connected-test Gradle invocations to a 1-GiB heap / one worker; normal APK build
+settings are unchanged. On failure the runner captures bounded host memory,
+cgroup counters, process **names** (not arguments), device state and matching
+kernel OOM/crash lines **before** emulator teardown. A disappearing emulator is
+not itself proof of a host OOM or an app assertion failure. No test is retried,
+removed, accepted as skipped or given a longer deadline by these controls.
 
 Normal CI uploads the public and opt-in network APKs as separate 30-day
 artifacts: `html5-offline-launcher-public-debug-apk` and

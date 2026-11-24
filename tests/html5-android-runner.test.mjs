@@ -62,6 +62,18 @@ test("suite diagnostics keep early cause and late context with bounded annotatio
   }
 });
 
+test("lost-emulator and bounded host evidence are retained without treating normal lmkd initialization as an OOM", () => {
+  const output = report({
+    "android-webview-logcat.log": "lowmemorykiller: lmkd updated properties successfully\nlowmemorykiller: closing lmkd data connection\n",
+    "android-webview-tests.log": "com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found\nTest run failed to complete. Expected 1 tests, received 0\n",
+    "android-webview-host.log": "synthetic pre-teardown resource snapshot\nmemory.events: oom_kill 1\nOut of memory: Killed process synthetic qemu\n",
+  });
+  assert.match(output, /device 'emulator-5554' not found/);
+  assert.match(output, /Android-runner-host/);
+  assert.match(output, /oom_kill 1/);
+  assert.doesNotMatch(output, /lmkd updated properties successfully|closing lmkd data connection/);
+});
+
 const buildWrapper = new URL("../scripts/run-html5-android-ci.sh", import.meta.url);
 function build(script) {
   const dir = mkdtempSync(join(tmpdir(), "synthetic-android-build-"));
@@ -88,4 +100,51 @@ test("build failure annotations escape untrusted log data and retain early cause
   assert.match(result.stdout, /%0A::notice/);
   assert.equal(result.stdout.split("\n").filter((line) => line.startsWith("::notice")).length, 0);
   assert.ok(result.stdout.length < 13000);
+});
+
+const completeSummary = () => ({ schema: 1, phases: Object.entries({ "public-local-files": 6, "network-local-files": 6, "public-audio-policy": 1, "public-headline-harry": 1 })
+  .map(([phase, tests]) => ({ phase, exit: 0, tests, passed: tests, failed: 0, skipped: 0, firstFailure: null })) });
+function validate(summary) {
+  const dir = mkdtempSync(join(tmpdir(), "synthetic-android-complete-"));
+  try {
+    const path = join(dir, "summary.json");
+    if (summary !== undefined) writeFileSync(path, typeof summary === "string" ? summary : JSON.stringify(summary));
+    return spawnSync("python3", [reporter.pathname, "--require-complete", path], { encoding: "utf8", timeout: 10000 });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("Android completion gate requires all 14 passing actual results and four zero exits", () => {
+  const result = validate(completeSummary());
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /14 passed, zero failed\/skipped/);
+});
+
+test("Android completion gate refuses partial/no results, skips, failures or nonzero phase exit even if a runner claims success", () => {
+  for (const change of [
+    (s) => { s.phases[0].tests = 5; s.phases[0].passed = 5; },
+    (s) => { s.phases[1].skipped = 1; s.phases[1].passed = 5; },
+    (s) => { s.phases[1].failed = 1; s.phases[1].passed = 5; },
+    (s) => { s.phases[2].exit = 1; },
+    (s) => { s.phases[3].exit = null; s.phases[3].tests = 0; s.phases[3].passed = 0; },
+    (s) => { s.phases[0].tests = true; },
+  ]) {
+    const summary = completeSummary(); change(summary);
+    const result = validate(summary);
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(result.stdout, /Android-WebView-incomplete/);
+  }
+});
+
+test("Android completion gate refuses malformed, missing, duplicate or unknown phase metadata", () => {
+  for (const summary of [undefined, "{broken", {}, { schema: 1, phases: [] },
+    { schema: true, phases: completeSummary().phases },
+    { schema: 1, phases: [null, ...completeSummary().phases.slice(1)] },
+    { schema: 1, phases: [completeSummary().phases[1], ...completeSummary().phases.slice(1)] },
+    { schema: 1, phases: [{ phase: "untrusted\n::notice title=fake::no" }, ...completeSummary().phases.slice(1)] },
+  ]) {
+    const result = validate(summary);
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(result.stdout, /Android-WebView-incomplete/);
+    assert.doesNotMatch(result.stdout, /::notice/);
+  }
 });
