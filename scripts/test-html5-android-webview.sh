@@ -20,16 +20,19 @@ timeout --kill-after=3s 10s adb shell wm size 720x1280 || exit "$?"
 timeout --kill-after=3s 10s adb shell wm density 280 || exit "$?"
 status=0
 run_tests() {
-  local label="$1" limit="$2" task="$3" test_class="$4" code=0
+  local label="$1" limit="$2" task="$3" test_class="$4" code=0 flavor=public
+  if [[ "$task" == *Network* ]]; then flavor=network; fi
+  # Reports from an earlier invocation must not be counted as this one's run.
+  rm -rf "app/build/outputs/androidTest-results/connected/debug/flavors/$flavor"
   printf '\n=== %s ===\n' "$label" >> app/build/android-webview-tests.log
   timeout --kill-after=10s "$limit" ./gradlew --no-daemon --stacktrace "$task" \
     "-Pandroid.testInstrumentationRunnerArguments.class=$test_class" \
     -Pandroid.testInstrumentationRunnerArguments.timeout_msec=120000 \
     >> app/build/android-webview-tests.log 2>&1 || code=$?
   printf '=== %s exit=%s ===\n' "$label" "$code" >> app/build/android-webview-tests.log
-  if [[ -d app/build/outputs/androidTest-results ]]; then
+  if [[ -d "app/build/outputs/androidTest-results/connected/debug/flavors/$flavor" ]]; then
     mkdir -p "app/build/instrumentation-reports/$label"
-    cp -R app/build/outputs/androidTest-results/. "app/build/instrumentation-reports/$label/"
+    cp -R "app/build/outputs/androidTest-results/connected/debug/flavors/$flavor/." "app/build/instrumentation-reports/$label/"
   fi
   if [[ "$code" != 0 ]]; then status=1; fi
 }

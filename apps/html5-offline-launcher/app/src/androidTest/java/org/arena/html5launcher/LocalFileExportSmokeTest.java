@@ -12,12 +12,15 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.webkit.WebView;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -226,15 +229,17 @@ public final class LocalFileExportSmokeTest {
     }
     private void acceptNetworkWarning() {
         if (!BuildConfig.NETWORK_ENABLED) return;
-        long deadline = SystemClock.uptimeMillis() + 10000;
-        while (SystemClock.uptimeMillis() < deadline) {
-            AccessibilityNodeInfo root = instrumentation.getUiAutomation().getRootInActiveWindow();
-            if (root != null) for (AccessibilityNodeInfo node : root.findAccessibilityNodeInfosByText("Continue")) {
-                if (node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return;
-            }
-            SystemClock.sleep(100);
-        }
-        fail("network warning must be explicitly accepted by the synthetic test user");
+        // UiAutomator synchronizes the actual foreground window. A cached raw
+        // AccessibilityNodeInfo tree can stay on the prior app during launch.
+        UiDevice device = UiDevice.getInstance(instrumentation);
+        UiObject2 title = device.wait(Until.findObject(By.text("Network-enabled apps")), 10000);
+        assertNotNull("network warning must be shown, foreground package=" + device.getCurrentPackageName(), title);
+        UiObject2 positive = device.wait(Until.findObject(By.res("android", "button1")), 10000);
+        assertNotNull("network warning must have a native positive button", positive);
+        assertEquals("continue", positive.getText().toLowerCase(java.util.Locale.ROOT));
+        positive.click();
+        assertTrue("synthetic user must explicitly dismiss the network warning",
+                Boolean.TRUE.equals(device.wait(Until.gone(By.text("Network-enabled apps")), 10000)));
     }
     private void load(WebView web, String url) throws Exception {
         assertNotNull(web);

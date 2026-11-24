@@ -78,17 +78,19 @@ repeated.
 
 ## Evidence, scoped honestly
 
-- Focused Node model/UI/launcher/adapter/snapshot checks passed locally; final
-  counts belong with the matching-head validation on PR #238.
+- Focused Node model/UI/launcher/adapter/snapshot checks: **39 passed**, zero
+  skips. Additional recipient/streaming-backup/Drive-relay checks: **8 passed**.
+  Final matching-head Android readiness belongs on PR #238, not inferred from
+  these Node checks.
 - Full Vitest: **318 passed / 36 files**, no failures. No timeout or production
   assertion was weakened.
 - Actual Chromium OpenPGP tests passed with real RSA-3072 Web Crypto, protected
   private and revocation downloads, exact recovery, independent gpgv signatures,
   PUBLIC reload/revalidation and secret rejection. The same-job native RSA-16384
   public control is an explicit local skip; mandatory CI covers it separately.
-- Audio browser tests cover actual local boots, user-started Web Audio, no
-  automatic microphone request, self-HTML downloads and alternate AURA preset
-  JSON. A first test incorrectly looked for Sanctuary's home-only download
+- Audio browser/catalog tests: **4 passed**, covering the complete searchable
+  catalog, actual local boots, user-started Web Audio, no automatic microphone
+  request, self-HTML downloads and alternate AURA preset JSON. A first test incorrectly looked for Sanctuary's home-only download
   button after entry; the test now exits via its real control first. Cleanup
   also skips already-closed contexts rather than calling close twice. These
   failed harness attempts are not presented as passed runs.
@@ -102,7 +104,14 @@ repeated.
   late results after navigation. Tests exercise real WebView callbacks and
   resolver I/O; only the Files picker choice is stubbed. Public and network
   flavors have separate execution, before independent audio and game runs.
-  A background logcat collector preserves diagnostics even if a game hangs. This is not an interactive human picker, physical phone,
+  A background logcat collector preserves diagnostics even if a game hangs.
+  The next device run compiled/build-checked all flavors but still failed the
+  synthetic network-warning interaction: the raw accessibility-tree helper did
+  not find/click the native dialog. It is replaced with synchronized UiAutomator
+  title/resource-ID checks and an actual native button click, not a production
+  consent bypass. Per-phase summaries and deduplicated report copies prevent
+  duplicate failures from exhausting GitHub's annotation budget.
+  This is not an interactive human picker, physical phone,
   acoustic-quality, OpenKeychain, PGPony or Kleopatra GUI certification.
 - The prior PR #232/main Android runs really failed. New emulator subcommands
   have independent time bounds and preserve logs; neither APK compilation nor
@@ -118,12 +127,36 @@ compatible v4 certificate as the replacement for this backup. The exact
 selected primary/encryption fingerprints and approval are retained only in the
 ignored private delivery workspace, not the public app corpus. The other two
 v6 certificates are not substituted, and Workbench's compatibility policy is
-not loosened. No private key or passphrase was requested. No new plaintext
-private upload, public cloud sharing, completed encrypted delivery or recovery
-of already-lost in-memory research is claimed at this stage.
-The Drive connector now accepts a workspace-file upload; delivery still requires
-actual ciphertext bytes, independent size/digests/metadata and private sharing
-checks. APK artifacts and curated browser bundles remain distinct; the private
+not loosened. No private key or passphrase was requested. No plaintext
+private upload, public cloud sharing or recovery of already-lost in-memory
+research is claimed. The current Drive connector's workspace upload completed
+**four real ciphertext transfers** at checkpoint `a2438b7fe9e2adf3fdc26cd12766017362fd63d9`:
+
+| Encrypted checkpoint backup | Ciphertext bytes |
+| --- | ---: |
+| Research/source preservation: 1,270 tracked source/research files, including all 188 audited app sources | 17,961,929 |
+| Public portable browser release: 96 app entrypoints | 57,068,859 |
+| Opt-in network portable browser release: 98 app entrypoints | 57,145,003 |
+| Private portable browser copy: four allowlisted apps | 6,205,795 |
+
+Each actual ciphertext envelope and independently recomputed local SHA-256/MD5
+was checked against separately refetched Drive file metadata (including bytes,
+parent and non-trashed state). The folder and all four payloads each have exactly
+one user/owner permission, no public/domain/group sharing. JSON/Markdown receipts
+and `SHA256SUMS` were also delivered and read back. Links, exact fingerprints and
+full inventories stay in the private delivery workspace/receipts, not this public
+source report. ZIP CRC and inner per-file digests were checked; fresh Chromium
+boots also checked both portable public/network catalogs and the requested app
+modules with zero page errors/external requests. The private browser's 98-file
+manifest and four-entry catalog were independently checked.
+
+**Owner decryption is not verified.** No owner secret was received. The archive
+is encrypted, not sender-signed; it is a checkpoint of the named tracked trees,
+not all live browser/phone/cloud state or every root binary/data dependency.
+The three release copies above are browser packages, **not Android APK backups**.
+The earlier failed Actions-secret handoff is not relabeled as a successful APK
+upload. The Android recipient-dispatch gate and final device validation remain
+separate. APK artifacts and curated browser bundles remain distinct; the private
 Android two-app allowlist is not the private four-app browser bundle.
 
 Immediate follow-through: matching-head Android save/import/device checks and
