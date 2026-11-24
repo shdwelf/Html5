@@ -28,7 +28,9 @@ export function restoreSoundSnapshot(snapshot) {
   if (/<(?:script|link|img|iframe|source|audio|video|object)\b[^>]*\b(?:src|href|data)\s*=\s*["'](?:https?:)?\/\//i.test(html) || /@import\s.*https?:|fonts\.googleapis\.com|cloudflareinsights\.com/i.test(html)) {
     throw new Error(`Unreviewed external resource survived sound snapshot restore: ${snapshot.source}`);
   }
-  return html;
+  // Drop only a whitespace-only line immediately before the closing body;
+  // do not rewrite meaningful inline/template-literal whitespace.
+  return html.replace(/\n[ \t]+\n(?=\s*<\/body>\s*<\/html>\s*$)/i, "\n\n");
 }
 
 export function buildSoundApps({ check = false } = {}) {

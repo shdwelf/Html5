@@ -8,7 +8,7 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 ## Scope and packaging
 
 - The current builder discovers **96** HTML entrypoints and packages **8,510
-  files** (166,321,094 bytes uncompressed) inside those app directories. It
+  files** (166,321,092 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
