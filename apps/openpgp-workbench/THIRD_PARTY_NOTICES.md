@@ -8,6 +8,10 @@ The build script copies this browser bundle from the pinned npm package into `pu
 
 The application wrappers use OpenPGP.js's exported key, signature and packet APIs. The RSA keyring extension uses a freshly signed classic-preference User ID certification; it does not modify the normal vendored browser module or implement a cipher, KDF, hash, fingerprint or RSA primitive. No code from KDE Kleopatra, GnuPG, OpenKeychain, PGPony, Proton VPN or the unconfirmed Photon VPN candidate is copied into this app. Their source-review provenance is documented separately.
 
+## Local passphrase-recovery worker
+
+`recovery-worker.mjs` imports the same **unmodified** local `vendor/openpgp.min.mjs` by relative URL (no worker importmap, CDN or extra engine). The wrapper only ranks/bounds candidate strings and invokes the library's secret-packet decrypt/validation APIs sequentially. It implements no cipher, S2K, hash or fingerprint primitive, never exports an unlocked key and does not use the large-RSA generation patch below. The readable wrapper source is shipped unchanged. Engine research does not add or bundle GnuPG, Sequoia, RNP, rPGP, Bouncy Castle or Go code.
+
 ## Explicit large-RSA worker — local dispatch patch
 
 Chromium's native generator refuses RSA above 8192 bits. Only for the explicitly

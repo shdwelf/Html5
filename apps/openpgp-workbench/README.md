@@ -1,6 +1,6 @@
 # OpenPGP Workbench
 
-Local browser text tools plus **conservative key creation and a public-only keyring**. This is not a general-purpose secure PGP client or a certification that every target app accepts every export.
+Local browser text tools, **conservative key creation, a public-only keyring and bounded wordlist-assisted private-key passphrase recovery**. This is not a general-purpose secure PGP client or a certification that every target app accepts every export.
 
 ## Build and preview
 
@@ -21,7 +21,70 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 - **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted. Public fingerprints are 40 hex characters for v4 and 64 for v6; v6 still requires a modern destination client.
 - Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or blanket subkey audit. The display separately detects a currently usable bound encryption key; signing/authentication-only subkeys are not encryption keys.
 
-No public-key **message** encryption/decryption, secret-key import, signing UI, attachments, modern AEAD writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+- **Recover passphrase:** a separate, explicit transient protected-key input with ranked wordlist/hint preview and optional small typo variants. At most 256 candidates / 120 seconds, a dedicated local module worker, full fingerprint and permission acknowledgement, exact all-secret-packet unlock/validation, Stop/Clear/navigation termination, and explicit result reveal only. It does not import secrets into the public keyring, reset a passphrase, decrypt messages/files or export an unlocked key. See bounds below.
+
+No public-key **message** encryption/decryption, persistent secret-key import, signing UI, attachments, modern AEAD message writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+
+## Bounded local passphrase recovery
+
+Open **Recover passphrase**, load/paste your protected private `.asc` and a small
+UTF-8 wordlist, optionally supply a remembered hint, then **Preview**. No
+passphrases are tried during inspection. NFC + lowercase Unicode OSA edit
+comparison ranks/filters entries at distance 0–2; original candidate strings
+retain spaces, case and Unicode form. A zero fuzzy distance is **not** an exact
+passphrase match. Without a hint, wordlist order is kept. Exact duplicates and
+blank lines are removed; CRLF separates lines; malformed UTF-8 files are refused
+and a BOM is retained as candidate data. Fuzzy filtering may remove the correct
+candidate; the preview reports matched, filtered, duplicate and capped counts.
+
+Variants are off by default: when explicitly enabled, generate case changes,
+one deletion, character duplication or adjacent swap from the hint and first
+three ranked entries. No arbitrary alphabet/numeric range, mask, chaining,
+GPU/distributed search, large imported dictionaries or automatic retries. At
+most 256 original entries / 32 KiB, 128 characters / 256 UTF-8 bytes per guess or
+hint, and 256 total candidates. Existing matched entries take priority over
+variants at the cap; all included guesses are ranked stably. Preview values are
+hidden until explicitly revealed on screen.
+
+Inspect exactly one complete protected certificate, at most 1 MiB / 128 packets
+and 16 secret packets: v4 RSA-2048–16384, legacy v4 Ed25519/Curve25519, or v6
+Ed25519/X25519. All included secret packets must have AES-128/192/256 protection,
+iterated salted SHA-1/SHA-2 S2K and SHA-1 integrity or standard AEAD. **Argon2 is
+refused before derivation**, not weakened; so are stubs, unprotected/mixed keys,
+photo/unsupported packets, simple/salted-only S2K and old 16-bit checksums. Other
+formats need a separately reviewed offline native client. Keep the original;
+never strip private subkeys just to make a recovery attempt pass.
+
+Compare and enter the full 40-hex v4 / 64-hex v6 primary fingerprint, acknowledge
+ownership/permission and **Start**. This checks one exact candidate at a time
+against **every** included secret packet, then validates each secret/public
+parameter pair. It does not use the high-level primary-only validation shortcut
+or weaken the existing public binding/revocation/recipient checks. Different
+per-packet passphrases are not recovered. Success proves only that candidate's
+unlock/parameter validation in this library, not owner identity, certificate
+validity, ability to decrypt an old file, or another client's support.
+
+Inspection has a 15-second worker limit; attempts have a hard 120-second limit.
+Stop, Clear, global Clear, edits or navigation terminate the dedicated worker
+and reject late replies. Progress counts only completed candidate trials;
+timeout/cancel is not exhaustion, and an exhausted bounded plan is not proof
+recovery is impossible. There is no main-thread fallback or new engine.
+The unmodified local OpenPGP.js browser module is imported by relative URL in
+the worker; it never uses the patched large-RSA generator.
+
+Private/wordlist/hint fields are cleared on Start. Only counts, a fingerprint
+and a matching **index**, never private parameters/passphrases, leave the worker.
+The parent retains a successful candidate only for explicit reveal; no secret
+copy/download/automatic save or PUBLIC keyring import is offered. Recovery Clear
+does not alter an opted-in PUBLIC snapshot or any original/backup file.
+Clearing/navigation drops references; it does not guarantee memory, clipboard,
+autofill, extension, keyboard, swap or disk erasure. Use a trusted isolated
+origin/device, not a shared catalog origin for high-value secrets. Do not send
+private keys, guesses or hints to chat, CI, metasearch or online recovery sites.
+
+See the [implementation/evidence and engine investigation](../../docs/openpgp-wordlist-recovery-2026-11-17.md).
+SearXNG instances are discovery services, **not cryptographic engines**; no
+metasearch integration or engine switching was added to the app.
 
 ## Export to another client
 
@@ -102,6 +165,8 @@ node --test tests/openpgp-native-interop.test.mjs
 node tests/openpgp-workbench-browser.mjs
 node --test tests/openpgp-v6.test.mjs
 node tests/openpgp-v6-browser.mjs
+node --test tests/openpgp-recovery.test.mjs tests/openpgp-recovery-worker.test.mjs tests/openpgp-recovery-dom.test.mjs
+REQUIRE_OPENPGP_BROWSER=1 node tests/openpgp-recovery-browser.mjs
 ```
 
 Independent controls include the existing GnuPG symmetric vector/CyberChef reader, generated RSA signatures verified by **gpgv**, and optional **PGPy 0.6.0** parsing/unlock/cross-encryption/signature tests. `gpgv` is verification-only, **not** full `gpg` private-key import/decrypt validation. The real Chromium runner exercises Web Crypto, actual downloads, public remembering/restore, multi-key imports, reset and external-request observation. Real Android WebView file-save coverage is separate from Chromium downloads. All keys are synthetic and temporary; no private fixture is committed. See the source review for the complete evidence/remaining-device-test matrix.

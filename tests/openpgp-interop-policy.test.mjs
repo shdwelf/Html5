@@ -42,6 +42,8 @@ test("the bounded native CI lane requires all readers and never uploads or cache
   assert.match(workflow, /large-rsa:[\s\S]*?timeout-minutes: 30/);
   assert.match(workflow, /RUN_OPENPGP_LARGE_RSA: '1'/);
   assert.match(workflow, /REQUIRE_OPENPGP_BROWSER: '1'/);
+  for (const name of ["recovery", "recovery-worker", "recovery-dom"]) assert.ok(workflow.includes(`tests/openpgp-${name}.test.mjs`));
+  assert.match(workflow, /REQUIRE_OPENPGP_BROWSER=1 node tests\/openpgp-recovery-browser\.mjs/);
   assert.match(workflow, /OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH: \.openpgp-synthetic-large-PUBLIC\.asc/);
   const largeJobEnv = workflow.split("  large-rsa:")[1].split("    steps:")[0];
   assert.doesNotMatch(largeJobEnv, /\$\{\{\s*(?:runner|env|steps)\./, "job-level env cannot reference step/runner contexts; invalid workflows register zero jobs");

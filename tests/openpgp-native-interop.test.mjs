@@ -11,6 +11,7 @@ import { join } from "node:path";
 import * as openpgp from "openpgp";
 import { encryptBackup } from "../scripts/encrypt-openpgp-backup.mjs";
 import { generateCompatibilityKey, createPublicKeyring, KEY_COMPATIBILITY_CONFIG as config } from "../apps/openpgp-workbench/keyring.mjs";
+import { createPrivateKeyRecoveryTools } from "../apps/openpgp-workbench/recovery.mjs";
 
 const gpg = process.env.OPENPGP_GPG || "gpg";
 const gpgconf = process.env.OPENPGP_GPGCONF || "gpgconf";
@@ -140,10 +141,17 @@ test("native GnuPG imports both protected RSA packets, refuses wrong passphrases
     assert.equal(verification.signatures.length, 1); await verification.signatures[0].verified;
 
     // A GnuPG re-export is read only by this independent test. The app still
-    // has no secret-key import feature and its strict generated-download
-    // protection checker is not weakened to accept arbitrary GnuPG settings.
+    // has no persistent secret-key import and its strict generated-download
+    // protection checker is not weakened by transient recovery input or to
+    // accept arbitrary GnuPG settings.
     context.run(["--armor", "--output", context.path("reexport-private.asc"), "--export-secret-keys", key.fingerprint], { secret: passphrase });
-    const protectedAgain = await openpgp.readPrivateKey({ armoredKey: readFileSync(context.path("reexport-private.asc"), "utf8") });
+    const nativeReexport = readFileSync(context.path("reexport-private.asc"), "utf8");
+    const recovery = createPrivateKeyRecoveryTools(openpgp);
+    const inspected = await recovery.inspectProtectedKey(nativeReexport);
+    assert.equal(inspected.fingerprint, key.fingerprint); assert.equal(inspected.secretPackets, 2);
+    const recoveredCandidate = await recovery.recoverProtectedKey(nativeReexport, key.fingerprint, [wrongPassphrase, passphrase]);
+    assert.deepEqual(recoveredCandidate, { status: "matched", index: 1, attempted: 2, total: 2, fingerprint: key.fingerprint, secretPackets: 2 });
+    const protectedAgain = await openpgp.readPrivateKey({ armoredKey: nativeReexport });
     assert.equal(protectedAgain.isDecrypted(), false);
     const unlockedAgain = await openpgp.decryptKey({ privateKey: protectedAgain, passphrase, config });
     try { assert.ok(unlockedAgain.getKeys().every((part) => part.keyPacket.isDecrypted())); assert.equal(unlockedAgain.getFingerprint().toUpperCase(), key.fingerprint); }

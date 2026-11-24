@@ -13,6 +13,7 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   // Dependency/recipient release-operations manifest, not offline manual data.
   "docs/research/openpgp-dependency-update-2026-11-17.json",
   "docs/research/openpgp-v6-native-interop-2026-11-17.json",
+  "docs/research/openpgp-recovery-engines-2026-11-17.json",
 ]);
 
 export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
@@ -47,6 +48,8 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   // Round 86 and native-v6 evidence are operational validation/handoff notes.
   "docs/backlog-execution-round-86-2026-11-17.md",
   "docs/openpgp-v6-native-interop-2026-11-17.md",
+  // Recovery validation/source-selection notes, not public offline manual data.
+  "docs/openpgp-wordlist-recovery-2026-11-17.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

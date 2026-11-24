@@ -49,7 +49,11 @@ test("no identity, generation, download, import or private DOM output occurs aut
     assert.equal(ui.get("generated-public-output").value, ""); assert.equal(ui.get("keyring-output").value, "");
     assert.equal(ui.get("download-private-key").disabled, true); assert.equal(ui.get("download-revocation").disabled, true);
     assert.equal(ui.get("keygen-panel").hidden, true);
-    assert.equal(ui.window.document.querySelector('textarea[id*="private"]'), null);
+    // The new recovery workflow accepts an explicit, empty PRIVATE input;
+    // generation and the PUBLIC keyring still never display secret outputs.
+    assert.deepEqual([...ui.window.document.querySelectorAll('textarea[id*="private"]')].map((node) => node.id), ["recovery-private-key"]);
+    assert.equal(ui.get("recovery-private-key").value, ""); assert.equal(ui.get("recovery-private-key").readOnly, false);
+    assert.equal(ui.get("recovery-match").value, ""); assert.equal(ui.get("recovery-start").disabled, true);
     assert.equal(ui.window.document.querySelector('button[data-copy*="private"]'), null);
   } finally { ui.dom.window.close(); }
 });
@@ -247,7 +251,7 @@ test("keyboard tabs remain accessible and insecure contexts cannot re-enable cry
     assert.equal(ui.get("capability-warning").hidden, false);
     for (const button of ui.window.document.querySelectorAll("[data-crypto-submit]")) assert.equal(button.disabled, true);
     ui.get("encrypt-tab").dispatchEvent(new ui.window.KeyboardEvent("keydown", { key: "End", bubbles: true }));
-    assert.equal(ui.get("keyring-tab").getAttribute("aria-selected"), "true"); assert.equal(ui.get("keyring-panel").hidden, false);
+    assert.equal(ui.get("recovery-tab").getAttribute("aria-selected"), "true"); assert.equal(ui.get("recovery-panel").hidden, false);
     ui.get("clear-all").click();
     for (const button of ui.window.document.querySelectorAll("[data-crypto-submit]")) assert.equal(button.disabled, true);
   } finally { ui.dom.window.close(); }

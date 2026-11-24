@@ -281,7 +281,7 @@ jobs:
                   source = Path(f"config/{name}.json").read_bytes()
                   if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
                       raise SystemExit(f"Stale coin/network registry in network APK: {name}")
-              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "vendor/openpgp.min.mjs"):
+              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
                   source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")

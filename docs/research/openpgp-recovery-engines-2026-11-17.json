@@ -1,0 +1,125 @@
+{
+  "schema": "html5-openpgp-recovery-engine-review-v1",
+  "snapshotLabel": "2026-11-17",
+  "dateMeaning": "Repository research-series label, not an upstream release date or a claim that a moving documentation page was current on that date. GitHub source observations are commit-pinned below.",
+  "requestedWorkflow": {
+    "target": "owner-authorized protected private-key passphrase recovery",
+    "matching": "Rank/filter a small wordlist and optionally preview bounded one-step typo variants; cryptographic verification is exact.",
+    "runtimeEngineAdded": false,
+    "runtimeMetasearchAdded": false,
+    "newDependencyAdded": false,
+    "ownerSecretsUsed": false
+  },
+  "discovery": {
+    "query": "OpenPGP Sequoia RNP GnuPG engines",
+    "privacy": "Only generic public engine names were searched. No owner private key, candidate, hint or fingerprint was sent to metasearch.",
+    "services": [
+      {
+        "url": "https://searx.space/",
+        "role": "SearXNG instance directory, not a cryptographic engine",
+        "observed": "Directory accessible; search.utilibre.org listed. Instance presence/rating does not certify privacy, engine compatibility or cryptographic safety."
+      },
+      {
+        "url": "https://baresearch.org/",
+        "role": "SearXNG metasearch instance",
+        "queryUrls": [
+          "https://baresearch.org/search?q=OpenPGP+Sequoia+RNP+GnuPG+engines&categories=it&language=en&format=json",
+          "https://baresearch.org/search?q=OpenPGP+Sequoia+RNP+GnuPG+engines&categories=general&language=en"
+        ],
+        "observed": "Homepage accessible. JSON query fetch failed; HTML general query returned no results. Not a comprehensive search or a negative engine-support finding."
+      },
+      {
+        "url": "https://utilibre.org/en/",
+        "role": "Tool catalog; actual metasearch is search.utilibre.org",
+        "queryUrls": [
+          "https://search.utilibre.org/search?q=OpenPGP+Sequoia+RNP+GnuPG+engines&categories=it&language=en",
+          "https://search.utilibre.org/search?q=OpenPGP+Sequoia+RNP+GnuPG+engines&categories=general&language=en"
+        ],
+        "observed": "IT query mostly irrelevant; general query mixed results including Sequoia. Used only to discover authoritative sources, not as a feature/support matrix. Catalog privacy descriptions were not independently audited."
+      }
+    ]
+  },
+  "engines": [
+    {
+      "id": "openpgpjs",
+      "name": "OpenPGP.js",
+      "version": "6.3.3",
+      "runtime": "Existing pinned browser engine, unmodified module; Node/browser distributions are the same engine",
+      "sources": ["https://github.com/openpgpjs/openpgpjs/tree/804cf464668fa088e20f7d3fe4501e39aa4cd4e1"],
+      "finding": "The workbench wraps existing secret-packet decrypt and validation APIs. Default high-level decryptKey validation need not validate every subkey; the recovery wrapper validates every included secret packet sequentially and returns only a matching candidate index.",
+      "appProfile": "v4 RSA-2048-16384, v4 legacy Ed25519/Curve25519 or v6 Ed25519/X25519; AES + iterated salted SHA-1/SHA-2 S2K, SHA-1 integrity or standard AEAD. Argon2/stubs/unprotected/mixed/unsupported inputs refused.",
+      "execution": "Synthetic Node and shipped-browser-module tests plus actual Chromium worker controls; not owner-key or physical-device certification."
+    },
+    {
+      "id": "gnupg",
+      "name": "GnuPG",
+      "runtime": "Native engine; GPGME is a high-level integration library, not a separate OpenPGP implementation",
+      "sources": [
+        "https://www.gnupg.org/documentation/manuals/gnupg/OpenPGP-Key-Management.html",
+        "https://gnupg.org/software/gpgme/index.html"
+      ],
+      "finding": "Key-management and controlled passphrase interfaces exist. Use a separately reviewed native integration, never shell-interpolate candidates or use an owner's default home/agent. gpgv is signature verification only and cannot establish private-key recovery.",
+      "execution": "Existing classic-v4 native harness extended to check exact candidates against a fresh GnuPG-protected re-export. Full gpg/gpgconf unavailable locally; mandatory exact-head CI must run it without skips. No GnuPG v6, GUI, owner-key or mobile recovery claim."
+    },
+    {
+      "id": "sequoia",
+      "name": "Sequoia OpenPGP / sq / sqop",
+      "runtime": "Rust library with separate CLI/SOP tools, not a browser drop-in",
+      "sources": ["https://www.sequoia-pgp.org/projects/", "https://www.sequoia-pgp.org/status/"],
+      "finding": "Projects page describes an RFC 9580 implementation, sq key/certificate operations and sqop SOP. sqv is a detached-signature verifier. The fetched status page explicitly dates itself 2024-10-02 and is not treated as a current-version feature matrix.",
+      "execution": "Source/documentation review only; no Sequoia binary, build, license integration or recovery test executed in this change."
+    },
+    {
+      "id": "rnp",
+      "name": "RNP / librnp",
+      "runtime": "C++ engine with a C API and selectable native crypto backends",
+      "commit": "3f2dcc913631b84d834d95eee8a33ef824dc69df",
+      "repository": "https://github.com/rnpgp/rnp",
+      "files": [
+        { "path": "README.adoc", "sha256": "cce7194cb86d787f323e0f77e2d3af2e267093353ae86b17b7e93fc4c99ce9e6" },
+        { "path": "docs/crypto-backends.adoc", "sha256": "31df2c15c3facfa531055e296451ebf56e4d17a91757348c095d2eb21f510e19" },
+        { "path": "include/rnp/rnp.h", "sha256": "a2c21aa3a993a8f69d5969db3943ed6b0ba1448a9db8cd6096252efc0d55d4bf" }
+      ],
+      "finding": "rnp_key_unlock accepts an exact password/provider, with separate key-protection queries. RFC-9580-related algorithms depend on build flags/backend; crypto-refresh and PQC options are documented off by default at this pin. A generic RNP name is not proof a packaged binary supports the desired v6/S2K/AEAD profile.",
+      "execution": "Commit-pinned source review only; not compiled or linked into the app."
+    },
+    {
+      "id": "rpgp",
+      "name": "rPGP",
+      "runtime": "Pure-Rust OpenPGP library with low-level APIs",
+      "commit": "1a5788b91726200e1c4ccd697430e59426c82be2",
+      "repository": "https://github.com/rpgp/rpgp",
+      "sources": ["https://github.com/rpgp/rpgp/blob/1a5788b91726200e1c4ccd697430e59426c82be2/README.md"],
+      "files": [{ "path": "docs/IMPL_STATUS.md", "sha256": "86f838d383b43b8135788bed618a0716bd6c9a93e24536b78236360455292f06" }],
+      "finding": "README and implementation checklist claim RFC 9580/v4/v6, PKESKv6/SKESKv6/SEIPDv2 support. A source checklist is not an independently executed interoperability result or a guarantee for every consumer application.",
+      "execution": "Commit-pinned source review only; no Rust/WASM binary or recovery backend added."
+    },
+    {
+      "id": "bouncy-castle",
+      "name": "Bouncy Castle Java bcpg",
+      "runtime": "Java OpenPGP library, separate from provider/FIPS products",
+      "commit": "6560e91d0a164b8ab58266f141ee6daeec21a340",
+      "repository": "https://github.com/bcgit/bc-java",
+      "files": [
+        { "path": "README.md", "sha256": "1889f9aa7c53d1b715e5cac47f83114c4af24950910eadad638f483768cec652" },
+        { "path": "pg/src/main/java/org/bouncycastle/openpgp/PGPSecretKey.java", "sha256": "5d66201b8fd3ed01f84ecca68b83266f64e314d55d0064c6f481fd8ac51990df" }
+      ],
+      "sources": ["https://www.bouncycastle.org/documentation/specification_interoperability/"],
+      "finding": "Pinned README identifies bcpg RFC 4880/RFC 9580 support; PGPSecretKey.extractPrivateKey uses a supplied decryptor and returns null for missing private material. The general specification webpage still lists older RFCs, so do not infer a full v6 support matrix from that page or a FIPS certificate.",
+      "execution": "Commit-pinned source review only; no Java/Android implementation or GUI/device recovery test added."
+    },
+    {
+      "id": "go-crypto",
+      "name": "ProtonMail/go-crypto; GOpenPGP wrapper",
+      "version": "go-crypto v1.5.2",
+      "sources": [
+        "https://github.com/ProtonMail/go-crypto/tree/7537b30ff8aaf643512ce8bb78f5f92c44ffa6b4",
+        "https://github.com/ProtonMail/gopenpgp/tree/dcc4859aba4cd912c7562a534912fc8fc688e04b"
+      ],
+      "finding": "The repository already has a separate pinned, test-only independent native v6 interoperability harness. GOpenPGP wraps go-crypto and is not a second independent implementation. That message harness does not certify owner protected-key passphrase recovery.",
+      "execution": "Existing four mandatory native-v6 tests, separate from this new recovery UI; no Go engine shipped in the browser."
+    }
+  ],
+  "decision": "Keep the pinned, unmodified OpenPGP.js browser engine and bounded local recovery worker. Do not add runtime switching, native binaries, remote dictionaries, metasearch requests or secret uploads. Future engines require version/build-flag/license review and independent protected-key negative/positive tests before integration.",
+  "unchangedGates": ["PUBLIC keyring and full fingerprint/binding/revocation recipient policy", "conservative generated protected-private downloads", "owner/device/GUI recovery acceptance", "original keys and existing encrypted backups", "encrypted APK delivery and unrelated deployment gates"]
+}

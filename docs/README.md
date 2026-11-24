@@ -15,7 +15,12 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
-## Current round 86 · independent native OpenPGP v6
+## Current OpenPGP continuation · bounded owner-authorized wordlist recovery
+
+- [Local wordlist recovery and engine investigation](openpgp-wordlist-recovery-2026-11-17.md) — explicit ranked/typo preview, exact all-secret-packet validation, stoppable local worker, strict limits and non-persistence; SearXNG discovery kept separate from source-reviewed cryptographic engines. Not unbounded cracking, owner-key recovery or device/GUI certification.
+- [Pinned engine/source observations](research/openpgp-recovery-engines-2026-11-17.json) — GnuPG/GPGME, Sequoia, RNP, rPGP, Bouncy Castle and the existing Go harness; source claims distinguished from executed controls. No new runtime dependency or metasearch integration.
+
+## Round 86 · independent native OpenPGP v6
 
 - [Independent native v6 interoperability](openpgp-v6-native-interop-2026-11-17.md) — four actual mandatory Go/OpenPGP.js two-way, full-fingerprint, strictness and tamper controls; pinned test-only dependencies, per-direction OCB/GCM assertions and local/CI SDK distinction. Not owner recovery or mobile/GUI certification.
 - [Round 86 execution and remaining gates](backlog-execution-round-86-2026-11-17.md) — intact PUBLIC attachment inspection without a recipient change, unchanged backups, fail-closed native CI and remaining delivery/device/token-evidence gates.

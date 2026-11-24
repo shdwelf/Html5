@@ -230,7 +230,7 @@ try {
     await test("mobile tabs fit, real keyboard navigation works and no page/external-request errors occurred", async () => {
       await page.setViewport({ width: 360, height: 800 });
       await page.focus("#encrypt-tab"); await page.keyboard.press("End");
-      assert.equal(await page.$eval("#keyring-tab", (element) => element.getAttribute("aria-selected")), "true");
+      assert.equal(await page.$eval("#recovery-tab", (element) => element.getAttribute("aria-selected")), "true");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.click("#keygen-tab");
       await page.screenshot({ path: join(directory, "workbench-mobile.png"), fullPage: true });
