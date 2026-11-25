@@ -110,3 +110,40 @@ Outcome records land on `main` in `docs/drive-sync/dropbox-probe.log` and
   sanitized ledger carries no checkable entries by design, so the only
   meaningful post-restore checks are the probe's own manifest re-hash and
   the restored files' presence.
+
+## Probe outcome (CI run 45587347179)
+
+The probe (post-merge, redacted log committed as
+`docs/drive-sync/dropbox-probe.log`) answered the open question
+definitively: **no server-side fetch form can work.** Every override form of
+the shared link returned the host's web-app HTML instead of bytes (231 KB
+`maestro` pages), the alternate content host 404'd, the anonymous Drive
+endpoints are still quota-404, `gdown` failed, and the share page carries no
+URL-style signature parameter to extract. The decisive cross-check: the
+platform-side page fetcher — a completely different network path — receives
+the identical "error" page, while the authorized-connector metadata still
+reports the link as live, public, and downloadable. That combination means
+the host is blocking **datacenter IP ranges**, not the link, the form, or
+the credentials: a valid public link that no server-side fetcher may
+download.
+
+## Completion path (release-asset route, one owner step)
+
+Following the PR-184 retrieval doctrine (owner bridges the network gap with
+a browser step; CI does the rest), the round ships
+[`chipwright-restore.yml`](../.github/workflows/chipwright-restore.yml):
+
+1. **Owner (browser, ~2 minutes):** download
+   `Html5-worktree-2026-09-27-12c463f.tar.gz` from the storage area and
+   attach it to a GitHub release tagged `chipwright-snapshot-12c463f`
+   (Releases → draft → drag the file in → publish).
+2. **Agent/CI:** dispatch `chipwright-restore`. The workflow downloads the
+   release asset (repo-internal URL — no external host, no identifiers),
+   verifies the SHA-256 against the prefix published in the status doc,
+   extracts the snapshot, locates its root via `chipwright.html`, restores
+   the missing files with `scripts/drive-sync-apply.mjs` (re-hashing each
+   against the committed manifest), and commits them plus the apply log.
+
+Until the owner step is done, the chipwright strand stays at
+"everything staged, one browser upload pending" — the same terminal state
+the PR-184 APK retrieval record documents.

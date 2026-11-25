@@ -1,0 +1,115 @@
+name: chipwright-restore
+
+# Backlog round 87 completion path (see docs/backlog-execution-round-87-2026-10-29.md
+# and docs/chipwright-restore-status-2026-10-22.md).
+#
+# Every server-side fetch of the 2026-09-27 snapshot tarball is blocked by
+# IP-reputation (probe run 45587347179: Dropbox serves its web app / error
+# page to datacenter IPs in every URL form, the alternate content host 404s,
+# the Drive anonymous endpoints are quota-404, and the authorized-connector
+# metadata is fine — so the link is valid but host-blocked; the platform-side
+# fetcher errors identically, which rules out any non-residential fetcher).
+# Per the PR-184 retrieval doctrine, the owner bridges the gap with a browser
+# step: download the tarball from the storage area and attach it to the
+# release named below. This workflow then does everything else.
+#
+# Steps for the owner (also recorded in the status doc):
+#   1. Download `Html5-worktree-2026-09-27-12c463f.tar.gz` from the storage
+#      area in a browser.
+#   2. On GitHub: Releases → draft a release with tag `chipwright-snapshot-12c463f`
+#      (or reuse it) and drag the tarball in as an attachment; publish.
+#   3. Actions → chipwright-restore → Run workflow.
+#
+# The workflow verifies the tarball SHA-256 against the prefix published in
+# the status doc, extracts the snapshot, locates its root via chipwright.html,
+# restores the missing files with scripts/drive-sync-apply.mjs (re-hashing
+# each against the committed docs/drive-sync manifest), and commits them plus
+# the apply log. The gitignored payload is never staged.
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag holding the snapshot tarball asset'
+        required: false
+        default: 'chipwright-snapshot-12c463f'
+
+permissions:
+  contents: write
+
+env:
+  TARBALL_NAME: Html5-worktree-2026-09-27-12c463f.tar.gz
+  SHA_PREFIX: c4cb0bc0276e2af4
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download and verify the snapshot tarball from the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -e
+          mkdir -p .arena-drive/payload
+          gh release download "$RELEASE_TAG" \
+            --pattern "$TARBALL_NAME" \
+            --output ".arena-drive/payload/$TARBALL_NAME" \
+            --clobber
+          got=$(sha256sum ".arena-drive/payload/$TARBALL_NAME" | cut -d' ' -f1)
+          echo "tarball sha256_prefix=${got:0:16} expected_prefix=$SHA_PREFIX"
+          if [ "${got:0:16}" != "$SHA_PREFIX" ]; then
+            echo "::error::tarball sha256 does not match the published prefix — refusing to restore"
+            exit 1
+          fi
+
+      - name: Restore the missing files
+        run: |
+          set -e
+          rm -rf /tmp/snap && mkdir -p /tmp/snap
+          tar xzf ".arena-drive/payload/$TARBALL_NAME" -C /tmp/snap
+          root=/tmp/snap
+          if [ ! -f "$root/chipwright.html" ]; then
+            f=$(find /tmp/snap -name chipwright.html -print -quit)
+            [ -n "$f" ] && root=$(dirname "$f")
+          fi
+          echo "snapshot root located: yes"
+          man=docs/drive-sync/Html5-file-manifest-2026-09-27-12c463f.sha256
+          node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write \
+            2>&1 | tee docs/drive-sync/restore-12c463f.log
+          test -f chipwright.html || {
+            echo "::error::restore produced no candidates — see the apply log above"
+            exit 1
+          }
+
+      - name: Commit the restored files
+        run: |
+          set -e
+          git config user.name chipwright-restore
+          git config user.email chipwright-restore@users.noreply.github.com
+          git add -A
+          if git diff --cached --name-only | grep -q '^\.arena-drive/payload/'; then
+            echo "::error::snapshot payload staged for commit — refusing"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -q -m "chipwright: restore the 25 workbench files from the 12c463f snapshot"
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" || true
+            sleep 3
+          done
+          echo "::error::push failed after 5 attempts"
+          exit 1
