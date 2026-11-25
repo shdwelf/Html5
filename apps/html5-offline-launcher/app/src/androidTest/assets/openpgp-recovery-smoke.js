@@ -38,7 +38,9 @@
   async function create(mode) {
     try {
       const pgp = await import("openpgp");
-      const config = { v6Keys: false, s2kIterationCountByte: mode === "slow" ? 255 : 96 };
+      // Bound the synthetic hash input to 16 MiB (c=224), not 62 MiB
+      // (c=255). This does not rewrite any production key/S2K parameter.
+      const config = { v6Keys: false, s2kIterationCountByte: mode === "slow" ? 224 : 96 };
       const common = { userIDs: [{ name: "Synthetic Android recovery control only" }], passphrase: secret };
       if (mode === "slow") {
         const key = await pgp.generateKey({ ...common, type: "ecc", curve: "curve25519Legacy", config });

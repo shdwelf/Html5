@@ -37,6 +37,17 @@ test("native aborts and last touchscreen phases survive noisy WebView and Gradle
   assert.match(output, /injecting ACTION_UP/);
 });
 
+test("recovery milestones survive later audio/game stages without exposing page values", () => {
+  const output = report({ "android-webview-logcat.log":
+    "Html5RecoverySmoke: actual progress received; native cancellation gesture next\n" +
+    "Html5RecoverySmoke: cancellation settled; checking counters and hidden result\n" +
+    "Html5GestureSmoke: start: touchscreen injection returned\n".repeat(120) });
+  assert.match(output, /recovery milestones/);
+  assert.match(output, /native cancellation gesture next/);
+  assert.match(output, /cancellation settled/);
+  assert.ok(output.length < 7000);
+});
+
 test("annotation data is escaped and malformed or absent XML is not labeled a passing test", () => {
   const output = report({
     "instrumentation-reports/public-local-files/broken.xml": "<broken",

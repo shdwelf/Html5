@@ -126,6 +126,10 @@ try {
         for (const action of ["recovery-stop", "recovery-clear", "clear-all"]) {
           await load("slow", "slow"); await preview(); await start();
           await page.waitForFunction(() => __androidRecoverySmoke.snapshot().attempts >= 1 && __androidRecoverySmoke.snapshot().live === 1, { timeout: 30000 });
+          const running = await snapshot();
+          assert.equal(running.records.at(-1).operation, "recover");
+          assert.equal(running.records.at(-1).total, 256);
+          assert.equal(running.records.at(-1).terminated, false);
           assert.equal(await page.evaluate(() => 6 * 7), 42);
           await page.click(`#${action}`); await text(action === "recovery-stop" ? "not a completed/exhausted search" : "cleared; any worker terminated");
           const stopped = await snapshot();

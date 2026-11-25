@@ -131,12 +131,19 @@ public final class RecoveryWebViewSmokeTest {
                 preview(web, "success");
                 start(web);
                 awaitTrue(web, "__androidRecoverySmoke.snapshot().attempts >= 1 && __androidRecoverySmoke.snapshot().live === 1");
+                JSONObject running = snapshot(web);
+                JSONObject active = running.getJSONArray("records").getJSONObject(running.getJSONArray("records").length() - 1);
+                assertEquals("recover", active.getString("operation"));
+                assertEquals(256, active.getInt("total"));
+                assertFalse(active.getBoolean("terminated"));
+                Log.i("Html5RecoverySmoke", "actual progress received; native cancellation gesture next");
                 // A real expensive S2K is executing off-thread; the page must
                 // still evaluate JS and accept an actual foreground touch.
                 assertEquals("42", evaluate(web, "String(6 * 7)"));
                 tap(web, action);
                 awaitText(web, "recovery-stop".equals(action) ? "not a completed/exhausted search" : "cleared; any worker terminated");
                 JSONObject stopped = snapshot(web);
+                Log.i("Html5RecoverySmoke", "cancellation settled; checking counters and hidden result");
                 assertWorkers(stopped, stopped.getJSONArray("records").length(), true);
                 assertTrue(stopped.getBoolean("matchEmpty"));
                 assertTrue(stopped.getBoolean("revealHidden"));
@@ -173,6 +180,7 @@ public final class RecoveryWebViewSmokeTest {
         evaluate(web, "__androidRecoverySmoke.create('" + mode + "'); 'creating'");
         awaitTrue(web, "__androidRecoverySmoke.snapshot().ready || __androidRecoverySmoke.snapshot().failed");
         JSONObject initial = snapshot(web);
+        Log.i("Html5RecoverySmoke", "synthetic fixture generation settled");
         assertFalse("synthetic fixture generation must succeed, without exposing inputs/errors", initial.getBoolean("failed"));
         assertTrue(initial.getBoolean("secure"));
         assertWorkers(initial, 0, true);
@@ -183,6 +191,7 @@ public final class RecoveryWebViewSmokeTest {
         Log.i("Html5RecoverySmoke", "requesting preview; expected kind: " + kind);
         tap(web, "recovery-preview");
         awaitTrue(web, "!document.getElementById('recovery-preview').disabled && document.getElementById('recovery-status').dataset.kind === '" + kind + "'");
+        Log.i("Html5RecoverySmoke", "preview settled; expected kind: " + kind);
     }
     private void start(WebView web) throws Exception {
         Log.i("Html5RecoverySmoke", "confirming synthetic fingerprint and starting exact attempts");

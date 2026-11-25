@@ -63,6 +63,9 @@ def collect(base):
         chosen = list(dict.fromkeys(hits[:2] + hits[-4:]))
         for i in chosen:
             evidence.append(("Android-runner-process", name + "\n" + "\n".join(lines[max(0, i - 2):i + 8])[:CHUNK - 100]))
+        recovery = [line for line in lines if "Html5RecoverySmoke" in line]
+        if recovery:
+            evidence.append(("Android-runner-stages", name + " [recovery milestones]\n" + "\n".join(recovery[-16:])[-CHUNK + 100:]))
         stages = [line for line in lines if STAGES.search(line)]
         if stages:
             evidence.append(("Android-runner-stages", name + "\n" + "\n".join(stages[-24:])[-CHUNK + 100:]))

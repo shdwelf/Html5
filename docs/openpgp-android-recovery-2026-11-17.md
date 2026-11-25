@@ -39,7 +39,7 @@ assertion bypass, retry, skip or extension of an existing deadline.
    construction. The malformed Argon2 control performs no Argon2 derivation.
    A valid protected key with only the case-mismatched guess completes exactly
    one attempt, never reports success and retains the bounded-exhaustion warning.
-3. **Actual in-flight cancellation.** A fresh iterated-S2K-255 synthetic key and
+3. **Actual in-flight cancellation.** A fresh iterated-S2K-224 synthetic key and
    256 wrong candidates keep a real worker busy. After at least one reported
    exact attempt and while the worker is live, page JavaScript remains
    responsive. Real Stop, recovery Clear and global Clear independently call
@@ -87,7 +87,7 @@ artifacts are preserved. Private APK plaintext and test APKs are not uploaded.
 Fresh local controls before CI:
 
 - Android policy/completion/save plus all three recovery unit/crypto/DOM suites
-  and operational corpus exclusion: **66 passed / 0 failed / 0 skipped**.
+  and operational corpus exclusion: **67 passed / 0 failed / 0 skipped**.
 - Identical test-APK fixture with real Chromium workers: **3 passed / 0 failed /
   0 skipped**, including both success profiles, refusal/no-match and all three
   cancellation actions, zero page errors/external requests/downloads.
@@ -108,6 +108,28 @@ asynchronous. The harness now awaits actual destruction events with a strict
 10-second deadline and still requires every real worker to be destroyed;
 no assertion or production behavior is weakened. The fresh three-case rerun
 above passed. That failed attempt is not counted as a successful run.
+
+### First actual Android attempt and bounded fixture correction
+
+Head `4aec811`'s [actual Android run](https://github.com/shdwelf/Html5/actions/runs/45583514112)
+kept all original **14 cases passing**, but the new recovery phase timed out
+(exit124, no complete XML). The runner reported a 120,000-ms cancellation-test
+timeout, while guest LMKD reported low-memory/swap pressure. The host still
+had 10,687 MiB available and the emulator remained present; this is not a
+proven host OOM, exact native-crash diagnosis or successful new recovery gate.
+
+The initial synthetic cancellation key used c=255. The pinned engine's
+`GenericS2K.getCount/produceKey` allocates a **62-MiB hash input per derivation**
+for that setting, before browser/native copies. The test fixture now explicitly
+uses c=224 (**16 MiB**, also the upstream engine default) to bound its mobile
+working set. This is a synthetic-fixture resource correction, not an assertion
+bypass or a proven root-cause claim. All **256 real wrong guesses**, actual
+reported progress, a live native worker, real foreground touches, every Stop /
+Clear action, native termination, hidden results and no late progress remain
+mandatory. The active worker's `recover` operation and total256 are additional
+assertions. Production key/S2K policies, owner inputs, recovery limits, every
+original test and every deadline remain unchanged. Phase-only recovery
+milestones are retained separately from later audio/game noise.
 
 Only the exact final head's successful Android job and structured per-phase
 annotation can establish this new emulator gate. Final CI links/counts and the

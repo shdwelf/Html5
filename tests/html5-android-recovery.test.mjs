@@ -17,7 +17,8 @@ test("test-APK fixture parses and generates only fresh synthetic material withou
   assert.match(fixture, /await import\("openpgp"\)/);
   assert.match(fixture, /await pgp\.generateKey/);
   assert.match(fixture, /v6Keys: true, aeadProtect: true/);
-  assert.match(fixture, /mode === "slow" \? 255 : 96/);
+  assert.match(fixture, /mode === "slow" \? 224 : 96/);
+  assert.equal((16 + (224 & 15)) * 2 ** ((224 >> 4) + 6), 16 * 1024 * 1024, "synthetic S2K hash-input allocation is bounded");
   assert.doesNotMatch(fixture, /-----BEGIN PGP|console\.|fetch\(|XMLHttpRequest|localStorage\.setItem|sessionStorage\.setItem|\.download\s*=/);
   assert.match(fixture, /noPersistence: localStorage\.length === 0 && sessionStorage\.length === 0/);
   const activity = read("apps/html5-offline-launcher/app/src/main/java/org/arena/html5launcher/MainActivity.java");
