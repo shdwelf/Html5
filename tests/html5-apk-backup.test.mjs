@@ -23,6 +23,14 @@ test("APK backup verification accepts a valid APK and matching checksum under th
   assert.match(result.sha256, /^[a-f0-9]{64}$/);
 });
 
+test("APK backup verification matches the repository-relative sha256sum label used by CI", async (t) => {
+  const apkPath = await fixture(t, Buffer.from("synthetic APK fixture"));
+  const label = "apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk";
+  const digest = createHash("sha256").update("synthetic APK fixture").digest("hex");
+  await writeFile(`${apkPath}.sha256`, `${digest}  ${label}\n`);
+  assert.equal((await verifyApkBackup(apkPath, { checksumLabel: label })).sha256, digest);
+});
+
 test("APK backup cap is inclusive at the exact byte limit", async (t) => {
   const apkPath = await fixture(t, Buffer.from("12345"));
   assert.equal((await verifyApkBackup(apkPath, { maxBytes: 5 })).bytes, 5);
