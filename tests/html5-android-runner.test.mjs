@@ -37,6 +37,17 @@ test("native aborts and last touchscreen phases survive noisy WebView and Gradle
   assert.match(output, /injecting ACTION_UP/);
 });
 
+test("recovery milestones survive later audio/game stages without exposing page values", () => {
+  const output = report({ "android-webview-logcat.log":
+    "Html5RecoverySmoke: actual progress received; native cancellation gesture next\n" +
+    "Html5RecoverySmoke: cancellation settled; checking counters and hidden result\n" +
+    "Html5GestureSmoke: start: touchscreen injection returned\n".repeat(120) });
+  assert.match(output, /recovery milestones/);
+  assert.match(output, /native cancellation gesture next/);
+  assert.match(output, /cancellation settled/);
+  assert.ok(output.length < 7000);
+});
+
 test("annotation data is escaped and malformed or absent XML is not labeled a passing test", () => {
   const output = report({
     "instrumentation-reports/public-local-files/broken.xml": "<broken",
@@ -102,7 +113,7 @@ test("build failure annotations escape untrusted log data and retain early cause
   assert.ok(result.stdout.length < 13000);
 });
 
-const completeSummary = () => ({ schema: 1, phases: Object.entries({ "public-local-files": 6, "network-local-files": 6, "public-audio-policy": 1, "public-headline-harry": 1 })
+const completeSummary = () => ({ schema: 1, phases: Object.entries({ "public-local-files": 6, "network-local-files": 6, "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1 })
   .map(([phase, tests]) => ({ phase, exit: 0, tests, passed: tests, failed: 0, skipped: 0, firstFailure: null })) });
 function validate(summary) {
   const dir = mkdtempSync(join(tmpdir(), "synthetic-android-complete-"));
@@ -113,10 +124,10 @@ function validate(summary) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("Android completion gate requires all 14 passing actual results and four zero exits", () => {
+test("Android completion gate requires all 17 passing actual results and five zero exits", () => {
   const result = validate(completeSummary());
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /14 passed, zero failed\/skipped/);
+  assert.match(result.stdout, /17 passed, zero failed\/skipped/);
 });
 
 test("Android completion gate refuses partial/no results, skips, failures or nonzero phase exit even if a runner claims success", () => {
@@ -125,7 +136,11 @@ test("Android completion gate refuses partial/no results, skips, failures or non
     (s) => { s.phases[1].skipped = 1; s.phases[1].passed = 5; },
     (s) => { s.phases[1].failed = 1; s.phases[1].passed = 5; },
     (s) => { s.phases[2].exit = 1; },
-    (s) => { s.phases[3].exit = null; s.phases[3].tests = 0; s.phases[3].passed = 0; },
+    (s) => { s.phases[3].exit = 1; },
+    (s) => { s.phases[4].exit = null; s.phases[4].tests = 0; s.phases[4].passed = 0; },
+    (s) => { s.phases[2].tests = 2; s.phases[2].passed = 2; },
+    (s) => { s.phases[2].skipped = 1; s.phases[2].passed = 2; },
+    (s) => { s.phases.splice(2, 1); },
     (s) => { s.phases[0].tests = true; },
   ]) {
     const summary = completeSummary(); change(summary);

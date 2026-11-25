@@ -153,8 +153,11 @@ actual Chromium recovery (browser absence fails, not skips), and the extended
 GnuPG protected re-export control. It retains mandatory PGPy/full-GnuPG and the
 separate slow large-RSA lane. Generated/shipped modules are byte-matched, and
 Android APK asset checks include all recovery modules. Android packaging success
-is **not** an actual Android worker/device/GUI recovery test. No synthetic secret
-artifact, home, passphrase or revocation file is uploaded/cross-job cached.
+is **not** an actual Android worker/device/GUI recovery test. The subsequent
+[Android recovery acceptance gate](openpgp-android-recovery-2026-11-17.md) adds
+separate real-WebView/module-worker cases; its exact-head results must be
+reviewed independently, not folded into this earlier local capture. No synthetic
+secret artifact, home, passphrase or revocation file is uploaded/cross-job cached.
 
 Exact-head required CI must pass before merge; old-head passes do not validate
 new recovery code. Later CI evidence belongs to the matching PR head/results,

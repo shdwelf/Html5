@@ -151,8 +151,9 @@ Network: app/build/outputs/apk/network/debug/app-network-debug.apk
 
 The Android instrumentation suite exercises matching-origin microphone policy,
 requests a real `getUserMedia` audio track, saves/imports synthetic files through
-real WebView callbacks and a test document provider, and boots the packaged
-Headline Harry DOS program in Android WebView. CI runs these tests on an API 34
+real WebView callbacks and a test document provider, runs protected-key
+recovery through actual local module workers, and boots the packaged Headline
+Harry DOS program in Android WebView. CI runs these tests on an API 34
 emulator with a silent, local PulseAudio source; this verifies permission and
 track startup, not acoustic capture quality. Device testing has a separate
 20-minute step bound; build artifacts are exported **before** it starts. An APK
@@ -164,9 +165,9 @@ activation phases. An empty JUnit `<failure/>` or a partial testcase count is
 not a passing phase and does not establish an emulator-only root cause. These
 diagnostics do not change the tests, permission/save policies or time limits.
 CI additionally requires complete results: six public file/save cases, six
-network file/save cases, one audio-policy case and one game-boot case. All 14
-must pass with zero skips and all four phase exits zero; missing/partial runner
-output cannot yield a green device gate. The CI guest is limited to 2 GiB and
+network file/save cases, three protected-key recovery cases, one audio-policy
+case and one game-boot case. All **17** must pass with zero skips and all five
+phase exits zero; missing/partial runner output cannot yield a green device gate. The CI guest is limited to 2 GiB and
 connected-test Gradle invocations to a 1-GiB heap / one worker; normal APK build
 settings are unchanged. On failure the runner captures bounded host memory,
 cgroup counters, process **names** (not arguments), device state and matching
@@ -183,8 +184,24 @@ returned, while the other 13 cases passed. Resource reduction alone did not fix
 it; the captured host snapshot had ample available memory and no matching OOM
 kernel evidence. A related external renderer-crash report [1](https://github.com/expo/eas-cli/issues/4928)
 is a discovery clue, not proof of our exact native crash or universal hardware
-compatibility. The renderer change must pass our same 14-case, zero-skip gate;
-no packaged game/WebView/app behavior or graphics-success assertion is changed.
+compatibility. The renderer change passed the original 14-case, zero-skip gate
+in PR239. The expanded 17-case gate retains every one of those cases; no packaged
+game/WebView/app behavior or graphics-success assertion is changed.
+
+The three additional recovery cases exercise protected v4 legacy-25519 and
+v6 Ed25519/X25519 exact two-candidate checks, full-fingerprint refusal, explicit
+reveal, public/unprotected/Argon2 refusal before attempts, bounded no-match,
+and real Stop/recovery Clear/global Clear during expensive S2K work. Preview,
+acknowledgement, Start, reveal, Stop and Clear use the foreground/focus-gated
+real-touchscreen helper; synthetic input fields are populated by the harness.
+A test-APK-only script generates fresh synthetic keys in memory and delegates to native
+module workers, recording only URL/type/operation/count/termination metadata.
+The identical fixture also runs in mandatory Chromium as an independent test
+of the harness; Chromium is not Android proof. No owner inputs, private fixture,
+secret diagnostics, persistence, download or production test hook is added.
+This API-34 public-APK test is not physical-device, network-flavor recovery,
+OpenKeychain, PGPony, Kleopatra or guaranteed-memory-erasure acceptance. See
+[the recovery acceptance record](../../docs/openpgp-android-recovery-2026-11-17.md).
 
 Normal CI uploads the public and opt-in network APKs as separate 30-day
 artifacts: `html5-offline-launcher-public-debug-apk` and
