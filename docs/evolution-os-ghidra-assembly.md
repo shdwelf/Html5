@@ -1,6 +1,6 @@
 # Evolution OS — Ghidra disassembly, assembled with BBS / wiki / fax modem
 
-Generated: 2026-10-28T12:44:54.470Z by `tools/evolution-os/evolution-os.mjs`.
+Generated: 2026-11-25T09:16:31.587Z by `tools/evolution-os/evolution-os.mjs`.
 
 **Status: 3 Ghidra report(s) assembled.** Static analysis only — no input was executed.
 
