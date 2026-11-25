@@ -132,6 +132,13 @@ node --test tests/token-research.test.mjs tests/coin-research.test.mjs tests/coi
 
 ## Next acceptance work
 
+The follow-up [deployment capture preflight](token-deployment-capture-2026-11-17.md)
+adds bounded offline hash-pinned request plans and strict local-capture controls
+for the three existing EVM tuples, including the Circle reference's legacy
+proxy-slot distinction. It does not contact RPC, change this ledger's unqueried
+state or close a deployment/financial gate. TRON still needs separate TVM
+evidence; consistent provider assertions are not consensus/state proofs.
+
 1. Finish per-deployment block-anchored code/implementation, initialized metadata,
    control/fee state, migration and reserve/redemption-source checks. Current
    fee and transfer behaviour remain unknown until independently evidenced.

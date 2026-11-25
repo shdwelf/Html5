@@ -1,0 +1,70 @@
+name: Waves paper practice
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'js/coins.js'
+      - 'js/coins.d.ts'
+      - 'config/coins-top500.json'
+      - 'config/market-top500.json'
+      - 'tests/waves-practice-browser.mjs'
+      - 'tests/lib-browser.mjs'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+      - 'vitest.config.ts'
+      - 'bip39-haiku-workbench.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/waves-practice.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'js/coins.js'
+      - 'js/coins.d.ts'
+      - 'config/coins-top500.json'
+      - 'config/market-top500.json'
+      - 'tests/waves-practice-browser.mjs'
+      - 'tests/lib-browser.mjs'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+      - 'vitest.config.ts'
+      - 'bip39-haiku-workbench.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/waves-practice.yml'
+
+# No wallet RPC, credentials, transactions, publications or artifact uploads.
+permissions:
+  contents: read
+
+concurrency:
+  group: waves-practice-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  paper-ui:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Retain strict ES2020 TypeScript checks
+        run: npx --no-install tsc --noEmit
+      - name: Require the whole maintained application unit and DOM suite
+        run: npx --no-install vitest run
+      - name: Build the offline single-file workbench
+        run: npm run build:web
+      - name: Require real Chromium desktop and mobile paper-session controls
+        run: node tests/waves-practice-browser.mjs
+      - name: Keep generated sources and runtime token inputs unchanged
+        run: git diff --exit-code

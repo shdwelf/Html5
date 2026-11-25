@@ -1,237 +1,170 @@
-import { useMemo, useState } from "react";
-import { useMarket, fmt, Sparkline } from "../lib/market";
-import { WORDLIST } from "../lib/wallet";
+import { useReducer, useState } from "react";
+import { useMarket, Sparkline, type Ticker } from "../lib/market";
+import {
+  EMPTY_PAPER_STATE, PAPER_ASSETS, formatPaperUnits, paperPriceUnits,
+  paperReducer, placePaperOrder, type PaperSide,
+} from "../lib/paper-market";
 
-interface Account {
-  seed: string;
-  address: string;
-  balances: Record<string, number>;
-}
-
-const ACC_KEY = "waves_acc_v1";
-
-function genWavesAccount(): Account {
-  const words: string[] = [];
-  for (let i = 0; i < 15; i++)
-    words.push(WORDLIST[Math.floor(Math.random() * WORDLIST.length)]);
-  const seed = words.join(" ");
-  // pseudo Waves address (3P… mainnet style) for display purposes
-  const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-  let addr = "3P";
-  let h = 0;
-  for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  for (let i = 0; i < 33; i++) {
-    h = (h * 1103515245 + 12345) >>> 0;
-    addr += chars[h % chars.length];
-  }
-  return {
-    seed,
-    address: addr,
-    balances: { WAVES: 100, USDT: 5000, BTC: 0.05, ETH: 0.5 },
-  };
-}
-
-function loadAcc(): Account | null {
-  try {
-    return JSON.parse(localStorage.getItem(ACC_KEY) || "") as Account;
-  } catch {
-    return null;
-  }
-}
+// An explicit illustrative price, not a fabricated current WAVES quote. The
+// shared offline feed has BTC/ETH but does not currently include WAVES.
+const SAMPLE_WAVES: Ticker = {
+  symbol: "WAVES", name: "Waves (practice only)", price: 1, change24h: 0,
+  history: [0.99, 1.01, 0.98, 1.02, 1],
+};
+const panel = "min-w-0 rounded-xl border border-zinc-700 bg-zinc-900/60 p-5";
+const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300";
 
 export default function WavesExchange() {
-  const market = useMarket(2000);
-  const [acc, setAcc] = useState<Account | null>(loadAcc());
+  const feed = useMarket(2000);
+  const market = [SAMPLE_WAVES, ...feed.filter((ticker) => ticker.symbol === "BTC" || ticker.symbol === "ETH")];
+  const [state, dispatch] = useReducer(paperReducer, EMPTY_PAPER_STATE);
   const [pair, setPair] = useState("WAVES");
-  const [side, setSide] = useState<"buy" | "sell">("buy");
+  const [side, setSide] = useState<PaperSide>("buy");
   const [amount, setAmount] = useState("10");
-  const [revealSeed, setRevealSeed] = useState(false);
-
-  const ticker = market.find((t) => t.symbol === pair)!;
-  const price = ticker?.price ?? 0;
-
-  const book = useMemo(() => {
-    const asks = Array.from({ length: 7 }, (_, i) => ({
-      p: price * (1 + (i + 1) * 0.0008),
-      a: Math.random() * 500 + 10,
-    }));
-    const bids = Array.from({ length: 7 }, (_, i) => ({
-      p: price * (1 - (i + 1) * 0.0008),
-      a: Math.random() * 500 + 10,
-    }));
-    return { asks: asks.reverse(), bids };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pair, Math.round(price * 100)]);
-
-  const createAcc = () => {
-    const a = genWavesAccount();
-    localStorage.setItem(ACC_KEY, JSON.stringify(a));
-    setAcc(a);
-  };
-
-  const trade = () => {
-    if (!acc) return;
-    const amt = parseFloat(amount);
-    if (!amt || amt <= 0) return;
-    const cost = amt * price;
-    const b = { ...acc.balances };
-    if (side === "buy") {
-      if ((b.USDT ?? 0) < cost) return alert("Insufficient USDT");
-      b.USDT -= cost;
-      b[pair] = (b[pair] ?? 0) + amt;
-    } else {
-      if ((b[pair] ?? 0) < amt) return alert(`Insufficient ${pair}`);
-      b[pair] -= amt;
-      b.USDT = (b.USDT ?? 0) + cost;
-    }
-    const next = { ...acc, balances: b };
-    setAcc(next);
-    localStorage.setItem(ACC_KEY, JSON.stringify(next));
-  };
-
-  if (!acc) {
-    return (
-      <div className="mx-auto max-w-md space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-8 text-center">
-        <div className="text-5xl">🌊</div>
-        <h2 className="text-xl font-semibold">wAves Lite Client</h2>
-        <p className="text-sm text-zinc-400">
-          A self-custodial Waves wallet & DEX. Generate a 15-word seed to begin
-          (kept locally, offline).
-        </p>
-        <button
-          onClick={createAcc}
-          className="rounded-lg bg-cyan-500 px-5 py-2.5 font-semibold text-zinc-950 hover:bg-cyan-400"
-        >
-          Create Waves account
-        </button>
-      </div>
-    );
-  }
+  const ticker = market.find((item) => item.symbol === pair);
+  const price = ticker?.price ?? Number.NaN;
+  const priceUnits = paperPriceUnits(price);
+  const assessment = state.balances ? placePaperOrder(state.balances, pair, side, amount, price) : null;
+  const chart = ticker?.history?.filter((value) => Number.isFinite(value)) ?? [];
+  const ready = assessment?.ok === true;
+  const levels = (direction: number) => priceUnits === null ? [] : Array.from({ length: 5 }, (_, i) => ({
+    price: priceUnits * BigInt(10_000 + direction * (i + 1) * 8) / 10_000n,
+    amount: 15 + i * 23,
+  }));
 
   return (
-    <div className="grid gap-5 lg:grid-cols-3">
-      {/* Account */}
-      <div className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">🌊 Wallet</h2>
-        <div>
-          <div className="text-xs uppercase tracking-wider text-zinc-500">Address</div>
-          <div className="break-all font-mono text-xs text-cyan-300">{acc.address}</div>
-        </div>
-        <div>
-          <div className="text-xs uppercase tracking-wider text-zinc-500">Balances</div>
-          <div className="mt-1 space-y-1">
-            {Object.entries(acc.balances).map(([k, v]) => (
-              <div key={k} className="flex justify-between text-sm">
-                <span className="text-zinc-400">{k}</span>
-                <span className="font-mono text-zinc-100">{fmt(v)}</span>
+    <section aria-labelledby="waves-practice-title" className="space-y-5">
+      <a href="#paper-order" onClick={(event) => {
+        // The parent workbench uses the URL hash to choose a codebase. Move
+        // keyboard focus locally instead of accidentally leaving the suite.
+        event.preventDefault();
+        document.getElementById("paper-order")?.focus();
+      }} className={`sr-only focus:not-sr-only ${focus}`}>Skip to practice order</a>
+      <header className="rounded-xl border border-cyan-700/60 bg-cyan-950/30 p-5 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">Offline practice · no real funds</p>
+        <h2 id="waves-practice-title" className="mt-2 text-2xl font-semibold text-zinc-50">Waves market sandbox</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-200">
+          Learn the shape of an order with paper assets and virtual credits. All prices, charts,
+          balances and book levels here are synthetic. This is not a Waves wallet or exchange;
+          it cannot create an account, receive deposits, connect a wallet or submit an order.
+        </p>
+        <p className="mt-2 text-sm text-cyan-200">The WAVES example starts at 1 virtual credit, not a current market price.</p>
+      </header>
+
+      <p role="status" aria-live="polite" className="min-h-6 text-sm leading-6 text-zinc-200">
+        {state.notice || "Start a paper portfolio to practice. No seed phrase, address or account is needed."}
+      </p>
+
+      <div className="grid items-start gap-5 lg:grid-cols-3">
+        <section aria-labelledby="paper-portfolio-title" className={`${panel} space-y-4`}>
+          <h3 id="paper-portfolio-title" className="text-lg font-semibold">Paper portfolio</h3>
+          <p className="text-sm leading-6 text-zinc-300">Session memory only. Leaving this screen or reloading ends the practice session.</p>
+          {state.balances ? (
+            <>
+              <dl className="space-y-3">
+                {(["CREDITS", ...PAPER_ASSETS] as const).map((symbol) => (
+                  <div key={symbol} className="flex flex-wrap justify-between gap-2 border-b border-zinc-800 pb-2 text-sm">
+                    <dt className="text-zinc-300">{symbol === "CREDITS" ? "Virtual credits" : `Paper ${symbol}`}</dt>
+                    <dd className="break-all font-mono text-zinc-100" data-testid={`paper-balance-${symbol}`}>
+                      {formatPaperUnits(state.balances![symbol])}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="text-sm text-zinc-300">Simulated fills this session: <strong>{state.fills}</strong></p>
+              <div className="flex flex-wrap gap-3">
+                <button type="button" onClick={() => dispatch({ type: "reset" })}
+                  className={`rounded-lg border border-zinc-500 px-3 py-2 text-sm hover:bg-zinc-800 ${focus}`}>Reset paper balances</button>
+                <button type="button" onClick={() => dispatch({ type: "end" })}
+                  className={`rounded-lg px-3 py-2 text-sm text-zinc-300 underline underline-offset-4 ${focus}`}>End practice session</button>
               </div>
-            ))}
-          </div>
-        </div>
-        <button
-          onClick={() => setRevealSeed((s) => !s)}
-          className="text-xs text-zinc-500 hover:text-zinc-300"
-        >
-          {revealSeed ? "hide" : "reveal"} backup seed
-        </button>
-        {revealSeed && (
-          <code className="block break-all rounded bg-zinc-950 p-2 text-xs text-amber-300">
-            {acc.seed}
-          </code>
-        )}
-      </div>
+            </>
+          ) : (
+            <button type="button" onClick={() => dispatch({ type: "start" })}
+              className={`w-full rounded-lg bg-cyan-400 px-4 py-3 font-semibold text-zinc-950 hover:bg-cyan-300 ${focus}`}>Start paper portfolio</button>
+          )}
+          <details className="rounded-lg border border-zinc-700 p-3 text-sm leading-6 text-zinc-300">
+            <summary className={`cursor-pointer font-medium text-zinc-100 ${focus}`}>About earlier browser records</summary>
+            <p className="mt-2">An older demo may have saved a record under <code>waves_acc_v1</code>.
+              This screen does not read, overwrite or delete it. That demo record is not proof of a valid
+              Waves account. Do not deposit funds or paste a real recovery phrase here.</p>
+          </details>
+        </section>
 
-      {/* Trade */}
-      <div className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Exchange</h2>
-          <div className="flex items-center gap-2">
-            <Sparkline data={ticker.history} />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <select
-            value={pair}
-            onChange={(e) => setPair(e.target.value)}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm"
-          >
-            {market
-              .filter((t) => t.symbol !== "USDT")
-              .map((t) => (
-                <option key={t.symbol} value={t.symbol}>
-                  {t.symbol}/USDT
-                </option>
-              ))}
-          </select>
-          <div className="flex flex-1 items-center justify-end font-mono text-zinc-100">
-            ${fmt(price)}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={() => setSide("buy")}
-            className={`rounded-lg py-2 text-sm font-semibold ${
-              side === "buy" ? "bg-emerald-500 text-zinc-950" : "border border-zinc-700"
-            }`}
-          >
-            Buy
-          </button>
-          <button
-            onClick={() => setSide("sell")}
-            className={`rounded-lg py-2 text-sm font-semibold ${
-              side === "sell" ? "bg-rose-500 text-zinc-950" : "border border-zinc-700"
-            }`}
-          >
-            Sell
-          </button>
-        </div>
-        <label className="block text-sm">
-          <span className="text-xs uppercase tracking-wider text-zinc-500">
-            Amount ({pair})
-          </span>
-          <input
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 font-mono text-sm"
-          />
-        </label>
-        <div className="flex justify-between text-sm text-zinc-400">
-          <span>Total</span>
-          <span className="font-mono">${fmt((parseFloat(amount) || 0) * price)}</span>
-        </div>
-        <button
-          onClick={trade}
-          className="w-full rounded-lg bg-cyan-500 py-2.5 font-semibold text-zinc-950 hover:bg-cyan-400"
-        >
-          {side === "buy" ? "Buy" : "Sell"} {pair}
-        </button>
-      </div>
+        <section id="paper-order" tabIndex={-1} aria-labelledby="paper-order-title" className={`${panel} space-y-4 ${focus}`}>
+          <h3 id="paper-order-title" className="text-lg font-semibold">Practice order</h3>
+          <p className="text-sm leading-6 text-zinc-300">Immediate simulated fills only: no matcher, real liquidity, trading fee or network fee is modeled.</p>
+          <form onSubmit={(event) => {
+            event.preventDefault();
+            dispatch({ type: "order", symbol: pair, side, amount, price });
+          }}>
+            <fieldset disabled={!state.balances} className="space-y-4 disabled:opacity-60">
+              <legend className="sr-only">Configure a paper trade</legend>
+              <label className="block space-y-2 text-sm">
+                <span>Practice pair</span>
+                <select value={pair} onChange={(event) => setPair(event.target.value)}
+                  className={`w-full rounded-lg border border-zinc-600 bg-zinc-950 px-3 py-2 ${focus}`}>
+                  {market.map((item) => <option key={item.symbol} value={item.symbol}>{item.symbol} / virtual credits</option>)}
+                </select>
+              </label>
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Practice order side">
+                {(["buy", "sell"] as const).map((value) => <button type="button" key={value} aria-pressed={side === value}
+                  onClick={() => setSide(value)}
+                  className={`rounded-lg border px-3 py-2 text-sm font-semibold ${side === value ? "border-cyan-300 bg-cyan-400 text-zinc-950" : "border-zinc-600 text-zinc-200"} ${focus}`}>
+                  {value === "buy" ? "Practice buy" : "Practice sell"}
+                </button>)}
+              </div>
+              <label className="block space-y-2 text-sm">
+                <span>Paper amount ({pair})</span>
+                <input value={amount} onChange={(event) => setAmount(event.target.value)} inputMode="decimal" maxLength={16}
+                  autoComplete="off" spellCheck={false} aria-describedby="paper-amount-help paper-order-feedback"
+                  aria-invalid={assessment !== null && !assessment.ok}
+                  className={`w-full rounded-lg border border-zinc-600 bg-zinc-950 px-3 py-2 font-mono ${focus}`} />
+              </label>
+              <p id="paper-amount-help" className="text-xs leading-5 text-zinc-400">Positive decimals, up to eight places; maximum 1,000,000 paper units.</p>
+              <dl className="space-y-2 text-sm">
+                <div className="flex flex-wrap justify-between gap-2"><dt>Sample price</dt><dd className="font-mono">{priceUnits === null ? "Unavailable" : `${formatPaperUnits(priceUnits)} credits`}</dd></div>
+                <div className="flex flex-wrap justify-between gap-2"><dt>Practice total</dt><dd className="font-mono">{assessment?.ok ? `${formatPaperUnits(assessment.cost)} credits` : "—"}</dd></div>
+              </dl>
+              <p id="paper-order-feedback" className="min-h-10 text-sm leading-5 text-amber-200">
+                {assessment && !assessment.ok ? assessment.error : "Virtual units only. No transaction will be sent."}
+              </p>
+              <button type="submit" disabled={!ready}
+                className={`w-full rounded-lg bg-cyan-400 px-4 py-3 font-semibold text-zinc-950 hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-300 ${focus}`}>
+                Simulate {side} {pair}
+              </button>
+            </fieldset>
+          </form>
+          {!state.balances && <p className="text-sm text-cyan-200">Start a paper portfolio to enable the practice controls.</p>}
+        </section>
 
-      {/* Order book */}
-      <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
-        <h2 className="text-lg font-semibold">Order Book</h2>
-        <div className="grid grid-cols-2 text-[10px] uppercase tracking-wider text-zinc-500">
-          <span>Price</span>
-          <span className="text-right">Amount</span>
-        </div>
-        <div className="space-y-0.5 font-mono text-xs">
-          {book.asks.map((o, i) => (
-            <div key={"a" + i} className="grid grid-cols-2 text-rose-400">
-              <span>{fmt(o.p)}</span>
-              <span className="text-right text-zinc-400">{o.a.toFixed(1)}</span>
-            </div>
-          ))}
-          <div className="my-1 border-y border-zinc-800 py-1 text-center text-sm text-zinc-100">
-            ${fmt(price)}
-          </div>
-          {book.bids.map((o, i) => (
-            <div key={"b" + i} className="grid grid-cols-2 text-emerald-400">
-              <span>{fmt(o.p)}</span>
-              <span className="text-right text-zinc-400">{o.a.toFixed(1)}</span>
-            </div>
-          ))}
-        </div>
+        <section aria-labelledby="sample-book-title" className={`${panel} space-y-4`}>
+          <h3 id="sample-book-title" className="text-lg font-semibold">Illustrative order book</h3>
+          <p className="text-sm leading-6 text-zinc-300">Fixed example sizes around the sample price. These are not market orders or available liquidity.</p>
+          {chart.length > 1 && <div role="img" aria-label={`Synthetic ${pair} price illustration; not historical market data`}>
+            <Sparkline data={chart} w={180} h={40} />
+          </div>}
+          {priceUnits === null ? <p className="text-sm text-amber-200">Sample price unavailable. No book is displayed.</p> : (
+            <table className="w-full table-fixed text-right text-xs">
+              <caption className="sr-only">Illustrative {pair} levels in virtual credits</caption>
+              <thead><tr className="border-b border-zinc-700 text-zinc-300"><th scope="col" className="py-2 text-left">Side</th><th scope="col">Credits</th><th scope="col">Paper units</th></tr></thead>
+              <tbody>
+                {[...levels(1).reverse().map((row) => ({ ...row, side: "Ask" })), ...levels(-1).map((row) => ({ ...row, side: "Bid" }))].map((row, i) => (
+                  <tr key={i}><th scope="row" className={`py-1.5 text-left font-normal ${row.side === "Ask" ? "text-rose-300" : "text-emerald-300"}`}>{row.side}</th>
+                    <td className="break-all font-mono text-zinc-100">{formatPaperUnits(row.price)}</td><td className="font-mono text-zinc-300">{row.amount}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <p className="text-xs leading-5 text-zinc-400">Paper quantities and credits use eight decimal places. Buy totals round up; sell totals round down. This is not a real fee estimate.</p>
+        </section>
       </div>
-    </div>
+      <footer className="text-sm leading-6 text-zinc-400">
+        This educational screen is not the historical Waves Lite Client. The reported <code>.hts</code> file has not been identified.
+        {" "}<a href="https://github.com/wavesplatform/WavesGUI/releases/tag/v0.5.18" target="_blank" rel="noopener noreferrer"
+          className={`text-cyan-300 underline underline-offset-4 ${focus}`}>Historical upstream release (external)</a>.
+        Archived wallet software is not recommended for real keys or funds.
+      </footer>
+    </section>
   );
 }

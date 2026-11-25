@@ -5,7 +5,6 @@ import {
   haibunForMnemonic,
   lineText,
   mnemonicFromRenga,
-  packRenga,
   renderCamouflageHtml,
   RENGA_PATTERN,
 } from "../lib/renga";

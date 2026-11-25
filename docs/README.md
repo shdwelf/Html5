@@ -138,6 +138,9 @@ IANA media types (RFC 6838 / BCP 13).
 
 ## Research deep dives (the “ghirdra” line)
 
+- [wordpress-tiddlywiki-small-web-2026-11-17.md](wordpress-tiddlywiki-small-web-2026-11-17.md) — draft-only content UX, maintenance boundary, TiddlyWiki integration/plugin leads, restricted Archive.org books, alt255 archive quotations, four named search services, and Gopher/free-shell terms
+- [waves-paper-practice-2026-11-17.md](waves-paper-practice-2026-11-17.md) — bounded offline paper practice, strict bridge/ES2020 fixes, reproducible recovery tests and the still-unidentified historical `.hts` artifact
+- [token-deployment-capture-2026-11-17.md](token-deployment-capture-2026-11-17.md) — exact USDT/USDC offline capture planning/validation, legacy Circle slot probes, source pins and no runtime/financial promotion
 - [2600-public-software-review-2026-11-17.md](2600-public-software-review-2026-11-17.md) — sampled historical code inventory and 31-byte NASM build, SnapSafe SECV source/recipe review, Neuron Edition simulation boundary, and HOPE_16 follow-ups
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
 - [algorithm-engineering-guidance-2026-11-05.md](algorithm-engineering-guidance-2026-11-05.md) — algorithm-engineering checklist informed by public Springer references

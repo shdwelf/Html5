@@ -1,0 +1,294 @@
+{
+  "schema": "html5-wordpress-waves-small-web-research-v1",
+  "checkedOn": "2026-11-17",
+  "scope": "Public source/documentation inspection; no owner secrets, plugin install, shell login, wallet RPC, transaction, private wiki upload or public WordPress publication.",
+  "webpageEvidence": "Extracted public-page text was inspected with fetch tools; no raw-page digest is claimed for these entries. Dynamic pages and archive accessibility can change.",
+  "immutableSourceFiles": [
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "path": "README.md",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/8fcc0ae67e6b7814196061ed9d7768888793cb6f/README.md",
+      "bytes": 700,
+      "lines": 20,
+      "sha256": "18acb1f188201bcedf28514169afae2fe45b04f4ade3ac9ccd2f681a9e557aa0",
+      "classification": "historical-client-source"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "path": "src/index.html",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/8fcc0ae67e6b7814196061ed9d7768888793cb6f/src/index.html",
+      "bytes": 13719,
+      "lines": 423,
+      "sha256": "fd43db67d47f8d9da48219fae17677a38355833dfc13cdf2551f1c00f574cca3",
+      "classification": "historical-client-source"
+    },
+    {
+      "repo": "gophernicus/gophernicus",
+      "commit": "a84026b5940ed1b3d012d6287630d9cb8daa59a7",
+      "path": "INSTALL.md",
+      "url": "https://github.com/gophernicus/gophernicus/blob/a84026b5940ed1b3d012d6287630d9cb8daa59a7/INSTALL.md",
+      "bytes": 4774,
+      "lines": 127,
+      "sha256": "f0a579381463c04ac0bab9e1853633fb0867c34a13014c71d63bf4e10f4a9aca",
+      "classification": "development-branch-documentation-not-deployment-recommendation"
+    },
+    {
+      "repo": "gophernicus/gophernicus",
+      "commit": "a84026b5940ed1b3d012d6287630d9cb8daa59a7",
+      "path": "LICENSE",
+      "url": "https://github.com/gophernicus/gophernicus/blob/a84026b5940ed1b3d012d6287630d9cb8daa59a7/LICENSE",
+      "bytes": 1426,
+      "lines": 27,
+      "sha256": "c6a97e3701b987d18ecb31736ebea04be4ac1b95cc598cce49f5ddc63cbe3115",
+      "classification": "development-branch-documentation-not-deployment-recommendation"
+    },
+    {
+      "repo": "gophernicus/gophernicus",
+      "commit": "a84026b5940ed1b3d012d6287630d9cb8daa59a7",
+      "path": "README.gophermap",
+      "url": "https://github.com/gophernicus/gophernicus/blob/a84026b5940ed1b3d012d6287630d9cb8daa59a7/README.gophermap",
+      "bytes": 3476,
+      "lines": 108,
+      "sha256": "97b57d98b471b1764c34585bdfcbf257c0b5e0c9ee76934acf943860f275046c",
+      "classification": "development-branch-documentation-not-deployment-recommendation"
+    },
+    {
+      "repo": "gophernicus/gophernicus",
+      "commit": "a84026b5940ed1b3d012d6287630d9cb8daa59a7",
+      "path": "README.md",
+      "url": "https://github.com/gophernicus/gophernicus/blob/a84026b5940ed1b3d012d6287630d9cb8daa59a7/README.md",
+      "bytes": 14330,
+      "lines": 336,
+      "sha256": "7db7e75547561967aa23cfe1914ce7afcf57c5cfbb48fb9152bf4730efdd6e52",
+      "classification": "development-branch-documentation-not-deployment-recommendation"
+    },
+    {
+      "ref": "3.1.1",
+      "commit": "0dc47480f140d2b72e751f64bdffea554b58adb9",
+      "path": "README.md",
+      "url": "https://github.com/gophernicus/gophernicus/blob/0dc47480f140d2b72e751f64bdffea554b58adb9/README.md",
+      "sha256": "13d1c3055d65a6a2bbe8b516dcc3413fe0a31533437f89c84329fd2ae2bf2f7c",
+      "bytes": 14280,
+      "lines": 335,
+      "repo": "gophernicus/gophernicus",
+      "classification": "tagged-3.1.1-documentation-only-readme-still-says-DEVEL"
+    },
+    {
+      "ref": "3.1.1",
+      "commit": "0dc47480f140d2b72e751f64bdffea554b58adb9",
+      "path": "INSTALL.md",
+      "url": "https://github.com/gophernicus/gophernicus/blob/0dc47480f140d2b72e751f64bdffea554b58adb9/INSTALL.md",
+      "sha256": "d60755d537a354cdcb0c854815e5f86bf8935793142240c793bc2a569c8b91b7",
+      "bytes": 4773,
+      "lines": 127,
+      "repo": "gophernicus/gophernicus",
+      "classification": "tagged-3.1.1-documentation-only-readme-still-says-DEVEL"
+    },
+    {
+      "ref": "3.1.1",
+      "commit": "0dc47480f140d2b72e751f64bdffea554b58adb9",
+      "path": "LICENSE",
+      "url": "https://github.com/gophernicus/gophernicus/blob/0dc47480f140d2b72e751f64bdffea554b58adb9/LICENSE",
+      "sha256": "c6a97e3701b987d18ecb31736ebea04be4ac1b95cc598cce49f5ddc63cbe3115",
+      "bytes": 1426,
+      "lines": 27,
+      "repo": "gophernicus/gophernicus",
+      "classification": "tagged-3.1.1-documentation-only-readme-still-says-DEVEL"
+    },
+    {
+      "ref": "3.1.1",
+      "commit": "0dc47480f140d2b72e751f64bdffea554b58adb9",
+      "path": "README.gophermap",
+      "url": "https://github.com/gophernicus/gophernicus/blob/0dc47480f140d2b72e751f64bdffea554b58adb9/README.gophermap",
+      "sha256": "69ccd880c03628e2dd9098391a902655bb9d647cd8a7b78fc40a7379e2989f42",
+      "bytes": 3475,
+      "lines": 108,
+      "repo": "gophernicus/gophernicus",
+      "classification": "tagged-3.1.1-documentation-only-readme-still-says-DEVEL"
+    }
+  ],
+  "webObservations": [
+    {
+      "id": "wp-custom-html",
+      "url": "https://wordpress.com/support/wordpress-editor/blocks/custom-html-block/",
+      "findingAndLimit": "Official guide: restricted iframe/script/style tags require paid plan and active hosting features; ensogen entitlement unverified."
+    },
+    {
+      "id": "wp-plugins",
+      "url": "https://wordpress.com/support/plugins/",
+      "findingAndLimit": "Official guide currently lists plugin installation on paid plans; no installation or entitlement check occurred."
+    },
+    {
+      "id": "wp-directory-query",
+      "url": "https://wordpress.org/plugins/search/tiddlywiki/",
+      "findingAndLimit": "Fetched directory query returned zero matches, not proof no historical integration exists."
+    },
+    {
+      "id": "advanced-iframe",
+      "url": "https://wordpress.org/plugins/advanced-iframe/",
+      "findingAndLimit": "Generic embed candidate, not a TiddlyWiki save backend or an installed/audited plugin."
+    },
+    {
+      "id": "tw-node",
+      "url": "https://tiddlywiki.com/static/TiddlyWiki%2520on%2520Node.js.html",
+      "findingAndLimit": "Official Node.js workspace/server option, separate hosting and access control required."
+    },
+    {
+      "id": "tw-static",
+      "url": "https://tiddlywiki.com/static/Generating%2520Static%2520Sites%2520with%2520TiddlyWiki.html",
+      "findingAndLimit": "Official static HTML export; not editable server synchronization."
+    },
+    {
+      "id": "tw-saving",
+      "url": "https://tiddlywiki.com/static/SavingMechanism.html",
+      "findingAndLimit": "Whole-file saving and per-tiddler sync are distinct mechanisms."
+    },
+    {
+      "id": "tw-wordpress-thread",
+      "url": "https://talk.tiddlywiki.org/t/integrating-tw-into-a-wordpress-site/9167",
+      "findingAndLimit": "Both February 2024 replies inspected. Community design discussion, not a supported plugin or security guarantee."
+    },
+    {
+      "id": "tw5-login-wp",
+      "url": "https://gist.github.com/philwonski/cd6c8c53e71045d4a2f4a99451e9cfde",
+      "findingAndLimit": "Both chunks inspected. April 2021 partial login widget, revision 12445b80c663c15481b2a0ff74f3986cc9a81fe4; token storage and manually formed credential body, not a reviewed WordPress save adapter."
+    },
+    {
+      "id": "book-2013",
+      "url": "https://archive.org/details/wordpressfordumm0005sabi",
+      "findingAndLimit": "Lisa Sabin-Wilson, 2013, ISBN 9781118383186; restricted item, no suitable download obtained."
+    },
+    {
+      "id": "book-2015",
+      "url": "https://archive.org/details/wordpressfordumm0000sabi",
+      "findingAndLimit": "Lisa Sabin-Wilson, 2015 seventh edition, ISBN 9781119088578; restricted item, no suitable download obtained."
+    },
+    {
+      "id": "alt255-root",
+      "url": "https://web.archive.org/web/20190824181529/http://alt255.motd.org/",
+      "findingAndLimit": "Archived root, 2019-08-24T18:15:29Z; dated 2018 quotation posts and January 2019 unresolved social-feed shortcode. Not live-site evidence."
+    },
+    {
+      "id": "alt255-cdx",
+      "url": "https://web.archive.org/cdx/search/cdx?url=alt255.motd.org%2F*&output=json&filter=statuscode%3A200&collapse=urlkey&fl=timestamp%2Coriginal%2Cmimetype&limit=25",
+      "findingAndLimit": "Limited 25-row URL index, not an exhaustive site inventory or recovered post text."
+    },
+    {
+      "id": "alt255-rss",
+      "url": "https://web.archive.org/web/20201204085836/http://alt255.motd.org/?feed=rss2",
+      "findingAndLimit": "Both chunks inspected. RSS lastBuildDate 2020-12-01; historical WordPress generator 5.5.3, 2020 James/Han/Shaw entries and full text of several 2018 posts. Site attributions are not independently authenticated authorship."
+    },
+    {
+      "id": "alt255-raven",
+      "url": "https://web.archive.org/web/20180221195930/http://alt255.motd.org/?p=16",
+      "findingAndLimit": "Archived page dated 2017-09-11: excerpt of The Raven attributed in its body to Edgar Allan Poe; title misspells surname Pow."
+    },
+    {
+      "id": "alt255-cryptogram",
+      "url": "https://web.archive.org/web/20190301115035/http://alt255.motd.org/?p=23",
+      "findingAndLimit": "Archived page dated 2017-10-08 presents a Poe cryptogram solution; names Udo Hebisch and date 27.04.2011. Does not identify site owner or independently validate transcription."
+    },
+    {
+      "id": "baresearch",
+      "url": "https://baresearch.org/",
+      "findingAndLimit": "SearXNG frontend observed; an exact-domain alt255 trial did not produce useful results. One trial is not a reliability ranking."
+    },
+    {
+      "id": "libresearch",
+      "url": "https://libresearch.space/",
+      "findingAndLimit": "SearXNG frontend observed; trial results were noisy and included malformed redirects, which were not followed."
+    },
+    {
+      "id": "utilibre-tools",
+      "url": "https://utilibre.org/en/",
+      "findingAndLimit": "Tools portal distinct from search subdomain. Local-browser/privacy descriptions are operator claims, not independently audited."
+    },
+    {
+      "id": "utilibre-search",
+      "url": "https://search.utilibre.org/search?q=%22alt255.motd.org%22&categories=general",
+      "findingAndLimit": "Exact-domain trial returned unrelated Chinese-language results; not evidence of malicious ownership or a conclusive service-wide assessment."
+    },
+    {
+      "id": "searx-directory",
+      "url": "https://searx.space/",
+      "findingAndLimit": "Inspected first chunk of directory, displaying 73 online instances; changing snapshot metrics, not an audit or privacy/anonymity guarantee."
+    },
+    {
+      "id": "sdf-signup",
+      "url": "https://sdf.org/?signup",
+      "findingAndLimit": "Free-shell onboarding lead only. No signup, login or connection made."
+    },
+    {
+      "id": "sdf-memberships",
+      "url": "https://sdf.org/?faq?MEMBERS?01",
+      "findingAndLimit": "Official undated FAQ displays free 20 MB home/web/Gopher quotas, inbound SSH/SFTP after validation and separately lists MOTD.ORG WordPress membership. Does not authenticate an alt255 account or current quota/pricing."
+    },
+    {
+      "id": "tilde-club",
+      "url": "https://tilde.club/wiki/faq.html",
+      "findingAndLimit": "Community shell lead; displayed 1 GB soft/3 GB hard quota and one-week grace. Admission, privileges and current terms need confirmation."
+    },
+    {
+      "id": "tilde-gopher",
+      "url": "https://tilde.team/wiki/gopher",
+      "findingAndLimit": "Public Gopher directory ~/public_gopher and gophermap guide. No deployment performed."
+    },
+    {
+      "id": "tilde-tos",
+      "url": "https://tilde.team/wiki/tos",
+      "findingAndLimit": "Bans cryptocurrency software, AI agents/models/services, proxies/VPN obfuscation and outgoing scans; do not recommend this workload there."
+    },
+    {
+      "id": "gopher-rfc",
+      "url": "https://www.rfc-editor.org/rfc/rfc1436",
+      "findingAndLimit": "March 1993 typed-selector protocol with conventional TCP 70. Basic Gopher is not encrypted web/writable wiki hosting."
+    },
+    {
+      "id": "waves-release",
+      "url": "https://github.com/wavesplatform/WavesGUI/releases/tag/v0.5.18",
+      "findingAndLimit": "Release metadata and pinned source tree inspected. ZIP assets not downloaded or executed; source tree is not a release-archive inventory."
+    }
+  ],
+  "wavesTreeChecks": [
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "ref": "v0.5.18",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "treeEntries": 674,
+      "treeTruncated": false,
+      "htsOrHta": []
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "ref": "932364f6050f547e86631c9595dfff0ee7f55edb",
+      "commit": "932364f6050f547e86631c9595dfff0ee7f55edb",
+      "treeEntries": 268,
+      "treeTruncated": false,
+      "htsOrHta": [],
+      "indexLeads": [
+        "src/index.html"
+      ],
+      "archiveLeads": []
+    },
+    {
+      "repo": "username1565/waves-lite-client",
+      "ref": "HEAD",
+      "commit": "b48fb2fbead066194679f0696595ce43bd5599d2",
+      "treeEntries": 77,
+      "treeTruncated": false,
+      "htsOrHta": [],
+      "indexLeads": [
+        "index.html"
+      ],
+      "archiveLeads": []
+    }
+  ],
+  "localHistorySearch": {
+    "atCommit": "98c6de833ca4761e86dab8b0ecfdadee7e1b9497",
+    "command": "git log --all --format='%H' -- '*.hts' '*.hta'",
+    "matchingCommits": 0,
+    "limit": "Reachable local history at inspection only; absence does not identify or rule out a differently named or externally distributed artifact."
+  }
+}
