@@ -21,3 +21,9 @@ confirmed files. Treat ID 3 as unresolved; do not infer existence from HTTP
 400/500 responses. Keep source-derived identifiers, links, OCR text, and the
 source image out of this public repository. Revalidation needs an authorized
 owner/source confirmation or positive metadata from an authorized account.
+
+A later authorized follow-up found no Drive files matching a supplied text
+prefix, no shortcuts in the searched scope, and no spreadsheets in the Sheets
+listing. These are limited negative search results only; they do not establish
+that an anomalous candidate is absent or resolve ID 3. Continue only from an
+authorized local export or positive, authorized source metadata.
