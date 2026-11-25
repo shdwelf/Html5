@@ -366,6 +366,10 @@ jobs:
             sha256sum "$apk" > "${apk}.sha256"
           done
 
+      - name: Verify public and network APK backup files (non-recipient builds only)
+        if: ${{ inputs.recipient_public_key == '' }}
+        run: node scripts/verify-html5-apk-backup.mjs
+
       - name: Upload public APK for backup (non-recipient builds only)
         if: ${{ inputs.recipient_public_key == '' }}
         uses: actions/upload-artifact@v4

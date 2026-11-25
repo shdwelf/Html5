@@ -1,0 +1,41 @@
+# dropbox probe 2026-11-25T09:38:59Z run=45587347179
+identifiers redacted from this log by policy; form names only
+## form=override-1
+curl: code=200 type=text/html; charset=utf-8 dl=231410
+size=231410
+<!DOCTYPE html>
+<html class="maestro global-header" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head><meta charset="utf-8" />
+<meta content="noindex, nofollow, noimageindex" name="robots" />
+
+## form=override-2
+curl: code=200 type=text/html; charset=utf-8 dl=231516
+size=231516
+<!DOCTYPE html>
+<html class="maestro global-header" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head><meta charset="utf-8" />
+<meta content="noindex, nofollow, noimageindex" name="robots" />
+
+## form=override-3
+curl: code=404 type=text/html dl=1457
+size=1457
+<!DOCTYPE html>
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+## form=drive-drive.usercontent.google.com
+curl: code=404 type=text/html; charset=utf-8 dl=1652
+size=1652
+<html lang="en" dir=ltr><meta charset=utf-8><meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width"><title>Error 404 (Not Found)!!1</title><style nonce="_HimQqDCzF11nrS2ntHUyw">*{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;p
+## form=drive-drive.google.com
+curl: code=404 type=text/html; charset=utf-8 dl=1652
+size=1652
+<html lang="en" dir=ltr><meta charset=utf-8><meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width"><title>Error 404 (Not Found)!!1</title><style nonce="FoI3ZZtcMo9syNDJvKj4aA">*{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;p
+## share-page st extraction
+share page: code=200 dl=230850
+st param: none
+## gdown fallback
+gdown rc=1
+gdown size=0
+NO WINNER — see forms above

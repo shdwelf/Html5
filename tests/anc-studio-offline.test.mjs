@@ -37,7 +37,14 @@ test("Android microphone access is ANC-only, opt-in, and runtime-permission gate
 
   assert.match(manifest, /<uses-permission android:name="android\.permission\.RECORD_AUDIO"\s*\/>/);
   assert.doesNotMatch(manifest, /android\.permission\.INTERNET/);
-  assert.match(launcher, /ANC_AUDIO_HOST\s*=\s*"app-anc-studio\.invalid"/);
+  assert.match(launcher, /AUDIO_HOSTS\s*=\s*new java\.util\.HashSet<>\(java\.util\.Arrays\.asList\(/);
+  for (const host of [
+    "app-anc-studio.invalid",
+    "app-sound-sanctuary.invalid",
+    "app-aura-sound-studio.invalid",
+  ]) {
+    assert.match(launcher, new RegExp(`"${host.replaceAll(".", "\\.")}"`));
+  }
   assert.match(launcher, /request\.getOrigin\(\)/);
   assert.match(launcher, /resources\.length\s*==\s*1/);
   assert.match(launcher, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
