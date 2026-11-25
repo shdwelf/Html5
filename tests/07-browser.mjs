@@ -6,10 +6,11 @@
  * NSS libraries it lacks come from the @sparticuz/chromium npm tarball, whose
  * al2023.tar.br ships libnspr4/libnss3/libnssutil3 (plus SwiftShader).
  *
- *   npm i --no-save puppeteer-core @sparticuz/chromium
- *   node tests/07-browser.mjs [url]
+ *   npm ci
+ *   npm run test:browser
  *
- * Skips itself when those packages are absent. Screenshots land in /tmp.
+ * A direct invocation still skips if optional dependencies are absent; the
+ * dedicated runner preflights them and fails loudly instead. Screenshots land in /tmp.
  */
 import { brotliDecompressSync, inflateSync } from "zlib";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
@@ -118,8 +119,15 @@ try {
   page.on("console", (m) => { if (m.type() === "error") errors.push(`console.error: ${m.text()}`); });
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("requestfailed", (r) => errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText ?? ""}`));
+  const externalRequests = [];
+  page.on("request", (r) => {
+    if (/^https?:/.test(r.url()) && new URL(r.url()).host !== new URL(URL_TARGET).host) externalRequests.push(r.url());
+  });
 
-  await page.goto(URL_TARGET, { waitUntil: "networkidle2", timeout: 60000 });
+  // The keyspace application may keep local worker/fetch activity alive; page
+  // readiness is asserted explicitly below, so network-idle is not a reliable
+  // navigation condition in CI.
+  await page.goto(URL_TARGET, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForFunction(
     () => /Checksum valid/.test(document.getElementById("status")?.textContent || ""),
     { timeout: 60000 }
@@ -144,7 +152,7 @@ try {
   check("boots to a valid phrase", /Checksum valid/.test(boot.status), boot.status);
   check("12 chips rendered", boot.chips === 12, boot.chips);
   check("72 rack rows", boot.rackRows === 72, boot.rackRows);
-  check("13 3-D forms", boot.forms === 13, boot.forms);
+  check("15 3-D forms", boot.forms === 15, boot.forms);
   check("layout note correct", /132 bits = 128 ENT \+ 4 CS/.test(boot.wcNote), boot.wcNote);
   check("WebGL context live", boot.webgl);
   check("GL renderer", boot.renderer.length > 0, boot.renderer.slice(0, 60));
@@ -153,6 +161,47 @@ try {
   const stage = pngLitPixels(stageShot);
   check("stage rasterised", stage.lit > 2000, `${stage.lit}/${stage.w * stage.h} lit px (${stage.w}x${stage.h})`);
   await page.screenshot({ path: "/tmp/keyspace-1-boot.png" });
+
+  /* Network-aware token addresses and finite fields in the real browser. */
+  await page.waitForFunction(() => document.getElementById("topCoin").options.length === 500, { timeout: 30000 });
+  await page.evaluate(() => {
+    document.getElementById("phrase").value = "abandon ".repeat(11) + "about";
+    document.getElementById("apply").click();
+  });
+  await page.waitForFunction(() => document.getElementById("hex").textContent === "0".repeat(32));
+  await page.$eval("#topCoinSearch", (el) => { el.value = "usdt-tether"; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  await page.select("#topCoinNetwork", "bsc");
+  await page.click("#deriveTopCoin");
+  await page.waitForFunction(() => !document.getElementById("topCoinOutput").hidden, { timeout: 60000 });
+  const bsc = await page.evaluate(() => ({
+    address: document.getElementById("topCoinAddress").textContent,
+    path: document.getElementById("topCoinPath").textContent,
+    info: document.getElementById("topCoinNetworkInfo").textContent,
+    networks: document.getElementById("topCoinNetwork").options.length,
+  }));
+  check("USDT has three mainnet deployments + four host-only test identities", bsc.networks === 7, bsc.networks);
+  check("BEP-20 holder matches known address", bsc.address === "0x9858EfFD232B4033E47d90003D41EC34EcaEda94", bsc.address);
+  check("BEP-20 uses coin type 60 and chain ID 56", bsc.path === "m/44'/60'/0'/0/0" && /chain ID 56/.test(bsc.info), bsc.path);
+  await page.select("#fieldPreset", "f17");
+  await page.evaluate(() => {
+    document.getElementById("fieldA").value = "16";
+    document.getElementById("fieldB").value = "2";
+    document.getElementById("fieldA").dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  const field = await page.evaluate(() => {
+    const c = document.getElementById("fieldPlot"), data = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    let lit = 0; for (let i = 0; i < data.length; i += 4) if (data[i] + data[i + 1] + data[i + 2] > 60) lit++;
+    return { product: document.getElementById("fieldProduct").textContent, lit, phrase: document.getElementById("phrase").value };
+  });
+  check("GF(17) arithmetic is exact", field.product === "15", field.product);
+  check("finite-field grid rasterised", field.lit > 2000, field.lit);
+  check("field arithmetic leaves mnemonic unchanged", field.phrase === "abandon ".repeat(11) + "about");
+  await page.click("#fieldFromEntropy");
+  const zero = await page.$eval("#fieldInverse", (el) => el.textContent);
+  check("zero has no inverse in browser", /undefined/.test(zero), zero);
+  await page.select("#topCoinNetwork", "tron");
+  const clearedNetwork = await page.$eval("#topCoinOutput", (el) => el.hidden);
+  check("network change clears old address", clearedNetwork);
 
   /* generalised 25-word length */
   await page.select("#wc", "25");
@@ -213,6 +262,75 @@ try {
   }));
   check("modal μ lens renders", mu.rows.length > 0, mu.rows.join(" | "));
   await page.screenshot({ path: "/tmp/keyspace-3-modal.png" });
+
+  /* the ceiling of the length menu: 512 words = 5624 ENT + 8 CS, rendered for real */
+  const menu = await page.evaluate(() => {
+    const values = [...document.getElementById("wc").options].map((o) => o.value);
+    const beyond = values.filter((v) => Number(v) > 24).map(Number);
+    return { count: beyond.length, first: beyond[0], last: beyond[beyond.length - 1], contiguous: beyond.every((v, i) => v === 25 + i) };
+  });
+  check("menu lists every count 25…512", menu.count === 488 && menu.first === 25 && menu.last === 512 && menu.contiguous, JSON.stringify(menu));
+  await page.select("#wc", "512");
+  await page.evaluate(() => document.getElementById("wc").dispatchEvent(new Event("change", { bubbles: true })));
+  const t512 = Date.now();
+  await page.click("#gen");
+  await page.waitForFunction(() => document.querySelectorAll("#chips .chip").length === 512, { timeout: 120000 });
+  const w512 = await page.evaluate(() => ({
+    chips: document.querySelectorAll("#chips .chip").length,
+    status: document.getElementById("status").textContent,
+    hexLen: document.getElementById("hex").textContent.length,
+    ent: document.getElementById("entBits").textContent,
+    cs: document.getElementById("csBits").textContent,
+    flipMax: document.getElementById("flipBit").max,
+    tape: document.querySelectorAll("#tape tbody tr").length,
+    wcNote: document.getElementById("wcNote").textContent,
+  }));
+  check("512 words generated", w512.chips === 512, `${w512.chips} in ${Date.now() - t512} ms`);
+  check("512-word layout note", /5632 bits = 5624 ENT \+ 8 CS/.test(w512.wcNote), w512.wcNote.slice(0, 60));
+  check("512-word phrase validates as generalised", /Checksum valid.*generalised/.test(w512.status), w512.status.slice(0, 58));
+  check("1406 hex nibbles (703 bytes)", w512.hexLen === 1406, w512.hexLen);
+  check("ENT/CS readouts", w512.ent === "5624 bits" && w512.cs === "8 bits", `${w512.ent} / ${w512.cs}`);
+  check("flip slider spans the ENT", w512.flipMax === "5623", w512.flipMax);
+  check("tape has 512 rows", w512.tape === 512, w512.tape);
+  const stage512 = pngLitPixels(await (await page.$("#stage")).screenshot());
+  check("stage still rasterises at 512 words", stage512.lit > 2000, `${stage512.lit} lit px`);
+  await page.click("#deriveWallet");
+  await page.waitForFunction(() => /standard 12\/15\/18\/21\/24-word/.test(document.getElementById("walletStatus").textContent), { timeout: 10000 });
+  check("wallet refuses the 512-word phrase", true);
+  await page.screenshot({ path: "/tmp/keyspace-4-512.png" });
+
+  /* Public BIP-39 vector only: all default leaves stay local and unqueried. */
+  await page.evaluate(() => {
+    document.getElementById("phrase").value = "abandon ".repeat(11) + "about";
+    document.getElementById("apply").click();
+  });
+  await page.waitForFunction(() => document.getElementById("hex").textContent === "0".repeat(32));
+  await page.locator("#coinTabInvestigate").click();
+  await page.waitForFunction(() => !document.getElementById("coinInvestigatePanel").hidden);
+  await page.locator("#deriveAllCoinsLocal").click();
+  await page.waitForFunction(() => /All holdings UNQUERIED/.test(document.getElementById("coinInvestigationStatus").textContent), { timeout: 90000 });
+  const investigation = await page.evaluate(() => ({
+    count: document.getElementById("coinInvestigationRows").children.length,
+    status: document.getElementById("coinInvestigationStatus").textContent,
+    queried: document.querySelectorAll("#coinInvestigationRows tr").length && /holdings: observed/.test(document.getElementById("coinInvestigationRows").textContent),
+  }));
+  check("all 500 default-leaf results rendered", investigation.count === 500, investigation.count);
+  check("347 derived / 153 unsupported, holdings unqueried", /347 default leaves derived · 153 unsupported · 0 errors/.test(investigation.status) && !investigation.queried, investigation.status.slice(0, 105));
+  await page.locator('[data-inspect-coin="eth-ethereum"]').click();
+  check("inspection displays a public address without lookup", await page.$eval("#coinProbeDisclosure", (el) => el.textContent.includes("0x9858EfFD232B4033E47d90003D41EC34EcaEda94")));
+  check("balance read is disabled without consent", await page.$eval("#querySelectedCoin", (el) => el.disabled));
+  await page.select("#topCoinOrder", "fee");
+  check("documented zero first, unknowns not free", await page.$eval("#topCoin", (el) => el.options[0].value === "xno-nano"));
+  await page.locator("#coinTabMetadata").click();
+  const iframeElement = await page.$("#coinMetadataFrame"), metadataFrame = await iframeElement.contentFrame();
+  await metadataFrame.waitForFunction(() => /Not queried/.test(document.getElementById("status")?.textContent || ""), { timeout: 15000 });
+  check("existing NFT viewer loads as a local integrated module", await metadataFrame.$eval("#metadataBtn", (el) => el.disabled));
+  check("no automatic external RPC/metadata/media request", externalRequests.length === 0, externalRequests.join(" | "));
+  await page.evaluate(() => {
+    const p = document.getElementById("phrase"); p.value = "test ".repeat(11) + "junk";
+    p.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  check("phrase edit clears batch and selected balance state", await page.evaluate(() => document.getElementById("coinInvestigationRows").children.length === 0 && document.getElementById("coinProbeResult").textContent === "unqueried"));
 } finally {
   await browser.close();
 }

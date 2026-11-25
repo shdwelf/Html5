@@ -1,0 +1,6 @@
+# Optional, multi-GB dependency set; validated on CPython 3.11 x86-64 Linux.
+# Do not install in the browser bundle or commit a generated key/venv.
+concrete-python==2.11.0
+torch==1.13.1
+# Ed25519 signatures bind the evaluation-key digest to the circuit manifest.
+cryptography==50.0.2

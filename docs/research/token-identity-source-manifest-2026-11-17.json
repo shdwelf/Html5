@@ -1,0 +1,297 @@
+{
+  "schema": "html5-token-identity-source-review-v1",
+  "reviewed": "2026-11-17",
+  "scope": "First two historical registry token candidates: selected source evidence only, not completed deployment/backing/runtime validation. No upstream code executed or reused.",
+  "files": [
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "README.md",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/README.md",
+      "sha256": "12aad0494130101cba2bee2fc602014b90abec840af93b1984a6fa54b10e3185",
+      "bytes": 6493,
+      "lines": 224,
+      "license": "Apache-2.0",
+      "id": "circle-readme",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "doc/deployment.md",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/doc/deployment.md",
+      "sha256": "6cd88e5e142eb1cd87f780ff9127cef769f3d59040d7cff58b0b50ca2991c24b",
+      "bytes": 3582,
+      "lines": 104,
+      "license": "Apache-2.0",
+      "id": "circle-deployment",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/v1/FiatTokenV1.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/v1/FiatTokenV1.sol",
+      "sha256": "423a0c805f7bfff28c89432f671a38d19717fb4b6c3e5591fa46d5d4b04f2c21",
+      "bytes": 14508,
+      "lines": 454,
+      "license": "Apache-2.0",
+      "id": "circle-token-v1",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/v1/FiatTokenProxy.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/v1/FiatTokenProxy.sol",
+      "sha256": "73d8c4146e057604868713c8acd4e19bec97d0b7cc1cedba423b075c66809be5",
+      "bytes": 1090,
+      "lines": 34,
+      "license": "Apache-2.0",
+      "id": "circle-proxy",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/v1/Blacklistable.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/v1/Blacklistable.sol",
+      "sha256": "c788c40515a7255735bae06bebe0025af70a3713097bcc10293bd263f098ba90",
+      "bytes": 3659,
+      "lines": 120,
+      "license": "Apache-2.0",
+      "id": "circle-blacklist",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/v1/Pausable.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/v1/Pausable.sol",
+      "sha256": "3aac2a3b16249fdfe82357649fb5ad2bd5887cb521b59f0833851457a8e845b8",
+      "bytes": 3273,
+      "lines": 95,
+      "license": "Apache-2.0",
+      "id": "circle-pause",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/v2/FiatTokenV2_2.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/v2/FiatTokenV2_2.sol",
+      "sha256": "d1f045f392042e4e8ac04d4c53a8e6d2f599085025a6ff979252bc9783b3fc3a",
+      "bytes": 10732,
+      "lines": 312,
+      "license": "Apache-2.0",
+      "id": "circle-token-v22",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/upgradeability/AdminUpgradeabilityProxy.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/upgradeability/AdminUpgradeabilityProxy.sol",
+      "sha256": "d6dc1555e31406e06a5953ea7eab6e688d2ead1ebb5b9a344d55354123c36bc4",
+      "bytes": 5416,
+      "lines": 167,
+      "license": "Apache-2.0",
+      "id": "circle-proxy-admin",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/upgradeability/UpgradeabilityProxy.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/upgradeability/UpgradeabilityProxy.sol",
+      "sha256": "51f3c781cbe1c6556a0c4b795046f5cd12e69b465631f6e85f239f0bf7443036",
+      "bytes": 3348,
+      "lines": 97,
+      "license": "Apache-2.0",
+      "id": "circle-proxy-upgrade",
+      "publisherKind": "publisher-source"
+    },
+    {
+      "id": "tw-usdt-ethereum",
+      "repo": "trustwallet/assets",
+      "commit": "5c8eba81275e50843ef7df1899161c8b65852dba",
+      "path": "blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/info.json",
+      "url": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/info.json",
+      "sha256": "53f85c4211409fb71f9bdc0be59e0d0db035d1b6eb6f6fd2704be4a77575d7df",
+      "bytes": 794,
+      "lines": 28,
+      "publisherKind": "secondary-catalogue"
+    },
+    {
+      "id": "tw-usdt-bsc",
+      "repo": "trustwallet/assets",
+      "commit": "5c8eba81275e50843ef7df1899161c8b65852dba",
+      "path": "blockchains/smartchain/assets/0x55d398326f99059fF775485246999027B3197955/info.json",
+      "url": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/smartchain/assets/0x55d398326f99059fF775485246999027B3197955/info.json",
+      "sha256": "4bac5aa99b7c96c0693429ac14d08e7230cbea89ccb812ae700986c595ab9ec7",
+      "bytes": 796,
+      "lines": 25,
+      "publisherKind": "secondary-catalogue"
+    },
+    {
+      "id": "tw-usdt-tron",
+      "repo": "trustwallet/assets",
+      "commit": "5c8eba81275e50843ef7df1899161c8b65852dba",
+      "path": "blockchains/tron/assets/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/info.json",
+      "url": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/tron/assets/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/info.json",
+      "sha256": "b4d5a4e5461e614feb92f948e4845b26e56686d3b9823941ab1883e587ec68a2",
+      "bytes": 1221,
+      "lines": 44,
+      "publisherKind": "secondary-catalogue"
+    },
+    {
+      "id": "tw-usdc-ethereum",
+      "repo": "trustwallet/assets",
+      "commit": "5c8eba81275e50843ef7df1899161c8b65852dba",
+      "path": "blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/info.json",
+      "url": "https://github.com/trustwallet/assets/blob/5c8eba81275e50843ef7df1899161c8b65852dba/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/info.json",
+      "sha256": "435cfb1a7fd75d6238487511a18391f2f9275a06a4e3a584eb8c807f18be9f3c",
+      "bytes": 1135,
+      "lines": 36,
+      "publisherKind": "secondary-catalogue"
+    }
+  ],
+  "unanchoredPages": [
+    {
+      "id": "tether-protocols",
+      "url": "https://tether.to/en/supported-protocols/",
+      "publisherKind": "issuer-documentation",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "Ethereum USD₮: 0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "TRON USD₮: TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+        "Tether’s current USD₮ ERC20 contract is based on a slightly older standard that does not return a Boolean value in the transfer function.",
+        "The BNB Smart Chain section lists XAU₮; it does not identify 0x55d398326f99059fF775485246999027B3197955 as Tether-issued USD₮."
+      ],
+      "limitation": "Selected identifiers/observation only, not a complete protocol list or proof that every unlisted representation is illegitimate. Historical/deprecated protocols must not be enabled by name matching."
+    },
+    {
+      "id": "eth-usdt-explorer",
+      "url": "https://etherscan.io/token/0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "publisherKind": "explorer-secondary",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "Token Contract (WITH 6 Decimals): 0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "Verified-source label TetherToken; ABI exposes basisPointsRate, maximumFee, setParams, deprecated, upgradedAddress, paused, isBlackListed and destroyBlackFunds.",
+        "The transfer and transferFrom ABI entries have empty outputs arrays."
+      ],
+      "limitation": "Rendered source exposed an outline/ABI, not the complete Solidity body. No exact fee formula, parameter value, bytecode match or current control state is established."
+    },
+    {
+      "id": "tron-usdt-explorer",
+      "url": "https://tronscan.org/#/token20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+      "publisherKind": "explorer-secondary",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "USDT is the official stablecoin issued by Tether on the TRON network.",
+        "Contract: TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t; Decimal: 6."
+      ],
+      "limitation": "Explorer identity/decimal corroboration only; current TVM code, fee/control parameters and transfer behaviour were not independently queried."
+    },
+    {
+      "id": "binance-collateral",
+      "url": "https://www.binance.com/en/proof-of-collateral",
+      "publisherKind": "peg-operator-documentation",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "This page only refers to Binance Bridge pegged tokens. This is not the proof of reserve page for Binance.com.",
+        "USDT is listed with an Ethereum proof-of-assets row and a BEP20 wrapped-token address abbreviated as 0x55d398326f990...6999027b3197955."
+      ],
+      "limitation": "Operator claim, not an independent backing audit. Full address/decimals use separate pinned catalogue and explorer evidence; ratios and balances are deliberately not copied."
+    },
+    {
+      "id": "bsc-usdt-explorer",
+      "url": "https://bscscan.com/token/0x55d398326f99059fF775485246999027B3197955",
+      "publisherKind": "explorer-secondary",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "Binance-Peg BSC-USD (BSC-USD).",
+        "This token's displayed name symbol does not match its contract's Name and Symbol function.",
+        "Token Contract (WITH 18 Decimals): 0x55d398326f99059fF775485246999027B3197955."
+      ],
+      "limitation": "Explorer label does not make this Tether-issued native USDT. Contract behaviour, redeemability, reserves and live parameters remain unverified."
+    },
+    {
+      "id": "tether-backing-claim",
+      "url": "https://tether.to/en/transparency/",
+      "publisherKind": "issuer-claim",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "All Tether tokens are pegged at 1-to-1 with a matching fiat currency and are backed 100% by Tether’s Reserves."
+      ],
+      "limitation": "Issuer assertion only. No reserves report audit or redemption test is performed; changing dated amounts, supplies, prices and future-dated notices are not ingested."
+    },
+    {
+      "id": "circle-addresses",
+      "url": "https://developers.circle.com/stablecoins/usdc-contract-addresses",
+      "publisherKind": "issuer-documentation",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "Ethereum mainnet USDC: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.",
+        "The page separates mainnet contract addresses from testnet tokens, which have no financial value and are not backed by real US dollars.",
+        "The X Layer note distinguishes Circle-issued USDC from separate bridged USDC.e, which is not issued or backed by Circle."
+      ],
+      "limitation": "Only the Ethereum mainnet tuple is reviewed here. Do not infer any testnet, bridge deployment, chain activation or implementation address from this reference."
+    },
+    {
+      "id": "circle-overview",
+      "url": "https://developers.circle.com/stablecoins/what-is-usdc",
+      "publisherKind": "issuer-claim",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "USDC is a digital dollar issued by Circle, running on many major blockchains.",
+        "It’s backed 100% by cash and cash-equivalent assets so that it’s always redeemable 1:1 for USD.",
+        "Circle publishes monthly attestation reports for USDC reserve holdings on Circle’s Transparency page."
+      ],
+      "limitation": "Issuer assertion, not an independently reproduced reserve attestation, proof of solvency, unconditional redemption right or a bridge-backing guarantee."
+    },
+    {
+      "id": "eth-usdc-explorer",
+      "url": "https://etherscan.io/token/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "publisherKind": "explorer-secondary",
+      "retrieval": "fetch_page selected content; observations below are not complete raw responses",
+      "rawSha256": null,
+      "blockAnchor": null,
+      "excerpts": [
+        "Token Contract (WITH 6 Decimals): 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.",
+        "Explorer marks the token contract as a proxy and links an implementation."
+      ],
+      "limitation": "No implementation address is promoted to the token identity. There was no block-anchored implementation-slot, bytecode, pause/blacklist/role or storage query."
+    }
+  ],
+  "rejectedAsPrimaryEvidence": [
+    {
+      "url": "https://github.com/tethercoin/USDT",
+      "reason": "A similarly named repository is not issuer provenance; no issuer-site linkage was established. Its code is not used."
+    },
+    {
+      "url": "https://github.com/tetherto/tether-dev-docs",
+      "reason": "Inspected README describes shared ESLint configuration, not token contract/deployment documentation."
+    },
+    {
+      "url": "https://developers.circle.com/stablecoins/evm-smart-contracts",
+      "reason": "Redirected to CCTP contract-address documentation; a TokenMessenger address is not a USDC token contract."
+    }
+  ]
+}

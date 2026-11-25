@@ -1,0 +1,4230 @@
+{
+  "schema": "html5.country-viewer.iana-cctld-register/v1",
+  "reviewDate": "2026-11-09",
+  "purpose": "Offline search aliases for Internet country-code top-level domains (ccTLDs), mapped through the separately reviewed ISO alpha-2 to Factbook crosswalk. Not a sovereignty classification or a live IANA lookup.",
+  "source": {
+    "package": "world-countries",
+    "version": "5.1.0",
+    "commit": "f931d9cfb70446d2d8e3c3193726b211f695afd3",
+    "file": "countries.json",
+    "fileSha256": "359431fb9475666dfad1ea5e72e53521cef40520f65eecd08e02ba569eb8491b",
+    "license": "ODbL-1.0",
+    "repository": "https://github.com/mledoze/countries",
+    "tarball": "https://registry.npmjs.org/world-countries/-/world-countries-5.1.0.tgz",
+    "integrity": "sha512-CXR6EBvTbArDlDDIWU3gfKb7Qk0ck2WNZ234b/A0vuecPzIfzzxH+O6Ejnvg1sT8XuiZjVlzOH0h08ZtaO7g0w==",
+    "relevantFields": [
+      "cca2",
+      "tld"
+    ],
+    "ignoredFields": [
+      "independent",
+      "unMember",
+      "status",
+      "coordinates",
+      "capital",
+      "population"
+    ],
+    "note": "This snapshot contributes only its IANA TLD strings and ISO alpha-2 join keys; its sovereignty/independence fields are not imported."
+  },
+  "ianaList": {
+    "repository": "https://github.com/jehiah/generic_tlds",
+    "commit": "2ffc03370881f7c88d53470abb407eb047b73c91",
+    "commitDate": "2026-10-05",
+    "path": "generic_tlds.go",
+    "blobSha": "6a9eb3f082b8134dbcae3fd77b7bfc813a371a59",
+    "license": "MIT",
+    "upstream": "https://data.iana.org/TLD/tlds-alpha-by-domain.txt",
+    "statement": "The pinned repository describes itself as a mirror of the IANA TLD list. It is a snapshot, not a live IANA API."
+  },
+  "counts": {
+    "sourceCountryRows": 250,
+    "sourceTldValues": 283,
+    "validatedTldAliases": 277,
+    "uniqueValidatedTlds": 272,
+    "isoEntriesWithTld": 247,
+    "sharedTldNames": 5,
+    "excludedUnverifiedTldValues": 5,
+    "ianaTldNamesInPinnedSnapshot": 1437,
+    "excludedSourceTldValues": 6
+  },
+  "exclusions": [
+    {
+      "isoAlpha2": "BL",
+      "sourceTld": ".bl",
+      "asciiTld": "bl",
+      "reason": "Not found in the pinned IANA TLD-list snapshot; excluded from active IANA search aliases."
+    },
+    {
+      "isoAlpha2": "BQ",
+      "sourceTld": ".bq",
+      "asciiTld": "bq",
+      "reason": "Not found in the pinned IANA TLD-list snapshot; excluded from active IANA search aliases."
+    },
+    {
+      "isoAlpha2": "EH",
+      "sourceTld": ".eh",
+      "asciiTld": "eh",
+      "reason": "Not found in the pinned IANA TLD-list snapshot; excluded from active IANA search aliases."
+    },
+    {
+      "isoAlpha2": "SU",
+      "sourceTld": ".su",
+      "asciiTld": ".su",
+      "reason": "The pinned IANA TLD list contains this label, but the source dataset associates it with the modern RU record. This crosswalk withholds that non-one-to-one association rather than presenting .su as a unique current-country code."
+    },
+    {
+      "isoAlpha2": "SY",
+      "sourceTld": "سوريا.",
+      "asciiTld": "xn--mgbtf8fl",
+      "reason": "Not found in the pinned IANA TLD-list snapshot; excluded from active IANA search aliases."
+    },
+    {
+      "isoAlpha2": "XK",
+      "sourceTld": ".xk",
+      "asciiTld": "xk",
+      "reason": "Not found in the pinned IANA TLD-list snapshot; excluded from active IANA search aliases."
+    }
+  ],
+  "sharedTldAssignments": [
+    {
+      "tld": ".aq",
+      "isoAlpha2": [
+        "AQ",
+        "HM"
+      ],
+      "note": "The source dataset associates this TLD with more than one ISO entry. Search results may therefore include multiple profiles or ISO-only entries; the TLD is not treated as a unique sovereignty identifier."
+    },
+    {
+      "tld": ".fr",
+      "isoAlpha2": [
+        "FR",
+        "MF"
+      ],
+      "note": "The source dataset associates this TLD with more than one ISO entry. Search results may therefore include multiple profiles or ISO-only entries; the TLD is not treated as a unique sovereignty identifier."
+    },
+    {
+      "tld": ".gp",
+      "isoAlpha2": [
+        "GP",
+        "MF"
+      ],
+      "note": "The source dataset associates this TLD with more than one ISO entry. Search results may therefore include multiple profiles or ISO-only entries; the TLD is not treated as a unique sovereignty identifier."
+    },
+    {
+      "tld": ".nl",
+      "isoAlpha2": [
+        "BQ",
+        "NL"
+      ],
+      "note": "The source dataset associates this TLD with more than one ISO entry. Search results may therefore include multiple profiles or ISO-only entries; the TLD is not treated as a unique sovereignty identifier."
+    },
+    {
+      "tld": ".us",
+      "isoAlpha2": [
+        "UM",
+        "US"
+      ],
+      "note": "The source dataset associates this TLD with more than one ISO entry. Search results may therefore include multiple profiles or ISO-only entries; the TLD is not treated as a unique sovereignty identifier."
+    }
+  ],
+  "attribution": {
+    "databaseLicense": "ODbL-1.0",
+    "licenseText": "resources/country-viewer/licenses/ODbL-1.0.md",
+    "attribution": "IANA ccTLD strings from world-countries 5.1.0, pinned at commit f931d9cfb70446d2d8e3c3193726b211f695afd3; verified against jehiah/generic_tlds commit 2ffc03370881f7c88d53470abb407eb047b73c91, an MIT-licensed mirror of the IANA TLD list. This package snapshot is not live IANA data.",
+    "note": "The source TLD values are validated against the pinned IANA-list mirror. Some source aliases are intentionally withheld when the source association is not one-to-one (notably .su); this is not a live IANA service."
+  },
+  "entries": [
+    {
+      "isoAlpha2": "AW",
+      "names": [
+        "Aruba"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".aw",
+          "ascii": ".aw"
+        }
+      ],
+      "factbookCodes": [
+        "aa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AF",
+      "names": [
+        "Afghanistan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".af",
+          "ascii": ".af"
+        }
+      ],
+      "factbookCodes": [
+        "af"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AO",
+      "names": [
+        "Angola"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ao",
+          "ascii": ".ao"
+        }
+      ],
+      "factbookCodes": [
+        "ao"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AI",
+      "names": [
+        "Anguilla"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ai",
+          "ascii": ".ai"
+        }
+      ],
+      "factbookCodes": [
+        "av"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AX",
+      "names": [
+        "Åland Islands",
+        "Aland Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ax",
+          "ascii": ".ax"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "AL",
+      "names": [
+        "Albania"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".al",
+          "ascii": ".al"
+        }
+      ],
+      "factbookCodes": [
+        "al"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AD",
+      "names": [
+        "Andorra"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ad",
+          "ascii": ".ad"
+        }
+      ],
+      "factbookCodes": [
+        "an"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AE",
+      "names": [
+        "United Arab Emirates",
+        "UAE"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ae",
+          "ascii": ".ae"
+        },
+        {
+          "sourceName": "امارات.",
+          "ascii": ".xn--mgbaam7a8h"
+        }
+      ],
+      "factbookCodes": [
+        "ae"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "AR",
+      "names": [
+        "Argentina"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ar",
+          "ascii": ".ar"
+        }
+      ],
+      "factbookCodes": [
+        "ar"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AM",
+      "names": [
+        "Armenia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".am",
+          "ascii": ".am"
+        }
+      ],
+      "factbookCodes": [
+        "am"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AS",
+      "names": [
+        "American Samoa"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".as",
+          "ascii": ".as"
+        }
+      ],
+      "factbookCodes": [
+        "aq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AQ",
+      "names": [
+        "Antarctica"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".aq",
+          "ascii": ".aq"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "TF",
+      "names": [
+        "French Southern Territories"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tf",
+          "ascii": ".tf"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "AG",
+      "names": [
+        "Antigua and Barbuda"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ag",
+          "ascii": ".ag"
+        }
+      ],
+      "factbookCodes": [
+        "ac"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AU",
+      "names": [
+        "Australia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".au",
+          "ascii": ".au"
+        }
+      ],
+      "factbookCodes": [
+        "as"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AT",
+      "names": [
+        "Austria"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".at",
+          "ascii": ".at"
+        }
+      ],
+      "factbookCodes": [
+        "au"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AZ",
+      "names": [
+        "Azerbaijan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".az",
+          "ascii": ".az"
+        }
+      ],
+      "factbookCodes": [
+        "aj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BI",
+      "names": [
+        "Burundi"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bi",
+          "ascii": ".bi"
+        }
+      ],
+      "factbookCodes": [
+        "by"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BE",
+      "names": [
+        "Belgium"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".be",
+          "ascii": ".be"
+        }
+      ],
+      "factbookCodes": [
+        "be"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BJ",
+      "names": [
+        "Benin"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bj",
+          "ascii": ".bj"
+        }
+      ],
+      "factbookCodes": [
+        "bn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BF",
+      "names": [
+        "Burkina Faso"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bf",
+          "ascii": ".bf"
+        }
+      ],
+      "factbookCodes": [
+        "uv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BD",
+      "names": [
+        "Bangladesh"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bd",
+          "ascii": ".bd"
+        }
+      ],
+      "factbookCodes": [
+        "bg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BG",
+      "names": [
+        "Bulgaria"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bg",
+          "ascii": ".bg"
+        }
+      ],
+      "factbookCodes": [
+        "bu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BH",
+      "names": [
+        "Bahrain"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bh",
+          "ascii": ".bh"
+        }
+      ],
+      "factbookCodes": [
+        "ba"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BS",
+      "names": [
+        "Bahamas"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bs",
+          "ascii": ".bs"
+        }
+      ],
+      "factbookCodes": [
+        "bf"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BA",
+      "names": [
+        "Bosnia and Herzegovina"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ba",
+          "ascii": ".ba"
+        }
+      ],
+      "factbookCodes": [
+        "bk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SH",
+      "names": [
+        "Saint Helena"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ac",
+          "ascii": ".ac"
+        },
+        {
+          "sourceName": ".sh",
+          "ascii": ".sh"
+        }
+      ],
+      "factbookCodes": [
+        "sh"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BY",
+      "names": [
+        "Belarus"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".by",
+          "ascii": ".by"
+        }
+      ],
+      "factbookCodes": [
+        "bo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BZ",
+      "names": [
+        "Belize"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bz",
+          "ascii": ".bz"
+        }
+      ],
+      "factbookCodes": [
+        "bh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BM",
+      "names": [
+        "Bermuda"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bm",
+          "ascii": ".bm"
+        }
+      ],
+      "factbookCodes": [
+        "bd"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BO",
+      "names": [
+        "Bolivia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bo",
+          "ascii": ".bo"
+        }
+      ],
+      "factbookCodes": [
+        "bl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BQ",
+      "names": [
+        "Bonaire, Sint Eustatius and Saba"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nl",
+          "ascii": ".nl"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "BR",
+      "names": [
+        "Brazil"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".br",
+          "ascii": ".br"
+        }
+      ],
+      "factbookCodes": [
+        "br"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BB",
+      "names": [
+        "Barbados"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bb",
+          "ascii": ".bb"
+        }
+      ],
+      "factbookCodes": [
+        "bb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BN",
+      "names": [
+        "Brunei Darussalam"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bn",
+          "ascii": ".bn"
+        }
+      ],
+      "factbookCodes": [
+        "bx"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BT",
+      "names": [
+        "Bhutan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bt",
+          "ascii": ".bt"
+        }
+      ],
+      "factbookCodes": [
+        "bt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BV",
+      "names": [
+        "Bouvet Island"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bv",
+          "ascii": ".bv"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "BW",
+      "names": [
+        "Botswana"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".bw",
+          "ascii": ".bw"
+        }
+      ],
+      "factbookCodes": [
+        "bc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CF",
+      "names": [
+        "Central African Republic"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cf",
+          "ascii": ".cf"
+        }
+      ],
+      "factbookCodes": [
+        "ct"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CA",
+      "names": [
+        "Canada"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ca",
+          "ascii": ".ca"
+        }
+      ],
+      "factbookCodes": [
+        "ca"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CC",
+      "names": [
+        "Cocos (Keeling) Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cc",
+          "ascii": ".cc"
+        }
+      ],
+      "factbookCodes": [
+        "ck"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CH",
+      "names": [
+        "Switzerland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ch",
+          "ascii": ".ch"
+        }
+      ],
+      "factbookCodes": [
+        "sz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CL",
+      "names": [
+        "Chile"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cl",
+          "ascii": ".cl"
+        }
+      ],
+      "factbookCodes": [
+        "ci"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CN",
+      "names": [
+        "People's Republic of China",
+        "China"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cn",
+          "ascii": ".cn"
+        },
+        {
+          "sourceName": ".公司",
+          "ascii": ".xn--55qx5d"
+        },
+        {
+          "sourceName": ".中国",
+          "ascii": ".xn--fiqs8s"
+        },
+        {
+          "sourceName": ".中國",
+          "ascii": ".xn--fiqz9s"
+        },
+        {
+          "sourceName": ".网络",
+          "ascii": ".xn--io0a7i"
+        }
+      ],
+      "factbookCodes": [
+        "ch"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CI",
+      "names": [
+        "Cote d'Ivoire",
+        "Côte d'Ivoire",
+        "Ivory Coast"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ci",
+          "ascii": ".ci"
+        }
+      ],
+      "factbookCodes": [
+        "iv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CM",
+      "names": [
+        "Cameroon"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cm",
+          "ascii": ".cm"
+        }
+      ],
+      "factbookCodes": [
+        "cm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CD",
+      "names": [
+        "Democratic Republic of the Congo",
+        "Congo"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cd",
+          "ascii": ".cd"
+        }
+      ],
+      "factbookCodes": [
+        "cg"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CG",
+      "names": [
+        "Republic of the Congo",
+        "Congo"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cg",
+          "ascii": ".cg"
+        }
+      ],
+      "factbookCodes": [
+        "cf"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CK",
+      "names": [
+        "Cook Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ck",
+          "ascii": ".ck"
+        }
+      ],
+      "factbookCodes": [
+        "cw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CO",
+      "names": [
+        "Colombia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".co",
+          "ascii": ".co"
+        }
+      ],
+      "factbookCodes": [
+        "co"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KM",
+      "names": [
+        "Comoros"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".km",
+          "ascii": ".km"
+        }
+      ],
+      "factbookCodes": [
+        "cn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CV",
+      "names": [
+        "Cape Verde"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cv",
+          "ascii": ".cv"
+        }
+      ],
+      "factbookCodes": [
+        "cv"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CR",
+      "names": [
+        "Costa Rica"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cr",
+          "ascii": ".cr"
+        }
+      ],
+      "factbookCodes": [
+        "cs"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CU",
+      "names": [
+        "Cuba"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cu",
+          "ascii": ".cu"
+        }
+      ],
+      "factbookCodes": [
+        "cu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CW",
+      "names": [
+        "Curaçao"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cw",
+          "ascii": ".cw"
+        }
+      ],
+      "factbookCodes": [
+        "uc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CX",
+      "names": [
+        "Christmas Island"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cx",
+          "ascii": ".cx"
+        }
+      ],
+      "factbookCodes": [
+        "kt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KY",
+      "names": [
+        "Cayman Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ky",
+          "ascii": ".ky"
+        }
+      ],
+      "factbookCodes": [
+        "cj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CY",
+      "names": [
+        "Cyprus"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cy",
+          "ascii": ".cy"
+        }
+      ],
+      "factbookCodes": [
+        "cy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CZ",
+      "names": [
+        "Czech Republic",
+        "Czechia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".cz",
+          "ascii": ".cz"
+        }
+      ],
+      "factbookCodes": [
+        "ez"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DE",
+      "names": [
+        "Germany"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".de",
+          "ascii": ".de"
+        }
+      ],
+      "factbookCodes": [
+        "gm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DJ",
+      "names": [
+        "Djibouti"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".dj",
+          "ascii": ".dj"
+        }
+      ],
+      "factbookCodes": [
+        "dj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DM",
+      "names": [
+        "Dominica"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".dm",
+          "ascii": ".dm"
+        }
+      ],
+      "factbookCodes": [
+        "do"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DK",
+      "names": [
+        "Denmark"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".dk",
+          "ascii": ".dk"
+        }
+      ],
+      "factbookCodes": [
+        "da"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DO",
+      "names": [
+        "Dominican Republic"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".do",
+          "ascii": ".do"
+        }
+      ],
+      "factbookCodes": [
+        "dr"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "DZ",
+      "names": [
+        "Algeria"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".dz",
+          "ascii": ".dz"
+        },
+        {
+          "sourceName": "الجزائر.",
+          "ascii": ".xn--lgbbat1ad8j"
+        }
+      ],
+      "factbookCodes": [
+        "ag"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EC",
+      "names": [
+        "Ecuador"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ec",
+          "ascii": ".ec"
+        }
+      ],
+      "factbookCodes": [
+        "ec"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EG",
+      "names": [
+        "Egypt"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".eg",
+          "ascii": ".eg"
+        },
+        {
+          "sourceName": ".مصر",
+          "ascii": ".xn--wgbh1c"
+        }
+      ],
+      "factbookCodes": [
+        "eg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ER",
+      "names": [
+        "Eritrea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".er",
+          "ascii": ".er"
+        }
+      ],
+      "factbookCodes": [
+        "er"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ES",
+      "names": [
+        "Spain"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".es",
+          "ascii": ".es"
+        }
+      ],
+      "factbookCodes": [
+        "sp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EE",
+      "names": [
+        "Estonia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ee",
+          "ascii": ".ee"
+        }
+      ],
+      "factbookCodes": [
+        "en"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ET",
+      "names": [
+        "Ethiopia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".et",
+          "ascii": ".et"
+        }
+      ],
+      "factbookCodes": [
+        "et"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FI",
+      "names": [
+        "Finland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fi",
+          "ascii": ".fi"
+        }
+      ],
+      "factbookCodes": [
+        "fi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FJ",
+      "names": [
+        "Fiji"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fj",
+          "ascii": ".fj"
+        }
+      ],
+      "factbookCodes": [
+        "fj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FK",
+      "names": [
+        "Falkland Islands (Malvinas)"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fk",
+          "ascii": ".fk"
+        }
+      ],
+      "factbookCodes": [
+        "fk"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "FR",
+      "names": [
+        "France"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fr",
+          "ascii": ".fr"
+        }
+      ],
+      "factbookCodes": [
+        "fr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FO",
+      "names": [
+        "Faroe Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fo",
+          "ascii": ".fo"
+        }
+      ],
+      "factbookCodes": [
+        "fo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FM",
+      "names": [
+        "Micronesia, Federated States of"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fm",
+          "ascii": ".fm"
+        }
+      ],
+      "factbookCodes": [
+        "fm"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "GA",
+      "names": [
+        "Gabon"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ga",
+          "ascii": ".ga"
+        }
+      ],
+      "factbookCodes": [
+        "gb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GB",
+      "names": [
+        "United Kingdom",
+        "UK",
+        "Great Britain"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".uk",
+          "ascii": ".uk"
+        }
+      ],
+      "factbookCodes": [
+        "uk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GE",
+      "names": [
+        "Georgia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ge",
+          "ascii": ".ge"
+        }
+      ],
+      "factbookCodes": [
+        "gg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GG",
+      "names": [
+        "Guernsey"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gg",
+          "ascii": ".gg"
+        }
+      ],
+      "factbookCodes": [
+        "gk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GH",
+      "names": [
+        "Ghana"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gh",
+          "ascii": ".gh"
+        }
+      ],
+      "factbookCodes": [
+        "gh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GI",
+      "names": [
+        "Gibraltar"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gi",
+          "ascii": ".gi"
+        }
+      ],
+      "factbookCodes": [
+        "gi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GN",
+      "names": [
+        "Guinea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gn",
+          "ascii": ".gn"
+        }
+      ],
+      "factbookCodes": [
+        "gv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GP",
+      "names": [
+        "Guadeloupe"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gp",
+          "ascii": ".gp"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "GM",
+      "names": [
+        "Republic of The Gambia",
+        "The Gambia",
+        "Gambia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gm",
+          "ascii": ".gm"
+        }
+      ],
+      "factbookCodes": [
+        "ga"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GW",
+      "names": [
+        "Guinea-Bissau"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gw",
+          "ascii": ".gw"
+        }
+      ],
+      "factbookCodes": [
+        "pu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GQ",
+      "names": [
+        "Equatorial Guinea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gq",
+          "ascii": ".gq"
+        }
+      ],
+      "factbookCodes": [
+        "ek"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GR",
+      "names": [
+        "Greece"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gr",
+          "ascii": ".gr"
+        }
+      ],
+      "factbookCodes": [
+        "gr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GD",
+      "names": [
+        "Grenada"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gd",
+          "ascii": ".gd"
+        }
+      ],
+      "factbookCodes": [
+        "gj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GL",
+      "names": [
+        "Greenland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gl",
+          "ascii": ".gl"
+        }
+      ],
+      "factbookCodes": [
+        "gl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GT",
+      "names": [
+        "Guatemala"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gt",
+          "ascii": ".gt"
+        }
+      ],
+      "factbookCodes": [
+        "gt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GF",
+      "names": [
+        "French Guiana"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gf",
+          "ascii": ".gf"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "GU",
+      "names": [
+        "Guam"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gu",
+          "ascii": ".gu"
+        }
+      ],
+      "factbookCodes": [
+        "gq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GY",
+      "names": [
+        "Guyana"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gy",
+          "ascii": ".gy"
+        }
+      ],
+      "factbookCodes": [
+        "gy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HK",
+      "names": [
+        "Hong Kong"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".hk",
+          "ascii": ".hk"
+        },
+        {
+          "sourceName": ".香港",
+          "ascii": ".xn--j6w193g"
+        }
+      ],
+      "factbookCodes": [
+        "hk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HM",
+      "names": [
+        "Heard Island and McDonald Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".aq",
+          "ascii": ".aq"
+        },
+        {
+          "sourceName": ".hm",
+          "ascii": ".hm"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "HN",
+      "names": [
+        "Honduras"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".hn",
+          "ascii": ".hn"
+        }
+      ],
+      "factbookCodes": [
+        "ho"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HR",
+      "names": [
+        "Croatia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".hr",
+          "ascii": ".hr"
+        }
+      ],
+      "factbookCodes": [
+        "hr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HT",
+      "names": [
+        "Haiti"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ht",
+          "ascii": ".ht"
+        }
+      ],
+      "factbookCodes": [
+        "ha"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HU",
+      "names": [
+        "Hungary"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".hu",
+          "ascii": ".hu"
+        }
+      ],
+      "factbookCodes": [
+        "hu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ID",
+      "names": [
+        "Indonesia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".id",
+          "ascii": ".id"
+        }
+      ],
+      "factbookCodes": [
+        "id"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IM",
+      "names": [
+        "Isle of Man"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".im",
+          "ascii": ".im"
+        }
+      ],
+      "factbookCodes": [
+        "im"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IN",
+      "names": [
+        "India"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".in",
+          "ascii": ".in"
+        }
+      ],
+      "factbookCodes": [
+        "in"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IO",
+      "names": [
+        "British Indian Ocean Territory"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".io",
+          "ascii": ".io"
+        }
+      ],
+      "factbookCodes": [
+        "io"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "IE",
+      "names": [
+        "Ireland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ie",
+          "ascii": ".ie"
+        }
+      ],
+      "factbookCodes": [
+        "ei"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IR",
+      "names": [
+        "Islamic Republic of Iran",
+        "Iran"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ir",
+          "ascii": ".ir"
+        },
+        {
+          "sourceName": "ایران.",
+          "ascii": ".xn--mgba3a4f16a"
+        }
+      ],
+      "factbookCodes": [
+        "ir"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IQ",
+      "names": [
+        "Iraq"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".iq",
+          "ascii": ".iq"
+        }
+      ],
+      "factbookCodes": [
+        "iz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IS",
+      "names": [
+        "Iceland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".is",
+          "ascii": ".is"
+        }
+      ],
+      "factbookCodes": [
+        "ic"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IL",
+      "names": [
+        "Israel"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".il",
+          "ascii": ".il"
+        }
+      ],
+      "factbookCodes": [
+        "is"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IT",
+      "names": [
+        "Italy"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".it",
+          "ascii": ".it"
+        }
+      ],
+      "factbookCodes": [
+        "it"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JM",
+      "names": [
+        "Jamaica"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".jm",
+          "ascii": ".jm"
+        }
+      ],
+      "factbookCodes": [
+        "jm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JE",
+      "names": [
+        "Jersey"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".je",
+          "ascii": ".je"
+        }
+      ],
+      "factbookCodes": [
+        "je"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JO",
+      "names": [
+        "Jordan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".jo",
+          "ascii": ".jo"
+        },
+        {
+          "sourceName": "الاردن.",
+          "ascii": ".xn--mgbayh7gpa"
+        }
+      ],
+      "factbookCodes": [
+        "jo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JP",
+      "names": [
+        "Japan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".jp",
+          "ascii": ".jp"
+        },
+        {
+          "sourceName": ".みんな",
+          "ascii": ".xn--q9jyb4c"
+        }
+      ],
+      "factbookCodes": [
+        "ja"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KZ",
+      "names": [
+        "Kazakhstan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kz",
+          "ascii": ".kz"
+        },
+        {
+          "sourceName": ".қаз",
+          "ascii": ".xn--80ao21a"
+        }
+      ],
+      "factbookCodes": [
+        "kz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KE",
+      "names": [
+        "Kenya"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ke",
+          "ascii": ".ke"
+        }
+      ],
+      "factbookCodes": [
+        "ke"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KG",
+      "names": [
+        "Kyrgyzstan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kg",
+          "ascii": ".kg"
+        }
+      ],
+      "factbookCodes": [
+        "kg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KH",
+      "names": [
+        "Cambodia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kh",
+          "ascii": ".kh"
+        }
+      ],
+      "factbookCodes": [
+        "cb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KI",
+      "names": [
+        "Kiribati"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ki",
+          "ascii": ".ki"
+        }
+      ],
+      "factbookCodes": [
+        "kr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KN",
+      "names": [
+        "Saint Kitts and Nevis"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kn",
+          "ascii": ".kn"
+        }
+      ],
+      "factbookCodes": [
+        "sc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KR",
+      "names": [
+        "South Korea",
+        "Korea, Republic of",
+        "Republic of Korea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kr",
+          "ascii": ".kr"
+        },
+        {
+          "sourceName": ".한국",
+          "ascii": ".xn--3e0b707e"
+        }
+      ],
+      "factbookCodes": [
+        "ks"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KW",
+      "names": [
+        "Kuwait"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kw",
+          "ascii": ".kw"
+        }
+      ],
+      "factbookCodes": [
+        "ku"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LA",
+      "names": [
+        "Lao People's Democratic Republic"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".la",
+          "ascii": ".la"
+        }
+      ],
+      "factbookCodes": [
+        "la"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "LB",
+      "names": [
+        "Lebanon"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lb",
+          "ascii": ".lb"
+        }
+      ],
+      "factbookCodes": [
+        "le"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LR",
+      "names": [
+        "Liberia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lr",
+          "ascii": ".lr"
+        }
+      ],
+      "factbookCodes": [
+        "li"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LY",
+      "names": [
+        "Libya"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ly",
+          "ascii": ".ly"
+        }
+      ],
+      "factbookCodes": [
+        "ly"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LC",
+      "names": [
+        "Saint Lucia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lc",
+          "ascii": ".lc"
+        }
+      ],
+      "factbookCodes": [
+        "st"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LI",
+      "names": [
+        "Liechtenstein"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".li",
+          "ascii": ".li"
+        }
+      ],
+      "factbookCodes": [
+        "ls"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LK",
+      "names": [
+        "Sri Lanka"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lk",
+          "ascii": ".lk"
+        },
+        {
+          "sourceName": ".ලංකා",
+          "ascii": ".xn--fzc2c9e2c"
+        },
+        {
+          "sourceName": ".இலங்கை",
+          "ascii": ".xn--xkc2al3hye2a"
+        }
+      ],
+      "factbookCodes": [
+        "ce"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LS",
+      "names": [
+        "Lesotho"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ls",
+          "ascii": ".ls"
+        }
+      ],
+      "factbookCodes": [
+        "lt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LT",
+      "names": [
+        "Lithuania"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lt",
+          "ascii": ".lt"
+        }
+      ],
+      "factbookCodes": [
+        "lh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LU",
+      "names": [
+        "Luxembourg"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lu",
+          "ascii": ".lu"
+        }
+      ],
+      "factbookCodes": [
+        "lu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LV",
+      "names": [
+        "Latvia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".lv",
+          "ascii": ".lv"
+        }
+      ],
+      "factbookCodes": [
+        "lg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MO",
+      "names": [
+        "Macao"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mo",
+          "ascii": ".mo"
+        }
+      ],
+      "factbookCodes": [
+        "mc"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MF",
+      "names": [
+        "Saint Martin (French part)"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".fr",
+          "ascii": ".fr"
+        },
+        {
+          "sourceName": ".gp",
+          "ascii": ".gp"
+        }
+      ],
+      "factbookCodes": [
+        "rn"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MA",
+      "names": [
+        "Morocco"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ma",
+          "ascii": ".ma"
+        },
+        {
+          "sourceName": "المغرب.",
+          "ascii": ".xn--mgbc0a9azcg"
+        }
+      ],
+      "factbookCodes": [
+        "mo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MC",
+      "names": [
+        "Monaco"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mc",
+          "ascii": ".mc"
+        }
+      ],
+      "factbookCodes": [
+        "mn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MD",
+      "names": [
+        "Moldova, Republic of"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".md",
+          "ascii": ".md"
+        }
+      ],
+      "factbookCodes": [
+        "md"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MG",
+      "names": [
+        "Madagascar"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mg",
+          "ascii": ".mg"
+        }
+      ],
+      "factbookCodes": [
+        "ma"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MV",
+      "names": [
+        "Maldives"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mv",
+          "ascii": ".mv"
+        }
+      ],
+      "factbookCodes": [
+        "mv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MX",
+      "names": [
+        "Mexico"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mx",
+          "ascii": ".mx"
+        }
+      ],
+      "factbookCodes": [
+        "mx"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MH",
+      "names": [
+        "Marshall Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mh",
+          "ascii": ".mh"
+        }
+      ],
+      "factbookCodes": [
+        "rm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MK",
+      "names": [
+        "The Republic of North Macedonia",
+        "North Macedonia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mk",
+          "ascii": ".mk"
+        }
+      ],
+      "factbookCodes": [
+        "mk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ML",
+      "names": [
+        "Mali"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ml",
+          "ascii": ".ml"
+        }
+      ],
+      "factbookCodes": [
+        "ml"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MT",
+      "names": [
+        "Malta"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mt",
+          "ascii": ".mt"
+        }
+      ],
+      "factbookCodes": [
+        "mt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MM",
+      "names": [
+        "Myanmar"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mm",
+          "ascii": ".mm"
+        }
+      ],
+      "factbookCodes": [
+        "bm"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "ME",
+      "names": [
+        "Montenegro"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".me",
+          "ascii": ".me"
+        }
+      ],
+      "factbookCodes": [
+        "mj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MN",
+      "names": [
+        "Mongolia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mn",
+          "ascii": ".mn"
+        }
+      ],
+      "factbookCodes": [
+        "mg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MP",
+      "names": [
+        "Northern Mariana Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mp",
+          "ascii": ".mp"
+        }
+      ],
+      "factbookCodes": [
+        "cq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MZ",
+      "names": [
+        "Mozambique"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mz",
+          "ascii": ".mz"
+        }
+      ],
+      "factbookCodes": [
+        "mz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MR",
+      "names": [
+        "Mauritania"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mr",
+          "ascii": ".mr"
+        }
+      ],
+      "factbookCodes": [
+        "mr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MS",
+      "names": [
+        "Montserrat"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ms",
+          "ascii": ".ms"
+        }
+      ],
+      "factbookCodes": [
+        "mh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MQ",
+      "names": [
+        "Martinique"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mq",
+          "ascii": ".mq"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "MU",
+      "names": [
+        "Mauritius"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mu",
+          "ascii": ".mu"
+        }
+      ],
+      "factbookCodes": [
+        "mp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MW",
+      "names": [
+        "Malawi"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".mw",
+          "ascii": ".mw"
+        }
+      ],
+      "factbookCodes": [
+        "mi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MY",
+      "names": [
+        "Malaysia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".my",
+          "ascii": ".my"
+        }
+      ],
+      "factbookCodes": [
+        "my"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "YT",
+      "names": [
+        "Mayotte"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".yt",
+          "ascii": ".yt"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "NA",
+      "names": [
+        "Namibia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".na",
+          "ascii": ".na"
+        }
+      ],
+      "factbookCodes": [
+        "wa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NC",
+      "names": [
+        "New Caledonia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nc",
+          "ascii": ".nc"
+        }
+      ],
+      "factbookCodes": [
+        "nc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NE",
+      "names": [
+        "Niger"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ne",
+          "ascii": ".ne"
+        }
+      ],
+      "factbookCodes": [
+        "ng"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NF",
+      "names": [
+        "Norfolk Island"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nf",
+          "ascii": ".nf"
+        }
+      ],
+      "factbookCodes": [
+        "nf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NG",
+      "names": [
+        "Nigeria"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ng",
+          "ascii": ".ng"
+        }
+      ],
+      "factbookCodes": [
+        "ni"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NI",
+      "names": [
+        "Nicaragua"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ni",
+          "ascii": ".ni"
+        }
+      ],
+      "factbookCodes": [
+        "nu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NU",
+      "names": [
+        "Niue"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nu",
+          "ascii": ".nu"
+        }
+      ],
+      "factbookCodes": [
+        "ne"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NL",
+      "names": [
+        "Netherlands",
+        "The Netherlands",
+        "Netherlands (Kingdom of the)"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nl",
+          "ascii": ".nl"
+        }
+      ],
+      "factbookCodes": [
+        "nl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NO",
+      "names": [
+        "Norway"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".no",
+          "ascii": ".no"
+        }
+      ],
+      "factbookCodes": [
+        "no"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NP",
+      "names": [
+        "Nepal"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".np",
+          "ascii": ".np"
+        }
+      ],
+      "factbookCodes": [
+        "np"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NR",
+      "names": [
+        "Nauru"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nr",
+          "ascii": ".nr"
+        }
+      ],
+      "factbookCodes": [
+        "nr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NZ",
+      "names": [
+        "New Zealand"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".nz",
+          "ascii": ".nz"
+        }
+      ],
+      "factbookCodes": [
+        "nz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "OM",
+      "names": [
+        "Oman"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".om",
+          "ascii": ".om"
+        }
+      ],
+      "factbookCodes": [
+        "mu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PK",
+      "names": [
+        "Pakistan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pk",
+          "ascii": ".pk"
+        }
+      ],
+      "factbookCodes": [
+        "pk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PA",
+      "names": [
+        "Panama"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pa",
+          "ascii": ".pa"
+        }
+      ],
+      "factbookCodes": [
+        "pm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PN",
+      "names": [
+        "Pitcairn",
+        "Pitcairn Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pn",
+          "ascii": ".pn"
+        }
+      ],
+      "factbookCodes": [
+        "pc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PE",
+      "names": [
+        "Peru"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pe",
+          "ascii": ".pe"
+        }
+      ],
+      "factbookCodes": [
+        "pe"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PH",
+      "names": [
+        "Philippines"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ph",
+          "ascii": ".ph"
+        }
+      ],
+      "factbookCodes": [
+        "rp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PW",
+      "names": [
+        "Palau"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pw",
+          "ascii": ".pw"
+        }
+      ],
+      "factbookCodes": [
+        "ps"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PG",
+      "names": [
+        "Papua New Guinea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pg",
+          "ascii": ".pg"
+        }
+      ],
+      "factbookCodes": [
+        "pp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PL",
+      "names": [
+        "Poland"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pl",
+          "ascii": ".pl"
+        }
+      ],
+      "factbookCodes": [
+        "pl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PR",
+      "names": [
+        "Puerto Rico"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pr",
+          "ascii": ".pr"
+        }
+      ],
+      "factbookCodes": [
+        "rq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KP",
+      "names": [
+        "North Korea"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".kp",
+          "ascii": ".kp"
+        }
+      ],
+      "factbookCodes": [
+        "kn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PT",
+      "names": [
+        "Portugal"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pt",
+          "ascii": ".pt"
+        }
+      ],
+      "factbookCodes": [
+        "po"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PY",
+      "names": [
+        "Paraguay"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".py",
+          "ascii": ".py"
+        }
+      ],
+      "factbookCodes": [
+        "pa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PS",
+      "names": [
+        "State of Palestine",
+        "Palestine"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ps",
+          "ascii": ".ps"
+        },
+        {
+          "sourceName": "فلسطين.",
+          "ascii": ".xn--ygbi2ammx"
+        }
+      ],
+      "factbookCodes": [
+        "we",
+        "gz"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "PF",
+      "names": [
+        "French Polynesia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pf",
+          "ascii": ".pf"
+        }
+      ],
+      "factbookCodes": [
+        "fp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "QA",
+      "names": [
+        "Qatar"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".qa",
+          "ascii": ".qa"
+        },
+        {
+          "sourceName": "قطر.",
+          "ascii": ".xn--wgbl6a"
+        }
+      ],
+      "factbookCodes": [
+        "qa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RE",
+      "names": [
+        "Reunion"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".re",
+          "ascii": ".re"
+        }
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "IANA TLD is searchable as an ISO-name alias only; no separate Factbook profile is represented and no sovereignty or parent-territory status is inferred."
+    },
+    {
+      "isoAlpha2": "RO",
+      "names": [
+        "Romania"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ro",
+          "ascii": ".ro"
+        }
+      ],
+      "factbookCodes": [
+        "ro"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RU",
+      "names": [
+        "Russian Federation",
+        "Russia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ru",
+          "ascii": ".ru"
+        },
+        {
+          "sourceName": ".рф",
+          "ascii": ".xn--p1ai"
+        }
+      ],
+      "factbookCodes": [
+        "rs"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RW",
+      "names": [
+        "Rwanda"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".rw",
+          "ascii": ".rw"
+        }
+      ],
+      "factbookCodes": [
+        "rw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SA",
+      "names": [
+        "Saudi Arabia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sa",
+          "ascii": ".sa"
+        },
+        {
+          "sourceName": ".السعودية",
+          "ascii": ".xn--mgberp4a5d4ar"
+        }
+      ],
+      "factbookCodes": [
+        "sa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SD",
+      "names": [
+        "Sudan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sd",
+          "ascii": ".sd"
+        }
+      ],
+      "factbookCodes": [
+        "su"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SN",
+      "names": [
+        "Senegal"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sn",
+          "ascii": ".sn"
+        }
+      ],
+      "factbookCodes": [
+        "sg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SG",
+      "names": [
+        "Singapore"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sg",
+          "ascii": ".sg"
+        },
+        {
+          "sourceName": ".சிங்கப்பூர்",
+          "ascii": ".xn--clchc0ea0b2g2a9gcd"
+        },
+        {
+          "sourceName": ".新加坡",
+          "ascii": ".xn--yfro4i67o"
+        }
+      ],
+      "factbookCodes": [
+        "sn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GS",
+      "names": [
+        "South Georgia and the South Sandwich Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".gs",
+          "ascii": ".gs"
+        }
+      ],
+      "factbookCodes": [
+        "sx"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "SJ",
+      "names": [
+        "Svalbard and Jan Mayen"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sj",
+          "ascii": ".sj"
+        }
+      ],
+      "factbookCodes": [
+        "sv",
+        "jn"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "SB",
+      "names": [
+        "Solomon Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sb",
+          "ascii": ".sb"
+        }
+      ],
+      "factbookCodes": [
+        "bp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SL",
+      "names": [
+        "Sierra Leone"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sl",
+          "ascii": ".sl"
+        }
+      ],
+      "factbookCodes": [
+        "sl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SV",
+      "names": [
+        "El Salvador"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sv",
+          "ascii": ".sv"
+        }
+      ],
+      "factbookCodes": [
+        "es"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SM",
+      "names": [
+        "San Marino"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sm",
+          "ascii": ".sm"
+        }
+      ],
+      "factbookCodes": [
+        "sm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SO",
+      "names": [
+        "Somalia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".so",
+          "ascii": ".so"
+        }
+      ],
+      "factbookCodes": [
+        "so"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PM",
+      "names": [
+        "Saint Pierre and Miquelon"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".pm",
+          "ascii": ".pm"
+        }
+      ],
+      "factbookCodes": [
+        "sb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RS",
+      "names": [
+        "Serbia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".rs",
+          "ascii": ".rs"
+        },
+        {
+          "sourceName": ".срб",
+          "ascii": ".xn--90a3ac"
+        }
+      ],
+      "factbookCodes": [
+        "ri"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SS",
+      "names": [
+        "South Sudan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ss",
+          "ascii": ".ss"
+        }
+      ],
+      "factbookCodes": [
+        "od"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ST",
+      "names": [
+        "Sao Tome and Principe"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".st",
+          "ascii": ".st"
+        }
+      ],
+      "factbookCodes": [
+        "tp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SR",
+      "names": [
+        "Suriname"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sr",
+          "ascii": ".sr"
+        }
+      ],
+      "factbookCodes": [
+        "ns"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SK",
+      "names": [
+        "Slovakia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sk",
+          "ascii": ".sk"
+        }
+      ],
+      "factbookCodes": [
+        "lo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SI",
+      "names": [
+        "Slovenia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".si",
+          "ascii": ".si"
+        }
+      ],
+      "factbookCodes": [
+        "si"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SE",
+      "names": [
+        "Sweden"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".se",
+          "ascii": ".se"
+        }
+      ],
+      "factbookCodes": [
+        "sw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SZ",
+      "names": [
+        "Eswatini"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sz",
+          "ascii": ".sz"
+        }
+      ],
+      "factbookCodes": [
+        "wz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SX",
+      "names": [
+        "Sint Maarten (Dutch part)"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sx",
+          "ascii": ".sx"
+        }
+      ],
+      "factbookCodes": [
+        "nn"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "SC",
+      "names": [
+        "Seychelles"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sc",
+          "ascii": ".sc"
+        }
+      ],
+      "factbookCodes": [
+        "se"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SY",
+      "names": [
+        "Syrian Arab Republic"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".sy",
+          "ascii": ".sy"
+        }
+      ],
+      "factbookCodes": [
+        "sy"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "TC",
+      "names": [
+        "Turks and Caicos Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tc",
+          "ascii": ".tc"
+        }
+      ],
+      "factbookCodes": [
+        "tk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TD",
+      "names": [
+        "Chad"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".td",
+          "ascii": ".td"
+        }
+      ],
+      "factbookCodes": [
+        "cd"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TG",
+      "names": [
+        "Togo"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tg",
+          "ascii": ".tg"
+        }
+      ],
+      "factbookCodes": [
+        "to"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TH",
+      "names": [
+        "Thailand"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".th",
+          "ascii": ".th"
+        },
+        {
+          "sourceName": ".ไทย",
+          "ascii": ".xn--o3cw4h"
+        }
+      ],
+      "factbookCodes": [
+        "th"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TJ",
+      "names": [
+        "Tajikistan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tj",
+          "ascii": ".tj"
+        }
+      ],
+      "factbookCodes": [
+        "ti"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TK",
+      "names": [
+        "Tokelau"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tk",
+          "ascii": ".tk"
+        }
+      ],
+      "factbookCodes": [
+        "tl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TM",
+      "names": [
+        "Turkmenistan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tm",
+          "ascii": ".tm"
+        }
+      ],
+      "factbookCodes": [
+        "tx"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TL",
+      "names": [
+        "Timor-Leste"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tl",
+          "ascii": ".tl"
+        }
+      ],
+      "factbookCodes": [
+        "tt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TO",
+      "names": [
+        "Tonga"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".to",
+          "ascii": ".to"
+        }
+      ],
+      "factbookCodes": [
+        "tn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TT",
+      "names": [
+        "Trinidad and Tobago"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tt",
+          "ascii": ".tt"
+        }
+      ],
+      "factbookCodes": [
+        "td"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TN",
+      "names": [
+        "Tunisia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tn",
+          "ascii": ".tn"
+        }
+      ],
+      "factbookCodes": [
+        "ts"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TR",
+      "names": [
+        "Türkiye",
+        "Turkey"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tr",
+          "ascii": ".tr"
+        }
+      ],
+      "factbookCodes": [
+        "tu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TV",
+      "names": [
+        "Tuvalu"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tv",
+          "ascii": ".tv"
+        }
+      ],
+      "factbookCodes": [
+        "tv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TW",
+      "names": [
+        "Taiwan, Province of China",
+        "Taiwan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tw",
+          "ascii": ".tw"
+        },
+        {
+          "sourceName": ".台湾",
+          "ascii": ".xn--kprw13d"
+        },
+        {
+          "sourceName": ".台灣",
+          "ascii": ".xn--kpry57d"
+        }
+      ],
+      "factbookCodes": [
+        "tw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TZ",
+      "names": [
+        "United Republic of Tanzania",
+        "Tanzania"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".tz",
+          "ascii": ".tz"
+        }
+      ],
+      "factbookCodes": [
+        "tz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UG",
+      "names": [
+        "Uganda"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ug",
+          "ascii": ".ug"
+        }
+      ],
+      "factbookCodes": [
+        "ug"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UA",
+      "names": [
+        "Ukraine"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ua",
+          "ascii": ".ua"
+        },
+        {
+          "sourceName": ".укр",
+          "ascii": ".xn--j1amh"
+        }
+      ],
+      "factbookCodes": [
+        "up"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UM",
+      "names": [
+        "United States Minor Outlying Islands"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".us",
+          "ascii": ".us"
+        }
+      ],
+      "factbookCodes": [
+        "um"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "UY",
+      "names": [
+        "Uruguay"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".uy",
+          "ascii": ".uy"
+        }
+      ],
+      "factbookCodes": [
+        "uy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "US",
+      "names": [
+        "United States of America",
+        "United States",
+        "USA",
+        "U.S.A.",
+        "US",
+        "U.S."
+      ],
+      "tlds": [
+        {
+          "sourceName": ".us",
+          "ascii": ".us"
+        }
+      ],
+      "factbookCodes": [
+        "us"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UZ",
+      "names": [
+        "Uzbekistan"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".uz",
+          "ascii": ".uz"
+        }
+      ],
+      "factbookCodes": [
+        "uz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VA",
+      "names": [
+        "Holy See (Vatican City State)"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".va",
+          "ascii": ".va"
+        }
+      ],
+      "factbookCodes": [
+        "vt"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "VC",
+      "names": [
+        "Saint Vincent and the Grenadines"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".vc",
+          "ascii": ".vc"
+        }
+      ],
+      "factbookCodes": [
+        "vc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VE",
+      "names": [
+        "Venezuela"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ve",
+          "ascii": ".ve"
+        }
+      ],
+      "factbookCodes": [
+        "ve"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VG",
+      "names": [
+        "Virgin Islands, British"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".vg",
+          "ascii": ".vg"
+        }
+      ],
+      "factbookCodes": [
+        "vi"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "VI",
+      "names": [
+        "Virgin Islands, U.S."
+      ],
+      "tlds": [
+        {
+          "sourceName": ".vi",
+          "ascii": ".vi"
+        }
+      ],
+      "factbookCodes": [
+        "vq"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "VN",
+      "names": [
+        "Vietnam"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".vn",
+          "ascii": ".vn"
+        }
+      ],
+      "factbookCodes": [
+        "vm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VU",
+      "names": [
+        "Vanuatu"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".vu",
+          "ascii": ".vu"
+        }
+      ],
+      "factbookCodes": [
+        "nh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "WF",
+      "names": [
+        "Wallis and Futuna"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".wf",
+          "ascii": ".wf"
+        }
+      ],
+      "factbookCodes": [
+        "wf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "WS",
+      "names": [
+        "Samoa"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ws",
+          "ascii": ".ws"
+        }
+      ],
+      "factbookCodes": [
+        "ws"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "YE",
+      "names": [
+        "Yemen"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".ye",
+          "ascii": ".ye"
+        }
+      ],
+      "factbookCodes": [
+        "ym"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZA",
+      "names": [
+        "South Africa"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".za",
+          "ascii": ".za"
+        }
+      ],
+      "factbookCodes": [
+        "sf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZM",
+      "names": [
+        "Zambia"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".zm",
+          "ascii": ".zm"
+        }
+      ],
+      "factbookCodes": [
+        "za"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZW",
+      "names": [
+        "Zimbabwe"
+      ],
+      "tlds": [
+        {
+          "sourceName": ".zw",
+          "ascii": ".zw"
+        }
+      ],
+      "factbookCodes": [
+        "zi"
+      ],
+      "mapping": "normalized-english-name"
+    }
+  ]
+}

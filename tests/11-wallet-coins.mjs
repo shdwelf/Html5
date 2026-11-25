@@ -325,9 +325,10 @@ const coins = REG.assets;
   const eth50 = W.deriveCoin(top50, ABANDON, { id: "eth-ethereum" });
   const usdt50 = W.deriveCoin(top50, ABANDON, { id: "usdt-tether" });
   s.eq("host-chain token reuses its EVM address", usdt50.address, eth50.address);
-  s.ok("viewer has top-50 selector contract",
+  s.ok("viewer exposes the full registry and an explicit network selector",
     /id="topCoin"/.test(viewerHtml) && /id="deriveTopCoin"/.test(viewerHtml) &&
-    /slice\(0, 50\)/.test(viewerJs));
+    /id="topCoinNetwork"/.test(viewerHtml) && /id="topCoinSearch"/.test(viewerHtml) &&
+    /state\.topCoins = registry\.assets/.test(viewerJs) && !/slice\(0, 50\)/.test(viewerJs));
 }
 
 process.exit(s.done() ? 1 : 0);

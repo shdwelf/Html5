@@ -1,0 +1,2733 @@
+{
+  "schema": "html5.country-viewer.iso-crosswalk/v1",
+  "reviewDate": "2026-11-09",
+  "source": {
+    "package": "i18n-iso-countries",
+    "version": "7.14.0",
+    "commit": "55c3a72603faf0185661e80841074e1c2fcf8db5",
+    "file": "langs/en.json",
+    "license": "MIT",
+    "repository": "https://github.com/michaelwittig/node-i18n-iso-countries",
+    "tarball": "https://registry.npmjs.org/i18n-iso-countries/-/i18n-iso-countries-7.14.0.tgz",
+    "integrity": "sha512-nXHJZYtNrfsi1UQbyRqm3Gou431elgLjKl//CYlnBGt5aTWdRPH1PiS2T/p/n8Q8LnqYqzQJik3Q7mkwvLokeg=="
+  },
+  "comparison": {
+    "target": "The vendored CIA World Factbook country profiles in js/country-data.js; ISO names are retained as search labels, not as inferred Factbook profiles.",
+    "counts": {
+      "isoNameEntries": 250,
+      "mappedIsoEntries": 239,
+      "unmappedIsoEntries": 11,
+      "splitNameEntries": 2
+    },
+    "unmappedPolicy": "Do not create or infer a country profile from an unmatched ISO label."
+  },
+  "displayOverrides": [
+    {
+      "factbookCode": "ct",
+      "isoAlpha2": "CF",
+      "displayName": "Central African Republic"
+    },
+    {
+      "factbookCode": "sh",
+      "isoAlpha2": "SH",
+      "displayName": "Saint Helena"
+    },
+    {
+      "factbookCode": "fm",
+      "isoAlpha2": "FM",
+      "displayName": "Micronesia, Federated States of"
+    },
+    {
+      "factbookCode": "ae",
+      "isoAlpha2": "AE",
+      "displayName": "United Arab Emirates"
+    },
+    {
+      "factbookCode": "io",
+      "isoAlpha2": "IO",
+      "displayName": "British Indian Ocean Territory"
+    }
+  ],
+  "searchAliases": [
+    {
+      "factbookCode": "us",
+      "names": [
+        "USA",
+        "United States of America"
+      ]
+    },
+    {
+      "factbookCode": "uk",
+      "names": [
+        "UK",
+        "United Kingdom",
+        "Great Britain"
+      ]
+    },
+    {
+      "factbookCode": "rs",
+      "names": [
+        "Russia",
+        "Russian Federation"
+      ]
+    },
+    {
+      "factbookCode": "tu",
+      "names": [
+        "Turkey",
+        "Türkiye"
+      ]
+    },
+    {
+      "factbookCode": "ir",
+      "names": [
+        "Iran",
+        "Islamic Republic of Iran"
+      ]
+    },
+    {
+      "factbookCode": "sy",
+      "names": [
+        "Syria",
+        "Syrian Arab Republic"
+      ]
+    },
+    {
+      "factbookCode": "bx",
+      "names": [
+        "Brunei Darussalam"
+      ]
+    },
+    {
+      "factbookCode": "cv",
+      "names": [
+        "Cape Verde"
+      ]
+    },
+    {
+      "factbookCode": "cf",
+      "names": [
+        "Congo-Brazzaville",
+        "Congo Brazzaville",
+        "Republic of the Congo"
+      ]
+    },
+    {
+      "factbookCode": "cg",
+      "names": [
+        "Congo-Kinshasa",
+        "Congo Kinshasa",
+        "DR Congo",
+        "DRC",
+        "Democratic Republic of the Congo"
+      ]
+    },
+    {
+      "factbookCode": "dr",
+      "names": [
+        "Dominican Republic"
+      ]
+    },
+    {
+      "factbookCode": "la",
+      "names": [
+        "Lao PDR",
+        "Lao People’s Democratic Republic"
+      ]
+    },
+    {
+      "factbookCode": "mc",
+      "names": [
+        "Macao"
+      ]
+    },
+    {
+      "factbookCode": "bm",
+      "names": [
+        "Burma",
+        "Myanmar"
+      ]
+    },
+    {
+      "factbookCode": "vt",
+      "names": [
+        "Holy See",
+        "Vatican City",
+        "Vatican City State"
+      ]
+    },
+    {
+      "factbookCode": "we",
+      "names": [
+        "Palestine",
+        "State of Palestine"
+      ]
+    },
+    {
+      "factbookCode": "gz",
+      "names": [
+        "Palestine",
+        "State of Palestine"
+      ]
+    },
+    {
+      "factbookCode": "sv",
+      "names": [
+        "Svalbard",
+        "Svalbard and Jan Mayen"
+      ]
+    },
+    {
+      "factbookCode": "jn",
+      "names": [
+        "Jan Mayen",
+        "Svalbard and Jan Mayen"
+      ]
+    },
+    {
+      "factbookCode": "ae",
+      "names": [
+        "UAE"
+      ]
+    },
+    {
+      "factbookCode": "vq",
+      "names": [
+        "U.S. Virgin Islands",
+        "US Virgin Islands",
+        "Virgin Islands, U.S."
+      ]
+    },
+    {
+      "factbookCode": "vi",
+      "names": [
+        "British Virgin Islands",
+        "Virgin Islands, British"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "isoAlpha2": "AF",
+      "names": [
+        "Afghanistan"
+      ],
+      "factbookCodes": [
+        "af"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AL",
+      "names": [
+        "Albania"
+      ],
+      "factbookCodes": [
+        "al"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DZ",
+      "names": [
+        "Algeria"
+      ],
+      "factbookCodes": [
+        "ag"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AS",
+      "names": [
+        "American Samoa"
+      ],
+      "factbookCodes": [
+        "aq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AD",
+      "names": [
+        "Andorra"
+      ],
+      "factbookCodes": [
+        "an"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AO",
+      "names": [
+        "Angola"
+      ],
+      "factbookCodes": [
+        "ao"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AI",
+      "names": [
+        "Anguilla"
+      ],
+      "factbookCodes": [
+        "av"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AQ",
+      "names": [
+        "Antarctica"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "AG",
+      "names": [
+        "Antigua and Barbuda"
+      ],
+      "factbookCodes": [
+        "ac"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AR",
+      "names": [
+        "Argentina"
+      ],
+      "factbookCodes": [
+        "ar"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AM",
+      "names": [
+        "Armenia"
+      ],
+      "factbookCodes": [
+        "am"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AW",
+      "names": [
+        "Aruba"
+      ],
+      "factbookCodes": [
+        "aa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AU",
+      "names": [
+        "Australia"
+      ],
+      "factbookCodes": [
+        "as"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AT",
+      "names": [
+        "Austria"
+      ],
+      "factbookCodes": [
+        "au"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AZ",
+      "names": [
+        "Azerbaijan"
+      ],
+      "factbookCodes": [
+        "aj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BS",
+      "names": [
+        "Bahamas"
+      ],
+      "factbookCodes": [
+        "bf"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BH",
+      "names": [
+        "Bahrain"
+      ],
+      "factbookCodes": [
+        "ba"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BD",
+      "names": [
+        "Bangladesh"
+      ],
+      "factbookCodes": [
+        "bg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BB",
+      "names": [
+        "Barbados"
+      ],
+      "factbookCodes": [
+        "bb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BY",
+      "names": [
+        "Belarus"
+      ],
+      "factbookCodes": [
+        "bo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BE",
+      "names": [
+        "Belgium"
+      ],
+      "factbookCodes": [
+        "be"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BZ",
+      "names": [
+        "Belize"
+      ],
+      "factbookCodes": [
+        "bh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BJ",
+      "names": [
+        "Benin"
+      ],
+      "factbookCodes": [
+        "bn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BM",
+      "names": [
+        "Bermuda"
+      ],
+      "factbookCodes": [
+        "bd"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BT",
+      "names": [
+        "Bhutan"
+      ],
+      "factbookCodes": [
+        "bt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BO",
+      "names": [
+        "Bolivia"
+      ],
+      "factbookCodes": [
+        "bl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BA",
+      "names": [
+        "Bosnia and Herzegovina"
+      ],
+      "factbookCodes": [
+        "bk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BW",
+      "names": [
+        "Botswana"
+      ],
+      "factbookCodes": [
+        "bc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BV",
+      "names": [
+        "Bouvet Island"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "BR",
+      "names": [
+        "Brazil"
+      ],
+      "factbookCodes": [
+        "br"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IO",
+      "names": [
+        "British Indian Ocean Territory"
+      ],
+      "factbookCodes": [
+        "io"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BN",
+      "names": [
+        "Brunei Darussalam"
+      ],
+      "factbookCodes": [
+        "bx"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "BG",
+      "names": [
+        "Bulgaria"
+      ],
+      "factbookCodes": [
+        "bu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BF",
+      "names": [
+        "Burkina Faso"
+      ],
+      "factbookCodes": [
+        "uv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BI",
+      "names": [
+        "Burundi"
+      ],
+      "factbookCodes": [
+        "by"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KH",
+      "names": [
+        "Cambodia"
+      ],
+      "factbookCodes": [
+        "cb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CM",
+      "names": [
+        "Cameroon"
+      ],
+      "factbookCodes": [
+        "cm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CA",
+      "names": [
+        "Canada"
+      ],
+      "factbookCodes": [
+        "ca"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CV",
+      "names": [
+        "Cape Verde"
+      ],
+      "factbookCodes": [
+        "cv"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "KY",
+      "names": [
+        "Cayman Islands"
+      ],
+      "factbookCodes": [
+        "cj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CF",
+      "names": [
+        "Central African Republic"
+      ],
+      "factbookCodes": [
+        "ct"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "TD",
+      "names": [
+        "Chad"
+      ],
+      "factbookCodes": [
+        "cd"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CL",
+      "names": [
+        "Chile"
+      ],
+      "factbookCodes": [
+        "ci"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CN",
+      "names": [
+        "People's Republic of China",
+        "China"
+      ],
+      "factbookCodes": [
+        "ch"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CX",
+      "names": [
+        "Christmas Island"
+      ],
+      "factbookCodes": [
+        "kt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CC",
+      "names": [
+        "Cocos (Keeling) Islands"
+      ],
+      "factbookCodes": [
+        "ck"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CO",
+      "names": [
+        "Colombia"
+      ],
+      "factbookCodes": [
+        "co"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KM",
+      "names": [
+        "Comoros"
+      ],
+      "factbookCodes": [
+        "cn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CG",
+      "names": [
+        "Republic of the Congo",
+        "Congo"
+      ],
+      "factbookCodes": [
+        "cf"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CD",
+      "names": [
+        "Democratic Republic of the Congo",
+        "Congo"
+      ],
+      "factbookCodes": [
+        "cg"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "CK",
+      "names": [
+        "Cook Islands"
+      ],
+      "factbookCodes": [
+        "cw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CR",
+      "names": [
+        "Costa Rica"
+      ],
+      "factbookCodes": [
+        "cs"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CI",
+      "names": [
+        "Cote d'Ivoire",
+        "Côte d'Ivoire",
+        "Ivory Coast"
+      ],
+      "factbookCodes": [
+        "iv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HR",
+      "names": [
+        "Croatia"
+      ],
+      "factbookCodes": [
+        "hr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CU",
+      "names": [
+        "Cuba"
+      ],
+      "factbookCodes": [
+        "cu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CY",
+      "names": [
+        "Cyprus"
+      ],
+      "factbookCodes": [
+        "cy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CZ",
+      "names": [
+        "Czech Republic",
+        "Czechia"
+      ],
+      "factbookCodes": [
+        "ez"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DK",
+      "names": [
+        "Denmark"
+      ],
+      "factbookCodes": [
+        "da"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DJ",
+      "names": [
+        "Djibouti"
+      ],
+      "factbookCodes": [
+        "dj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DM",
+      "names": [
+        "Dominica"
+      ],
+      "factbookCodes": [
+        "do"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DO",
+      "names": [
+        "Dominican Republic"
+      ],
+      "factbookCodes": [
+        "dr"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "EC",
+      "names": [
+        "Ecuador"
+      ],
+      "factbookCodes": [
+        "ec"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EG",
+      "names": [
+        "Egypt"
+      ],
+      "factbookCodes": [
+        "eg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SV",
+      "names": [
+        "El Salvador"
+      ],
+      "factbookCodes": [
+        "es"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GQ",
+      "names": [
+        "Equatorial Guinea"
+      ],
+      "factbookCodes": [
+        "ek"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ER",
+      "names": [
+        "Eritrea"
+      ],
+      "factbookCodes": [
+        "er"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EE",
+      "names": [
+        "Estonia"
+      ],
+      "factbookCodes": [
+        "en"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ET",
+      "names": [
+        "Ethiopia"
+      ],
+      "factbookCodes": [
+        "et"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FK",
+      "names": [
+        "Falkland Islands (Malvinas)"
+      ],
+      "factbookCodes": [
+        "fk"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "FO",
+      "names": [
+        "Faroe Islands"
+      ],
+      "factbookCodes": [
+        "fo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FJ",
+      "names": [
+        "Fiji"
+      ],
+      "factbookCodes": [
+        "fj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FI",
+      "names": [
+        "Finland"
+      ],
+      "factbookCodes": [
+        "fi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FR",
+      "names": [
+        "France"
+      ],
+      "factbookCodes": [
+        "fr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GF",
+      "names": [
+        "French Guiana"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "PF",
+      "names": [
+        "French Polynesia"
+      ],
+      "factbookCodes": [
+        "fp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TF",
+      "names": [
+        "French Southern Territories"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "GA",
+      "names": [
+        "Gabon"
+      ],
+      "factbookCodes": [
+        "gb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GM",
+      "names": [
+        "Republic of The Gambia",
+        "The Gambia",
+        "Gambia"
+      ],
+      "factbookCodes": [
+        "ga"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GE",
+      "names": [
+        "Georgia"
+      ],
+      "factbookCodes": [
+        "gg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "DE",
+      "names": [
+        "Germany"
+      ],
+      "factbookCodes": [
+        "gm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GH",
+      "names": [
+        "Ghana"
+      ],
+      "factbookCodes": [
+        "gh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GI",
+      "names": [
+        "Gibraltar"
+      ],
+      "factbookCodes": [
+        "gi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GR",
+      "names": [
+        "Greece"
+      ],
+      "factbookCodes": [
+        "gr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GL",
+      "names": [
+        "Greenland"
+      ],
+      "factbookCodes": [
+        "gl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GD",
+      "names": [
+        "Grenada"
+      ],
+      "factbookCodes": [
+        "gj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GP",
+      "names": [
+        "Guadeloupe"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "GU",
+      "names": [
+        "Guam"
+      ],
+      "factbookCodes": [
+        "gq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GT",
+      "names": [
+        "Guatemala"
+      ],
+      "factbookCodes": [
+        "gt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GN",
+      "names": [
+        "Guinea"
+      ],
+      "factbookCodes": [
+        "gv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GW",
+      "names": [
+        "Guinea-Bissau"
+      ],
+      "factbookCodes": [
+        "pu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GY",
+      "names": [
+        "Guyana"
+      ],
+      "factbookCodes": [
+        "gy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HT",
+      "names": [
+        "Haiti"
+      ],
+      "factbookCodes": [
+        "ha"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HM",
+      "names": [
+        "Heard Island and McDonald Islands"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "VA",
+      "names": [
+        "Holy See (Vatican City State)"
+      ],
+      "factbookCodes": [
+        "vt"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "HN",
+      "names": [
+        "Honduras"
+      ],
+      "factbookCodes": [
+        "ho"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HK",
+      "names": [
+        "Hong Kong"
+      ],
+      "factbookCodes": [
+        "hk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "HU",
+      "names": [
+        "Hungary"
+      ],
+      "factbookCodes": [
+        "hu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IS",
+      "names": [
+        "Iceland"
+      ],
+      "factbookCodes": [
+        "ic"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IN",
+      "names": [
+        "India"
+      ],
+      "factbookCodes": [
+        "in"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ID",
+      "names": [
+        "Indonesia"
+      ],
+      "factbookCodes": [
+        "id"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IR",
+      "names": [
+        "Islamic Republic of Iran",
+        "Iran"
+      ],
+      "factbookCodes": [
+        "ir"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IQ",
+      "names": [
+        "Iraq"
+      ],
+      "factbookCodes": [
+        "iz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IE",
+      "names": [
+        "Ireland"
+      ],
+      "factbookCodes": [
+        "ei"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IL",
+      "names": [
+        "Israel"
+      ],
+      "factbookCodes": [
+        "is"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IT",
+      "names": [
+        "Italy"
+      ],
+      "factbookCodes": [
+        "it"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JM",
+      "names": [
+        "Jamaica"
+      ],
+      "factbookCodes": [
+        "jm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JP",
+      "names": [
+        "Japan"
+      ],
+      "factbookCodes": [
+        "ja"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JO",
+      "names": [
+        "Jordan"
+      ],
+      "factbookCodes": [
+        "jo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KZ",
+      "names": [
+        "Kazakhstan"
+      ],
+      "factbookCodes": [
+        "kz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KE",
+      "names": [
+        "Kenya"
+      ],
+      "factbookCodes": [
+        "ke"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KI",
+      "names": [
+        "Kiribati"
+      ],
+      "factbookCodes": [
+        "kr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KP",
+      "names": [
+        "North Korea"
+      ],
+      "factbookCodes": [
+        "kn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KR",
+      "names": [
+        "South Korea",
+        "Korea, Republic of",
+        "Republic of Korea"
+      ],
+      "factbookCodes": [
+        "ks"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KW",
+      "names": [
+        "Kuwait"
+      ],
+      "factbookCodes": [
+        "ku"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "KG",
+      "names": [
+        "Kyrgyzstan"
+      ],
+      "factbookCodes": [
+        "kg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LA",
+      "names": [
+        "Lao People's Democratic Republic"
+      ],
+      "factbookCodes": [
+        "la"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "LV",
+      "names": [
+        "Latvia"
+      ],
+      "factbookCodes": [
+        "lg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LB",
+      "names": [
+        "Lebanon"
+      ],
+      "factbookCodes": [
+        "le"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LS",
+      "names": [
+        "Lesotho"
+      ],
+      "factbookCodes": [
+        "lt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LR",
+      "names": [
+        "Liberia"
+      ],
+      "factbookCodes": [
+        "li"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LY",
+      "names": [
+        "Libya"
+      ],
+      "factbookCodes": [
+        "ly"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LI",
+      "names": [
+        "Liechtenstein"
+      ],
+      "factbookCodes": [
+        "ls"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LT",
+      "names": [
+        "Lithuania"
+      ],
+      "factbookCodes": [
+        "lh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LU",
+      "names": [
+        "Luxembourg"
+      ],
+      "factbookCodes": [
+        "lu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MO",
+      "names": [
+        "Macao"
+      ],
+      "factbookCodes": [
+        "mc"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MG",
+      "names": [
+        "Madagascar"
+      ],
+      "factbookCodes": [
+        "ma"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MW",
+      "names": [
+        "Malawi"
+      ],
+      "factbookCodes": [
+        "mi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MY",
+      "names": [
+        "Malaysia"
+      ],
+      "factbookCodes": [
+        "my"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MV",
+      "names": [
+        "Maldives"
+      ],
+      "factbookCodes": [
+        "mv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ML",
+      "names": [
+        "Mali"
+      ],
+      "factbookCodes": [
+        "ml"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MT",
+      "names": [
+        "Malta"
+      ],
+      "factbookCodes": [
+        "mt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MH",
+      "names": [
+        "Marshall Islands"
+      ],
+      "factbookCodes": [
+        "rm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MQ",
+      "names": [
+        "Martinique"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "MR",
+      "names": [
+        "Mauritania"
+      ],
+      "factbookCodes": [
+        "mr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MU",
+      "names": [
+        "Mauritius"
+      ],
+      "factbookCodes": [
+        "mp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "YT",
+      "names": [
+        "Mayotte"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "MX",
+      "names": [
+        "Mexico"
+      ],
+      "factbookCodes": [
+        "mx"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "FM",
+      "names": [
+        "Micronesia, Federated States of"
+      ],
+      "factbookCodes": [
+        "fm"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MD",
+      "names": [
+        "Moldova, Republic of"
+      ],
+      "factbookCodes": [
+        "md"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "MC",
+      "names": [
+        "Monaco"
+      ],
+      "factbookCodes": [
+        "mn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MN",
+      "names": [
+        "Mongolia"
+      ],
+      "factbookCodes": [
+        "mg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MS",
+      "names": [
+        "Montserrat"
+      ],
+      "factbookCodes": [
+        "mh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MA",
+      "names": [
+        "Morocco"
+      ],
+      "factbookCodes": [
+        "mo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MZ",
+      "names": [
+        "Mozambique"
+      ],
+      "factbookCodes": [
+        "mz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MM",
+      "names": [
+        "Myanmar"
+      ],
+      "factbookCodes": [
+        "bm"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "NA",
+      "names": [
+        "Namibia"
+      ],
+      "factbookCodes": [
+        "wa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NR",
+      "names": [
+        "Nauru"
+      ],
+      "factbookCodes": [
+        "nr"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NP",
+      "names": [
+        "Nepal"
+      ],
+      "factbookCodes": [
+        "np"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NL",
+      "names": [
+        "Netherlands",
+        "The Netherlands",
+        "Netherlands (Kingdom of the)"
+      ],
+      "factbookCodes": [
+        "nl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NC",
+      "names": [
+        "New Caledonia"
+      ],
+      "factbookCodes": [
+        "nc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NZ",
+      "names": [
+        "New Zealand"
+      ],
+      "factbookCodes": [
+        "nz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NI",
+      "names": [
+        "Nicaragua"
+      ],
+      "factbookCodes": [
+        "nu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NE",
+      "names": [
+        "Niger"
+      ],
+      "factbookCodes": [
+        "ng"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NG",
+      "names": [
+        "Nigeria"
+      ],
+      "factbookCodes": [
+        "ni"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NU",
+      "names": [
+        "Niue"
+      ],
+      "factbookCodes": [
+        "ne"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NF",
+      "names": [
+        "Norfolk Island"
+      ],
+      "factbookCodes": [
+        "nf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MK",
+      "names": [
+        "The Republic of North Macedonia",
+        "North Macedonia"
+      ],
+      "factbookCodes": [
+        "mk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MP",
+      "names": [
+        "Northern Mariana Islands"
+      ],
+      "factbookCodes": [
+        "cq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "NO",
+      "names": [
+        "Norway"
+      ],
+      "factbookCodes": [
+        "no"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "OM",
+      "names": [
+        "Oman"
+      ],
+      "factbookCodes": [
+        "mu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PK",
+      "names": [
+        "Pakistan"
+      ],
+      "factbookCodes": [
+        "pk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PW",
+      "names": [
+        "Palau"
+      ],
+      "factbookCodes": [
+        "ps"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PS",
+      "names": [
+        "State of Palestine",
+        "Palestine"
+      ],
+      "factbookCodes": [
+        "we",
+        "gz"
+      ],
+      "mapping": "reviewed-code-crosswalk",
+      "note": "This composite ISO name maps to two separately named Factbook records only to improve search; no recognition or sovereignty conclusion is inferred."
+    },
+    {
+      "isoAlpha2": "PA",
+      "names": [
+        "Panama"
+      ],
+      "factbookCodes": [
+        "pm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PG",
+      "names": [
+        "Papua New Guinea"
+      ],
+      "factbookCodes": [
+        "pp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PY",
+      "names": [
+        "Paraguay"
+      ],
+      "factbookCodes": [
+        "pa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PE",
+      "names": [
+        "Peru"
+      ],
+      "factbookCodes": [
+        "pe"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PH",
+      "names": [
+        "Philippines"
+      ],
+      "factbookCodes": [
+        "rp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PN",
+      "names": [
+        "Pitcairn",
+        "Pitcairn Islands"
+      ],
+      "factbookCodes": [
+        "pc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PL",
+      "names": [
+        "Poland"
+      ],
+      "factbookCodes": [
+        "pl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PT",
+      "names": [
+        "Portugal"
+      ],
+      "factbookCodes": [
+        "po"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PR",
+      "names": [
+        "Puerto Rico"
+      ],
+      "factbookCodes": [
+        "rq"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "QA",
+      "names": [
+        "Qatar"
+      ],
+      "factbookCodes": [
+        "qa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RE",
+      "names": [
+        "Reunion"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "RO",
+      "names": [
+        "Romania"
+      ],
+      "factbookCodes": [
+        "ro"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RU",
+      "names": [
+        "Russian Federation",
+        "Russia"
+      ],
+      "factbookCodes": [
+        "rs"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "RW",
+      "names": [
+        "Rwanda"
+      ],
+      "factbookCodes": [
+        "rw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SH",
+      "names": [
+        "Saint Helena"
+      ],
+      "factbookCodes": [
+        "sh"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "KN",
+      "names": [
+        "Saint Kitts and Nevis"
+      ],
+      "factbookCodes": [
+        "sc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LC",
+      "names": [
+        "Saint Lucia"
+      ],
+      "factbookCodes": [
+        "st"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "PM",
+      "names": [
+        "Saint Pierre and Miquelon"
+      ],
+      "factbookCodes": [
+        "sb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VC",
+      "names": [
+        "Saint Vincent and the Grenadines"
+      ],
+      "factbookCodes": [
+        "vc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "WS",
+      "names": [
+        "Samoa"
+      ],
+      "factbookCodes": [
+        "ws"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SM",
+      "names": [
+        "San Marino"
+      ],
+      "factbookCodes": [
+        "sm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ST",
+      "names": [
+        "Sao Tome and Principe"
+      ],
+      "factbookCodes": [
+        "tp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SA",
+      "names": [
+        "Saudi Arabia"
+      ],
+      "factbookCodes": [
+        "sa"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SN",
+      "names": [
+        "Senegal"
+      ],
+      "factbookCodes": [
+        "sg"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SC",
+      "names": [
+        "Seychelles"
+      ],
+      "factbookCodes": [
+        "se"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SL",
+      "names": [
+        "Sierra Leone"
+      ],
+      "factbookCodes": [
+        "sl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SG",
+      "names": [
+        "Singapore"
+      ],
+      "factbookCodes": [
+        "sn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SK",
+      "names": [
+        "Slovakia"
+      ],
+      "factbookCodes": [
+        "lo"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SI",
+      "names": [
+        "Slovenia"
+      ],
+      "factbookCodes": [
+        "si"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SB",
+      "names": [
+        "Solomon Islands"
+      ],
+      "factbookCodes": [
+        "bp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SO",
+      "names": [
+        "Somalia"
+      ],
+      "factbookCodes": [
+        "so"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZA",
+      "names": [
+        "South Africa"
+      ],
+      "factbookCodes": [
+        "sf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GS",
+      "names": [
+        "South Georgia and the South Sandwich Islands"
+      ],
+      "factbookCodes": [
+        "sx"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "ES",
+      "names": [
+        "Spain"
+      ],
+      "factbookCodes": [
+        "sp"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "LK",
+      "names": [
+        "Sri Lanka"
+      ],
+      "factbookCodes": [
+        "ce"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SD",
+      "names": [
+        "Sudan"
+      ],
+      "factbookCodes": [
+        "su"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SR",
+      "names": [
+        "Suriname"
+      ],
+      "factbookCodes": [
+        "ns"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SJ",
+      "names": [
+        "Svalbard and Jan Mayen"
+      ],
+      "factbookCodes": [
+        "sv",
+        "jn"
+      ],
+      "mapping": "reviewed-code-crosswalk",
+      "note": "This composite ISO name maps to two separately named Factbook records only to improve search; no sovereignty or territorial-status conclusion is inferred."
+    },
+    {
+      "isoAlpha2": "SZ",
+      "names": [
+        "Eswatini"
+      ],
+      "factbookCodes": [
+        "wz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SE",
+      "names": [
+        "Sweden"
+      ],
+      "factbookCodes": [
+        "sw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "CH",
+      "names": [
+        "Switzerland"
+      ],
+      "factbookCodes": [
+        "sz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SY",
+      "names": [
+        "Syrian Arab Republic"
+      ],
+      "factbookCodes": [
+        "sy"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "TW",
+      "names": [
+        "Taiwan, Province of China",
+        "Taiwan"
+      ],
+      "factbookCodes": [
+        "tw"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TJ",
+      "names": [
+        "Tajikistan"
+      ],
+      "factbookCodes": [
+        "ti"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TZ",
+      "names": [
+        "United Republic of Tanzania",
+        "Tanzania"
+      ],
+      "factbookCodes": [
+        "tz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TH",
+      "names": [
+        "Thailand"
+      ],
+      "factbookCodes": [
+        "th"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TL",
+      "names": [
+        "Timor-Leste"
+      ],
+      "factbookCodes": [
+        "tt"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TG",
+      "names": [
+        "Togo"
+      ],
+      "factbookCodes": [
+        "to"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TK",
+      "names": [
+        "Tokelau"
+      ],
+      "factbookCodes": [
+        "tl"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TO",
+      "names": [
+        "Tonga"
+      ],
+      "factbookCodes": [
+        "tn"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TT",
+      "names": [
+        "Trinidad and Tobago"
+      ],
+      "factbookCodes": [
+        "td"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TN",
+      "names": [
+        "Tunisia"
+      ],
+      "factbookCodes": [
+        "ts"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TR",
+      "names": [
+        "Türkiye",
+        "Turkey"
+      ],
+      "factbookCodes": [
+        "tu"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TM",
+      "names": [
+        "Turkmenistan"
+      ],
+      "factbookCodes": [
+        "tx"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TC",
+      "names": [
+        "Turks and Caicos Islands"
+      ],
+      "factbookCodes": [
+        "tk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "TV",
+      "names": [
+        "Tuvalu"
+      ],
+      "factbookCodes": [
+        "tv"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UG",
+      "names": [
+        "Uganda"
+      ],
+      "factbookCodes": [
+        "ug"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UA",
+      "names": [
+        "Ukraine"
+      ],
+      "factbookCodes": [
+        "up"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AE",
+      "names": [
+        "United Arab Emirates",
+        "UAE"
+      ],
+      "factbookCodes": [
+        "ae"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "GB",
+      "names": [
+        "United Kingdom",
+        "UK",
+        "Great Britain"
+      ],
+      "factbookCodes": [
+        "uk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "US",
+      "names": [
+        "United States of America",
+        "United States",
+        "USA",
+        "U.S.A.",
+        "US",
+        "U.S."
+      ],
+      "factbookCodes": [
+        "us"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UM",
+      "names": [
+        "United States Minor Outlying Islands"
+      ],
+      "factbookCodes": [
+        "um"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "UY",
+      "names": [
+        "Uruguay"
+      ],
+      "factbookCodes": [
+        "uy"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "UZ",
+      "names": [
+        "Uzbekistan"
+      ],
+      "factbookCodes": [
+        "uz"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VU",
+      "names": [
+        "Vanuatu"
+      ],
+      "factbookCodes": [
+        "nh"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VE",
+      "names": [
+        "Venezuela"
+      ],
+      "factbookCodes": [
+        "ve"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VN",
+      "names": [
+        "Vietnam"
+      ],
+      "factbookCodes": [
+        "vm"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "VG",
+      "names": [
+        "Virgin Islands, British"
+      ],
+      "factbookCodes": [
+        "vi"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "VI",
+      "names": [
+        "Virgin Islands, U.S."
+      ],
+      "factbookCodes": [
+        "vq"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "WF",
+      "names": [
+        "Wallis and Futuna"
+      ],
+      "factbookCodes": [
+        "wf"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "EH",
+      "names": [
+        "Western Sahara"
+      ],
+      "factbookCodes": [
+        "wi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "YE",
+      "names": [
+        "Yemen"
+      ],
+      "factbookCodes": [
+        "ym"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZM",
+      "names": [
+        "Zambia"
+      ],
+      "factbookCodes": [
+        "za"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ZW",
+      "names": [
+        "Zimbabwe"
+      ],
+      "factbookCodes": [
+        "zi"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "AX",
+      "names": [
+        "Åland Islands",
+        "Aland Islands"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "BQ",
+      "names": [
+        "Bonaire, Sint Eustatius and Saba"
+      ],
+      "factbookCodes": [],
+      "mapping": "no-separate-profile",
+      "note": "ISO name entry only. Do not create or infer a country profile from an unmatched ISO label."
+    },
+    {
+      "isoAlpha2": "CW",
+      "names": [
+        "Curaçao"
+      ],
+      "factbookCodes": [
+        "uc"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "GG",
+      "names": [
+        "Guernsey"
+      ],
+      "factbookCodes": [
+        "gk"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "IM",
+      "names": [
+        "Isle of Man"
+      ],
+      "factbookCodes": [
+        "im"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "JE",
+      "names": [
+        "Jersey"
+      ],
+      "factbookCodes": [
+        "je"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "ME",
+      "names": [
+        "Montenegro"
+      ],
+      "factbookCodes": [
+        "mj"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "BL",
+      "names": [
+        "Saint Barthélemy"
+      ],
+      "factbookCodes": [
+        "tb"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "MF",
+      "names": [
+        "Saint Martin (French part)"
+      ],
+      "factbookCodes": [
+        "rn"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "RS",
+      "names": [
+        "Serbia"
+      ],
+      "factbookCodes": [
+        "ri"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "SX",
+      "names": [
+        "Sint Maarten (Dutch part)"
+      ],
+      "factbookCodes": [
+        "nn"
+      ],
+      "mapping": "reviewed-code-crosswalk"
+    },
+    {
+      "isoAlpha2": "SS",
+      "names": [
+        "South Sudan"
+      ],
+      "factbookCodes": [
+        "od"
+      ],
+      "mapping": "normalized-english-name"
+    },
+    {
+      "isoAlpha2": "XK",
+      "names": [
+        "Kosovo"
+      ],
+      "factbookCodes": [
+        "kv"
+      ],
+      "mapping": "normalized-english-name"
+    }
+  ]
+}

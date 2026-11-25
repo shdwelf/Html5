@@ -44,8 +44,10 @@ live HTML (fully read Oct 6, 2026) is the sole current source and rules wherever
 ## III. Glendora High years, 1997–2001
 
 - **Glendora High School, 1997–2001** [dated] — the resume's degree field reads "GED Diploma";
-  the book's register holds Class of 2001 with commencement at Citrus College Stadium (exact
-  2001 date unpublished by standing rule). The two labels sit side by side, unresolved.
+  the book's timeline carries a memory-tier Class of 2001 graduation and the user's Citrus
+  College Stadium venue clue. Later records document GHS use of the stadium (2011–2026), but
+  no contemporary 2001 GHS program or schedule has verified the venue or exact date. The two
+  education labels sit side by side, unresolved.
 - **Cal Poly Pomona, 1998** [dated] — summer school, non-transferable: Medieval Studies, Lego
   Logo programming, French introduction, robot interaction, building-design software
   ("Hometown U.S.A.").
@@ -58,8 +60,6 @@ live HTML (fully read Oct 6, 2026) is the sole current source and rules wherever
 - **Shizuka No Do** — purple belt two white stripes karate, Sensei Jerome Walczak.
 - **Scuba Schools International — Open Water certified** (Santa Barbara Aquatics; Curtis Weisner).
 - **Cultured Pearl Association of America — Certified Pearl Specialist** ("Pearls As One").
-- **International Academy of Science — Technical Training, Wideband NMU** (Kansas State
-  Education System, Gallatin, Mo.; science.edu / wideband.com; Roger Billings).
 - **CalTech** [undated → this era] — Asian American Studies, Falun Gong training; babysitting
   for the dean of students.
 - **Azusa Pacific University** [undated] — research library sciences, one night class at the
@@ -182,6 +182,18 @@ live HTML (fully read Oct 6, 2026) is the sole current source and rules wherever
 - **Movie Screening — Ambassador (gofobo)** [undated → matches the Oct 2018 release] —
   *Hunter Killer*.
 
+## XI. Undated technical training item (not placed)
+
+- **International Academy of Science — “Technical Training Wideband NMU”** [undated; date unresolved].
+  The resume also lists “Wideband NMU” as a skill and names Kansas State Education System,
+  Gallatin, Missouri, `science.edu` / `wideband.com`, and Roger Billings. WideBand Corporation's
+  public launch announcement dates the named Network Management Unit (nMU) to 2 May 2006; this
+  makes placement in the 1997–2001 high-school years unsupported. It does not rule out an earlier
+  prototype or predecessor, and it does not prove the training occurred. No course syllabus,
+  certificate, or independent attendance record was found. Keep this self-reported item out of
+  the dated timeline unless a dated source appears. See
+  [`wideband-nmu-public-evidence-2026-11-07.md`](wideband-nmu-public-evidence-2026-11-07.md).
+
 ---
 
 ## Open questions and conflicts
@@ -201,7 +213,29 @@ live HTML (fully read Oct 6, 2026) is the sole current source and rules wherever
    is public, the outfit's name is not.
 7. **The resume itself is not archived** (no Wayback captures) and its PDF variant is
    outdated per the author — the live HTML is the single current source.
+8. **WideBand nMU technical training is undated.** The official product announcement dates the
+   public nMU launch to 2 May 2006; the resume's ordering does not support placing the training
+   in 1997–2001. No course syllabus, certificate, or attendance record was found. See
+   [`wideband-nmu-public-evidence-2026-11-07.md`](wideband-nmu-public-evidence-2026-11-07.md).
 
-*Arranged October 6, 2026, from the live HTML register. Cross-references: the book (src-9,
-src-123, src-124), the map nodes channel-data-systems / novacoast / crm-security / dhammakaya /
+## Supplemental public-search audit — 2026-11-07
+
+- **Discovery platforms:** BareSearch and LibreSearch are SearXNG instances;
+  [searx.space](https://searx.space/) is an instance-status directory, not a
+  source about Greeran. The search results repeated the known
+  [self-published Standard Resume](https://standardresume.co/r/sgreeran) and
+  secondary class/yearbook directories, but supplied no new dated professional
+  entry or primary GHS commencement record. Search-engine snippets remain leads,
+  not corroboration.
+- **Catalog checks:** Internet Archive Advanced Search returned zero records for
+  exact and shortened name queries; Project Gutenberg returned no name matches.
+  These searches establish only that the named catalogs returned no hit. No
+  archive item or book was downloaded. [Internet Archive name search](https://archive.org/advancedsearch.php?q=%22Steven+Thomas+Greeran%22&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&output=json) · [Project Gutenberg name search](https://www.gutenberg.org/ebooks/search/?query=Steven+Thomas+Greeran)
+- People-search/data-broker snippets were excluded as unreliable and
+  unnecessary for the résumé chronology; no private contact or residence data
+  was copied. No access controls were bypassed.
+
+*First arranged October 6, 2026, from the live HTML register; WideBand date review and
+public-search audit added November 7, 2026. Cross-references: the book (src-9, src-123,
+src-124), the map nodes channel-data-systems / novacoast / crm-security / dhammakaya /
 sgv-examiner / sealtight / pss / davidson-mil / live-oak-renfaire, and the master timeline.*

@@ -1,0 +1,78 @@
+{
+  "file": "xpt05_7004.rom",
+  "bytes": 131072,
+  "sha256": "6546fa1807b5878ea7d85e286415ac07ee0e33509fb74b553ba667c1ec5da48e",
+  "magicHex": "00 20 00 07 58 39 cc 12 7f 16 00 00 62 a7 7b 1e",
+  "attempts": [
+    {
+      "method": "gzip",
+      "offset": 0,
+      "ok": false,
+      "error": "Error -3 while decompressing data: incorrect header check",
+      "outBytes": 0,
+      "keywordHits": {},
+      "printableRatio": 0.0,
+      "plausible": false
+    },
+    {
+      "method": "zlib",
+      "offset": 0,
+      "ok": false,
+      "error": "Error -3 while decompressing data: incorrect header check",
+      "outBytes": 0,
+      "keywordHits": {},
+      "printableRatio": 0.0,
+      "plausible": false
+    },
+    {
+      "method": "raw-deflate",
+      "offset": 0,
+      "ok": false,
+      "error": "Error -3 while decompressing data: invalid stored block lengths",
+      "outBytes": 0,
+      "keywordHits": {},
+      "printableRatio": 0.0,
+      "plausible": false
+    },
+    {
+      "method": "bzip2",
+      "offset": 0,
+      "ok": false,
+      "error": "Invalid data stream",
+      "outBytes": 0,
+      "keywordHits": {},
+      "printableRatio": 0.0,
+      "plausible": false
+    },
+    {
+      "method": "lzma-xz",
+      "offset": 0,
+      "ok": false,
+      "error": "Input format not supported by decoder",
+      "outBytes": 0,
+      "keywordHits": {},
+      "printableRatio": 0.0,
+      "plausible": false
+    }
+  ],
+  "inflated": null,
+  "verdict": "raw",
+  "vectorTable": {
+    "initialStackPointer": "0x00200007",
+    "resetEntry": "0x5839cc12",
+    "resetEntryWithinImage": false
+  },
+  "rawScore": {
+    "outBytes": 131072,
+    "keywordHits": {
+      "lantronix": 2,
+      "copyright": 1,
+      "http": 5,
+      "telnet": 7,
+      "snmp": 4,
+      "firmware": 3
+    },
+    "printableRatio": 0.3577,
+    "plausible": true
+  }
+}

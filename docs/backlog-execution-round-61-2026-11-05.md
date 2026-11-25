@@ -1,0 +1,55 @@
+# Backlog execution round 61 — 2026-11-05
+
+## Cellular-automata signal-pattern research
+
+Clarified that “256 rules” means the finite rule tables for elementary 1D,
+binary, radius-one CA; it does not describe every CA model. Researched how
+known Life-like signals can be checked: identify the rule and boundary first,
+parse RLE/cell-state data, match exact pattern phases, and then confirm a
+spaceship's displacement or a stream's lane and timing across generations.
+Life gliders and signal circuits are rule-specific and are not generic evidence
+of a cipher. See
+[`cellular-automata-signal-pattern-detection-2026-11-05.md`](cellular-automata-signal-pattern-detection-2026-11-05.md)
+for a standard B3/S23 glider positive control, a detector outline, limits, and
+public references.
+
+The Zangi DEX/native review has not produced a CA rule, grid, or state sequence.
+The word “Signal” in Zangi's Signal Protocol calls is unrelated to a glider
+signal stream. There is therefore no data to run the proposed pattern search
+against and no basis for a CA cipher operation. Resources and all other package
+assets remain unexhaustively inspected; the negative result is bounded.
+
+## Backlog and implementation gate
+
+No standalone detector or app was created. A pattern recognizer would need an
+explicit CA model and real grid/time-series input; a cipher recipe additionally
+requires the observed transform, an independent known-answer vector, negative
+tests, and a duplicate check. The earlier PGPonyCore review and Cookbook
+Reference card remain as recorded in round 60.
+
+The Android-consolidation request and the follow-up HTML5 alternative are still
+awaiting a scope decision: target platform and the functions the app should
+expose. PGPonyCore itself is not a browser dependency.
+
+## Verification
+
+- Before the Wiki rebuild, 329 Markdown/HTML/Java-Wiki inputs were checked for
+  direct private Google item URLs and suspicious identifier-shaped values in
+  Google/Drive context: zero matches.
+- The latest `npm run build:wikiinajar` generated 316 documentation pages in a
+  12-entry bundle. A page-aware post-build audit of the app HTML, Java Wiki
+  pages, staged pages, and packed pages found zero unsafe matches.
+- Targeted OpenPGP/Cookbook/Wiki checks: 39 passed.
+- Full `npm test`: 307 Vitest tests passed; 959 Node tests, 948 passed,
+  11 skipped, zero failed.
+- `npm ci` restored the missing test dependencies and reported 7 dependency
+  advisories (1 low, 1 moderate, 3 high, 2 critical); no dependency fixes were
+  applied.
+
+The final repository/build-artifact hash is reported in the completion summary,
+not embedded in the wiki corpus.
+
+## Sources
+
+- Zenil & Martinez, [Cellular automata](http://www.scholarpedia.org/article/Cellular_automata), *Scholarpedia* (2024), DOI [10.4249/scholarpedia.53227](http://dx.doi.org/10.4249/scholarpedia.53227).
+- LifeWiki: [Glider](https://conwaylife.com/wiki/Glider), [General technology](https://conwaylife.com/wiki/Tutorials/General_technology), [Stream](https://conwaylife.com/wiki/Stream), [RLE](https://conwaylife.com/wiki/Run_Length_Encoded), [apgcode](https://conwaylife.com/wiki/apgcode), and [apgsearch](https://conwaylife.com/wiki/Apgsearch).

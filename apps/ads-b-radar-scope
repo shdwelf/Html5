@@ -342,11 +342,10 @@
 
         <div class="feed-selector">
             <span class="feed-label">FEED:</span>
-            <button class="feed-btn active" onclick="setFeed('opensky')" id="feedOpenSky">OPNSKY</button>
             <button class="feed-btn" onclick="setFeed('adsbfi')" id="feedADSBfi">ADS.FI</button>
             <button class="feed-btn" onclick="setFeed('airplaneslive')" id="feedAirplanes">AIRPLN</button>
             <button class="feed-btn" onclick="setFeed('adsblol')" id="feedADSBloL">ADS.LOL</button>
-            <button class="feed-btn combined" onclick="setFeed('combined')" id="feedCombined">COMBO</button>
+            <button class="feed-btn combined active" onclick="setFeed('combined')" id="feedCombined">COMBO</button>
             <button class="feed-btn peer" onclick="setFeed('peers')" id="feedPeers">PEERS</button>
             <button class="feed-btn peer combined" onclick="setFeed('all')" id="feedAll">ALL</button>
         </div>
@@ -620,15 +619,6 @@
         // FEED DEFINITIONS
         // ============================================
         const FEEDS = {
-            opensky: {
-                name: 'OpenSky Network', shortName: 'OPNSKY', refreshMs: 10000,
-                async fetch(bounds) {
-                    const url = `https://opensky-network.org/api/states/all?lamin=${bounds.south}&lomin=${bounds.west}&lamax=${bounds.north}&lomax=${bounds.east}`;
-                    const { data, proxyName } = await fetchViaProxy(url, 'opensky');
-                    if (!data.states || data.states.length === 0) throw new Error('No aircraft');
-                    return { states: data.states, source: 'opensky', proxy: proxyName };
-                }
-            },
             adsbfi: {
                 name: 'ADSB.fi', shortName: 'ADS.FI', refreshMs: 8000,
                 async fetch(bounds) {
@@ -670,11 +660,6 @@
                 name: 'Combined (API Feeds)', shortName: 'COMBO', refreshMs: 12000,
                 async fetch(bounds) {
                     const sources = [
-                        {
-                            key: 'opensky',
-                            url: `https://opensky-network.org/api/states/all?lamin=${bounds.south}&lomin=${bounds.west}&lamax=${bounds.north}&lomax=${bounds.east}`,
-                            normalize: (d) => d.states || []
-                        },
                         {
                             key: 'adsbfi',
                             url: 'https://api.adsb.fi/api/aircraft/json',
@@ -852,7 +837,7 @@
             lastUpdate: null,
             demoMode: false,
             model: 'classic',
-            feed: 'opensky',
+            feed: 'combined',
             feedStatuses: {},
             refreshInterval: null,
             proxiesUsed: [],
@@ -939,7 +924,7 @@
             if (!FEEDS[feedName]) return;
             state.feed = feedName;
             document.querySelectorAll('.feed-btn').forEach(btn => btn.classList.remove('active'));
-            const btnMap = { opensky: 'feedOpenSky', adsbfi: 'feedADSBfi', airplaneslive: 'feedAirplanes', adsblol: 'feedADSBloL', combined: 'feedCombined', peers: 'feedPeers', all: 'feedAll' };
+            const btnMap = { adsbfi: 'feedADSBfi', airplaneslive: 'feedAirplanes', adsblol: 'feedADSBloL', combined: 'feedCombined', peers: 'feedPeers', all: 'feedAll' };
             const el = document.getElementById(btnMap[feedName]);
             if (el) el.classList.add('active');
             state.aircraft.clear();
@@ -1812,7 +1797,7 @@
                 case '3': window.setRadarModel('atc'); break;
                 case '4': window.setRadarModel('retro'); break;
                 case '5': window.setRadarModel('stealth'); break;
-                case '6': window.setFeed('opensky'); break;
+                case '6': window.setFeed('combined'); break;
                 case '7': window.setFeed('adsbfi'); break;
                 case '8': window.setFeed('airplaneslive'); break;
                 case '9': window.setFeed('adsblol'); break;

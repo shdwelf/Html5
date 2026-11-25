@@ -1,0 +1,56 @@
+== AGE, PGPony, and local recipe review — 2026-11-07 ==
+
+Source: docs/age-pgpony-local-recipe-review-2026-11-07.md — synced 2026-11-07 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= AGE, PGPony, and local recipe review — 2026-11-07 =
+
+== Summary ==
+
+This is a source-level review, not a build or interoperability test. No AGE executable, PGPony APK, Swift package, or Kotlin core was built or run. The workspace has no Go toolchain. The CyberChef registry was booted from the actual local page: **518 operations**. It contains no AGE operation and no PGPonyCore-specific operation; its relevant OpenPGP operations are `pgpArmorCheck` and `pgpSymDecrypt`. This review adds no operation.
+
+== AGE: spec versus the current CLI ==
+
+The current [C2SP AGE specification](https://github.com/C2SP/C2SP/blob/main/age.md) (latest `age.md` commit found: [`fc7f312`](https://github.com/C2SP/C2SP/commit/fc7f312aff098ed080f3dd5a3da4fd820be17a2e), 2026-07-29) specifies five native recipient types:
+
+| Spec type | v1.3.2 command-source check | Identity / deployment caveat |
+| --- | --- | --- |
+| X25519 | `cmd/age/parse.go` calls `age.ParseX25519Recipient` for `age1…`; `x25519.go` provides the native type | Standard age identity path |
+| scrypt passphrase | `cmd/age` has a passphrase path; `scrypt.go` implements `ScryptRecipient`/identity | It is a passphrase recipient, not a public-key form |
+| MLKEM768-X25519 (X-Wing) | `age1pq1…` dispatches to `age.ParseHybridRecipient`; `pq.go` implements the hybrid recipient | The release notes and README describe `age-plugin-pq` compatibility for identity conversion; native recipient parsing does not mean every identity workflow is plugin-free |
+| P-256 tagged (`p256tag`) | `age1tag1…` dispatches to `tag.ParseRecipient` | The spec defines the recipient encoding, not identity generation/encoding; hardware identity handling is separate |
+| MLKEM768-P-256 tagged (`mlkem768p256tag`) | `age1tagpq1…` also dispatches to `tag.ParseRecipient` | Same identity limitation; the recipient form is hybrid, but usable hardware/private-key support is a separate concern |
+
+The source check is pinned to the [age v1.3.2 release](https://github.com/FiloSottile/age/releases/tag/v1.3.2), commit [`b74dce4`](https://github.com/FiloSottile/age/commit/b74dce4cdbe35b5e5f66c06d9612b72f89028758), published 2026-08-29. Thus, as of that checked release, the CLI source parses all five **recipient encodings** for encryption. That is deliberately narrower than saying that every AGE implementation supports every current spec type or that the stock CLI has a generic identity for each tagged hardware recipient. The C2SP text expressly leaves identity generation/encoding for tagged types out of scope; the `age-plugin-tag` documentation describes the identity side as hardware/plugin-mediated.
+
+=== `age-inspect` ===
+
+Upstream's [`age-inspect`](https://github.com/FiloSottile/age/tree/v1.3.2/cmd/age-inspect) is a read-only metadata inspector. Its source reports format version, armor, stanza types, a post-quantum classification, and an estimated size breakdown; it does not decrypt the payload. The test source [`internal/inspect/inspect_test.go`](https://github.com/FiloSottile/age/blob/v1.3.2/internal/inspect/inspect_test.go) covers `p256tag` as non-PQ and `mlkem768p256tag` as PQ, and checks unknown stanza handling. It also expects `unknown` for an unrecognized-only or hybrid-plus-unrecognized stanza set, and `no` when a file contains both X-Wing and X25519 recipients. That caution matters: a hybrid recipient somewhere in a multi-recipient header does not automatically mean every recipient path is post-quantum.
+
+These are source/test findings only; Go was not available, so neither `age` nor `age-inspect` was executed in this workspace. No test secret from upstream fixtures was copied.
+
+== PGPony and its cores ==
+
+- **Android app:** The [PGPonyAndroid GitHub repository](https://github.com/norsehorse-dev/PGPonyAndroid) identifies as Kotlin/Apache-2.0. Its latest visible commit on 2026-11-07 is `c1a43d0` (“4.8.0: RC7 in the RC history”). The reviewed `app/build.gradle.kts` sets `minSdk = 26`; this is PGPony's target, not the separate Html5 Android target. The [F-Droid listing](https://f-droid.org/en/packages/com.pgpony.android/) showed stable version **4.7.3**, added 2026-11-04, requiring Android 8.0 or newer. The listing describes OpenPGP v4/v6, PQ, NFC/smartcard, WKD/keyserver discovery, and a `foss` flavor. These are repository/listing claims; the APK was not installed or audited.
+- **Kotlin/JVM core:** [`PGPonyCore-Kotlin`](https://github.com/norsehorse-dev/PGPonyCore-Kotlin) is a separate Apache-2.0 repository. Its README says it is plain Kotlin/JVM, JDK 17+, with no Android dependencies; it wraps BouncyCastle for OpenPGP services and implements a smart-card/APDU transport. It is not a browser JavaScript library. No Gradle build or test was run.
+- **Swift core:** The prior [2026-11-05 source review](pgponycore-cyberchef-source-review-2026-11-05.md) covers the separate iOS Swift `PGPonyCore` source snapshot at commit `86d23e0`; it remains read-only and was not built.
+- **Source-scope inconsistency:** The [official open-source page](https://pgpony.app/open-source.php) says the full Android app and both cores are public under Apache-2.0 and identifies `PGPonyAndroid` as the full app. The `PGPonyCore-Kotlin` README says the apps (including key storage, NFC binding, UI, password-store integration, and sync) stay closed. The app repo is public and lists Apache-2.0, but that README discrepancy remains unresolved; repository visibility alone is not proof that a release APK is reproducible from the reviewed revision. The F-Droid page links a source tarball and reproducibility status, which were not independently verified here.
+
+== Actual local CyberChef registry and recipe fit ==
+
+The live registry in `public/apps/cyberchef/index.html` was booted in JSDOM on 2026-11-07. It reports **518** operations. A name/category/id audit found:
+
+- `pgpArmorCheck` — checks OpenPGP Radix-64 armor CRC-24; its existing pack is **OpenPGP Armor (Kleopatra / GnuPG)**.
+- `pgpSymDecrypt` — existing classic OpenPGP symmetric decrypt; its pack is **OpenPGP Symmetric Message (SKESK / SEIPD)**. Its reviewed implementation covers v4 SKESK without an encrypted-session-key field, AES-128/192/256, iterated-and-salted S2K type 3 with SHA-1/SHA-256, and SEIPD v1 CFB+MDC. Existing GnuPG control tests exercise the supported path and explicit refusals.
+- No AGE operation and no PGPony/PGPonyCore operation was present. The local symmetric operation must not be described as supporting PGPony's v5/v6 SKESK, Argon2, AEAD, or tag-20 modes; see the source review above.
+
+A future `age-inspect`-style CyberChef operation would be an envelope parser/report, not an AGE encrypt/decrypt implementation. It would still need local test fixtures and expected metadata, including unknown/mixed-recipient classification cases, before registration. No AGE or PGPony cipher functionality was added, and no existing local operation was duplicated.
+
+== Sources and dates ==
+
+- [C2SP `age.md`](https://github.com/C2SP/C2SP/blob/main/age.md), latest file commit `fc7f312` (2026-07-29), checked 2026-11-07.
+- [age v1.3.2 release](https://github.com/FiloSottile/age/releases/tag/v1.3.2) and source commit `b74dce4` (2026-08-29); command parser, recipient code, and `age-inspect` tests read through GitHub on 2026-11-07.
+- [PGPonyAndroid](https://github.com/norsehorse-dev/PGPonyAndroid), latest visible commit `c1a43d0` (2026-11-07); [F-Droid 4.7.3 listing](https://f-droid.org/en/packages/com.pgpony.android/), fetched 2026-11-07.
+- [PGPonyCore-Kotlin](https://github.com/norsehorse-dev/PGPonyCore-Kotlin), latest visible source commit `60e05d6` (2026-10-30); README fetched 2026-11-07.
+- [PGPony open-source statement](https://pgpony.app/open-source.php), fetched 2026-11-07.
+- Local runtime audit: `public/apps/cyberchef/index.html`, 518 operations, no AGE or PGPony-specific op; relevant local test files include `tests/openpgp-sym-decrypt.test.mjs` and `tests/openpgp-armor.test.mjs`.

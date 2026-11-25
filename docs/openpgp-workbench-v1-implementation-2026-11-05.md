@@ -1,0 +1,95 @@
+# OpenPGP Workbench v1 — browser implementation and verification — 2026-11-05
+
+## Decision and scope
+
+The browser-first step uses OpenPGP.js rather than importing PGPonyCore: the
+reviewed PGPonyCore package is iOS-only Swift with Apple-framework dependencies
+and internal APIs. The new static app is a separate JavaScript implementation,
+not a port of that Swift code.
+
+Version 1 is deliberately limited to passphrase-protected UTF-8 text:
+
+- Encrypt to ASCII armor and decrypt a passphrase-protected armored message.
+- Emit the classic profile: v4 SKESK (tag 3), iterated-and-salted S2K type 3
+  with SHA-256 and coded count `0xFF`, AES-256, and SEIPD v1 (tag 18) using CFB
+  plus an MDC. The v4 SKESK has no encrypted-session-key field.
+- Reject empty passphrases and bound plaintext to 1 MiB, armored messages to
+  2 MiB, passphrases to 4 KiB, and decompressed plaintext to 1 MiB.
+- No public-key workflows, key management, signatures, signature verification,
+  attachments, AEAD output, network API, telemetry, or app-level persistence.
+
+The app is at [`public/apps/openpgp-workbench/`](../public/apps/openpgp-workbench/)
+and its source is in [`apps/openpgp-workbench/`](../apps/openpgp-workbench/).
+Run `npm run build:openpgp-workbench` to regenerate the static app and local
+browser bundle.
+
+## Implementation notes
+
+`openpgp@6.3.2` is pinned in `package.json` and `package-lock.json`. The unmodified
+browser distribution is copied into the app, along with its LGPL-3.0+ license;
+the page uses an import map to load that local file and has no CDN or remote
+module dependency.
+
+OpenPGP.js's high-level `encrypt()` writer wraps a random session key in the v4
+SKESK. This workbench instead uses OpenPGP.js's exported packet classes to form
+the direct-S2K v4 form required by the existing local CyberChef reader and the
+classic profile under review. OpenPGP.js still supplies S2K key derivation,
+AES-CFB/MDC packet encryption, packet serialization, and armor; this repository
+does not implement a new AES, CFB, hash, or armor primitive. This is low-level
+packet API use, so the library is pinned and the output profile is checked by
+both the Node and shipped browser builds.
+
+The app is intentionally text-only and preserves exact UTF-8 bytes and newline
+sequences by creating binary literal-data packets and decoding decrypted bytes
+with a fatal UTF-8 decoder. Web Crypto in a secure context (HTTPS or localhost)
+is required. MDC proves only message integrity, not sender identity.
+
+## Independent checks
+
+`tests/openpgp-workbench.test.mjs` checks:
+
+- The GnuPG-originated AES-128 test message in
+  [`tests/fixtures/openpgp/gnupg-enc-sym-cfb-1.asc`](../tests/fixtures/openpgp/gnupg-enc-sym-cfb-1.asc)
+  decrypts to its known plaintext, `Hello, world!\n`.
+- Unicode and exact newline round-trip, wrong-passphrase refusal, and size
+  limits.
+- The Node package implementation and the shipped browser module produce
+  v4/direct-S2K AES-256 messages that independently decrypt in the existing
+  CyberChef `pgpSymDecrypt` operation with the expected plaintext and valid MDC.
+- The static app uses a local import map/bundle and includes the library license.
+
+The environment does not have a local `gpg` executable. The evidence is a
+GnuPG-originated known-answer input plus cross-decryption of generated output by
+the separate CyberChef implementation; no local GnuPG encryption run is claimed.
+
+## Adjacent CyberChef correction
+
+The cross-reader test exposed a pre-existing issue in `pgpSymDecrypt`: it used
+the S2K digest to recompute the MDC. RFC 4880 §5.13 fixes the MDC digest to
+SHA-1, independently of whether S2K uses SHA-1 or SHA-256. The operation now
+always computes the MDC with SHA-1. Its existing GnuPG AES-128/AES-256 fixtures
+still pass, and the new OpenPGP.js AES-256/SHA-256-S2K output specifically
+regresses the distinction.
+
+## Compatibility boundary and follow-up
+
+This app does not implement PGPonyCore's v5/v6 SKESK, Argon2 S2K, AEAD, public-
+key, signature, or PGPonyPair behavior. Do not extend it with a new cipher
+profile from a title or source comment alone; require observed mechanics,
+independent expected output, malformed/negative tests, and a duplicate check.
+
+The agreed next phase is Android consolidation. Its exact target set and
+acceptance criteria still need to be mapped to the repository inventory before
+building. The later CA pattern inspector remains conditional on suitable
+grid/time-series data and an identified CA rule.
+
+## References
+
+- OpenPGP.js [`openpgp@6.3.2`](https://www.npmjs.com/package/openpgp) and
+  [project repository](https://github.com/openpgpjs/openpgpjs).
+- PGPonyCore 8.4.0 source snapshot:
+  [commit `86d23e0`](https://github.com/norsehorse-dev/PGPonyCore/tree/86d23e0abc05a7135e46c6eab5aa215fea2025d6).
+- [RFC 4880](https://www.rfc-editor.org/rfc/rfc4880), especially §§3.7.1.3,
+  5.3, and 5.13.
+- Local CyberChef duplicate and boundary review:
+  [`pgponycore-cyberchef-source-review-2026-11-05.md`](pgponycore-cyberchef-source-review-2026-11-05.md).

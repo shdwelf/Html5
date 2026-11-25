@@ -1,35 +1,12 @@
-# Agent backlog processing — `agent.txt.xml` (21 Oct 2026)
+# Agent backlog register — sanitized public copy (21 Oct 2026)
 
-*Source: `/tmp/arena-coding-uploads/agent.txt.xml` · SHA-256 `26296aed08203a5bcc27b2199933a0e9247b682d9dbe891d5c1ad187f0a494c0` · 234,703 bytes · 172 lines. Machine-readable companion: [`agent-backlog-2026-10-21.json`](agent-backlog-2026-10-21.json).*
+*Source provenance and upload locator intentionally omitted from this public register. The companion JSON contains only the sanitized task/status index.*
 
-The upload is a concatenated agent-session export: a research/build backlog of 21 distinct
-task statements (two of them duplicated), a twice-repeated **failed** transcript of a
-uuencode/base64 session over a `KGK.ARJ` listing capture, and one already-analyzed script
-fragment. This document is the processing pass: everything extracted, deduplicated,
-cross-referenced against what the repository already contains, and organized into
-**fourteen parallel work streams** that can be executed concurrently.
+This is a sanitized backlog register, not a copy of the uploaded source. Original source text, extraction transcripts, Drive identifiers, and source payloads are omitted.
 
 ## 1 · Input forensics
 
-| Region | Lines | Content |
-| --- | --- | --- |
-| Task head | 2–11 | Backlog imperatives (crypto/archive RE, GIS mega-task, CyberChef, uClinux fax, shufflecake/vault, Android lab, password recipes) |
-| Evidence notes | 12–14 | Regex-scan hits over the Sneakers SFX payload (`-lh5-` LHA, `SNEAKERS.EXE`, *LHA's SFX 2.12S*) |
-| Failed session ×2 | 18–81, 83–152 | Near-verbatim duplicated transcript: “Decrypt to base64 uue” over a `GK.ARJ` listing capture; both attempts died on `SyntaxError`/`FileNotFoundError`. The base64 conversion was **never completed** |
-| Task tail | 153–171 | BagIt/Xena order, survey markers, Sneakers wiki + xdc, goldkey/Gina.dll, BBS→ColdFire, SIM/Android lab, DTSearch/UCSB recipes, Cicada/Warrick/Geomate, haiku vault + RFC drafts |
-| Drainer fragment | 155 | Changelly/docs.google.com script — already analyzed in [`changelly-drainer-analysis.md`](changelly-drainer-analysis.md) |
-
-### Recovered payload
-
-The listing capture that the failed sessions were trying to preserve is extracted verbatim to
-[`research/kgk-arj-listing-extract.txt`](../research/kgk-arj-listing-extract.txt)
-(33,678 bytes, SHA-256 `d0e6361e0071ad7a842290119b6a994c55dd0bbe2494fc72a18a3b5c9eaacbb6`).
-It carries the ARJ comment `ARJ archive created by Kenneth G. Kirkpatrick R#2112` and the
-`ALMANAC/` member list (`NAMES.EXE`, `DOCS.NAM`, `NAME001.NAM`…, `FILE_ID.DIZ`) — consistent
-with the 17 October `KGK.ARJ` inspection recorded in
-[`greeran-family-tree-ebook-and-data-status.md`](greeran-family-tree-ebook-and-data-status.md)
-and the FNA102B preservation in [`fna102b-xena-preservation.md`](fna102b-xena-preservation.md).
-This extract supersedes the transcript’s unfinished base64 work; no re-encoding is needed.
+Source file identifiers, raw text, extraction transcripts, and payload copies are intentionally omitted from this public repository. The following streams are a normalized task/status register only.
 
 ## 2 · Standing decisions applied while processing
 
@@ -37,7 +14,7 @@ This extract supersedes the transcript’s unfinished base64 work; no re-encodin
 | --- | --- |
 | **F1** — “globally chmod 777 in the repository” (line 171) | **Declined.** World-writable files are a security defect and break git’s permission discipline. Nothing in the deliverables needs it; any runtime exception should be granted per-directory. |
 | **F2** — ungarbling the KGK.ARJ / FNA102B name database | **Standing decision governs.** The repository has already recorded *preserve and inspect only: no member decrypted, no garble key sought* (see [`fna102b-xena-preservation.md`](fna102b-xena-preservation.md)). Recipe/tooling research about ARJ and SFX passwords stays in scope; applying it to the shareware name database does not. |
-| **F3** — external hosts (archive.org, ebay, LexisNexis, cad.chp.ca.gov, docs.google.com, science.edu, cs.ucsb.edu, kksoft.com, …) | Route through the repo’s `.relay` / `.arena-drive` fetch runners or user-supplied captures; this build sandbox only reaches github.com/api.github.com, npm and PyPI directly. |
+| **F3** — external sources and user-owned Drive material | Use only sources authorized for the task. Keep private Drive identifiers, URLs, exports, and passages out of the public repository; use sanitized local exports when authorized. |
 | **F4** — John the Ripper / Elcomsoft / rainbow tables / HaveIBeenPwned | Security-research notes and cookbook recipes only; no credential attacks against third-party systems. |
 
 ## 3 · Parallel work streams
@@ -48,8 +25,7 @@ Full task→stream mapping and per-item line numbers are in the JSON companion.
 ### S1 · Archive formats & crypto-forensics corpus — *partial*
 Decompressor recipe matrix (ace rar arj uue zip 7z iso img peazip 7zip pkware), ARJ/SFX
 password recipes at the cookbook level (F2/F4), and the ordered “bag-it → xena → ghirdra”
-preservation of the Google Doc `1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I` with its Drive
-PDF. Already on file: [`arj-garble-format-notes.md`](arj-garble-format-notes.md),
+preservation of an authorized source item; private item details are omitted. Already on file: [`arj-garble-format-notes.md`](arj-garble-format-notes.md),
 [`fna102b-xena-preservation.md`](fna102b-xena-preservation.md),
 [`exe-compressors-and-scumm.md`](exe-compressors-and-scumm.md),
 [`exe-protection-deep-dive.md`](exe-protection-deep-dive.md),
@@ -63,15 +39,7 @@ work remains blocked on a sandbox JVM.
 the Elcomsoft/John/rainbow-table/HIBP survey delivered as notes-only per F4
 (HIBP k-anonymity + NIST SP 800-63B-4 as the defensive distillation); the
 ARJ/SFX password-recipe strand closed by F4 with identification notes on file.
-*2026-10-25 round (round 55):* the BagIt next-action is **closed** — the
-Google Doc `1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I` ("API Script",
-the Changelly stage-1 loader of S14) was fetched through the authorized
-Drive connector and preserved inert in a validated BagIt bag
-(`dist/api-script-loader-bag/`, gitignored; text export 725 B sha256
-`d1fc0982…`, PDF export 36,221 B sha256 `1e3412db…`). No Drive-native PDF
-companion exists under that name, so the PDF is a labelled fresh export.
-Record: [`backlog-execution-round-55-2026-10-25.md`](backlog-execution-round-55-2026-10-25.md).
-S1 remains *partial* only for the JVM-blocked Ghidra decompressor strand.
+*2026-10-25 round (round 55):* the preservation next-action is closed. Item-level Drive metadata, exports, file names, hashes, and source details are omitted from this public register. S1 remains *partial* only for the JVM-blocked Ghidra decompressor strand.
 
 ### S2 · Sneakers press kit: Ghidra, js-dos xdc, wiki — *partial*
 FindCrypt/native-Ghidra work is done ([`sneakers-original-ghidra-wasm-2026-10-18.md`](sneakers-original-ghidra-wasm-2026-10-18.md),
@@ -692,6 +660,16 @@ feed-agnostic layer normalizers (`js/incident-adapters.js`; loud
 rejections, dedupe, staleness, ArcGIS-point adapter; synthetic fixtures
 only). "WREN cameras" remains an unverified referent — flagged, not
 guessed. Live capture is F3 runner work; viewer wiring is next.
+
+**Round 74 status (2026-11-13): local snapshot viewer wiring shipped.**
+`planet-viewer-4dwm.html` and its packaged offline app now accept a
+user-chosen canonical S5 JSON snapshot, validate and age-gate it through
+`js/incident-snapshot.js` / `js/incident-adapters.js`, and plot the accepted
+points on the orthographic globe with kind filters, provenance inspection,
+rejection counts, and in-memory clear. Browser and Node tests use only
+synthetic fixtures. No live request, remote camera media, or private record
+is bundled; upstream captures and feed permissions remain F3 runner work.
+See [`backlog-execution-round-74-2026-11-13.md`](backlog-execution-round-74-2026-11-13.md).
 ### S6 · BBS & telecom history: Keyhole, FidoNet/ARPANET, payphones, ColdFire — *partial*
 Keyhole BBS + forum deep dive and In-Q-Tel/VC mapping are new; the BBS→ColdFire port line has
 several docs already ([`bbs-abandonware-coldfire-port.md`](bbs-abandonware-coldfire-port.md),
@@ -841,6 +819,19 @@ defined (SUBSURF sketch screens, sdcc via runner, F-Droid wrapper via runner).
 is a complete SOCAL SUBSURFACE calculator port; `make -C socal-calc test` re-verified
 green. Only device compilation (sdcc/tigcc via runner) and the F-Droid wrapper remain.
 TI-calc/F-Droid builds and the device-lab items remain open.
+
+*2026-11-05 round (63):* Android replacement-OS terminology and QEMU paths,
+XPort Pro debug-interface status, and HackRF/PortaPack capture/replay controls
+were researched in [`backlog-execution-round-63-2026-11-05.md`](backlog-execution-round-63-2026-11-05.md).
+A BDM-specific check adds detail beyond the earlier JTAG-only search: the
+µClinux notes already mention a BDM connector for MatchPort AR, and Lantronix
+also documents BDM on the separate XPort Pro Dev Board for both Evolution and
+Linux SDK kits, plus a USB BDM probe. This is not evidence of a JTAG interface
+on the production module; no BDM/JTAG implementation or test exists here. Mayhem
+source has capture/stop and replay/stop/loop, and scanner pause/resume, but no
+capture pause or replay seek/pause in the reviewed path. Android/QEMU execution,
+XPort hardware/app porting, and other SDR tests remain open pending exact target
+models and hardware/SDK.
 
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*
 Catalog the OCR haiku into the haiku vault and verify the enso generators + haiku randomizers

@@ -1026,7 +1026,11 @@ const DRAW = {
     if (!e?.length) return;
     const rows = Math.min(8, e.length);
     const tbl = [];
-    for (let i = 0; i < rows; i++) tbl.push([`0x${e[i].toString(16).padStart(2, "0")}`, `0x${gf256Inv(e[i]).toString(16).padStart(2, "0")}`, `0x${gf256Mul(e[i], gf256Inv(e[i])).toString(16)}`]);
+    for (let i = 0; i < rows; i++) tbl.push([
+      `0x${e[i].toString(16).padStart(2, "0")}`,
+      e[i] ? `0x${gf256Inv(e[i]).toString(16).padStart(2, "0")}` : "undefined",
+      e[i] ? `0x${gf256Mul(e[i], gf256Inv(e[i])).toString(16)}` : "undefined",
+    ]);
     table(ctx, w, h, { head: ["a", "a⁻¹", "a·a⁻¹"], rows: tbl });
   },
   "alg-lattice": (ctx, w, h, d) => {

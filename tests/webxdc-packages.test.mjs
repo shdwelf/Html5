@@ -7,10 +7,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { unzipSync } from "../vendor/fflate/index.mjs";
+import { PUBLIC_CORPUS_EXCLUDED_ASSETS, PUBLIC_CORPUS_EXCLUDED_SOURCES } from "../tools/wikiinajar/public-corpus-policy.mjs";
+import { hasPrivateBackupPassage, hasPrivateCloudReference } from "../tools/wikiinajar/privacy-preflight.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
@@ -28,21 +30,50 @@ function source(name) {
   return readFileSync(path.join(root, name), "utf8");
 }
 
+function treeFiles(directory, prefix = "") {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const relative = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const absolute = path.join(directory, entry.name);
+    return entry.isDirectory() ? treeFiles(absolute, relative) : [relative];
+  });
+}
+
+function assertPublicDocs(files, archiveName) {
+  for (const privateSource of [...PUBLIC_CORPUS_EXCLUDED_SOURCES, ...PUBLIC_CORPUS_EXCLUDED_ASSETS]
+    .filter((name) => name.startsWith("docs/"))) {
+    assert.ok(!files[privateSource], `${privateSource} must not be copied into ${archiveName}`);
+  }
+  for (const name of Object.keys(files).filter((name) =>
+    name.startsWith("docs/") && !name.endsWith("/") && !/\.(?:png|jpe?g|gif|webp|bmp)$/i.test(name))) {
+    const content = text(files, name);
+    assert.equal(hasPrivateCloudReference(content), false, `${name} contains a private cloud reference`);
+    assert.equal(hasPrivateBackupPassage(content), false, `${name} contains private backup context`);
+  }
+}
+
 test("SITE-K archive contains the current shell and complete Project Y exhibit", () => {
   const files = archive("sitek.xdc");
   for (const file of [
     "index.html", "manifest.toml", "los-alamos.html", "4dwm-ports.html",
     "bluetops-gso-4dwm.html", "dalton-race-4dwm.html", "esgvrop-4dwm.html",
     "glendora-high-4dwm.html", "greeran-family-4dwm.html", "greeran-subsurface.html",
-    "planet-viewer-4dwm.html", "red-october-4dwm.html", "sanborn-restaurant-4dwm.html",
+    "planet-viewer-4dwm.html", "country-viewer.html", "red-october-4dwm.html", "sanborn-restaurant-4dwm.html",
     "socal-subsurface.html", "vincennes-4dwm.html", "wasm/ghidra/ghidra_decompiler.wasm",
     "css/app.css", "css/wm.css", "css/project-y-sites.css", "css/project-y-4dwm.css",
-    "js/sitek-modes.js", "js/flash-coordinates.js",
+    "css/planet-viewer-4dwm.css", "js/sitek-modes.js", "js/flash-coordinates.js",
+    "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/country-viewer.js", "js/country-map.js",
+    "js/country-data.js", "js/country-viewer-islands.js", "js/city-gazetteer.js", "js/city-gazetteer-data.js",
+    "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
+    "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
+    "js/city-gazetteer-data-toronto.js", "js/sanborn-restaurant-manifest.js", "apps/red-october-command-viewer/core.js",
+    "vendor/world/countries.geo.json",
     "js/project-y-sites-data.js", "js/project-y-sites.js", "js/project-y-4dwm.js",
     "vendor/three.module.min.js", "vendor/OrbitControls.js",
   ]) text(files, file);
 
   assert.match(text(files, "manifest.toml"), /SITE-K · Offline Site Collection/);
+  assertPublicDocs(files, "the public SITE-K archive");
   assert.equal(text(files, "index.html"), source("index.html"));
   assert.equal(text(files, "4dwm-ports.html"), source("4dwm-ports.html"));
   assert.equal(text(files, "js/sitek-modes.js"), source("js/sitek-modes.js"));
@@ -50,6 +81,19 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
   assert.equal(text(files, "js/project-y-sites-data.js"), source("js/project-y-sites-data.js"));
   const worker = text(files, "sw.js");
   assert.equal(worker, source("sw.js"));
+  assert.equal(text(files, "js/zip.js"), source("js/zip.js"), "offline ZIP writer is current");
+  assert.equal(text(files, "vendor/fflate/browser.mjs"), source("vendor/fflate/browser.mjs"), "ZIP compressor is bundled");
+  assert.match(source("js/zip.js"), /from "\.\.\/vendor\/fflate\/browser\.mjs"/);
+  assert.ok(worker.includes('"./vendor/fflate/browser.mjs"'), "ZIP compressor is precached for offline exports");
+  assert.ok(worker.includes('"./js/sanborn-restaurant-manifest.js"'), "Sanborn's local parser is precached for first offline launch");
+  for (const file of [
+    "country-viewer.html", "planet-viewer-4dwm.html", "js/country-viewer.js", "js/country-viewer-islands.js", "js/country-map.js",
+    "js/planet-viewer-4dwm.js", "js/planet-viewer-search.js", "js/planet-viewer-checks.js",
+    "js/planet-viewer-data.js", "js/planet-globe.js", "js/city-gazetteer.js",
+    "js/city-gazetteer-data-atlanta.js", "js/city-gazetteer-data-buffalo.js",
+    "js/city-gazetteer-data-kansascity.js", "js/city-gazetteer-data-lawrence.js",
+    "js/city-gazetteer-data-toronto.js", "js/sanborn-restaurant-manifest.js",
+  ]) assert.equal(text(files, file), source(file), `${file} is stale in SITE-K XDC`);
   const portTargets = [...text(files, "4dwm-ports.html").matchAll(/href="\.\/([^"#?]+\.html)"/g)].map((match) => match[1]);
   for (const target of portTargets) {
     assert.ok(files[target], `${target} is missing from SITE-K XDC`);
@@ -62,6 +106,13 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
     assert.equal(text(files, model), source(model), `${id} model is stale or missing in SITE-K`);
     assert.match(source("sw.js"), new RegExp(`models/project-y/${id}\\.wrl`), `${id} is not precached by SITE-K`);
   }
+});
+
+test("ADL Gazetteer archive uses the privacy-filtered public docs tree", () => {
+  const files = archive("adl.xdc");
+  assert.ok(files["index.html"] && files["manifest.toml"]);
+  assert.ok(files["docs/research/03_GAZBEAN_ARCHITECTURE.md"], "public ADL architecture note remains available offline");
+  assertPublicDocs(files, "the ADL archive");
 });
 
 test("focused Project Y archive ships all six sites and their local dependencies", () => {
@@ -140,7 +191,7 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
 test("legacy Planet XDC filename now ships the SoCal Subsurface 4Dwm app", () => {
   const planetAlias = readFileSync(path.join(root, "planet-viewer-4dwm.xdc"));
   const canonical = readFileSync(path.join(root, "socal-subsurface.xdc"));
-  assert.deepEqual(planetAlias, canonical, "Planet compatibility XDC must mirror the canonical SoCal package");
+  assert.ok(planetAlias.equals(canonical), "Planet compatibility XDC must mirror the canonical SoCal package");
 
   const files = unzipSync(planetAlias);
   assert.match(text(files, "manifest.toml"), /^name = \"SoCal Subsurface 4Dwm\"/);
@@ -212,7 +263,7 @@ test("SoCal Subsurface inlined builder reports current outputs", (t) => {
 test("Sanborn Installations archive carries both complete source applications", () => {
   const named = readFileSync(path.join(root, "sanborn-installations.xdc"));
   const compatibility = readFileSync(path.join(root, "sanborn-suite.xdc"));
-  assert.deepEqual(named, compatibility, "compatibility archive must be the exact complete suite");
+  assert.ok(named.equals(compatibility), "compatibility archive must be the exact complete suite");
 
   const files = unzipSync(named);
   const suite = text(files, "index.html");
@@ -396,6 +447,59 @@ test("Headline Harry DOSBox smoke drives Press Pass input and checks for a trans
   assert.match(workflow, /game-shots\/press-pass/);
   assert.ok(workflow.includes("Upload Press Pass runtime evidence"));
   assert.ok(workflow.includes('cp -r "$work/hd/HH/." .xfer/harry/installed/'));
+});
+
+test("Keyspace Viewer archive carries the exact offline app and its licenses", () => {
+  const files = archive("keyspace.xdc");
+  for (const file of [
+    "index.html", "manifest.toml", "LICENSE", "webxdc.js", "css/viewer.css",
+    "config/coins-top500.json", "config/token-networks.json", "wasm/entropy.wasm", "vendor/three.module.min.js",
+    "vendor/OrbitControls.js", "vendor/THREE_LICENSE", "js/bip39.js", "js/bip39-en.js",
+    "js/engine.js", "js/viewer.js", "js/galois.js", "js/galois-view.js", "js/coin-networks.js",
+    "js/coin-research.js", "js/coin-workbench.js", "js/wallet-investigation.js", "js/chain-read.js", "js/nft-viewer.js", "apps/index3.html", "config/chain-research.json",
+  ]) text(files, file);
+  assert.equal(text(files, "index.html"), source("keyspace.html"));
+  assert.equal(text(files, "LICENSE"), source("LICENSE"));
+  assert.equal(text(files, "vendor/THREE_LICENSE"), source("vendor/THREE_LICENSE"));
+  assert.equal(text(files, "index.html"), source("public/apps/keyspace/index.html"));
+  assert.equal(text(files, "manifest.toml"), source("public/apps/keyspace/manifest.toml"));
+  const stagedRoot = path.join(root, "public", "apps", "keyspace");
+  const stagedPaths = treeFiles(stagedRoot).sort();
+  const archivePaths = Object.keys(files).filter((name) => !name.endsWith("/")).sort();
+  assert.deepEqual(archivePaths, stagedPaths, "Keyspace XDC and staged viewer have the same complete file set");
+  for (const relative of stagedPaths) {
+    assert.ok(
+      Buffer.from(files[relative]).equals(readFileSync(path.join(stagedRoot, relative))),
+      `${relative} is stale in keyspace.xdc`,
+    );
+  }
+});
+
+test("Keyspace's full module/registry graph is fresh in both archives and precached by SITE-K", () => {
+  const keyspace = archive("keyspace.xdc"), sitek = archive("sitek.xdc");
+  const worker = source("sw.js");
+  const seen = new Set();
+  function visit(file) {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const current = source(file);
+    assert.equal(text(keyspace, file), current, `stale Keyspace module: ${file}`);
+    assert.equal(text(sitek, file), current, `stale SITE-K module: ${file}`);
+    assert.ok(worker.includes(`"./${file}"`), `${file} is not precached`);
+    for (const match of current.matchAll(/\bimport\s+(?:[^'";]*?\s+from\s*)?["']([^"']+)["']/g)) {
+      assert.ok(match[1].startsWith("."), `external import in offline module ${file}`);
+      visit(path.posix.normalize(path.posix.join(path.posix.dirname(file), match[1])));
+    }
+  }
+  visit("js/viewer.js");
+  visit("js/nft-viewer.js");
+  for (const file of ["config/coins-top500.json", "config/token-networks.json", "config/chain-research.json", "apps/index3.html"]) {
+    assert.equal(text(keyspace, file), source(file));
+    assert.equal(text(sitek, file), source(file));
+    assert.ok(worker.includes(`"./${file}"`));
+  }
+  assert.equal(text(sitek, "keyspace.html"), source("keyspace.html"));
+  assert.equal(text(sitek, "css/viewer.css"), source("css/viewer.css"));
 });
 
 test("merged CyberChef archive is current and self-contained", () => {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HTML5 Apps — served over HTTPS</title>
+<title>HTML5 App Library — Complete Public Catalog</title>
 <style>
   :root{--bg:#0b0b0e;--panel:#17171c;--line:#2b2b33;--fg:#e6e6ea;--muted:#8a8a95;--accent:#5ce4a0;--accent2:#c39df3}
   *{box-sizing:border-box}
@@ -19,6 +19,8 @@
   .card h2{margin:0 0 4px;font-size:16px;color:var(--accent2)}
   .card p{margin:0;color:var(--muted);font-size:13px}
   .tag{display:inline-block;font-size:11px;color:var(--accent);border:1px solid rgba(92,228,160,.3);border-radius:99px;padding:1px 8px;margin-top:8px}
+  .search{display:block;width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);padding:12px;margin:6px 0 12px;font:inherit}
+  label{font-weight:600} .notice{font-size:13px;color:var(--muted);margin:0 0 20px}
   footer{color:var(--muted);font-size:12px;margin-top:28px;border-top:1px solid var(--line);padding-top:14px}
   code{background:#000;padding:1px 5px;border-radius:4px;font-size:12px}
 </style>
@@ -26,9 +28,25 @@
 <body>
 <div class="wrap">
   <h1>HTML5 Apps</h1>
-  <p class="sub">Recovered from <code>Html5-sync-incoming</code> and served over HTTPS.</p>
+  <p class="sub">Every approved public HTML entrypoint, generated from the same inventory as the Android library.</p>
   <div id="ctx" class="ctx"></div>
 
+  <label for="app-search">Find an app</label>
+  <input id="app-search" class="search" type="search" placeholder="Search all apps — OpenPGP, Sanctuary, AURA…" autocomplete="off">
+  <p id="app-count" role="status" aria-live="polite">Loading the complete catalog. Direct links are available below.</p>
+  <p class="notice">Browser apps share this site's origin; Android isolates each packaged app. Export and verify research backups before clearing data or uninstalling. Private archives and unbuilt imports are not silently published in this catalog.</p>
+  <div id="app-list">
+  <a class="card" href="./openpgp-workbench/index.html">
+    <h2>OpenPGP Workbench</h2>
+    <p>Local message encryption, protected key exports and opt-in PUBLIC certificate remembering. No automatic secret persistence.</p>
+    <span class="tag">explicit local saves · compare full fingerprints</span>
+  </a>
+  <a class="card" href="./sound-sanctuary/index.html">
+    <h2>Sound Sanctuary</h2><p>Complete Noise Canceling Sanctuary snapshot. Experimental browser audio, not hearing protection.</p>
+  </a>
+  <a class="card" href="./aura-sound-studio/index.html">
+    <h2>AURA Sound Studio</h2><p>Complete local audio lab, including its alternate saved-settings snapshot. Remote fonts and analytics removed.</p>
+  </a>
   <a class="card" href="./wikiinajar/">
     <h2>Wiki in a Jar · Personal Wiki &amp; PIM</h2>
     <p>The 2008 USB-stick wiki (wikiinajar 0.8) as an offline webxdc: .wiki pages, img/djvu embeds with the WASM DjVu reader, vCard contacts, and chat sync.</p>
@@ -61,7 +79,7 @@
 
   <a class="card" href="./cyberchef/">
     <h2>CyberChef — Renovated Kitchen</h2>
-    <p>336 recipes, plus file input, byte-exact Base64 and Save Output.</p>
+    <p>Local recipe kitchen, file input, byte-exact Base64 and Save Output.</p>
     <span class="tag">📁 Load File → → Base64 → 💾 Save Output</span>
   </a>
 
@@ -95,19 +113,15 @@
     <span class="tag">🐒 MonKey Miner runs fully offline</span>
   </a>
 
+  </div>
+  <noscript><p>Enable JavaScript for the complete searchable inventory; the direct links above still work.</p></noscript>
   <footer>
-    <strong>Why this page exists.</strong> <code>getUserMedia</code> only works in a
-    secure context. Opening an app from <code>file://</code> is not one, so the browser
-    never offers the microphone prompt. Served from this origin it does.
+    Web Crypto and microphone APIs need a secure context and browser support;
+    use HTTPS or a loopback development origin rather than relying on local-file behavior.
+    Microphone access still requires consent. Experimental audio DSP is not certified ANC or hearing protection.
+    A requested browser download is not proof of a saved backup: check the resulting file.
   </footer>
 </div>
-<script>
-  var el=document.getElementById('ctx');
-  var secure=window.isSecureContext;
-  var mic=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
-  el.className='ctx '+(secure&&mic?'ok':'bad');
-  el.textContent=(secure?'✓ Secure context ('+location.protocol+'//'+location.host+')':'✗ Not a secure context — '+location.protocol)
-    +(mic?' · microphone available':' · getUserMedia unavailable');
-</script>
+<script src="./catalog-browser.js" defer></script>
 </body>
 </html>

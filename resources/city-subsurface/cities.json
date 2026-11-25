@@ -1029,7 +1029,32 @@
             "US EPA Superfund site profile CAD980358832; coordinate per gazetteer row"
           ]
         }
-      ],
+      ,
+          {"id":"uc-berkeley-campus-life","name":"UC Berkeley · campus, ASUC Student Union + Alumni House","layer":"uc-network","tier":"official","kind":"university-campus","lon":-122.258,"lat":37.872,"depthM":0,"facts":["Approximate campus-centre anchor, not a surveyed building coordinate. The campus-life register points to the Martin Luther King Jr. Student Union and Alumni House, plus archive records for student organizations and Greek societies.","Internet Archive's Blue and Gold record for volume 48 names both the Associated Students and Zeta Psi Fraternity, Iota Chapter; a separately catalogued Berkeley film item describes alumni-house, campus, and fraternity-building footage. Neither archive item establishes that historical organizations or houses remain active at those locations."],"sources":["UC Berkeley Student Union: https://studentunion.berkeley.edu/","UCOP campus alumni association directory (Alumni House): https://policy.ucop.edu/doc/6000621/CampusAlumni","Internet Archive, The Blue and Gold vol. 48: https://archive.org/details/bluegold48univ","Internet Archive, UC Berkeley outtakes (catalog description): https://archive.org/details/UC_Berkeley_outtakes","Approximate campus-centre coordinate; use the official campus map for building-level location."]},
+          {"id":"uc-davis-campus-life","name":"UC Davis · campus, Memorial Union + Cal Aggie Alumni Association","layer":"uc-network","tier":"official","kind":"university-campus","lon":-121.762,"lat":38.538,"depthM":0,"facts":["Approximate campus-centre anchor. The Memorial Union is identified by UC Davis as its main student union; alumni-association mailing address is listed by UCOP."],"sources":["UC Davis Student Affairs, Memorial Union: https://studentaffairs.ucdavis.edu/facilities","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","UC Davis campus map: https://campusmap.ucdavis.edu/","Approximate campus-centre coordinate; not a union or alumni-office geocode."]},
+          {"id":"uc-irvine-campus-life","name":"UC Irvine · campus, Student Center + Newkirk Alumni Center","layer":"uc-network","tier":"official","kind":"university-campus","lon":-117.844,"lat":33.64,"depthM":0,"facts":["Approximate campus-centre anchor. UC Irvine's alumni association publishes the Newkirk Alumni Center address; the pin represents the campus, not that building address."],"sources":["UC Irvine Alumni Association, Newkirk Alumni Center: https://engage.alumni.uci.edu/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","UC Irvine campus map: https://map.uci.edu/","Approximate campus-centre coordinate; not a building geocode."]},
+          {"id":"uc-los-angeles-campus-life","name":"UCLA · campus, Ackerman Union + James West Alumni Center","layer":"uc-network","tier":"official","kind":"university-campus","lon":-118.444,"lat":34.072,"depthM":0,"facts":["Approximate campus-centre anchor. UCLA yearbooks in the Internet Archive's UCLA Yearbook Collection document the historical student-body publication and campus-life record; catalog metadata identifies the Associated Students of UCLA as a publisher. These scans are historical sources, not proof of current chapter status."],"sources":["UCLA campus map: https://map.ucla.edu/","UCOP campus alumni association directory (James West Alumni Center): https://policy.ucop.edu/doc/6000621/CampusAlumni","Internet Archive, UCLA Yearbook Collection (Southern Campus): https://archive.org/details/uclayearbooks","Internet Archive, Southern Campus 1953 full text: https://archive.org/stream/southerncampus1953univ/southerncampus1953univ_djvu.txt","Approximate campus-centre coordinate; not a building geocode."]},
+          {"id":"uc-merced-campus-life","name":"UC Merced · campus + alumni association","layer":"uc-network","tier":"official","kind":"university-campus","lon":-120.425,"lat":37.365,"depthM":0,"facts":["Approximate campus-centre anchor. UCOP lists a campus alumni association; this layer records the campus-scale hub rather than inventing an alumni-house or union address."],"sources":["UC Merced campus map: https://campusmap.ucmerced.edu/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","Approximate campus-centre coordinate; campus-specific facility point not asserted."]},
+          {"id":"uc-riverside-campus-life","name":"UC Riverside · campus, Highlander Union + Alumni & Visitors Center","layer":"uc-network","tier":"official","kind":"university-campus","lon":-117.328,"lat":33.974,"depthM":0,"facts":["Approximate campus-centre anchor. The UCOP directory identifies the UCR Alumni & Visitors Center; the nearby Palm Desert Center is mapped separately as an off-campus operation."],"sources":["UC Riverside campus map: https://campusmap.ucr.edu/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","Approximate campus-centre coordinate; not a building geocode."]},
+          {"id":"uc-san-diego-campus-life","name":"UC San Diego · campus, University Centers + alumni association","layer":"uc-network","tier":"official","kind":"university-campus","lon":-117.234,"lat":32.88,"depthM":0,"facts":["Approximate campus-centre anchor. UC San Diego describes University Centers (Price Center and Student Center) as its student union; the off-campus Park & Market center is shown separately."],"sources":["UC San Diego University Centers: https://universitycenters.ucsd.edu/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","UC San Diego campus map: https://maps.ucsd.edu/","Approximate campus-centre coordinate; not a Price Center geocode."]},
+          {"id":"uc-san-francisco-campus-life","name":"UC San Francisco · Parnassus campus + alumni association","layer":"uc-network","tier":"official","kind":"university-campus","lon":-122.458,"lat":37.764,"depthM":0,"facts":["Approximate Parnassus campus anchor. The alumni association's UCOP-listed contact is in downtown San Francisco, not at this campus pin; the layer does not conflate those locations."],"sources":["UCSF campus map: https://campuslifeservices.ucsf.edu/clsmap/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","Approximate Parnassus campus-centre coordinate; the separately listed alumni-office address is downtown."]},
+          {"id":"uc-santa-barbara-campus-life","name":"UC Santa Barbara · campus, UCen + Mosher Alumni House","layer":"uc-network","tier":"official","kind":"university-campus","lon":-119.849,"lat":34.414,"depthM":0,"facts":["Approximate campus-centre anchor. Mosher Alumni House is identified in the UCOP alumni directory and university records; the Internet Archive catalog lists the 1967 La Cumbre yearbook as a UCSB yearbook."],"sources":["UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","UC Santa Barbara University Archives, periodical publications: https://www.library.ucsb.edu/special-collections/university-archives/university-archives-periodical-publications","Internet Archive, 1967 UCSB La Cumbre yearbook: https://archive.org/details/1967UCSBYEARBOOKLACUMBRE","Approximate campus-centre coordinate; not a Mosher Alumni House geocode."]},
+          {"id":"uc-santa-cruz-campus-life","name":"UC Santa Cruz · campus, Student Union Assembly + alumni association","layer":"uc-network","tier":"official","kind":"university-campus","lon":-122.06,"lat":36.991,"depthM":0,"facts":["Approximate campus-centre anchor. UC Santa Cruz also describes a networked-campus model; documented operational, proposed, and potential off-campus locations are distinguished in separate records."],"sources":["UC Santa Cruz campus map: https://maps.ucsc.edu/","UCOP campus alumni association directory: https://policy.ucop.edu/doc/6000621/CampusAlumni","UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate campus-centre coordinate; not a specific college or alumni-office geocode."]},
+          {"id":"ucd-aggie-square","name":"UC Davis · Aggie Square (Sacramento satellite campus)","layer":"uc-network","tier":"official","kind":"satellite-campus","lon":-121.45,"lat":38.55,"depthM":0,"facts":["UC Regents' 2023 capacity-plan document identifies Aggie Square as a launched UC Davis innovation hub in Sacramento, at the UC Davis Medical Center campus; use the official project map for building-level positions."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Aggie Square official project site: https://aggiesquare.ucdavis.edu/","Approximate district anchor; not a parcel or building survey."]},
+          {"id":"ucr-palm-desert-center","name":"UC Riverside Palm Desert Center","layer":"uc-network","tier":"official","kind":"research-center","lon":-116.39,"lat":33.73,"depthM":0,"facts":["UC Regents describes the Palm Desert Center as an operating UCR site in the Coachella Valley, active since 2005 and supporting research and UC Extension."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","UC Riverside Palm Desert Center: https://palmdesert.ucr.edu/","Approximate center anchor; refer to UCR for address and current facility details."]},
+          {"id":"ucsd-park-market","name":"UC San Diego Park & Market · downtown center","layer":"uc-network","tier":"official","kind":"satellite-campus","lon":-117.162,"lat":32.715,"depthM":0,"facts":["The Regents' 2023 report describes the four-story Park & Market center as open in downtown San Diego in spring 2022, connecting academic, community, and business partners."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","UC San Diego Park & Market: https://parkandmarket.ucsd.edu/","Approximate downtown site anchor."]},
+          {"id":"ucsc-silicon-valley-center","name":"UC Santa Cruz Silicon Valley Center · Santa Clara","layer":"uc-network","tier":"official","kind":"extension-center","lon":-121.96,"lat":37.35,"depthM":0,"facts":["The Regents identify the Silicon Valley Center as part of UCSC's networked-campus operations, including Games and Playable Media programming. Pin is an approximate city-area anchor."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","UC Santa Cruz Silicon Valley campus: https://siliconvalley.ucsc.edu/","Approximate Santa Clara anchor; use UCSC for current suite/building location."]},
+          {"id":"ucsc-scotts-valley-center","name":"UC Santa Cruz Scotts Valley Center","layer":"uc-network","tier":"official","kind":"extension-center","lon":-122.03,"lat":37.05,"depthM":0,"facts":["The Regents' report names Scotts Valley among UCSC's physical and remote networked-campus locations; current occupancy and programs should be rechecked before a visit."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate Scotts Valley city anchor; building-level address not asserted."]},
+          {"id":"ucsc-westside-research-park","name":"UC Santa Cruz Westside Research Park","layer":"uc-network","tier":"official","kind":"research-center","lon":-122.06,"lat":36.96,"depthM":0,"facts":["Listed in the Regents' 2023 report as an existing UCSC satellite operation, in close proximity to the main campus. Approximate city-area anchor only."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate Westside Santa Cruz anchor; building-level location not claimed."]},
+          {"id":"ucsc-coastal-science-campus","name":"UC Santa Cruz Coastal Science Campus","layer":"uc-network","tier":"official","kind":"research-campus","lon":-122.06,"lat":36.95,"depthM":0,"facts":["Listed by UC Regents as an existing UCSC satellite operation close to the main campus. The position is an approximate site-area anchor, not a building survey."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate Coastal Science Campus anchor."]},
+          {"id":"ucsc-mbest-marina","name":"UC Santa Cruz · MBEST Center, Marina / Fort Ord","layer":"uc-network","tier":"context","kind":"regional-plan","lon":-121.79,"lat":36.68,"depthM":0,"facts":["The Regents' report frames MBEST as development potential for a regional collaborative research and workforce hub, not as equivalent to an established active campus. Marker denotes the Marina/Fort Ord planning area only."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate Marina/Fort Ord area anchor; planned capacity is not represented as completed construction."]},
+          {"id":"uc-berkeley-point-reyes-field-station","name":"UC Berkeley · Point Reyes Field Station","layer":"uc-network","tier":"official","kind":"field-station","lon":-122.8,"lat":38.07,"depthM":0,"facts":["The UC Natural Reserve System reports that Point Reyes Field Station joined the system in 2021 and is operated by UC Berkeley. Approximate field-station-area anchor."],"sources":["UC News, Point Reyes and Lassen field stations join UC reserve system: https://www.universityofcalifornia.edu/news/uc-reserve-system-grows-include-point-reyes-mount-lassen","Approximate Point Reyes station-area anchor; contact UC NRS for access rules."]},
+          {"id":"uc-davis-lassen-field-station","name":"UC Davis · Lassen Field Station","layer":"uc-network","tier":"official","kind":"field-station","lon":-121.51,"lat":40.49,"depthM":0,"facts":["The UC Natural Reserve System reports that Lassen Field Station joined in 2021 and is administered by UC Davis in partnership with Lassen Volcanic National Park. Approximate park-area anchor."],"sources":["UC News, Point Reyes and Lassen field stations join UC reserve system: https://www.universityofcalifornia.edu/news/uc-reserve-system-grows-include-point-reyes-mount-lassen","Approximate Lassen field-station-area anchor; use NPS/UC NRS for access rules."]},
+          {"id":"ucsb-ventura-center-closed","name":"UC Santa Barbara Ventura Center · historical off-campus program site","layer":"uc-network","tier":"context","kind":"historical-center","lon":-119.29,"lat":34.28,"depthM":0,"facts":["UC Regents' September 2023 report says UCSB's Ventura Center launched an off-campus studies program in 1974 and closed in 2009 for financial reasons. This is a historical marker, not an active UC facility."],"sources":["UC Regents, UC 2030 capacity and satellite-operations discussion (2023): https://regents.universityofcalifornia.edu/regmeet/sept23/a3.pdf","Approximate Ventura city-area anchor; former facility address not established here."]},
+          {"id":"uc-archive-berkeley-student-societies","name":"Archive.org · Berkeley student societies, Greek life + alumni record","layer":"uc-network","tier":"community","kind":"archival-collection","lon":-122.258,"lat":37.872,"depthM":0,"facts":["Internet Archive's Blue and Gold catalog record documents a historical Berkeley yearbook run and identifies Zeta Psi Fraternity, Iota Chapter and Associated Students among associated names. The Berkeley outtakes catalog describes campus and fraternity-building footage and an alumni-house exterior. These sources document archival coverage, not current chapter status, occupancy, or building-level coordinates."],"sources":["Internet Archive, Blue and Gold: https://archive.org/details/bluegold48univ","Internet Archive, UC Berkeley outtakes: https://archive.org/details/UC_Berkeley_outtakes","Historical corpus only; no current Greek-house location or membership inferred."]},
+          {"id":"uc-archive-ucla-student-organizations","name":"Archive.org · UCLA Southern Campus yearbooks + student life","layer":"uc-network","tier":"community","kind":"archival-collection","lon":-118.444,"lat":34.072,"depthM":0,"facts":["The UCLA Yearbook Collection identifies Southern Campus as a publication of the Southern Branch/Associated Students of UCLA. Internet Archive's full text of the 1953 yearbook includes separate sections for sororities, fraternities, and living groups. A yearbook documents historical campus life, not current Greek organizations or precise off-campus house locations."],"sources":["Internet Archive, UCLA Yearbook Collection: https://archive.org/details/uclayearbooks","Internet Archive, Southern Campus 1953 OCR: https://archive.org/stream/southerncampus1953univ/southerncampus1953univ_djvu.txt","Archive.org metadata is a discovery/corpus source, not a current organization directory."]},
+          {"id":"uc-archive-ucsb-yearbook","name":"Archive.org · UCSB La Cumbre yearbook record","layer":"uc-network","tier":"community","kind":"archival-collection","lon":-119.849,"lat":34.414,"depthM":0,"facts":["The Internet Archive catalog record identifies the 1967 La Cumbre as a UCSB yearbook. The pin is campus-context only; the item does not geolocate a union, alumni house, society, fraternity, or sorority."],"sources":["Internet Archive, 1967 UCSB La Cumbre: https://archive.org/details/1967UCSBYEARBOOKLACUMBRE","UC Santa Barbara Archives yearbook holdings: https://www.library.ucsb.edu/special-collections/university-archives/university-archives-periodical-publications"]}
+        ],
         "gazetteerRows": [
         ["Los Angeles", "Populated Place", "pop.place", "Los Angeles", 34.0522390563, -118.2436970875, null, "1662328", 1, "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1662328; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
         ["San Francisco", "Populated Place", "pop.place", "San Francisco", 37.77500494, -122.41945762, null, "277593", 1, "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=277593; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
@@ -19417,6 +19442,796 @@
           "Kauai north-shore river record at Hanalei Bay. USGS GNIS Geocoder (GNIS), FEATURE_ID=359043; exact official name and Stream type in Kauai County cross-checked 2026-10-24. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "newyork": {
+      "title": "NEW YORK SUBSURFACE 4Dwm",
+      "subtitle": "Adirondacks · Catskills · Great Lakes · Hudson Valley — statewide frame, New York",
+      "gazTitle": "NEW YORK USGS GNIS REGISTER",
+      "gazNote": "Round 41 starter register: 27 verified rows are exact official GNIS records screened across the GNIS Geocoder and DomesticNames_NY_Text.zip. Same-name traps and primary points outside New York are documented in the batch-22 source register. Pins are points, not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "NY",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -79.85,
+        "lat0": 40.45,
+        "lon1": -71.75,
+        "lat1": 45.05
+      },
+      "center": {
+        "lon": -75.75,
+        "lat": 42.75
+      },
+      "baseElevationM": 300,
+      "roughnessM": 140,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Adirondack High Peaks",
+          "lon": -73.92,
+          "lat": 44.1,
+          "rx": 0.45,
+          "ry": 0.5,
+          "amp": 880,
+          "rot": 0.0
+        },
+        {
+          "name": "Catskills / Slide Mountain",
+          "lon": -74.38,
+          "lat": 42.0,
+          "rx": 0.45,
+          "ry": 0.3,
+          "amp": 520,
+          "rot": 0.05
+        },
+        {
+          "name": "Allegheny Plateau",
+          "lon": -78.0,
+          "lat": 42.0,
+          "rx": 0.75,
+          "ry": 0.5,
+          "amp": 180,
+          "rot": -0.1
+        },
+        {
+          "name": "Tug Hill Plateau",
+          "lon": -75.9,
+          "lat": 43.7,
+          "rx": 0.5,
+          "ry": 0.35,
+          "amp": 120,
+          "rot": 0.0
+        },
+        {
+          "name": "Hudson Valley",
+          "lon": -73.9,
+          "lat": 42.0,
+          "rx": 0.25,
+          "ry": 0.9,
+          "amp": -75,
+          "rot": 0.0
+        },
+        {
+          "name": "Long Island / coastal plain",
+          "lon": -72.5,
+          "lat": 40.75,
+          "rx": 0.7,
+          "ry": 0.22,
+          "amp": -35,
+          "rot": 0.0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "hudson-river-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Hudson River valley context (generalized)",
+          "short": "Hudson",
+          "depthM": 0,
+          "path": [
+            [
+              -73.92,
+              44.1
+            ],
+            [
+              -73.95,
+              43.55
+            ],
+            [
+              -73.9,
+              43.05
+            ],
+            [
+              -73.92,
+              42.6
+            ],
+            [
+              -73.92,
+              42.1
+            ],
+            [
+              -73.95,
+              41.55
+            ],
+            [
+              -74.0281957,
+              40.6967694
+            ]
+          ],
+          "facts": [
+            "Generalized Hudson Valley reach between the North Country, Albany, and the harbor. GNIS supplies point anchors only; this is not the Hudson River channel centerline."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "mohawk-valley-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mohawk River valley context (generalized)",
+          "short": "Mohawk",
+          "depthM": 0,
+          "path": [
+            [
+              -75.2326641,
+              43.1009031
+            ],
+            [
+              -74.9,
+              43.0
+            ],
+            [
+              -74.6,
+              42.91
+            ],
+            [
+              -74.3,
+              42.84
+            ],
+            [
+              -74.0,
+              42.8
+            ],
+            [
+              -73.6870628,
+              42.7609113
+            ]
+          ],
+          "facts": [
+            "Generalized Mohawk Valley reach from Utica toward the Hudson confluence; not a stream centerline."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "niagara-river-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Niagara River corridor (generalized)",
+          "short": "Niagara",
+          "depthM": 0,
+          "path": [
+            [
+              -79.05,
+              42.88
+            ],
+            [
+              -79.07,
+              43.02
+            ],
+            [
+              -79.0703253,
+              43.2622766
+            ],
+            [
+              -79.03,
+              43.4
+            ]
+          ],
+          "facts": [
+            "Generalized Niagara River reach between the lakes. The GNIS primary point is an anchor, not the international boundary or a channel trace."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "finger-lakes-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Finger Lakes region context (generalized)",
+          "short": "Finger Lakes",
+          "depthM": 0,
+          "path": [
+            [
+              -76.95,
+              42.7788172
+            ],
+            [
+              -76.7,
+              42.6881354
+            ],
+            [
+              -76.55,
+              42.55
+            ],
+            [
+              -76.35,
+              42.35
+            ]
+          ],
+          "facts": [
+            "Regional context joining separate lake-point anchors; not a connected watercourse or lake shoreline."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "southern-tier-context",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Southern Tier regional context (generalized)",
+          "short": "Southern Tier",
+          "depthM": 0,
+          "path": [
+            [
+              -79.4,
+              42.17
+            ],
+            [
+              -78.88,
+              42.89
+            ],
+            [
+              -77.62,
+              43.15
+            ],
+            [
+              -76.81,
+              42.09
+            ],
+            [
+              -75.92,
+              42.1
+            ]
+          ],
+          "facts": [
+            "A schematic regional line through western and Southern Tier population anchors, not a named highway, rail route, or alignment."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "delaware-river-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Delaware River border context (generalized)",
+          "short": "Delaware",
+          "depthM": 0,
+          "path": [
+            [
+              -75.1,
+              42.0
+            ],
+            [
+              -75.08,
+              41.55
+            ],
+            [
+              -75.03,
+              41.05
+            ],
+            [
+              -75.0,
+              40.55
+            ]
+          ],
+          "facts": [
+            "Context only: the exact DomesticNames Stream primary point is in New Castle County, Delaware and outside this frame, so no New York GNIS river row is seeded; this is not a channel centerline."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        },
+        {
+          "id": "saint-lawrence-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Saint Lawrence / North Country context (generalized)",
+          "short": "St. Lawrence",
+          "depthM": 0,
+          "path": [
+            [
+              -79.5,
+              44.95
+            ],
+            [
+              -78.5,
+              44.8
+            ],
+            [
+              -77.5,
+              44.65
+            ],
+            [
+              -76.5,
+              44.55
+            ],
+            [
+              -75.5,
+              44.45
+            ]
+          ],
+          "facts": [
+            "Context only: the exact DomesticNames Stream primary point is outside the New York frame, so no GNIS river row is seeded; this is not the river boundary or channel geometry."
+          ],
+          "sources": [
+            "Generalized statewide context only; not an alignment, boundary, shoreline, or surveyed geometry"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "albany",
+          "name": "Albany",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -73.7562317,
+          "lat": 42.6525793,
+          "depthM": 0,
+          "facts": [
+            "State-capital anchor; this marker reuses the GNIS populated-place primary point."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 977310; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "new-york",
+          "name": "New York",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -74.0059729,
+          "lat": 40.7142691,
+          "depthM": 0,
+          "facts": [
+            "Official GNIS populated-place anchor for the city; this point is not a city boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 975772; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "buffalo",
+          "name": "Buffalo",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -78.8783689,
+          "lat": 42.8864468,
+          "depthM": 0,
+          "facts": [
+            "Western New York anchor; this marker reuses the GNIS populated-place primary point."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 973345; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "rochester",
+          "name": "Rochester",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -77.6155568,
+          "lat": 43.1547845,
+          "depthM": 0,
+          "facts": [
+            "Genesee Valley anchor; this marker reuses the GNIS populated-place primary point."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 962684; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "niagara-falls",
+          "name": "Niagara Falls",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -79.0567111,
+          "lat": 43.0944999,
+          "depthM": 0,
+          "facts": [
+            "Populated-place record; the same-name waterfall record is kept separate."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 970406; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-marcy",
+          "name": "Mount Marcy",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -73.9236546,
+          "lat": 44.11281,
+          "depthM": 0,
+          "facts": [
+            "Adirondack High Peaks anchor; no elevation is asserted from this candidate extract."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 973357; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "slide-mountain",
+          "name": "Slide Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -74.3857682,
+          "lat": 41.9991499,
+          "depthM": 0,
+          "facts": [
+            "Selected Ulster County Catskills summit among four exact-name GNIS Summit records."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 975759; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "plattsburgh",
+          "name": "Plattsburgh",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -73.4529124,
+          "lat": 44.6994873,
+          "depthM": 0,
+          "facts": [
+            "North Country anchor; this marker reuses the GNIS populated-place primary point."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 960698; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Albany",
+          "Populated Place",
+          "pop.place",
+          "Albany",
+          42.6525793,
+          -73.7562317,
+          null,
+          "977310",
+          1,
+          "State-capital anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=977310; exact official name and Cities & Populated Places type in Albany County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Binghamton",
+          "Populated Place",
+          "pop.place",
+          "Broome",
+          42.0986867,
+          -75.9179738,
+          null,
+          "943985",
+          1,
+          "Southern Tier populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=943985; exact official name and Cities & Populated Places type in Broome County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Buffalo",
+          "Populated Place",
+          "pop.place",
+          "Erie",
+          42.8864468,
+          -78.8783689,
+          null,
+          "973345",
+          1,
+          "Western New York populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=973345; exact official name and Cities & Populated Places type in Erie County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Cayuga Lake",
+          "Lake",
+          "hydro.lake",
+          "Cayuga",
+          42.6881354,
+          -76.7022922,
+          null,
+          "974076",
+          1,
+          "Finger Lakes hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=974076; exact official name and Lakes & Reservoirs type in Cayuga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon."
+        ],
+        [
+          "Chautauqua Lake",
+          "Lake",
+          "hydro.lake",
+          "Chautauqua",
+          42.1694423,
+          -79.4038311,
+          null,
+          "946461",
+          1,
+          "Western New York hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=946461; exact official name and Lakes & Reservoirs type in Chautauqua County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon."
+        ],
+        [
+          "Elmira",
+          "Populated Place",
+          "pop.place",
+          "Chemung",
+          42.0897965,
+          -76.8077338,
+          null,
+          "949577",
+          1,
+          "Chemung Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=949577; exact official name and Cities & Populated Places type in Chemung County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Genesee River",
+          "Stream",
+          "hydro.stream",
+          "Monroe",
+          43.2583951,
+          -77.6022239,
+          null,
+          "970162",
+          1,
+          "Western New York stream point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970162; exact official name and Streams & Canals type in Monroe County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline."
+        ],
+        [
+          "Hudson River",
+          "Stream",
+          "hydro.stream",
+          "New York",
+          40.6967694,
+          -74.0281957,
+          null,
+          "970226",
+          1,
+          "The source primary point is at the New York County harbor reach; it is not a trace of the full river. USGS GNIS Geocoder (GNIS), FEATURE_ID=970226; exact official name and Streams & Canals type in New York County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline."
+        ],
+        [
+          "Ithaca",
+          "Populated Place",
+          "pop.place",
+          "Tompkins",
+          42.4406284,
+          -76.4966071,
+          null,
+          "970238",
+          1,
+          "Tompkins County populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970238; exact official name and Cities & Populated Places type in Tompkins County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Lake George",
+          "Lake",
+          "hydro.lake",
+          "Warren",
+          43.6019166,
+          -73.5794567,
+          null,
+          "970163",
+          1,
+          "Lake feature selected over the same-name Populated Place FEATURE_ID 954913. USGS GNIS Geocoder (GNIS), FEATURE_ID=970163; exact official name and Lakes & Reservoirs type in Warren County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon."
+        ],
+        [
+          "Mohawk River",
+          "Stream",
+          "hydro.stream",
+          "Saratoga",
+          42.7609113,
+          -73.6870628,
+          null,
+          "970360",
+          1,
+          "Mohawk Valley stream point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=970360; exact official name and Streams & Canals type in Saratoga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline."
+        ],
+        [
+          "Mount Marcy",
+          "Summit",
+          "phys.summit",
+          "Essex",
+          44.11281,
+          -73.9236546,
+          null,
+          "973357",
+          1,
+          "Adirondack High Peaks summit anchor; no elevation is asserted from these candidate extracts. USGS GNIS Geocoder (GNIS), FEATURE_ID=973357; exact official name and Summit type in Essex County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a summit-area boundary or elevation contour."
+        ],
+        [
+          "New York",
+          "Populated Place",
+          "pop.place",
+          "New York",
+          40.7142691,
+          -74.0059729,
+          null,
+          "975772",
+          1,
+          "Official GNIS populated-place spelling is New York; the separate exact-name New York City query returned no record. USGS GNIS Geocoder (GNIS), FEATURE_ID=975772; exact official name and Cities & Populated Places type in New York County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Niagara Falls",
+          "Populated Place",
+          "pop.place",
+          "Niagara",
+          43.0944999,
+          -79.0567111,
+          null,
+          "970406",
+          1,
+          "Populated Place feature selected over the same-name Falls feature FEATURE_ID 958544. USGS GNIS Geocoder (GNIS), FEATURE_ID=970406; exact official name and Cities & Populated Places type in Niagara County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Niagara River",
+          "Stream",
+          "hydro.stream",
+          "Niagara",
+          43.2622766,
+          -79.0703253,
+          null,
+          "958547",
+          1,
+          "Western border-river point anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=958547; exact official name and Streams & Canals type in Niagara County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a channel centerline."
+        ],
+        [
+          "Oneida Lake",
+          "Lake",
+          "hydro.lake",
+          "Oswego",
+          43.2031992,
+          -75.9098444,
+          null,
+          "959369",
+          1,
+          "Central New York hydrographic anchor; the DomesticNames county string is preserved verbatim. USGS GNIS Geocoder (GNIS), FEATURE_ID=959369; exact official name and Lakes & Reservoirs type in Oswego County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon."
+        ],
+        [
+          "Plattsburgh",
+          "Populated Place",
+          "pop.place",
+          "Clinton",
+          44.6994873,
+          -73.4529124,
+          null,
+          "960698",
+          1,
+          "North Country populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=960698; exact official name and Cities & Populated Places type in Clinton County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Rochester",
+          "Populated Place",
+          "pop.place",
+          "Monroe",
+          43.1547845,
+          -77.6155568,
+          null,
+          "962684",
+          1,
+          "Genesee Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=962684; exact official name and Cities & Populated Places type in Monroe County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Saranac Lake",
+          "Populated Place",
+          "pop.place",
+          "Franklin",
+          44.329496,
+          -74.1312662,
+          null,
+          "964482",
+          1,
+          "Adirondack populated-place anchor; this is not a lake feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=964482; exact official name and Cities & Populated Places type in Franklin County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Schenectady",
+          "Populated Place",
+          "pop.place",
+          "Schenectady",
+          42.8142432,
+          -73.9395687,
+          null,
+          "964570",
+          1,
+          "Capital District populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=964570; exact official name and Cities & Populated Places type in Schenectady County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Seneca Lake",
+          "Lake",
+          "hydro.lake",
+          "Seneca",
+          42.7788172,
+          -76.9498099,
+          null,
+          "974079",
+          1,
+          "Finger Lakes hydrographic anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=974079; exact official name and Lakes & Reservoirs type in Seneca County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon."
+        ],
+        [
+          "Slide Mountain",
+          "Summit",
+          "phys.summit",
+          "Ulster",
+          41.9991499,
+          -74.3857682,
+          null,
+          "975759",
+          1,
+          "Selected the Ulster County summit FEATURE_ID 975759 from four exact-name Summit records; Essex 965414/965415 and Warren 965413 are excluded. USGS GNIS Geocoder (GNIS), FEATURE_ID=975759; exact official name and Summit type in Ulster County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a summit-area boundary or elevation contour."
+        ],
+        [
+          "Syracuse",
+          "Populated Place",
+          "pop.place",
+          "Onondaga",
+          43.0481221,
+          -76.1474244,
+          null,
+          "966966",
+          1,
+          "Central New York populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=966966; exact official name and Cities & Populated Places type in Onondaga County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Troy",
+          "Populated Place",
+          "pop.place",
+          "Rensselaer",
+          42.7284117,
+          -73.6917851,
+          null,
+          "967902",
+          1,
+          "Capital District populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=967902; exact official name and Cities & Populated Places type in Rensselaer County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Utica",
+          "Populated Place",
+          "pop.place",
+          "Oneida",
+          43.1009031,
+          -75.2326641,
+          null,
+          "968324",
+          1,
+          "Mohawk Valley populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=968324; exact official name and Cities & Populated Places type in Oneida County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Watertown",
+          "Populated Place",
+          "pop.place",
+          "Jefferson",
+          43.9747838,
+          -75.9107565,
+          null,
+          "968914",
+          1,
+          "North Country populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=968914; exact official name and Cities & Populated Places type in Jefferson County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ],
+        [
+          "Yonkers",
+          "Populated Place",
+          "pop.place",
+          "Westchester",
+          40.9312099,
+          -73.8987469,
+          null,
+          "971828",
+          1,
+          "Lower Hudson populated-place anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=971828; exact official name and Cities & Populated Places type in Westchester County. Name, type, state, county, ID, and primary-point coordinates match DomesticNames_NY_Text.zip (SHA-256 9471de762b1d6bdd7d3f44031b66663568c12a9683b44133e6ee0700f87ab7c8) and the retained Geocoder candidate response from GitHub Actions run 42482246013. Stored coordinate is the GNIS primary point; it is not a municipal boundary or address geocode."
+        ]
+      ],
+      "demRequired": false
     }
   }
 }

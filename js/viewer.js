@@ -5,11 +5,14 @@ import {
   WORDLIST,
   parsePhrase,
   mnemonicToEntropy,
-  randomMnemonic,
   entropyToMnemonic,
-  wordCountToEntropyBits,
   keyspaceDecimal,
   indicesOf,
+  layoutForWords,
+  layoutForEntropyBits,
+  STANDARD_WORDS,
+  MIN_WORDS,
+  MAX_WORDS,
 } from "./bip39.js";
 import {
   bytesToBits,
@@ -43,8 +46,15 @@ import { pathTemplate, PIPELINE } from "./hdtopo.js";
 import { greedy575 } from "./syllables.js";
 import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
 import { deriveBitcoinWallet } from "./wallet-derivatives.js";
-import { deriveCoin } from "./coins.js";
+import { searchCoins } from "./coins.js";
+import { networksForCoin, coinOnNetwork, deriveCoinNetwork } from "./coin-networks.js";
 import { entropyStatistics } from "./key-stats.js";
+import { LENSES, LENS_BY_ID, invertReport, notBytes } from "./formal.js";
+import { drawLens } from "./lens-draw.js";
+import { buildLensLayer, LENS_3D } from "./lens-3d.js";
+import { initGaloisExplorer } from "./galois-view.js";
+import { researchedNetworks } from "./coin-research.js";
+import { initCoinWorkbench } from "./coin-workbench.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -68,12 +78,32 @@ const state = {
   walletScheme: "84",
   walletRevealed: false,
   topCoins: [],
+  tokenNetworks: null,
+  topCoinEpoch: 0,
   topCoinResult: null,
   statsView: "nibbles",
   statistics: null,
+  /* layers: invert keyspace A↔B + formal-system lenses */
+  wordsB: [],
+  analysisB: null,
+  pair: null,
+  lens: "inv-subcube",
+  layers: new Set(["inv-subcube"]),
+  layerObjs: new Map(),
+  flips: null,
+  flipsKey: null,
+  anf: null,
+  anfKey: null,
+  pathPts: [],
+  actions: [],
+  timings: [],
+  seed: 12345,
 };
 
 let formGroup = null;
+let lensGroup = null;
+let galoisExplorer = null;
+let coinWorkbench = null;
 
 let scene, camera, renderer, controls;
 let wordCloud, fieldPts, pathLine, pathGlow, sliceMarker;
@@ -142,6 +172,10 @@ function initThree() {
   );
   sliceMarker.visible = false;
   scene.add(sliceMarker);
+
+  lensGroup = new THREE.Group();
+  lensGroup.name = "lensLayers";
+  scene.add(lensGroup);
 
   resize();
   addEventListener("resize", resize);
@@ -282,7 +316,7 @@ function updateLiveStats(entropy) {
 
 function updateRollNeed() {
   const src = SOURCES[state.src] || SOURCES.coin;
-  const bits = wordCountToEntropyBits(Number($("wc").value)) || 128;
+  const bits = currentLayout()?.entBits || 128;
   const need = rollsNeeded(bits, src.bits);
   const have = parseRolls($("rolls").value, state.src).length;
   $("poolBits").textContent = (have * src.bits).toFixed(1);
@@ -292,7 +326,13 @@ function updateRollNeed() {
 async function commitRolls() {
   const src = SOURCES[state.src];
   if (!src) return;
-  const bits = wordCountToEntropyBits(Number($("wc").value));
+  const layout = currentLayout();
+  const bits = layout?.entBits;
+  if (!bits) {
+    $("status").className = "status warn";
+    $("status").textContent = "Pick a valid length first";
+    return;
+  }
   const values = parseRolls($("rolls").value, state.src);
   const need = rollsNeeded(bits, src.bits);
   if (values.length < need) {
@@ -534,7 +574,10 @@ function drawParallel(indices, changed = []) {
   const xs = (i) => pad + (i / Math.max(1, n - 1)) * (w - pad * 2);
   ctx.strokeStyle = "#163246";
   ctx.lineWidth = 1;
-  for (let i = 0; i < n; i++) {
+  // One axis per word up to 64 words; beyond that thin the guides out so a
+  // 512-word phrase does not paint the whole plot the axis colour.
+  const axisStep = Math.max(1, Math.ceil(n / 64));
+  for (let i = 0; i < n; i += axisStep) {
     ctx.beginPath();
     ctx.moveTo(xs(i), 10);
     ctx.lineTo(xs(i), h - 16);
@@ -550,11 +593,14 @@ function drawParallel(indices, changed = []) {
     else ctx.lineTo(xs(i), y);
   });
   ctx.stroke();
+  // 512 words share the same width as 12: shrink the markers so the polyline
+  // stays readable instead of dissolving into one bar.
+  const dot = n > 128 ? 1.2 : n > 48 ? 2.2 : 3.5;
   indices.forEach((idx, i) => {
     const y = 10 + (1 - Math.max(0, idx) / 2047) * (h - 28);
     ctx.fillStyle = changed.includes(i) ? "#ffb020" : "#5ce1ff";
     ctx.beginPath();
-    ctx.arc(xs(i), y, 3.5, 0, Math.PI * 2);
+    ctx.arc(xs(i), y, changed.includes(i) ? Math.max(dot, 3) : dot, 0, Math.PI * 2);
     ctx.fill();
   });
 }
@@ -562,12 +608,15 @@ function drawParallel(indices, changed = []) {
 function drawFiber(csBits, observed) {
   const cv = $("fiber");
   if (!cv) return;
-  const ctx = cv.getContext("2d");
   const n = Math.max(1, 1 << (csBits || 0));
+  const cols = n <= 256 ? Math.min(n, 16) : 32;
+  const rows = Math.ceil(n / cols);
+  const cell = n <= 256 ? 14 : 4;
+  cv.width = 256;
+  cv.height = Math.max(64, rows * cell);
+  const ctx = cv.getContext("2d");
   ctx.fillStyle = "#05070c";
   ctx.fillRect(0, 0, cv.width, cv.height);
-  const cols = Math.min(n, 16);
-  const rows = Math.ceil(n / cols);
   const cw = cv.width / cols;
   const ch = cv.height / rows;
   const lit = observed && observed.length ? bitsToInt(observed) : -1;
@@ -741,6 +790,7 @@ async function previewAvalanche() {
   drawParallel(a.indices, hit);
   const names = hit.map((i) => `${i + 1}:${state.words[i]}→${words[i]}`).join(" · ");
   $("avalancheNote").textContent = `Bit ${bit} flipped. Chunks that jumped: ${names || "none (shouldn't happen)"}. Last word usually moves (checksum avalanche).`;
+  logAction("flip", a.ok);
 }
 
 function renderScale(bits) {
@@ -829,6 +879,8 @@ function renderWalletScheme() {
 }
 
 function clearTopCoin() {
+  coinWorkbench?.clearDerived();
+  state.topCoinEpoch++;
   state.topCoinResult = null;
   $("topCoinOutput").hidden = true;
   $("topCoinPath").textContent = "—";
@@ -841,73 +893,137 @@ function selectedTopCoin() {
   return state.topCoins.find((coin) => coin.id === $("topCoin").value) || null;
 }
 
-function updateTopCoinSelection() {
+function updateTopCoinNetwork() {
   clearTopCoin();
   const coin = selectedTopCoin();
+  $("deriveTopCoin").disabled = !coin?.derive;
+  $("topCoinNetworkInfo").textContent = "";
   if (!coin) {
-    $("deriveTopCoin").disabled = true;
+    coinWorkbench?.setSelection(null, null);
+    $("topCoinNote").textContent = "No matching asset in the offline snapshot.";
     return;
   }
-  $("deriveTopCoin").disabled = !coin.derive;
+  const networkId = $("topCoinNetwork").value;
+  const network = networksForCoin(state.tokenNetworks, coin).find((item) => item.id === networkId);
+  coinWorkbench?.setSelection(coin, network);
+  if (!network) {
+    $("deriveTopCoin").disabled = true;
+    $("topCoinNote").textContent = "Select an explicit network first.";
+    return;
+  }
+  const identity = [network.name, network.standard];
+  if (network.chainId !== null) identity.push(`chain ID ${network.chainId}`);
+  if (network.contract) identity.push(`Token contract (NOT receive address): ${network.contract}`, `decimals ${network.decimals}`, `fees: ${network.feeAsset}`);
+  identity.push(network.warning);
+  $("topCoinNetworkInfo").textContent = identity.join(" · ");
   $("topCoinNote").textContent = coin.derive
-    ? `#${coin.rank} ${coin.name} · ${coin.chain} · ${coin.path} · local derivation available.`
+    ? `#${coin.rank} ${coin.name} · ${coinOnNetwork(state.tokenNetworks, coin, networkId).row.path} · local receive derivation. No signing, transfers, automatic balance checks or bridging. Read-only lookups require separate consent in the investigation tab.`
     : `#${coin.rank} ${coin.name} · unsupported: ${coin.reason}`;
+}
+
+function updateTopCoinSelection() {
+  const networks = networksForCoin(state.tokenNetworks, selectedTopCoin());
+  $("topCoinNetwork").replaceChildren(...networks.map((network) => option(network.name, network.id)));
+  $("topCoinNetwork").disabled = !networks.length;
+  updateTopCoinNetwork();
+}
+
+function filterTopCoins() {
+  const select = $("topCoin");
+  const previous = select.value;
+  const found = searchCoins(state.topCoins, $("topCoinSearch").value, state.topCoins.length);
+  const matches = coinWorkbench?.orderedCoins(found) || found;
+  coinWorkbench?.renderCosts(found);
+  select.replaceChildren(...matches.map((coin) => option(
+    `#${coin.rank} · ${coin.symbol} · ${coin.name}${coin.derive ? "" : " · unsupported"}`, coin.id,
+  )));
+  if (matches.some((coin) => coin.id === previous)) select.value = previous;
+  select.disabled = !matches.length;
+  updateTopCoinSelection();
 }
 
 async function loadTopCoins() {
   try {
-    const response = await fetch("./config/coins-top500.json");
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const registry = await response.json();
-    state.topCoins = (registry.assets || []).slice(0, 50);
-    const select = $("topCoin");
-    select.replaceChildren(...state.topCoins.map((coin) => {
-      const option = document.createElement("option");
-      option.value = coin.id;
-      option.textContent = `#${coin.rank} · ${coin.symbol} · ${coin.name}${coin.derive ? "" : " · unsupported"}`;
-      return option;
-    }));
-    select.disabled = false;
-    updateTopCoinSelection();
+    const load = async (url) => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+      return response.json();
+    };
+    const [registry, networks, research] = await Promise.all([
+      load("./config/coins-top500.json"), load("./config/token-networks.json"), load("./config/chain-research.json"),
+    ]);
+    if (!Array.isArray(registry.assets) || networks.schema !== "html5-token-networks-v1" || research.schema !== "html5-chain-research-v1") throw new Error("Invalid offline asset registry");
+    state.topCoins = registry.assets;
+    state.tokenNetworks = researchedNetworks(registry.assets, networks, research);
+    coinWorkbench = initCoinWorkbench(document, {
+      coins: state.topCoins, networks: state.tokenNetworks, research,
+      getPhrase: currentStandardPhrase, onListChange: filterTopCoins,
+      onInspect: (row) => {
+        try { currentStandardPhrase(); }
+        catch (error) { $("coinInvestigationStatus").textContent = error.message; coinWorkbench?.invalidateAll(); return; }
+        $("topCoinSearch").value = ""; $("topCoinGroup").value = "all";
+        filterTopCoins(); $("topCoin").value = row.id; updateTopCoinSelection();
+        const coin = selectedTopCoin();
+        const network = networksForCoin(state.tokenNetworks, coin).find((item) => item.id === row.networkId);
+        if (coin && network) showTopCoinResult(coin, { ...row, coin, network });
+      },
+    });
+    $("topCoinSearch").disabled = false;
+    filterTopCoins();
   } catch (error) {
-    $("topCoin").replaceChildren(new Option("Registry unavailable"));
-    $("topCoinNote").textContent = `Could not load the offline coin registry: ${error.message || error}`;
+    $("topCoin").replaceChildren(option("Registry unavailable", ""));
+    $("topCoin").disabled = $("topCoinSearch").disabled = $("topCoinNetwork").disabled = $("deriveTopCoin").disabled = true;
+    $("topCoinNote").textContent = `Could not load the offline coin/network registry: ${error.message || error}`;
   }
+}
+
+function currentStandardPhrase() {
+  if (!state.analysis?.ok || !state.analysis?.layout?.standard || parsePhrase($("phrase").value).join(" ") !== state.words.join(" ")) {
+    throw new Error("Apply a checksum-valid standard BIP-39 phrase first; edited/unapplied phrases cannot be derived or queried.");
+  }
+  return { mnemonic: state.words.join(" "), passphrase: $("walletPass").value };
+}
+
+function showTopCoinResult(coin, result) {
+  state.topCoinResult = result;
+  $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.network.name} · path`;
+  $("topCoinPath").textContent = result.path;
+  $("topCoinAddress").textContent = result.address;
+  $("topCoinPublic").textContent = result.pubkeyHex;
+  $("topCoinOutput").hidden = false;
+  $("clearWallet").disabled = false;
+  coinWorkbench?.setDerived(result);
+  $("topCoinNote").textContent = `Derived a holder receive address on ${result.network.name}, not a token contract. No private material is displayed or shared here. Read-only balance lookup is separate and opt-in; one default leaf cannot establish whole-wallet holdings.`;
 }
 
 async function deriveSelectedTopCoin() {
   const coin = selectedTopCoin();
-  if (!coin?.derive) return;
-  if (!state.analysis?.ok || !state.analysis?.layout?.standard) {
-    $("topCoinNote").textContent = "Use a valid standard BIP-39 phrase first.";
-    return;
-  }
+  const networkId = $("topCoinNetwork").value;
+  if (!coin?.derive || !networkId) return;
+  let phrase;
+  try { phrase = currentStandardPhrase(); }
+  catch (error) { $("topCoinNote").textContent = error.message; return; }
+  clearTopCoin();
+  const epoch = state.topCoinEpoch;
+  const { mnemonic, passphrase } = phrase;
   const button = $("deriveTopCoin");
   button.disabled = true;
   $("topCoinNote").textContent = `Deriving ${coin.symbol} locally…`;
   await new Promise((resolve) => setTimeout(resolve, 0));
   try {
-    const result = deriveCoin(state.topCoins, state.words.join(" "), { id: coin.id }, {
-      passphrase: $("walletPass").value,
-    });
-    state.topCoinResult = result;
-    $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.family || coin.family} · path`;
-    $("topCoinPath").textContent = result.path;
-    $("topCoinAddress").textContent = result.address;
-    $("topCoinPublic").textContent = result.pubkeyHex;
-    $("topCoinOutput").hidden = false;
-    $("clearWallet").disabled = false;
-    const hostNote = coin.type === "token" ? ` Token address uses its host chain ${coin.chain}.` : "";
-    $("topCoinNote").textContent = `Derived locally from the selected path.${hostNote} No private material is displayed or shared here.`;
+    if (epoch !== state.topCoinEpoch) return;
+    const result = deriveCoinNetwork(state.topCoins, state.tokenNetworks, mnemonic, coin.id, networkId, { passphrase });
+    showTopCoinResult(coin, result);
   } catch (error) {
     clearTopCoin();
     $("topCoinNote").textContent = `Derivation failed: ${error.message || error}`;
   } finally {
-    button.disabled = !coin.derive;
+    button.disabled = !selectedTopCoin()?.derive;
   }
 }
 
 function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = false) {
+  coinWorkbench?.invalidateAll();
   state.wallet = null;
   clearTopCoin();
   if (clearPassphrase) $("walletPass").value = "";
@@ -924,8 +1040,8 @@ function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = 
 
 async function deriveWallet() {
   const standard = state.analysis?.layout?.standard;
-  if (!state.analysis?.ok || !standard) {
-    clearWallet("Use a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
+  if (!state.analysis?.ok || !standard || parsePhrase($("phrase").value).join(" ") !== state.words.join(" ")) {
+    clearWallet("Apply a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
     return;
   }
   const button = $("deriveWallet");
@@ -958,6 +1074,7 @@ function renderAnalysis(words, analysis) {
     .join("");
 
   renderSeedIdentity(words, analysis);
+  galoisExplorer?.update();
 
   const status = $("status");
   if (!analysis) {
@@ -996,13 +1113,17 @@ function renderAnalysis(words, analysis) {
 async function applyPhrase(text, { broadcast = false } = {}) {
   const words = parsePhrase(text);
   const normalized = words.join(" ");
-  if ((state.wallet || state.topCoinResult) && normalized !== state.words.join(" ")) clearWallet("Phrase changed · derive again explicitly.", true);
+  if (normalized !== state.words.join(" ")) {
+    clearWallet("Phrase changed · derive again explicitly.", true);
+  }
   $("phrase").value = normalized;
   state.words = words;
   if (!words.length) {
     state.analysis = null;
     renderAnalysis([], null);
     makePath([]);
+    state.pathPts = [];
+    updatePair();
     return;
   }
   const analysis = await mnemonicToEntropy(words);
@@ -1010,12 +1131,22 @@ async function applyPhrase(text, { broadcast = false } = {}) {
   renderAnalysis(words, analysis);
 
   const idxs = indicesOf(words).map((i) => (i < 0 ? 0 : i));
-  makePath(state.engine.phrasePath(idxs));
+  const t0 = performance.now();
+  const raw = state.engine.phrasePath(idxs);
+  pushTiming("phrasePath", performance.now() - t0);
+  state.pathPts = [];
+  for (let i = 0; i < raw.length; i += 3) state.pathPts.push([raw[i], raw[i + 1], raw[i + 2]]);
+  makePath(raw);
 
   const seed = analysis.entropy ?? new TextEncoder().encode(words.join(" "));
   const fieldN = isCoarse ? 2200 : 5000;
+  const t1 = performance.now();
   makeField(state.engine.entropyField(seed, fieldN));
   applyForm();
+  pushTiming(`entropyField ×${fieldN}`, performance.now() - t1);
+  logAction("project", analysis.ok);
+  updatePair();
+  await refreshLens();
 
   if (broadcast && window.webxdc?.sendUpdate) {
     window.webxdc.sendUpdate(
@@ -1030,8 +1161,18 @@ async function applyPhrase(text, { broadcast = false } = {}) {
 }
 
 async function generate() {
-  const n = Number($("wc").value);
-  const { words } = await randomMnemonic(n);
+  const layout = currentLayout();
+  if (!layout) {
+    $("status").className = "status bad";
+    $("status").textContent = `Pick a valid length: ${MIN_WORDS}–${MAX_WORDS} words, or entropy in whole bytes.`;
+    return;
+  }
+  const t0 = performance.now();
+  const entropy = new Uint8Array(layout.entBytes);
+  crypto.getRandomValues(entropy);
+  const words = await entropyToMnemonic(entropy);
+  pushTiming(`sample+encode ${layout.entBits}b`, performance.now() - t0);
+  logAction("sample", true);
   await applyPhrase(words.join(" "));
 }
 
@@ -1076,7 +1217,324 @@ async function shareChat() {
   await applyPhrase(text, { broadcast: true });
 }
 
+/* ------------------------------------------------------------------ *
+ * layers — invert keyspace A↔B and the formal-system lenses
+ * ------------------------------------------------------------------ */
+
+function pushTiming(label, ms) {
+  state.timings = [...state.timings.filter((t) => t.label !== label), { label, ms }].slice(-6);
+}
+
+function logAction(kind, ok) {
+  state.actions.push({ kind, at: performance.now(), ok });
+  if (state.actions.length > 80) state.actions.shift();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/** Everything a lens is allowed to look at. */
+function sessionCtx() {
+  const a = state.analysis;
+  return {
+    words: state.words,
+    indices: a?.indices || indicesOf(state.words),
+    entropy: a?.entropy,
+    layout: a?.layout || layoutForWords(state.words.length) || layoutForWords(12),
+    analysis: a,
+    path: state.pathPts,
+    flips: state.flips,
+    anf: state.anf,
+    pair: state.pair,
+    pairEntropy: state.analysisB?.entropy,
+    actions: state.actions,
+    timings: state.timings,
+    seed: state.seed,
+  };
+}
+
+/** Which key length the controls currently ask for. */
+function currentLayout() {
+  const v = $("wc").value;
+  if (v === "custom") {
+    const bits = Number($("customBits").value);
+    if (bits) return layoutForEntropyBits(bits);
+    return layoutForWords(Number($("customWords").value));
+  }
+  return layoutForWords(Number(v));
+}
+
+function describeLayout(layout) {
+  if (!layout) return `no valid layout — words must be ${MIN_WORDS}–${MAX_WORDS}, entropy a multiple of 8`;
+  const rule = layout.standard ? "BIP-39 ladder (CS = ENT/32)" : "generalised rule (largest CS ≤ 11)";
+  return `${layout.words} words × 11 = ${layout.totalBits} bits = ${layout.entBits} ENT + ${layout.csBits} CS · ${rule} · keyspace 2^${layout.entBits}`;
+}
+
+function layoutOptionLabel(layout) {
+  return `${layout.words} words · ${layout.entBits}-bit ENT · CS ${layout.csBits}`;
+}
+
+function option(text, value) {
+  const o = document.createElement("option");
+  o.value = value;
+  o.textContent = text;
+  return o;
+}
+
+/**
+ * The length menu lists every word count the layout rule closes: the five
+ * BIP-39 ladder entries, then *all* generalised counts from 25 up to MAX_WORDS
+ * (each labelled from layoutForWords, so ENT/CS can never drift from the
+ * maths), then the custom row for short counts or an exact ENT bit length.
+ * The static markup only carries the ladder and a few examples; this rebuilds
+ * the menu so the two never disagree.
+ */
+function buildWordCountMenu() {
+  const sel = $("wc");
+  const keep = sel.value || String(STANDARD_WORDS[0]);
+  const group = (label, values) => {
+    const g = document.createElement("optgroup");
+    g.label = label;
+    for (const n of values) {
+      const layout = layoutForWords(n);
+      if (layout) g.append(option(layoutOptionLabel(layout), String(n)));
+    }
+    return g;
+  };
+  const beyond = [];
+  for (let n = 25; n <= MAX_WORDS; n++) if (!STANDARD_WORDS.includes(n)) beyond.push(n);
+  const custom = document.createElement("optgroup");
+  custom.label = `custom · ${MIN_WORDS}–${MAX_WORDS} words or an ENT bit length`;
+  custom.append(option("custom words or bit length…", "custom"));
+  sel.replaceChildren(
+    group("BIP-39 standard ladder · CS = ENT/32", STANDARD_WORDS),
+    group(`generalised rule · every count 25…${MAX_WORDS} · 11n = ENT + CS`, beyond),
+    custom
+  );
+  sel.value = [...sel.options].some((o) => o.value === keep) ? keep : String(STANDARD_WORDS[0]);
+  $("customWords").min = String(MIN_WORDS);
+  $("customWords").max = String(MAX_WORDS);
+  $("customWords").placeholder = `words (${MIN_WORDS}–${MAX_WORDS})`;
+}
+
+/** Flip every entropy bit once and re-run Φ — the measured derivative. */
+async function runFlipSweep() {
+  const a = state.analysis;
+  if (!a?.entropy) return;
+  const key = hex(a.entropy);
+  if (state.flipsKey === key && state.flips) return;
+  const t0 = performance.now();
+  const baseIdx = a.indices;
+  const out = [];
+  const entBits = a.entropyBits;
+  for (let b = 0; b < entBits; b++) {
+    const words = await entropyToMnemonic(flipEntropyBit(a.entropy, b));
+    const idx = indicesOf(words);
+    let changed = 0;
+    const deltas = [];
+    for (let i = 0; i < idx.length; i++) {
+      if (idx[i] !== baseIdx[i]) {
+        changed++;
+        deltas.push([i, Math.abs(idx[i] - baseIdx[i])]);
+      }
+    }
+    out.push({ bit: b, changed, deltas, lastChanged: idx[idx.length - 1] !== baseIdx[idx.length - 1] });
+    if ((b & 63) === 63) await new Promise((r) => setTimeout(r, 0));
+  }
+  state.flips = out;
+  state.flipsKey = key;
+  pushTiming(`flip sweep ×${entBits}`, performance.now() - t0);
+}
+
+/** 16 preimages: the checksum word's LSB as a Boolean function of 4 ENT bits. */
+async function runAnfProbe() {
+  const a = state.analysis;
+  if (!a?.entropy || state.anfKey === hex(a.entropy)) return;
+  const t0 = performance.now();
+  const table = [];
+  for (let m = 0; m < 16; m++) {
+    const e = new Uint8Array(a.entropy);
+    for (let i = 0; i < 4; i++) if ((m >> i) & 1) e[0] ^= 1 << (7 - i);
+    const words = await entropyToMnemonic(e);
+    table.push((INDEX.get(words[words.length - 1]) ?? 0) & 1);
+  }
+  state.anf = table;
+  state.anfKey = hex(a.entropy);
+  pushTiming("ANF probe ×16", performance.now() - t0);
+}
+
+async function ensureLensData(lens) {
+  const needs = lens.needs || [];
+  if (needs.includes("flips")) {
+    if (!state.flips || state.flipsKey !== hex(state.analysis?.entropy ?? new Uint8Array(0))) {
+      $("lensPredict").textContent = `Measuring ∂Φ over ${state.analysis?.entropyBits ?? 0} bits…`;
+      await runFlipSweep();
+    }
+  }
+  if (needs.includes("anf")) await runAnfProbe();
+}
+
+function renderLensPanel(lens) {
+  const ctx = sessionCtx();
+  let res = null;
+  try {
+    res = lens.compute(ctx);
+  } catch (err) {
+    console.error(`lens ${lens.id} failed`, err);
+  }
+  const rows = res?.rows || [];
+  $("lensRows").innerHTML = rows
+    .map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`)
+    .join("");
+  $("lensDescribe").textContent = res?.describe ? `Describe · ${res.describe}` : "";
+  $("lensExplain").textContent = res?.explain ? `Explain · ${res.explain}` : "";
+  $("lensPredict").textContent = res
+    ? `Predict · ${res.predict}`
+    : lens.needs?.includes("pair") && !ctx.pair
+      ? "Needs a second key — load key B above."
+      : "No data yet — project a phrase first.";
+  const drew = lens.kind !== "card" && drawLens(lens.id, $("lensCanvas"), ctx);
+  $("lensCanvas").hidden = !drew;
+}
+
+function disposeGroup(g) {
+  g.traverse((o) => {
+    o.geometry?.dispose?.();
+    if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+    else o.material?.dispose?.();
+  });
+}
+
+function rebuildLensLayers() {
+  if (!lensGroup) return;
+  for (const [, g] of state.layerObjs) {
+    lensGroup.remove(g);
+    disposeGroup(g);
+  }
+  state.layerObjs.clear();
+  const ctx = sessionCtx();
+  for (const id of state.layers) {
+    if (!LENS_3D.includes(id)) continue;
+    let g = null;
+    try {
+      g = buildLensLayer(id, ctx);
+    } catch (err) {
+      console.error(`3D layer ${id} failed`, err);
+    }
+    if (g) {
+      lensGroup.add(g);
+      state.layerObjs.set(id, g);
+    }
+  }
+}
+
+async function focusLens(id) {
+  const lens = LENS_BY_ID.get(id);
+  if (!lens) return;
+  state.lens = id;
+  $("lensName").textContent = lens.name;
+  $("lensKind").textContent = lens.kind === "card" ? "card" : "lens";
+  $("lensKind").className = lens.kind === "card" ? "tag card" : "tag";
+  $("lensTag").textContent = lens.tagline;
+  await ensureLensData(lens);
+  renderLensPanel(lens);
+  renderRack();
+  rebuildLensLayers();
+}
+
+async function refreshLens() {
+  if (state.lens) await focusLens(state.lens);
+}
+
+function renderRack() {
+  const filter = $("lensFilter").value;
+  const host = $("lensRack");
+  host.innerHTML = LENSES.filter((l) => filter === "all" || l.group === filter)
+    .map((l) => {
+      const on = state.layers.has(l.id);
+      const card = l.kind === "card";
+      const st = on ? (card ? "CARD" : LENS_3D.includes(l.id) ? "3D" : "2D") : "off";
+      // Two intents, two targets: the dot toggles the layer, the name focuses the panel.
+      return `<div class="layer-row${on ? " on" : ""}${
+        state.lens === l.id ? " focus" : ""
+      }" data-lens="${l.id}">
+        <button type="button" class="dot-btn" data-act="toggle" aria-pressed="${on}"
+          title="${on ? "remove this layer from the scene" : "add this layer to the scene"}"><span class="dot"></span></button>
+        <button type="button" class="nm-btn" data-act="focus">${escapeHtml(l.name)}</button>
+        <span class="grp">${escapeHtml(l.group)}</span>
+        <span class="st${card ? " card" : ""}">${st}</span></div>`;
+    })
+    .join("");
+}
+
+function updatePair() {
+  const A = state.analysis?.entropy;
+  const B = state.analysisB?.entropy;
+  state.pair = A && B ? invertReport(A, B) : null;
+  const r = state.pair;
+  $("invHam").textContent = r ? `${r.d} / ${r.entBits}` : "—";
+  $("invSub").textContent = r ? (r.d <= 20 ? String(2 ** r.d) : `2^${r.d}`) : "—";
+  $("invComp").textContent = r ? `${r.complementAToB}` : "—";
+  $("invGeo").textContent = r ? `${r.d}!` : "—";
+  $("invertNote").textContent = !r
+    ? "S(A,B) = { A ⊕ (m ⊙ s) : s ∈ {0,1}^d }, m = A⊕B — load key B to open the invert layers."
+    : `d(A,B) = ${r.d} bits → the subcube S(A,B) holds 2^${r.d} keys = 2^${r.measureLog2} of the space. ` +
+      `d(¬A,B) = ${r.complementAToB} = ${r.entBits} − ${r.d}. ${
+        r.equalLength ? "" : "(lengths differ — shorter key left-padded with zero bytes)"
+      }`;
+  drawInvertCanvas();
+}
+
+function drawInvertCanvas() {
+  const mode = state.layers.has("inv-geodesic")
+    ? "inv-geodesic"
+    : state.layers.has("inv-complement")
+      ? "inv-complement"
+      : state.layers.has("inv-shell")
+        ? "inv-shell"
+        : "inv-subcube";
+  drawLens(mode, $("invertPlot"), sessionCtx());
+}
+
+async function applyPhraseB(text) {
+  const words = parsePhrase(text);
+  $("phraseB").value = words.join(" ");
+  state.wordsB = words;
+  if (!words.length) {
+    state.analysisB = null;
+    $("statusB").className = "status warn";
+    $("statusB").textContent = "No key B — the invert layers need two keys.";
+    updatePair();
+    return;
+  }
+  const analysis = await mnemonicToEntropy(words);
+  state.analysisB = analysis;
+  $("statusB").className = `status ${analysis.ok ? "ok" : "bad"}`;
+  $("statusB").textContent = `B · ${analysis.reason}`;
+  logAction("load-b", analysis.ok);
+  updatePair();
+  await refreshLens();
+}
+
+async function sampleB() {
+  const layout = state.analysis?.layout || currentLayout() || layoutForWords(12);
+  const entropy = new Uint8Array(layout.entBytes);
+  crypto.getRandomValues(entropy);
+  const words = await entropyToMnemonic(entropy);
+  await applyPhraseB(words.join(" "));
+}
+
+/** B = the well-formed phrase whose entropy is the bitwise complement of A's. */
+async function bFromNotA() {
+  const A = state.analysis?.entropy;
+  if (!A) return;
+  const words = await entropyToMnemonic(notBytes(A));
+  await applyPhraseB(words.join(" "));
+}
+
 async function main() {
+  galoisExplorer = initGaloisExplorer(document, () => state.analysis?.ok ? state.analysis.entropy : null);
   initThree();
   startTicker();
   bindSheet();
@@ -1092,7 +1550,8 @@ async function main() {
     state.form = sel.value;
     applyForm();
   };
-  $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
+  buildWordCountMenu();
+  $("wcNote").textContent = describeLayout(currentLayout());
 
   state.engine = await loadEngine("./wasm/entropy.wasm");
   state.scatterCache = state.engine.scatterWords(2048);
@@ -1167,8 +1626,13 @@ async function main() {
   $("clearWallet").onclick = () => clearWallet("Wallet derivatives and passphrase cleared.", true);
   $("deriveTopCoin").onclick = deriveSelectedTopCoin;
   $("topCoin").addEventListener("change", updateTopCoinSelection);
+  $("topCoinNetwork").addEventListener("change", updateTopCoinNetwork);
+  $("topCoinSearch").addEventListener("input", filterTopCoins);
   $("walletPass").addEventListener("input", () => {
-    if (state.wallet || state.topCoinResult) clearWallet("Passphrase changed · derive again explicitly.");
+    clearWallet("Passphrase changed · derive again explicitly.");
+  });
+  $("phrase").addEventListener("input", () => {
+    clearWallet("Phrase edited · apply it, then derive again explicitly.");
   });
   $("walletScheme").addEventListener("click", (event) => {
     const button = event.target.closest("[data-wallet-scheme]");
@@ -1177,10 +1641,50 @@ async function main() {
     [...$("walletScheme").querySelectorAll(".seg-btn")].forEach((item) => item.classList.toggle("on", item === button));
     renderWalletScheme();
   });
-  $("wc").onchange = () => {
-    $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
+  const syncWc = () => {
+    $("customRow").hidden = $("wc").value !== "custom";
+    const layout = currentLayout();
+    $("wcNote").textContent = describeLayout(layout);
     updateRollNeed();
   };
+  $("wc").onchange = syncWc;
+  $("customWords").addEventListener("input", syncWc);
+  $("customBits").addEventListener("input", syncWc);
+  syncWc();
+
+  /* layers: invert keyspace + formal-system lenses */
+  $("genB").onclick = sampleB;
+  $("notA").onclick = bFromNotA;
+  $("phraseB").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      applyPhraseB($("phraseB").value);
+      $("phraseB").blur();
+    }
+  });
+  $("lensFilter").onchange = renderRack;
+  $("lensRack").addEventListener("click", (e) => {
+    const row = e.target.closest("[data-lens]");
+    if (!row) return;
+    const id = row.dataset.lens;
+    const act = e.target.closest("[data-act]")?.dataset.act ?? "focus";
+    if (act === "toggle") {
+      // dot: add/remove the layer. Turning one on also opens its panel.
+      if (state.layers.has(id)) state.layers.delete(id);
+      else {
+        state.layers.add(id);
+        focusLens(id);
+      }
+      renderRack();
+      rebuildLensLayers();
+      drawInvertCanvas();
+      return;
+    }
+    // name (or anywhere else on the row): focus the readout, leave layers alone
+    focusLens(id);
+  });
+  renderRack();
+  focusLens(state.lens);
   $("phrase").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

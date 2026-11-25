@@ -5,8 +5,9 @@
  * No apt, no conda, no Chrome CDN: the browser binary, the three NSS libraries
  * the sandbox lacks and SwiftShader (so WebGL works with no GPU) all come out of
  * the @sparticuz/chromium npm tarball. Everything here skips itself cleanly when
- * those two packages are absent, because the suites that use it must stay
- * runnable on a bare checkout.
+ * those two packages are absent for direct optional-suite invocation. The
+ * `npm run test:browser` entry point preflights them and treats their absence
+ * as a configuration error; `npm ci` installs the pinned root dev dependencies.
  */
 import { brotliDecompressSync, inflateSync } from "node:zlib";
 import { execSync } from "node:child_process";
@@ -74,11 +75,12 @@ export function serve(root = ROOT) {
   return new Promise((done) => server.listen(0, "127.0.0.1", () => done({ server, port: server.address().port })));
 }
 
-export async function withBrowser(deps, fn) {
+export async function withBrowser(deps, fn, { protocolTimeout } = {}) {
   const libDir = unpackLibs();
   const browser = await deps.puppeteer.launch({
     executablePath: await deps.chromium.executablePath(),
     headless: "new",
+    ...(protocolTimeout === undefined ? {} : { protocolTimeout }),
     env: { ...process.env, LD_LIBRARY_PATH: `${libDir}:${process.env.LD_LIBRARY_PATH ?? ""}` },
     args: [
       "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu-sandbox",

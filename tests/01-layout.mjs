@@ -70,6 +70,46 @@ console.log("\n[4] unknown words and odd bit lengths");
   s.ok("56-bit round trip", (await B.mnemonicToEntropy(w)).ok);
 }
 
+console.log("\n[6] the whole range 2…512: no gaps, one layout each, both directions agree");
+{
+  s.eq("bounds exported", [B.MIN_WORDS, B.MAX_WORDS], [2, 512]);
+  s.eq("standard ladder exported", B.STANDARD_WORDS, [12, 15, 18, 21, 24]);
+  const all = B.allLayouts();
+  s.eq("allLayouts() covers every count", all.length, 511);
+  let closed = 0, aligned = 0, csRange = 0, roundTrip = 0, standard = [];
+  for (const L of all) {
+    if (11 * L.words === L.entBits + L.csBits) closed++;
+    if (L.entBits % 8 === 0 && L.entBytes === L.entBits / 8) aligned++;
+    if (L.csBits >= 1 && L.csBits <= 11) csRange++;
+    if (B.layoutForEntropyBits(L.entBits)?.words === L.words) roundTrip++;
+    if (L.standard) standard.push(L.words);
+  }
+  s.eq("11n = ENT + CS for all 511", closed, 511);
+  s.eq("ENT byte aligned for all 511", aligned, 511);
+  s.eq("1 ≤ CS ≤ 11 for all 511", csRange, 511);
+  s.eq("layoutForEntropyBits inverts layoutForWords for all 511", roundTrip, 511);
+  s.eq("`standard` is exactly the BIP-39 ladder", standard, [12, 15, 18, 21, 24]);
+  const top = B.layoutForWords(512);
+  s.eq("ceiling: 512 words", [top.entBits, top.csBits, top.entBytes, top.totalBits], [5624, 8, 703, 5632]);
+  s.ok("513 words and ENT 5632 have no layout", B.layoutForWords(513) === null && B.layoutForEntropyBits(5632) === null);
+  s.ok("above-ladder counts are never called standard", [25, 26, 48, 100, 256, 512].every((n) => B.layoutForWords(n).standard === false));
+  // "largest c ≤ 11 that closes 11n" never drops below 4 bits: r = 11n mod 8
+  // takes r + 8 when that fits under 11, so CS ranges over exactly 4…11.
+  const csSeen = [...new Set(all.map((L) => L.csBits))].sort((a, b) => a - b);
+  s.eq("checksum widths that occur", csSeen, [4, 5, 6, 7, 8, 9, 10, 11]);
+  const cs11 = all.find((L) => L.words > 24 && L.csBits === 11);
+  s.eq("first CS=11 count above the ladder", cs11.words, 25);
+  s.eq("CS period is 8 words", all.filter((L) => L.csBits === 11).map((L) => L.words).slice(0, 4), [9, 17, 25, 33]);
+  for (const n of [26, 100, 512]) {
+    const { words, entropy } = await B.randomMnemonic(n);
+    const back = await B.mnemonicToEntropy(words);
+    s.ok(`randomMnemonic(${n}) round trips`, back.ok && Buffer.from(back.entropy).equals(Buffer.from(entropy)) && back.layout.standard === false, back.reason);
+  }
+  let threw = "";
+  try { await B.randomMnemonic(513); } catch (e) { threw = e.message; }
+  s.ok("randomMnemonic(513) names the range", /2…512/.test(threw), threw);
+}
+
 console.log("\n[5] checksum strength: a random 12-word phrase validates at ~2^-CS");
 {
   const trials = 400;

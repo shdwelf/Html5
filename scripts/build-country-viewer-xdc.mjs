@@ -2,9 +2,9 @@
  * Package the PC-Globe-style country viewer as a Webxdc bundle.
  *
  * A .xdc is a deflated ZIP rooted at index.html + manifest.toml. This stages
- * the root-level authoring sources (country-viewer.html, js/country-*.js)
- * into public/apps/country-viewer/ as a flat offline bundle, then zips it
- * deterministically — same flow as build-cheyenne-xdc.mjs.
+ * the Country Viewer plus its limited city/island offline Gazetteer engine/data into
+ * public/apps/country-viewer/ as a flat bundle, then zips it deterministically
+ * — same flow as build-cheyenne-xdc.mjs.
  *
  *   node scripts/build-country-viewer-xdc.mjs
  */
@@ -21,12 +21,15 @@ const appDir = path.join(root, "public", "apps", "country-viewer");
 const outName = "country-viewer.xdc";
 const mtime = new Date("2026-10-02T00:00:00.000Z"); // reproducible builds
 
-const manifest = `name = "Country Viewer - PC-Globe style (Factbook)"
+const manifest = `name = "Country Viewer - Country Outlines + Factbook"
 source_code_url = "https://github.com/shdwelf/Html5"
+description = "Offline country and area profiles with reviewed ISO name/code and IANA ccTLD search crosswalks, Natural Earth outlines, regional map views, and a limited city/island place-name index."
 `;
 
 await rm(appDir, { recursive: true, force: true });
 await mkdir(path.join(appDir, "js"), { recursive: true });
+await mkdir(path.join(appDir, "vendor", "world"), { recursive: true });
+await mkdir(path.join(appDir, "resources", "country-viewer", "licenses"), { recursive: true });
 
 let html = await readFile(path.join(root, "country-viewer.html"), "utf8");
 html = html.replace(
@@ -34,8 +37,29 @@ html = html.replace(
   '<script src="./webxdc.js"></script>\n  <script type="module" src="./js/country-viewer.js"></script>',
 );
 await writeFile(path.join(appDir, "index.html"), html);
-for (const f of ["country-viewer.js", "country-data.js"]) {
+for (const f of [
+  "country-viewer.js", "country-viewer-islands.js", "country-viewer-search.js", "country-iso-crosswalk.js", "country-iana-cctlds.js", "country-map.js", "country-data.js", "city-gazetteer.js", "city-gazetteer-data.js",
+  "city-gazetteer-data-atlanta.js", "city-gazetteer-data-buffalo.js",
+  "city-gazetteer-data-kansascity.js", "city-gazetteer-data-lawrence.js",
+  "city-gazetteer-data-toronto.js", "city-gazetteer-data-polynesia.js",
+]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
+}
+for (const f of ["countries.geo.json", "README.md", "UNLICENSE"]) {
+  await copyFile(path.join(root, "vendor", "world", f), path.join(appDir, "vendor", "world", f));
+}
+for (const f of [
+  "bora-bora-place-register-2026-11-09.json",
+  "country-iso-crosswalk-register-2026-11-09.json",
+  "country-iana-cctld-register-2026-11-09.json",
+  "licenses/ODbL-1.0.md",
+  "licenses/MIT-i18n-iso-countries.txt",
+  "licenses/MIT-jehiah-generic-tlds.txt",
+]) {
+  await copyFile(
+    path.join(root, "resources", "country-viewer", f),
+    path.join(appDir, "resources", "country-viewer", f),
+  );
 }
 
 // Simulator shim: Delta Chat replaces webxdc.js at runtime, but shipping one

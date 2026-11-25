@@ -82,3 +82,5 @@ await packageAppXdc("kryptos-vrml", "kryptos-vrml.xdc");
 await packageAppXdc("sanborn-suite", "sanborn-suite.xdc");
 // The same complete suite under the purpose-revealing distribution name.
 await packageAppXdc("sanborn-suite", "sanborn-installations.xdc");
+await packageAppXdc("helios-observatory", "helios-observatory.xdc");
+await packageAppXdc("prime-viewer", "prime-viewer.xdc");

@@ -4,10 +4,37 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Country / planet viewer and research continuation (2026-11-15)
+
+- [Island/place coverage update](research/island-place-coverage-2026-11-15.md) — Tasmania and named island examples, coordinate/source caveats, and GNIS geographic scope.
+- [Black Sheep Squadron / Boyington continuation](research/black-sheep-squadron-boyington-2026-11-15.md) — source-led VMF-214 chronology, kill-count distinctions, and remaining TV-production research.
+- [4DWM × FHE squared-error experiment](research/4dwm-fhe-squared-error-2026-11-15.md) — encrypted exact-integer SSE prototype, command, tested bounds, and node-seal/Microsoft SEAL security caveat.
+
 *Conventions:* deep dives carry provenance inline (F3 — external hosts are
 link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
+
+## Current OpenPGP continuation · bounded owner-authorized wordlist recovery
+
+- [Local wordlist recovery and engine investigation](openpgp-wordlist-recovery-2026-11-17.md) — explicit ranked/typo preview, exact all-secret-packet validation, stoppable local worker, strict limits and non-persistence; SearXNG discovery kept separate from source-reviewed cryptographic engines. Not unbounded cracking, owner-key recovery or device/GUI certification.
+- [Pinned engine/source observations](research/openpgp-recovery-engines-2026-11-17.json) — GnuPG/GPGME, Sequoia, RNP, rPGP, Bouncy Castle and the existing Go harness; source claims distinguished from executed controls. No new runtime dependency or metasearch integration.
+
+## Round 86 · independent native OpenPGP v6
+
+- [Independent native v6 interoperability](openpgp-v6-native-interop-2026-11-17.md) — four actual mandatory Go/OpenPGP.js two-way, full-fingerprint, strictness and tamper controls; pinned test-only dependencies, per-direction OCB/GCM assertions and local/CI SDK distinction. Not owner recovery or mobile/GUI certification.
+- [Round 86 execution and remaining gates](backlog-execution-round-86-2026-11-17.md) — intact PUBLIC attachment inspection without a recipient change, unchanged backups, fail-closed native CI and remaining delivery/device/token-evidence gates.
+
+## Round 83 · host fees and local OpenPGP keyrings
+
+- [43 remaining host fee-model reviews](chain-fee-model-review-round-83-2026-11-17.md) — primary evidence, pinned source manifest, Cronos POS/EVM separation and TFUEL fee-asset correction. No live prices, activation or historical-network liveness certification.
+- [Local OpenPGP keyrings: source review and implementation](openpgp-keyring-source-review-2026-11-17.md) — nine pinned upstreams, conservative RSA key generation, public-only import/export, protected backups, independent controls and explicit Android/iOS/Kleopatra test gates; Photon and Proton VPN kept separate.
+- [Round 83 execution and validation](backlog-execution-round-83-2026-11-17.md).
+- [Coin fees, network evidence and opt-in wallet investigation](coin-fees-and-investigation-2026-11-17.md) — local default leaves, explicit read-only consent, expected-chain guard and the existing NFT/ERC-20 metadata viewer.
+- [All 500 asset coverage rows and explicit research gaps](coin-research-inventory-2026-11-17.md) — 58 host profiles, 58 source-reviewed fee models / 0 pending; not 500 independently verified token contracts.
+- [FHE Masked Aggregation v2](cyberchef-fhe-masked-aggregation-2026-11-17.md) — distinct plaintext Kitchen oracle plus separate actual finite-depth BFV encrypted-mask companion; no bootstrapping/paper speedup claim.
+- [Round 81 execution and remaining gates](backlog-execution-round-81-2026-11-17.md).
+- [Round 82 — NEAR transaction-fee evidence](backlog-execution-round-82-2026-11-15.md) — one host fee model reviewed from primary documentation; no live quote or default estimate.
 
 ## MIME quick reference
 
@@ -77,21 +104,72 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-51-2026-10-25.md](backlog-execution-round-51-2026-10-25.md) — backlog execution round 51 2026 10 25 (KeyViewer · PR #159)
 - [backlog-execution-round-54-2026-10-25.md](backlog-execution-round-54-2026-10-25.md) — backlog execution round 54 2026 10 25 (subsurface fleet proof · S4 closed · Georgia repair · renumbered from 52 after PR #162 claimed the slot)
 - [backlog-execution-round-53-2026-10-25.md](backlog-execution-round-53-2026-10-25.md) — backlog execution round 53 2026 10 25 (Drive recipe investigation · spy-manual challenge cookbook · Playfair decrypt fix)
+- [backlog-execution-round-56-2026-11-04.md](backlog-execution-round-56-2026-11-04.md) — backlog execution round 56 2026 11 04 (MLS metasearch · tax-lien/e-file software review · remaining gates)
+- [backlog-execution-round-57-2026-11-04.md](backlog-execution-round-57-2026-11-04.md) — backlog execution round 57 2026 11 04 (Zangi sources · EFF review · ACE Huffman experiment)
+- [backlog-execution-round-58-2026-11-04.md](backlog-execution-round-58-2026-11-04.md) — backlog execution round 58 2026 11 04 (XAPK transfer attempt · cellular-automata cipher triage · merge gate)
+- [backlog-execution-round-59-2026-11-04.md](backlog-execution-round-59-2026-11-04.md) — backlog execution round 59 2026 11 04 (Zangi package static check · CA target gate)
+- [backlog-execution-round-60-2026-11-05.md](backlog-execution-round-60-2026-11-05.md) — backlog execution round 60 2026 11 05 (Zangi DEX review · algorithm engineering · PGPonyCore recipe audit)
+- [backlog-execution-round-61-2026-11-05.md](backlog-execution-round-61-2026-11-05.md) — backlog execution round 61 2026 11 05 (CA glider and signal-stream pattern detection)
+- [backlog-execution-round-62-2026-11-05.md](backlog-execution-round-62-2026-11-05.md) — browser OpenPGP Workbench v1 and CyberChef MDC correction
+- [backlog-execution-round-63-2026-11-05.md](backlog-execution-round-63-2026-11-05.md) — Android/QEMU, XPort Pro, SDR, and backlog research
+- [backlog-execution-round-64-2026-11-07.md](backlog-execution-round-64-2026-11-07.md) — Zangi VPN tunneling, NanoProxy comparison, and authorized Z-Library/IPFS research
+- [backlog-execution-round-65-2026-11-07.md](backlog-execution-round-65-2026-11-07.md) — ACE distance-history fix, CyberChef ElGamal demo, keyservers, AGE/PGPony, and WideBand review
+- [backlog-execution-round-66-2026-11-11.md](backlog-execution-round-66-2026-11-11.md) — CyberChef munitionsTshirt, Perl cookbook, v2 inactivation decoder, 3D lighting sync
+- [backlog-execution-round-67-2026-11-11.md](backlog-execution-round-67-2026-11-11.md) — ARPANET 1969/1971/1977 time-slice invariants, comms history layer, and backlog audit
+- [google-drive-html5-xdc-integration-research-2026-11-11.md](google-drive-html5-xdc-integration-research-2026-11-11.md) — Google Drive 15 HTML files and 53 XDC packages triage, deduplication, and offline integration
+- [backlog-execution-round-68-2026-11-11.md](backlog-execution-round-68-2026-11-11.md) — Backlog execution round 68: Drive archive consolidation, offline viewer tier validation, and test pass
+- [backlog-execution-round-69-2026-11-11.md](backlog-execution-round-69-2026-11-11.md) — Backlog execution round 69: Open backlog audit, stream status reconciliation, and suite verification
+- [backlog-execution-round-70-2026-11-11.md](backlog-execution-round-70-2026-11-11.md) — Backlog execution round 70: Planet Viewer DEM zoom and OrbitControls inspection tuning
+- [backlog-execution-round-71-2026-11-12.md](backlog-execution-round-71-2026-11-12.md) — Backlog execution round 71: Offline viewer index verification and incident adapters audit
+- [backlog-execution-round-72-2026-11-12.md](backlog-execution-round-72-2026-11-12.md) — Backlog execution round 72: HTML5 offline viewer and XDC viewer integration verification
+- [backlog-execution-round-73-2026-11-13.md](backlog-execution-round-73-2026-11-13.md) — Backlog execution round 73: backlog resume, Linear notes sync, and Drive PR packet (PR #215)
+- [backlog-execution-round-74-2026-11-13.md](backlog-execution-round-74-2026-11-13.md) — Backlog execution round 74: S5 offline incident snapshot viewer wiring (PR #215)
+- [backlog-execution-round-75-2026-11-15.md](backlog-execution-round-75-2026-11-15.md) — Backlog execution round 75: Keyspace Viewer word counts 25…512 (layered page re-merged, menu lists every count, suites 05/07 gating again) and the OnlyKey web-app investigation
+- [backlog-execution-round-76-2026-11-15.md](backlog-execution-round-76-2026-11-15.md) — LCS35 alternate source, BFV/TOTP boundaries, GitHub TOTP code review, FindCrypt/recipe cross-check, GRASP decoding record, wiki server catalog, and Keyspace Viewer status
+- [backlog-execution-round-77-2026-11-15.md](backlog-execution-round-77-2026-11-15.md) — seven-design CAD registry/test alignment, EAGLE net-class and connectivity corrections, generated coins freshness, and full-suite verification
+- [backlog-execution-round-78-2026-11-16.md](backlog-execution-round-78-2026-11-16.md) — restore the pinned TiddlyWiki dependency, build the separate workspace, back up portable outputs, and review conversion warnings
+- [backlog-execution-round-79-2026-11-17.md](backlog-execution-round-79-2026-11-17.md) — bind Concrete composability in the signed circuit contract, add a dependency-free metadata check, and verify real encrypted evaluation and provenance rejection
+- [backlog-execution-round-80-2026-11-17.md](backlog-execution-round-80-2026-11-17.md) — selectable Galois fields, full offline coin selector and USDT BEP-20/TRC-20 identities, deterministic registry generation, 2600 software builds and passive SnapSafe recipes
+- [backlog-comprehensive-investigation-and-synthesis-2026-11-11.md](backlog-comprehensive-investigation-and-synthesis-2026-11-11.md) — Comprehensive backlog deep dive, technical synthesis, and stream roadmap
+
+- [backlog-execution-round-85-2026-11-17.md](backlog-execution-round-85-2026-11-17.md) — Android local saves, sound-app restoration, complete 96-app browser catalog, source audit and research-retention gates (merged PR #238)
+- [backlog-execution-round-86-2026-11-17.md](backlog-execution-round-86-2026-11-17.md) — independent native v6 synthetic interoperability, pinned Go reader/mandatory CI and unchanged recipient/recovery boundaries
 
 ## Research deep dives (the “ghirdra” line)
 
+- [2600-public-software-review-2026-11-17.md](2600-public-software-review-2026-11-17.md) — sampled historical code inventory and 31-byte NASM build, SnapSafe SECV source/recipe review, Neuron Edition simulation boundary, and HOPE_16 follow-ups
 - [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
+- [algorithm-engineering-guidance-2026-11-05.md](algorithm-engineering-guidance-2026-11-05.md) — algorithm-engineering checklist informed by public Springer references
+- [age-pgpony-local-recipe-review-2026-11-07.md](age-pgpony-local-recipe-review-2026-11-07.md) — AGE v1.3.2/spec capability check, PGPony source scope, and local recipe-registry audit
+- [cellular-automata-cipher-triage-2026-11-04.md](cellular-automata-cipher-triage-2026-11-04.md) — cellular-automata cipher triage 2026 11 04
+- [cellular-automata-signal-pattern-detection-2026-11-05.md](cellular-automata-signal-pattern-detection-2026-11-05.md) — checking known CA gliders and signal streams
+- [eff-secure-messaging-source-check-2026-11-04.md](eff-secure-messaging-source-check-2026-11-04.md) — EFF secure-messaging source check 2026 11 04
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
 - [john-ghidra-diablo-research.md](john-ghidra-diablo-research.md) — john ghidra diablo research
 - [mime-types-deep-dive-2026-10-21.md](mime-types-deep-dive-2026-10-21.md) — mime types deep dive 2026 10 21
+- [mls-metasearch-and-reso-access-review-2026-11-04.md](mls-metasearch-and-reso-access-review-2026-11-04.md) — real-estate MLS metasearch and authorized RESO access review
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
+- [pgponycore-cyberchef-source-review-2026-11-05.md](pgponycore-cyberchef-source-review-2026-11-05.md) — PGPonyCore source review and CyberChef recipe audit
+- [html5-offline-launcher-v1-implementation-2026-11-05.md](html5-offline-launcher-v1-implementation-2026-11-05.md) — Android offline WebView/catalog launcher for all 89 HTML entrypoints
+- [pr-184-artifact-and-drive-retrieval-guide-2026-11-07.md](pr-184-artifact-and-drive-retrieval-guide-2026-11-07.md) — PR #184 Android offline launcher APK artifact provenance and Drive backup guide
+- [openpgp-workbench-v1-implementation-2026-11-05.md](openpgp-workbench-v1-implementation-2026-11-05.md) — browser OpenPGP Workbench v1 implementation and verification
+- [public-repository-privacy-audit-2026-11-04.md](public-repository-privacy-audit-2026-11-04.md) — public-safe Drive-reference and Wiki-bundle privacy audit
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21
 - [snopes-game-show-forensics-2026-10-21.md](snopes-game-show-forensics-2026-10-21.md) — snopes game show forensics 2026 10 21
+- [zangi-public-source-review-2026-11-04.md](zangi-public-source-review-2026-11-04.md) — Zangi public-source review 2026 11 04
+- [wideband-nmu-public-evidence-2026-11-07.md](wideband-nmu-public-evidence-2026-11-07.md) — public nMU product sources, undated resume training, and non-transferable Ethernet claims
+- [zangi-xapk-static-inspection-2026-11-04.md](zangi-xapk-static-inspection-2026-11-04.md) — Zangi XAPK static inspection 2026 11 04
+- [zangi-dex-static-inspection-2026-11-05.md](zangi-dex-static-inspection-2026-11-05.md) — Zangi DEX and native static-inspection follow-up 2026 11 05
 
 ## Software protection & disassembly
 
+- [ace-delta-history-crc-fix-2026-11-07.md](ace-delta-history-crc-fix-2026-11-07.md) — representative ACE Delta-mode CRC mismatch, distance-history diagnosis, and regression proof
+- [ace-huffman-delta-luby-raptor-research-2026-11-07.md](ace-huffman-delta-luby-raptor-research-2026-11-07.md) — ACE Huffman delta, Luby transform, Raptor recovery codes, and microblog BBS filesystem deep dive
+- [offline-viewer-and-3d-pipeline-investigation-2026-11-11.md](offline-viewer-and-3d-pipeline-investigation-2026-11-11.md) — Offline viewer, 3D VRML pipeline, DEM stitching, and cryptographic hardware backlog investigation
+- [cryptofountain-cookbook-and-perl-guide-2026-11-07.md](cryptofountain-cookbook-and-perl-guide-2026-11-07.md) — CryptoFountain BBS cookbook, Perl porting guide, and ITAR munitions T-shirt free speech analysis
+- [ace-huffman-two-queue-experiment-2026-11-04.md](ace-huffman-two-queue-experiment-2026-11-04.md) — ACE Huffman two-queue experiment 2026 11 04
 - [arj-garble-format-notes.md](arj-garble-format-notes.md) — arj garble format notes
 - [arj-lha-ace-password-notes-2026-10-21.md](arj-lha-ace-password-notes-2026-10-21.md) — arj lha ace password notes 2026 10 21
 - [dos-game-disassembly.md](dos-game-disassembly.md) — dos game disassembly
@@ -101,7 +179,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [ghidra-dos-disasm-plan.md](ghidra-dos-disasm-plan.md) — ghidra dos disasm plan
 - [ghidra-headless-benign-sample-methodology.md](ghidra-headless-benign-sample-methodology.md) — ghidra headless benign sample methodology
 - [jcreator-jdk-ghidra.md](jcreator-jdk-ghidra.md) — jcreator jdk ghidra
+- [sneakers-headline-harry-layout-parity-2026-10-21.md](sneakers-headline-harry-layout-parity-2026-10-21.md) — sneakers headline harry layout parity audit
 - [sneakers-original-ghidra-wasm-2026-10-18.md](sneakers-original-ghidra-wasm-2026-10-18.md) — sneakers original ghidra wasm 2026 10 18
+- [sneakers-press-kit-investigation-2026-11-11.md](sneakers-press-kit-investigation-2026-11-11.md) — sneakers 1992 electronic press kit archival and web investigation
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis
 - [spycraft-research.md](spycraft-research.md) — spycraft research
@@ -115,7 +195,9 @@ IANA media types (RFC 6838 / BCP 13).
 - [bbs-abandonware-coldfire-port.md](bbs-abandonware-coldfire-port.md) — bbs abandonware coldfire port
 - [bbs-viewer-and-netcat-capture.md](bbs-viewer-and-netcat-capture.md) — bbs viewer and netcat capture
 - [dss-casefiles-riddle-warrick.md](dss-casefiles-riddle-warrick.md) — dss casefiles riddle warrick
+- [fravia-searchlores-deep-dive-2026-11-01.md](fravia-searchlores-deep-dive-2026-11-01.md) — fravia searchlores deep dive 2026 11 01
 - [fna102b-xena-preservation.md](fna102b-xena-preservation.md) — fna102b xena preservation
+- [goddard-moka-exchange-research-2026-11-01.md](goddard-moka-exchange-research-2026-11-01.md) — Goddard–Moka exchange research status, 2026-11-01
 - [java-bbs-coldfire-survey.md](java-bbs-coldfire-survey.md) — java bbs coldfire survey
 - [sanborn-kryptos-webxdc.md](sanborn-kryptos-webxdc.md) — sanborn kryptos webxdc
 - [xport-bbs-deployment.md](xport-bbs-deployment.md) — xport bbs deployment
@@ -124,9 +206,15 @@ IANA media types (RFC 6838 / BCP 13).
 
 - [aes-nacl-recipe-checks-2026-10-21.md](aes-nacl-recipe-checks-2026-10-21.md) — aes nacl recipe checks 2026 10 21
 - [bip-standards.md](bip-standards.md) — bip standards
+- [fhe-randomization-stream-audit-2026-11-17.md](fhe-randomization-stream-audit-2026-11-17.md) — randomized FHE encryption, known-input regression, evaluation-key provenance, and LT transport boundary
+- [cyberchef-fhe-study-lab-2026-11-17.md](cyberchef-fhe-study-lab-2026-11-17.md) — public teaching boundaries and Drive-informed FHE architecture notes
+- [cyberchef-fhe-architecture-profile-2026-11-17.md](cyberchef-fhe-architecture-profile-2026-11-17.md) — second Drive-informed FHE research edition and bounded manual CKKS profile recipe
+- [openpgp-keyserver-working-list-2026-11-07.md](openpgp-keyserver-working-list-2026-11-07.md) — direct keyserver snapshots, protocol/consent/sync comparison, and dated evidence trail
+- [onlykey-webapp-releases-2026-11-15.md](onlykey-webapp-releases-2026-11-15.md) — OnlyKey web apps: `apps.crp.to` (Webcrypt 3.0.0 + archived beta7/Beta8, firmware ≤ v3.0.4) vs `apps.onlykey.io` (4.0.0, PQC age/PGP, firmware > v3.0.4), how `/app/past_releases?version=beta7` redirects, and the firmware-version router
 
 ## Silicon, RTL & hardware intel
 
+- [24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07.md](24v-rj11-homeplug-greenphy-i2plctr-2-review-2026-11-07.md) — public I2PLCTR-2 data and unresolved 24 V DC coupling gates
 - [cheyenne.md](cheyenne.md) — cheyenne
 - [ingress-intel-connector-research-2026-10-07.md](ingress-intel-connector-research-2026-10-07.md) — ingress intel connector research 2026 10 07
 - [ingress-intel-map-viewer.md](ingress-intel-map-viewer.md) — ingress intel map viewer
@@ -141,9 +229,13 @@ IANA media types (RFC 6838 / BCP 13).
 - [cyberchef-aztec-cuecat.md](cyberchef-aztec-cuecat.md) — cyberchef aztec cuecat
 - [cyberchef-cipher-machine-recipe-checks-2026-10-05.md](cyberchef-cipher-machine-recipe-checks-2026-10-05.md) — cyberchef cipher machine recipe checks 2026 10 05
 - [cyberchef-classical-cipher-deep-dive.md](cyberchef-classical-cipher-deep-dive.md) — cyberchef classical cipher deep dive
+- [cyberchef-elgamal-multiplicative-demo-2026-11-07.md](cyberchef-elgamal-multiplicative-demo-2026-11-07.md) — CyberChef multiplicative ElGamal demo, independent toy vector, and not-FHE scope
+- [cyberchef-fhe-study-lab-2026-11-17.md](cyberchef-fhe-study-lab-2026-11-17.md) — Drive-sourced FHE architecture research and the new plaintext-only F17 / byte-pair / Lancelot study recipes
 - [cyberchef-gb-rom-2026-10-21.md](cyberchef-gb-rom-2026-10-21.md) — cyberchef gb rom 2026 10 21
 - [cyberchef-matrix-deep-dive.md](cyberchef-matrix-deep-dive.md) — cyberchef matrix deep dive
 - [cyberchef-modern-cryptography-research-2026-09-29.md](cyberchef-modern-cryptography-research-2026-09-29.md) — cyberchef modern cryptography research 2026 09 29
+- [cyberchef-mystery-book-source-audit-2026-11-02.md](cyberchef-mystery-book-source-audit-2026-11-02.md) — initial Hardy Boys and Nancy Drew cipher-source screen for CyberChef Kitchen
+- [cyberchef-mystery-recipes-follow-up-2026-11-03.md](cyberchef-mystery-recipes-follow-up-2026-11-03.md) — expanded Drive review and source-informed Sherlock Holmes/Nancy Drew recipe presets
 - [cyberchef-recipe-comparison-2026-10-21.md](cyberchef-recipe-comparison-2026-10-21.md) — cyberchef recipe comparison 2026 10 21
 - [cyberchef-sfx-coverage-audit-2026-10-09.md](cyberchef-sfx-coverage-audit-2026-10-09.md) — cyberchef sfx coverage audit 2026 10 09
 - [cyberchef-sfx-coverage-audit-2026-10-13.md](cyberchef-sfx-coverage-audit-2026-10-13.md) — cyberchef sfx coverage audit 2026 10 13
@@ -198,6 +290,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [geomate-sg7-firmware-analysis.md](geomate-sg7-firmware-analysis.md) — geomate sg7 firmware analysis
 - [geomate-viewermade-source-check-2026-10-07.md](geomate-viewermade-source-check-2026-10-07.md) — geomate viewermade source check 2026 10 07
 - [github-jdk-runtime-research-2026-10-23.md](github-jdk-runtime-research-2026-10-23.md) — github jdk runtime research 2026 10 23
+- [github-tax-lien-and-efile-software-review-2026-11-04.md](github-tax-lien-and-efile-software-review-2026-11-04.md) — GitHub review of tax-lien and e-file software
 - [goldkey-parity-gina-and-units.md](goldkey-parity-gina-and-units.md) — goldkey parity gina and units
 - [greeran-book-ideas-backlog.md](greeran-book-ideas-backlog.md) — greeran book ideas backlog
 - [greeran-commencement-research-2026-10-16.md](greeran-commencement-research-2026-10-16.md) — greeran commencement research 2026 10 16
@@ -212,9 +305,12 @@ IANA media types (RFC 6838 / BCP 13).
 - [historical-network-viewer-scope-2026-10-22.md](historical-network-viewer-scope-2026-10-22.md) — historical network viewer scope 2026 10 22
 - [hp-aio-xport-modem-adapter-feasibility.md](hp-aio-xport-modem-adapter-feasibility.md) — hp aio xport modem adapter feasibility
 - [iacr-research-watch-2026-09-28.md](iacr-research-watch-2026-09-28.md) — iacr research watch 2026 09 28
+- [indiana-jones-diary-bibliography-2026-11-02.md](indiana-jones-diary-bibliography-2026-11-02.md) — Indiana Jones and Langdon diary source bibliography
+- [indiana-jones-grail-diary-page-gaps-2026-11-02.md](indiana-jones-grail-diary-page-gaps-2026-11-02.md) — Grail Diary and Lost Journal missing-page provenance audit
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
 - [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
+- [keyhole-investor-ecosystem-2026-11-11.md](keyhole-investor-ecosystem-2026-11-11.md) — keyhole inc venture capital angel investors and lineage
 - [kromecorp-rodger-ramrod-casefile.md](kromecorp-rodger-ramrod-casefile.md) — kromecorp rodger ramrod casefile
 - [lantronix-uclinux-deep-dive-2026-10-08.md](lantronix-uclinux-deep-dive-2026-10-08.md) — lantronix uclinux deep dive 2026 10 08
 - [lawrence-kansas-subsurface.md](lawrence-kansas-subsurface.md) — lawrence kansas subsurface
@@ -232,6 +328,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [los-alamos-source-check-2026-09-30.md](los-alamos-source-check-2026-09-30.md) — los alamos source check 2026 09 30
 - [lost-treasure-source-check-2026-10-04.md](lost-treasure-source-check-2026-10-04.md) — lost treasure source check 2026 10 04
 - [norton-ghost-deep-dive.md](norton-ghost-deep-dive.md) — norton ghost deep dive
+- [s5-live-layers-inventory-2026-10-25.md](s5-live-layers-inventory-2026-10-25.md) — stream s5 live incident camera and sensor layers inventory
+- [s5-incident-sensor-broadcast-layers-2026-11-12.md](s5-incident-sensor-broadcast-layers-2026-11-12.md) — stream s5 live incident camera sdr and broadcast layers deep dive
 - [pdfdrive-deep-dive-2026-10-13.md](pdfdrive-deep-dive-2026-10-13.md) — pdfdrive deep dive 2026 10 13
 - [phreaking-boxes-vlsi-notes.md](phreaking-boxes-vlsi-notes.md) — phreaking boxes vlsi notes
 - [planet-viewer-deep-dive.md](planet-viewer-deep-dive.md) — planet viewer deep dive
@@ -247,9 +345,12 @@ IANA media types (RFC 6838 / BCP 13).
 - [sanborn-suite-deep-dive.md](sanborn-suite-deep-dive.md) — sanborn suite deep dive
 - [satellite-constellations.md](satellite-constellations.md) — satellite constellations
 - [satellite-launch-windows-research-2026-10-04.md](satellite-launch-windows-research-2026-10-04.md) — satellite launch windows research 2026 10 04
+- [scouting-field-trip-research-2026-11-01.md](scouting-field-trip-research-2026-11-01.md) — Scout, school field-trip, yearbook, book-access, and lodge research status
 - [sgreeran-resume-chronology.md](sgreeran-resume-chronology.md) — sgreeran resume chronology
 - [sierra-shadow-president-sweep-2026-10-21.md](sierra-shadow-president-sweep-2026-10-21.md) — sierra shadow president sweep 2026 10 21
 - [simgirls-disassembly-research.md](simgirls-disassembly-research.md) — simgirls disassembly research
+- [sim-lock-research-2026-10-23.md](sim-lock-research-2026-10-23.md) — sim lock research primary law and regulatory timeline
+- [imei-sim-lock-lnp-metasearch-research-2026-11-11.md](imei-sim-lock-lnp-metasearch-research-2026-11-11.md) — mobile device identifier imei sim network unlock lnp and metasearch research
 - [size-coding-256b-notes.md](size-coding-256b-notes.md) — size coding 256b notes
 - [source-check-2026-09-28.md](source-check-2026-09-28.md) — source check 2026 09 28
 - [source-check-2026-09-29-vincennes.md](source-check-2026-09-29-vincennes.md) — source check 2026 09 29 vincennes
@@ -262,6 +363,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [territorial-classification-deep-dive-2026-10-06.md](territorial-classification-deep-dive-2026-10-06.md) — territorial classification deep dive 2026 10 06
 - [ucsb-2001-first-quarter-research.md](ucsb-2001-first-quarter-research.md) — ucsb 2001 first quarter research
 - [vincennes-4dwm-deep-dive.md](vincennes-4dwm-deep-dive.md) — vincennes 4dwm deep dive
+- [openrce-iso-kr0me-riddle-vcl-2026-11-01.md](openrce-iso-kr0me-riddle-vcl-2026-11-01.md) — openrce iso kr0me riddle virtual intelligence lecture hall update
 - [virtual-intelligence-lecture-hall-update-2026-10-05.md](virtual-intelligence-lecture-hall-update-2026-10-05.md) — virtual intelligence lecture hall update 2026 10 05
 - [virus-encyclopedia-xena-preservation.md](virus-encyclopedia-xena-preservation.md) — virus encyclopedia xena preservation
 - [virus-encyclopedia.md](virus-encyclopedia.md) — virus encyclopedia

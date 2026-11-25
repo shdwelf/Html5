@@ -3,6 +3,8 @@
 > **Register:** session-14 (continues the casefile-lab notes at src-74)
 > **Subject:** Maurice Frederick Hewitt (1913/14–2007) and his brother
 > Melvin Samuel "Sam" Hewitt (1924–2004) — World War II service records.
+> **Birth-date correction (1 Nov 2026):** family guestbook entries resolve
+> Maurice's date of birth to 27 March 1913; see session-17 §3h.
 > **Method:** free primary databases only — NARA Access to Archival Databases
 > (AAD) World War II Army Enlistment Records (Electronic Army Serial Number
 > Merged File) and World War II Prisoners of War Data File (RG 389), plus
@@ -160,7 +162,9 @@ as a lead, not a finding.
    "Records of World War II Prisoners of War, 1942–1947" (dt=3159).
 3. FamilySearch ancestors page, Clifford LeRoy Hewitt (KZB1-VVX) — lists all
    eight children including Maurice Frederick Hewitt (1914–2007, G7M1-4PH)
-   and Melvin Samuel Hewitt (1924–2004); corroborated by session-12.
+   and Melvin Samuel Hewitt (1924–2004); corroborated by session-12. The
+   FamilySearch 1914 year for Maurice is superseded by the guestbook-backed
+   27 March 1913 date (session-17 §3h).
 4. 301st Bombardment Group mission list — 301bg.com, "WWII Bombing Missions":
    26 June 1944 Vienna, Austria — Oil Refinery; 23 June 1944 Ploesti, Romania.
 5. 15th Air Force, 5th Bomb Wing mission narrative, June 1944 (15thaf.org) —

@@ -1,0 +1,609 @@
+name: HTML5 Offline Library — Android debug APK
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/html5-offline-launcher/**'
+      - 'apps/ads-b-radar-scope'
+      - 'apps/news-globe.html'
+      - 'public/apps/**'
+      - 'resources/city-subsurface/**'
+      - 'js/city-subsurface.js'
+      - 'css/city-subsurface.css'
+      - 'resources/city-subsurface-template.html'
+      - 'scripts/build-city-subsurface*.mjs'
+      - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/build-sound-apps.mjs'
+      - 'scripts/build-html5-browser-catalog.mjs'
+      - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'scripts/run-html5-android-ci.sh'
+      - 'tests/html5-android-runner.test.mjs'
+      - 'apps/AURA_SoundStudio_Quine*.html'
+      - 'apps/noise-canceling-sanctuary*.html'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'scripts/upload-encrypted-drive-backups.py'
+      - 'tests/drive-backup-upload*'
+      - 'tests/openpgp-v6.test.mjs'
+      - 'apps/openpgp-workbench/keyring.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tests/city-subsurface.test.mjs'
+      - 'tests/html5-offline-launcher.test.mjs'
+      - 'tests/local-file-exports.test.mjs'
+      - 'tests/sound-apps.test.mjs'
+      - 'tests/sound-apps-browser.mjs'
+      - 'scripts/audit-app-source-inventory.mjs'
+      - '.github/workflows/html5-offline-launcher-build.yml'
+  pull_request:
+    paths:
+      - 'apps/html5-offline-launcher/**'
+      - 'apps/ads-b-radar-scope'
+      - 'apps/news-globe.html'
+      - 'public/apps/**'
+      - 'resources/city-subsurface/**'
+      - 'js/city-subsurface.js'
+      - 'css/city-subsurface.css'
+      - 'resources/city-subsurface-template.html'
+      - 'scripts/build-city-subsurface*.mjs'
+      - 'scripts/build-html5-offline-launcher-assets.mjs'
+      - 'scripts/build-sound-apps.mjs'
+      - 'scripts/build-html5-browser-catalog.mjs'
+      - 'scripts/test-html5-android-webview.sh'
+      - 'scripts/report-html5-android-runner.py'
+      - 'scripts/run-html5-android-ci.sh'
+      - 'tests/html5-android-runner.test.mjs'
+      - 'apps/AURA_SoundStudio_Quine*.html'
+      - 'apps/noise-canceling-sanctuary*.html'
+      - 'scripts/encrypt-openpgp-backup.mjs'
+      - 'scripts/upload-encrypted-drive-backups.py'
+      - 'tests/drive-backup-upload*'
+      - 'tests/openpgp-v6.test.mjs'
+      - 'apps/openpgp-workbench/keyring.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tests/city-subsurface.test.mjs'
+      - 'tests/html5-offline-launcher.test.mjs'
+      - 'tests/local-file-exports.test.mjs'
+      - 'tests/sound-apps.test.mjs'
+      - 'tests/sound-apps-browser.mjs'
+      - 'scripts/audit-app-source-inventory.mjs'
+      - '.github/workflows/html5-offline-launcher-build.yml'
+  workflow_dispatch:
+    inputs:
+      recipient_public_key:
+        description: 'Optional armored OpenPGP public key: encrypt public, network and private APKs; only ciphertext is exported on this dispatch.'
+        required: false
+        type: string
+        default: ''
+      recipient_fingerprint:
+        description: 'Required with recipient_public_key: exact full 40-hex v4 or 64-hex v6 primary fingerprint, verified independently.'
+        required: false
+        type: string
+        default: ''
+      recipient_profile:
+        description: 'Explicit encryption profile. modern-v6 requires a supported v6 Ed25519/X25519 public certificate (use the checked reduced export if the full original has unsupported subkeys). No v6-to-v4 downgrade.'
+        required: false
+        type: choice
+        options:
+          - classic-v4
+          - modern-v6
+        default: classic-v4
+      upload_to_drive:
+        description: 'Opt-in ciphertext-only transfer through three one-time Drive upload sessions held in HTML5_RELEASE_UPLOAD_SESSIONS; no account token.'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: html5-offline-launcher-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate paired recipient inputs
+        shell: bash
+        env:
+          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+          RECIPIENT_PROFILE: ${{ inputs.recipient_profile || 'classic-v4' }}
+          UPLOAD_TO_DRIVE: ${{ inputs.upload_to_drive }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$RECIPIENT_PUBLIC_KEY" || -n "$RECIPIENT_FINGERPRINT" ]]; then
+            test -n "$RECIPIENT_PUBLIC_KEY"
+            [[ "$RECIPIENT_FINGERPRINT" =~ ^([A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})$ ]]
+            case "$RECIPIENT_PROFILE" in
+              classic-v4) [[ ${#RECIPIENT_FINGERPRINT} == 40 ]] ;;
+              modern-v6) [[ ${#RECIPIENT_FINGERPRINT} == 64 ]] ;;
+              *) exit 1 ;;
+            esac
+          fi
+          if [[ "$UPLOAD_TO_DRIVE" == "true" ]]; then
+            test -n "$RECIPIENT_PUBLIC_KEY"
+          fi
+
+      - name: Install locked OpenPGP encryption dependency
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Android SDK platform 34
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+          bash scripts/run-html5-android-ci.sh apps/html5-offline-launcher/app/build/android-sdk-setup.log -- "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Test launcher inventory and offline policy
+        run: node --test tests/html5-offline-launcher.test.mjs tests/html5-android-runner.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
+
+      - name: Validate restored sound snapshots and local export adapter
+        run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
+
+      - name: Validate public app inventory
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
+
+      - name: Validate private app allowlist
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile private
+
+      - name: Validate network app inventory
+        run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile network
+
+      - name: Build public debug APK
+        working-directory: apps/html5-offline-launcher
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-public-build.log -- ./gradlew --no-daemon --stacktrace :app:assemblePublicDebug
+
+      - name: Compile public and network WebView instrumentation
+        working-directory: apps/html5-offline-launcher
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-instrumentation-compile.log -- ./gradlew --no-daemon --stacktrace :app:assemblePublicDebugAndroidTest :app:assembleNetworkDebugAndroidTest
+
+      - name: Verify public APK permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          printf '%s\n' "$permissions"
+          grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
+          ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+
+      - name: Build curated private debug APK (do not upload)
+        working-directory: apps/html5-offline-launcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/private-apk-build.log"
+          set +e
+          ./gradlew --no-daemon --stacktrace :app:assemblePrivateDebug > "$log" 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            python3 - "$log" <<'PY'
+          import pathlib
+          import sys
+
+          lines = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace").splitlines()
+          markers = ("failure: build failed", "what went wrong:", "execution failed for task", "caused by:", "could not")
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line.lower() for marker in markers):
+                  selected.extend(lines[max(0, index - 2):min(len(lines), index + 6)])
+          if not selected:
+              selected = lines[-60:]
+          details = "\n".join(dict.fromkeys(selected))[-6000:]
+          safe = details.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Private-APK-Gradle::{safe}")
+          PY
+            exit "$status"
+          fi
+          tail -n 12 "$log"
+
+      - name: Verify private APK allowlist and reduced permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/private/debug/app-private-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          ! grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          ! grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
+          ! grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+          python3 - "$apk" <<'PY'
+          import json
+          import sys
+          import zipfile
+
+          apk_path = sys.argv[1]
+          expected = ["helios-observatory", "prime-viewer"]
+          with zipfile.ZipFile(apk_path) as apk:
+              catalog = json.loads(apk.read("assets/launcher/catalog.json"))
+              slugs = sorted(app["slug"] for app in catalog["apps"])
+              roots = sorted({
+                  name.split("/")[2]
+                  for name in apk.namelist()
+                  if name.startswith("assets/apps/") and len(name.split("/")) > 3
+              })
+              if slugs != expected or roots != expected:
+                  raise SystemExit(f"Unexpected private APK app set: catalog={slugs}, assets={roots}")
+          print("Private APK contains only the two allowlisted apps.")
+          PY
+
+      - name: Build opt-in network debug APK
+        working-directory: apps/html5-offline-launcher
+        run: bash ../../scripts/run-html5-android-ci.sh app/build/android-network-build.log -- ./gradlew --no-daemon --stacktrace :app:assembleNetworkDebug
+
+      - name: Verify network APK permission and app inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          permissions="$("$aapt" dump permissions "$apk")"
+          grep -Fq 'android.permission.INTERNET' <<< "$permissions"
+          grep -Fq 'android.permission.RECORD_AUDIO' <<< "$permissions"
+          grep -Fq 'android.permission.MODIFY_AUDIO_SETTINGS' <<< "$permissions"
+          ! grep -Fq 'android.permission.CAMERA' <<< "$permissions"
+          python3 - "$apk" <<'PY'
+          import json
+          import sys
+          import zipfile
+
+          with zipfile.ZipFile(sys.argv[1]) as apk:
+              catalog = json.loads(apk.read("assets/launcher/catalog.json"))
+              if catalog.get("networkEnabled") is not True:
+                  raise SystemExit("Network APK catalog is missing its network-enabled marker")
+              slugs = {app["slug"] for app in catalog["apps"]}
+              expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio"}
+              if len(slugs) != 98 or not expected.issubset(slugs):
+                  raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
+              for slug in expected:
+                  if f"assets/apps/{slug}/index.html" not in apk.namelist():
+                      raise SystemExit(f"Missing staged network entrypoint: {slug}")
+              # Bind the network build to the current reviewed registry and
+              # OpenPGP assets; do not ship a stale cached app tree.
+              from pathlib import Path
+              for name in ("coins-top500", "token-networks", "chain-research"):
+                  source = Path(f"config/{name}.json").read_bytes()
+                  if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
+                      raise SystemExit(f"Stale coin/network registry in network APK: {name}")
+              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
+                  source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
+                  if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
+                      raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
+          print("Network APK contains both live-feed apps, current coin/OpenPGP assets and INTERNET.")
+          PY
+
+      # Export verified builds before device tests. An emulator timeout must
+      # not discard successful build/encryption work or expose a private APK.
+      - name: Encrypt all three APK profiles for supplied OpenPGP recipient
+        if: ${{ inputs.recipient_public_key != '' }}
+        shell: bash
+        env:
+          RECIPIENT_PUBLIC_KEY: ${{ inputs.recipient_public_key }}
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+          RECIPIENT_PROFILE: ${{ inputs.recipient_profile || 'classic-v4' }}
+        run: |
+          set -euo pipefail
+          umask 077
+          recipient="$RUNNER_TEMP/apk-recipient-public.asc"
+          trap 'rm -f "$recipient"' EXIT
+          printf '%s\n' "$RECIPIENT_PUBLIC_KEY" > "$recipient"
+          for profile in public network private; do
+            apk="apps/html5-offline-launcher/app/build/outputs/apk/$profile/debug/app-$profile-debug.apk"
+            test -s "$apk"
+            node scripts/encrypt-openpgp-backup.mjs \
+              --input "$apk" \
+              --output "$RUNNER_TEMP/encrypted-apks/app-$profile-debug.apk.gpg" \
+              --recipient-file "$recipient" \
+              --expected-fingerprint "$RECIPIENT_FINGERPRINT" \
+              --source-revision "$GITHUB_SHA" \
+              --profile "$RECIPIENT_PROFILE"
+          done
+          node --input-type=module <<'JS'
+          import { readFileSync } from "node:fs";
+          for (const profile of ["public", "network", "private"]) {
+            const receipt = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/encrypted-apks/app-${profile}-debug.apk.gpg.json`, "utf8"));
+            const safe = JSON.stringify({ profile, receipt }).replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+            console.log(`::notice title=Encrypted-APK-receipt::${safe}`);
+          }
+          JS
+
+      - name: Upload encrypted APKs only
+        if: ${{ inputs.recipient_public_key != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-encrypted-debug-apks
+          path: ${{ runner.temp }}/encrypted-apks/*.gpg*
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload ciphertext to one-time Drive sessions
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload_to_drive }}
+        shell: bash
+        env:
+          DRIVE_UPLOAD_SESSIONS_JSON: ${{ secrets.HTML5_RELEASE_UPLOAD_SESSIONS }}
+          ENCRYPTED_APK_DIRECTORY: ${{ runner.temp }}/encrypted-apks
+          RECIPIENT_FINGERPRINT: ${{ inputs.recipient_fingerprint }}
+        run: python3 scripts/upload-encrypted-drive-backups.py
+
+      - name: Report public APK size and SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+          test -s "$apk"
+          ls -lh "$apk"
+          sha256sum "$apk"
+
+      - name: Generate public and network APK checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          for profile in public network; do
+            apk="apps/html5-offline-launcher/app/build/outputs/apk/${profile}/debug/app-${profile}-debug.apk"
+            test -s "$apk"
+            sha256sum "$apk" > "${apk}.sha256"
+          done
+
+      - name: Upload public APK for backup (non-recipient builds only)
+        if: ${{ inputs.recipient_public_key == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-public-debug-apk
+          path: |
+            apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/public/debug/app-public-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload network APK for backup (non-recipient builds only)
+        if: ${{ inputs.recipient_public_key == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-offline-launcher-network-debug-apk
+          path: |
+            apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk
+            apps/html5-offline-launcher/app/build/outputs/apk/network/debug/app-network-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Install PulseAudio runtime for Android emulator microphone tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils
+
+      - name: Enable KVM group permissions for the Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run Android WebView permission and Headline Harry smoke tests
+        id: android-smoke-tests
+        timeout-minutes: 20
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          XDG_RUNTIME_DIR: ${{ runner.temp }}/pulse-runtime
+          PULSE_SERVER: unix:${{ runner.temp }}/pulse-runtime/native
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          emulator-boot-timeout: 300
+          working-directory: apps/html5-offline-launcher
+          # Bound the CI guest alongside Gradle/UTP and WASM compilation. This
+          # is a runner resource profile, not an app/device support guarantee.
+          # ANGLE software rendering: the legacy swiftshader_indirect backend
+          # lost the entire emulator during DOSBox boot. See the README sources.
+          emulator-options: -no-window -gpu swangle -skin 720x1280 -memory 2048 -cores 2 -no-snapshot -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          # Match density/skin before boot, not a high-resolution launcher resize
+          # after startup. An unrelated Nexus launcher ANR can occlude all taps.
+          # This action runs each nonempty script line in a separate shell; keep these scripts on one line.
+          pre-emulator-launch-script: >-
+            { set -e; sed -i '/^hw[.]lcd[.]density=/d' "$ANDROID_AVD_HOME/test.avd/config.ini"; printf '\nhw.lcd.density=280\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"; mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; pulseaudio -n --daemonize=yes --exit-idle-time=-1 --log-target="file:$RUNNER_TEMP/pulseaudio.log" --load="module-native-protocol-unix socket=${PULSE_SERVER#unix:} auth-anonymous=1" --load="module-null-sink sink_name=ci_mic_bus"; pactl set-default-source ci_mic_bus.monitor; echo "PWD=$PWD"; echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME"; ls -l /dev/kvm || true; grep -E '^(hw[.]audioInput|hw[.]audioOutput)=' "$ANDROID_AVD_HOME/test.avd/config.ini" || true; pactl info; pactl list short sources; "$ANDROID_HOME/emulator/emulator" -version || true; } > app/build/emulator-prelaunch.log 2>&1
+          script: bash ../../scripts/test-html5-android-webview.sh
+
+      - name: Surface per-phase Android WebView results
+        if: ${{ always() && steps.android-smoke-tests.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob, json, os, re, xml.etree.ElementTree as ET
+          base = "apps/html5-offline-launcher/app/build"
+          try:
+              log = open(base + "/android-webview-tests.log", encoding="utf-8", errors="replace").read()
+          except OSError:
+              log = ""
+          phases = []
+          for label in ["public-local-files", "network-local-files", "public-audio-policy", "public-headline-harry"]:
+              exits = re.findall(r"=== " + re.escape(label) + r" exit=(\d+) ===", log)
+              cases = {}
+              failure_details = []
+              for path in glob.glob(base + "/instrumentation-reports/" + label + "/**/*.xml", recursive=True):
+                  try:
+                      suite = ET.parse(path).getroot()
+                  except (OSError, ET.ParseError):
+                      continue
+                  for case in suite.iter("testcase"):
+                      name = case.get("classname", "") + "." + case.get("name", "")
+                      cases[name] = "failed" if case.find("failure") is not None or case.find("error") is not None else "skipped" if case.find("skipped") is not None else "passed"
+                      for result in list(case.findall("failure")) + list(case.findall("error")):
+                          detail = " ".join(list(result.attrib.values()) + list(result.itertext()))
+                          if detail.strip():
+                              failure_details.append(re.sub(r"\s+", " ", detail).strip()[:650])
+              phases.append({"phase": label, "exit": int(exits[-1]) if exits else None, "tests": len(cases), "passed": list(cases.values()).count("passed"), "failed": list(cases.values()).count("failed"), "skipped": list(cases.values()).count("skipped"), "firstFailure": failure_details[0] if failure_details else None})
+          result = {"schema": 1, "phases": phases}
+          os.makedirs(base, exist_ok=True)
+          open(base + "/android-webview-summary.json", "w", encoding="utf-8").write(json.dumps(result, indent=2) + "\n")
+          summary = json.dumps(result, separators=(",", ":")).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print("::notice title=Android-WebView-results::" + summary)
+          PY
+          python3 scripts/report-html5-android-runner.py --require-complete apps/html5-offline-launcher/app/build/android-webview-summary.json
+
+      - name: Surface Android instrumentation failure details
+        if: ${{ failure() && steps.android-smoke-tests.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          python3 scripts/report-html5-android-runner.py apps/html5-offline-launcher/app/build
+          python3 - <<'PY'
+          import glob
+          import os
+          import re
+          import subprocess
+          import xml.etree.ElementTree as ET
+
+          reports = glob.glob("apps/html5-offline-launcher/app/build/instrumentation-reports/**/*.xml", recursive=True)
+          if not reports:
+              reports = glob.glob("apps/html5-offline-launcher/app/build/outputs/androidTest-results/**/*.xml", recursive=True)
+          failures = []
+          for report in reports:
+              try:
+                  root = ET.parse(report).getroot()
+              except (ET.ParseError, OSError):
+                  continue
+              for case in root.iter("testcase"):
+                  for result in list(case.findall("failure")) + list(case.findall("error")):
+                      attributes = " ".join(f"{key}={value}" for key, value in result.attrib.items())
+                      text = " ".join(part.strip() for part in result.itertext() if part and part.strip())
+                      detail = re.sub(r"\s+", " ", " | ".join(part for part in [attributes, text] if part)).strip()
+                      if not detail:
+                          case_output = " ".join(
+                              part.strip()
+                              for element in list(case.findall("system-out")) + list(case.findall("system-err"))
+                              for part in element.itertext()
+                              if part and part.strip()
+                          )
+                          detail = re.sub(r"\s+", " ", case_output).strip()
+                      if not detail:
+                          detail = "failure element has no attributes, text, or testcase output"
+                      name = ".".join(filter(None, [case.get("classname"), case.get("name")]))
+                      failures.append(f"{name}: {detail[:4000]}")
+
+          # Capture logcat inside the emulator-runner action before it tears
+          # down the virtual device; fall back to adb here for older runs.
+          logcat_path = "apps/html5-offline-launcher/app/build/android-webview-logcat.log"
+          if os.path.isfile(logcat_path):
+              try:
+                  logcat = open(logcat_path, encoding="utf-8", errors="replace").read().splitlines()
+              except OSError as error:
+                  logcat = [f"Could not read captured Android logcat: {error}"]
+          else:
+              try:
+                  result = subprocess.run(
+                      ["adb", "logcat", "-d", "-t", "1500", "-v", "brief"],
+                      capture_output=True, text=True, errors="replace", timeout=20,
+                  )
+                  logcat = result.stdout.splitlines()
+                  if result.returncode and result.stderr:
+                      logcat.append(f"adb logcat exited {result.returncode}: {result.stderr.strip()}")
+              except (OSError, subprocess.TimeoutExpired) as error:
+                  logcat = [f"Could not read adb logcat: {error}"]
+          logcat_pattern = re.compile(
+              r"(?i)(FATAL EXCEPTION|AndroidRuntime|chromium|crash_dump|SIGSEGV|ANR in|"
+              r"WebView|headline.?harry|js-dos|DOSBox error|failed to start|"
+              r"HeadlineHarrySmoke|Html5Offline|console)"
+          )
+          # Keep the dedicated game probe and native crashes ahead of noisy
+          # WebView compositor lines. These are synthetic tests, not user data.
+          important = [line for line in logcat if re.search(r"HeadlineHarrySmoke|FATAL EXCEPTION|SIGSEGV|ANR in|crash_dump", line)]
+          recent = [line for line in logcat if logcat_pattern.search(line)][-30:]
+          game_probe = [line for line in logcat if "HeadlineHarrySmoke" in line]
+          relevant_logcat = list(dict.fromkeys(game_probe[-15:] + important[-15:] + recent))
+          if not relevant_logcat:
+              relevant_logcat = ["No matching Android/WebView crash or Headline Harry logcat lines."]
+          logcat_text = "\n".join(relevant_logcat)[:9000]
+          for chunk_index, start in enumerate(range(0, len(logcat_text), 3000), start=1):
+              chunk = logcat_text[start:start + 3000]
+              safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Android-logcat-{chunk_index}::{safe}")
+
+          if failures:
+              for failure in list(dict.fromkeys(failures))[:3]:
+                  safe = failure.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::error title=Android-instrumentation-failure::{safe}")
+          else:
+              report_names = ", ".join(os.path.relpath(report) for report in reports) or "none found"
+              print(f"::error title=Android-instrumentation-failure::No JUnit failure details; XML reports: {report_names}")
+
+          prelaunch_path = "apps/html5-offline-launcher/app/build/emulator-prelaunch.log"
+          if os.path.isfile(prelaunch_path):
+              prelaunch_lines = open(prelaunch_path, encoding="utf-8", errors="replace").read().splitlines()
+              relevant = [line for line in prelaunch_lines if re.search(r"(?i)error|fail|pulse|source|audio|kvm|emulator", line)]
+              if relevant:
+                  message = "\n".join(relevant[-10:])
+                  safe = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  print(f"::error title=Android-emulator-prelaunch::{safe[:5000]}")
+          else:
+              print(f"::error title=Android-emulator-prelaunch::Pre-launch diagnostics were not written: {prelaunch_path}")
+
+          log_path = "apps/html5-offline-launcher/app/build/android-webview-tests.log"
+          if not os.path.isfile(log_path):
+              print(f"::error title=Android-instrumentation-log::Gradle log file is missing: {log_path}")
+          try:
+              lines = open(log_path, encoding="utf-8", errors="replace").read().splitlines()
+          except OSError as error:
+              lines = [f"Could not read Gradle log: {error}"]
+          if not lines:
+              lines = [f"Gradle log exists but is empty ({os.path.getsize(log_path)} bytes)"]
+
+          # GitHub clips a single annotation at 4 KB. Emit focused failure
+          # contexts and the log tail as separate annotations so the actual
+          # Gradle/JUnit cause is not hidden behind hundreds of stack frames.
+          marker = re.compile(
+              r"(?i)(FAILURE:|what went wrong:|execution failed for task|caused by:|"
+              r"assertionerror|headline.?harry|ci-ready|dosbox error|failed to start js-dos|"
+              r"instrumentation_status|instrumentation_code|fatal exception|build failed)"
+          )
+          hits = [index for index, line in enumerate(lines) if marker.search(line)]
+          selected = {}
+          for index in hits[-12:]:
+              for context_index in range(max(0, index - 2), min(len(lines), index + 5)):
+                  selected[context_index] = lines[context_index]
+          selected.update({index: lines[index] for index in range(max(0, len(lines) - 40), len(lines))})
+          diagnostic_lines = [selected[index] for index in sorted(selected)]
+          message = "\n".join(diagnostic_lines) if diagnostic_lines else "\n".join(lines[-40:])
+          message = message[-9000:]
+          for chunk_index, start in enumerate(range(0, len(message), 3000), start=1):
+              chunk = message[start:start + 3000]
+              safe = chunk.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Android-instrumentation-log-{chunk_index}::{safe}")
+
+          PY
+
+      - name: Preserve bounded synthetic WebView diagnostics
+        if: ${{ always() && steps.android-smoke-tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: html5-android-webview-diagnostics
+          path: |
+            apps/html5-offline-launcher/app/build/android-webview-*.log
+            apps/html5-offline-launcher/app/build/android-webview-summary.json
+            apps/html5-offline-launcher/app/build/emulator-prelaunch.log
+            apps/html5-offline-launcher/app/build/instrumentation-reports/**/*.xml
+          if-no-files-found: warn
+          retention-days: 7

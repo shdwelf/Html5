@@ -46,6 +46,7 @@ for (const f of [
   "cheyenne-dem.js",
   "cheyenne-dem-data.js",
   "cheyenne-borders.js",
+  "pip-window-manager.js",
 ]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
 }

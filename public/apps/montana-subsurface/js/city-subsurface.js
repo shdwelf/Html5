@@ -12,6 +12,7 @@
 
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
+import { preparePipWindows } from "./pip-window-manager.js";
 import {
   GAZ_CLASS_META,
   GAZ_FACETS,
@@ -91,6 +92,7 @@ const DATA_LOADERS = {
   alaska: () => import("./city-subsurface-data-alaska.js"),
   newjersey: () => import("./city-subsurface-data-newjersey.js"),
   hawaii: () => import("./city-subsurface-data-hawaii.js"),
+  newyork: () => import("./city-subsurface-data-newyork.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -151,6 +153,7 @@ const GAZ_LOADERS = {
   alaska: () => import("./city-gazetteer-data-alaska.js"),
   newjersey: () => import("./city-gazetteer-data-newjersey.js"),
   hawaii: () => import("./city-gazetteer-data-hawaii.js"),
+  newyork: () => import("./city-gazetteer-data-newyork.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -223,6 +226,7 @@ const DEM_LOADERS = {
   alaska: () => importDem("./city-dem-grid-alaska.js"),
   newjersey: () => importDem("./city-dem-grid-newjersey.js"),
   hawaii: () => importDem("./city-dem-grid-hawaii.js"),
+  newyork: () => importDem("./city-dem-grid-newyork.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
@@ -1044,36 +1048,7 @@ if (gpxClearButton) gpxClearButton.addEventListener("click", clearImportedCaches
 
 /* --------------------------------------------------------- PIP + controls */
 
-function makeDraggable(pip) {
-  const head = pip.querySelector(".pip-head");
-  let dx = 0;
-  let dy = 0;
-  head.addEventListener("pointerdown", (e) => {
-    if (e.target.closest("button")) return;
-    const r = pip.getBoundingClientRect();
-    dx = e.clientX - r.left;
-    dy = e.clientY - r.top;
-    pip.style.right = "auto";
-    pip.style.bottom = "auto";
-    head.setPointerCapture(e.pointerId);
-    const move = (ev) => {
-      pip.style.left = `${Math.min(Math.max(0, ev.clientX - dx), innerWidth - 60)}px`;
-      pip.style.top = `${Math.min(Math.max(0, ev.clientY - dy), innerHeight - 30)}px`;
-    };
-    const up = () => {
-      head.removeEventListener("pointermove", move);
-      head.removeEventListener("pointerup", up);
-    };
-    head.addEventListener("pointermove", move);
-    head.addEventListener("pointerup", up);
-  });
-  const min = pip.querySelector("[data-min]");
-  min?.addEventListener("click", () => {
-    pip.classList.toggle("min");
-    min.textContent = pip.classList.contains("min") ? "+" : "–";
-  });
-}
-document.querySelectorAll(".pip").forEach(makeDraggable);
+preparePipWindows();
 
 /* ---------------------------------------------------------- minimap (PIP) */
 

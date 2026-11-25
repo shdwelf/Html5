@@ -18,7 +18,7 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube · 6 statistics</p>
+      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube · 6 statistics · layers: invert A↔B + formal-system lenses</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;pointer-events:auto">
       <a href="./index.html#studio" target="_top" style="color:#8eacff;font-size:10px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(142,172,255,.35);padding:8px 10px;border-radius:8px">ART STUDIO</a>
@@ -33,12 +33,33 @@
 
       <label for="wc">Phrase</label>
       <select id="wc">
-        <option value="12" selected>12 words · 128-bit</option>
-        <option value="15">15 words · 160-bit</option>
-        <option value="18">18 words · 192-bit</option>
-        <option value="21">21 words · 224-bit</option>
-        <option value="24">24 words · 256-bit</option>
+        <optgroup label="BIP-39 standard ladder · CS = ENT/32">
+          <option value="12" selected>12 words · 128-bit ENT · CS 4</option>
+          <option value="15">15 words · 160-bit ENT · CS 5</option>
+          <option value="18">18 words · 192-bit ENT · CS 6</option>
+          <option value="21">21 words · 224-bit ENT · CS 7</option>
+          <option value="24">24 words · 256-bit ENT · CS 8</option>
+        </optgroup>
+        <!-- js/viewer.js rebuilds this group with every count 25…512 at boot;
+             these entries only keep the menu meaningful before the module runs. -->
+        <optgroup label="generalised rule · every count 25…512 · 11n = ENT + CS">
+          <option value="25">25 words · 264-bit ENT · CS 11</option>
+          <option value="26">26 words · 280-bit ENT · CS 6</option>
+          <option value="27">27 words · 288-bit ENT · CS 9</option>
+          <option value="30">30 words · 320-bit ENT · CS 10</option>
+          <option value="33">33 words · 352-bit ENT · CS 11</option>
+          <option value="48">48 words · 520-bit ENT · CS 8</option>
+          <option value="56">56 words · 608-bit ENT · CS 8</option>
+          <option value="512">512 words · 5624-bit ENT · CS 8</option>
+        </optgroup>
+        <optgroup label="custom · 2–512 words or an ENT bit length">
+          <option value="custom">custom words or bit length…</option>
+        </optgroup>
       </select>
+      <div class="row custom-row" id="customRow" hidden>
+        <input type="number" id="customWords" min="2" max="512" step="1" inputmode="numeric" placeholder="words (2–512)" />
+        <input type="number" id="customBits" min="8" step="8" inputmode="numeric" placeholder="or ENT bits (e.g. 56)" />
+      </div>
       <div class="row" style="margin-top:8px">
         <button class="act" id="gen" type="button">Sample CSPRNG</button>
         <button class="act" id="apply" type="button">Project</button>
@@ -169,7 +190,72 @@
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
 
-      <h2 class="step">12 · Seed haiku identity</h2>
+      <h2 class="step">11 · Invert keyspace A ↔ B</h2>
+      <label for="phraseB">Key B · second phrase</label>
+      <textarea id="phraseB" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="second phrase to invert against"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="act" id="genB" type="button">Sample B</button>
+        <button class="act" id="notA" type="button">B ← phrase of ¬A</button>
+      </div>
+      <div id="statusB" class="status warn">No key B — the invert layers need two keys.</div>
+      <canvas id="invertPlot" class="plot" width="340" height="188" aria-label="Invert keyspace between A and B"></canvas>
+      <div class="metric-grid">
+        <div class="metric"><span>d(A,B)</span><b id="invHam">—</b></div>
+        <div class="metric"><span>subcube |S|</span><b id="invSub">—</b></div>
+        <div class="metric"><span>d(¬A,B)</span><b id="invComp">—</b></div>
+        <div class="metric"><span>geodesics</span><b id="invGeo">—</b></div>
+      </div>
+      <p class="legend" id="invertNote">S(A,B) = { A ⊕ (m ⊙ s) : s ∈ {0,1}^d }, m = A⊕B — the affine subcube between the two keys.</p>
+
+      <h2 class="step">12 · Formal-system lenses</h2>
+      <label for="lensFilter">Family</label>
+      <select id="lensFilter">
+        <option value="all" selected>all families</option>
+        <option value="invert">invert keyspace</option>
+        <option value="λ">λ-calculus</option>
+        <option value="analysis">analysis</option>
+        <option value="logic">logic</option>
+        <option value="algebra">algebra</option>
+        <option value="geometry">geometry</option>
+        <option value="trigonometry">trigonometry</option>
+        <option value="time">time</option>
+        <option value="stochastic">stochastic</option>
+        <option value="process">process</option>
+      </select>
+      <p class="legend">Dot = add / remove that layer in the 3D scene (turning one on opens its panel). Name = open its readout. Cards are marked — no fake geometry.</p>
+      <div class="rack" id="lensRack"></div>
+      <div class="lens-panel" id="lensPanel">
+        <div class="lens-head"><b id="lensName">—</b><span class="tag" id="lensKind"></span></div>
+        <p class="legend" id="lensTag"></p>
+        <canvas id="lensCanvas" class="plot" width="340" height="172" aria-label="focused lens rendering"></canvas>
+        <table class="lens-rows" id="lensRows"></table>
+        <p class="legend" id="lensDescribe"></p>
+        <p class="legend" id="lensExplain"></p>
+        <p class="legend lens-predict" id="lensPredict"></p>
+      </div>
+
+      <details class="field-lab" open>
+        <summary>Galois-field explorer · exact arithmetic</summary>
+        <label for="fieldPreset">Field / polynomial basis</label>
+        <select id="fieldPreset" aria-describedby="fieldBasis"></select>
+        <p class="legend" id="fieldBasis"></p>
+        <div class="row">
+          <label>a <input id="fieldA" type="text" value="0x57" spellcheck="false" autocomplete="off" aria-label="Field element a, decimal or hex" /></label>
+          <label>b <input id="fieldB" type="text" value="0x83" spellcheck="false" autocomplete="off" aria-label="Field element b, decimal or hex" /></label>
+        </div>
+        <button class="act" id="fieldFromEntropy" type="button">Inspect first two entropy bytes</button>
+        <dl class="field-results" aria-live="polite">
+          <div><dt>a + b</dt><dd id="fieldSum">—</dd></div>
+          <div><dt>a × b</dt><dd id="fieldProduct">—</dd></div>
+          <div><dt>a⁻¹</dt><dd id="fieldInverse">—</dd></div>
+          <div><dt>a / b</dt><dd id="fieldDivision">—</dd></div>
+        </dl>
+        <canvas id="fieldPlot" class="plot" width="352" height="288" aria-label="Multiplication by a over all elements of the selected finite field"></canvas>
+        <p class="legend" id="fieldStatus" role="status"></p>
+        <p class="legend">A view only: this does not alter entropy, the mnemonic or 2^ENT keyspace. BIP-39 uses a SHA-256 checksum, not this arithmetic. These small fields are not secp256k1's coordinate or scalar field. Never use this educational calculator for secret-key operations.</p>
+      </details>
+
+      <h2 class="step">13 · Seed haiku identity</h2>
       <div class="seed-identity">
         <canvas id="seedEnso" width="320" height="320" aria-label="Deterministic ensō fingerprint for the loaded entropy"></canvas>
         <div id="haiku" class="haiku" aria-live="polite">
@@ -185,7 +271,7 @@
         <div class="enso-id" id="ensoId">EN—</div>
       </div>
 
-      <h2 class="step">13 · Wallet derivatives</h2>
+      <h2 class="step">14 · Wallet derivatives</h2>
       <div class="wallet-panel">
         <p class="legend wallet-warning">Educational, local-only Bitcoin derivation. Never paste a mnemonic that protects real funds into a web page.</p>
         <label for="walletPass">BIP-39 passphrase</label>
@@ -196,16 +282,69 @@
           <button class="act" id="clearWallet" type="button" disabled>Clear</button>
         </div>
         <div id="walletStatus" class="legend">Derivation is explicit and only accepts standard 12/15/18/21/24-word phrases with valid checksums.</div>
-        <label for="topCoin">Top 50 asset address</label>
+        <label for="topCoinGroup">Group assets</label>
+        <select id="topCoinGroup" disabled><option value="all">All 500 assets</option></select>
+        <label for="topCoinOrder">Asset order</label>
+        <select id="topCoinOrder" disabled><option value="rank">Historical market rank</option><option value="fee">Fee scenario · free → expensive, unknown last</option></select>
+        <label for="topCoinSearch">Asset address · full 500-asset snapshot</label>
+        <input id="topCoinSearch" type="search" placeholder="Filter by name, symbol or asset ID" autocomplete="off" aria-label="Filter offline asset registry" disabled />
+        <label for="topCoin">Asset · historical market rank, not live data</label>
+        <select id="topCoin" disabled><option>Loading registry…</option></select>
+        <label for="topCoinNetwork">Network / token standard</label>
         <div class="row">
-          <select id="topCoin" disabled><option>Loading registry…</option></select>
-          <button class="act" id="deriveTopCoin" type="button" disabled>Derive selected</button>
+          <select id="topCoinNetwork" disabled><option>Select an asset first</option></select>
+          <button class="act" id="deriveTopCoin" type="button" disabled>Derive receive address</button>
         </div>
-        <p id="topCoinNote" class="legend">Market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
+        <div id="topCoinNetworkInfo" class="legend" aria-live="polite"></div>
+        <p id="topCoinNote" class="legend" role="status">Offline market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
         <div id="topCoinOutput" class="top-coin-output" hidden>
           <div class="wallet-kv"><span id="topCoinLabel">Selected asset</span><code id="topCoinPath">—</code></div>
-          <div class="wallet-kv"><span>Address</span><code id="topCoinAddress">—</code></div>
+          <div class="wallet-kv"><span>Holder receive address · NOT the token contract</span><code id="topCoinAddress">—</code></div>
           <div class="wallet-kv"><span>Public key</span><code id="topCoinPublic">—</code></div>
+        </div>
+        <div class="coin-workbench" id="coinWorkbench">
+          <div class="seg coin-tabs" role="tablist" aria-label="Coin research and wallet investigation">
+            <button id="coinTabCosts" class="seg-btn on" type="button" role="tab" aria-selected="true" aria-controls="coinCostsPanel" data-coin-tab="coinCostsPanel">Fees &amp; networks</button>
+            <button id="coinTabInvestigate" class="seg-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="coinInvestigatePanel" data-coin-tab="coinInvestigatePanel">Wallet investigation</button>
+            <button id="coinTabMetadata" class="seg-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="coinMetadataPanel" data-coin-tab="coinMetadataPanel">NFT / token metadata</button>
+          </div>
+          <section id="coinCostsPanel" role="tabpanel" aria-labelledby="coinTabCosts">
+            <h3>Selected asset · evidence, not a live quote</h3>
+            <pre id="coinResearchSummary" class="coin-report">Loading offline evidence…</pre>
+            <div id="coinResearchLinks" class="coin-links"></div>
+            <details>
+              <summary>Local fee scenario · optional USD ranking</summary>
+              <p class="legend">Different native units cannot be ranked against each other. Enter fee-asset USD prices and transaction assumptions below; they are manual scenarios, never market data. Token gas is not the 21,000-gas native transfer. Unknowns stay unranked; test funds are not free mainnet funds. Base/minimum fees exclude deposits, rent, activation, priority, data and service costs.</p>
+              <label for="coinFeeScenario">Scenario JSON (local only; prices in USD per fee asset)</label>
+              <textarea id="coinFeeScenario" rows="7" spellcheck="false">{"prices":{},"gasGwei":{},"tokenGas":{},"nativeFees":{}}</textarea>
+              <p class="legend">Keys: prices by fee symbol; gasGwei for ETH/BSC/HYPE only; tokenGas by asset ID; nativeFees by asset ID or assetID@networkID. Other reviewed models, including Avalanche's gas-limit floor, need a transaction-specific total entered through nativeFees; generic 21,000-gas arithmetic is not applied to them. Bitcoin also accepts vbytes and satPerVbyte. All amounts are explicit scenarios, not RPC quotes. No values are fetched or stored.</p>
+              <button id="applyCoinFeeScenario" class="act" type="button">Apply scenario</button>
+              <p id="coinFeeStatus" class="legend" role="status">No USD prices supplied. Only a documented zero protocol fee can rank without one.</p>
+            </details>
+            <div class="coin-table-wrap" tabindex="0" role="region" aria-label="All asset fee research">
+              <table class="coin-table"><thead><tr><th>Asset / host</th><th>Fee asset / model</th><th>Native cost / basis</th><th>USD scenario</th></tr></thead><tbody id="coinFeeRows"></tbody></table>
+            </div>
+          </section>
+          <section id="coinInvestigatePanel" role="tabpanel" aria-labelledby="coinTabInvestigate" hidden>
+            <h3>Default-leaf investigation · offline first</h3>
+            <p class="legend wallet-warning">One curated default path per supported asset; account 0, receive branch, index 0. This is NOT an exhaustive wallet recovery or gap-limit scan. Tokens may share a host address; that does not prove a token balance. Use a throwaway test phrase, not a funded mnemonic.</p>
+            <div class="row"><button id="deriveAllCoinsLocal" class="act" type="button" disabled>Derive supported default leaves locally</button><button id="cancelCoinInvestigation" class="act" type="button" disabled>Cancel / clear investigation</button></div>
+            <p id="coinInvestigationStatus" class="legend" role="status">Not derived. No address has been queried.</p>
+            <h3>Selected address · explicit, read-only lookup</h3>
+            <p id="coinProbeDisclosure" class="legend">Derive or inspect a single address before choosing a public-data lookup.</p>
+            <label for="coinProbeEndpoint">Selected public HTTPS RPC / API endpoint (editable)</label>
+            <input id="coinProbeEndpoint" type="url" spellcheck="false" autocomplete="off" placeholder="No verified endpoint for this network" />
+            <label class="coin-consent"><input id="coinProbeConsent" type="checkbox" /> Send ONLY this selected public address and any catalogued token contract to this provider. It sees my IP and can correlate the request; never send my phrase, seed or private keys.</label>
+            <button id="querySelectedCoin" class="act" type="button" disabled>Read selected balance once</button>
+            <pre id="coinProbeResult" class="coin-report" aria-live="polite">unqueried</pre>
+            <div class="coin-table-wrap" tabindex="0" role="region" aria-label="Default leaf investigation results">
+              <table class="coin-table"><thead><tr><th>Asset / chain</th><th>Path / public address</th><th>Derivation / holdings</th><th>Inspect</th></tr></thead><tbody id="coinInvestigationRows"></tbody></table>
+            </div>
+          </section>
+          <section id="coinMetadataPanel" role="tabpanel" aria-labelledby="coinTabMetadata" hidden>
+            <p class="legend">The existing NFT viewer is <code>apps/index3.html</code>, extended here with ERC-20 facts, an expected-chain guard and separate off-chain consent. It receives no mnemonic or derived address. Enter a public contract; metadata is untrusted and is not automatically on-chain.</p>
+            <iframe class="coin-metadata-frame" id="coinMetadataFrame" title="Read-only NFT and token metadata viewer" src="./apps/index3.html" loading="lazy" referrerpolicy="no-referrer"></iframe>
+          </section>
         </div>
         <div id="walletOutput" hidden>
           <div class="wallet-kv"><span>Seed · 512-bit</span><code id="walletSeed" class="wallet-secret">—</code></div>

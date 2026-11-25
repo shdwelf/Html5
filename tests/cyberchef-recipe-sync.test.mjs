@@ -79,6 +79,22 @@ const POST_MERGE_OPS = [
   // docs/cyberchef-hash-lab-drive-investigation-2026-10-25.md).
   "blake2",
   "argon2",
+  // 2026-11-07 multiplicative ElGamal demo (not FHE).
+  "elgamalMulDemo",
+  // 2026-11-08 ITAR munitions export law protest: Perl RSA T-shirt as free speech.
+  "munitionsTshirt",
+  // 2026-11-13 GRASP 4.00d protected-library cipher recovered from the Sneakers
+  // press kit (docs/sneakers-grasp-library-cipher-2026-11-13.md).
+  "graspGlTable",
+  "graspGlDirectory",
+  // 2026-11-17 FHE study lab: exact F17 oracle / codec / architecture card,
+  // explicitly educational and not an encryption implementation, plus a
+  // separate manual CKKS architecture-profile calculator.
+  "fheKitchenLab",
+  "fheArchitectureLab",
+  // Round 80: bounded, passive SnapSafe SECV v1 structural inspector.
+  "snapSafeSecv",
+  "fheMaskLab",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <title>PLANET VIEWER · 4DWM — USGS 3DEP terrain + GNIS</title>
-  <meta name="description" content="Offline USGS 3DEP terrain plates with wireframe, x-ray, VRML, labels and relief modes over an offline USGS GNIS gazetteer, in the socal-subsurface viewer idiom." />
+  <meta name="description" content="Offline USGS 3DEP terrain plates, a country globe and PC Globe index, plus optional local incident and sensor snapshot imports. No live feed is fetched." />
   <link rel="stylesheet" href="./css/project-y-4dwm.css" />
   <link rel="stylesheet" href="./css/planet-viewer-4dwm.css" />
 </head>
 <body data-mode="relief">
-  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
-  <canvas id="globeStage" hidden>Globe plate: drag to rotate the Red October orthographic globe.</canvas>
+  <canvas id="stage" role="img" aria-label="Interactive three-dimensional terrain plate. Use the plate, mode, and Gazetteer controls to explore the offline data.">This visualization needs a canvas-capable browser.</canvas>
+  <canvas id="globeStage" hidden role="img" aria-label="Interactive orthographic globe. Drag to rotate; capital markers and optional imported snapshot markers can be inspected.">Globe plate: drag to rotate the Red October orthographic globe.</canvas>
   <section id="pcgPanel" hidden aria-label="PC Globe 1990 index plate">
     <h2>PC GLOBE (1990) · INDEX PLATE</h2>
     <p class="small" id="pcgMeta">Decoded PC Globe index — names and label strings only.</p>
     <p class="small dim">Index only: PC Globe's binary map payload (feature coordinates and the name-to-record
       pointer table) is undecoded, so country records are listed by file position — not matched to country
-      names — and nothing from PC Globe is plotted on the terrain or globe plates. Globe markers are the
-      country viewer's Factbook capitals.</p>
-    <input type="search" id="pcgSearch" placeholder="filter country names, records, features…" autocomplete="off" />
+      names — and no PC Globe map coordinates are plotted. Exact-name label matches can be selected using
+      independent offline Gazetteer points; these are not recovered PC Globe coordinates. Globe markers also include the country viewer's Factbook capitals.</p>
+    <input type="search" id="pcgSearch" aria-label="Filter PC Globe index names and records" placeholder="Filter names, records, features…" autocomplete="off" />
     <div id="pcgBody"></div>
   </section>
   <div id="labels" aria-hidden="true"></div>
@@ -30,32 +30,40 @@
       <p>USGS 3DEP control-point terrain · offline GNIS · schematic, not a survey product</p>
     </div>
     <div class="top-actions">
+      <div class="panel-toggles" role="group" aria-label="Show viewer panels">
+        <button type="button" id="btnControls" aria-expanded="false" aria-controls="controlsPanel">CONTROLS</button>
+        <button type="button" id="btnInspector" aria-expanded="false" aria-controls="inspectorPanel">INSPECTOR</button>
+      </div>
       <div class="plate-switch" role="group" aria-label="Plate">
-        <button type="button" data-plate="chey" class="active">CHEYENNE</button>
-        <button type="button" data-plate="ange">SAN GABRIEL</button>
-        <button type="button" data-plate="lawrence">LAWRENCE</button>
-        <button type="button" data-plate="globe">GLOBE</button>
-        <button type="button" data-plate="pcg">PC GLOBE INDEX</button>
+        <button type="button" data-plate="chey" class="active" aria-pressed="true">CHEYENNE</button>
+        <button type="button" data-plate="ange" aria-pressed="false">SAN GABRIEL</button>
+        <button type="button" data-plate="lawrence" aria-pressed="false">LAWRENCE</button>
+        <button type="button" data-plate="globe" aria-pressed="false">GLOBE</button>
+        <button type="button" data-plate="pcg" aria-pressed="false">PC GLOBE INDEX</button>
       </div>
       <div class="mode-switch" role="group" aria-label="View mode">
-        <button type="button" data-mode="relief" class="active">RELIEF</button>
-        <button type="button" data-mode="wire">WIREFRAME</button>
-        <button type="button" data-mode="xray">X-RAY</button>
+        <button type="button" data-mode="relief" class="active" aria-pressed="true">RELIEF</button>
+        <button type="button" data-mode="wire" aria-pressed="false">WIREFRAME</button>
+        <button type="button" data-mode="xray" aria-pressed="false">X-RAY</button>
       </div>
       <button type="button" id="btnLabels" class="active" aria-pressed="true">LABELS</button>
+      <div class="zoom-controls" role="group" aria-label="Map and terrain zoom">
+        <button type="button" id="btnZoomIn" aria-label="Zoom in">ZOOM +</button>
+        <button type="button" id="btnZoomOut" aria-label="Zoom out">ZOOM −</button>
+      </div>
       <button type="button" id="btnVrml" title="Export the current plate as a VRML 2.0 terrarium">VRML ↓</button>
       <button type="button" id="btnReset">RESET</button>
     </div>
   </header>
 
-  <aside class="panel panel-left">
+  <aside class="panel panel-left" id="controlsPanel" aria-label="Viewer controls and checks">
     <section class="card">
-      <h2>Gazetteer · GNIS</h2>
+      <h2>Offline Gazetteer · terrain plates + city names</h2>
       <form class="search-row" role="search" onsubmit="return false">
-        <input type="search" id="searchBox" placeholder="find GNIS name (fuzzy trigram)…" autocomplete="off" />
+        <input type="search" id="searchBox" aria-label="Search offline Gazetteer place names" placeholder="Search place names (2+ letters)…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
-      <p class="tiny">Offline USGS GNIS subset (five packed cities). Mountain plates legitimately have no points; the box-search check says so.</p>
+      <p class="tiny">Search covers the Cheyenne/Pikes Peak and SoCal registers, five city datasets, a name-only Bora Bora locality, and curated island/territory place points including Tasmania, Florida Keys context, Guam and Midway. The mixed-source island list is not complete; source tier, point basis and coordinate caveats remain visible. Select a mapped result to jump to terrain or the globe. GNIS identifiers are shown only where retained in the source register; this is not address lookup.</p>
       <div class="slider-row">
         <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
         <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
@@ -67,6 +75,32 @@
       <ul class="legend" id="layerList"></ul>
     </section>
 
+    <section class="card" aria-labelledby="sensorHeading">
+      <h2 id="sensorHeading">S5 · Local incident &amp; sensor snapshot</h2>
+      <p class="tiny">Choose a versioned canonical JSON export (up to 1 MiB / 2,000 records). No live feed is fetched; no file is uploaded or saved. Dynamic records (incident, fire, camera, NOTAM) older than 24 hours are rejected. Static lookout and SDR locations keep their dated snapshot context. Markers appear on GLOBE only.</p>
+      <label class="small sensor-label" for="sensorFile">Import snapshot JSON</label>
+      <input id="sensorFile" type="file" accept=".json,application/json" />
+      <div class="sensor-actions">
+        <label class="small" for="sensorKind">Show</label>
+        <select id="sensorKind" aria-label="Filter imported snapshot kind">
+          <option value="all">All kinds</option>
+          <option value="incident">Incidents</option>
+          <option value="fire">Fires</option>
+          <option value="camera">Cameras</option>
+          <option value="notam">NOTAMs</option>
+          <option value="lookout">Lookouts</option>
+          <option value="sdr">SDR receivers</option>
+        </select>
+        <button id="sensorClear" type="button" disabled>Clear</button>
+      </div>
+      <p id="sensorStatus" class="small" role="status" aria-live="polite">No snapshot imported.</p>
+      <div id="sensorResults" class="sensor-results" aria-label="Imported snapshot records"></div>
+      <details id="sensorRejects" hidden>
+        <summary>Rejected records: 0</summary>
+        <ul></ul>
+      </details>
+    </section>
+
     <section class="card">
       <h2>Cross-checks</h2>
       <div id="checkList" class="check-list"></div>
@@ -74,10 +108,10 @@
     </section>
   </aside>
 
-  <aside class="panel panel-right">
+  <aside class="panel panel-right" id="inspectorPanel" aria-label="Inspector and source details">
     <section class="card">
       <h2 id="infoTitle">Inspector</h2>
-      <div id="infoBody"><p class="small">Click a GNIS marker. Every point carries its GNIS class and coordinates.</p></div>
+      <div id="infoBody"><p class="small">Click a Gazetteer marker or an imported snapshot marker/record to inspect its source.</p></div>
     </section>
 
     <section class="card">
@@ -85,13 +119,18 @@
       <div id="cardList" class="card-list"></div>
       <p class="tiny">Each opens its own 4Dwm window. DATUM NAVD 88; horizontal NAD83/EPSG:4326.</p>
     </section>
+    <section class="card" aria-labelledby="fheDemHeading">
+      <h2 id="fheDemHeading">FHE · 4DWM formula experiment</h2>
+      <p class="small">Exact integer squared-error sum: <code>Σ(sample − reference)²</code>. Separate BFV CLI experiment on synthetic terrain-like values returned <b>175</b> for four pairs, with one multiplication layer and a positive noise budget.</p>
+      <p class="tiny">Not encrypted terrain, not connected to this browser viewer, and not a DEM accuracy claim. The experiment encrypts both inputs, evaluates one aggregate, and decrypts locally. Run <code>npm run demo:bfv-dem-sse</code>; see <code>docs/research/4dwm-fhe-squared-error-2026-11-15.md</code> for bounds, sources, and limits.</p>
+    </section>
   </aside>
 
   <div class="statusbar">
     <span id="statPlate">plate: —</span>
     <span id="statChecks">checks: —</span>
     <span id="hudFps">fps: —</span>
-    <span id="status">boot…</span>
+    <span id="status" role="status" aria-live="polite">boot…</span>
   </div>
 
   <div class="pip-layer" id="pipLayer"></div>

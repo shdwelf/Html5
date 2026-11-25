@@ -65,12 +65,36 @@ test('firmware candidates point at the hash-recorded archive.org mirrors', () =>
   assert.match(first.download, /^https:\/\/archive\.org\/download\//);
   for (const c of FIRMWARE_CANDIDATES) {
     assert.ok(EVOLUTION_TARGETS.some((t) => t.id === c.target), `unknown target ${c.target}`);
-    assert.match(c.status, /romz/);
+    assert.match(c.status, /romz|raw \.rom/);
   }
   const md = buildAssembly({ reports: [], generatedAt: '2026-10-28T00:00:00.000Z' });
   assert.match(md, /Lantronix_XPort-Pro_6\.0\.0\.1R2_136c8/);
   assert.match(md, /xport_pro_6_0_0_1_R2\.romz/);
   assert.match(md, /evolution-os-software-search-2026-10-28\.md/);
+});
+
+test('x86 candidates carry the raw .rom payload facts', () => {
+  const xpico = FIRMWARE_CANDIDATES.find((c) => c.target === 'xpico');
+  assert.equal(xpico.payloadName, 'xpico_7003.rom');
+  assert.equal(xpico.payloadBytes, 131072);
+  assert.equal(xpico.payloadMd5, '71e078c3ee61fef06c67cd916dd9f767');
+  const x05 = FIRMWARE_CANDIDATES.find((c) => c.archiveOrg === 'Lantronix_XPort-05_7.0.0.4_1c3f8');
+  assert.equal(x05.payloadName, 'xpt05_7004.rom');
+  assert.equal(x05.payloadMd5, '34159ce8243f8c6cf77579d9a8378a61');
+});
+
+test('assembly renders inflated and raw probe verdicts', () => {
+  const md = buildAssembly({
+    reports: [],
+    probes: [
+      { file: 'a.romz', bytes: 10, sha256: 'aa', magicHex: '1f 8b', attempts: [{ method: 'gzip', offset: 0, ok: true, plausible: true, outBytes: 20 }], inflated: { method: 'gzip', outBytes: 20, sha256: 'bb', keywordHits: { evolution: 2 } }, verdict: 'inflated', vectorTable: { initialStackPointer: '0x00010000', resetEntry: '0x00000400', resetEntryWithinImage: true } },
+      { file: 'b.rom', bytes: 131072, sha256: 'cc', magicHex: 'e9', attempts: [], inflated: null, verdict: 'raw', vectorTable: null },
+    ],
+    generatedAt: '2026-10-28T00:00:00.000Z',
+  });
+  assert.match(md, /Verdict: inflated/);
+  assert.match(md, /Verdict: raw/);
+  assert.match(md, /reset entry/);
 });
 
 test('assembly with no reports states the gap instead of inventing a listing', () => {

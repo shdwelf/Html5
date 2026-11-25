@@ -1,0 +1,79 @@
+== ACE blocked-mode CRC failure: distance-history fix — 2026-11-07 ==
+
+Source: docs/ace-delta-history-crc-fix-2026-11-07.md — synced 2026-11-07 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= ACE blocked-mode CRC failure: distance-history fix — 2026-11-07 =
+
+== Result ==
+
+The `-2` patterned-input failure is a decompression/data-round-trip defect, not an
+incorrect CRC-32 calculation and not CyberChef's separate ACE header CRC-16
+check. A separate source patch fixes the defect in the external
+[`seb3773/ace-c`](https://github.com/seb3773/ace-c) encoder. It does **not** alter
+this repository's ACE header parser.
+
+The earlier 2026-11-04 experiment note did not preserve the original temporary
+fixture generator, so that exact byte sequence could not be replayed. A
+repeatable representative varying-offset fixture was reconstructed and produces
+the same reported failure class:
+
+```python
+n = 131072
+input[i] = ((i % 7) + (i // 7)) & 0xff
+```
+
+At base commit `6cc986fbecf65137bc4657039fba1eb227e2e446`, `ace a ... -2 ...`
+followed by `ace t` reports `crc mismatch` for this fixture. The same happens
+with only the two-queue Huffman patch applied. The same input passes `-z`
+integrity testing and extraction. The new regression script also checks period-13
+and period-64 variants.
+
+== Diagnosis ==
+
+The CRC routine's raw ACE CRC-32 variant is consistent between archive writing
+and verification. Extraction produces wrong bytes after a blocked-mode boundary.
+The compressor called `tokenize()` separately for each blocked LZ77/DELTA run;
+`tokenize()` reset its four-entry repeat-distance history every time. The decoder
+keeps that history in `ace_lz77_t.dh` across typecode/mode switches. Thus, a
+repeated-distance symbol in a later run could refer to a different distance at
+decode time than the encoder used. The Huffman tree change was not causal: it
+changes code lengths/tie ordering, while leaving this token-history mismatch
+unchanged.
+
+The fix owns and zero-initializes the repeat-distance history once per compressed
+member, then passes that shared state through each tokenization call. It aligns
+the encoder with the decoder's existing state lifetime; it does not weaken or
+bypass any CRC check.
+
+== Patch and verification ==
+
+- [`patches/ace-c-lz77-distance-history.patch`](../patches/ace-c-lz77-distance-history.patch)
+  — separate patch against `ace-c` base commit `6cc986f`; it changes only
+  `src/compress.c` when applied.
+- [`scripts/test-ace-c-distance-history-fix.sh`](../scripts/test-ace-c-distance-history-fix.sh)
+  — builds a temporary checkout, confirms the `-z` control, reproduces the
+  baseline and Huffman-only `-2` CRC failures, applies the distance-history fix,
+  and verifies `ace t`, extraction, and byte-for-byte `cmp` for three fixtures.
+- Run with:
+
+  ```sh
+  ACE_C_DIR=/path/to/ace-c ./scripts/test-ace-c-distance-history-fix.sh
+  ```
+
+Verified in this workspace: baseline and Huffman-only builds both reproduced the
+CRC mismatch; the combined two-queue Huffman plus distance-history build passed
+`test_core` and all three `-2` integrity/extraction comparisons. The existing
+[`scripts/test-ace-c-huffman-patch.sh`](../scripts/test-ace-c-huffman-patch.sh)
+also passed its 14,150 Huffman vectors and five archive round trips.
+
+== Scope and remaining caveats ==
+
+This is a source-level fix for the independent `ace-c` implementation, not a
+patch to CyberChef's header-CRC code or a change to this repository's ACE parser.
+The reconstructed fixture is a confirmed representative reproducer, but the
+exact earlier temporary fixture was not saved, so this does not claim a
+bit-for-bit replay of that original run. Independent WinACE-compatible reader
+testing, third-party ACE corpus testing, cross-version testing, and original
+WinACE executable disassembly remain open validation gates. The Huffman patch
+also retains its separate tie-order/interoperability caveat.

@@ -13,6 +13,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { inflateRawSync } from "node:zlib";
 
 import { buildModel } from "../js/ghs-model.js";
 import { campusToVrml, vrmlStats } from "../js/ghs-vrml.js";
@@ -543,22 +544,10 @@ section("webxdc (.xdc) bundle");
     const lExtraLen = z.getUint16(localOfs + 28, true);
     const dataOfs = localOfs + 30 + lNameLen + lExtraLen;
     const stored = zip.subarray(dataOfs, dataOfs + csize);
-    let payload = stored;
-    if (method === 8) {
-      // stored deflate blocks — walk them back to raw bytes
-      const out = [];
-      let q = 0;
-      while (q < stored.length) {
-        const last = stored[q];
-        const len = stored[q + 1] | (stored[q + 2] << 8);
-        q += 5;
-        for (let k = 0; k < len; k++) out.push(stored[q + k]);
-        q += len;
-        if (last) break;
-      }
-      payload = Uint8Array.from(out);
-    }
-    if (payload.length !== usize || crc32(payload) !== crc) crcBad++;
+    // This directory walker is independent of the ZIP writer. DEFLATE
+    // payloads are decoded by Node's zlib, not the vendored fflate encoder.
+    const payload = method === 8 ? inflateRawSync(stored) : method === 0 ? stored : null;
+    if (!payload || payload.length !== usize || crc32(payload) !== crc) crcBad++;
     entries++;
     void name;
     cdOfs += 46 + nameLen + extraLen + commentLen;

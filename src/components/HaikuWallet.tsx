@@ -11,9 +11,12 @@ import {
 } from "../lib/wallet";
 import {
   decryptVaultFile,
+  decryptVaultFileV2,
   downloadStandaloneDecryptor,
   downloadVaultFile,
+  downloadVaultFileV2,
   encryptVaultFile,
+  VAULT_FILE_V2_MAGIC,
 } from "../lib/vaultfile";
 import { drawEnso } from "../lib/enso";
 import { decodeEnsoId } from "../lib/enso";
@@ -36,6 +39,9 @@ function EnsoThumb({ ensoId }: { ensoId: string }) {
 
 export default function HaikuWallet({ ensoId }: Props) {
   const [items, setItems] = useState<HaikuWalletItem[]>([]);
+  const itemsRef = useRef<HaikuWalletItem[]>([]);
+  const ensoIdRef = useRef(ensoId);
+  ensoIdRef.current = ensoId;
   const [count, setCount] = useState(1);
   const [requireGrammar, setRequireGrammar] = useState(true);
   const [grammarThreshold, setGrammarThreshold] = useState(70);
@@ -45,33 +51,41 @@ export default function HaikuWallet({ ensoId }: Props) {
   const cancel = useRef(false);
   const [imported, setImported] = useState<string | null>(null);
   const [vaultMsg, setVaultMsg] = useState<string | null>(null);
+  const [v2Busy, setV2Busy] = useState(false);
   const vaultFileInput = useRef<HTMLInputElement>(null);
 
-  // Import a .haikuvault file (AES-256-GCM, PBKDF2 x120k) using the current
-  // Ensō ID as the password, merging into the vault without duplicates.
+  // Import v1 or v2 using the current Ensō ID; v2 authenticates its frame before
+  // optional LZMA2 decompression. Merge without duplicates.
   const onVaultFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = ""; // allow re-selecting the same file
     if (!file) return;
+    const importEnsoId = ensoId;
     try {
       const blob = await file.text();
-      const parsed = decryptVaultFile(blob, ensoId);
+      const parsed = blob.trim().startsWith(VAULT_FILE_V2_MAGIC)
+        ? await decryptVaultFileV2(blob, importEnsoId)
+        : decryptVaultFile(blob, importEnsoId);
+      if (ensoIdRef.current !== importEnsoId) {
+        setVaultMsg("Ensō ID changed while decrypting; import cancelled. Select the file again.");
+        window.setTimeout(() => setVaultMsg(null), 4200);
+        return;
+      }
       const incoming = Array.isArray(parsed) ? parsed : [];
-      let added = 0;
-      setItems((prev) => {
-        const seen = new Set(prev.map((p) => p.mnemonic));
-        const fresh = incoming.filter(
-          (it): it is HaikuWalletItem =>
-            !!it && typeof it.mnemonic === "string" && !seen.has(it.mnemonic)
-        );
-        added = fresh.length;
-        const next = [...fresh, ...prev];
-        saveVault(next, ensoId);
-        return next;
+      const current = itemsRef.current;
+      const seen = new Set(current.map((item) => item.mnemonic));
+      const fresh = incoming.filter((item): item is HaikuWalletItem => {
+        if (!item || typeof item.mnemonic !== "string" || seen.has(item.mnemonic)) return false;
+        seen.add(item.mnemonic);
+        return true;
       });
+      const next = [...fresh, ...current];
+      itemsRef.current = next;
+      setItems(next);
+      saveVault(next, importEnsoId);
       setVaultMsg(
-        added > 0
-          ? `Imported ${added} wallet${added > 1 ? "s" : ""} from ${file.name}.`
+        fresh.length > 0
+          ? `Imported ${fresh.length} wallet${fresh.length > 1 ? "s" : ""} from ${file.name}.`
           : `No new wallets in ${file.name} (all already present, or the file was empty).`
       );
     } catch {
@@ -97,10 +111,13 @@ export default function HaikuWallet({ ensoId }: Props) {
 
   // Load encrypted vault using the Ensō ID as the master password
   useEffect(() => {
-    setItems(loadVault(ensoId));
+    const loaded = loadVault(ensoId);
+    itemsRef.current = loaded;
+    setItems(loaded);
   }, [ensoId]);
 
   const persist = (next: HaikuWalletItem[]) => {
+    itemsRef.current = next;
     setItems(next);
     saveVault(next, ensoId);
   };
@@ -109,12 +126,12 @@ export default function HaikuWallet({ ensoId }: Props) {
   const addMnemonic = (phrase: string) => {
     const item = itemFromMnemonic(phrase, ensoId);
     if (!item) return;
-    setItems((prev) => {
-      if (prev.some((p) => p.mnemonic === item.mnemonic)) return prev;
-      const next = [item, ...prev];
-      saveVault(next, ensoId);
-      return next;
-    });
+    const current = itemsRef.current;
+    if (current.some((existing) => existing.mnemonic === item.mnemonic)) return;
+    const next = [item, ...current];
+    itemsRef.current = next;
+    setItems(next);
+    saveVault(next, ensoId);
   };
 
   const forge = async () => {
@@ -132,10 +149,14 @@ export default function HaikuWallet({ ensoId }: Props) {
         grammarThreshold,
         maxAttempts: 60000,
       });
+      if (ensoIdRef.current !== ensoId) break;
       if (w) {
         collected.push(w);
         setForged(collected.length);
-        persist([...items, ...collected]);
+        const current = itemsRef.current;
+        if (!current.some((item) => item.mnemonic === w.mnemonic)) {
+          persist([...current, w]);
+        }
       }
       setProgress(((i + 1) / count) * 100);
     }
@@ -270,10 +291,30 @@ export default function HaikuWallet({ ensoId }: Props) {
             <button
               onClick={() => downloadVaultFile(items, ensoId)}
               disabled={!items.length}
-              title="AES-256-GCM vault file (PBKDF2 ×120k) — decryptable by the standalone decryptor"
+              title="Legacy v1 AES-256-GCM vault file; format and behavior are unchanged"
               className="rounded-lg border border-cyan-800 px-3 py-1.5 text-xs text-cyan-300 hover:bg-cyan-950/40 disabled:opacity-40"
             >
-              🔐 Export .haikuvault
+              🔐 Export v1 .haikuvault
+            </button>
+            <button
+              onClick={async () => {
+                setV2Busy(true);
+                setVaultMsg(null);
+                try {
+                  await downloadVaultFileV2(items, ensoId, { compression: "auto" });
+                  setVaultMsg("Exported v2 .haikuvault (LZMA2 is used only when it saves space).");
+                } catch (error) {
+                  setVaultMsg(error instanceof Error ? error.message : "Could not export v2 vault.");
+                } finally {
+                  setV2Busy(false);
+                  window.setTimeout(() => setVaultMsg(null), 4200);
+                }
+              }}
+              disabled={!items.length || v2Busy}
+              title="Opt-in v2 AES-256-GCM file with authenticated framing and optional LZMA2 compression"
+              className="rounded-lg border border-emerald-800 px-3 py-1.5 text-xs text-emerald-300 hover:bg-emerald-950/40 disabled:opacity-40"
+            >
+              {v2Busy ? "⏳ Creating v2…" : "🔐 Export v2 .haikuvault"}
             </button>
             <button
               onClick={() =>
@@ -281,7 +322,7 @@ export default function HaikuWallet({ ensoId }: Props) {
                   items.length ? encryptVaultFile(items, ensoId) : undefined
                 )
               }
-              title="Self-contained HTML page that opens .haikuvault files with your Ensō ID — no network, no dependencies"
+              title="Self-contained, offline decryptor for legacy v1 .haikuvault files"
               className="rounded-lg border border-cyan-800 px-3 py-1.5 text-xs text-cyan-300 hover:bg-cyan-950/40"
             >
               🧰 Standalone decryptor ⬇
@@ -314,8 +355,13 @@ export default function HaikuWallet({ ensoId }: Props) {
             </p>
           )}
           <p className="text-[11px] text-zinc-600">
-            Vault is AES-256 encrypted with your Ensō ID and saved to an encrypted
-            cookie + localStorage for offline persistence.
+            Vault data remains encrypted with your Ensō ID in an encrypted cookie
+            and localStorage. v1 stays unchanged; v2 is opt-in and authenticates
+            its frame before optional LZMA2 decompression. The v2 codec is loaded
+            from local app assets only. See the{" "}
+            <a className="underline" href="/licenses/7z-wasm/THIRD_PARTY_NOTICES.md" target="_blank" rel="noreferrer">
+              codec notices
+            </a>.
           </p>
           </div>
         </Collapsible>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xena><meta_data><meta_data_wrapper_name>Default Package Wrapper</meta_data_wrapper_name><normaliser_name>au.gov.naa.digipres.xena.kernel.normalise.BinaryToXenaBinaryNormaliser</normaliser_name><input_source_uri>grasp-gl:SNEAKERS.EXE!/x1.txt</input_source_uri><html5_provenance><collection>Universal Pictures Sneakers computer press kit (1992), GRASPRT 4.00d</collection><method>static bytes only; nothing executed</method><generated_by>tools/xena_binary_archive.py</generated_by><container>SNEAKERS.EXE GRASP GL library @121997</container><gl_offset>1116510</gl_offset><gl_key_word>0xec70</gl_key_word><cipher>GRASPRT 4.00d byte permutation (xorshift31 seeded key*0x7cf7)</cipher></html5_provenance></meta_data><content><binary-object:binary-object xmlns:binary-object="http://preservation.naa.gov.au/binary-object/1.0" binary-object:description="The following data is a MIME-compliant (RFC 2045) PEM base64 (RFC 1421) representation of the original file contents.">
+bGluayBjY2YNCg0KdG9wZGF0YToNCjENCg0Kc2NyZWVuMToNCjE2LDMwMCw2MDcgMA0KIlBST0xP
+R1VFIFRPIFRIRSBDT05GSURFTlRJQUwgQ0FTRSBGSUxFUyINCg0KIlRoZSBleGNpdGVtZW50IGFu
+ZCBzdXNwZW5zZSBvZiB0aGUgbW90aW9uIHBpY3R1cmUgU05FQUtFUlMgDQppcyBmdWVsZWQgYnkg
+bW9yZSB0aGFuIG5pbmUgeWVhcnMgb2YgcmVzZWFyY2ggaW50byB0aGUgDQpmcm9udGllcnMgb2Yg
+dGhlIEluZm9ybWF0aW9uIEFnZS4gIEFzIHRoZSBzY3JpcHQgdG9vayBzaGFwZSANCm92ZXIgdGhl
+IHllYXJzLCB0aGUgZmlsbW1ha2VycyBkcmV3IGluc3BpcmF0aW9uIGZyb20gYW4gDQphcnJheSBv
+ZiBzdWJqZWN0cyAtLSByYW5naW5nIGZyb20gY29tcHV0ZXIgaGFja2VycyB0byANCmNyeXB0b2xv
+Z3kgdG8gYSBzZWNyZXRpdmUgZ292ZXJubWVudCBhZ2VuY3kgY2FsbGVkIHRoZSBOU0EuDQoNClRo
+ZSBlbGVjdHJvbmljIGZyb250aWVyIGlzIG9wZW5pbmcgdXAgZmFzdGVyIHRoYW4gYW55IA0KZG9j
+dW1lbnQgY2FuIHJlY29yZC4gIFdoYXQgZm9sbG93cyBpcyBhIHNhbXBsaW5nIG9mIHNvbWUgb2Yg
+DQp0aGUgY29tcGVsbGluZyBmYWN0cyBiZWhpbmQgdGhlIGNyZWF0aXZlIGZpY3Rpb24gb2YgDQpT
+TkVBS0VSUy4NCg0KICAgICAjICAjICAjIg0KDQoNCg0KGg==
+</binary-object:binary-object></content></xena>

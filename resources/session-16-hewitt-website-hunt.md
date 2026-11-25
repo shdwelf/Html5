@@ -1,0 +1,349 @@
+# Session 16 — The Hewitt Website Hunt (archive.org / Wayback), 28 October 2026
+
+> **Subject:** the personal website of **Maurice Frederick “Fred” Hewitt**
+> (1913–2007, Duarte CA; ASN **19067302**, Air Corps, enlisted 4 Jan 1942,
+> Los Angeles — see `resources/session-14-hewitt-military-pow.md`), remembered
+> by family as showing **his service ribbons and a young photograph of him**,
+> topic: his military service. Probable hosts guessed by family: AOL /
+> EarthLink member pages; possibly connected to son-in-law James Eiselein
+> or to brother Melvin Samuel “Sam” Hewitt (ASN **19179305**, 301st BG,
+> Stalag Luft IV — session-15).
+>
+> **Method, executed in the order agreed with the user:** (1) GeoCities
+> mirrors (OOCities/Reocities) and Homestead/FortuneCity/Angelfire/Tripod
+> Wayback CDX variants under non-obvious usernames; (2) veterans’-profile
+> sites that display ribbons + portrait (Together We Served, HonorStates,
+> unit-association pages); (3) Eiselein-authored family pages, plus
+> verification of the open RootsWeb lead.
+>
+> **Headline:** Maurice’s own site is **still not located**. The strongest
+> new artefact is **Sam’s** serviceman page on 301bg.com, which does display
+> his award ribbons — supporting the standing hypothesis that some family
+> memories of “Maurice the airman” (radio operator, ribbons) belong to the
+> younger brother. Every negative below is a *searched-and-empty* result,
+> not an absence of searching.
+
+---
+
+## 1. Step 1 — GeoCities mirrors and alternate hosts (all negative)
+
+Wayback CDX prefix/domain probes, all returning `[]` (no captures):
+
+| Probe | Result |
+|---|---|
+| `geocities.com/hewittfamily` (prefix) | empty |
+| `geocities.com/thehewitts` (prefix) | captures exist only for **`thehewitts_2000`** — a web-graphics/backgrounds site (buttons, dividers, guestbook); not a family or military page |
+| `fhewitt.homestead.com` (domain) | empty |
+| `members.fortunecity.com/fhewitt` (prefix) | empty |
+| `members.tripod.com/fhewitt` (prefix) | empty (earlier session: `fhewitt.tripod.com` domain also empty) |
+| `angelfire.com/*hewitt` (prefix pattern) | empty |
+| `www.oocities.org/fhewitt` | no page (fetch 404-class failure) |
+| web search `oocities.org OR reocities.com Hewitt … Duarte/army` | no relevant mirror |
+
+Combined with the previous session’s empties (`geocities.com/fhewitt`,
+`geocities.com/fredhewitt*` = SEO spam, `fredhewitt.com` = an unrelated
+photographer), the GeoCities/free-host space under obvious and
+family-style usernames is now well covered and negative.
+
+## 2. Step 2 — Ribbons-and-portrait profile sites
+
+### 2.1 Sam M. Hewitt **found** on 301bg.com (ribbons: yes; portrait: not yet)
+
+`https://www.301bg.com/352nd_Squadron_Servicemen.cfm` lists, in the 352nd
+Bomb Squadron roster, **Hewitt, Sam M** (as both S/Sgt and TSGT). His
+serviceman page — `https://www.301bg.com/Hewitt_Sam_H9305_301BG.cfm`
+(page key `H9305` = last four of ASN **19179305**, confirming identity) —
+tabulates his awards *with ribbon images*, extracted from 15th Air Force
+General Orders:
+
+| Date | Order | Award |
+|---|---|---|
+| 07 May 1944 | GO 445, 15th AF | Air Medal + Bronze Oak Leaf Cluster |
+| 14 May 1944 | GO 445 / GO 446, 15th AF | Air Medal + OLC; Air Medal |
+| 30 May 1944 | GO 733, 15th AF | Air Medal + 2 OLC |
+| 10 Jul 1944 | GO 1750, 15th AF | Air Medal + 3 OLC (order post-dates his 26 Jun 1944 capture) |
+
+Plus a “2/25/1944 PUC” (Presidential Unit Citation) notation. The page
+carries **no portrait** and explicitly solicits one (“please contact us
+with any biographical data, pictures…”). So the ribbons half of the family
+memory exists online — for **Sam**, on his unit-association site.
+
+### 2.2 Maurice on AncientFaces — record yes, photo no
+
+`https://www.ancientfaces.com/person/maurice-f-hewitt-birth-1913-death-2007/84888805`
+independently reproduces his enlistment card (serial 19067302, enlisted
+4 Jan 1942 Los Angeles, Air Corps, carpenter, 3 years high school) but
+uses a generic avatar: **no photograph, no ribbons, no user memories**.
+
+### 2.3 Together We Served / HonorStates — inconclusive, not negative
+
+Name/serial searches surface no Hewitt profile for either brother on
+`*.togetherweserved.com` or HonorStates. TWS “shadow box” pages (which
+are exactly the ribbons-plus-portrait format remembered) are poorly
+indexed and largely login-walled, so this is recorded as
+**searched, nothing indexed found** — it does not prove no profile exists.
+
+## 3. Step 3 — Eiselein pages, and the RootsWeb lead closed
+
+Wayback CDX prefix probes, all `[]`:
+
+- `home.earthlink.net/~eiselein`, `~jeiselein`, `~jimeiselein` — empty
+  (previous session: `~l7070` and `homepages.earthlink.net/~l7070`, from
+  James Eiselein’s `l7070@earthlink.net`, also empty);
+- `members.aol.com/eiselein` — empty;
+- `geocities.com/eiselein` — empty.
+
+**RootsWeb lead — ruled out.** The one live Hewitt personal site in the
+Wayback Machine, `freepages.rootsweb.com/~hewitt/genealogy/` (captures
+Aug 2024–Jan 2025; `index.html`, `photos.html`, Guam group photo, Petersen
+family photos), is the work of **Heath Martin Hewitt**
+(`hhewitt@ucla.edu`, page created 21 Apr 2000, untouched since ~2006),
+tracing the colonial **Thomas Hewitt of Stonington, Connecticut** line.
+No Duarte, Maurice, Louise, or California-daily-life content. Not our
+family.
+
+## 4. Standing conclusion and next avenues
+
+1. **Maurice’s own website remains unfound.** AOL/EarthLink/GeoCities/
+   Tripod/FortuneCity/Homestead/Angelfire/RootsWeb under every plausible
+   username tried across two sessions return nothing; archive.org *item*
+   searches return only the French violinist Maurice Hewitt (1884–1971)
+   and unrelated namesakes.
+2. **The ribbons-plus-young-photo memory now has a concrete partial
+   match in Sam’s 301bg.com page** (ribbons documented; photo solicited
+   but absent). Given session-14’s finding that the “radio operator”
+   story also fits Sam better than Maurice, conflation of the brothers
+   in family memory is the leading explanation — but Maurice’s page, if
+   it existed, would have been a separate artefact.
+3. **Next avenues, in order of expected yield:**
+   - Fold3 / NARA **MACR for the 26 June 1944 Vienna loss** — names Sam’s
+     crew and aircraft; a crew photograph (often on the pilot’s 301bg.com
+     page or Fold3) is the likeliest source of a *young Sam* picture.
+   - **NARA NPRC (St. Louis) OMPFs** for both brothers — settles Maurice’s
+     unit/MOS and Sam’s crew position.
+   - Wayback *availability-API* sweep of `hometown.aol.com/<username>`
+     variants (AOL Hometown used different URL grammar than
+     `members.aol.com` and has not yet been cleanly probed).
+   - Camp Hidden Valley material for the book introduction is already
+     solid and independent of this hunt: the camp-history record states
+     Fred Hewitt of Duarte built Hidden Valley’s craft shelter and that
+     he and Louise served as its resident managers for many years,
+     corroborated by Louise’s 2005 obituary.
+
+## 5. Addendum (same day) — Hometown sweep closed; Sam's aircraft and crew identified
+
+### 5.1 AOL Hometown: negative
+
+Wayback CDX prefix probes on `hometown.aol.com/<name>` for `fhewitt`,
+`fredhewitt`, `mfhewitt`, `mauricehewitt`, `hewittf`, `hewitt`, `l7070`,
+and `eiselein` all returned `[]`. (A domain-wide sanity query was too
+heavy for the CDX endpoint and timed out, so this is recorded as
+username-complete, not host-complete.) With `members.aol.com` already
+empty (previous sessions), the AOL space is closed under every plausible
+username.
+
+### 5.2 Sam's aircraft: B-17G **42-31701**, MACR **6353** — radio operator confirmed
+
+The 32nd Bomb Squadron loss list (32ndbombsquadron.org, from Werrel's
+301st BG history *Who Fears*) records two 301st losses over Vienna on
+26 Jun 1944: 42-31482 (5 killed, 5 POW) and **42-31701 (all POW)**. The
+B-17 Flying Fortress database (b17flyingfortress.de, airframe 42-31701,
+MACR 6353, lost by flak, 54 missions) gives the crew:
+
+| Position | Name |
+|---|---|
+| Pilot | Norman L Gourley |
+| Co-pilot | Hughes |
+| Navigator | Reeves |
+| Bombardier | Williams |
+| Flight engineer / top turret | Jones |
+| **Radio operator** | **Hewitt** |
+| Ball turret | Turney |
+| Waist gunner | Ingold |
+| Waist gunner | Seger |
+| Tail gunner | Whaley |
+
+All ten became POWs; the aircraft crashed at “Ugarn” (Ungarn = Hungary
+in the German-language loss records; the aircraft came down in the
+Vienna–Hungary border area). This **confirms from an independent,
+airframe-level source that Sam Hewitt flew as his crew's radio
+operator**, settling the family “radio operator” story in his favour
+(cf. session-14 §3, where it was only the cleanest reading).
+
+**Squadron nuance, recorded honestly:** the airframe was assigned to the
+32nd BS, while Hewitt (and ball-turret gunner Turney, per his own awards
+page) were carried on the **352nd BS** roster at 301bg.com —
+cross-squadron crewing was routine in the 15th Air Force; MACR 6353
+itself (below) is the authoritative document.
+
+**Crew-photo hunt:** pilot Norman L Gourley's 301bg.com page
+(`gourley-norman-g3687-301bg.cfm`) carries no awards table and no photo;
+no crew photograph for 42-31701 was found in web search, and the airframe
+database likewise holds no photo of this aircraft. The young-Sam portrait
+therefore remains unlocated online.
+
+**MACR 6353 access:** held by NARA (RG 92, Entry A1 2109-B; digitized in
+the NARA Catalog / Fold3). NARA’s reference desk
+(`archives2reference@nara.gov`) will locate a report given the three keys
+we now have: **date of loss 26 Jun 1944, tail 42-31701, crewman
+Hewitt, Sam M, ASN 19179305**. The MACR will give every crewman’s serial
+number, position, and next-of-kin — the last being directly useful for
+reaching crew families who may hold the crew photograph.
+
+## 6. Addendum 2 — family-surname usernames, memorial sites, legacy hosts
+
+Executed after the §5 addendum, same day. All negative or ruled out:
+
+- **Family-surname usernames:** Wayback CDX `[]` for
+  `freepages.rootsweb.com/~eiselein`, `~greeran`, `~hewittcarey`, and
+  `geocities.com/careyhewitt` (Louise's maiden name Carey, and the
+  children's married names Eiselein / Greeran, produce no sites).
+- **Legacy hosts:** CDX prefix `[]` for
+  `ourworld.compuserve.com/homepages/hewitt` and
+  `pages.prodigy.net/hewitt`. One hit elsewhere:
+  **`groups.msn.com/HewittFamily`** (captures Nov 2003–Jun 2004, message
+  board + photo shoebox) — inspected via the 28 Nov 2003 capture; members
+  (“bobo”, “Dotty”, “Bill”, “Tammie”) and content (PC-crash chatter,
+  Christmas 2002 photos) match **no one** in the Duarte family. Ruled out.
+- **Find a Grave:** no matching memorial for the Duarte Maurice F.
+  Hewitt (1913–2007) was found. A memorial with the exact full name,
+  ID **14702273**, is a different man: an RAF Flight Sergeant who died
+  **14 May 1943** at El Alamein, Egypt. Do not merge the two men; see
+  §10 and session-17 §3h.
+- **WWII Memorial Registry (ABMC):** no indexed honoree page for Maurice.
+
+**Status after two sessions:** every free-host, mirror, memorial,
+registry, and unit-association avenue under every plausible name has
+been searched. The remaining doors are (a) a screen name nobody has
+guessed yet, or (b) paper records (MACR 6353; NPRC OMPFs). Any recalled
+fragment of the site's address, title, or screen name would reopen (a)
+immediately.
+
+## 7. Addendum 3 — KG6ZD residuals closed; family testimony (31 Oct 2026)
+
+- **EarthLink/Tripod under the callsign:** Wayback CDX `[]` for
+  `home.earthlink.net/~kg6zd`, `kg6zd.tripod.com` (domain), and
+  `members.tripod.com/kg6zd/index.htm` (exact); the `members.tripod.com/
+  kg6zd` *prefix* query repeatedly errored on the CDX endpoint and is
+  recorded as near-closed rather than proven. Combined with §5/§6:
+  AOL (both grammars), EarthLink, GeoCities, QSL.net (no captures),
+  hometown, Tripod — the callsign has **no archived home page anywhere
+  probed**.
+- **QRZ.com via proxy (Jina reader):** “The search for KG6ZD produced
+  no results” — QRZ drops long-expired callsigns (his cancelled
+  27 Jul 2007) from public search; no QRZ biography survives. HamCall
+  holds the call in its archive database but walls it behind login.
+- **ARRL QST “Silent Keys” 2007 — not openly checkable:** archive.org's
+  `sim_qst` run ends at the 2001 volume/index; 2007 QST is in ARRL's
+  members-only periodicals archive. The 2007 QST index confirms the
+  Silent Keys column ran monthly (Jan p.92, Feb p.96, Mar p.85, Apr
+  p.92 … Sep p.86); a Maurice listing, if reported, would sit in an
+  Apr–Jun 2007 issue (he died 28 Feb 2007). Family-side check via any
+  ARRL member remains open.
+- **Family testimony (user, 31 Oct 2026 — uncorroborated, recorded as
+  recollection):** Maurice “loved *Nuts and Volts* [the electronics
+  hobbyist magazine], always went to RadioShack, and ate Chicken
+  Littles from KFC.” Consistent with, and humanising, the documented
+  record: carpenter (1942 enlistment card), wartime-Air-Corps
+  generation of radio men, FCC amateur license **KG6ZD** granted in
+  his eighties (1995), Camp Hidden Valley builder/manager, and Duarte
+  food-service volunteer (session-17). These details belong in the
+  book's portrait of him exactly as family memory; no print source has
+  been claimed for them.
+
+## 8. Addendum 4 — ham-community sweep and the Tripod close (31 Oct 2026)
+
+In the order queued at the close of addendum 3:
+
+1. **Pasadena Radio Club (W6KA) / SGV clubs:** no `Hewitt`/`KG6ZD`
+   hit. W6KA's online library is Field Day *video* back to the early
+   1990s (Bruce Nolte, N1BN) — not text-searchable, and no roster
+   surfaced; the San Gabriel Valley Radio Club (W6QFK, ARRL-affiliated
+   since 1957, ~12 members today) has no public newsletter archive.
+   **Reading of the silence:** Maurice's footprint (no club roster, no
+   Field Day log, no QRZ page, no ham home page) fits a *listener/
+   builder* ham — the *Nuts and Volts*/RadioShack workbench profile of
+   the family testimony — rather than a club-and-contest operator.
+2. **eHam / silent-key memorial indexes:** no KG6ZD entry found.
+3. **Tripod, final retry:** `members.tripod.com/kg6zd` prefix now
+   returns `[]` — **Tripod is formally closed**; the kg6zd web
+   footprint is exhausted on every host probed.
+4. **Family paper requests:** drafted as `session-18` (MACR 6353 via
+   NARA; NPRC OMPFs for 19067302 and 19179305; ARRL-member side quest
+   for QST Silent Keys, Apr–Jun 2007).
+
+
+## 9. Addendum 5 — the TogetherWeServed shadow-box lead; VHP negative (31 Oct 2026)
+
+- The remembered artefact — **ribbons, a young uniform photograph, a
+  “shadow box,” built by Maurice himself** — matches the house format
+  of **TogetherWeServed (TWS)**, whose veteran profiles are presented
+  literally as shadow boxes (service photo, badges/ribbons, units,
+  timeline). TWS's public U.S. Air Force index lists **“Hewitt,
+  Sam M., TSgt (1942–1945)”** among Aerial Gunnery School classmates —
+  brother Sam has, or is indexed by, a TWS profile of the kind TWS
+  volunteers create as Roll of Honor pages for deceased veterans.
+- Maurice is **not** findable through search-engine-indexed TWS
+  pages, and TWS's own people search sits behind member login. The
+  one untested door is therefore human and free: register on TWS,
+  search both the Army and Air Force sites for **Maurice F. Hewitt /
+  ASN 19067302**, and open Sam's profile — its creator/“served with”
+  credits may name whoever built the family pages, or be family.
+- **Library of Congress Veterans History Project:** catalogue search
+  returns other Hewitts (William Myers, Richard A., Harold Austin)
+  — **no Maurice collection**. Negative recorded.
+- **Status unchanged: the website is still NOT LOCATED.** Every
+  free-host, mirror, registry and index avenue remains exhausted;
+  the TWS member search joins the ARRL QST check (session-18) as a
+  family-side click, and paper (MACR 6353, NPRC OMPFs) remains the
+  load-bearing route.
+
+## 10. Addendum 6 — obituary found; the website remains unlocated (1 Nov 2026)
+
+**Correction:** an earlier working conclusion that no standalone 2007
+Maurice obituary had been located was wrong. The *San Gabriel Valley
+Tribune* published a full obituary for **Maurice Frederick Hewitt** on
+3–5 March 2007; Legacy carries the same notice and an eight-entry
+family guestbook. The source and full transcription are in
+session-17 §3h.
+
+The newly recovered notice explicitly identifies Fred as a long-time
+electronics technician and, in his younger years, a carpenter; names
+the **Spanish Trails Girl Scout Council** as the council for which he
+built Hidden Valley's craft shelter; says he and Louise were resident
+managers; and announces a private graveside service at Forest Lawn
+Memorial Park, Covina Hills, on 6 March 2007. Family guestbook birthday
+posts on 27 March 2007 resolve his birth date to **27 March 1913**.
+Forest Lawn's official grave finder now confirms Maurice's interment
+location at Covina Hills, Section Honor, Map 4, Lot 508, Space 1; it
+also returns a likely match for the family's John David as “Jondavid
+Frederick Greeran” in the same park. The name form and the reported
+physical proximity remain gated in session-17 §3e.2; the service notice
+alone did not provide those plot details.
+
+**This corrects obituary status only:** Maurice's self-built military
+website / shadow-box page is still **NOT LOCATED**. The new career and
+council facts do not establish his wartime unit or MOS; NPRC remains the
+paper route.
+
+## Sources
+
+1. Wayback CDX API (`web.archive.org/cdx/search/cdx`) — probes tabulated
+   in §§1 and 3, 28 Oct 2026.
+2. 301st Bombardment Group — 352nd Squadron servicemen roster and Sam
+   Hewitt serviceman page (`301bg.com/Hewitt_Sam_H9305_301BG.cfm`).
+3. AncientFaces — Maurice F Hewitt biography 84888805 (enlistment data;
+   no photo).
+4. Wayback capture 20240812203244 of `freepages.rootsweb.com/~hewitt/
+   genealogy/index.html` (Heath Martin Hewitt; Stonington line).
+5. Prior sessions: `resources/session-14-hewitt-military-pow.md`,
+   `resources/session-15-301bg-vienna-stalag-luft-iv.md`.
+6. *San Gabriel Valley Tribune*, “Maurice Frederick Hewitt” obituary
+   (published 3–5 Mar 2007), https://www.sgvtribune.com/obituaries/maurice-frederick-hewitt-ca/;
+   Legacy reprint and eight-entry guestbook,
+   https://www.legacy.com/us/obituaries/sgvtribune/name/maurice-hewitt-obituary?id=25113187
+   (full text, birthday posts, and Terry & Gary Milwood's 13 Mar 2007 memory).
+7. Forest Lawn Memorial-Park Association, official “Find a Service or
+   Grave” results — Maurice Frederick Hewitt and the likely Greeran
+   record; details and name-form gate in session-17 §§3e.2, 3h.3.
+   Direct result URLs and Covina Hills contact are in session-17 Source 27.

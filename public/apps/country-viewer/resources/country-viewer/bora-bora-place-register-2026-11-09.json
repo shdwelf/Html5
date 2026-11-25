@@ -1,0 +1,29 @@
+{
+  "schema": "html5.country-viewer.place-register/v1",
+  "reviewed": "2026-11-09",
+  "purpose": "Name-only place lookup; not a sovereign-country profile or a geocoding source.",
+  "entries": [
+    {
+      "name": "Bora Bora",
+      "classification": "locality",
+      "context": "French Polynesia",
+      "coordinates": null,
+      "coordinateStatus": "withheld pending independent corroboration",
+      "countryProfileCode": "fp",
+      "note": "A GitHub city-database record identifies Bora-Bora with country code PF and reports coordinates, but this one-source coordinate has not been independently verified and is not imported. Bora Bora is indexed here as a place in French Polynesia, not as a separate country.",
+      "source": {
+        "repository": "https://github.com/dr5hn/countries-states-cities-database",
+        "commit": "30fcbf267d538f96dafd0e4e451f5e43b2989700",
+        "path": "contributions/cities/PF.json",
+        "record": "Bora-Bora",
+        "license": "ODbL-1.0",
+        "pinnedUrl": "https://github.com/dr5hn/countries-states-cities-database/blob/30fcbf267d538f96dafd0e4e451f5e43b2989700/contributions/cities/PF.json"
+      }
+    }
+  ],
+  "distribution": {
+    "databaseLicense": "ODbL-1.0",
+    "licenseText": "resources/country-viewer/licenses/ODbL-1.0.md",
+    "attribution": "Bora-Bora place-name reference from dr5hn/countries-states-cities-database, pinned commit 30fcbf267d538f96dafd0e4e451f5e43b2989700, contributions/cities/PF.json; ODbL-1.0. Coordinates are not included."
+  }
+}

@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Local OpenPGP text tools, RSA key generation, a public-only keyring and bounded wordlist-assisted private-key passphrase recovery.">
+  <title>OpenPGP Workbench</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "openpgp": "./vendor/openpgp.min.mjs"
+      }
+    }
+  </script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="OpenPGP Workbench home">
+        <span class="brand-mark" aria-hidden="true">PGP</span>
+        <span class="brand-name">OpenPGP <span>Workbench</span></span>
+      </a>
+      <div class="local-badge"><span class="local-dot" aria-hidden="true"></span> LOCAL PROCESSING</div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span class="eyebrow-line"></span> LOCAL MESSAGES &amp; KEYRINGS</div>
+        <h1 id="page-title">Keep the message<br><span>between you and the passphrase.</span></h1>
+        <p class="hero-copy">Protect text, create an RSA key, assemble a public keyring, or preview a small wordlist to help recover your own private-key passphrase. Processing stays in this tab and local workers; no upload, keyserver, telemetry, or automatic secret storage. Remembering PUBLIC certificates is a separate opt-in.</p>
+        <div id="capability-warning" class="notice notice-warning" role="alert" hidden>
+          This browser needs Web Crypto in a secure context. Open the app over HTTPS or localhost, then reload.
+        </div>
+      </section>
+
+      <section class="workbench" aria-label="OpenPGP message tools">
+        <div class="workbench-heading">
+          <div>
+            <p class="section-kicker">OFFLINE WORKSPACE</p>
+            <h2>Messages &amp; keyrings</h2>
+          </div>
+          <span class="profile-chip"><span aria-hidden="true">◆</span> Classic profiles · explicit local saves</span>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Choose an OpenPGP operation">
+          <button class="tab is-active" id="encrypt-tab" type="button" role="tab" aria-selected="true" aria-controls="encrypt-panel" data-tab="encrypt-panel">Encrypt</button>
+          <button class="tab" id="decrypt-tab" type="button" role="tab" aria-selected="false" aria-controls="decrypt-panel" data-tab="decrypt-panel" tabindex="-1">Decrypt</button>
+          <button class="tab" id="keygen-tab" type="button" role="tab" aria-selected="false" aria-controls="keygen-panel" data-tab="keygen-panel" tabindex="-1">Create key</button>
+          <button class="tab" id="keyring-tab" type="button" role="tab" aria-selected="false" aria-controls="keyring-panel" data-tab="keyring-panel" tabindex="-1">Public keyring</button>
+          <button class="tab" id="recovery-tab" type="button" role="tab" aria-selected="false" aria-controls="recovery-panel" data-tab="recovery-panel" tabindex="-1">Recover passphrase</button>
+        </div>
+
+        <section id="encrypt-panel" class="panel" role="tabpanel" aria-labelledby="encrypt-tab" data-panel="encrypt-panel">
+          <form id="encrypt-form" novalidate>
+            <div class="field-heading">
+              <label for="plaintext">Message text</label>
+              <span class="field-hint">Up to 1 MiB of UTF-8 text</span>
+            </div>
+            <textarea id="plaintext" name="plaintext" rows="7" maxlength="1048576" spellcheck="false" autocomplete="off" placeholder="Write or paste the message you want to protect…"></textarea>
+
+            <div class="two-column">
+              <div class="field">
+                <label for="encrypt-passphrase">Passphrase</label>
+                <div class="password-wrap">
+                  <input id="encrypt-passphrase" name="passphrase" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="encrypt-passphrase" aria-pressed="false">Show</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="encrypt-confirm">Confirm passphrase</label>
+                <div class="password-wrap">
+                  <input id="encrypt-confirm" name="confirm" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="encrypt-confirm" aria-pressed="false">Show</button>
+                </div>
+              </div>
+            </div>
+            <p class="field-hint passphrase-hint">Use a strong, unique passphrase and share it through a separate trusted channel.</p>
+
+            <div class="form-actions">
+              <button class="button button-primary" type="submit" data-crypto-submit>
+                <span aria-hidden="true">↗</span> Encrypt message
+              </button>
+              <button class="button button-quiet" type="button" data-clear-form="encrypt-form">Clear</button>
+            </div>
+            <p class="status-message" id="encrypt-status" role="status" aria-live="polite">Your message and passphrase stay in this tab's memory while you work.</p>
+          </form>
+
+          <div class="output-block">
+            <div class="field-heading">
+              <label for="encrypted-output">Armored OpenPGP message</label>
+              <span class="field-hint">Copy or save as a .asc file</span>
+            </div>
+            <textarea id="encrypted-output" rows="8" readonly spellcheck="false" autocomplete="off" aria-label="Encrypted armored OpenPGP message" placeholder="Your encrypted message will appear here…"></textarea>
+            <div class="output-actions">
+              <button class="button button-secondary" type="button" data-copy="encrypted-output">Copy message</button>
+              <button class="button button-secondary" type="button" data-download="encrypted-output" data-filename="openpgp-message.asc">Download .asc</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="decrypt-panel" class="panel" role="tabpanel" aria-labelledby="decrypt-tab" data-panel="decrypt-panel" hidden>
+          <form id="decrypt-form" novalidate>
+            <div class="field-heading">
+              <label for="armored-input">Armored OpenPGP message</label>
+              <span class="field-hint">Paste a passphrase-protected message</span>
+            </div>
+            <textarea id="armored-input" name="armored" rows="10" spellcheck="false" autocomplete="off" placeholder="-----BEGIN PGP MESSAGE-----&#10;…&#10;-----END PGP MESSAGE-----"></textarea>
+
+            <div class="field decrypt-passphrase-field">
+              <label for="decrypt-passphrase">Passphrase</label>
+              <div class="password-wrap password-wrap-narrow">
+                <input id="decrypt-passphrase" name="passphrase" type="password" autocomplete="current-password" maxlength="4096" required>
+                <button class="reveal-button" type="button" data-toggle-password="decrypt-passphrase" aria-pressed="false">Show</button>
+              </div>
+            </div>
+            <p class="field-hint passphrase-hint">The message tools do not decrypt public-key messages or verify signatures. Key creation is a separate export workflow.</p>
+
+            <div class="form-actions">
+              <button class="button button-primary" type="submit" data-crypto-submit>
+                <span aria-hidden="true">↙</span> Decrypt message
+              </button>
+              <button class="button button-quiet" type="button" data-clear-form="decrypt-form">Clear</button>
+            </div>
+            <p class="status-message" id="decrypt-status" role="status" aria-live="polite">Only a compatible passphrase-protected OpenPGP message can be opened here.</p>
+          </form>
+
+          <div class="output-block">
+            <div class="field-heading">
+              <label for="decrypted-output">Decrypted text</label>
+              <span class="field-hint">Plain text only</span>
+            </div>
+            <textarea id="decrypted-output" rows="8" readonly spellcheck="false" autocomplete="off" aria-label="Decrypted plaintext" placeholder="Decrypted text will appear here…"></textarea>
+            <div class="output-actions">
+              <button class="button button-secondary" type="button" data-copy="decrypted-output">Copy plaintext</button>
+              <button class="button button-quiet" type="button" data-clear-output="decrypted-output">Clear output</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="keygen-panel" class="panel" role="tabpanel" aria-labelledby="keygen-tab" data-panel="keygen-panel" hidden>
+          <h3>Create an exportable key</h3>
+          <p class="panel-intro">v4 RSA signing/certification primary + same-size RSA encryption subkey. Default 3072 bits; opt-in sizes through 16384 bits. Both private packets are protected with AES-256 and iterated SHA-256 S2K (0xFF). No AEAD, v5/v6 or post-quantum output.</p>
+          <div class="notice" role="note">Source-informed targets: OpenKeychain, PGPony Android/iOS and KDE Kleopatra/GnuPG. This browser tool is not a device compatibility certification. Prefer a dedicated reviewed client for high-value identities. Nothing is generated until you submit your own User ID and passphrase.</div>
+          <form id="keygen-form" novalidate>
+            <div class="two-column">
+              <div class="field">
+                <label for="key-name">User ID name or alias</label>
+                <input id="key-name" name="uid-name" maxlength="128" autocomplete="off" spellcheck="false" placeholder="Your chosen identity, not inferred">
+              </div>
+              <div class="field">
+                <label for="key-email">User ID email (optional)</label>
+                <input id="key-email" name="uid-email" type="email" maxlength="254" autocomplete="off" spellcheck="false" placeholder="Only if you want it in the public certificate">
+              </div>
+            </div>
+            <p class="field-hint">Supply a name or an email. User IDs are public, self-asserted claims. Never enter a wallet recovery phrase.</p>
+            <div class="two-column">
+              <div class="field">
+                <label for="key-passphrase">Private-key passphrase</label>
+                <div class="password-wrap">
+                  <input id="key-passphrase" name="key-passphrase" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="key-passphrase" aria-pressed="false">Show</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="key-confirm">Confirm private-key passphrase</label>
+                <div class="password-wrap">
+                  <input id="key-confirm" name="key-confirm" type="password" autocomplete="new-password" maxlength="4096" required>
+                  <button class="reveal-button" type="button" data-toggle-password="key-confirm" aria-pressed="false">Show</button>
+                </div>
+              </div>
+            </div>
+            <p class="field-hint">At least 12 characters; use a strong unique passphrase. No strength or recovery guarantee. The passphrase fields are cleared when generation starts.</p>
+            <div class="field expiry-field">
+              <label for="key-rsa-bits">RSA size for both key packets</label>
+              <select id="key-rsa-bits" name="rsa-bits" aria-describedby="key-rsa-size-help">
+                <option value="3072" selected>3072 bits — recommended default</option>
+                <option value="4096">4096 bits</option>
+                <option value="6144">6144 bits — large</option>
+                <option value="8192">8192 bits — large</option>
+                <option value="12288">12288 bits — very large</option>
+                <option value="16384">16384 bits — experimental browser generation</option>
+              </select>
+              <p id="key-rsa-size-help" class="field-hint">Larger is not automatically safer. Slow generation, larger files and client limits can outweigh the benefit. 16384 bits is a resource cap, not a compatibility guarantee.</p>
+            </div>
+            <div id="large-rsa-warning" class="notice notice-warning" role="note" hidden>
+              <strong>Large RSA is an advanced opt-in.</strong> Both key packets use the selected size. Generation can take many minutes, particularly on phones. Up to 8192 bits uses native Web Crypto, which cannot be stopped once started. Above 8192 uses a local isolated worker with the existing OpenPGP.js prime search enabled by a narrowly scoped dispatch patch, not native generation; Clear terminates that worker (20-minute resource limit). A real 16384-bit browser trial reached the 20-minute limit without completing; that generation choice is experimental, not verified successful browser generation. Public imports through 16384 bits and native Node generation are tested separately. Your client may refuse very large keys. Test with a synthetic identity before relying on them.
+              <label class="check-row" for="key-large-ack"><input id="key-large-ack" type="checkbox"> I accept the performance and compatibility limits of RSA above 4096 bits.</label>
+            </div>
+            <div class="field expiry-field">
+              <label for="key-expiry">Key expiry, days from creation</label>
+              <input id="key-expiry" name="expiry" type="number" min="30" max="3650" step="1" value="730" inputmode="numeric" required>
+            </div>
+            <div class="form-actions">
+              <button id="generate-key" class="button button-primary" type="submit" data-crypto-submit>Generate RSA key locally</button>
+              <button id="clear-generated" class="button button-quiet" type="button">Clear generated material</button>
+            </div>
+            <p class="status-message" id="keygen-status" role="status" aria-live="polite">No key exists here until you generate one. Generation is random, not derived from an account or mnemonic.</p>
+          </form>
+          <div class="output-block">
+            <h3>Full primary fingerprint</h3>
+            <p id="generated-fingerprint" class="fingerprint">No key generated in this tab.</p>
+            <p id="generated-expiry" class="field-hint"></p>
+            <label for="generated-public-output">Public certificate — contains your User ID</label>
+            <textarea id="generated-public-output" rows="7" readonly autocomplete="off" spellcheck="false" placeholder="Only PUBLIC key armor appears here. Private material is never displayed or copied."></textarea>
+            <div class="output-actions">
+              <button id="copy-public-key" class="button button-secondary" type="button" data-copy="generated-public-output" data-status="keygen-status" disabled>Copy public key</button>
+              <button id="download-public-key" class="button button-secondary" type="button" disabled>Download public .asc</button>
+              <button id="add-generated-public" class="button button-secondary" type="button" disabled>Add public key to keyring</button>
+            </div>
+            <div class="backup-box">
+              <h3>Sensitive backups — explicit downloads only</h3>
+              <p class="field-hint">The protected private .asc can be imported into a compatible client. The separate revocation certificate is <strong>not encrypted</strong>: anyone who gets it can revoke the key. Store both securely; clearing or closing this tab loses unsaved exports.</p>
+              <label class="check-row" for="key-backup-ack"><input id="key-backup-ack" type="checkbox"> I understand that private-key and revocation backups are sensitive and must be kept offline/private.</label>
+              <div class="field">
+                <label for="backup-fingerprint">Confirm the full fingerprint displayed above</label>
+                <input id="backup-fingerprint" maxlength="128" autocomplete="off" spellcheck="false" placeholder="40 hexadecimal characters; spaces allowed" dir="ltr">
+              </div>
+              <div class="form-actions">
+                <button id="download-private-key" class="button button-secondary" type="button" disabled>Download protected private .asc</button>
+                <button id="download-revocation" class="button button-secondary" type="button" disabled>Download revocation certificate</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="keyring-panel" class="panel" role="tabpanel" aria-labelledby="keyring-tab" data-panel="keyring-panel" hidden>
+          <h3>Public-only keyring</h3>
+          <p class="panel-intro">Import v4 RSA public certificates (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates. v6 needs a modern client; dropping subkeys does not convert it into v4. Both concatenated armor blocks and multiple certificates in a single block are read. Limit: 1 MiB and 32 certificates. Secret packets, photo IDs, other profiles, mixed content and unsupported packets are refused.</p>
+          <form id="keyring-import-form" novalidate>
+            <div class="field">
+              <label for="public-key-file">Load an ASCII-armored public key file (optional)</label>
+              <input id="public-key-file" type="file" accept=".asc,.pub,application/pgp-keys,text/plain">
+            </div>
+            <div class="field key-input-field">
+              <label for="public-key-input">Public certificates to import</label>
+              <textarea id="public-key-input" rows="8" maxlength="1048576" autocomplete="off" spellcheck="false" placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----&#10;…&#10;-----END PGP PUBLIC KEY BLOCK-----"></textarea>
+            </div>
+            <div class="field key-input-field">
+              <label for="expected-fingerprint">Expected full fingerprint (optional, single-certificate import only)</label>
+              <input id="expected-fingerprint" maxlength="128" autocomplete="off" spellcheck="false" dir="ltr" placeholder="Obtain independently; short key IDs are refused">
+            </div>
+            <p class="field-hint">A matching fingerprint only compares bytes you supplied. Verify it over an independent trusted channel. Use the full 40-hex v4 or 64-hex v6 primary fingerprint. Bulk imports without this field remain identity-unverified. A detected encryption key is checked for a current binding, not owner identity. Signing/authentication-only subkeys are not encryption keys. Full and one-encryption-subkey exports contain PUBLIC data only; a subset is not a revocation and cannot change which secret subkey old ciphertext requires.</p>
+            <div class="form-actions">
+              <button id="import-public-keys" class="button button-primary" type="submit" data-crypto-submit>Import public keys</button>
+              <button id="clear-keyring" class="button button-quiet" type="button">Clear keyring, input &amp; saved public copy</button>
+            </div>
+            <p class="field-hint">For a single v6 certificate with unsupported public subkeys, these explicit exports require the full expected fingerprint. Full preserves the original input; the subset retains one currently usable bound encryption subkey and its signatures, omitting all other subkey blocks. Omitted algorithms are not validated or declared invalid. Neither export imports or changes the input; keep the original for archival/verification use.</p>
+            <div class="form-actions">
+              <button id="export-full-public-input" class="button button-secondary" type="button">Export full original PUBLIC .asc</button>
+              <button id="export-reduced-public-input" class="button button-secondary" type="button">Export one-encryption-subkey PUBLIC .asc</button>
+            </div>
+            <p class="status-message" id="keyring-status" role="status" aria-live="polite">Only public data is accepted. No keyserver lookup, publishing or private-key import. Device remembering is off until you opt in.</p>
+          </form>
+          <div class="notice" role="note">
+            <label class="check-row" for="remember-public-keyring"><input id="remember-public-keyring" type="checkbox"> Remember PUBLIC certificates on this device (opt-in)</label>
+            <p class="field-hint">Public certificates include User IDs; local storage is not encrypted and is separate for each app/site origin. Private keys, revocation certificates, research text and passphrases are NEVER remembered. This device copy can disappear on uninstall, browser-data clearing or device loss; also export a .asc backup. Do not uninstall an old Android build to fix a signing mismatch until your exports are verified.</p>
+            <button id="forget-public-keyring" type="button" class="button button-quiet">Forget saved public certificates</button>
+            <p id="public-storage-status" class="status-message" role="status" aria-live="polite">Device remembering is off. Public imports remain in memory until you opt in or export them.</p>
+          </div>
+          <div class="output-block">
+            <h3 id="keyring-count">0 / 32 public certificates</h3>
+            <ul id="keyring-list" class="keyring-list" aria-label="Public certificates in memory"></ul>
+            <p class="field-hint">A changed certificate with an existing fingerprint is refused rather than silently merged. Review updates/revocations in a dedicated client, then explicitly remove/reimport here. Expired/revoked/invalid self-certifications are marked archival-only.</p>
+            <label for="keyring-output">Exported public keyring — separate armor block per certificate</label>
+            <textarea id="keyring-output" rows="8" readonly autocomplete="off" spellcheck="false" placeholder="Public-only armor will appear after an import."></textarea>
+            <div class="output-actions">
+              <button id="copy-keyring" class="button button-secondary" type="button" data-copy="keyring-output" data-status="keyring-status" disabled>Copy public keyring</button>
+              <button id="download-keyring" class="button button-secondary" type="button" disabled>Download public keyring .asc</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="recovery-panel" class="panel" role="tabpanel" aria-labelledby="recovery-tab" data-panel="recovery-panel" hidden>
+          <h3>Local wordlist-assisted private-key recovery</h3>
+          <p class="panel-intro">For your own protected OpenPGP/GPG private key: rank a small wordlist against a remembered hint and optionally add bounded typo variants. OpenPGP requires the <strong>exact passphrase</strong>; fuzzy distance is only a way to choose guesses, never a partial unlock. This is not public-key cracking or message/file recovery.</p>
+          <div class="notice" role="note">Use only a trusted, isolated device and an unmodified local copy of this app. Private-key input and guesses are sensitive: browser extensions, other same-origin apps, keyboard/clipboard tools and screen capture are outside this tool's protection. No keyserver, metasearch, cloud dictionary, upload, storage, automatic export or recovery guarantee. Keep the original protected file unchanged and backed up.</div>
+          <form id="recovery-form" autocomplete="off" novalidate>
+            <div class="field key-input-field">
+              <label for="recovery-key-file">Load one protected private .asc file (optional, at most 1 MiB)</label>
+              <input id="recovery-key-file" type="file" accept=".asc,application/pgp-keys,text/plain" data-recovery-input>
+            </div>
+            <div class="field key-input-field">
+              <label for="recovery-private-key">Protected private-key input — transient, not added to the public keyring</label>
+              <textarea id="recovery-private-key" rows="5" maxlength="1048576" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" data-recovery-input placeholder="-----BEGIN PGP PRIVATE KEY BLOCK-----&#10;…&#10;-----END PGP PRIVATE KEY BLOCK-----"></textarea>
+            </div>
+            <p class="field-hint">One complete ASCII-armored certificate. Bounded profiles: v4 RSA-2048–16384, v4 legacy Ed25519/Curve25519, v6 Ed25519/X25519; up to 16 secret packets. Every packet must be AES-protected with iterated salted SHA-1/SHA-2 S2K and SHA-1 integrity or standard AEAD. Argon2, unprotected/stub/hardware keys, unsupported/mixed packets and old 16-bit checksums are refused; nothing is silently dropped or weakened.</p>
+            <div class="field key-input-field">
+              <label for="recovery-wordlist-file">Load a small UTF-8 wordlist (optional, at most 32 KiB)</label>
+              <input id="recovery-wordlist-file" type="file" accept=".txt,text/plain" data-recovery-input>
+            </div>
+            <div class="field key-input-field">
+              <label for="recovery-wordlist">Wordlist — one exact candidate per line, at most 256 entries</label>
+              <textarea id="recovery-wordlist" rows="6" maxlength="32768" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" data-recovery-input placeholder="Use only your own small list of plausible passphrases. Do not paste wallet seeds or unrelated credentials."></textarea>
+            </div>
+            <p class="field-hint">Leading/trailing spaces, case, Unicode form and a UTF-8 BOM are retained in guesses. CRLF separates lines; blank lines are ignored and exact duplicates removed. Empty passphrases, controls, invalid Unicode, over 128 characters / 256 UTF-8 bytes per candidate or hint are outside this profile. Files with malformed UTF-8 are refused, not repaired.</p>
+            <div class="two-column">
+              <div class="field">
+                <label for="recovery-hint">Approximate remembered hint (optional, sensitive)</label>
+                <input id="recovery-hint" type="password" maxlength="256" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" data-recovery-input>
+              </div>
+              <div class="field">
+                <label for="recovery-distance">Maximum fuzzy distance to hint</label>
+                <select id="recovery-distance" data-recovery-input>
+                  <option value="0">0 — case/Unicode-folded comparison only</option>
+                  <option value="1">1 — one small edit</option>
+                  <option value="2" selected>2 — at most two small edits</option>
+                </select>
+              </div>
+            </div>
+            <p class="field-hint">Ranking compares NFC-normalized, lowercase Unicode characters using insertion, deletion, substitution and adjacent transposition distance. It never changes original wordlist bytes. With no hint, keep wordlist order. Fuzzy filtering may exclude the correct passphrase; compare the preview/count.</p>
+            <label class="check-row" for="recovery-variants"><input id="recovery-variants" type="checkbox" data-recovery-input> Also generate small typo variants from the hint and first three ranked entries: case changes, one deletion, duplication or adjacent swap. No alphabet expansion, masks, numeric ranges, chaining, GPU/distributed search or automatic retries.</label>
+            <div class="form-actions">
+              <button id="recovery-preview" class="button button-secondary" type="submit" data-crypto-submit>Preview local candidate plan</button>
+              <button id="recovery-clear" class="button button-quiet" type="button">Clear recovery inputs &amp; result</button>
+            </div>
+            <div class="output-block">
+              <h3>Compare key &amp; review bounded plan</h3>
+              <p id="recovery-key-identity" class="fingerprint">No protected key inspected.</p>
+              <p id="recovery-summary" class="panel-intro">No candidate plan previewed.</p>
+              <label class="check-row" for="recovery-reveal-preview"><input id="recovery-reveal-preview" type="checkbox" disabled> Reveal candidate preview on this screen (sensitive; includes passphrase guesses)</label>
+              <ol id="recovery-candidates" class="recovery-candidates" aria-label="Ranked candidate plan; values hidden until explicitly revealed"></ol>
+              <div class="field key-input-field">
+                <label for="recovery-fingerprint">Confirm exact full primary fingerprint — 40-hex v4 or 64-hex v6</label>
+                <input id="recovery-fingerprint" maxlength="128" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" data-recovery-input placeholder="Compare independently; no short IDs or fuzzy fingerprint matching">
+              </div>
+              <label class="check-row" for="recovery-owner-ack"><input id="recovery-owner-ack" type="checkbox" data-recovery-input> I own this key or have permission to recover it. I accept local CPU use and understand that this small candidate plan may not recover anything.</label>
+              <p class="field-hint">At most 256 exact candidates, sequentially, with a hard 120-second worker limit. A candidate succeeds only if it unlocks and validates <strong>every</strong> included secret packet with the same passphrase; per-packet-different passphrases are not recovered. The public keyring, recipient rules, originals and backups are unchanged. Inspection is not identity/binding/revocation validation.</p>
+              <div class="form-actions">
+                <button id="recovery-start" class="button button-primary" type="button" data-crypto-submit disabled>Start exact local attempts</button>
+                <button id="recovery-stop" class="button button-secondary" type="button" disabled>Stop worker</button>
+              </div>
+              <progress id="recovery-progress" max="1" value="0" aria-label="Completed exact candidate attempts"></progress>
+              <p id="recovery-progress-count" class="field-hint">0 / 0 completed exact candidate attempts</p>
+              <p id="recovery-status" class="status-message" role="status" aria-live="polite">No attempts until you preview, compare the full fingerprint, acknowledge permission and press Start. A local module worker is required; no main-thread fallback.</p>
+              <div class="field key-input-field">
+                <button id="recovery-reveal-match" class="button button-secondary" type="button" aria-expanded="false" aria-controls="recovery-match" hidden>Reveal matching candidate</button>
+                <label class="field-hint" for="recovery-match">Matching candidate — shown only on explicit reveal; no automatic copy/save</label>
+                <input id="recovery-match" type="text" readonly autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" hidden>
+              </div>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <section class="details-grid" aria-label="Profile and safety details">
+        <article class="detail-card">
+          <div class="detail-icon" aria-hidden="true">01</div>
+          <h2>Classic compatibility profile</h2>
+          <p>v4 SKESK · iterated-and-salted SHA-256 S2K (coded count 0xFF) · AES-256 · SEIPD v1 with MDC. AEAD output is disabled.</p>
+        </article>
+        <article class="detail-card detail-card-warning">
+          <div class="detail-icon" aria-hidden="true">!</div>
+          <h2>Know what this does not prove</h2>
+          <p>MDC checks message integrity, not who sent it. This app does not authenticate sender identity, verify signatures, or replace an independently reviewed secure-messaging client.</p>
+        </article>
+      </section>
+
+      <section class="scope-note" aria-label="Version one scope">
+        <span class="scope-mark" aria-hidden="true">i</span>
+        <p><strong>Scope:</strong> classic passphrase text tools, export-only RSA key creation, a public-only keyring, and a separate bounded, local wordlist-assisted private-key recovery check. Recovery input is transient and never added to that keyring; no unlocked key export. Public-key message encryption/decryption, signing UI, attachments, persistent secret-key import, hardware cards, owner trust and modern AEAD message output are not included. No app-level upload. Only validated PUBLIC certificates may be remembered after explicit opt-in. Android Save confirms write/read-back verification; browser downloads are requests, not proof of a saved file. Choose “On this device” for local-only destinations: cloud document providers may upload selected exports. Clearing/Stop drops references and terminates recovery workers, not a guaranteed memory/clipboard/disk erase. Page navigation clears secrets and unsaved tab state, not an opted-in public device copy.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>OpenPGP.js 6.3.3 · locally vendored · LGPL-3.0+</span>
+      <button id="clear-all" class="button button-quiet" type="button">Clear tab &amp; saved public data</button>
+      <span class="footer-links"><a href="./vendor/openpgp.LICENSE">Library license</a><a href="./THIRD_PARTY_NOTICES.md">Third-party notices</a></span>
+    </footer>
+  </div>
+</body>
+</html>

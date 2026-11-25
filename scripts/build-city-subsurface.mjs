@@ -128,6 +128,9 @@ for (const [cityId, city] of Object.entries(config.cities)) {
   validateRows(cityId, city, city.gazetteerRows);
 
   const views = viewsFor(city);
+  const layers = cityId === "california"
+    ? [...LAYERS, { id: "uc-network", name: "UC campuses · unions · alumni + satellite sites", color: "#34d399", kind: "node", on: true }]
+    : LAYERS;
   const dataModule = `/**
  * CITY SUBSURFACE — ${city.title} data pack.
  *
@@ -156,7 +159,7 @@ export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 export const COAST = ${JSON.stringify(city.coast)};
 export const RELIEF = ${JSON.stringify(city.relief, null, 2)};
-export const LAYERS = ${JSON.stringify(LAYERS, null, 2)};
+export const LAYERS = ${JSON.stringify(layers, null, 2)};
 export const TIER_COLOR = ${JSON.stringify(TIER_COLOR, null, 2)};
 export const CORRIDORS = ${JSON.stringify(city.corridors, null, 2)};
 export const NODES = ${JSON.stringify(city.nodes, null, 2)};

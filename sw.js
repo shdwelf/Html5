@@ -1,7 +1,7 @@
 /* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
    visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v39`;
+const CACHE = `${CACHE_PREFIX}v47`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -13,6 +13,10 @@ const PRECACHE = [
   "./greeran-family-4dwm.html",
   "./greeran-subsurface.html",
   "./planet-viewer-4dwm.html",
+  "./country-viewer.html",
+  "./contacts.html",
+  "./docs/historical-contact-directory-source-review-2026-11-03.md",
+  "./docs/convention-suppliers-transit-2017-2020.md",
   "./red-october-4dwm.html",
   "./sanborn-restaurant-4dwm.html",
   "./socal-subsurface.html",
@@ -76,6 +80,33 @@ const PRECACHE = [
   "./js/app.js",
   "./js/sitek-catalog.js",
   "./js/sitek-modes.js",
+  // Country Viewer and Planet Viewer: keep their standalone pages and every
+  // local Gazetteer/terrain module available to a fresh offline install.
+  "./css/planet-viewer-4dwm.css",
+  "./css/local-contacts.css",
+  "./js/country-viewer.js",
+  "./js/country-map.js",
+  "./js/country-data.js",
+  "./js/sanborn-restaurant-manifest.js",
+  "./js/local-contacts-core.js",
+  "./js/local-contacts-app.js",
+  "./js/planet-viewer-4dwm.js",
+  "./js/planet-viewer-data.js",
+  "./js/planet-viewer-checks.js",
+  "./js/planet-viewer-search.js",
+  "./js/planet-globe.js",
+  "./js/cheyenne-dem.js",
+  "./js/city-dem-grid-lawrence.js",
+  "./js/city-gazetteer.js",
+  "./js/city-gazetteer-data.js",
+  "./js/city-gazetteer-data-atlanta.js",
+  "./js/city-gazetteer-data-buffalo.js",
+  "./js/city-gazetteer-data-kansascity.js",
+  "./js/city-gazetteer-data-lawrence.js",
+  "./js/city-gazetteer-data-toronto.js",
+  "./js/pcglobe-index-data.js",
+  "./apps/red-october-command-viewer/core.js",
+  "./vendor/world/countries.geo.json",
   "./js/adl-studio.js",
   "./js/adl-map.js",
   "./js/adl-data.js",
@@ -127,6 +158,18 @@ const PRECACHE = [
   "./js/stx-plot.js",
   "./js/ca-plot.js",
   "./js/viewer.js",
+  // Keyspace's complete local module/registry graph, including the explicit
+  // token-network choices, coin evidence and finite-field explorer. External
+  // read-only RPC/metadata requests are opt-in and must NEVER enter this cache.
+  "./js/engine.js", "./js/spacefill.js", "./js/entropy-live.js", "./js/lexicon.js",
+  "./js/mathvis.js", "./js/forms3d.js", "./js/hdtopo.js", "./js/formal.js",
+  "./js/lens-draw.js", "./js/lens-3d.js", "./js/syllables.js", "./js/enso-id.js",
+  "./js/wallet-derivatives.js", "./js/coins.js", "./js/bip32.js", "./js/addrs.js",
+  "./js/codec.js", "./js/hash.js", "./js/secp256k1.js", "./js/ed25519.js",
+  "./js/key-stats.js", "./js/galois.js", "./js/galois-view.js", "./js/coin-networks.js",
+  "./js/coin-research.js", "./js/coin-workbench.js", "./js/wallet-investigation.js",
+  "./js/chain-read.js", "./js/nft-viewer.js", "./apps/index3.html",
+  "./config/coins-top500.json", "./config/token-networks.json", "./config/chain-research.json",
   "./js/validator.js",
   "./js/viruslab.js",
   "./js/flash-decompiler.js",
@@ -186,6 +229,7 @@ const PRECACHE = [
   "./js/makint.js",
   "./samples/makint/analysis.json",
   "./vendor/fflate/index.mjs",
+  "./vendor/fflate/browser.mjs", // ZIP export from js/zip.js works offline
 ];
 
 async function precache() {
@@ -222,7 +266,7 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  if (req.method !== "GET") return;
+  if (req.method !== "GET" || req.cache === "no-store") return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 

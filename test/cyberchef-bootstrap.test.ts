@@ -17,12 +17,14 @@ function boot(file = APP) {
   const dom = new JSDOM(html, {
     runScripts: "dangerously",
     url: "https://example.test/apps/cyberchef/",
+    pretendToBeVisual: true,
     beforeParse(window) {
       window.alert = () => undefined;
       window.confirm = () => false;
       window.prompt = () => null;
       window.URL.createObjectURL = () => "blob:test";
       window.URL.revokeObjectURL = () => undefined;
+      window.HTMLCanvasElement.prototype.getContext = () => null;
     },
   });
   const win = dom.window as unknown as { eval: (src: string) => any; close: () => void; document: Document };

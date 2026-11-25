@@ -1,0 +1,2 @@
+# Unified-diff context-only blank lines are represented by one leading space.
+patches/*.patch whitespace=-blank-at-eol

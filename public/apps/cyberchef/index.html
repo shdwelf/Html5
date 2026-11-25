@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 517 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 525 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -331,18 +331,22 @@ addOp('gronsfeld','Gronsfeld Cipher','Classical',
     }).join('');
   });
 
-/* 4. One-Time Pad / XOR */
+/* 4. One-Time Pad / XOR — hex key is useful for binary RE; text stays default. */
 addOp('xor','One-Time Pad / XOR','Classical',
-  'Bitwise XOR of input bytes with key bytes (key repeats). XOR is self-inverse.',
+  'Bitwise XOR of input bytes with repeating key bytes (text or hex). XOR is self-inverse.',
   [
     {key:'key',label:'Key',type:'text',default:'key'},
+    {key:'keyFmt',label:'Key format',type:'select',default:'text',options:[['text','Text (legacy)'],['hex','Hex bytes']]},
     {key:'infmt',label:'Input fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]},
     {key:'outfmt',label:'Output fmt',type:'select',default:'text',options:[['text','Text'],['hex','Hex']]}
   ],
   function(text,args){
-    const keyBytes=args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
+    const hexKey=String(args.key||'').replace(/[\s:,\-]/g,'');
+    if(args.keyFmt==='hex' && !/^(?:[0-9a-fA-F]{2})+$/.test(hexKey))
+      throw new Error('Hex key must contain complete byte pairs (e.g. f4901795)');
+    const keyBytes=args.keyFmt==='hex'?bytesFromHex(hexKey):args.key.split('').map(ch=>ch.charCodeAt(0)&0xff);
     if(!keyBytes.length)return text;
-    let bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
+    const bytes=args.infmt==='hex'?bytesFromHex(text):new Uint8Array(utf8Encode(text));
     const out=bytes.map((b,i)=>b^keyBytes[i%keyBytes.length]);
     return args.outfmt==='hex'?hexFromBytes(out):utf8Decode(out);
   });
@@ -699,7 +703,14 @@ addOp('morse','Morse Code','Classical','Encode/decode International Morse.',
         return map[c]!==undefined?map[c]:c;
       }).join(' ');
     }else{
-      return text.trim().split(/\s*\/\s*|\s+/).map(tok=>rev[tok]!==undefined?rev[tok]:(tok==='/'?' ':tok)).join(' ');
+      const raw=String(text||'').trim();
+      if(raw.includes('/')){
+        return raw.split(/\s*\/\s*/).map(word=>{
+          const tokens=word.trim()?word.trim().split(/\s+/):[];
+          return tokens.map(tok=>rev[tok]!==undefined?rev[tok]:tok).join('');
+        }).join(' ');
+      }
+      return raw.split(/\s+/).map(tok=>rev[tok]!==undefined?rev[tok]:(tok==='/'?' ':tok)).join(' ');
     }
   });
 
@@ -2893,6 +2904,109 @@ addOp('lzexeDecode','LZEXE 0.91 Unpack','EXE Protection',
     return L.join('\n');
   });
 
+/* ---- GRASP 4.00d protected GL library (Sneakers 1992 press kit) ----
+   Recovered from the GRASPRT 4.00d load module of SNEAKERS.EXE (sha256
+   d5738c9a…5961) with objdump real-mode disassembly; see
+   docs/sneakers-grasp-library-cipher-2026-11-13.md.  Code-segment offsets
+   (file offset = 0x1200 + offset):
+     0x1224a  rng: x=state&0x7fffffff; x^=x>>13; x^=x<<18 (32-bit); return low 16 bits
+     0x16024  perm=0..255; for i in 0..255: j=rng()&0xff; swap(perm[i],perm[j])
+     0x16087  inverse[perm[i]]=i   (the table the DOS read hook at 0xc003 applies via xlat)
+     0x145b2  key word = HIGH word of the first directory entry's offset; seed = key*0x7cf7
+   cipher = perm[plain] for every member byte, including the 4-byte length prefix. */
+function graspXorshift31(seed){
+  let s=seed>>>0;
+  return ()=>{let x=s&0x7fffffff; x^=x>>>13; x=(x^(x<<18))>>>0; s=x; return x&0xffff;};
+}
+function graspPermutation(keyWord,mult){
+  const rng=graspXorshift31(Math.imul(keyWord&0xffff,(mult==null?0x7cf7:mult)&0xffff)>>>0);
+  const p=Array.from({length:256},(_,i)=>i);
+  for(let i=0;i<256;i++){const j=rng()&0xff; const t=p[i]; p[i]=p[j]; p[j]=t;}
+  return p;
+}
+function graspInverse(p){const inv=new Array(256); for(let i=0;i<256;i++)inv[p[i]]=i; return inv;}
+function graspKeyWord(s){
+  const h=String(s==null?'':s).trim().replace(/^0x/i,'');
+  if(!/^[0-9a-fA-F]{1,4}$/.test(h))throw new Error('GRASP key word must be 1–4 hex digits (Sneakers: ec70)');
+  return parseInt(h,16);
+}
+function graspMzLoadModule(b){
+  if(b.length<0x1c||b[0]!==0x4d||b[1]!==0x5a)return 0;
+  const cblp=b[2]|(b[3]<<8), cp=b[4]|(b[5]<<8);
+  return cblp?((cp-1)*512+cblp):cp*512;
+}
+function graspParseLibrary(bytes,offset){
+  const data=bytes.subarray(offset);
+  if(data.length<2)throw new Error('No GL directory after offset '+offset);
+  const dirLen=data[0]|(data[1]<<8);
+  const entries=[];
+  for(let pos=2;pos+17<=dirLen+2;pos+=17){
+    const off=(data[pos]|(data[pos+1]<<8)|(data[pos+2]<<16)|(data[pos+3]<<24))>>>0;
+    let name=''; for(let k=4;k<17&&data[pos+k];k++)name+=String.fromCharCode(data[pos+k]);
+    entries.push({off,name});
+  }
+  if(!entries.length)throw new Error('Empty GL directory');
+  const keyWord=entries[0].off>>>16; entries[0].off&=0xffff;
+  const members=entries.filter(e=>e.name);
+  const table=keyWord?graspInverse(graspPermutation(keyWord)):Array.from({length:256},(_,i)=>i);
+  members.forEach((m,i)=>{
+    const next=i+1<members.length?members[i+1].off:data.length;
+    const L=[0,1,2,3].map(k=>table[data[m.off+k]]);
+    m.length=(L[0]|(L[1]<<8)|(L[2]<<16)|(L[3]<<24))>>>0;
+    m.span=next-m.off-4;
+    m.ok=m.length===m.span;
+  });
+  return {offset,dirLen,keyWord,members,table,data};
+}
+addOp('graspGlTable','GRASP 4.00d Protected-Library Bytes','EXE Protection',
+  'Byte substitution used by GRASPRT 4.00d for “protected” GL libraries (Sneakers 1992 press kit). The 16-bit key word seeds a 31-bit xorshift (>>13, <<18) via key×0x7cf7; 256 swaps build the table. Decrypt = inverse table. Paste a reviewed hex excerpt of member bytes, or feed Load File bytes.',
+  [
+    {key:'keyWord',label:'Key word (hex)',type:'text',default:'ec70'},
+    {key:'mode',label:'Mode',type:'select',default:'decrypt',options:[['decrypt','Decrypt (inverse table)'],['encrypt','Encrypt (perm table)'],['table','Show tables only']]},
+    {key:'infmt',label:'Input fmt',type:'select',default:'hex',options:[['hex','Hex'],['binstr','Raw byte string (Load File)'],['text','UTF-8 text']]},
+    {key:'outfmt',label:'Output fmt',type:'select',default:'text',options:[['text','Latin-1 text'],['hex','Hex'],['binstr','Raw byte string']]}
+  ],
+  function(t,a){
+    const keyWord=graspKeyWord(a.keyWord);
+    const perm=graspPermutation(keyWord), inv=graspInverse(perm);
+    if(a.mode==='table')
+      return 'key word 0x'+keyWord.toString(16).padStart(4,'0')+' · seed 0x'+(Math.imul(keyWord,0x7cf7)>>>0).toString(16).padStart(8,'0')+
+        '\nencrypt (plain→cipher): '+perm.map(v=>v.toString(16).padStart(2,'0')).join('')+
+        '\ndecrypt (cipher→plain): '+inv.map(v=>v.toString(16).padStart(2,'0')).join('');
+    const bytes=a.infmt==='hex'?bytesFromHex(t):a.infmt==='binstr'?bytesFromBinStr(t):utf8Encode(t);
+    const table=a.mode==='encrypt'?perm:inv;
+    const out=new Uint8Array(bytes.length); for(let i=0;i<bytes.length;i++)out[i]=table[bytes[i]];
+    return a.outfmt==='hex'?hexFromBytes(out):binStrFromBytes(out);
+  });
+addOp('graspGlDirectory','GRASP GL Library Directory (EXE-bound)','EXE Protection',
+  'Parse a GRASP .GL library or an EXE-bound GRASPRT presentation (Load File → raw byte string). Reads the 17-byte directory entries, recovers the protection key word from the first entry’s high offset word, decodes every member’s 4-byte length prefix and checks it against the directory. Optionally output one decoded member. Static parse only — never runs the presentation or its .grp code members.',
+  [
+    {key:'offset',label:'Library offset (blank = MZ load-module size)',type:'text',default:''},
+    {key:'member',label:'Output member (name) or blank for the listing',type:'text',default:''},
+    {key:'outfmt',label:'Member output',type:'select',default:'text',options:[['text','Latin-1 text'],['hex','Hex'],['binstr','Raw byte string']]}
+  ],
+  function(t,a){
+    const bytes=bytesFromBinStr(t);
+    const offset=String(a.offset||'').trim()?parseInt(a.offset,10):graspMzLoadModule(bytes);
+    const lib=graspParseLibrary(bytes,offset);
+    const want=String(a.member||'').trim().toLowerCase();
+    if(want){
+      const m=lib.members.find(x=>x.name.toLowerCase()===want);
+      if(!m)throw new Error('No member named '+want);
+      if(!m.ok)throw new Error('Member length prefix disagrees with the directory; wrong key or offset?');
+      const raw=lib.data.subarray(m.off+4,m.off+4+m.length);
+      const out=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++)out[i]=lib.table[raw[i]];
+      return a.outfmt==='hex'?hexFromBytes(out):binStrFromBytes(out);
+    }
+    const ok=lib.members.filter(m=>m.ok).length;
+    const L=['GRASP GL directory @ file offset '+offset+' (0x'+offset.toString(16)+') · directory bytes '+lib.dirLen+
+      ' · key word 0x'+lib.keyWord.toString(16).padStart(4,'0')+(lib.keyWord?' (protected)':' (plain)')+
+      ' · members '+lib.members.length+' · length-consistent '+ok];
+    L.push('name          file-offset  length  check');
+    for(const m of lib.members)L.push(m.name.padEnd(13)+' '+(offset+m.off).toString().padStart(11)+' '+String(m.length).padStart(7)+'  '+(m.ok?'ok':'MISMATCH'));
+    return L.join('\n');
+  });
+
 /* ---- PKLITE: the stub decrypts itself before it decompresses ----
    Only a short preamble is plaintext; it ends in a backwards running-XOR
    chain (std + lodsw/xchg/xor/stosw) over its own body.  The chain key is the
@@ -3230,6 +3344,8 @@ const RECIPE_PACKS={
  'Fam Secret BIP44 / BIP39 Wallet Recovery':[['bip44Recovery',{}],['bip44',{}],['bip84',{}]],
  'GCWizard Geocaching Mystery & Coordinate Pack':[['gcwCoords',{}],['gcwBacon',{}],['gcwKenny',{}],['gcwRoman',{}]],
  'Fam Secret GCWizard Mystery Pack':[['gcwTomTom',{}],['gcwTemplar',{}],['gcwBookCipher',{}],['gcwDancingMen',{}]],
+ 'Sherlock Holmes — Dancing Men (word-end flags)':[['gcwDancingMen',{op:'encode',wordEnds:'flags'}]],
+ 'Nancy Drew 16 — Tapping Heels (Morse decoder)':[['morse',{mode:'decode'}]],
  'Fam Secret Symbol Tables & Unicode Pack':[['gcwSymbolTables',{}],['unicodeInspect',{}],['unicodeStyles',{}],['gcwMorse',{}]],
  'Magnet URI & Torrent Metainfo Pack':[['magnetParse',{}],['torrentBencode',{}]],
  'Fam Secret Larger Game of Life & Text Input':[['textInput',{}],['lifeXL',{}]],
@@ -3267,6 +3383,20 @@ const RECIPE_PACKS={
  'Encoding Lab — Base64, Base32, URL, Unicode, Hex, ROT47 round-trips':[['toB64',{}],['fromB64',{}],['toBase32',{}],['fromBase32',{}],['toURL',{}],['fromURL',{}],['toUnicode',{}],['fromUnicode',{}],['toHex',{sep:'none'}],['fromHex',{mode:'utf8'}],['rot47',{}],['rot47',{}]],
  'Binary File Lab — byte-exact Base64 round-trip (load a file first)':[['binToB64',{wrap:0}],['b64ToBin',{}]],
  'Obfuscation Lab — single-byte XOR with a toy ASCII input':[['xor',{key:'B',infmt:'text',outfmt:'text'}],['xorBrute',{}]],
+ // FBCTF 2019 source + hash-pinned distribution: see docs/ctftime-facebook-2019-software-crypto-2026-11-13.md.
+ // Paste a reviewed hex excerpt only; the challenge executables are NOT recipe inputs.
+ 'FBCTF 2019 — SOMBRERO ROJO key-file path (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO printed flag bytes (XOR)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (XOR; NOT Base64 decoded)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}]],
+ // An analyst-only interpretation, NOT the runtime KEK path; the decoded FLAG{...} is not the printed fb{...}.
+ 'FBCTF 2019 — SOMBRERO ROJO KEK text (analyst Base64 inspection)':[['xor',{key:'fb',keyFmt:'hex',infmt:'hex',outfmt:'text'}],['fromB64',{}]],
+ // Load ONLY the organizer's 64-byte dist/enc via Load File; 32-byte IV + ciphertext, no decryption.
+ 'FBCTF 2019 — netscream enc envelope (inspect only)':[['toHexdump',{srcfmt:'binstr',width:'16'}]],
+ // Sneakers 1992 press kit: GRASPRT 4.00d protected library; algorithm recovered from the runtime's own code.
+ // Load File SNEAKERS.EXE (repo ZIP webxdc-sneakers-exact/source) for the directory; paste a hex excerpt for the byte op.
+ 'Sneakers 1992 — GRASP GL directory + key word (Load File SNEAKERS.EXE)':[['graspGlDirectory',{}]],
+ 'Sneakers 1992 — GRASP protected member bytes (decrypt hex excerpt)':[['graspGlTable',{keyWord:'ec70',mode:'decrypt',infmt:'hex',outfmt:'text'}]],
+ 'Sneakers 1992 — GRASP substitution tables for key word ec70':[['graspGlTable',{keyWord:'ec70',mode:'table'}]],
  'Encryption Lab — AES-GCM password round-trip (demo text only)':[['aesGCM',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesGCM',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Encryption Lab — AES-CBC round-trip (legacy mode; demo text only)':[['aesCBC',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesCBC',{pass:'demo-only-not-secret',mode:'decrypt'}]],
  'Block Cipher Lab — Camellia ECB round-trip (demo text only)':[['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'encrypt'}],['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'decrypt'}]],
@@ -6491,10 +6621,11 @@ addOp('privacyIdeaTotp','privacyIDEA OATH TOTP / HOTP Token','FIDO & Hardware Ke
     }
     const period = parseInt(a.period) || 30;
     let tsVal = 1700000000;
-    if(a.ts === 'NOW' || a.ts === 'now' || !a.ts){
+    const tsText = String(a.ts == null ? '' : a.ts).trim();
+    if(/^now$/i.test(tsText) || !tsText){
       tsVal = Math.floor(Date.now() / 1000);
-    }else{
-      tsVal = parseInt(a.ts) || 1700000000;
+    }else if(/^[0-9]+$/.test(tsText)){
+      tsVal = parseInt(tsText, 10); // "0" is a valid counter (RFC 4226 Appendix D), not a fallback
     }
     const counter = Math.floor(tsVal / period);
     const tb = [];
@@ -7566,30 +7697,40 @@ addOp('gcwTomTom','TomTom / Tap Code Cipher','GCWizard',
 );
 
 addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
-  'Sherlock Holmes Dancing Men symbol cipher (from GitHub GCWizard/GCWizard & Sir Arthur Conan Doyle). Encodes letters into visual ASCII/Unicode stick-figure Dancing Men representations (A="o/|\\\\", B="\\\\o/|", C="o<|>") and decodes back to text.',
+  'Dancing Men monoalphabetic symbol cipher. Uses the existing GCWizard-style 26-letter ASCII stand-in table (not a transcription of every original drawing). Optional word-end mode appends ⚑ to the last symbol of each word and restores spaces while decoding, following the small flags in Doyle’s story.',
   [
-    {key:'op',label:'Operation',type:'select',default:'encode',options:[['encode','Encode Text to Dancing Men'],['decode','Decode Dancing Men back to Text']]}
+    {key:'op',label:'Operation',type:'select',default:'encode',options:[['encode','Encode Text to Dancing Men'],['decode','Decode Dancing Men back to Text']]},
+    {key:'wordEnds',label:'Word boundaries',type:'select',default:'none',options:[['none','No word-end flags (legacy)'],['flags','Use ⚑ marker to preserve words']]}
   ],
   function(t,a){
+    const FLAG='⚑';
+    const BS=String.fromCharCode(92);
     const dmen = {
-      'A': 'o/|\\', 'B': '\\o/|', 'C': 'o<|>', 'D': '<o>|', 'E': 'o|/\\',
-      'F': '\\o|/', 'G': 'o/|>', 'H': '<|o\\', 'I': 'o|',   'J': '/o\\|',
-      'K': 'o/|',  'L': '\\o/',  'M': '|o|',  'N': 'o/\\',  'O': 'o<>',
-      'P': '<o>',  'Q': 'o\\/',  'R': '/o/',  'S': '\\o\\', 'T': 'o-|',
-      'U': '|-o',  'V': 'o|-',  'W': 'o/\\|', 'X': '|\\o/', 'Y': '/|o\\', 'Z': '\\o|-'
+      'A': 'o/|'+BS, 'B': BS+'o/|', 'C': 'o<|>', 'D': '<o>|', 'E': 'o|/'+BS,
+      'F': BS+'o|/', 'G': 'o/|>', 'H': '<|o'+BS, 'I': 'o|',   'J': '/o'+BS+'|',
+      'K': 'o/|',  'L': BS+'o/',  'M': '|o|',  'N': 'o/'+BS,  'O': 'o<>',
+      'P': '<o>',  'Q': 'o'+BS+'/',  'R': '/o/',  'S': BS+'o'+BS, 'T': 'o-|',
+      'U': '|-o',  'V': 'o|-',  'W': 'o/'+BS+'|', 'X': '|'+BS+'o/', 'Y': '/|o'+BS, 'Z': BS+'o|-'
     };
     const dec = {};
     for(const k in dmen) dec[dmen[k]] = k;
+    const useFlags=a.wordEnds==='flags';
     if(a.op === 'encode'){
-      const text = (t || 'GEOCACHE').toUpperCase().replace(/[^A-Z]/g, '');
-      const out = Array.from(text).map(c => dmen[c] || '').join(' ');
+      const words=String(t||'GEOCACHE').toUpperCase().match(/[A-Z]+/g)||[];
+      if(!words.length)throw new Error('Enter A–Z text to encode');
+      const text=words.join(' ');
+      const out=words.map(word=>Array.from(word).map((c,i)=>{
+        const symbol=dmen[c]||'?';
+        return symbol+(useFlags&&i===word.length-1?FLAG:'');
+      }).join(' ')).join(' ');
       const ascii = [
         '════ GCWIZARD SHERLOCK HOLMES DANCING MEN CIPHER ════',
         'Input Text     : ' + text,
+        'Word Ends      : ' + (useFlags?'flag markers preserve spaces':'not encoded'),
         '─────────────────────────────────────────────────────',
         'Dancing Men Out: ' + out,
         '',
-        '(Verified against GitHub GCWizard/GCWizard Dancing Men specifications)'
+        '(⚑ is a textual stand-in for a flag on the last figure; the 26-letter table is a modern reconstruction.)'
       ].join('\n');
       const html = '<div style="font-family:sans-serif;background:#1a1d24;color:#eee;border:1px solid #334;border-radius:8px;padding:16px;max-width:620px;">' +
         '<div style="font-size:16px;font-weight:bold;color:#61afef;margin-bottom:10px;">Dancing Men Cipher <span style="font-size:13px;color:#98c379;">(Sherlock Holmes · GCWizard)</span></div>' +
@@ -7597,14 +7738,24 @@ addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
         '</div>';
       return {__visual:true, __html:html, __text:ascii};
     }else{
-      const raw = (t || 'o/|> o|/\\ o<> o<|> o/|\\ o<|> <|o\\ o|/\\').trim().split(/\s+/);
-      const out = raw.map(c => dec[c] || '?').join('');
+      const sample='o/|> o|/\\ o<> o<|> o/|\\ o<|> <|o\\ o|/\\';
+      const raw=String(t||sample).trim().split(/\s+/).filter(Boolean);
+      let out='',sawFlag=false;
+      for(const token of raw){
+        if(token===FLAG){if(useFlags&&out&&!out.endsWith(' '))out+=' ';sawFlag=true;continue;}
+        const flagged=token.endsWith(FLAG);
+        const symbol=flagged?token.slice(0,-FLAG.length):token;
+        out+=dec[symbol]||'?';
+        if(flagged){sawFlag=true;if(useFlags)out+=' ';}
+      }
+      if(useFlags&&sawFlag)out=out.trimEnd();
       const ascii = [
         '════ GCWIZARD DANCING MEN DECODER ════',
         'Input Symbols : ' + raw.join(' '),
+        'Word Ends     : ' + (useFlags?'spaces restored from ⚑ markers':'not restored'),
         'Decoded Text  : ' + out,
         '',
-        '(Verified against GitHub GCWizard/GCWizard Dancing Men specifications)'
+        '(⚑ is a textual stand-in for a flag on the last figure; the 26-letter table is a modern reconstruction.)'
       ].join('\n');
       const html = '<div style="font-family:sans-serif;background:#1a1d24;color:#eee;border:1px solid #334;border-radius:8px;padding:16px;max-width:580px;">' +
         '<div style="font-size:16px;font-weight:bold;color:#61afef;margin-bottom:10px;">Dancing Men Decoder</div>' +
@@ -7614,7 +7765,6 @@ addOp('gcwDancingMen','Dancing Men Cipher (Sherlock Holmes)','GCWizard',
     }
   }
 );
-
 addOp('gcwTemplar','Knights Templar / Pigpen Cipher','GCWizard',
   'Knights Templar / Pigpen / Freemason\'s geometric symbol cipher (from GitHub GCWizard/GCWizard). Encodes letters into grid fragments and dots representing the Masonic grid coordinates, and decodes symbols back to plaintext.',
   [
@@ -11299,10 +11449,12 @@ function tapDec(s){
 /* ===== SOLITAIRE (unkeyed + passphrase) ===== */
 function solNewDeck(){const d=[]; for(let i=1;i<=54;i++) d.push(i); return d;}
 function solMove(d,card,n){
-  let i=d.indexOf(card);
+  // Schneier: a joker at the bottom wraps to just below the top card; one up from
+  // the bottom moving two goes below the top card. After removal d has 53 cards,
+  // so any landing index past 53 wraps by exactly 53 (verified on sol-test.txt).
+  const i=d.indexOf(card);
   d.splice(i,1);
-  let j=i+n; if(j>=d.length) j=(j%d.length)+1; // skip wrapping to top as bottom
-  if(j>d.length) j=d.length;
+  let j=i+n; if(j>d.length) j-=d.length;
   d.splice(j,0,card);
 }
 function solTriple(d){
@@ -11369,7 +11521,7 @@ addOp('gcwTapir','TAPIR (NVA / STASI)','GCWizard',
   }
 );
 addOp('gcwSolitaire','Solitaire / Pontifex','GCWizard',
-  'Bruce Schneier Solitaire (Cryptonomicon “Pontifex”). 54-card deck keystream, passphrase keying, Beaufort-style add/subtract mod 26. GCWizard leftover. Self-consistent encrypt↔decrypt verified. Keystream letters for the published KDWUP ONOWT demo: DONOTUSEPC → OSKJJJGTMW.',
+  'Bruce Schneier Solitaire (Cryptonomicon “Pontifex”). 54-card deck keystream, passphrase keying, add/subtract mod 26. Matches all 12 vectors of Schneier’s sol-test.txt (tests/kitchen-published-vectors.test.mjs); self-consistent encrypt↔decrypt verified. Keystream letters for the published KDWUP ONOWT demo: DONOTUSEPC → OSKJJJGTMW.',
   [
     {key:'op',label:'Mode',type:'select',default:'encode',options:[['encode','Encrypt'],['decode','Decrypt']]},
     {key:'pass',label:'Passphrase (deck key)',type:'text',default:''}
@@ -25360,6 +25512,443 @@ addOp('pgpArmorCheck','OpenPGP Radix-64 armor check (CRC-24)','Modern',
       'Caution    : a checksum detects transcription damage only — it is not a MAC, and a mismatch can equally mean the wrong block was pasted.'].join('\n');
   });
 
+/* Educational finite-group ElGamal example. The PDF's p denotes the prime
+   group order; here P is a prime field modulus and q is the order of a prime-order
+   subgroup G=<g> of Z_P*. This is deliberately small and deterministic. */
+const EGM_U64_MAX=(1n<<64n)-1n;
+function egmMod(a,m){const r=a%m;return r<0n?r+m:r;}
+function egmPow(b,e,m){let x=egmMod(b,m),r=1n;while(e>0n){if((e&1n)!==0n)r=(r*x)%m;x=(x*x)%m;e>>=1n;}return r;}
+function egmParse(v,label){const s=String(v==null?'':v).trim();if(!/^(0|[1-9][0-9]*)$/.test(s))throw new Error(label+' must be a non-negative decimal integer');const n=BigInt(s);if(n>EGM_U64_MAX)throw new Error(label+' is limited to an unsigned 64-bit value in this educational operation');return n;}
+function egmPrime64(n){
+  if(n<2n||n>EGM_U64_MAX)return false;
+  const small=[2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n];
+  for(const p of small){if(n===p)return true;if(n%p===0n)return false;}
+  let d=n-1n,s=0;while((d&1n)===0n){d>>=1n;s++;}
+  // Deterministic Miller-Rabin bases for all unsigned 64-bit integers.
+  for(const base of [2n,325n,9375n,28178n,450775n,9780504n,1795265022n]){
+    const a=base%n;if(a===0n)continue;let x=egmPow(a,d,n);
+    if(x===1n||x===n-1n)continue;
+    let passed=false;for(let i=1;i<s;i++){x=(x*x)%n;if(x===n-1n){passed=true;break;}}
+    if(!passed)return false;
+  }
+  return true;
+}
+function egmInv(a,m){let oldR=m,r=egmMod(a,m),oldT=0n,t=1n;while(r!==0n){const q=oldR/r;[oldR,r]=[r,oldR-q*r];[oldT,t]=[t,oldT-q*t];}if(oldR!==1n)throw new Error('No modular inverse exists for the decryption value');return egmMod(oldT,m);}
+function egmGroupMember(x,p,q,label){if(x<=0n||x>=p||egmPow(x,q,p)!==1n)throw new Error(label+' must be a nonzero member of the order-q subgroup G');}
+addOp('munitionsTshirt','Munitions T-shirt (Perl RSA & Free Speech)','Public Key',
+  'Generates and simulates the historic 1995 Adam Back 3-line Perl RSA munitions signature printed on cypherpunk protest T-shirts against ITAR weapons export restrictions. Demonstrates the legal doctrine that code is constitutionally protected speech under the First Amendment (Bernstein v. United States).',
+  [
+    {key:'action',label:'Action',type:'select',options:['Generate Perl script','Encrypt message','Decrypt message','Show legal brief'],default:'Generate Perl script'},
+    {key:'n',label:'Modulus n (hex or decimal)',type:'text',default:'3233'},
+    {key:'k',label:'Exponent e or d (hex or decimal)',type:'text',default:'17'}
+  ],function(text,a){
+    const parseNum=function(s){
+      s=String(s).trim();
+      if(!s)return 0n;
+      if(s.startsWith('0x')||s.startsWith('0X'))return BigInt(s);
+      return /^[0-9a-fA-F]+$/.test(s)&&/[a-fA-F]/.test(s)?BigInt('0x'+s):BigInt(s);
+    };
+    const modPow=function(base,exp,mod){
+      let res=1n;
+      base=((base%mod)+mod)%mod;
+      while(exp>0n){
+        if(exp&1n)res=(res*base)%mod;
+        base=(base*base)%mod;
+        exp>>=1n;
+      }
+      return res;
+    };
+    const action=a.action||'Generate Perl script';
+    const historicPerl='#!/bin/perl -s-- -export-a-crypto-system-sig -RSA-3-lines-PERL\n$m=unpack(H.$w,$m."\\0"x$w),$_=`echo "16do$w 2+4Oi0$d*-^1[d2%Sa\\n2/d0<X+d*La1=z\\U$n%0]SX$k"[$m*]\\EszlXx++p|dc`,s/^.|\\W//g,print\npack(\'H*\',$_)while read(STDIN,$m,($w=2*$d-1+length$n&~1)/2)';
+
+    if(action==='Generate Perl script'){
+      return historicPerl;
+    }
+    if(action==='Show legal brief'){
+      return JSON.stringify({
+        artifact:'Munitions T-Shirt (1995)',
+        author:'Dr. Adam Back',
+        regulatoryRegime:'ITAR (International Traffic in Arms Regulations, 22 CFR 120-130)',
+        category:'Category XIII — Auxiliary Military Equipment (Cryptographic systems)',
+        constitutionalIssue:'First Amendment (Freedom of Speech) vs ITAR prior restraint',
+        landmarkPrecedent:'Bernstein v. United States, 176 F.3d 1132 (9th Cir. 1999)',
+        ruling:'Source code is expressive speech protected by the First Amendment; government export restrictions on cryptographic publishing constitute an unconstitutional prior restraint.',
+        quote:'Cypherpunks write code. We know that someone has to write software to defend privacy, and since we can\x27t get privacy unless we all do, we\x27re going to write it.'
+      },null,2);
+    }
+
+    const n=parseNum(a.n);
+    const k=parseNum(a.k);
+    if(n<=1n)throw new Error('Modulus n must be greater than 1');
+    if(k<=0n)throw new Error('Exponent must be positive');
+
+    if(action==='Encrypt message'){
+      const trimmed=text.trim();
+      const m=trimmed?parseNum(trimmed):42n;
+      if(m>=n)throw new Error('Plaintext integer m must be less than modulus n');
+      const c=modPow(m,k,n);
+      return JSON.stringify({
+        operation:'RSA Encryption (Perl Munitions Model)',
+        input:String(m),
+        modulusN:String(n),
+        publicExponentE:String(k),
+        ciphertext:String(c),
+        hex:'0x'+c.toString(16)
+      },null,2);
+    }
+
+    if(action==='Decrypt message'){
+      const trimmed=text.trim();
+      const c=trimmed?parseNum(trimmed):2183n;
+      const m=modPow(c,k,n);
+      return JSON.stringify({
+        operation:'RSA Decryption (Perl Munitions Model)',
+        ciphertext:String(c),
+        modulusN:String(n),
+        privateExponentD:String(k),
+        plaintext:String(m),
+        hex:'0x'+m.toString(16)
+      },null,2);
+    }
+    return historicPerl;
+  });
+
+addOp('elgamalMulDemo','ElGamal multiplicative demo (not FHE)','Public Key',
+  'Educational worked example of the paper\'s multiplicative ElGamal: c=(g^r, h^r·m), h=g^α; componentwise ciphertext multiplication encrypts m₀·m₁, and multiplying by a fresh encryption of 1 rerandomizes it. This operation uses explicit decimal arguments and produces a reproducible JSON report; it does not generate randomness. The default group is the order-11 subgroup G=<2> of Z₂₃*, with tiny, insecure values. This demonstrates one multiplicative homomorphism only: it is NOT fully homomorphic encryption (FHE), not production cryptography, and not an implementation of the paper\'s bootstrapping/GSW material. P is the field modulus and q is the subgroup order; primality checks are deterministic only up to 64 bits.',
+  [
+    {key:'p',label:'Prime modulus P',type:'text',default:'23'},
+    {key:'q',label:'Prime subgroup order q',type:'text',default:'11'},
+    {key:'g',label:'Generator g',type:'text',default:'2'},
+    {key:'alpha',label:'Private exponent α',type:'text',default:'3'},
+    {key:'m0',label:'Message m₀ (group element)',type:'text',default:'4'},
+    {key:'r0',label:'Encryption exponent r₀',type:'text',default:'4'},
+    {key:'m1',label:'Message m₁ (group element)',type:'text',default:'8'},
+    {key:'r1',label:'Encryption exponent r₁',type:'text',default:'5'},
+    {key:'rerand',label:'Rerandomization exponent s',type:'text',default:'3'}
+  ],function(_text,a){
+    const p=egmParse(a.p,'P'),q=egmParse(a.q,'q'),g=egmParse(a.g,'g');
+    if(p<3n||!egmPrime64(p))throw new Error('P must be prime and no larger than 2^64−1');
+    if(q<2n||!egmPrime64(q))throw new Error('q must be prime and no larger than 2^64−1');
+    if(q>=p||(p-1n)%q!==0n)throw new Error('q must be a prime divisor of P−1');
+    if(g<=1n||g>=p||egmPow(g,q,p)!==1n)throw new Error('g must be a non-identity element of the order-q subgroup G');
+    const alpha=egmParse(a.alpha,'α');
+    if(alpha<1n||alpha>=q)throw new Error('α must satisfy 1 ≤ α < q');
+    const m0=egmParse(a.m0,'m₀'),m1=egmParse(a.m1,'m₁');
+    egmGroupMember(m0,p,q,'m₀');egmGroupMember(m1,p,q,'m₁');
+    const r0=egmParse(a.r0,'r₀'),r1=egmParse(a.r1,'r₁'),s=egmParse(a.rerand,'s');
+    for(const [name,r] of [['r₀',r0],['r₁',r1],['s',s]])if(r>=q)throw new Error(name+' must satisfy 0 ≤ exponent < q');
+    const h=egmPow(g,alpha,p);
+    const enc=(m,r)=>({c0:egmPow(g,r,p),c1:(m*egmPow(h,r,p))%p});
+    const c0=enc(m0,r0),c1=enc(m1,r1);
+    const product={c0:(c0.c0*c1.c0)%p,c1:(c0.c1*c1.c1)%p};
+    const decrypt=c=>((c.c1*egmInv(egmPow(c.c0,alpha,p),p))%p);
+    const encOne={c0:egmPow(g,s,p),c1:egmPow(h,s,p)};
+    const rerandomized={c0:(product.c0*encOne.c0)%p,c1:(product.c1*encOne.c1)%p};
+    const jsonCipher=c=>({c0:String(c.c0),c1:String(c.c1)});
+    return JSON.stringify({
+      scope:'Educational multiplicative ElGamal only — not FHE and not production cryptography.',
+      group:{modulusP:String(p),primeOrderQ:String(q),generatorG:String(g),publicH:String(h)},
+      encryptions:[
+        {message:String(m0),randomizer:String(r0),ciphertext:jsonCipher(c0)},
+        {message:String(m1),randomizer:String(r1),ciphertext:jsonCipher(c1)}
+      ],
+      homomorphicProduct:{formula:'(c0₀·c0₁ mod P, c1₀·c1₁ mod P)',ciphertext:jsonCipher(product),plaintextProductModP:String((m0*m1)%p),decrypted:String(decrypt(product))},
+      rerandomization:{formula:'C′ = C · Enc(1; s)',freshExponent:String(s),freshEncryptionOfOne:jsonCipher(encOne),ciphertext:jsonCipher(rerandomized),decrypted:String(decrypt(rerandomized))},
+      notes:['The product ciphertext is an encryption of m₀·m₁ in G; its randomness is the sum of the input exponents modulo q, not fresh independent randomness.','Rerandomization multiplies by Enc(1; s), using the explicitly supplied s; this demo never samples randomness.','One multiplicative homomorphism is not full homomorphism: this does not implement arbitrary circuits, bootstrapping, or GSW.']
+    },null,2);
+  });
+
+/* ============================================================
+   FHE STUDY LAB — plaintext teaching aids, not an HE implementation
+============================================================ */
+function fheKitchenParsePairs(text){
+  const rows=[];
+  const lines=String(text??'').split(/\r?\n/);
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i].trim();
+    if(!line||line.startsWith('#'))continue;
+    const match=line.match(/^([0-9]+)(?:\s*,\s*|\s+)([0-9]+)$/);
+    if(!match)throw new Error('Line '+(i+1)+': enter two non-negative integers as x,y (one pair per line); comments may start with #');
+    const x=Number(match[1]),y=Number(match[2]);
+    if(!Number.isSafeInteger(x)||x>16)throw new Error('Line '+(i+1)+': x must be an integer in 0..16');
+    if(!Number.isSafeInteger(y)||y>16)throw new Error('Line '+(i+1)+': y must be an integer in 0..16');
+    rows.push({x,y});
+    if(rows.length>289)throw new Error('At most 289 input pairs are allowed per bake');
+  }
+  if(!rows.length)throw new Error('Enter at least one F17 input pair as x,y');
+  return rows;
+}
+function fheKitchenF17Oracle(text){
+  const rows=fheKitchenParsePairs(text);
+  const inverse=y=>{
+    for(let n=1;n<17;n++)if((y*n)%17===1)return n;
+    throw new Error('No inverse exists for nonzero divisor '+y+' in F17');
+  };
+  const results=rows.map(({x,y},sequence)=>{
+    const rawProduct=x*y;
+    const product=rawProduct%17;
+    const squareIndex=product+x+1;
+    const divisorValid=y!==0;
+    return {
+      sequence,x,y,
+      sum:(x+y)%17,
+      difference:((x-y)%17+17)%17,
+      product,
+      quotient:divisorValid?(x*inverse(y))%17:0,
+      divisor_valid:divisorValid,
+      square:(squareIndex*squareIndex)%17,
+      intermediates:{raw_product:rawProduct,reduction_index:rawProduct,square_lut_index:squareIndex}
+    };
+  });
+  return JSON.stringify({
+    scope:'Plaintext reference oracle only. No keys, ciphertexts, encryption, encrypted evaluation, or noise refresh are performed.',
+    field:{name:'F17',modulus:17,plaintext_range:[0,16]},
+    input_contract:{format:'one x,y integer pair per line; blank lines and # comments are ignored',maximum_pairs:289},
+    circuit:{
+      outputs:['sum=(x+y) mod 17','difference=(x-y) mod 17','product=(x*y) mod 17','quotient=x/y when y is nonzero','divisor_valid','square=((x*y mod 17)+x+1)^2 mod 17'],
+      bounds:{raw_product_max:256,reduction_index_max:256,square_index_max:33},
+      division:'When y=0, quotient is the placeholder 0 and divisor_valid=false. A real client must check the decrypted validity flag before using the quotient.'
+    },
+    results
+  },null,2);
+}
+function fheKitchenBytePairs(text){
+  const bytes=Array.from(utf8Encode(String(text??'')));
+  if(bytes.length>4096)throw new Error('The teaching codec is limited to 4096 UTF-8 bytes per bake');
+  const pairs=bytes.map((byte,index)=>{
+    const x=Math.floor(byte/17),y=byte%17;
+    return {index,byte,pair:[x,y],reconstructed_byte:x*17+y};
+  });
+  return JSON.stringify({
+    scope:'Deterministic UTF-8 representation only: not encryption, authentication, FHE, or noise refresh.',
+    encoding:'b -> [floor(b/17), b mod 17]',
+    input_utf8_bytes:bytes.length,
+    pair_count:pairs.length,
+    round_trip_exact:pairs.every(row=>row.reconstructed_byte===row.byte),
+    preserves_order:true,
+    transport_note:'A field pair is a representation of one byte here, not a ciphertext. Preserve chunk order/length and authenticate the serialized stream separately.',
+    pairs
+  },null,2);
+}
+function fheKitchenArchitectureCard(){
+  return JSON.stringify({
+    scope:'Source-grounded architecture study card; not a protocol implementation or a security evaluation.',
+    case_study:'Lancelot: Byzantine-robust federated learning with FHE',
+    source:{authors:'Siyang Jiang, Hao Yang, Qipeng Xie, Chuan Ma, Sen Wang, Zhe Liu, Tao Xiang, and Guoliang Xing',title:'Towards compute-efficient Byzantine-robust federated learning with fully homomorphic encryption',journal:'Nature Machine Intelligence 7 (2025), 1657–1668',doi:'10.1038/s42256-025-01107-6',url:'https://doi.org/10.1038/s42256-025-01107-6'},
+    source_review_limit:'The available Drive text extraction was truncated. This card summarizes only the accessible excerpt and is not a full paper, threat-model, or security review; reported performance was not independently reproduced.',
+    roles:[
+      {role:'Clients',responsibility:'Keep local training data and encrypt model updates before sending them.'},
+      {role:'Server',responsibility:'Compute supported distances and aggregation steps on ciphertexts.'},
+      {role:'Trusted key-generation centre',responsibility:'Provision key material; in the paper’s interactive workflow, decrypt and sort encrypted distances, return an encrypted selection mask, then decrypt the final aggregate.'}
+    ],
+    workflow:['Clients encrypt and send model updates.','The server computes encrypted distances.','The encrypted distance list goes to the trusted centre for decryption and sorting.','The centre encrypts a mask identifying selected clients and returns it.','The server applies the mask to encrypted updates and aggregates.','The centre decrypts the aggregate for distribution.'],
+    engineering:'The paper discusses lazy relinearization, dynamic hoisting, and GPU acceleration; it reports a 20-fold processing-speed improvement in its evaluated setup. That result is not a general FHE speedup guarantee.',
+    security_and_scope:[
+      'FHE confidentiality alone does not prevent poisoned inputs or guarantee Byzantine robustness; robust aggregation is a separate protocol goal.',
+      'The trusted centre’s decrypt-and-sort step is an explicit trust boundary. Do not describe this workflow as server-only, non-interactive evaluation.',
+      'Depth, ciphertext comparisons, compute, communication, parameter selection, and the threat model remain finite and application-specific.'
+    ]
+  },null,2);
+}
+addOp('fheKitchenLab','FHE Study Lab (plaintext only)','Educational',
+  'Three bounded study modes: an F17 plaintext oracle, a UTF-8/base-17 pair codec, and a source-grounded Lancelot architecture card. None encrypts, evaluates ciphertexts, generates keys, or refreshes noise.',
+  [{key:'mode',label:'Study mode',type:'select',default:'oracle',options:[['oracle','F17 plaintext circuit oracle'],['bytePairs','UTF-8 byte ↔ F17 pair codec'],['architecture','Lancelot architecture card']]}],
+  function(text,args){
+    if(args.mode==='oracle')return fheKitchenF17Oracle(text);
+    if(args.mode==='bytePairs')return fheKitchenBytePairs(text);
+    if(args.mode==='architecture')return fheKitchenArchitectureCard();
+    throw new Error('Unknown FHE study mode');
+  });
+
+// Manual, bounded measurements only. This deliberately does not inspect ciphertexts,
+// run an HE library, estimate scheme noise/precision, or infer hardware limits.
+function fheArchitectureProfile(text){
+  const input=String(text??'');
+  if(utf8Encode(input).length>65536)throw new Error('FHE profile JSON is limited to 65536 UTF-8 bytes');
+  let profile;
+  try{profile=JSON.parse(input);}catch(_){throw new Error('Enter one valid JSON FHE profile');}
+  if(!profile||typeof profile!=='object'||Array.isArray(profile))throw new Error('FHE profile must be a JSON object');
+  if(profile.schema!==1)throw new Error('FHE profile schema must be 1');
+  const label=(value,name,max=120)=>{
+    if(typeof value!=='string'||!value.trim()||value.trim().length>max)throw new Error(name+' must be a non-empty string of at most '+max+' characters');
+    return value.trim();
+  };
+  const metric=(value,name,{integer=false,positive=false}={})=>{
+    if(typeof value!=='number'||!Number.isFinite(value)||value>Number.MAX_SAFE_INTEGER||(positive?value<1e-9:value<0)||(integer&&!Number.isSafeInteger(value)))
+      throw new Error(name+' must be a '+(positive?'positive (at least 1e-9)':'non-negative')+' finite '+(integer?'safe integer':'number within the safe numeric range'));
+    return value;
+  };
+  const workload=label(profile.workload,'workload');
+  const scheme=label(profile.scheme,'scheme',24);
+  const platform=label(profile.platform,'platform');
+  if(!['serial','overlapping'].includes(profile.timing_model))throw new Error('timing_model must be "serial" or "overlapping"');
+  if(!Array.isArray(profile.stages)||profile.stages.length<1||profile.stages.length>128)throw new Error('stages must contain 1 to 128 measured stages');
+  const stages=profile.stages.map((stage,index)=>{
+    const prefix='stages['+index+'] ';
+    if(!stage||typeof stage!=='object'||Array.isArray(stage))throw new Error(prefix+'must be an object');
+    const name=label(stage.name,prefix+'name');
+    const wallMs=metric(stage.wall_ms,prefix+'wall_ms',{positive:true});
+    const gpuEventMs=stage.gpu_event_ms==null?null:metric(stage.gpu_event_ms,prefix+'gpu_event_ms');
+    const hostAllocationMs=stage.host_allocation_ms==null?null:metric(stage.host_allocation_ms,prefix+'host_allocation_ms');
+    const readBytes=stage.read_bytes==null?null:metric(stage.read_bytes,prefix+'read_bytes',{integer:true});
+    const writtenBytes=stage.written_bytes==null?null:metric(stage.written_bytes,prefix+'written_bytes',{integer:true});
+    if((readBytes===null)!==(writtenBytes===null))throw new Error(prefix+'read_bytes and written_bytes must both be supplied together');
+    let ioBytes=null;
+    if(readBytes!==null&&writtenBytes!==null){
+      ioBytes=readBytes+writtenBytes;
+      if(!Number.isSafeInteger(ioBytes))throw new Error(prefix+'read_bytes + written_bytes exceeds the safe-integer limit');
+    }
+    const workCount=stage.work_count==null?null:metric(stage.work_count,prefix+'work_count',{integer:true});
+    const workUnit=stage.work_unit==null?null:label(stage.work_unit,prefix+'work_unit',40);
+    if((workCount===null)!==(workUnit===null))throw new Error(prefix+'work_count and work_unit must be supplied together');
+    return {
+      name,wall_ms:wallMs,
+      gpu_event_ms:gpuEventMs,
+      host_allocation_ms:hostAllocationMs,
+      host_allocation_wall_ratio_percent:hostAllocationMs===null?null:(hostAllocationMs/wallMs)*100,
+      read_bytes:readBytes,written_bytes:writtenBytes,io_bytes:ioBytes,
+      apparent_io_GB_per_second:ioBytes===null?null:ioBytes/(wallMs*1000000),
+      work_count:workCount,work_unit:workUnit,
+      work_units_per_io_byte:workCount===null||ioBytes===null||ioBytes===0?null:workCount/ioBytes,
+      serial_wall_share_percent:profile.timing_model==='serial'?null:undefined
+    };
+  });
+  const serial=profile.timing_model==='serial';
+  const stageWallSumMs=serial?stages.reduce((sum,stage)=>sum+stage.wall_ms,0):null;
+  if(serial&&(!Number.isFinite(stageWallSumMs)||stageWallSumMs>Number.MAX_SAFE_INTEGER))throw new Error('Sequential stage-wall sum exceeds the safe numeric range');
+  for(const stage of stages){
+    if(serial)stage.serial_wall_share_percent=stageWallSumMs>0?(stage.wall_ms/stageWallSumMs)*100:null;
+    else delete stage.serial_wall_share_percent;
+  }
+  const largestStage=stages.reduce((largest,stage)=>stage.wall_ms>largest.wall_ms?stage:largest,stages[0]);
+  return JSON.stringify({
+    scope:'Manual profile calculator only. No encryption, ciphertext evaluation, key generation, bootstrapping, parameter selection, noise/precision estimate, or security evaluation is performed.',
+    measurement_origin:'Every measurement is supplied by the user; this operation runs no benchmark and verifies no hardware counter.',
+    workload,scheme,platform,timing_model:profile.timing_model,
+    stage_wall_sum_ms:stageWallSumMs,
+    stage_wall_sum_note:serial?'Sum of the entered sequential, non-overlapping stage wall times only; it is not an end-to-end total unless the supplied stages cover the whole path.':null,
+    largest_wall_measurement:{name:largestStage.name,wall_ms:largestStage.wall_ms},
+    stages,
+    metric_notes:[
+      'apparent_io_GB_per_second uses decimal GB and the supplied read_bytes + written_bytes divided by wall_ms. It is not DRAM bandwidth unless the byte counts are measured physical memory traffic.',
+      'work_units_per_io_byte is the supplied work_count divided by supplied I/O bytes; it is not a standardized roofline FLOP intensity.',
+      'gpu_event_ms, wall_ms, and host_allocation_ms are reported separately. GPU event times may be nested in asynchronous wall time; do not add overlapping intervals. The host-allocation/wall ratio is descriptive, not necessarily an additive share when measurements overlap.',
+      'No latency, memory, precision, noise budget, bootstrapping cost, or supported-circuit bound is inferred beyond the values entered.'
+    ],
+    research_context:[
+      'Agrawal and Joshi (2023) describe CKKS client-side encoding/encryption/decryption/decoding separately from server-side evaluation and report their profiled CKKS workloads and bootstrapping as memory-bound.',
+      'Lyashevsky, Titov, Qiu, and Zhai (2023) describe a SYCL/Microsoft SEAL CKKS GPU backend, with whole-pipeline, allocation, asynchronous execution, and kernel considerations; their performance study uses two experimental, non-production Intel GPUs and is not a hardware-selection guarantee.'
+    ],
+    sources:[
+      {title:'On Architecting Fully Homomorphic Encryption-based Computing Systems',authors:'Rashmi Agrawal and Ajay Joshi',year:2023,doi:'10.1007/978-3-031-31754-5',url:'https://doi.org/10.1007/978-3-031-31754-5'},
+      {title:'XeHE: An Intel GPU Accelerated Fully Homomorphic Encryption Library',authors:'Alexander Lyashevsky, Alexey Titov, Yiqin Qiu, and Yujia Zhai',year:2023,isbn:'979-8-88638-001-9',license:'CC BY 4.0'}
+    ]
+  },null,2);
+}
+addOp('fheArchitectureLab','FHE Architecture Profile (manual measurements only)','Educational',
+  'Analyze bounded user-supplied stage measurements using a source-grounded CKKS profiling checklist. It runs no benchmark and performs no encryption, ciphertext evaluation, noise refresh, or security assessment.',
+  [],
+  function(text){return fheArchitectureProfile(text);});
+
+/* FHE follow-up v2: exact plaintext reference for a real, separate BFV experiment. */
+function fheMaskReference(text){
+  const input=String(text??'');
+  if(utf8Encode(input).length>16384)throw new Error('Mask workload JSON is limited to 16384 UTF-8 bytes');
+  let data;
+  try{data=JSON.parse(input);}catch(_){throw new Error('Enter valid mask workload JSON: {"schema":1,"updates":[[2,3],[10,20],[4,5]],"selection":[1,0,1]}');}
+  if(!data||typeof data!=='object'||Array.isArray(data)||data.schema!==1)throw new Error('Mask workload schema must be 1');
+  if(Object.keys(data).some(key=>!['schema','updates','selection'].includes(key)))throw new Error('Unknown mask workload key');
+  const updates=data.updates,selection=data.selection;
+  if(!Array.isArray(updates)||updates.length<1||updates.length>16)throw new Error('updates must have 1 to 16 clients');
+  const width=updates[0]&&updates[0].length;
+  if(!Number.isInteger(width)||width<1||width>32)throw new Error('updates must have 1 to 32 features');
+  if(!Array.isArray(selection)||selection.length!==updates.length||selection.some(bit=>bit!==0&&bit!==1))throw new Error('selection must contain one 0/1 bit per client');
+  if(updates.some(row=>!Array.isArray(row)||row.length!==width||row.some(n=>!Number.isInteger(n)||n<0||n>100)))throw new Error('updates must be rectangular integer rows in 0..100');
+  const selectedCount=selection.reduce((sum,bit)=>sum+bit,0);
+  const selectedSum=updates[0].map((_,feature)=>updates.reduce((sum,row,client)=>sum+row[feature]*selection[client],0));
+  return JSON.stringify({
+    scope:'Plaintext reference only: this recipe performs NO encryption, ciphertext evaluation, key generation, decryption, sorting or bootstrapping.',
+    workload_version:2,
+    dimensions:{clients:updates.length,features:width,input_range:[0,100],maximum_possible_sum:updates.length*100},
+    selectedSum,selectedCount,
+    meanOutsideCiphertextEvaluation:selectedCount?selectedSum.map(sum=>sum/selectedCount):null,
+    empty_selection:selectedCount===0,
+    operations_in_separate_bfv_experiment:{ciphertextMultiplications:updates.length,ciphertextAdditions:updates.length-1,relinearizations:1,multiplicativeDepth:1,bootstraps:0},
+    separate_backend:'tools/he-bfv-mask-demo.mjs uses node-seal 7.0.0 / Microsoft SEAL 4.1.2 for actual finite-depth BFV encryption and evaluation. The browser recipe does not load that backend.',
+    trust_boundaries:[
+      'Lancelot uses an interactive trusted key-generation centre to decrypt and sort distances, then encrypt a client-selection mask. The server applies that encrypted mask to encrypted updates. This reference starts AFTER selection; it implements no distances, encrypted comparisons, Krum, Multi-Krum or Byzantine-robust training.',
+      'The separate BFV experiment co-locates client/selector/evaluator/owner roles in one local process. Its evaluator receives ciphertexts and a relinearization key, not a secret key or plaintext selection. This is not a deployed multi-party protocol.',
+      'The selected count and mean are outside ciphertext evaluation; division and zero-selection handling are not encrypted here. A zero selected count yields null, not a valid zero average.',
+      'No range/bit proofs, authenticated transport, key lifecycle, differential privacy or output-privacy guarantee. Aggregation and a ledger of usage do not by themselves prove computation correctness or prevent data leakage.'
+    ],
+    research_sources:[
+      {doi:'10.1038/s42256-025-01107-6',title:'Towards compute-efficient Byzantine-robust federated learning with fully homomorphic encryption',review:'Accessible introduction and system-model excerpt, including the trusted-centre encrypted-mask workflow; not a full security or benchmark reproduction.'},
+      {doi:'10.1109/CVCI51460.2020.9338620',title:'The Data Protection of Intelligent Connected Vehicles Cloud Control Framework Using Fully Homomorphic Encryption',review:'Accessible opening excerpt motivates separating encrypted computation from a consortium-ledger usage trail. No vehicle-control, CKKS or Hyperledger benchmark was reproduced.'}
+    ]
+  },null,2);
+}
+addOp('fheMaskLab','FHE Masked Aggregation v2 (plaintext reference)','Educational',
+  'Bounded synthetic update vectors and explicit selection bits: compute exact sums/count/mean and audit the trusted-selector boundary. Plaintext only; actual finite-depth BFV is a separate local CLI experiment, not this recipe.',
+  [],function(text){return fheMaskReference(text);});
+
+/* SnapSafe v4.2.0: passive SECV v1 layout inspection, not decryption.
+   Source: SecureCamera/SecureCameraAndroid @ 826bf51357c8ca81bad9e81c045107fd6671e633,
+   SecvFileFormat.kt and ChunkedStreamingEncryptor.kt; see docs/2600-public-software-review-2026-11-17.md. */
+function snapSafeSecvHeader(text,args){
+  const mode=args.mode||'header';
+  if(!['header','file'].includes(mode))throw new Error('Unknown SECV inspection mode');
+  const input=String(text||'');
+  if(input.length>3145728)throw new Error('SECV inspection is limited to 1 MiB of decoded bytes');
+  if(!/^[0-9a-f\s]*$/i.test(input))throw new Error('Give plain hex bytes with optional whitespace, not a hexdump or plaintext');
+  const hex=input.replace(/\s/g,'');
+  if(hex.length%2)throw new Error('SECV hex must contain complete bytes');
+  if(hex.length/2>1048576)throw new Error('SECV inspection is limited to 1 MiB of decoded bytes');
+  if(hex.length<128)throw new Error('SECV needs a complete 64-byte header');
+  if(mode==='header'&&hex.length!==128)throw new Error('Header mode needs exactly 64 bytes; use small-file mode to check the payload length');
+  const bytes=Uint8Array.from(hex.match(/../g),x=>parseInt(x,16));
+  if(String.fromCharCode(...bytes.slice(0,4))!=='SECV')throw new Error('Invalid SECV magic');
+  const le=(offset,width)=>{let value=0n;for(let i=width-1;i>=0;i--)value=(value<<8n)|BigInt(bytes[offset+i]);return value;};
+  const version=Number(le(4,2));
+  if(version!==1)throw new Error('Unsupported SECV version: '+version);
+  const chunkSize=le(6,4),totalChunks=le(10,8),originalSize=le(18,8),finalSize=le(26,4);
+  const maxLong=(1n<<63n)-1n;
+  // The source docs call these unsigned; Kotlin uses Int/Long and requires
+  // positive sizes/seek offsets in practice. Do not accept signed overflows.
+  if(chunkSize<1n||chunkSize>2147483647n)throw new Error('SECV chunk size is outside the positive Kotlin Int range');
+  if(totalChunks>maxLong||originalSize>maxLong)throw new Error('SECV count/size exceeds the nonnegative Kotlin Long range');
+  if(totalChunks===0n){
+    if(originalSize!==0n||finalSize!==0n)throw new Error('Empty SECV must have zero chunks, original size and final size');
+  }else{
+    if(finalSize<1n||finalSize>chunkSize)throw new Error('SECV final chunk must contain 1..chunk_size plaintext bytes');
+    if(originalSize!==(totalChunks-1n)*chunkSize+finalSize)throw new Error('SECV chunk count, original size and final size are inconsistent');
+  }
+  const expected=64n+originalSize+28n*totalChunks;
+  if(expected>maxLong)throw new Error('SECV layout exceeds the signed file-offset range');
+  if(mode==='file'&&expected!==BigInt(bytes.length))throw new Error('SECV payload length mismatch: expected '+expected+' bytes, received '+bytes.length);
+  const reservedNonzero=bytes.slice(30,64).some(x=>x!==0);
+  return JSON.stringify({
+    scope:'Passive SECV v1 structure inspection only. No decryption, PIN/password guessing, AES-GCM tag verification, or proof of secure deletion.',
+    source:{release:'v4.2.0',commit:'826bf51357c8ca81bad9e81c045107fd6671e633',url:'https://github.com/SecureCamera/SecureCameraAndroid/blob/826bf51357c8ca81bad9e81c045107fd6671e633/app/src/main/kotlin/com/darkrockstudios/app/securecamera/security/streaming/SecvFileFormat.kt'},
+    mode,version,byte_order:'little-endian',header_bytes:64,
+    chunk_size_bytes:Number(chunkSize),total_chunks:totalChunks.toString(),
+    original_size_bytes:originalSize.toString(),final_chunk_plaintext_bytes:Number(finalSize),
+    iv_bytes:12,tag_bytes:16,expected_file_bytes:expected.toString(),
+    first_chunk_offset:totalChunks?'64':null,
+    last_chunk_offset:totalChunks?(64n+(totalChunks-1n)*(chunkSize+28n)).toString():null,
+    provided_bytes:bytes.length,payload_length_checked:mode==='file',authentication_verified:false,
+    reserved_nonzero:reservedNonzero,
+    warnings:[
+      'All header values are untrusted. Layout consistency and matching lengths do not authenticate a file or its chunks.',
+      'This parser reads positive Kotlin Int/Long size ranges; exact large counts and offsets are decimal strings, never rounded JavaScript Numbers.',
+      'SnapSafe video recording uses a temporary unencrypted MP4 before post-recording encryption; deleting it is not proof of flash erasure.'
+    ].concat(reservedNonzero?['Reserved header bytes are nonzero; the v1 writer normally zeroes them.']:[])
+  },null,2);
+}
+addOp('snapSafeSecv','SnapSafe SECV v1 header (passive only)','Data',
+  'Inspect a 64-byte little-endian SnapSafe v4.2.0 video header in hex, or validate layout length of a small complete file (up to 1 MiB). Exact uint64-sized metadata is reported as decimal strings. No keys, decryption, PIN guessing, GCM verification or secure-deletion claim.',
+  [{key:'mode',label:'Input scope',type:'select',default:'header',options:[['header','64-byte header only'],['file','Complete small file: length check only']]}],
+  function(text,args){return snapSafeSecvHeader(text,args);});
+
 /* ---- OpenPGP string-to-key needs a hash inside the page: the iterated count may
    reach 65,011,712 octets (count byte 0xFF), so SHA-1 and SHA-256 are streamed in
    64 KiB chunks and the repeated salt+phrase is never materialised. Both cores are
@@ -25587,7 +26176,8 @@ addOp('pgpSymDecrypt','OpenPGP symmetric-key decrypt (SKESK + SEIPD)','Modern',
     const inner=pt.subarray(18,pt.length-22);
     const storedMdc=pt.subarray(pt.length-20);
     const d3=pt[pt.length-22],d4=pt[pt.length-21];
-    const computedMdc=fdHashBytes(s2k.hashName,pt.subarray(0,pt.length-20));
+    // RFC 4880 §5.13 always uses SHA-1 for the MDC, independent of the S2K digest.
+    const computedMdc=fdHashBytes('SHA-1',pt.subarray(0,pt.length-20));
     const mdcOk=d3===0xd3&&d4===0x14&&fdHex(computedMdc)===fdHex(storedMdc);
     const lines=[];
     lines.push('════ OpenPGP symmetric-key message ════');
@@ -33724,8 +34314,8 @@ RECIPE_PACKS["Full Coverage — Boxentriq"] = [["doubleTransposition",{}],["homo
 RECIPE_PACKS["Full Coverage — Calculator"] = [["calc",{}],["convert",{}],["worldclock",{}]];
 RECIPE_PACKS["Full Coverage — Classical"] = [["caesar",{}],["vigenere",{}],["gronsfeld",{}],["vic",{}],["atbash",{}],["rot13",{}],["railfence",{}],["coltrans",{}],["playfair",{}],["hill",{}],["a1z26",{}],["bacon",{}],["morse",{}],["porta",{}],["fourSquare",{}],["bifid",{}]];
 RECIPE_PACKS["Full Coverage — Coins"] = [["nanoAddr",{}],["sapling",{}],["solana",{}],["stellar",{}],["algorand",{}],["polkadot",{}],["monero",{}],["ripple",{}],["bch",{}],["kaspa",{}],["tezos",{}]];
-RECIPE_PACKS["Full Coverage — Data"] = [["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
-RECIPE_PACKS["Full Coverage — Educational"] = [["hashtheory",{}],["turingcomplete",{}]];
+RECIPE_PACKS["Full Coverage — Data"] = [["snapSafeSecv",{}],["toB62",{}],["fromB62",{}],["dataUri",{}],["toBinary",{}],["fromBinary",{}],["toASCII",{}],["fromASCII",{}]];
+RECIPE_PACKS["Full Coverage — Educational"] = [["fheMaskLab",{}],["hashtheory",{}],["turingcomplete",{}],["fheKitchenLab",{}],["fheArchitectureLab",{}]];
 RECIPE_PACKS["Full Coverage — Electronics"] = [["icAND",{}],["icOR",{}],["icXOR",{}],["icNAND",{}],["icNOR",{}],["icXNOR",{}],["icNOT",{}],["icAdder",{}],["ic7seg",{}],["icTruth",{}]];
 RECIPE_PACKS["Full Coverage — Encoding"] = [["toEntities",{}],["fromEntities",{}],["reverse",{}]];
 RECIPE_PACKS["Full Coverage — Encryption"] = [["aesGcmFile",{}],["encryptLink",{}],["decryptLink",{}]];
@@ -33738,7 +34328,7 @@ RECIPE_PACKS["Full Coverage — Keypairs"] = [["genRSA",{}],["genECDSA",{}],["na
 RECIPE_PACKS["Full Coverage — Modern Curves"] = [["ecdh",{}]];
 RECIPE_PACKS["Full Coverage — Parity"] = [["parity",{}],["lrc",{}]];
 RECIPE_PACKS["Full Coverage — Post-Quantum"] = [["mkkem",{}],["mldsa",{}],["mldsaCore",{}]];
-RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}]];
+RECIPE_PACKS["Full Coverage — Public Key"] = [["rsa",{}],["dh",{}],["elgamalMulDemo",{}],["munitionsTshirt",{}]];
 RECIPE_PACKS["Full Coverage — Recipes"] = [["recipePack",{}]];
 RECIPE_PACKS["Full Coverage — Secret Sharing"] = [["shamir",{}]];
 RECIPE_PACKS["Full Coverage — Steganography"] = [["stegoHide",{}],["stegoReveal",{}],["stegoSpace",{}],["stegoLSB",{}]];
@@ -33751,6 +34341,19 @@ RECIPE_PACKS["Full Coverage — Wallet (BIP39)"] = [["bip39",{}]];
 RECIPE_PACKS["Full Coverage — Wallet (BIP44)"] = [["haikub44",{}]];
 
 RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [["odPoemExact",{}],["vicSchedule",{}],["vicExact",{}],["diana",{}],["dianaTable",{}],["gronsfeld",{key:'123'}],["gronsfeldAnalyze",{}],["odPoemKey",{}],["secomExact",{}],["straddlingCheckerboard",{}]];
+// Based on Wu's ElGamal example in XRDSFHE.pdf: multiplication only, explicitly
+// not FHE. The toy operation ships with an independently checked worked vector.
+RECIPE_PACKS["ElGamal Multiplicative Homomorphism (not FHE)"] = [["elgamalMulDemo",{}]];
+RECIPE_PACKS["FHE Study — F17 arithmetic oracle (plaintext only)"] = [["fheKitchenLab",{mode:'oracle'}]];
+RECIPE_PACKS["FHE Study — UTF-8 byte / F17 pair codec (not encryption)"] = [["fheKitchenLab",{mode:'bytePairs'}]];
+RECIPE_PACKS["FHE Study — Lancelot architecture case study"] = [["fheKitchenLab",{mode:'architecture'}]];
+RECIPE_PACKS["FHE Study — CKKS architecture profile (manual data only)"] = [["fheArchitectureLab",{}]];
+RECIPE_PACKS["FHE Study — Masked aggregation v2 (plaintext reference, BFV companion CLI)"] = [["fheMaskLab",{}]];
+// Public magazine listing / source-format trail, not repackaged magazine scans.
+RECIPE_PACKS["2600 — Code Wall binary to UTF-8 (43:3)"] = [["fromBinary",{}]];
+RECIPE_PACKS["2600 — DOS Hello World bytes (43:3, hex to static hexdump)"] = [["fromHexdump",{outfmt:"binstr"}],["toHexdump",{srcfmt:"binstr",width:"16"}]];
+RECIPE_PACKS["2600 — SnapSafe SECV v1 header (42:4, passive only)"] = [["snapSafeSecv",{mode:"header"}]];
+RECIPE_PACKS["Munitions T-Shirt — Perl RSA & Free Speech"] = [["munitionsTshirt",{}]];
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.
 RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];
@@ -34058,7 +34661,7 @@ addOp('gf256','GF(2^8) field math (AES)','Math',
     switch (a.op) {
       case 'add': return 'add: '+hx(A)+' + '+hx(B)+' = '+hx(A^B);
       case 'mul': return 'mul: '+hx(A)+' * '+hx(B)+' = '+hx(mul(A,B));
-      case 'inv': return 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
+      case 'inv': return A===0 ? 'inv: 00^-1 is undefined (zero has no multiplicative inverse)' : 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
       case 'pow': {
         let r=1, base=A, e=B; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; }
         return 'pow: '+hx(A)+'^'+B+' = '+hx(r);

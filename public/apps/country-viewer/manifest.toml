@@ -1,2 +1,3 @@
-name = "Country Viewer - PC-Globe style (Factbook)"
+name = "Country Viewer - Country Outlines + Factbook"
 source_code_url = "https://github.com/shdwelf/Html5"
+description = "Offline country and area profiles with reviewed ISO name/code and IANA ccTLD search crosswalks, Natural Earth outlines, regional map views, and a limited city/island place-name index."

@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "program": "netscream.bin",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Executable and Linking Format (ELF)",
+  "executablePath": "/home/runner/work/_temp/fbctf-static/input/netscream.bin",
+  "md5": "67155bf12e731569086520d3b66e0932",
+  "sha256": "0a3b86e635d220fda3381432e67a139a2efa6cf587cc97e20e28caf08a714b89",
+  "language": "x86:LE:64:default",
+  "compiler": "gcc",
+  "imageBase": "00400000",
+  "minAddress": "00400000",
+  "maxAddress": "_elfSectionHeaders::000006ff",
+  "memoryBlocks": [
+    {
+      "name": "segment_2.1",
+      "start": "00400000",
+      "end": "004001ff",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".interp",
+      "start": "00400200",
+      "end": "0040021b",
+      "bytes": 28,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".note.ABI-tag",
+      "start": "0040021c",
+      "end": "0040023b",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".note.gnu.build-id",
+      "start": "0040023c",
+      "end": "0040025f",
+      "bytes": 36,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".gnu.hash",
+      "start": "00400260",
+      "end": "00400283",
+      "bytes": 36,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".dynsym",
+      "start": "00400288",
+      "end": "004005e7",
+      "bytes": 864,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".dynstr",
+      "start": "004005e8",
+      "end": "004007fc",
+      "bytes": 533,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".gnu.version",
+      "start": "004007fe",
+      "end": "00400845",
+      "bytes": 72,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".gnu.version_r",
+      "start": "00400848",
+      "end": "00400887",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".rela.dyn",
+      "start": "00400888",
+      "end": "004008b7",
+      "bytes": 48,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".rela.plt",
+      "start": "004008b8",
+      "end": "00400b9f",
+      "bytes": 744,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".init",
+      "start": "00400ba0",
+      "end": "00400bb9",
+      "bytes": 26,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": ".plt",
+      "start": "00400bc0",
+      "end": "00400dbf",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": ".text",
+      "start": "00400dc0",
+      "end": "00401701",
+      "bytes": 2370,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": ".fini",
+      "start": "00401704",
+      "end": "0040170c",
+      "bytes": 9,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": ".rodata",
+      "start": "00401720",
+      "end": "004017bf",
+      "bytes": 160,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".eh_frame_hdr",
+      "start": "004017c0",
+      "end": "00401843",
+      "bytes": 132,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".eh_frame",
+      "start": "00401848",
+      "end": "00401a7b",
+      "bytes": 564,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".init_array",
+      "start": "00601a80",
+      "end": "00601a87",
+      "bytes": 8,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".fini_array",
+      "start": "00601a88",
+      "end": "00601a8f",
+      "bytes": 8,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".jcr",
+      "start": "00601a90",
+      "end": "00601a97",
+      "bytes": 8,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".dynamic",
+      "start": "00601a98",
+      "end": "00601c77",
+      "bytes": 480,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".got",
+      "start": "00601c78",
+      "end": "00601c7f",
+      "bytes": 8,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".got.plt",
+      "start": "00601c80",
+      "end": "00601d8f",
+      "bytes": 272,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".data",
+      "start": "00601d90",
+      "end": "00601d9f",
+      "bytes": 16,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".bss",
+      "start": "00601dc0",
+      "end": "00601faf",
+      "bytes": 496,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": "EXTERNAL",
+      "start": "00602000",
+      "end": "0060210f",
+      "bytes": 272,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": false
+    },
+    {
+      "name": ".comment",
+      "start": ".comment::00000000",
+      "end": ".comment::00000038",
+      "bytes": 57,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": ".shstrtab",
+      "start": ".shstrtab::00000000",
+      "end": ".shstrtab::000000f7",
+      "bytes": 248,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    },
+    {
+      "name": "_elfSectionHeaders",
+      "start": "_elfSectionHeaders::00000000",
+      "end": "_elfSectionHeaders::000006ff",
+      "bytes": 1792,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    }
+  ],
+  "imports": [
+    {
+      "name": "AES_set_encrypt_key",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000001"
+    },
+    {
+      "name": "printf",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000002"
+    },
+    {
+      "name": "ftell",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000003"
+    },
+    {
+      "name": "fseek",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000004"
+    },
+    {
+      "name": "exit",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000005"
+    },
+    {
+      "name": "putchar",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000006"
+    },
+    {
+      "name": "EC_POINT_mul",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000007"
+    },
+    {
+      "name": "malloc",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000008"
+    },
+    {
+      "name": "fopen",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000009"
+    },
+    {
+      "name": "__libc_start_main",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000a"
+    },
+    {
+      "name": "AES_encrypt",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000b"
+    },
+    {
+      "name": "BN_mask_bits",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000c"
+    },
+    {
+      "name": "EC_POINT_get_affine_coordinates_GFp",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000d"
+    },
+    {
+      "name": "BN_new",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000e"
+    },
+    {
+      "name": "ERR_load_crypto_strings",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000000f"
+    },
+    {
+      "name": "BN_bn2bin",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000010"
+    },
+    {
+      "name": "AES_ige_encrypt",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000011"
+    },
+    {
+      "name": "ERR_print_errors_fp",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000012"
+    },
+    {
+      "name": "EC_POINT_new",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000013"
+    },
+    {
+      "name": "fread",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000014"
+    },
+    {
+      "name": "EC_GROUP_new_by_curve_name",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000015"
+    },
+    {
+      "name": "BN_CTX_new",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000016"
+    },
+    {
+      "name": "EC_POINT_set_affine_coordinates_GFp",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000017"
+    },
+    {
+      "name": "calloc",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000018"
+    },
+    {
+      "name": "fclose",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:00000019"
+    },
+    {
+      "name": "BN_num_bits",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001a"
+    },
+    {
+      "name": "fwrite",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001b"
+    },
+    {
+      "name": "fprintf",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001c"
+    },
+    {
+      "name": "BN_rshift",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001d"
+    },
+    {
+      "name": "BN_bin2bn",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001e"
+    },
+    {
+      "name": "__gmon_start__",
+      "library": "\u003cEXTERNAL\u003e",
+      "address": "EXTERNAL:0000001f"
+    }
+  ],
+  "definedStrings": 71,
+  "instructions": 680,
+  "functions": 114,
+  "decompilations": [
+    {
+      "name": "_DT_INIT",
+      "address": "00400ba0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00400bc0",
+      "address": "00400bc0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::AES_set_encrypt_key",
+      "address": "00400bd0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::printf",
+      "address": "00400be0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::ftell",
+      "address": "00400bf0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::__gmon_start__",
+      "address": "00400c00",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fseek",
+      "address": "00400c10",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::exit",
+      "address": "00400c20",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::putchar",
+      "address": "00400c30",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::EC_POINT_mul",
+      "address": "00400c40",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::malloc",
+      "address": "00400c50",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fopen",
+      "address": "00400c60",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::__libc_start_main",
+      "address": "00400c70",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::AES_encrypt",
+      "address": "00400c80",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_mask_bits",
+      "address": "00400c90",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::EC_POINT_get_affine_coordinates_GFp",
+      "address": "00400ca0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_new",
+      "address": "00400cb0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::ERR_load_crypto_strings",
+      "address": "00400cc0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_bn2bin",
+      "address": "00400cd0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::AES_ige_encrypt",
+      "address": "00400ce0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::ERR_print_errors_fp",
+      "address": "00400cf0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::EC_POINT_new",
+      "address": "00400d00",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fread",
+      "address": "00400d10",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::EC_GROUP_new_by_curve_name",
+      "address": "00400d20",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_CTX_new",
+      "address": "00400d30",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::EC_POINT_set_affine_coordinates_GFp",
+      "address": "00400d40",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::calloc",
+      "address": "00400d50",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fclose",
+      "address": "00400d60",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_num_bits",
+      "address": "00400d70",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fwrite",
+      "address": "00400d80",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::fprintf",
+      "address": "00400d90",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_rshift",
+      "address": "00400da0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "\u003cEXTERNAL\u003e::BN_bin2bn",
+      "address": "00400db0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "entry",
+      "address": "00400dc0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00400df0",
+      "address": "00400df0",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00400e30",
+      "address": "00400e30",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FINI_0",
+      "address": "00400e70",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_INIT_0",
+      "address": "00400e90",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00400eb6",
+      "address": "00400eb6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401073",
+      "address": "00401073",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_004010d6",
+      "address": "004010d6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401133",
+      "address": "00401133",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_004011dd",
+      "address": "004011dd",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401227",
+      "address": "00401227",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_0040128d",
+      "address": "0040128d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401298",
+      "address": "00401298",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401324",
+      "address": "00401324",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_00401377",
+      "address": "00401377",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}

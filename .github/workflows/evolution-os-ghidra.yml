@@ -27,8 +27,11 @@ on:
       - '.github/workflows/evolution-os-ghidra.yml'
       - '.arena-relay/evolution-os-ghidra.txt'
       - 'tools/evolution-os/evolution-os.mjs'
+      - 'tools/evolution-os/romz_probe.py'
       - 'tools/urln/ln'
       - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/ghidra_scripts/SetImageBase.java'
+      - 'tools/evolution-os/romz_probe.py'
   workflow_dispatch:
     inputs:
       firmware_url:
@@ -45,6 +48,10 @@ on:
           - 'x86:LE:16:Real Mode'
       target_name:
         description: 'Label for the report row (defaults to the file name)'
+        required: false
+        type: string
+      base_address:
+        description: 'Optional image base for a raw image (e.g. 0x00000000); empty = loader default. Evidence: the probe vector table.'
         required: false
         type: string
 
@@ -69,11 +76,14 @@ jobs:
           set -euo pipefail
           url='${{ inputs.firmware_url }}'
           language='${{ inputs.language }}'
+          base='${{ inputs.base_address }}'
           trigger='.arena-relay/evolution-os-ghidra.txt'
           if [ -z "$url" ] && [ -f "$trigger" ]; then
             url=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '1p' | tr -d '\r' || true)
             lang2=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '2p' | tr -d '\r' || true)
             [ -n "$lang2" ] && language="$lang2"
+            base3=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$trigger" | sed -n '3p' | tr -d '\r' || true)
+            [ -n "$base3" ] && base="$base3"
           fi
           if [ -z "$url" ]; then
             echo 'staged=false' >> "$GITHUB_OUTPUT"
@@ -87,6 +97,7 @@ jobs:
           echo 'staged=true' >> "$GITHUB_OUTPUT"
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "language=$language" >> "$GITHUB_OUTPUT"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "Evolution OS image staged: $url (language $language)"
 
       - uses: actions/setup-java@v5
@@ -133,8 +144,36 @@ jobs:
           stat -c 'staged bytes=%s' "$image"
           sha256sum "$image" | tee "$root/input/firmware.sha256"
 
-      - name: Install pinned official Ghidra release
+      - name: Probe the .romz container for its compression
+        id: probe
         if: steps.stage.outputs.staged == 'true'
+        shell: bash
+        run: |
+          root="$RUNNER_TEMP/evolution-os"
+          stem=$(basename "$IMAGE"); stem="${stem%.*}"
+          # Probe exit codes: 0 = inflated payload, 3 = raw plausible
+          # firmware (the classic .rom targets), 2 = unrecognised. None is
+          # a job failure by itself - the report is evidence either way.
+          if python3 tools/evolution-os/romz_probe.py "$IMAGE" \
+              --out "$root/input/$stem.payload.bin" \
+              --report "$root/$stem.romz-probe.json"; then
+            echo 'action=payload' >> "$GITHUB_OUTPUT"
+            echo "IMAGE=$root/input/$stem.payload.bin" >> "$GITHUB_ENV"
+            echo 'Container inflated; Ghidra will analyse the payload.'
+          else
+            code=$?
+            if [ "$code" -eq 3 ]; then
+              echo 'action=raw' >> "$GITHUB_OUTPUT"
+              echo 'Raw .rom firmware; Ghidra analyses the staged file as-is.'
+            else
+              echo 'action=skip' >> "$GITHUB_OUTPUT"
+              echo 'Container unrecognised; Ghidra skipped, probe report still committed.'
+            fi
+          fi
+          cat "$root/$stem.romz-probe.json"
+
+      - name: Install pinned official Ghidra release
+        if: steps.stage.outputs.staged == 'true' && steps.probe.outputs.action != 'skip'
         shell: bash
         run: |
           set -euo pipefail
@@ -146,7 +185,7 @@ jobs:
           test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
 
       - name: Disassemble the Evolution OS image (static only)
-        if: steps.stage.outputs.staged == 'true'
+        if: steps.probe.outputs.action != 'skip'
         shell: bash
         run: |
           set -euo pipefail
@@ -159,11 +198,17 @@ jobs:
           # inflated and a raw .rom needs its loader/base set before import;
           # this step assumes the staged URL already names an importable
           # image or raw payload for the chosen language.
+          base_args=()
+          if [ -n '${{ steps.stage.outputs.base }}' ]; then
+            base_args=(-preScript SetImageBase.java '${{ steps.stage.outputs.base }}')
+            echo "Relocating image base to ${{ steps.stage.outputs.base }} (SetImageBase.java)"
+          fi
           timeout 30m "$headless" "$projects" EVO_OS \
             -import "$IMAGE" \
             -processor '${{ steps.stage.outputs.language }}' \
             -analysisTimeoutPerFile 900 \
             -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            "${base_args[@]}" \
             -postScript GenericProgramReport.java "$reports" \
             -deleteProject
           find "$reports" -maxdepth 1 -type f -printf '%f %s bytes\n'
@@ -177,8 +222,14 @@ jobs:
           root="$RUNNER_TEMP/evolution-os"
           mkdir -p docs/ghidra/evolution-os
           # Derived static-analysis artefacts only — never the input image.
-          rm -f docs/ghidra/evolution-os/*
+          # No rm: each target's reports accumulate (<stem>.* per image).
           for f in "$root"/reports/*.ghidra.json "$root"/reports/*.strings.txt "$root"/reports/*.c; do
+            [ -e "$f" ] || continue
+            cp "$f" docs/ghidra/evolution-os/
+          done
+          # The container-probe report is evidence whether or not the
+          # payload inflated and Ghidra ran.
+          for f in "$root"/*.romz-probe.json; do
             [ -e "$f" ] || continue
             cp "$f" docs/ghidra/evolution-os/
           done

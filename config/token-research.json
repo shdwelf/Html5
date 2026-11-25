@@ -1,0 +1,256 @@
+{
+  "schema": "html5-token-research-v1",
+  "reviewed": "2026-11-17",
+  "scope": "Independent token evidence is separate from completed host fee reviews. Two source reviews have started; no full token acceptance gate is closed. This ledger is offline research, not a runtime read/signing catalogue.",
+  "sourceManifest": "docs/research/token-identity-source-manifest-2026-11-17.json",
+  "report": "docs/token-identity-review-round-84-2026-11-17.md",
+  "order": [
+    "usdt-tether",
+    "usdc-usd-coin"
+  ],
+  "assets": {
+    "usdt-tether": {
+      "symbol": "USDT",
+      "historicalRank": 3,
+      "status": "source-reviewed-runtime-open",
+      "closed": false,
+      "deployments": [
+        {
+          "networkId": "ethereum",
+          "hostChain": "ETH",
+          "family": "evm",
+          "chainId": 1,
+          "environment": "mainnet",
+          "contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "decimals": 6,
+          "catalogue": "existing",
+          "representation": "issuer-listed",
+          "identity": {
+            "status": "issuer-listed",
+            "sourceIds": [
+              "tether-protocols"
+            ]
+          },
+          "decimalEvidence": {
+            "status": "catalogue-and-explorer",
+            "sourceIds": [
+              "tw-usdt-ethereum",
+              "eth-usdt-explorer"
+            ]
+          },
+          "controlReview": {
+            "status": "abi-surface-only",
+            "notes": "Non-Boolean transfer return and fee/deprecation/pause/blacklist ABI controls observed. Fee formula and current values are not established. A TRON or BSC deployment does not inherit this ABI review.",
+            "sourceIds": [
+              "tether-protocols",
+              "eth-usdt-explorer"
+            ]
+          },
+          "backing": {
+            "status": "issuer-claim-only",
+            "independentlyVerified": false,
+            "sourceIds": [
+              "tether-backing-claim"
+            ]
+          },
+          "transferTax": {
+            "status": "unqueried",
+            "currentBasisPoints": null,
+            "transactionTested": false
+          },
+          "runtime": {
+            "status": "unqueried",
+            "blockNumber": null,
+            "blockHash": null,
+            "implementationAddress": null,
+            "transactionTested": false
+          }
+        },
+        {
+          "networkId": "bsc",
+          "hostChain": "BSC",
+          "family": "evm",
+          "chainId": 56,
+          "environment": "mainnet",
+          "contract": "0x55d398326f99059fF775485246999027B3197955",
+          "decimals": 18,
+          "catalogue": "existing",
+          "representation": "custodial-peg",
+          "identity": {
+            "status": "operator-peg-plus-catalogue",
+            "sourceIds": [
+              "binance-collateral",
+              "tw-usdt-bsc",
+              "bsc-usdt-explorer"
+            ]
+          },
+          "decimalEvidence": {
+            "status": "catalogue-and-explorer",
+            "sourceIds": [
+              "tw-usdt-bsc",
+              "bsc-usdt-explorer"
+            ]
+          },
+          "controlReview": {
+            "status": "not-reviewed",
+            "notes": "Binance-Peg BSC-USD is not the Ethereum or TRON issuer-listed token. Full runtime/control and backing checks remain separate; do not copy their six decimals or Tether ABI controls here.",
+            "sourceIds": [
+              "binance-collateral",
+              "bsc-usdt-explorer"
+            ]
+          },
+          "backing": {
+            "status": "operator-claim-only",
+            "independentlyVerified": false,
+            "sourceIds": [
+              "binance-collateral"
+            ]
+          },
+          "transferTax": {
+            "status": "unqueried",
+            "currentBasisPoints": null,
+            "transactionTested": false
+          },
+          "runtime": {
+            "status": "unqueried",
+            "blockNumber": null,
+            "blockHash": null,
+            "implementationAddress": null,
+            "transactionTested": false
+          }
+        },
+        {
+          "networkId": "tron",
+          "hostChain": "TRX",
+          "family": "tron",
+          "chainId": null,
+          "environment": "mainnet",
+          "contract": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+          "decimals": 6,
+          "catalogue": "existing",
+          "representation": "issuer-listed",
+          "identity": {
+            "status": "issuer-listed",
+            "sourceIds": [
+              "tether-protocols"
+            ]
+          },
+          "decimalEvidence": {
+            "status": "catalogue-and-explorer",
+            "sourceIds": [
+              "tw-usdt-tron",
+              "tron-usdt-explorer"
+            ]
+          },
+          "controlReview": {
+            "status": "not-reviewed",
+            "notes": "TRON is not EVM chain ID 1 or 56. Current TVM implementation, admin/fee controls and energy/bandwidth transaction cost were not queried; Ethereum ABI evidence is not substituted.",
+            "sourceIds": [
+              "tether-protocols",
+              "tron-usdt-explorer"
+            ]
+          },
+          "backing": {
+            "status": "issuer-claim-only",
+            "independentlyVerified": false,
+            "sourceIds": [
+              "tether-backing-claim"
+            ]
+          },
+          "transferTax": {
+            "status": "unqueried",
+            "currentBasisPoints": null,
+            "transactionTested": false
+          },
+          "runtime": {
+            "status": "unqueried",
+            "blockNumber": null,
+            "blockHash": null,
+            "implementationAddress": null,
+            "transactionTested": false
+          }
+        }
+      ],
+      "openGates": [
+        "Obtain block-anchored code, current fee/pause/blacklist/deprecation/implementation state for each deployment independently.",
+        "Confirm any migration/deprecated protocol and user redemption route from primary evidence, without automatic asset substitution.",
+        "Independently review issuer reserves and Binance-peg collateral/redeemability; an operator ratio is not an audit.",
+        "Use synthetic test deployments and transaction-specific controls before asserting transfer behaviour; do not send real funds.",
+        "Every extra mainnet/testnet/mint is a new tuple and remains unreviewed."
+      ]
+    },
+    "usdc-usd-coin": {
+      "symbol": "USDC",
+      "historicalRank": 6,
+      "status": "source-reviewed-runtime-open",
+      "closed": false,
+      "deployments": [
+        {
+          "networkId": "ethereum",
+          "hostChain": "ETH",
+          "family": "evm",
+          "chainId": 1,
+          "environment": "mainnet",
+          "contract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6,
+          "catalogue": "research-only",
+          "representation": "issuer-listed",
+          "identity": {
+            "status": "issuer-listed",
+            "sourceIds": [
+              "circle-addresses"
+            ]
+          },
+          "decimalEvidence": {
+            "status": "catalogue-and-explorer",
+            "sourceIds": [
+              "tw-usdc-ethereum",
+              "eth-usdc-explorer"
+            ]
+          },
+          "controlReview": {
+            "status": "pinned-reference-source-only",
+            "notes": "Pinned FiatToken reference source has configurable initialization decimals, full-value _transfer accounting, pause/blacklist/minter roles and an admin-upgradeable proxy. This is not a bytecode match to the deployed implementation and not a permanent zero-transfer-tax claim. The implementation/TokenMessenger address must never replace the issuer-listed token proxy.",
+            "sourceIds": [
+              "circle-readme",
+              "circle-deployment",
+              "circle-token-v1",
+              "circle-token-v22",
+              "circle-blacklist",
+              "circle-pause",
+              "circle-proxy",
+              "circle-proxy-admin",
+              "circle-proxy-upgrade"
+            ]
+          },
+          "backing": {
+            "status": "issuer-claim-only",
+            "independentlyVerified": false,
+            "sourceIds": [
+              "circle-overview"
+            ]
+          },
+          "transferTax": {
+            "status": "unqueried",
+            "currentBasisPoints": null,
+            "transactionTested": false
+          },
+          "runtime": {
+            "status": "unqueried",
+            "blockNumber": null,
+            "blockHash": null,
+            "implementationAddress": null,
+            "transactionTested": false
+          }
+        }
+      ],
+      "openGates": [
+        "Keep this tuple research-only; no new balance-read catalogue mapping is enabled by this review.",
+        "Obtain block-anchored proxy implementation/admin, initialized decimals, deployed bytecode and pause/blacklist state.",
+        "Review the appropriate issuer/reserve report and redemption terms independently; do not treat a claim as an audit.",
+        "Test transaction behaviour on separately verified synthetic deployments; a reviewed source file is not a live fee quote.",
+        "Review each bridged USDC/USDC.e, other host and testnet independently; no inferred mint or contract."
+      ]
+    }
+  }
+}

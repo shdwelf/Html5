@@ -692,7 +692,7 @@
 <contactref element="D1" pad="2"/></signal>
 <signal name="HOOK" class="0"><contactref element="J2" pad="2"/>
 <contactref element="TP1" pad="1"/></signal>
-<signal name="GND" class="0.5">
+<signal name="GND" class="0">
 <polygon width="0.4" layer="1" isolate="0.4" orphans="yes" rank="2" thermals="yes" pour="solid"><vertex x="1.5" y="1.5"/>
 <vertex x="108.5" y="1.5"/>
 <vertex x="108.5" y="78.5"/>

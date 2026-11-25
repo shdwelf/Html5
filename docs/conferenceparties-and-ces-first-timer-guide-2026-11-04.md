@@ -1,0 +1,51 @@
+# ConferenceParties and a plain-language CES first-timer guide
+
+**Reviewed:** 2026-11-04
+**Scope:** what `conferenceparties.com` is, what its accessible 2017–2020 archive does and does not show, whether a verifiable item titled “CES for Dummies” exists, and a short current CES primer.
+
+## Findings
+
+1. **ConferenceParties is an unofficial directory.** Its homepage describes its mission as aggregating unofficial vendor parties, happy hours, networking events, and similar side events for large tech conferences. It also sells sponsorships, including rapid publication. Treat listings as leads—not CES-produced schedules, endorsements, invitations, or proof that a listed party is open to every badge holder.
+2. **The accessible archive does not list CES editions for 2017–2020.** The current “Previous Conferences” page includes a 2017–2025 archive and lists a number of years/events, but its visible 2017–2020 items do not include CES. The current site does list CES 2025 and CES 2026. That gap is not proof that no CES side events existed; it only describes this directory's accessible archive snapshot.
+3. **No verifiable publication called exactly “CES for Dummies” was located.** CTA's official close equivalent is its living **“Your Essential First-Time CES Experience Guide.”** This note provides a short plain-language summary based on CTA's current official pages.
+
+## How to use ConferenceParties safely
+
+- Begin with the conference's official site for dates, badge rules, maps, transportation, and registration.
+- Use ConferenceParties to discover possible vendor-hosted receptions, happy hours, dinners, or parties; then verify date, host, venue, RSVP requirement, capacity, and eligibility with the organizer itself.
+- A vendor-sponsored item may be promotional. The directory's own homepage offers event sponsorship and rapid placement.
+- Do not assume a third-party party listing is official CES programming, included in a CES badge, or open without a separate invitation.
+- Do not use the archive's attendance or event counts as an official CES audit. The figures on ConferenceParties are site-published directory metadata.
+- A listing, RSVP, or badge record does not establish that a particular person attended.
+
+### Historical archive check (2017–2020)
+
+| Year | What the current ConferenceParties archive shows | Interpretation |
+| --- | --- | --- |
+| 2017 | AWS re:Invent is listed; no CES edition appears. | No CES entry in this directory snapshot. |
+| 2018 | RSA Conference and AWS re:Invent appear; no CES edition appears. | No CES entry in this directory snapshot. |
+| 2019 | Multiple conferences appear (including RSA, Google Cloud Next, and re:Invent); no CES edition appears. | No CES entry in this directory snapshot. |
+| 2020 | RSA Conference and AWS re:Invent appear; no CES edition appears. | No CES entry in this directory snapshot. |
+
+The older year-specific `ces2017`–`ces2020` URLs tested during research returned current-homepage content rather than an archived CES page. Treat those responses as unavailable historical pages, not as evidence that a CES party calendar never existed.
+
+## CES in plain language
+
+### What CES is
+
+CES is the Consumer Technology Association's industry trade event. For **CES 2027**, CTA lists **January 6–9, 2027, in Las Vegas**. It is **not open to the general public**: CTA says registrants must be at least 18 and affiliated with the consumer technology industry, and registration must meet the selected badge category's requirements.
+
+### First-timer checklist
+
+1. **Check eligibility and register at CES.tech.** Use the current CTA registration guide, choose the correct attendee/media/exhibitor category, and prepare the requested proof of industry affiliation. Avoid third-party “badge” or registration offers.
+2. **Book travel early through official links.** CTA says its official housing partner for CES 2027 is onPeak and advises booking early. Confirm any flight/hotel arrangement on CTA's attendee pages before paying.
+3. **Plan by campus, not by wish list.** CES 2027's map page groups 13 official venues into LVCC, Venetian, and C Space campuses. Mark the must-see booths and sessions on the official map/app, then plan a campus at a time; cross-campus travel takes time.
+4. **Pack for a lot of walking.** CTA recommends comfortable shoes, layers, hydration, and a refillable bottle. Check current bag and security rules before arriving.
+5. **Treat side events as separate invitations.** A vendor happy hour may be off-site, capacity-limited, RSVP-only, badge-restricted, or unrelated to official CES programming. Verify with the host.
+6. **Leave schedule margin.** Use the official transportation page and current campus maps; do not assume adjacent-looking venues are a short walk apart or that a third-party shuttle listing is current.
+7. **Keep the guide current.** The official first-timer page is a living resource; recheck the current edition's maps, hours, app availability, access rules, and transport before travel.
+
+## Sources
+
+- ConferenceParties [homepage / mission](https://conferenceparties.com/) and [Previous Conferences archive](https://conferenceparties.com/previous-conferences/); current [CES 2025](https://conferenceparties.com/ces2025/) and [CES 2026](https://conferenceparties.com/ces2026/) directories.
+- CTA's [Your Essential First-Time CES Experience Guide](https://www.ces.tech/attendee-guides/your-essential-first-time-ces-experience-guide/), [Attendee Guides index](https://www.ces.tech/attendee-guides/), [Registration Information](https://www.ces.tech/attendee-guides/registration-information), [Maps and Locations](https://www.ces.tech/explore-ces/maps-and-locations/), [Hotels](https://www.ces.tech/attendee-guides/hotels/), and [Transportation](https://www.ces.tech/attendee-guides/transportation/).

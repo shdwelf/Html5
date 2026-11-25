@@ -392,4 +392,3 @@ export function keccak256(msg) {
     out[i] = Number((s[(i / 8) | 0] >> BigInt(8 * (i % 8))) & 0xffn);
   return out;
 }
-

@@ -197,8 +197,14 @@ DEMU/vintagesoftware is the surviving mirror, reached via the proxy.
 ## Not covered / honest deferrals
 
 - Whale's nine layers: not stripped.
-- openrce.iso / rce.iso / Fravia reverse-lore ISOs: not fetched (the
-  186–623 MB images exceed the archive commit limits; metadata only).
+- **RCE CD lead identified, image not fetched:** Archive.org metadata exists
+  for `ReverseCodeEngineeringRceCdsandman2000.iso` (+sandman, 2000; 712,343,552
+  bytes; SHA-1 pinned in
+  [`openrce-iso-kr0me-riddle-vcl-2026-11-01.md`](openrce-iso-kr0me-riddle-vcl-2026-11-01.md)).
+  This does not verify that it is an OpenRCE.org image or that it contains
+  Kr0meCorp material. The exact `openrce.iso` name and any Fravia reverse-lore
+  ISOs remain unidentified/unfetched; the CD's hundreds of megabytes exceed
+  this repo's practical archive limits.
 - ~~Norton Ghost processor-lock and IDA/Immunity debugger sections: not
   completed this round.~~ **Done** — `docs/norton-ghost-deep-dive.md`
   (2026-09-29): the .GHO/.GHS container, the Fast LZ (Z1) codec, a

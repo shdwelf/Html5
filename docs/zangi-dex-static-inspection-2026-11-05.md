@@ -1,0 +1,74 @@
+# Zangi DEX and native static-inspection follow-up — 2026-11-05
+
+## Scope and handling
+
+The user confirmed that Zangi is the intended disassembly target. This follow-up
+used the supplied XAPK's base APK and arm64 configuration split, extracted outside
+the repository. No APK code was executed, and no APK, private transfer identifier,
+private link, embedded key value, or private message content was copied into Git.
+The package-integrity pass and public-source provenance are recorded in the
+[package inspection](zangi-xapk-static-inspection-2026-11-04.md) and
+[public-source review](zangi-public-source-review-2026-11-04.md).
+
+The static DEX inventory used Androguard 4.1.4. It found three DEX files,
+26,828 class definitions, and 172,865 method definitions. Keyword searches over
+DEX class names, method names, and string pools found no cellular-automata,
+Rule 30, Game of Life, or neighborhood-rule indicators. Searches of selected
+arm64 native symbols and strings likewise found no cellular-automata indicators.
+These are bounded searches, not proof that an obfuscated, data-driven, or
+otherwise unsearched implementation cannot exist.
+
+## Observed encryption-related paths
+
+- The `CryptManager` wrapper references Signal Protocol APIs including
+  `KeyHelper`, `PreKeyBundle`, `SessionBuilder.process`,
+  `SessionCipher.encrypt/decrypt`, and serialization/parsing of
+  `SignalMessage` and `PreKeySignalMessage` objects. These references show a
+  Signal Protocol integration path; they do not prove every message or traffic
+  type uses that path, nor establish a security verdict.
+- `MessagingServiceEncryption.encryptText` calls
+  `CryptManager.encryptData` and Base64-encodes the returned bytes. The
+  decompiler output was used only to navigate to methods; it is not treated as
+  authoritative source code.
+- A separate group-push notification helper, `GroupMessageNotificationCrypto`,
+  uses `AES/GCM/NoPadding`. Its companion derives a 128-bit AES key with
+  HMAC-SHA256 using an embedded master key and a UID, then decrypts using a
+  12-byte IV and a 128-bit authentication tag; the encoded representation
+  combines the IV and encrypted output. **The embedded key value is deliberately
+  omitted.**
+- Raw DEX references confirm that
+  `ConversationMessageHandler.handleGroupPushMessageForDecrypt` calls
+  `GroupMessageNotificationCrypto$Companion.generateKey(String)` and then
+  `decrypt(String, SecretKey)`. This call-site confirmation is stronger than
+  relying on reconstructed pseudocode, but it says nothing about runtime values
+  or a captured message.
+- The arm64 native library set includes `libcurve25519.so`,
+  `libdatastore_shared_counter.so`, `libimage_processing_util_jni.so`,
+  `libprojectcore.so`, `libprojectcore_light.so`, `libsurface_util_jni.so`, and
+  `libyuv.so`. Symbol/string inspection found crypto-related names (including
+  AES-GCM, RC4, and OpenSSL routines), but a string or symbol alone does not
+  prove that the app calls or uses that code. The only `xmlAutomata*` matches
+  were libxml symbols, not cellular automata.
+
+## Interpretation and limits
+
+No cellular-automata cipher was identified in the searched DEX identifiers,
+DEX string pools, or selected native symbol/string tables. No CA rule, full
+state-update function, known-plaintext pair, or expected-output vector was
+observed. Therefore there is still no evidence basis for a CA decryption recipe
+or a CyberChef/cookbook implementation.
+
+Androguard's DAD decompiler emitted `Multiple exit nodes found!` warnings and
+some source-like output had control-flow or placeholder artifacts. Important
+claims above were checked against DEX references where possible. Native code,
+resources, obfuscated names, runtime behavior, network traffic, and all other
+assets were not exhaustively analyzed. This is not a malware scan, a dynamic
+analysis, or an independent end-to-end-encryption audit.
+
+## Engineering gate
+
+Before any cipher implementation, document the exact transform and packet or
+message version, make an independent known-answer vector, test malformed and
+negative cases, and check the existing CyberChef operation/recipe packs and
+cookbook for duplicates. The general algorithm-engineering checklist is in
+[algorithm-engineering guidance](algorithm-engineering-guidance-2026-11-05.md).

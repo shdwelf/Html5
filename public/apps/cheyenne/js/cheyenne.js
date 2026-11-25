@@ -16,6 +16,7 @@
 
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
+import { preparePipWindows } from "./pip-window-manager.js";
 import {
   META, LAYERS, POLITICS, GAZETTEER, FACILITIES, CAMPS, CORRIDORS, VIEWS,
   OFF_FRAME, allMines, mineSources,
@@ -702,24 +703,7 @@ function init() {
   });
 
   /* draggable PIPs -------------------------------------------------------- */
-  for (const pip of document.querySelectorAll(".pip")) {
-    const head = pip.querySelector(".pip-head");
-    let drag = null;
-    head.addEventListener("pointerdown", (e) => {
-      if (e.target.closest("button")) return;
-      drag = { x: e.clientX, y: e.clientY, l: pip.offsetLeft, t: pip.offsetTop };
-      head.setPointerCapture(e.pointerId);
-    });
-    head.addEventListener("pointermove", (e) => {
-      if (!drag) return;
-      pip.style.left = `${drag.l + e.clientX - drag.x}px`;
-      pip.style.top = `${drag.t + e.clientY - drag.y}px`;
-      pip.style.right = "auto";
-      pip.style.bottom = "auto";
-    });
-    head.addEventListener("pointerup", () => (drag = null));
-    head.querySelector("[data-min]")?.addEventListener("click", () => pip.classList.toggle("min"));
-  }
+  preparePipWindows();
 
   /* --------------------------------------------------------------- minimap */
 

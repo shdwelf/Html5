@@ -7,11 +7,7 @@
 
 import { validate } from "./cheyenne-dem.js";
 import { makeGazetteerIndex, searchBox } from "./city-gazetteer.js";
-import { GAZ_ROWS as atl } from "./city-gazetteer-data-atlanta.js";
-import { GAZ_ROWS as buf } from "./city-gazetteer-data-buffalo.js";
-import { GAZ_ROWS as ksc } from "./city-gazetteer-data-kansascity.js";
-import { GAZ_ROWS as law } from "./city-gazetteer-data-lawrence.js";
-import { GAZ_ROWS as tor } from "./city-gazetteer-data-toronto.js";
+import { PLANET_GAZ_ROWS } from "./planet-viewer-gazetteer.js";
 import { demToVrml } from "./vrml-export.js";
 import { buildPlates, PLATE_ORDER, bboxKm } from "./planet-viewer-data.js";
 import { COUNTRIES } from "./country-data.js";
@@ -19,7 +15,7 @@ import { globeMarkers, projectOrthographic } from "./planet-globe.js";
 import { PCGLOBE_INDEX_META, PCGLOBE_COUNTRY_NAMES, PCGLOBE_COUNTRY_RECORDS } from "./pcglobe-index-data.js";
 
 const RHO = 1;
-const ALL_GAZ_ROWS = [...atl, ...buf, ...ksc, ...law, ...tor];
+const ALL_GAZ_ROWS = PLANET_GAZ_ROWS;
 
 /**
  * Minimal structural VRML check (the terrarium writer has no companion
@@ -118,25 +114,22 @@ export function runChecks(plates = buildPlates(96, 72)) {
   }
 
   /* · gazetteer: the box search must agree with a naive in-bbox scan --------- */
-  // The packed GNIS subset only covers five cities, so mountain plates
-  // legitimately have zero hits; the check that matters is that every hit the
-  // ADL search-box op returns is actually inside the box, and that a plate
-  // with a matching pack (Lawrence) returns its packed points.
+  // Each terrain plate now has its own local place-name pack. Search results
+  // are checked against the geographic extent, not treated as raster control.
   const idx = makeGazetteerIndex(ALL_GAZ_ROWS);
   for (const id of PLATE_ORDER) {
     const [w, s, e, n] = plates[id].grid.bbox;
     const boxed = searchBox(idx, { lat0: s, lat1: n, lon0: w, lon1: e }, { limit: 500 });
     const inside = boxed.filter((r) => r.lat >= s && r.lat <= n && r.lon >= w && r.lon <= e).length;
-    const expectHits = id === "lawrence";
     out.push({
       id: `${id}/gaz-in-box`,
       plate: id,
-      label: `${id}: GNIS box search returns only points inside the bbox`,
+      label: `${id}: Gazetteer box search returns only points inside the bbox`,
       kind: "consistency",
       tier: "official",
-      expected: expectHits ? "≥1 hit, all inside" : "all hits inside (0 is fine — no packed city here)",
+      expected: "at least one local name; every returned point inside",
       actual: `${boxed.length} hits, ${inside} inside`,
-      ok: inside === boxed.length && (!expectHits || boxed.length >= 1),
+      ok: inside === boxed.length && boxed.length >= 1,
     });
   }
 

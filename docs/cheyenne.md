@@ -25,7 +25,7 @@ inside a plate are true; the gap between plates is for reading, not flying.
 | --- | --- | --- |
 | Terrain · 3DEP control | USGS 3DEP 1 m DEM samples via National Map ImageServer `getSamples` (2026-10-02) | 291 real control points (138 chey + 153 ange), Shepard-interpolated between them; NAVD 88 |
 | Political relief | OpenStreetMap boundaries via Nominatim (county rings at 0.002–0.004°, ANF proclamation ring at 0.005°) | Teller + El Paso counties, LA + San Bernardino counties, Angeles NF |
-| GNIS gazetteer | USGS GNIS via carto.nationalmap.gov geonames MapServer (July 2026 refresh) | 75 summits/gaps/valleys/places, first point of each MultiPoint; feeds the search box |
+| GNIS gazetteer | USGS GNIS via carto.nationalmap.gov geonames MapServer (July 2026 refresh; exact query date unverified in retained source notes) | 75 summits/gaps/valleys/places, first point of each MultiPoint; feeds the search box |
 | NORAD / facilities | NORAD & US Space Force published history | Cheyenne Mountain Complex dossier: 1961–66 construction, 15 buildings on ~1,300 springs, 25-ton doors, 11 Sep 2001 |
 | Campsites | USFS/Recreation.gov (ANF), Colorado Parks & Wildlife (Cheyenne Mtn SP, Mueller) | 10 campgrounds incl. Crystal Lake, Chilao, Table Mountain, Manker Flat, Coldbrook, Heaton Flat |
 | Mines · San Gabriels | USGS MRDS (mrdata.usgs.gov WFS, pulled 2026-10-02) | 67 records: the East Fork gold belt (Big Horn, Allison, Gold Dollar, Eagle, Native Son, Holly, Zanteson…), Acton district (Red Rover, Puritan, Hi-Grade), tungsten/graphite/barite/gemstone oddities |

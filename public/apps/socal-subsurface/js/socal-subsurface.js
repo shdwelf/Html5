@@ -11,6 +11,7 @@
 
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
+import { preparePipWindows } from "./pip-window-manager.js";
 import {
   BBOX,
   CENTER,
@@ -1709,40 +1710,7 @@ renderer.domElement.addEventListener("pointermove", (e) => {
 
 /* ------------------------------------------------------------ PIP windows */
 
-function makeDraggable(pip) {
-  const head = pip.querySelector(".pip-head");
-  let dx = 0;
-  let dy = 0;
-  head.addEventListener("pointerdown", (e) => {
-    if (e.target.closest("button")) return;
-    const r = pip.getBoundingClientRect();
-    dx = e.clientX - r.left;
-    dy = e.clientY - r.top;
-    pip.style.right = "auto";
-    pip.style.bottom = "auto";
-    head.setPointerCapture(e.pointerId);
-    const move = (ev) => {
-      const x = Math.min(Math.max(0, ev.clientX - dx), innerWidth - 60);
-      const y = Math.min(Math.max(0, ev.clientY - dy), innerHeight - 30);
-      pip.style.left = `${x}px`;
-      pip.style.top = `${y}px`;
-    };
-    const up = () => {
-      head.removeEventListener("pointermove", move);
-      head.removeEventListener("pointerup", up);
-    };
-    head.addEventListener("pointermove", move);
-    head.addEventListener("pointerup", up);
-  });
-  const min = pip.querySelector("[data-min]");
-  if (min) {
-    min.addEventListener("click", () => {
-      pip.classList.toggle("min");
-      min.textContent = pip.classList.contains("min") ? "+" : "–";
-    });
-  }
-}
-document.querySelectorAll(".pip").forEach(makeDraggable);
+preparePipWindows();
 
 /* ---------------------------------------------------------- minimap (PIP) */
 

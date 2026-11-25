@@ -117,6 +117,20 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .panel::-webkit-scrollbar-thumb { background: #2a4a28; border-radius: 999px; }
 .panel-left { left: 1rem; top: 6.2rem; }
 .panel-right { right: 1rem; top: 6.2rem; }
+.panel.four-dwm-window { padding: 0; overflow: hidden; }
+.panel.four-dwm-window .four-dwm-window-head {
+  color: var(--focus);
+  background: rgba(5, 12, 8, 0.96);
+  border-bottom-color: var(--border);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+.panel.four-dwm-window .four-dwm-window-head button { padding: 0.25rem 0.5rem; }
+.panel.four-dwm-window .four-dwm-window-body {
+  padding: 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: #2a4a28 transparent;
+}
 
 .card {
   padding: 0.9rem;

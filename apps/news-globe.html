@@ -1300,38 +1300,38 @@ window.SelfUpdate = SelfUpdate;
   const OPML_URL =
     'https://raw.githubusercontent.com/plenaryapp/awesome-rss-feeds/master/recommended/with_category/News.opml';
 
-  // CORS strategy:
-  //   - GitHub raw, api.rss2json.com, and nominatim.openstreetmap.org all serve
-  //     `Access-Control-Allow-Origin: *`, so we can fetch them DIRECTLY from
-  //     the browser — no proxy needed for the primary pipeline.
-  //   - For any URL that DOES need a proxy (e.g. a few odd RSS feeds), we fall
-  //     back through this list of public CORS proxies in order.
-  // (corsproxy.io was removed — it started requiring an API key in 2024 and
-  //  now returns 403 to anonymous traffic, which is why no articles were
-  //  appearing in earlier builds of this file.)
-  const CORS_PROXIES = [
-    (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
-    (u) => 'https://api.cors.lol/?url=' + encodeURIComponent(u),
-    (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),  // last resort
-  ];
-
-  // Helper: try a direct fetch first, then walk the proxy chain on failure.
-  async function fetchWithFallback(url, { asJson = false, asText = false } = {}) {
-    const attempts = [url, ...CORS_PROXIES.map((p) => p(url))];
-    let lastErr;
-    for (const target of attempts) {
-      try {
-        const res = await fetch(target);
-        if (!res.ok) { lastErr = new Error('HTTP ' + res.status); continue; }
-        if (asJson) return await res.json();
-        if (asText) return await res.text();
-        return res;
-      } catch (e) {
-        lastErr = e;
-        continue;
-      }
+  // Dynamic OPML feeds are accepted only when their source URL is HTTPS and
+  // has a syntactically valid DNS hostname. This does not verify publisher
+  // identity or resolve the host to prove its IP is public.
+  function validateFeedUrl(raw) {
+    try {
+      const parsed = new URL(String(raw || '').trim());
+      const host = parsed.hostname.toLowerCase();
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password ||
+          (parsed.port && parsed.port !== '443') || !host || host.includes(':') ||
+          host.endsWith('.') || host.length > 253 || !host.includes('.') ||
+          /^[0-9.]+$/.test(host) || /^(?:0x[0-9a-f]+\.?)+$/i.test(host) ||
+          /\.(?:invalid|localhost|local|internal|home\.arpa|test)$/.test(host)) return null;
+      const labels = host.split('.');
+      if (labels.some((label) => !label || label.length > 63 ||
+          !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(label))) return null;
+      return parsed.href;
+    } catch (_) {
+      return null;
     }
-    throw lastErr || new Error('All fetches failed for ' + url);
+  }
+
+  // Live OPML and geocoding requests go directly to their configured HTTPS
+  // services; no public CORS-proxy fallback is used. RSS conversion is handled
+  // by the separately configured rss2json service below.
+  async function fetchValidated(url, { asJson = false, asText = false } = {}) {
+    const target = validateFeedUrl(url);
+    if (!target) throw new Error('Rejected non-HTTPS or invalid feed URL');
+    const res = await fetch(target);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (asJson) return await res.json();
+    if (asText) return await res.text();
+    return res;
   }
 
   const RSS2JSON = (u) =>
@@ -1381,16 +1381,19 @@ window.SelfUpdate = SelfUpdate;
     // Try the live URL first; on failure, fall back to the offline cache.
     try {
       log('Fetching OPML from GitHub (direct, no proxy)…');
-      const txt = await fetchWithFallback(OPML_URL, { asText: true });
+      const txt = await fetchValidated(OPML_URL, { asText: true });
       const doc = new DOMParser().parseFromString(txt, 'text/xml');
       const nodes = doc.querySelectorAll('outline[xmlUrl]');
       const feeds = [];
+      let rejected = 0;
       nodes.forEach((n) => {
-        const url = n.getAttribute('xmlUrl');
-        const title = n.getAttribute('title') || n.getAttribute('text') || url;
+        const rawUrl = n.getAttribute('xmlUrl');
+        const url = validateFeedUrl(rawUrl);
+        const title = n.getAttribute('title') || n.getAttribute('text') || rawUrl;
         if (url) feeds.push({ title, url });
+        else if (rawUrl) rejected++;
       });
-      log(`Loaded ${feeds.length} feeds from OPML`, 'ok');
+      log(`Loaded ${feeds.length} HTTPS feeds from OPML; rejected ${rejected} invalid or non-HTTPS URLs`, rejected ? 'warn' : 'ok');
       // Cache for offline use
       try { SelfUpdate.cacheOpml(feeds); } catch (e) {}
       return feeds;
@@ -1409,7 +1412,9 @@ window.SelfUpdate = SelfUpdate;
   state.feedStats = { ok: 0, fail: 0, articles: 0 };
   async function fetchFeed(feed) {
     try {
-      const res = await fetch(RSS2JSON(feed.url));
+      const safeFeedUrl = validateFeedUrl(feed && feed.url);
+      if (!safeFeedUrl) throw new Error('Rejected invalid or non-HTTPS feed host');
+      const res = await fetch(RSS2JSON(safeFeedUrl));
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       if (data.status !== 'ok' || !data.items) {
@@ -1555,7 +1560,7 @@ window.SelfUpdate = SelfUpdate;
       for (const c of job.candidates) {
         try {
           // Nominatim has Access-Control-Allow-Origin: * — fetch directly.
-          const j = await fetchWithFallback(NOMINATIM(c), { asJson: true });
+          const j = await fetchValidated(NOMINATIM(c), { asJson: true });
           if (j && j.length) {
             found = { lat: parseFloat(j[0].lat), lon: parseFloat(j[0].lon), name: j[0].display_name };
             break;

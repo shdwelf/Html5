@@ -8,6 +8,7 @@
 
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
+import { preparePipWindows } from "./pip-window-manager.js";
 import {
   META, LAYERS, BORDERS, SAN_JUAN_RIVER, GAZETTEER, SITES,
   TERRAIN_POINTS, VIEWS, CREDITS,
@@ -383,26 +384,7 @@ exagSlider.addEventListener("input", () => {
 
 /* ---------------------------------------------------------- pip drag/min -- */
 
-for (const pip of document.querySelectorAll(".pip")) {
-  const head = pip.querySelector(".pip-head");
-  const minBtn = pip.querySelector("[data-min]");
-  minBtn?.addEventListener("click", () => pip.classList.toggle("min"));
-  let drag = null;
-  head.addEventListener("pointerdown", (ev) => {
-    if (ev.target === minBtn) return;
-    const r = pip.getBoundingClientRect();
-    drag = { dx: ev.clientX - r.left, dy: ev.clientY - r.top };
-    head.setPointerCapture(ev.pointerId);
-  });
-  head.addEventListener("pointermove", (ev) => {
-    if (!drag) return;
-    pip.style.left = `${Math.max(0, ev.clientX - drag.dx)}px`;
-    pip.style.top = `${Math.max(0, ev.clientY - drag.dy)}px`;
-    pip.style.right = "auto";
-    pip.style.bottom = "auto";
-  });
-  head.addEventListener("pointerup", () => { drag = null; });
-}
+preparePipWindows();
 
 /* -------------------------------------------------------------- minimap -- */
 

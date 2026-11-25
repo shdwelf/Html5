@@ -26,8 +26,11 @@ mkdir -p "$tmp/css" "$tmp/js" "$tmp/src" "$tmp/docs"
 cp -R css/* "$tmp/css/" 2>/dev/null || true
 cp -R js/* "$tmp/js/" 2>/dev/null || true
 cp -R src/* "$tmp/src/" 2>/dev/null || true
-cp -R docs/* "$tmp/docs/" 2>/dev/null || true
+# Use the shared public-docs policy and refuse private cloud/backup references.
+node "$root/tools/wikiinajar/copy-public-docs.mjs" "$tmp/docs"
 
-# Package into .xdc ZIP archive
+# Recreate rather than incrementally update the archive so removed/private
+# sources cannot remain as stale entries in a previously built .xdc.
+rm -f "$out"
 (cd "$tmp" && zip -9 -r "$out" . -x "*.DS_Store" -x "*__pycache__*")
 echo "Wrote $out ($(wc -c < "$out") bytes)"

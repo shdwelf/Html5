@@ -8,9 +8,11 @@ It never signs. Every implemented standard below names its module and the
 was surveyed and deliberately left out.
 
 Provenance: SLIP-0044 registry snapshot `e9f91569…` (1479 entries);
-Coinpaprika rank snapshot `2026-09-11T16:48:15Z`. Cross-check libraries
-(`@scure/bip32`, `@noble/*`, `micro-ed25519-hdkey`, `ripple-keypairs`,
-`@scure/base`) were scratch oracles only — no test depends on them.
+Coinpaprika rank snapshot `2026-09-11T16:48:15Z`. The initial survey used
+cross-check libraries (`@scure/bip32`, `@noble/*`, `micro-ed25519-hdkey`,
+`ripple-keypairs`, `@scure/base`) as scratch oracles. Round 80 adds repeatable
+scure/Noble comparisons in `tests/coin-networks.test.mjs`, using the existing
+lockfile-resolved **2.4.0** packages; no new browser dependency was introduced.
 
 ## BIP-39 — mnemonic code for generating deterministic keys
 
@@ -160,9 +162,85 @@ mnemonic→key→keccak→checksum pipeline.
 
 ## Security model
 
-Private keys exist transiently in `deriveCoin` and are never serialised;
-the UI layer (`src/lib/coins.ts`) exposes addresses, paths, and xpubs, not
-keys. There is no network code anywhere in the stack — registry JSON is
-built offline and checked in, so derivation cannot leak. Treat any
-`slip44Source` ending in `-fallback` or the ISLM row as "verify against a
-second wallet before funding".
+Private keys exist transiently in `deriveCoin` and are not included in its
+returned public-address records. The separate UI layer (`src/lib/coins.ts`)
+exposes addresses, paths and xpubs. Keyspace also has an existing, explicitly
+revealed Bitcoin-wallet view that can show seed/root/WIF material; the new
+network selector does not add or share any such output. Coin/network registries
+are checked-in local JSON; address derivation makes no RPC or live-market
+requests. This is not a guarantee against a compromised browser, extension,
+host or application bundle, nor proof that JavaScript secret memory is erased.
+Use only public test phrases in this educational viewer. Treat any
+`slip44Source` ending in `-fallback` or the ISLM row as requiring independent
+wallet-convention verification; tests here are not a real-fund safety claim.
+
+## Round 80: network identity is not another BIP-44 coin number
+
+The Keyspace selector now exposes the full historical 500-asset registry and
+separates USDT's network choices into `config/token-networks.json`. The request's
+“bbep20” was interpreted as **BEP-20**, not a new chain or derivation standard.
+`js/coin-networks.js` uses the existing regression-tested address primitives;
+it adds no signing, transfers, balance queries, bridges or RPC dependencies.
+This is an educational implementation comparison, not an independent security
+audit or a claim of complete wallet-standard conformance.
+
+### Pinned primary repositories
+
+| Repository / reviewed revision | Relevant evidence |
+| --- | --- |
+| [`bitcoin/bips` @ `a7f91321f25b5be8d93e901775621c21519e80b7`](https://github.com/bitcoin/bips/tree/a7f91321f25b5be8d93e901775621c21519e80b7) | BIP-39 entropy/checksum/seed separation and NFKD; BIP-44 five-level hierarchy built on BIP-32/BIP-43 |
+| [`trustwallet/wallet-core` @ `7a21615fad32edd8dc0b040d845de3973cde2c5a`](https://github.com/trustwallet/wallet-core/blob/7a21615fad32edd8dc0b040d845de3973cde2c5a/registry.json) | `smartchain`: chain ID 56, default `m/44'/60'/0'/0/0`; `binance`/Beacon uses 714. Smartchain's library enum `coinId=20000714` and `slip44=714` metadata must not override its explicit default path. Its separate Stable Account path is not implemented here |
+| [`bnb-chain/BEPs` @ `aad6b1bd65605ae2d6d268b176f009386862d6ca`](https://github.com/bnb-chain/BEPs/blob/aad6b1bd65605ae2d6d268b176f009386862d6ca/BEPs/BEP20.md) | BEP-20 is a token-contract API on BNB Smart Chain, not a mnemonic/HD derivation scheme |
+| [`trustwallet/assets` @ `5c8eba81275e50843ef7df1899161c8b65852dba`](https://github.com/trustwallet/assets/tree/5c8eba81275e50843ef7df1899161c8b65852dba) | Network-specific contract identities and decimal scales below; each config row links the exact `info.json` |
+| [`paulmillr/scure-bip32` @ `ab00d7f78d067422898fc0adb8a7ef740b79386a`](https://github.com/paulmillr/scure-bip32/tree/ab00d7f78d067422898fc0adb8a7ef740b79386a) | `@scure/bip32` **2.4.0**, the lockfile-resolved independent HD oracle; source review of master HMAC, hardened/normal child serialization and child retry bounds |
+| [`paulmillr/scure-bip39` @ `2c8cf46fb4da10ea715aa56fee846142a2c0fa80`](https://github.com/paulmillr/scure-bip39/tree/2c8cf46fb4da10ea715aa56fee846142a2c0fa80) | `@scure/bip39` **2.4.0**, the lockfile-resolved seed oracle; `src/index.ts` uses mnemonic/salt NFKD and PBKDF2-HMAC-SHA512 with 2,048 iterations and 64-byte output |
+| [`paulmillr/noble-hashes` @ `663c2aeeffc308ac0cded59bd32f7c212adacfc2`](https://github.com/paulmillr/noble-hashes/tree/663c2aeeffc308ac0cded59bd32f7c212adacfc2) | `@noble/hashes` **2.4.0**, the lockfile-resolved independent Keccak oracle; `src/sha3.ts` distinguishes Keccak-256's `0x01` suffix from SHA3-256's `0x06` |
+
+The manifest's `^2.2.0` ranges do **not** mean the installed test packages are
+2.2.0. The versions above were checked against both `package-lock.json` and the
+installed package manifests; their npm-reported `gitHead` revisions were then
+fetched for the named source review. An npm `gitHead` is publisher metadata,
+not a reproducible-build or supply-chain attestation. These regression tests
+exercise public known-answer derivations, not every rare child-retry edge case
+or every Unicode input. None of these test dependencies is imported into the
+dependency-free browser wallet modules.
+
+| Asset / chain | Contract identifier (NOT the holder receive address) | Decimals | Holder derivation |
+| --- | --- | ---: | --- |
+| USDT / Ethereum, chain ID 1 | `0xdAC17F958D2ee523a2206206994597C13D831ec7` | 6 | EVM, `m/44'/60'/0'/0/0` |
+| Binance-Peg USDT / BNB Smart Chain, chain ID 56 | `0x55d398326f99059fF775485246999027B3197955` | 18 | EVM, `m/44'/60'/0'/0/0` |
+| USDT / TRON | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` | 6 | TRON, `m/44'/195'/0'/0/0` |
+
+The [BSC explorer](https://bscscan.com/token/0x55d398326f99059fF775485246999027B3197955)
+labels that representation **Binance-Peg BSC-USD**; the curated UI retains the
+familiar USDT label but explicitly says pegged and makes no collateral/issuer
+promise. The same EVM key yields the same holder address on Ethereum and BSC;
+chain ID is not an input to this address calculation. It matters for transaction
+network identity, but this module does not construct or sign transactions.
+TRON is not assigned an invented Ethereum-style chain ID in our metadata.
+
+### Regression evidence and scope
+
+`tests/coin-networks.test.mjs` compares BSC and TRON compressed public keys
+against scure's independent mnemonic→seed→HD derivation. BSC's 20-byte address
+payload is additionally checked using Node's secp256k1 public-key conversion and
+Noble's Keccak, and both networks retain fixed known-answer receive addresses.
+A composed/decomposed Unicode passphrase check pins BIP-39 NFKD against scure.
+It also verifies every existing supported registry family's default path,
+contract checksums, decimal/chain metadata, passphrase/leaf selection and
+unknown-network rejection. The receive-only wrapper ignores arbitrary
+purpose/path overrides rather than accidentally changing the selected network.
+
+The historical market's 500 rows and rank values are unchanged (including any
+original rank ties); **347** have supported address derivation. Rebuilding only
+changes provenance metadata: `marketSnapshot` and `slip44Snapshot` replace the
+non-reproducible wall-clock `built` date. A CLI check with a simulated 2040 clock
+must still pass. The source snapshots remain dated **2026-09-11**; no current
+market feed was fetched and no live price claim is made.
+
+The viewer gates derivation on a valid standard 12/15/18/21/24-word mnemonic;
+the lower-level seed/HD primitives are not a complete mnemonic-validation UI.
+Account discovery/gap-limit scanning, every alternative vendor path, account
+abstraction, hardware signing, balances, contract behaviour, token redemption
+and production safety are not established by these tests. Small Galois-field
+visualizations do not improve entropy or alter BIP-39/32 keys.

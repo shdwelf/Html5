@@ -3,8 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 import { buildPlates, PLATE_ORDER, bboxKm, elevScaleKm } from "../js/planet-viewer-data.js";
+import { DEM as lawrenceSource } from "../js/city-dem-grid-lawrence.js";
 import { runChecks } from "../js/planet-viewer-checks.js";
+import { PLANET_GAZ_ROWS, PLANET_GAZETTEER_META } from "../js/planet-viewer-gazetteer.js";
 import { demToVrml } from "../js/vrml-export.js";
+import { matchPcGlobeFeatureCoordinates } from "../js/planet-viewer-search.js";
+import { ISLAND_REFERENCE_ROWS } from "../js/country-viewer-islands.js";
 
 /* ======================================================================
    data adapter
@@ -22,6 +26,23 @@ test("every plate normalises to a finite grid with a world size", () => {
     assert.ok(p.world.w > 0 && p.world.d > 0, `${id}: no world size`);
     assert.equal(p.grid.bbox.length, 4);
   }
+});
+
+test("Lawrence 3DEP samples are orientation-correct and resampled onto the shared display grid", () => {
+  const sourceGrid = buildPlates(8, 8).lawrence.grid;
+  assert.deepEqual([...sourceGrid.elev], [
+    ...Array.from({ length: 8 }, (_, displayRow) =>
+      Array.from({ length: 8 }, (_, col) => lawrenceSource.data[(7 - displayRow) * 8 + col]),
+    ).flat(),
+  ], "north-to-south source rows are flipped to the viewer's south-to-north grid order");
+
+  const regularGrid = buildPlates(64, 48).lawrence.grid;
+  assert.equal(regularGrid.nx, 64);
+  assert.equal(regularGrid.ny, 48);
+  assert.equal(regularGrid.elev.length, 64 * 48);
+  assert.match(regularGrid.meta.note, /north-to-south.*bilinearly resampled/i);
+  assert.equal(regularGrid.meta.controlCount, 64, "resampling does not claim extra source samples");
+  assert.throws(() => buildPlates(1, 8), RangeError);
 });
 
 test("bboxKm is the right order for a known extent", () => {
@@ -61,13 +82,32 @@ test("control-point reproduction is among the checks and passes", () => {
   for (const c of repro) assert.ok(c.ok, `${c.id}: ${c.actual}`);
 });
 
-test("lawrence has packed GNIS in its box and the mountain plates do not", () => {
+test("each local terrain plate has its own in-bounds Gazetteer names", () => {
   const all = runChecks(buildPlates(64, 48));
   const gaz = Object.fromEntries(all.filter((c) => c.id.endsWith("/gaz-in-box")).map((c) => [c.plate, c]));
-  assert.ok(gaz.lawrence.ok);
+  for (const id of ["chey", "ange", "lawrence"]) {
+    assert.ok(gaz[id].ok, `${id}: ${gaz[id].actual}`);
+    assert.ok(Number.parseInt(gaz[id].actual, 10) > 0, `${id} should have local names`);
+  }
   assert.match(gaz.lawrence.actual, /^[1-9]\d* hits/, "lawrence should have hits");
-  assert.match(gaz.chey.actual, /^0 hits/, "chey has no packed city");
-  assert.match(gaz.ange.actual, /^0 hits/, "ange has no packed city");
+});
+
+test("Cheyenne GNIS refresh is recorded without inferring an unverified query date", () => {
+  assert.equal(PLANET_GAZETTEER_META.cheyenneGnisQueryDate, null);
+  const pikesPeak = PLANET_GAZ_ROWS.find(([name]) => name === "Pikes Peak");
+  assert.ok(pikesPeak, "Cheyenne register includes Pikes Peak");
+  assert.match(pikesPeak[9], /July 2026 refresh/);
+  assert.match(pikesPeak[9], /GNIS query date is unverified/);
+  assert.match(pikesPeak[9], /2026-10-02 3DEP\/MRDS pull dates/);
+  assert.doesNotMatch(pikesPeak[9], /GNIS (?:was )?queried 2026-10-02/);
+  assert.doesNotMatch(pikesPeak[9], /2026-11-08/, "the New York candidate date must not be attributed to Cheyenne");
+  assert.match(pikesPeak[9], /no GNIS FEATURE_ID/);
+  assert.equal(pikesPeak[7], null, "no GNIS feature ID is inferred for the four-column register");
+
+  const syncedSocalRow = PLANET_GAZ_ROWS.find((row) => row[9]?.includes("CHEYENNE/ANGELES"));
+  assert.ok(syncedSocalRow, "SoCal register retains cross-register provenance");
+  assert.match(syncedSocalRow[9], /exact GNIS query date unverified/i);
+  assert.doesNotMatch(syncedSocalRow[9], /GNIS carto MapServer pull 2026-10-02/);
 });
 
 /* ======================================================================
@@ -106,10 +146,15 @@ test("the page wires every control the viewer binds", () => {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const b of ["chey", "ange", "lawrence", "globe", "pcg"]) assert.ok(html.includes(`data-plate="${b}"`));
-  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody"]) {
+  for (const id of ["pcgPanel", "pcgMeta", "pcgSearch", "pcgBody", "controlsPanel", "inspectorPanel", "btnControls", "btnInspector", "btnZoomIn", "btnZoomOut"]) {
     assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
   }
   for (const m of ["relief", "wire", "xray"]) assert.ok(html.includes(`data-mode="${m}"`));
+  for (const pressed of ["true", "false"]) assert.match(html, new RegExp(`aria-pressed="${pressed}"`));
+  const css = readFileSync(new URL("../css/planet-viewer-4dwm.css", import.meta.url), "utf8");
+  assert.match(css, /@media \(max-width: 760px\)/, "mobile layout has a dedicated breakpoint");
+  assert.match(css, /\.panel\.is-open/, "mobile panels can be opened without covering the viewer by default");
+  assert.match(css, /button:focus-visible/, "keyboard focus is visible");
 });
 
 test("the viewer reuses the shared modules rather than re-deriving", () => {
@@ -204,6 +249,19 @@ import {
   PCGLOBE_COUNTRY_RECORDS,
 } from "../js/pcglobe-index-data.js";
 
+test("PC Globe feature labels only gain coordinates from exact independent gazetteer matches", () => {
+  const planetTasmania = PLANET_GAZ_ROWS.find(([name]) => name === "Tasmania");
+  assert.deepEqual([planetTasmania?.[4], planetTasmania?.[5]], [-42.0409059, 146.8087322],
+    "the same island point powers Planet Viewer search and PC Globe feature matching");
+  const match = matchPcGlobeFeatureCoordinates(["Tasmania", "Mystery Mountain", "oak island"], ISLAND_REFERENCE_ROWS);
+  assert.equal(match.length, 2, "matching is exact apart from case; unmatched labels receive no fabricated point");
+  assert.equal(match[0].label, "Tasmania");
+  assert.deepEqual([match[0].point[4], match[0].point[5]], [-42.0409059, 146.8087322]);
+  assert.equal(match[1].label, "oak island");
+  assert.equal(match[1].point[7], "1225123");
+  assert.equal(match[1].point[8], 0, "cross-referenced GNIS id is not asserted verified");
+});
+
 test("PC Globe index carries the decoded registers at full count", () => {
   assert.equal(PCGLOBE_COUNTRY_NAMES.length, 216);
   assert.equal(PCGLOBE_COUNTRY_NAMES[0], "AFGHANISTAN");
@@ -236,7 +294,8 @@ test("PC Globe index plate wiring is honest and complete", () => {
   }
   assert.match(app, /index-only/i);
   const html = readFileSync(new URL("../planet-viewer-4dwm.html", import.meta.url), "utf8");
-  assert.match(html, /nothing from PC Globe is plotted/);
+  assert.match(html, /no PC Globe map coordinates are plotted/);
+  assert.match(html, /Exact-name label matches can be selected using/);
   // The checks runner reports the index as a consistency check.
   const plates = buildPlates(32, 24);
   const check = runChecks(plates).find((c) => c.id === "pcglobe/index");

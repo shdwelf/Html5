@@ -706,7 +706,7 @@
 <pinref part="R15" gate="G$1" pin="2"/>
 <wire x1="220.08" y1="228" x2="225.16" y2="228" width="0.1524" layer="91"/>
 <label x="225.16" y="228" size="1.778" layer="95" rot="R0"/></segment></net>
-<net name="GND" class="0.5"><segment><pinref part="C9" gate="G$1" pin="-"/>
+<net name="GND" class="0"><segment><pinref part="C9" gate="G$1" pin="-"/>
 <wire x1="395" y1="225.46" x2="395" y2="220.38" width="0.1524" layer="91"/>
 <label x="395" y="220.38" size="1.778" layer="95" rot="R270"/>
 <pinref part="J6" gate="G$1" pin="2"/>

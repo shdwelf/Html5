@@ -1,0 +1,67 @@
+# EFF secure-messaging source check — 2026-11-04
+
+## Scope
+
+This review checks what the Electronic Frontier Foundation (EFF) publicly says
+about secure-messaging evaluation and whether the located EFF material gives a
+current Zangi-specific assessment. It is a source review, not an audit of
+Zangi’s client, server, protocol, or cryptographic implementation.
+
+## Findings
+
+1. **The old scorecard is not a current certification.** EFF’s former
+   [Secure Messaging Scorecard](https://www.eff.org/secure-messaging-scorecard)
+   URL currently returns a not-found page. EFF’s [2014 announcement](https://www.eff.org/press/releases/which-messaging-technologies-are-truly-safe-and-secure)
+   describes a historical comparison of messaging tools against seven security
+   criteria. A [2014–2015 copy of the scorecard PDF](https://upload.wikimedia.org/wikipedia/commons/9/92/Secure_Messaging_Scorecard_Electronic_Frontier_Foundation.pdf)
+   is available from Wikimedia Commons. The PDF itself cautions that scores are
+   not endorsements or guarantees. Zangi does not appear among the products in
+   that historical scorecard. That omission is not evidence about a current
+   Zangi release.
+
+2. **EFF does not certify the audits it mentions.** EFF’s article
+   [What Makes a Good Security Audit?](https://www.eff.org/deeplinks/2014/11/what-makes-good-security-audit)
+   explains that audits vary in scope and quality and that the scorecard was not
+   a review or endorsement of the audits associated with products. A claim that
+   an app was audited would still require the actual report, scope, date, build,
+   findings, and remediation status.
+
+3. **EFF’s later guidance is a threat-model framework, not a product ranking.**
+   [Thinking About What You Need In A Secure Messenger](https://www.eff.org/fa/deeplinks/2018/03/thinking-about-what-you-need-secure-messenger)
+   asks readers to start with whom they need to protect, from what, and under
+   which constraints. EFF’s [Communicating With Others](https://ssd.eff.org/module/communicating-others)
+   guide (last reviewed 2024-08-06) distinguishes end-to-end encryption from
+   transport encryption and notes that E2EE does not hide all metadata. It also
+   discusses the verification advantage of open-source software, established
+   protocols, and sustained independent researcher attention. These are general
+   criteria; the guide does not test Zangi.
+
+4. **Encryption can be weakened by features around the protocol.** EFF’s
+   [Don’t Let Encrypted Messaging Become a Hollow Promise](https://www.eff.org/deeplinks/2019/07/dont-let-encrypted-messaging-become-hollow-promise)
+   discusses client-side scanning, adding “ghost” participants, and unencrypted
+   backups as examples of risks outside a simple algorithm-name claim. It is
+   general analysis, not evidence that Zangi implements any of those features.
+
+## Application to Zangi
+
+The Google Play listing’s AES-GCM-256 and end-to-end-encryption statements are
+publisher claims. EFF’s materials provide no current Zangi-specific audit,
+score, recommendation, or certification that corroborates them. A complete
+assessment would need, at minimum, a documented threat model; protocol and key
+lifecycle details; reproducible client source/builds or equivalent review
+material; independent, scoped audit reports; metadata and backup disclosures;
+and a way for users to verify contacts and key changes.
+
+The lack of public verification evidence is a **confidence limitation**, not
+proof of a vulnerability. Conversely, encryption-in-transit or a named cipher
+is not enough to conclude that the service provides effective end-to-end
+protection in every feature path.
+
+## Conclusion
+
+I found no EFF source that currently evaluates, recommends, or certifies Zangi.
+The 2014–2015 scorecard is historical and its canonical URL is unavailable;
+EFF’s later material is useful for framing questions, not a Zangi security
+verdict. Treat Zangi’s encryption and data-safety statements as unverified
+publisher claims unless supported by independently reviewable implementation
+and audit evidence.
