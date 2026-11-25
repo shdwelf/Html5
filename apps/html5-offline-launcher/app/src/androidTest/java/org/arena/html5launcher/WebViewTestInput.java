@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.webkit.WebView;
 
+import androidx.test.uiautomator.UiDevice;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -22,6 +24,23 @@ import java.util.concurrent.atomic.AtomicReference;
 /** Real touchscreen activation for user-gesture-gated WebView controls. Test APK only. */
 final class WebViewTestInput {
     static void tapElement(Instrumentation instrumentation, WebView web, String id) throws Exception {
+        // Preserve the original idle-synchronized path for picker/game controls.
+        Log.i("Html5GestureSmoke", id + ": waiting for the focused app window");
+        UiDevice device = UiDevice.getInstance(instrumentation);
+        String targetPackage = instrumentation.getTargetContext().getPackageName();
+        long deadline = SystemClock.uptimeMillis() + 15000;
+        boolean[] focused = new boolean[1];
+        do {
+            instrumentation.runOnMainSync(() -> focused[0] = web.isShown() && web.hasWindowFocus());
+            if (focused[0] && targetPackage.equals(device.getCurrentPackageName())) break;
+            SystemClock.sleep(100);
+        } while (SystemClock.uptimeMillis() < deadline);
+        assertTrue("gesture requires the target app's foreground window; current=" + device.getCurrentPackageName(),
+                focused[0] && targetPackage.equals(device.getCurrentPackageName()));
+        tapVisibleElement(instrumentation, web, id);
+    }
+
+    static void tapBusyElement(Instrumentation instrumentation, WebView web, String id) throws Exception {
         // Page JS can be ready while another Android window is foreground.
         // Instrumentation correctly refuses an injection into another UID.
         // Wait for our own visible, focused window; never tap through system
@@ -45,6 +64,10 @@ final class WebViewTestInput {
         } while (SystemClock.uptimeMillis() < deadline);
         assertTrue("gesture requires the target app's foreground window; current=" + currentPackage,
                 focused[0] && targetPackage.equals(currentPackage));
+        tapVisibleElement(instrumentation, web, id);
+    }
+
+    private static void tapVisibleElement(Instrumentation instrumentation, WebView web, String id) throws Exception {
         Log.i("Html5GestureSmoke", id + ": focused; scrolling and measuring the visible HTML control");
         evaluate(web, "document.getElementById(" + JSONObject.quote(id) + ").scrollIntoView({behavior:'instant',block:'center',inline:'center'}); 'scrolled'");
         JSONArray point = new JSONArray(evaluate(web,

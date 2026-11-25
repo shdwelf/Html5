@@ -145,8 +145,9 @@ that implicit-idle query repeatedly, including while building its assertion
 message, so it could consume successive idle waits despite an already focused
 app window. Guest memory pressure was not established as the timeout root cause.
 
-The test-only helper now refreshes the actual active accessibility window root
-and checks its package **without a global-idle wait**. A missing/stale root
+For live cancellation, the test-only busy-touch helper refreshes the actual
+active accessibility window root and checks its package **without a global-idle
+wait**. Quiescent controls retain the original idle-synchronized touch path. A missing/stale root
 cannot authorize a tap. The app must still be shown, have window focus and
 match the active foreground package within the original15-second fence. The
 measured point must still be inside the visible WebView and injected DOWN/UP
@@ -155,6 +156,28 @@ protection untouched. This is not a blind click, JavaScript event, global
 UiAutomator timeout override, skip or deadline increase. Native network-consent
 and picker interactions keep their existing synchronized checks. Fresh policy
 controls explicitly require each of these guards.
+
+### Real recovery passed; isolate the busy path from existing picker controls
+
+Head `460ccfaf`'s first build stopped on Maven HTTP429 before compilation;
+one failed-job rerun on the identical commit cleared that dependency throttle.
+The [actual rerun](https://github.com/shdwelf/Html5/actions/runs/45588961519/job/139120229270)
+then passed **all three new recovery cases**, including each native Stop/Clear,
+but an existing network file-picker case timed out in its cleanup WebView
+callback. The complete gate correctly rejected **16/17**, not called green.
+The other public6, network5, audio1 and game1 cases passed. This does not prove
+the exact cause of that callback timeout.
+
+To avoid broadening the non-idle behavior beyond its purpose, it is confined
+to live recovery cancellation and recovery's own final cleanup. The default
+picker/game gesture entrypoint keeps its original idle-synchronized foreground
+checks verbatim. Both paths share the unchanged coordinate/visible-bounds and
+real DOWN/UP injection implementation. The original local-file instrumentation
+body and policy assertions are retained byte-for-byte; new policy assertions
+separately require the busy path's refreshed-root, matching-package, focused
+visible app,15-second fence and common real-touch checks. No callback deadline,
+phase count or original assertion is weakened. A fresh complete17/17 result is
+still mandatory for this narrower final head; the prior3/3 alone cannot merge it.
 
 Current-main updates through `99b18f95` were integrated on the same branch
 before final validation, preserving the parallel documentation/wiki/probe work.

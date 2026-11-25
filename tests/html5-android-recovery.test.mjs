@@ -59,18 +59,26 @@ test("three bounded public-APK cases require exact v4/v6 success, zero-attempt r
 
 test("busy recovery progress cannot force an idle wait or bypass actual foreground/focus/touchscreen fences", () => {
   const gestures = read("apps/html5-offline-launcher/app/src/androidTest/java/org/arena/html5launcher/WebViewTestInput.java");
-  assert.match(gestures, /web\.isShown\(\) && web\.hasWindowFocus\(\)/);
+  const busyStart = gestures.indexOf("static void tapBusyElement(");
+  const busyEnd = gestures.indexOf("private static void tapVisibleElement(");
+  assert.ok(busyStart > 0 && busyEnd > busyStart);
+  const busy = gestures.slice(busyStart, busyEnd);
+  assert.match(busy, /web\.isShown\(\) && web\.hasWindowFocus\(\)/);
+  assert.match(busy, /activeWindowPackage\(instrumentation\)/);
   assert.match(gestures, /getUiAutomation\(\)\.getRootInActiveWindow\(\)/);
   assert.match(gestures, /if \(root == null\) return ""/);
   assert.match(gestures, /if \(!root\.refresh\(\)\) return ""/);
   assert.match(gestures, /root\.getPackageName\(\)/);
-  assert.match(gestures, /targetPackage\.equals\(currentPackage\)/);
-  assert.match(gestures, /SystemClock\.uptimeMillis\(\) \+ 15000/);
+  assert.match(busy, /targetPackage\.equals\(currentPackage\)/);
+  assert.match(busy, /SystemClock\.uptimeMillis\(\) \+ 15000/);
+  assert.match(gestures, /targetPackage\.equals\(device\.getCurrentPackageName\(\)\)/);
+  assert.equal((gestures.match(/tapVisibleElement\(instrumentation, web, id\)/g) || []).length, 2);
+  assert.match(instrumentation, /WebViewTestInput\.tapBusyElement\(instrumentation, web, action\)/);
   assert.match(gestures, /visible\.contains\(Math\.round\(x\), Math\.round\(y\)\)/);
   assert.match(gestures, /InputDevice\.SOURCE_TOUCHSCREEN/);
   assert.match(gestures, /instrumentation\.sendPointerSync\(down\)/);
   assert.match(gestures, /instrumentation\.sendPointerSync\(up\)/);
-  assert.doesNotMatch(gestures, /device\.getCurrentPackageName\(|waitForIdle\(|setWaitForIdleTimeout\(|\.click\(\)/);
+  assert.doesNotMatch(busy, /device\.getCurrentPackageName\(|waitForIdle\(|setWaitForIdleTimeout\(|\.click\(\)/);
 });
 
 test("recovery adds a separate mandatory three-case phase without removing or lengthening the original 14 cases", () => {

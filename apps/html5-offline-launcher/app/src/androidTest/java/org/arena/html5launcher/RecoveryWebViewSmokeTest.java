@@ -140,7 +140,7 @@ public final class RecoveryWebViewSmokeTest {
                 // A real expensive S2K is executing off-thread; the page must
                 // still evaluate JS and accept an actual foreground touch.
                 assertEquals("42", evaluate(web, "String(6 * 7)"));
-                tap(web, action);
+                WebViewTestInput.tapBusyElement(instrumentation, web, action);
                 awaitText(web, "recovery-stop".equals(action) ? "not a completed/exhausted search" : "cleared; any worker terminated");
                 JSONObject stopped = snapshot(web);
                 Log.i("Html5RecoverySmoke", "cancellation settled; checking counters and hidden result");
@@ -218,7 +218,7 @@ public final class RecoveryWebViewSmokeTest {
     }
     private void dispose(WebView web) throws Exception {
         // Clear via the actual app control before discarding test-only fixtures.
-        tap(web, "clear-all");
+        WebViewTestInput.tapBusyElement(instrumentation, web, "clear-all");
         evaluate(web, "window.__androidRecoverySmoke?.dispose(); 'disposed'");
     }
     private void awaitText(WebView web, String text) throws Exception {
