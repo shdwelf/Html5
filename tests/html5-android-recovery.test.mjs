@@ -57,6 +57,22 @@ test("three bounded public-APK cases require exact v4/v6 success, zero-attempt r
   assert.doesNotMatch(instrumentation, /@Ignore|Assume\.|assumeTrue|requestSubmit\(|\.click\(\)/);
 });
 
+test("busy recovery progress cannot force an idle wait or bypass actual foreground/focus/touchscreen fences", () => {
+  const gestures = read("apps/html5-offline-launcher/app/src/androidTest/java/org/arena/html5launcher/WebViewTestInput.java");
+  assert.match(gestures, /web\.isShown\(\) && web\.hasWindowFocus\(\)/);
+  assert.match(gestures, /getUiAutomation\(\)\.getRootInActiveWindow\(\)/);
+  assert.match(gestures, /if \(root == null\) return ""/);
+  assert.match(gestures, /if \(!root\.refresh\(\)\) return ""/);
+  assert.match(gestures, /root\.getPackageName\(\)/);
+  assert.match(gestures, /targetPackage\.equals\(currentPackage\)/);
+  assert.match(gestures, /SystemClock\.uptimeMillis\(\) \+ 15000/);
+  assert.match(gestures, /visible\.contains\(Math\.round\(x\), Math\.round\(y\)\)/);
+  assert.match(gestures, /InputDevice\.SOURCE_TOUCHSCREEN/);
+  assert.match(gestures, /instrumentation\.sendPointerSync\(down\)/);
+  assert.match(gestures, /instrumentation\.sendPointerSync\(up\)/);
+  assert.doesNotMatch(gestures, /device\.getCurrentPackageName\(|waitForIdle\(|setWaitForIdleTimeout\(|\.click\(\)/);
+});
+
 test("recovery adds a separate mandatory three-case phase without removing or lengthening the original 14 cases", () => {
   const lines = runner.split("\n").filter((line) => line.startsWith("run_tests "));
   assert.equal(lines.length, 5);

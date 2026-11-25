@@ -141,7 +141,10 @@ test("v6 Android save fixtures stay explicitly allowlisted and real gestures req
   const smoke = readFileSync(new URL("LocalFileExportSmokeTest.java", base), "utf8");
   for (const name of ["v6-full.asc", "v6-reduced.asc"]) assert.ok(provider.includes(`!"${name}".equals(name)`));
   assert.match(gestures, /web\.isShown\(\) && web\.hasWindowFocus\(\)/);
-  assert.match(gestures, /targetPackage\.equals\(device\.getCurrentPackageName\(\)\)/);
+  assert.match(gestures, /targetPackage\.equals\(currentPackage\)/);
+  assert.match(gestures, /getUiAutomation\(\)\.getRootInActiveWindow\(\)/);
+  assert.match(gestures, /if \(!root\.refresh\(\)\) return ""/);
+  assert.match(gestures, /root\.getPackageName\(\)/);
   assert.match(gestures, /visible\.contains\(Math\.round\(x\), Math\.round\(y\)\)/);
   assert.match(gestures, /instrumentation\.sendPointerSync\(down\)/);
   assert.match(smoke, /__syntheticOldDocument/);

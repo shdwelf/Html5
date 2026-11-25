@@ -8,9 +8,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.webkit.WebView;
-
-import androidx.test.uiautomator.UiDevice;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,17 +28,23 @@ final class WebViewTestInput {
         // alerts or replace a user gesture with a synthetic JavaScript click.
         // Phase-only diagnostics: never log page values, keys or passphrases.
         Log.i("Html5GestureSmoke", id + ": waiting for the focused app window");
-        UiDevice device = UiDevice.getInstance(instrumentation);
         String targetPackage = instrumentation.getTargetContext().getPackageName();
+        String currentPackage = "";
         long deadline = SystemClock.uptimeMillis() + 15000;
         boolean[] focused = new boolean[1];
         do {
             instrumentation.runOnMainSync(() -> focused[0] = web.isShown() && web.hasWindowFocus());
-            if (focused[0] && targetPackage.equals(device.getCurrentPackageName())) break;
+            // UiDevice.getCurrentPackageName implicitly waits for global
+            // accessibility idleness, up to 10 seconds PER call. A live
+            // progress bar need not become idle before its Stop can be tapped.
+            // Refresh the actual active window's package instead; keep both
+            // the foreground-package and visible/focused-view guards intact.
+            currentPackage = activeWindowPackage(instrumentation);
+            if (focused[0] && targetPackage.equals(currentPackage)) break;
             SystemClock.sleep(100);
         } while (SystemClock.uptimeMillis() < deadline);
-        assertTrue("gesture requires the target app's foreground window; current=" + device.getCurrentPackageName(),
-                focused[0] && targetPackage.equals(device.getCurrentPackageName()));
+        assertTrue("gesture requires the target app's foreground window; current=" + currentPackage,
+                focused[0] && targetPackage.equals(currentPackage));
         Log.i("Html5GestureSmoke", id + ": focused; scrolling and measuring the visible HTML control");
         evaluate(web, "document.getElementById(" + JSONObject.quote(id) + ").scrollIntoView({behavior:'instant',block:'center',inline:'center'}); 'scrolled'");
         JSONArray point = new JSONArray(evaluate(web,
@@ -65,6 +70,17 @@ final class WebViewTestInput {
             instrumentation.sendPointerSync(up);
             Log.i("Html5GestureSmoke", id + ": touchscreen injection returned");
         } finally { down.recycle(); up.recycle(); }
+    }
+
+    @SuppressWarnings("deprecation") // Recycle remains appropriate on older supported test APIs.
+    private static String activeWindowPackage(Instrumentation instrumentation) {
+        AccessibilityNodeInfo root = instrumentation.getUiAutomation().getRootInActiveWindow();
+        if (root == null) return "";
+        try {
+            if (!root.refresh()) return ""; // A stale/detached root cannot authorize a gesture.
+            CharSequence name = root.getPackageName();
+            return name == null ? "" : name.toString();
+        } finally { root.recycle(); }
     }
 
     private static String evaluate(WebView web, String expression) throws Exception {

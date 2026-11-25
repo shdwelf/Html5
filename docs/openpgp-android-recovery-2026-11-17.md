@@ -87,7 +87,7 @@ artifacts are preserved. Private APK plaintext and test APKs are not uploaded.
 Fresh local controls before CI:
 
 - Android policy/completion/save plus all three recovery unit/crypto/DOM suites
-  and operational corpus exclusion: **67 passed / 0 failed / 0 skipped**.
+  and operational corpus exclusion: **68 passed / 0 failed / 0 skipped**.
 - Identical test-APK fixture with real Chromium workers: **3 passed / 0 failed /
   0 skipped**, including both success profiles, refusal/no-match and all three
   cancellation actions, zero page errors/external requests/downloads.
@@ -130,6 +130,36 @@ mandatory. The active worker's `recover` operation and total256 are additional
 assertions. Production key/S2K policies, owner inputs, recovery limits, every
 original test and every deadline remain unchanged. Phase-only recovery
 milestones are retained separately from later audio/game noise.
+
+### Idle-dependent gesture query diagnosed; all foreground guards retained
+
+The [next actual Android run](https://github.com/shdwelf/Html5/actions/runs/45586150321)
+at `9826285` again retained all original14 passes but timed out in the new
+cancellation case. **The smaller fixture alone did not fix it.** Its stronger
+milestone capture showed actual worker progress followed by about32 seconds
+before cancellation settled. The timeout stack specifically stopped in
+`UiAutomation.waitForIdle → QueryController.getCurrentPackageName →
+UiDevice.getCurrentPackageName`. Continuously updating progress need not become
+globally accessibility-idle before a user can tap Stop. The old helper called
+that implicit-idle query repeatedly, including while building its assertion
+message, so it could consume successive idle waits despite an already focused
+app window. Guest memory pressure was not established as the timeout root cause.
+
+The test-only helper now refreshes the actual active accessibility window root
+and checks its package **without a global-idle wait**. A missing/stale root
+cannot authorize a tap. The app must still be shown, have window focus and
+match the active foreground package within the original15-second fence. The
+measured point must still be inside the visible WebView and injected DOWN/UP
+must still be real SOURCE_TOUCHSCREEN events, with Android's cross-UID injection
+protection untouched. This is not a blind click, JavaScript event, global
+UiAutomator timeout override, skip or deadline increase. Native network-consent
+and picker interactions keep their existing synchronized checks. Fresh policy
+controls explicitly require each of these guards.
+
+Current-main updates through `99b18f95` were integrated on the same branch
+before final validation, preserving the parallel documentation/wiki/probe work.
+The incoming probe is manual-only and was not dispatched by this task; no
+restore or cloud connector operation is performed by this test continuation.
 
 Only the exact final head's successful Android job and structured per-phase
 annotation can establish this new emulator gate. Final CI links/counts and the
