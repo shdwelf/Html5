@@ -45,3 +45,20 @@ time (secret, else the pre-sanitization history commit), logs responses by
 form name with query strings redacted — no identifiers in the tree, per the
 2026-11-04 privacy audit — and on a size+SHA-verified fetch performs the
 `drive-sync-apply` restore and commits it.
+
+**Probe outcome (CI run 45587347179, log: `docs/drive-sync/dropbox-probe.log`):**
+all server-side fetch forms fail — the host serves its web app to datacenter
+IPs in every URL form, the alternate content host 404s, the anonymous Drive
+endpoints remain quota-404, and the platform-side fetcher errors identically
+while the connector metadata still reports the link live and public. The
+block is IP-reputation, not the link: no non-residential fetcher can
+download this file.
+
+**Completion path (release-asset route):** the owner downloads the tarball
+in a browser and attaches it to a GitHub release tagged
+`chipwright-snapshot-12c463f`; then dispatch
+[`chipwright-restore.yml`](../.github/workflows/chipwright-restore.yml) —
+it verifies the SHA-256 prefix, extracts, locates the snapshot root, runs
+`drive-sync-apply --write` against the committed manifest (re-hashed), and
+commits the restored files. Same terminal pattern as the PR-184 APK
+retrieval record: one browser step, then CI does the rest.
