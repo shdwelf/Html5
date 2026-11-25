@@ -134,6 +134,7 @@ IANA media types (RFC 6838 / BCP 13).
 
 - [backlog-execution-round-85-2026-11-17.md](backlog-execution-round-85-2026-11-17.md) — Android local saves, sound-app restoration, complete 96-app browser catalog, source audit and research-retention gates (merged PR #238)
 - [backlog-execution-round-86-2026-11-17.md](backlog-execution-round-86-2026-11-17.md) — independent native v6 synthetic interoperability, pinned Go reader/mandatory CI and unchanged recipient/recovery boundaries
+- [backlog-execution-round-87-2026-10-29.md](backlog-execution-round-87-2026-10-29.md) — snapshot-tarball fetch probe · chipwright restore unblock · connector audit (renumbered from a working "round 56" after main's round-56 slot was claimed by the 2026-11-04 privacy-audit round)
 
 ## Research deep dives (the “ghirdra” line)
 
