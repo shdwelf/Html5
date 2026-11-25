@@ -63,6 +63,7 @@ run_tests() {
 }
 run_tests public-local-files 3m :app:connectedPublicDebugAndroidTest org.arena.html5launcher.LocalFileExportSmokeTest
 run_tests network-local-files 3m :app:connectedNetworkDebugAndroidTest org.arena.html5launcher.LocalFileExportSmokeTest
+run_tests public-openpgp-recovery 3m :app:connectedPublicDebugAndroidTest org.arena.html5launcher.RecoveryWebViewSmokeTest
 run_tests public-audio-policy 2m :app:connectedPublicDebugAndroidTest 'org.arena.html5launcher.OfflineWebViewSmokeTest#microphoneCaptureWorksOnlyForAncOriginAndAudioResource'
 run_tests public-headline-harry 2m :app:connectedPublicDebugAndroidTest 'org.arena.html5launcher.OfflineWebViewSmokeTest#headlineHarryStartControlBootsBundledDosProgramInAndroidWebView'
 exit "$status"

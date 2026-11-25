@@ -20,6 +20,7 @@ on:
       - 'scripts/report-html5-android-runner.py'
       - 'scripts/run-html5-android-ci.sh'
       - 'tests/html5-android-runner.test.mjs'
+      - 'tests/html5-android-recovery*'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -54,6 +55,7 @@ on:
       - 'scripts/report-html5-android-runner.py'
       - 'scripts/run-html5-android-ci.sh'
       - 'tests/html5-android-runner.test.mjs'
+      - 'tests/html5-android-recovery*'
       - 'apps/AURA_SoundStudio_Quine*.html'
       - 'apps/noise-canceling-sanctuary*.html'
       - 'scripts/encrypt-openpgp-backup.mjs'
@@ -152,7 +154,10 @@ jobs:
           bash scripts/run-html5-android-ci.sh apps/html5-offline-launcher/app/build/android-sdk-setup.log -- "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Test launcher inventory and offline policy
-        run: node --test tests/html5-offline-launcher.test.mjs tests/html5-android-runner.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
+        run: node --test tests/html5-offline-launcher.test.mjs tests/html5-android-runner.test.mjs tests/html5-android-recovery.test.mjs tests/drive-backup-upload.test.mjs tests/openpgp-v6.test.mjs
+
+      - name: Validate synthetic Android recovery fixture with actual Chromium workers
+        run: REQUIRE_OPENPGP_BROWSER=1 node tests/html5-android-recovery-browser.mjs
 
       - name: Validate restored sound snapshots and local export adapter
         run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
@@ -292,6 +297,28 @@ jobs:
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
           print("Network APK contains both live-feed apps, current coin/OpenPGP assets and INTERNET.")
+          PY
+
+      - name: Verify synthetic recovery harness is confined to test APKs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path("apps/html5-offline-launcher/app")
+          fixture = root.joinpath("src/androidTest/assets/openpgp-recovery-smoke.js").read_bytes()
+          for profile in ("public", "network", "private"):
+              path = root / f"build/outputs/apk/{profile}/debug/app-{profile}-debug.apk"
+              with zipfile.ZipFile(path) as apk:
+                  if any(name.rsplit("/", 1)[-1] == "openpgp-recovery-smoke.js" for name in apk.namelist()):
+                      raise SystemExit("Synthetic recovery fixture leaked into a production APK")
+          for profile in ("public", "network"):
+              path = root / f"build/outputs/apk/androidTest/{profile}/debug/app-{profile}-debug-androidTest.apk"
+              with zipfile.ZipFile(path) as apk:
+                  if apk.read("assets/openpgp-recovery-smoke.js") != fixture:
+                      raise SystemExit("Synthetic recovery fixture missing or stale in test APK")
+          print("Fresh synthetic recovery source is in test APKs only; no generated private fixture is packaged.")
           PY
 
       # Export verified builds before device tests. An emulator timeout must
@@ -440,7 +467,7 @@ jobs:
           except OSError:
               log = ""
           phases = []
-          for label in ["public-local-files", "network-local-files", "public-audio-policy", "public-headline-harry"]:
+          for label in ["public-local-files", "network-local-files", "public-openpgp-recovery", "public-audio-policy", "public-headline-harry"]:
               exits = re.findall(r"=== " + re.escape(label) + r" exit=(\d+) ===", log)
               cases = {}
               failure_details = []

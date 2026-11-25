@@ -24,7 +24,7 @@ CRITICAL = re.compile(
     r"device .{0,80}not found|AdbCommandRejectedException|DeviceOfflineException|"
     r"runner finished with|test instrumentation process crashed)"
 )
-STAGES = re.compile(r"Html5GestureSmoke|Html5LocalFileSmoke|Html5CiPhase|TestRunner.*(?:started:|failed:|finished:)")
+STAGES = re.compile(r"Html5GestureSmoke|Html5LocalFileSmoke|Html5RecoverySmoke|Html5CiPhase|TestRunner.*(?:started:|failed:|finished:)")
 
 
 def tail(path):
@@ -79,16 +79,16 @@ def collect(base):
 
 
 EXPECTED = {"public-local-files": 6, "network-local-files": 6,
-            "public-audio-policy": 1, "public-headline-harry": 1}
+            "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1}
 
 
 def incomplete(summary):
-    """A zero Gradle exit without all 14 actual results must never turn green."""
+    """A zero Gradle exit without all 17 actual results must never turn green."""
     if not isinstance(summary, dict) or type(summary.get("schema")) is not int or summary["schema"] != 1:
         return ["Missing or unsupported Android WebView result schema."]
     phases = summary.get("phases")
     if not isinstance(phases, list) or len(phases) != len(EXPECTED):
-        return ["Exactly four Android WebView result phases are required."]
+        return ["Exactly five Android WebView result phases are required."]
     seen, errors = set(), []
     for phase in phases:
         if not isinstance(phase, dict) or not isinstance(phase.get("phase"), str):
@@ -120,7 +120,7 @@ def main():
         for error in errors:
             print(annotation("Android-WebView-incomplete", error))
         if not errors:
-            print("All four Android WebView phases: 14 passed, zero failed/skipped, all exits zero.")
+            print("All five Android WebView phases: 17 passed, zero failed/skipped, all exits zero.")
         return 1 if errors else 0
     if len(sys.argv) != 2:
         raise SystemExit("usage: report-html5-android-runner.py <synthetic app/build directory> | --require-complete <summary.json>")
