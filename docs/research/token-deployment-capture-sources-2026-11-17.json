@@ -1,0 +1,74 @@
+{
+  "schema": "html5-token-capture-source-review-v1",
+  "reviewed": "2026-11-17",
+  "scope": "Offline capture preflight and selected reference-layout/specification review only. Source bytes were inspected and digested, not executed/deployed. No RPC, financial or runtime acceptance gate is closed.",
+  "existingIdentitySources": "docs/research/token-identity-source-manifest-2026-11-17.json",
+  "files": [
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/upgradeability/UpgradeabilityProxy.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/upgradeability/UpgradeabilityProxy.sol",
+      "sha256": "51f3c781cbe1c6556a0c4b795046f5cd12e69b465631f6e85f239f0bf7443036",
+      "bytes": 3348,
+      "lines": 97,
+      "license": "Apache-2.0",
+      "review": "Legacy implementation slot is keccak256(org.zeppelinos.proxy.implementation), not ERC-1967. Reference source only; deployed bytecode/layout not matched.",
+      "liveDeploymentVerified": false
+    },
+    {
+      "repo": "circlefin/stablecoin-evm",
+      "commit": "fc85788bc7c23cefe3df1a757133048bfddadeaa",
+      "path": "contracts/upgradeability/AdminUpgradeabilityProxy.sol",
+      "url": "https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/contracts/upgradeability/AdminUpgradeabilityProxy.sol",
+      "sha256": "d6dc1555e31406e06a5953ea7eab6e688d2ead1ebb5b9a344d55354123c36bc4",
+      "bytes": 5416,
+      "lines": 167,
+      "license": "Apache-2.0",
+      "review": "Legacy admin slot is keccak256(org.zeppelinos.proxy.admin). Proxy role and token roles are distinct. Reference source only.",
+      "liveDeploymentVerified": false
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "commit": "445383fa32433bee55e56a8edd36fb2aad18b7fd",
+      "path": "EIPS/eip-1474.md",
+      "url": "https://github.com/ethereum/EIPs/blob/445383fa32433bee55e56a8edd36fb2aad18b7fd/EIPS/eip-1474.md",
+      "sha256": "c7070c73e4399666dbdfc19dff89f3e61c142ffe44fa6798af135312918c59e6",
+      "bytes": 63956,
+      "lines": 2254,
+      "license": "CC0-1.0",
+      "review": "Canonical QUANTITY/DATA encoding, JSON-RPC result/error envelopes and read method shapes.",
+      "liveDeploymentVerified": false
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "commit": "282fac210e1727fb8472b99c5cda59b844391844",
+      "path": "EIPS/eip-1898.md",
+      "url": "https://github.com/ethereum/EIPs/blob/282fac210e1727fb8472b99c5cda59b844391844/EIPS/eip-1898.md",
+      "sha256": "86aec72aca38fa23c5433deeae71b3bec318290df960c419272d42034027d5ac",
+      "bytes": 7992,
+      "lines": 95,
+      "license": "CC0-1.0",
+      "review": "Hash-pinned eth_getCode/eth_call/eth_getStorageAt with requireCanonical. An endpoint rejection must not fall back to latest or number-only state.",
+      "liveDeploymentVerified": false
+    },
+    {
+      "repo": "ethereum/ERCs",
+      "commit": "8dd085d159cb123f545c272c0d871a5339550e79",
+      "path": "ERCS/erc-1967.md",
+      "url": "https://github.com/ethereum/ERCs/blob/8dd085d159cb123f545c272c0d871a5339550e79/ERCS/erc-1967.md",
+      "sha256": "42384396793e9e220e8ce8a918c92e0cd70808df6f55db27bb82e09c0c2af44a",
+      "bytes": 21794,
+      "lines": 468,
+      "license": "CC0-1.0",
+      "review": "Standard ERC-1967 implementation/admin slots differ from the selected Circle reference. No generic slot fallback or live-deployment claim.",
+      "liveDeploymentVerified": false
+    }
+  ],
+  "rejectedShortcuts": [
+    "EIPS/eip-1967.md at 25cdf1d059778236e28bf22d752ca48a35af91f6 is a 132-byte status: Moved stub; the actual pinned ethereum/ERCs document was inspected instead.",
+    "Neither an ERC number nor an explorer implementation link proves the storage layout or bytecode of a deployed proxy.",
+    "Two different provider labels do not establish independent operators, consensus, state proofs or the truth of a locally supplied capture.",
+    "USDT Ethereum controls are not copied to Binance-Peg BSC-USD or TRON. All three retain separate exact tuples; TRON requires a TVM-specific capture profile."
+  ]
+}

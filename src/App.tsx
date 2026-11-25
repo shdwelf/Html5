@@ -36,7 +36,7 @@ const NAV: NavItem[] = [
   { id: "book", label: "Autobiography", icon: "📖" },
   { id: "cookbook", label: "Crypto Cookbook", icon: "📚" },
   { id: "terminal", label: "Terminal / IRC", icon: "▌" },
-  { id: "waves", label: "wAves Exchange", icon: "🌊" },
+  { id: "waves", label: "Waves practice", icon: "🌊" },
   { id: "market", label: "Market Data", icon: "📈" },
 ];
 

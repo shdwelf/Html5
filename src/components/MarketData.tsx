@@ -228,7 +228,7 @@ export default function MarketData() {
         </table>
       </div>
       <p className="text-xs text-zinc-600">
-        Offline simulated ticker (random-walk from the {REGISTRY_META.built}{" "}
+        Offline simulated ticker (random-walk from the {REGISTRY_META.marketSnapshot}{" "}
         top-10 snapshot) so the app stays fully standalone.
       </p>
 
@@ -238,7 +238,7 @@ export default function MarketData() {
         <h3 className="text-base font-semibold text-zinc-100">
           Top-500 registry{" "}
           <span className="text-xs font-normal text-zinc-500">
-            {derivable}/500 derivable · snapshot {REGISTRY_META.built}
+            {derivable}/500 derivable · snapshot {REGISTRY_META.marketSnapshot}
           </span>
         </h3>
         <input

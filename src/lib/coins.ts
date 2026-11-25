@@ -2,24 +2,9 @@
 // (js/*.js + config/coins-top500.json). Derivation runs fully offline in
 // the browser; nothing here touches the network.
 import registry from "../../config/coins-top500.json";
-import { findCoin, searchCoins, deriveCoin } from "../../js/coins.js";
+import { findCoin, searchCoins, deriveCoin, type RegistryCoin } from "../../js/coins.js";
 
-export interface CoinRow {
-  rank: number;
-  id: string;
-  symbol: string;
-  name: string;
-  type: "coin" | "token";
-  chain: string | null;
-  family: string | null;
-  slip44: number | null;
-  slip44Source: string | null;
-  registryName: string | null;
-  purpose: number | null;
-  path: string | null;
-  derive: boolean;
-  reason: string | null;
-}
+export type CoinRow = RegistryCoin;
 
 export interface DerivedAddress {
   address: string;
@@ -29,11 +14,7 @@ export interface DerivedAddress {
 }
 
 export const COINS: CoinRow[] = registry.assets as CoinRow[];
-export const REGISTRY_META = registry._meta as {
-  built: string;
-  assets: number;
-  derivable: number;
-};
+export const REGISTRY_META = registry._meta;
 
 export function searchRegistry(q: string, limit = 50): CoinRow[] {
   return searchCoins(COINS, q, limit) as CoinRow[];
@@ -55,10 +36,12 @@ export function deriveAddress(
   } = {}
 ): DerivedAddress {
   const r = deriveCoin(COINS, mnemonic.trim(), { id: coinId }, opts);
+  const family = r.family ?? r.coin.family;
+  if (!family) throw new Error("Derived address has no declared encoding family");
   return {
     address: r.address,
     path: r.path,
-    family: r.family,
+    family,
     pubkeyHex: r.pubkeyHex,
   };
 }

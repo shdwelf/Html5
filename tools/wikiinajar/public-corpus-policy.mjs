@@ -14,6 +14,10 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   "docs/research/openpgp-dependency-update-2026-11-17.json",
   "docs/research/openpgp-v6-native-interop-2026-11-17.json",
   "docs/research/openpgp-recovery-engines-2026-11-17.json",
+  // Review-only editorial and deployment-capture provenance, not app manuals.
+  "docs/research/token-deployment-capture-sources-2026-11-17.json",
+  "docs/research/wordpress-waves-small-web-sources-2026-11-17.json",
+  "docs/research/android-ssh-apk-sizes-2026-11-17.json",
 ]);
 
 export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
@@ -51,6 +55,12 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   // Recovery validation/source-selection notes, not public offline manual data.
   "docs/openpgp-wordlist-recovery-2026-11-17.md",
   "docs/openpgp-android-recovery-2026-11-17.md",
+  // Draft-only editorial research and per-deployment capture/identification
+  // procedures are not approved additions to public offline manual bundles.
+  "docs/token-deployment-capture-2026-11-17.md",
+  "docs/waves-paper-practice-2026-11-17.md",
+  "docs/wordpress-tiddlywiki-small-web-2026-11-17.md",
+  "docs/android-ssh-apk-size-comparison-2026-11-17.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

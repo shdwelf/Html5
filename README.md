@@ -141,7 +141,8 @@ derived artifacts still match their sources byte for byte.
 | **MonKey Miner** | Mines Banano wallets for rare monKey accessories, fully offline. |
 | **Autobiography** | Chapters plus an embedded filesystem; exports as one self-contained HTML book. |
 | **Crypto Cookbook** | The 83-section reference, framed byte-identical from `/apps/cookbook/`. |
-| Terminal / wAves / Market | Carried over from the original build. |
+| **Waves practice** | Explicitly synthetic paper portfolio/orders; no wallet, real funds, storage or exchange connection. [Scope and historical `.hts` investigation](docs/waves-paper-practice-2026-11-17.md). |
+| Terminal / Market Data | Original tools; market prices are an offline simulation from the labeled historical snapshot, not live quotes. |
 
 ## Recovery Lab
 

@@ -10,12 +10,16 @@ on:
       - 'js/coin-networks.js'
       - 'js/coin-research.js'
       - 'tools/token-research-evidence.mjs'
+      - 'tools/token-deployment-capture.mjs'
       - 'tools/build-coin-research-inventory.mjs'
       - 'tests/token-research.test.mjs'
+      - 'tests/token-deployment-capture.test.mjs'
       - 'tests/coin-networks.test.mjs'
       - 'tests/coin-research.test.mjs'
       - 'docs/coin-research-inventory-*.md'
       - 'docs/token-identity-review-*.md'
+      - 'docs/token-deployment-capture-*.md'
+      - 'docs/research/token-deployment-capture-sources-*.json'
       - 'docs/research/token-identity-source-manifest-*.json'
       - 'package.json'
       - 'package-lock.json'
@@ -30,12 +34,16 @@ on:
       - 'js/coin-networks.js'
       - 'js/coin-research.js'
       - 'tools/token-research-evidence.mjs'
+      - 'tools/token-deployment-capture.mjs'
       - 'tools/build-coin-research-inventory.mjs'
       - 'tests/token-research.test.mjs'
+      - 'tests/token-deployment-capture.test.mjs'
       - 'tests/coin-networks.test.mjs'
       - 'tests/coin-research.test.mjs'
       - 'docs/coin-research-inventory-*.md'
       - 'docs/token-identity-review-*.md'
+      - 'docs/token-deployment-capture-*.md'
+      - 'docs/research/token-deployment-capture-sources-*.json'
       - 'docs/research/token-identity-source-manifest-*.json'
       - 'package.json'
       - 'package-lock.json'
@@ -68,3 +76,5 @@ jobs:
         run: npm run check:coin-research
       - name: Check exact-tuple, no-promotion and existing host/network regressions
         run: node --test tests/token-research.test.mjs tests/coin-research.test.mjs tests/coin-networks.test.mjs
+      - name: Check offline hash-pinned capture, reference-slot and no-promotion controls
+        run: node --test tests/token-deployment-capture.test.mjs
