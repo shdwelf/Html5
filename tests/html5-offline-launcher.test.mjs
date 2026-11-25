@@ -198,6 +198,15 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   assert.match(ANDROID_WORKFLOW, /:app:assemblePrivateDebug/);
   assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-public-debug-apk/);
   assert.match(ANDROID_WORKFLOW, /html5-offline-launcher-network-debug-apk/);
+  const backupVerification = ANDROID_WORKFLOW.slice(
+    ANDROID_WORKFLOW.indexOf("- name: Verify public and network APK backup files"),
+    ANDROID_WORKFLOW.indexOf("- name: Upload public APK for backup"),
+  );
+  assert.match(backupVerification, /inputs\.recipient_public_key == ''/);
+  assert.match(backupVerification, /node scripts\/verify-html5-apk-backup\.mjs/);
+  assert.ok(ANDROID_WORKFLOW.indexOf("- name: Verify public and network APK backup files") < ANDROID_WORKFLOW.indexOf("- name: Upload public APK for backup"));
+  assert.doesNotMatch(backupVerification, /private-debug\.apk/);
+  assert.match(README, /100,000,000-byte per-APK limit/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/public\/debug\/app-public-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/network\/debug\/app-network-debug\.apk/);
   assert.match(ANDROID_WORKFLOW, /app\/build\/outputs\/apk\/private\/debug\/app-private-debug\.apk/);

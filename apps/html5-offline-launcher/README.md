@@ -189,10 +189,12 @@ no packaged game/WebView/app behavior or graphics-success assertion is changed.
 Normal CI uploads the public and opt-in network APKs as separate 30-day
 artifacts: `html5-offline-launcher-public-debug-apk` and
 `html5-offline-launcher-network-debug-apk`. Each includes its APK and SHA-256
-sidecar; check the individual archive size before sending it through a service
-with a per-file transfer cap. This avoids combining both profiles in one 120 MB
-handoff archive. The network package retains all 96 approved public apps plus
-RadarScope and News Globe. The private APK is never published as plaintext.
+sidecar. Before either artifact is uploaded, CI verifies the sidecar against the
+APK bytes and enforces a **100,000,000-byte per-APK limit** for Dropbox-sized
+handoffs. This is a conservative source-file gate, not a claim about the size of
+a service-generated archive. Separate artifacts avoid combining both profiles
+in one 120 MB handoff. The network package retains all 96 approved public apps
+plus RadarScope and News Globe. The private APK is never published as plaintext.
 A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
 the three profiles separately. To back up **all three profiles**, manually
 dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:
