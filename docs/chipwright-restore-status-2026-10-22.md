@@ -26,3 +26,17 @@ overwrites and re-hashes every restored file.
 to Dropbox `/Html5-Backups/`. Then: temporary link → secret → requeue
 run → verify 25 files against the manifest → revoke the Drive link
 sharing, delete the secret, re-comment the tarball request line.
+
+**2026-10-29 update (round 56, connector audit):** the owner upload is done
+(file present 2026-10-23T19:12Z, size matches `requests.txt` exactly) and the
+standing shared link re-verified live via the connector (public, download
+allowed). `get_temporary_link` is `not_allowed`, a fresh replacement link is
+refused (`shared_link_already_exists`), and Actions-secret writes 403 for
+this integration — so the temporary-link/secret routes are closed. The
+runner still gets the Dropbox rate-limit page on the committed `scl` forms
+(re-confirmed by dispatching `arena-drive-sync` on the round branch, run
+45581818003, which committed nothing). The restore now rides a URL-form
+probe ([`arena-dropbox-probe.yml`](../.github/workflows/arena-dropbox-probe.yml),
+dispatched after the round-56 PR merges) that logs every form to
+`docs/drive-sync/dropbox-probe.log` and, on a size+SHA-verified fetch,
+performs the `drive-sync-apply` restore and commits it.

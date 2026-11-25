@@ -70,6 +70,32 @@ jobs:
           if [ $ok = 0 ]; then try_fetch usercontent-dl1 \
             "https://dl.dropboxusercontent.com/scl/fi/8bqpiz6qenx8z9c7dvjfn/Html5-worktree-2026-09-27-12c463f.tar.gz?${RLKEY}&dl=1" \
             "$UAB" && ok=1; fi
+          # Last resorts, same as the standing workflow: Drive anonymous
+          # endpoints (quota 404s expected) and gdown (its confirm-token flow).
+          if [ $ok = 0 ]; then
+            for tmpl in \
+              "https://drive.usercontent.google.com/download?id=1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV&export=download&confirm=t" \
+              "https://drive.google.com/uc?export=download&id=1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV&confirm=t"; do
+              try_fetch "drive-$(echo "$tmpl" | cut -d/ -f3)" "$tmpl" "$UAB" && ok=1 && break
+            done
+          fi
+          if [ $ok = 0 ]; then
+            echo "## gdown fallback" >> "$LOG"
+            pip install -q gdown || true
+            rm -f /tmp/p.bin.gdown.part
+            python3 -m gdown --quiet -O /tmp/p.bin.gdown.part \
+              "https://drive.google.com/uc?id=1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV" \
+              >> "$LOG" 2>&1 || echo "gdown rc=$?" >> "$LOG"
+            sz=$(stat -c%s /tmp/p.bin.gdown.part 2>/dev/null || echo 0)
+            echo "gdown size=$sz" >> "$LOG"
+            if [ "$sz" = "$WANT" ]; then
+              mv /tmp/p.bin.gdown.part /tmp/p.bin
+              echo "WINNER form=gdown sha256=$(sha256sum /tmp/p.bin | cut -d' ' -f1)" >> "$LOG"
+              echo "gdown" > /tmp/winner_form; echo gdown-only > /tmp/winner_url
+              ok=1
+            fi
+            rm -f /tmp/p.bin.gdown.part
+          fi
 
           if [ $ok = 0 ]; then
             echo "## share-page st extraction" >> "$LOG"
@@ -99,6 +125,58 @@ jobs:
             man=docs/drive-sync/Html5-file-manifest-2026-09-27-12c463f.sha256
             node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write \
               2>&1 | tee -a docs/drive-sync/restore-12c463f.log
+            # Persist the working fetch form for future drive-sync runs —
+            # unless it was the short-lived st signature, which must not be
+            # committed (it expires within hours).
+            if [ "$(cat /tmp/winner_form)" != "st-dl1" ]; then
+              node -e '
+                const fs = require("fs");
+                const p = ".arena-drive/url-overrides.json";
+                const o = JSON.parse(fs.readFileSync(p, "utf8"));
+                const url = fs.readFileSync("/tmp/winner_url", "utf8").trim();
+                o["1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV"] = url === "gdown-only" ? [] : [url];
+                fs.writeFileSync(p, JSON.stringify(o, null, 2) + "\n");
+                console.log("url-overrides updated with winning form");
+              ' >> "$LOG" 2>&1 || true
+              # Retire the tarball request line so future runs stop refetching.
+              sed -i 's|^1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV|# RESTORED 2026-10-29 (dropbox-probe): 1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV|' .arena-drive/requests.txt
+              # Update the audit ledger: the chipwright orphan is no longer
+              # Drive-only, and drive-sync-audit.mjs fails on a restored
+              # orphan until the ledger records the resolution.
+              if [ -f chipwright.html ]; then
+                node -e '
+                  const fs = require("fs");
+                  const p = "docs/drive-inventory-2026-10-04.json";
+                  const d = JSON.parse(fs.readFileSync(p, "utf8"));
+                  d.orphans = (d.orphans || []).filter((o) => o.name !== "chipwright hardware-triage workbench");
+                  d.artifacts = d.artifacts || [];
+                  if (!d.artifacts.some((a) => a.repo_path === "chipwright.html")) {
+                    d.artifacts.push({
+                      drive_id: "1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV",
+                      drive_name: "Html5-worktree-2026-09-27-12c463f.tar.gz (restored subset)",
+                      size: 33141885,
+                      repo_path: "chipwright.html",
+                      status: "restored-2026-10-29-via-drive-sync-apply",
+                      note: "all 25 workbench files re-hashed against docs/drive-sync/Html5-file-manifest-2026-09-27-12c463f.sha256; log: docs/drive-sync/restore-12c463f.log"
+                    });
+                  }
+                  fs.writeFileSync(p, JSON.stringify(d, null, 2) + "\n");
+                  console.log("ledger updated: chipwright moved orphan -> artifacts");
+                ' >> "$LOG" 2>&1 || true
+              fi
+            fi
+            {
+              echo "## resolution $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+              echo "winning form: $(cat /tmp/winner_form)"
+            } >> "$LOG"
+            {
+              echo
+              echo "**Resolved 2026-10-29 (dropbox-probe, CI):** the tarball was fetched"
+              echo "via the winning URL form recorded in"
+              echo "docs/drive-sync/dropbox-probe.log; drive-sync-apply restored the"
+              echo "missing files against the committed 12c463f manifest (re-hashed),"
+              echo "and the tarball request line was retired in requests.txt."
+            } >> docs/chipwright-restore-status-2026-10-22.md
           else
             echo "NO WINNER — see forms above" >> "$LOG"
           fi
