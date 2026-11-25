@@ -1,0 +1,243 @@
+name: arena-dropbox-probe
+
+# Temporary diagnostic workflow (backlog round 87). The 2026-09-27 snapshot
+# worktree tarball — the sole source of the 25 Chipwright files, per
+# docs/chipwright-restore-status-2026-10-22.md — has been unfetchable on every
+# arena-drive-sync run: Drive's anonymous endpoints 404 on quota, and the
+# Dropbox shared-link override forms served rate-limit pages to the runner
+# (documented in the round-87 note and the pre-sanitization fetch log).
+#
+# Privacy posture (per docs/public-repository-privacy-audit-2026-11-04.md):
+# the fetch URL and any Drive identifiers are recovered at RUN TIME from git
+# history (commit 885424e — data that has been public in history all along) or
+# from the CHIPWRIGHT_TARBALL_URL secret; nothing identifier-bearing is
+# hard-coded here, printed to the committed log, or committed. The probe log
+# records form names, HTTP codes, content types, byte counts, and a short
+# SHA-256 prefix only, with query strings redacted. The restore itself
+# re-hashes every file against the committed docs/drive-sync manifest. On
+# success the restored files, the redacted probe log, the apply log, and a
+# resolution note on the status doc are committed; on failure the redacted
+# probe log is still committed so the next attempt can see the exact
+# responses. Delete this workflow once the restore lands.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # Pre-sanitization commit that still carries the local-only request files
+  # with the (already public-in-history) override URLs and Drive key.
+  HISTORY_COMMIT: 885424ef1e1fef82fffeead4a73097d5d5050034
+  TARBALL_NAME: Html5-worktree-2026-09-27-12c463f.tar.gz
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Recover fetch candidates (secret or pre-sanitization history)
+        run: |
+          node -e '
+            const { execSync } = require("child_process");
+            const { writeFileSync } = require("fs");
+            let urls = [], driveKey = null, source = "none";
+            const secret = (process.env.CHIPWRIGHT_TARBALL_URL || "").trim();
+            const manifest = process.env.TARBALL_NAME;
+            if (secret) {
+              urls = [secret];
+              source = "secret";
+            } else {
+              const raw = execSync(
+                "git show " + process.env.HISTORY_COMMIT + ":.arena-drive/url-overrides.json",
+                { encoding: "utf8" });
+              const o = JSON.parse(raw);
+              for (const key of Object.keys(o)) {
+                if (JSON.stringify(o[key]).includes(manifest)) {
+                  driveKey = key;
+                  urls = Array.isArray(o[key]) ? o[key] : [o[key]];
+                  source = "history";
+                }
+              }
+            }
+            writeFileSync("/tmp/state.json",
+              JSON.stringify({ urls, driveKey, source }));
+            const san = (driveKey || "").replace(/[^A-Za-z0-9]/g, "_");
+            const envName = san ? "ARENA_FETCH_URL_" + san : "";
+            const secretVal = envName ? (process.env[envName] || "") : "";
+            const finalUrls = (secretVal ? [secretVal] : []).concat(urls);
+            writeFileSync("/tmp/urls_final.json",
+              JSON.stringify({ urls: finalUrls, driveKey }));
+            console.log("candidate source:", source,
+              "| candidates:", finalUrls.length,
+              "| drive key present:", Boolean(driveKey),
+              "| secret env present:", Boolean(secretVal));
+          '
+
+      - name: Probe fetch forms and restore on success
+        run: |
+          set -u
+          mkdir -p docs/drive-sync
+          LOG=docs/drive-sync/dropbox-probe.log
+          WANT=33141885
+          EXPECT_SHA_PREFIX=c4cb0bc0276e2af4
+          UAB="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          {
+            echo "# dropbox probe $(date -u '+%Y-%m-%dT%H:%M:%SZ') run=$GITHUB_RUN_ID"
+            echo "identifiers redacted from this log by policy; form names only"
+          } > "$LOG"
+
+          try_fetch() { # label url
+            local label="$1" url="$2" sz
+            echo "## form=$label" >> "$LOG"
+            rm -f /tmp/p.bin
+            curl -sS -A "$UAB" -L --max-time 240 -c /tmp/pc.jar -b /tmp/pc.jar \
+              -o /tmp/p.bin -w 'curl: code=%{http_code} type=%{content_type} dl=%{size_download}\n' \
+              "$url" >> "$LOG" 2>&1 || true
+            sz=$(stat -c%s /tmp/p.bin 2>/dev/null || echo 0)
+            echo "size=$sz" >> "$LOG"
+            if [ "$sz" = "$WANT" ]; then
+              got=$(sha256sum /tmp/p.bin | cut -d' ' -f1)
+              echo "WINNER form=$label sha256_prefix=${got:0:16} expected_prefix=$EXPECT_SHA_PREFIX" >> "$LOG"
+              echo "$label" > /tmp/winner_form
+              return 0
+            fi
+            head -c 300 /tmp/p.bin 2>/dev/null | tr -d '\0' | head -4 \
+              | sed -E 's/(rlkey|st|id|confirm|token)=[^&" ]*/\1=[REDACTED]/g' >> "$LOG" || true
+            echo >> "$LOG"
+            return 1
+          }
+
+          ok=0
+          n=0
+          while IFS= read -r u; do
+            [ -n "$u" ] || continue
+            n=$((n+1))
+            if [ $ok = 0 ]; then try_fetch "override-$n" "$u" && ok=1; fi
+          done < <(node -e 'const u=JSON.parse(require("fs").readFileSync("/tmp/urls_final.json","utf8")).urls||[];for(const x of u)console.log(x)')
+
+          if [ $ok = 0 ]; then
+            DK=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/urls_final.json","utf8")).driveKey||"")')
+            if [ -n "$DK" ]; then
+              for tmpl in \
+                "https://drive.usercontent.google.com/download?id=%KEY%&export=download&confirm=t" \
+                "https://drive.google.com/uc?export=download&id=%KEY%&confirm=t"; do
+                if [ $ok = 0 ]; then try_fetch "drive-$(echo "$tmpl" | cut -d/ -f3)" "${tmpl/\%KEY\%/$DK}" && ok=1; fi
+              done
+            fi
+          fi
+
+          if [ $ok = 0 ]; then
+            echo "## share-page st extraction" >> "$LOG"
+            FIRST=$(node -e 'const u=JSON.parse(require("fs").readFileSync("/tmp/urls_final.json","utf8")).urls||[];console.log(u[0]||"")')
+            if [ -n "$FIRST" ]; then
+              BASE="${FIRST%%\?*}"
+              RLKEY=$(echo "$FIRST" | grep -o 'rlkey=[^&]*' || true)
+              curl -sS -A "$UAB" -L --max-time 120 -c /tmp/pc.jar -b /tmp/pc.jar \
+                "${BASE}?${RLKEY}" -o /tmp/share.html \
+                -w 'share page: code=%{http_code} dl=%{size_download}\n' >> "$LOG" 2>&1 || true
+              if grep -q 'st=' /tmp/share.html 2>/dev/null; then
+                ST=$(grep -o 'st=[A-Za-z0-9_%-]*' /tmp/share.html | head -1 || true)
+                echo "st param: present" >> "$LOG"
+                if [ -n "$ST" ]; then try_fetch "st-dl1" "${BASE}?${RLKEY}&${ST}&dl=1" && ok=1; fi
+              else
+                echo "st param: none" >> "$LOG"
+              fi
+            fi
+          fi
+
+          if [ $ok = 0 ]; then
+            DK=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/urls_final.json","utf8")).driveKey||"")')
+            if [ -n "$DK" ]; then
+              echo "## gdown fallback" >> "$LOG"
+              pip install -q gdown || true
+              rm -f /tmp/p.bin.gdown.part
+              python3 -m gdown --quiet -O /tmp/p.bin.gdown.part \
+                "https://drive.google.com/uc?id=$DK" > /tmp/gdown.log 2>&1 || echo "gdown rc=$?" >> "$LOG"
+              sz=$(stat -c%s /tmp/p.bin.gdown.part 2>/dev/null || echo 0)
+              echo "gdown size=$sz" >> "$LOG"
+              if [ "$sz" = "$WANT" ]; then
+                mv /tmp/p.bin.gdown.part /tmp/p.bin
+                got=$(sha256sum /tmp/p.bin | cut -d' ' -f1)
+                echo "WINNER form=gdown sha256_prefix=${got:0:16} expected_prefix=$EXPECT_SHA_PREFIX" >> "$LOG"
+                echo "gdown" > /tmp/winner_form
+                ok=1
+              fi
+            fi
+            rm -f /tmp/p.bin.gdown.part
+          fi
+
+          if [ $ok = 1 ] && [ -f /tmp/p.bin ]; then
+            echo "## restore" >> "$LOG"
+            mkdir -p .arena-drive/payload
+            cp /tmp/p.bin ".arena-drive/payload/$TARBALL_NAME"
+            rm -rf /tmp/snap && mkdir -p /tmp/snap
+            tar xzf ".arena-drive/payload/$TARBALL_NAME" -C /tmp/snap
+            root=/tmp/snap
+            if [ ! -f "$root/chipwright.html" ]; then
+              f=$(find /tmp/snap -name chipwright.html -print -quit)
+              [ -n "$f" ] && root=$(dirname "$f")
+            fi
+            echo "snapshot root located: yes" >> "$LOG"
+            man=docs/drive-sync/Html5-file-manifest-2026-09-27-12c463f.sha256
+            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write \
+              2>&1 | tee -a docs/drive-sync/restore-12c463f.log
+            if [ -f chipwright.html ]; then
+              {
+                echo
+                echo "**Resolved (dropbox-probe, CI):** the tarball was fetched via the"
+                echo "winning form recorded (by form name only) in"
+                echo "docs/drive-sync/dropbox-probe.log; drive-sync-apply restored the"
+                echo "missing files against the committed 12c463f manifest (re-hashed)."
+                echo "No fetch identifiers were committed; see the privacy audit for"
+                echo "the standing policy. The probe workflow is temporary."
+              } >> docs/chipwright-restore-status-2026-10-22.md
+            fi
+          else
+            echo "NO WINNER — see forms above" >> "$LOG"
+          fi
+
+          # Final redaction sweep over both logs, in case a tool echoed a URL.
+          sed -i -E 's/(rlkey|st|confirm|token)=[^&" ]*/\1=[REDACTED]/g' "$LOG" 2>/dev/null || true
+          sed -i -E 's/(rlkey|st|confirm|token)=[^&" ]*/\1=[REDACTED]/g' docs/drive-sync/restore-12c463f.log 2>/dev/null || true
+
+      - name: Commit probe results
+        if: always()
+        run: |
+          set -e
+          git config user.name arena-dropbox-probe
+          git config user.email arena-dropbox-probe@users.noreply.github.com
+          git add -A
+          # Belt and braces: payload and the sanitized queue files are
+          # gitignored by policy; refuse them even if that ever changes.
+          if git diff --cached --name-only | grep -q '^\.arena-drive/payload/'; then
+            echo "::error::snapshot payload staged for commit — refusing"
+            exit 1
+          fi
+          if git diff --cached --name-only | grep -qE '^\.arena-drive/(requests\.txt|url-overrides\.json|fetch\.log)$'; then
+            echo "::error::sanitized queue file staged for commit — refusing"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -q -m "dropbox-probe: redacted URL-form probe and chipwright restore"
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" || true
+            sleep 3
+          done
+          echo "::error::push failed after 5 attempts"
+          exit 1

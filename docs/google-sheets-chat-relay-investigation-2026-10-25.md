@@ -9,3 +9,15 @@ The user selected authorized local CSV/JSON exports. No organizer API request or
 ## Safe continuation
 
 If this work is reopened, use a user-supplied, authorized local export. Keep the export and any real contact data out of Git, tests, backups, and public bundles. Validate only synthetic fixtures in the repository.
+
+## Follow-up status (public-safe)
+
+The user corrected the prior register: they did **not** verify or open the
+index-22 transcription candidate. That candidate is unconfirmed. Follow-up
+Drive/Sheets checks and alternate anonymous routes produced only API errors,
+not-found responses, or generic fetch failures; none established a real file
+or its identity. The remaining anomalous batches have not been isolated to
+confirmed files. Treat ID 3 as unresolved; do not infer existence from HTTP
+400/500 responses. Keep source-derived identifiers, links, OCR text, and the
+source image out of this public repository. Revalidation needs an authorized
+owner/source confirmation or positive metadata from an authorized account.
