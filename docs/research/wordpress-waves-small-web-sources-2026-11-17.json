@@ -107,6 +107,56 @@
       "lines": 108,
       "repo": "gophernicus/gophernicus",
       "classification": "tagged-3.1.1-documentation-only-readme-still-says-DEVEL"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "path": "gulpfile.ts",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/8fcc0ae67e6b7814196061ed9d7768888793cb6f/gulpfile.ts",
+      "bytes": 11321,
+      "lines": 325,
+      "sha256": "72435f96f67a699668b8769af931d5262c5e6ec15bbcf3dba592ed4d2382b464",
+      "classification": "historical-client-build-source-not-executed"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "path": "package.json",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/8fcc0ae67e6b7814196061ed9d7768888793cb6f/package.json",
+      "bytes": 3889,
+      "lines": 109,
+      "sha256": "6ae8d2a841408aeea178a4513b4ad2b38a00d1423a970e83a5116bc06a6ad035",
+      "classification": "historical-client-build-source-not-executed"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "8fcc0ae67e6b7814196061ed9d7768888793cb6f",
+      "path": "ts-scripts/utils.ts",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/8fcc0ae67e6b7814196061ed9d7768888793cb6f/ts-scripts/utils.ts",
+      "bytes": 14930,
+      "lines": 439,
+      "sha256": "1a8ef43d5a2ff21042ee57f46fce2594a6018f0c61540b6c826d507f33b92316",
+      "classification": "historical-client-build-source-not-executed"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "932364f6050f547e86631c9595dfff0ee7f55edb",
+      "path": "Gruntfile.js",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/932364f6050f547e86631c9595dfff0ee7f55edb/Gruntfile.js",
+      "bytes": 28663,
+      "lines": 650,
+      "sha256": "d9ead3953a397f86635051227d359f41a894f62ed954867d1ff104aacb47ec7f",
+      "classification": "historical-client-build-source-not-executed"
+    },
+    {
+      "repo": "wavesplatform/WavesGUI",
+      "commit": "932364f6050f547e86631c9595dfff0ee7f55edb",
+      "path": "README.md",
+      "url": "https://github.com/wavesplatform/WavesGUI/blob/932364f6050f547e86631c9595dfff0ee7f55edb/README.md",
+      "bytes": 4910,
+      "lines": 96,
+      "sha256": "c475abffd22fae66deb76f4d4c98ffabb176dec1482107b6ffb9ee8d3f0bb997",
+      "classification": "historical-client-build-source-not-executed"
     }
   ],
   "webObservations": [
@@ -249,6 +299,16 @@
       "id": "waves-release",
       "url": "https://github.com/wavesplatform/WavesGUI/releases/tag/v0.5.18",
       "findingAndLimit": "Release metadata and pinned source tree inspected. ZIP assets not downloaded or executed; source tree is not a release-archive inventory."
+    },
+    {
+      "id": "waves-secondary-html-download",
+      "url": "https://coinbureau.com/review/waves-platform-decentralised-asset-exchange",
+      "findingAndLimit": "Historical secondary review explicitly describes an HTML download; corroborates a local frontend, not exact .hts identity, a reproduced saved artifact or offline trading."
+    },
+    {
+      "id": "waves-fork-local-use",
+      "url": "https://username1565.github.io/waves-lite-client/",
+      "findingAndLimit": "Modified 0.5.18a fork page advertises local client-side use and release ZIPs. Page text inspected only; no archived wallet execution or safety endorsement."
     }
   ],
   "wavesTreeChecks": [
@@ -289,6 +349,14 @@
     "atCommit": "98c6de833ca4761e86dab8b0ecfdadee7e1b9497",
     "command": "git log --all --format='%H' -- '*.hts' '*.hta'",
     "matchingCommits": 0,
-    "limit": "Reachable local history at inspection only; absence does not identify or rule out a differently named or externally distributed artifact."
+    "limit": "Reachable local filename history only; a user-renamed saved HTML page need not be named .hts upstream, so absence neither tests nor refutes that workflow."
+  },
+  "savedPageWorkflow": {
+    "userClarification": "Save the Waves Exchange page, rename it .hts, then serve it standalone. The extension need not exist in upstream filenames.",
+    "historicalIdentity": "unresolved-no-owner-artifact-supplied",
+    "primaryLocalUseEvidence": "Pinned old-client README instructs extracting a release ZIP and opening index.html; separately describes public-node reads and transaction broadcasts.",
+    "buildEvidence": "Pinned Grunt and Gulp utilities insert separate JS/CSS resources. A raw source template is not a self-contained release.",
+    "syntheticControl": "tests/waves-practice-browser.mjs copies the current single-file workbench to .hts with identical SHA-256, explicitly serves text/html with nosniff, blocks companion/external requests and exercises paper trading. This is not reproduction of the old Waves file.",
+    "preservationBoundary": "No old wallet code, owner seed or owner browser storage was opened. Originals/assets must be preserved; an origin/path change is not a backup or migration."
   }
 }

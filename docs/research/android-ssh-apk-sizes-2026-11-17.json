@@ -1,0 +1,320 @@
+{
+  "schema": "html5-android-ssh-apk-sizes-v1",
+  "checkedOn": "2026-11-17",
+  "selection": "Named, version-pinned stable-artifact samples, not an exhaustive market survey or a latest-version guarantee. Prerelease/dev builds are not silently substituted.",
+  "scope": {
+    "metadataOnly": true,
+    "apksDownloaded": false,
+    "apksInstalled": false,
+    "apksExecuted": false,
+    "installedFootprintMeasured": false,
+    "signaturesIndependentlyVerified": false
+  },
+  "units": {
+    "bytesPerMiB": 1048576,
+    "bytesPerMB": 1000000,
+    "ranking": "Exact single APKs are sorted by reported downloadBytes; rounded and ambiguous-unit observations are separate."
+  },
+  "exactApks": [
+    {
+      "id": "anotherterm-redist-versioned",
+      "app": "AnotherTerm",
+      "version": "MkIIIv87_release",
+      "flavor": "redist / versioned",
+      "container": "single-apk",
+      "sourceKind": "publisher-release-api",
+      "sourceUrl": "https://github.com/green-green-avk/AnotherTerm/releases/tag/MkIIIv87_release",
+      "releaseApiUrl": "https://api.github.com/repos/green-green-avk/AnotherTerm/releases/157695314",
+      "releaseId": 157695314,
+      "publishedAt": "2024-05-27T23:01:14Z",
+      "releasePrereleaseFlag": false,
+      "assetId": 170414894,
+      "filename": "app-redist-versioned-release.apk",
+      "downloadUrl": "https://github.com/green-green-avk/AnotherTerm/releases/download/MkIIIv87_release/app-redist-versioned-release.apk",
+      "downloadBytes": 2524940,
+      "downloadMiB": 2.408,
+      "advertisedDigest": null,
+      "digestIndependentlyVerified": false,
+      "sourceCommit": "f8849d85be1359ae17623cc6be4a54cdb73d657f",
+      "sourceDeclaredMinSdk": 14,
+      "sourceDeclaredAbis": null,
+      "apkManifestInspected": false,
+      "caveats": [
+        "2024 release; size is not evidence of current security maintenance.",
+        "Prefer explicit versioned identity over a fixed-version-code downgradable flavor.",
+        "The oldgood compatibility flavor is not recommended upstream for Android newer than 12."
+      ]
+    },
+    {
+      "id": "connectbot-google",
+      "app": "ConnectBot",
+      "version": "v1.11.1",
+      "flavor": "google",
+      "container": "single-apk",
+      "sourceKind": "publisher-release-api",
+      "sourceUrl": "https://github.com/connectbot/connectbot/releases/tag/v1.11.1",
+      "releaseApiUrl": "https://api.github.com/repos/connectbot/connectbot/releases/411438458",
+      "releaseId": 411438458,
+      "publishedAt": "2026-10-13T08:10:53Z",
+      "releasePrereleaseFlag": false,
+      "assetId": 636351134,
+      "filename": "ConnectBot-v1.11.1-google.apk",
+      "downloadUrl": "https://github.com/connectbot/connectbot/releases/download/v1.11.1/ConnectBot-v1.11.1-google.apk",
+      "downloadBytes": 6943704,
+      "downloadMiB": 6.622,
+      "advertisedDigest": "sha256:6780c156c450916cf7cbece7fa2a8a18054d02871ff1f288b100e3e67b093d6e",
+      "digestIndependentlyVerified": false,
+      "sourceCommit": "500982cdc99e469d5591b5d2e1dc5ba798289a76",
+      "sourceDeclaredMinSdk": 24,
+      "sourceDeclaredAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "apkManifestInspected": false,
+      "caveats": [
+        "Uses Google Play Services to update its cryptography provider; the APK is not the whole dependency footprint.",
+        "Play signing-key rotation may prevent later GitHub APK upgrades over a Play-upgraded installation."
+      ]
+    },
+    {
+      "id": "connectbot-oss",
+      "app": "ConnectBot",
+      "version": "v1.11.1",
+      "flavor": "oss",
+      "container": "single-apk",
+      "sourceKind": "publisher-release-api",
+      "sourceUrl": "https://github.com/connectbot/connectbot/releases/tag/v1.11.1",
+      "releaseApiUrl": "https://api.github.com/repos/connectbot/connectbot/releases/411438458",
+      "releaseId": 411438458,
+      "publishedAt": "2026-10-13T08:10:53Z",
+      "releasePrereleaseFlag": false,
+      "assetId": 636351011,
+      "filename": "ConnectBot-v1.11.1-oss.apk",
+      "downloadUrl": "https://github.com/connectbot/connectbot/releases/download/v1.11.1/ConnectBot-v1.11.1-oss.apk",
+      "downloadBytes": 13092258,
+      "downloadMiB": 12.486,
+      "advertisedDigest": "sha256:9e07972f3b03bc572a14845055c6e8048bcca19c8c40bf5e74b90effd9c1da55",
+      "digestIndependentlyVerified": false,
+      "sourceCommit": "500982cdc99e469d5591b5d2e1dc5ba798289a76",
+      "sourceDeclaredMinSdk": 24,
+      "sourceDeclaredAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "apkManifestInspected": false,
+      "caveats": [
+        "Bundles the cryptography provider; do not substitute a differently signed F-Droid build or an AAB size."
+      ]
+    },
+    {
+      "id": "shellwave-foss",
+      "app": "Shellwave",
+      "version": "1.11.0",
+      "flavor": "foss",
+      "container": "single-apk",
+      "sourceKind": "publisher-release-api",
+      "sourceUrl": "https://github.com/LordOfPolls/Shellwave/releases/tag/1.11.0",
+      "releaseApiUrl": "https://api.github.com/repos/LordOfPolls/Shellwave/releases/446101514",
+      "releaseId": 446101514,
+      "publishedAt": "2026-11-15T14:01:36Z",
+      "releasePrereleaseFlag": false,
+      "assetId": 751182974,
+      "filename": "shellwave-1.11.0-foss.apk",
+      "downloadUrl": "https://github.com/LordOfPolls/Shellwave/releases/download/1.11.0/shellwave-1.11.0-foss.apk",
+      "downloadBytes": 15797669,
+      "downloadMiB": 15.066,
+      "advertisedDigest": "sha256:112eabb23de35514ef75814b625c8c82d2b8e4170637587f8bb50cfb6a9733fe",
+      "digestIndependentlyVerified": false,
+      "sourceCommit": "1e3f0456e95960dc9d18226646f1e9be35d036b6",
+      "sourceDeclaredMinSdk": 31,
+      "sourceDeclaredAbis": null,
+      "apkManifestInspected": false,
+      "caveats": [
+        "Modern Android minimum is source-declared, not a device-install result.",
+        "ABI contents were not independently inspected in the APK."
+      ]
+    },
+    {
+      "id": "juicessh-3.2.2",
+      "app": "JuiceSSH",
+      "version": "3.2.2",
+      "versionCode": 200,
+      "container": "single-apk",
+      "sourceKind": "third-party-artifact-page",
+      "sourceUrl": "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/juicessh-ssh-client-3-2-2-release/juicessh-ssh-client-3-2-2-android-apk-download/",
+      "listedUploadedAt": "2021-02-06T02:49:00Z",
+      "downloadBytes": 24805394,
+      "downloadMiB": 23.656,
+      "sourcePrintedSize": "23.66 MB (24,805,394 bytes)",
+      "listedMinSdk": 26,
+      "listedTargetSdk": 29,
+      "listedAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "apkManifestInspected": false,
+      "signatureIndependentlyVerified": false,
+      "caveats": [
+        "Old 2021 artifact; no claim that all current storefronts have this version.",
+        "Mirror safety badges are not an independent audit.",
+        "Use explicit bytes, not the mirror binary-valued MB label, for comparison."
+      ]
+    }
+  ],
+  "roundedOrLegacyObservations": [
+    {
+      "id": "vx-connectbot",
+      "app": "VX ConnectBot",
+      "version": "1.7.1-30-git",
+      "container": "single-apk-listed",
+      "sourceKind": "third-party-page-extraction",
+      "sourceUrl": "https://vx-connectbot.en.uptodown.com/android/download",
+      "sourcePrintedSize": "748.54 KB",
+      "downloadBytes": null,
+      "listedAbis": [
+        "armeabi",
+        "x86"
+      ],
+      "listedDate": "2026-05-18",
+      "advertisedSha256": "682eb0cf99a966a826023acfe2c4ef7d7431a7dbb2efe6a9411042f2373967a9",
+      "caveats": [
+        "KB base is not established; no exact byte count claimed.",
+        "Mirror date is not evidence of recent upstream maintenance.",
+        "No modern 64-bit-only Android compatibility or signature verification was performed.",
+        "Mirror license labeling is inconsistent with the historical open-source fork; not accepted as authoritative licensing evidence."
+      ]
+    },
+    {
+      "id": "termbot",
+      "app": "TermBot",
+      "version": "1.9.6-termbot3",
+      "versionCode": 10905217,
+      "container": "single-apk-listed",
+      "sourceKind": "search-extracted-distributor-page-direct-fetch-unavailable",
+      "sourceUrl": "https://f-droid.org/packages/org.sufficientlysecure.termbot/",
+      "sourcePrintedSize": "7.9 MiB",
+      "downloadBytes": null,
+      "listedAddedOn": "2021-04-14",
+      "listedMinSdk": 14,
+      "listedAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "sourceRepository": "https://github.com/hwsecurity-sdk/termbot",
+      "caveats": [
+        "Size is a rounded search observation, not a fetched APK or a successful direct-page retrieval.",
+        "Upstream repository was archived on 2025-08-25; hardware-token support is a lead, not current-device certification."
+      ]
+    },
+    {
+      "id": "termux-fdroid-stable",
+      "app": "Termux",
+      "version": "0.118.3",
+      "versionCode": 1002,
+      "container": "single-apk-listed",
+      "sourceKind": "distributor-page-extraction",
+      "sourceUrl": "https://f-droid.org/packages/com.termux/",
+      "sourcePrintedSize": "108 MiB",
+      "downloadBytes": null,
+      "listedAddedOn": "2025-05-29",
+      "listedMinSdk": 24,
+      "listedAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "caveats": [
+        "F-Droid suggested stable artifact, not beta 0.119.0-beta.3 or an ABI-specific GitHub build.",
+        "A terminal environment plus OpenSSH is not comparable to a ready-to-use tiny SSH APK.",
+        "Installed bootstrap, OpenSSH, dependencies, updates, data and cache require additional storage; not measured."
+      ]
+    }
+  ],
+  "bundlesExcludedFromApkRanking": [
+    {
+      "app": "Termius",
+      "version": "8.0.1",
+      "versionCode": 1008,
+      "sourceKind": "third-party-artifact-page",
+      "sourceUrl": "https://www.apkmirror.com/apk/termius-corporation/termius-ssh-telnet-client/termius-modern-ssh-client-8-0-1-release/termius-modern-ssh-client-8-0-1-android-apk-download/",
+      "container": "base-apk-plus-11-splits-bundle",
+      "reportedArchiveBytes": 46507753,
+      "reportedArchiveMiB": 44.353,
+      "sourcePrintedSize": "44.35 MB (46,507,753 bytes)",
+      "listedUploadedOn": "2026-11-05",
+      "listedMinSdk": 26,
+      "listedAbis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "caveats": [
+        "The artifact body explicitly says Download APK Bundle, Base APK and 11 splits.",
+        "The release-index size differs (54.22 MB), reinforcing the need to pin the exact artifact page.",
+        "Neither archive bytes nor an aggregate split listing proves device-specific download or installed footprint.",
+        "Official Android download page points to Google Play; no installation or account/cloud-vault approval was made."
+      ]
+    }
+  ],
+  "immutableSourceFiles": [
+    {
+      "repo": "connectbot/connectbot",
+      "commit": "500982cdc99e469d5591b5d2e1dc5ba798289a76",
+      "path": "README.md",
+      "url": "https://github.com/connectbot/connectbot/blob/500982cdc99e469d5591b5d2e1dc5ba798289a76/README.md",
+      "bytes": 2902,
+      "sha256": "b295577fe9bb3041eacc8a1cd6bf8f40a319f8401a51f98b207b09536d6ee9b9"
+    },
+    {
+      "repo": "green-green-avk/AnotherTerm",
+      "commit": "f8849d85be1359ae17623cc6be4a54cdb73d657f",
+      "path": "README.md",
+      "url": "https://github.com/green-green-avk/AnotherTerm/blob/f8849d85be1359ae17623cc6be4a54cdb73d657f/README.md",
+      "bytes": 3617,
+      "sha256": "654841482b62a212ad43c9a52e6b508bae1b2345cccaf5cbe4a88babafad19b1"
+    },
+    {
+      "repo": "connectbot/connectbot",
+      "commit": "500982cdc99e469d5591b5d2e1dc5ba798289a76",
+      "path": "app/build.gradle.kts",
+      "url": "https://github.com/connectbot/connectbot/blob/500982cdc99e469d5591b5d2e1dc5ba798289a76/app/build.gradle.kts",
+      "bytes": 21693,
+      "sha256": "40f093fe8388eddec137509e8a69847c831fbf2bb59a5df1a06280506d255fe3"
+    },
+    {
+      "repo": "green-green-avk/AnotherTerm",
+      "commit": "f8849d85be1359ae17623cc6be4a54cdb73d657f",
+      "path": "app/build.gradle",
+      "url": "https://github.com/green-green-avk/AnotherTerm/blob/f8849d85be1359ae17623cc6be4a54cdb73d657f/app/build.gradle",
+      "bytes": 8267,
+      "sha256": "7b5368dd96baafceacd2e4ab62ecaa073c4ec5eecb5b6aa4d38e2ec2f1736786"
+    },
+    {
+      "repo": "LordOfPolls/Shellwave",
+      "commit": "1e3f0456e95960dc9d18226646f1e9be35d036b6",
+      "path": "app/build.gradle.kts",
+      "url": "https://github.com/LordOfPolls/Shellwave/blob/1e3f0456e95960dc9d18226646f1e9be35d036b6/app/build.gradle.kts",
+      "bytes": 10295,
+      "sha256": "132191046692c450e9450021de1b12028f9267b1ad6fd3d16d3e2483a54f0464"
+    },
+    {
+      "repo": "connectbot/connectbot",
+      "commit": "500982cdc99e469d5591b5d2e1dc5ba798289a76",
+      "path": "gradle/libs.versions.toml",
+      "url": "https://github.com/connectbot/connectbot/blob/500982cdc99e469d5591b5d2e1dc5ba798289a76/gradle/libs.versions.toml",
+      "bytes": 7797,
+      "sha256": "f31c170a32294f8ca807a48a5de4551f5672bec108b1a3bc857e6cf6631e7a42"
+    }
+  ],
+  "pageEvidenceLimit": "Page/search extractions are observations; raw page byte digests, downloaded APK hashes, manifest inspection, signing-certificate checks and physical-device results are not claimed."
+}

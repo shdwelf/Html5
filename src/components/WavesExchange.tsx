@@ -160,7 +160,7 @@ export default function WavesExchange() {
         </section>
       </div>
       <footer className="text-sm leading-6 text-zinc-400">
-        This educational screen is not the historical Waves Lite Client. The reported <code>.hts</code> file has not been identified.
+        This educational screen is not the historical Waves Lite Client. The remembered saved-and-renamed <code>.hts</code> page has not been identified.
         {" "}<a href="https://github.com/wavesplatform/WavesGUI/releases/tag/v0.5.18" target="_blank" rel="noopener noreferrer"
           className={`text-cyan-300 underline underline-offset-4 ${focus}`}>Historical upstream release (external)</a>.
         Archived wallet software is not recommended for real keys or funds.

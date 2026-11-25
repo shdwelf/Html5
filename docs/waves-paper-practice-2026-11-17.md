@@ -88,14 +88,22 @@ new review/operational notes were automatically eligible for the public Wiki
 bundle. They and the two provenance manifests are now explicitly excluded by
 `tools/wikiinajar/public-corpus-policy.mjs`, preserving the editorial boundary
 instead of disabling the corpus assertions or publishing the review material.
-The affected Wiki/workspace/Webxdc checks then passed **54/54**. Applicable
-exact-head CI, including the independent-native lane selected by that policy
-change, remains mandatory; earlier Android/native receipts are not substitutes.
+The affected Wiki/workspace/Webxdc checks then passed **54/54**. The complete
+local rerun at `c76a1051…` subsequently passed **38 Vitest files / 338 tests**
+and **1,307 Node tests: 1,288 passed, 0 failed, 19 environment/opt-in skips**.
+The later SSH comparison/provenance is likewise excluded from public offline
+manuals. Applicable final-head CI, including the independent-native lane
+selected by that policy change, remains mandatory; the earlier rerun or older
+Android/native receipts are not substitutes for changes made afterwards.
 
 ## Historical `.hts` investigation — unresolved
 
-The supplied recollection remains **`.hts`**. No artifact/file/link was supplied,
-and `.html` or `.hta` is not silently substituted as an identification.
+The user clarified that **`.hts` was a filename they gave the saved Waves
+Exchange page**, which then served standalone. It is not necessarily an
+upstream-distributed extension. This corrects the earlier filename-oriented
+lead: absence of `.hts` paths in source history cannot test or refute a
+save-and-rename workflow. No saved artifact/file/link was supplied; the specific
+historical page and browser/server combination remain unidentified.
 
 Public evidence inspected without executing old code:
 
@@ -120,6 +128,50 @@ never existed. Identification still needs a filename, file, hash, capture or
 other positive artifact match. Archived wallet software is not recommended
 for real keys/funds, and an exchange-branded page is not a safety endorsement.
 
+### Save-and-rename investigation
+
+The pinned [`old-client` README](https://github.com/wavesplatform/WavesGUI/blob/932364f6050f547e86631c9595dfff0ee7f55edb/README.md)
+provides stronger primary evidence for local use: download the release ZIP,
+extract it and open `index.html` in a browser. It also explicitly describes
+reading public nodes and broadcasting locally signed transactions. These are
+historical instructions/claims, **not modern security guidance**. Local UI
+availability did not mean network-independent trading.
+
+A [secondary historical review](https://coinbureau.com/review/waves-platform-decentralised-asset-exchange)
+explicitly describes the lite wallet as downloadable HTML. The
+[inspected fork page](https://username1565.github.io/waves-lite-client/)
+also advertises local client-side use. These support the local-page lead, not
+identification of the particular saved file or `.hts` handler. No legacy wallet
+page was executed.
+
+At the pinned v0.5.18 revision, `gulpfile.ts` constructs separate JS/CSS outputs;
+`ts-scripts/utils.ts` lines 120–129 insert `<script src>` and stylesheet links.
+The older branch's `Gruntfile.js` lines 17–23 similarly inserts companion JS/CSS,
+and lines 89–112 configure remote node/matcher/datafeed services. These source
+build recipes are multi-file; a later, different or browser-bundled saved copy
+could differ. The HTML source template alone is not a standalone distribution.
+
+Renaming alone does not inline resources, start an HTTP server, choose its MIME
+type or reproduce a live matcher/blockchain backend. A locally served interface
+can still use network services. **“Standalone page” and “fully offline exchange”
+are different claims.** A browser's complete-page save may require its companion
+directory; an appearance-only snapshot may not preserve interactivity.
+
+The browser acceptance now includes a **synthetic current-build comparison**:
+copy the single-file maintained workbench to `saved-market.hts`, require
+identical SHA-256 before/after, explicitly serve it as `text/html` with
+`nosniff`, and exercise paper practice while blocking all companion/external
+requests. **All four browser cases passed locally**, including the existing
+1440/390/320 layouts. This demonstrates filename-independent HTML under that
+server/browser configuration, **not** recovery or execution of the historical
+Waves page, generic `.hts` handling on every server or a real offline exchange.
+
+Preserve any original saved page and its companion assets before investigating
+a copy. Different origins/ports and browser-specific `file:` storage behavior
+can change which stored records are visible; renaming/moving a page is not a
+key backup or account migration. No existing owner storage was opened or
+modified in this investigation. Never put real seeds into an archived copy.
+
 ## Reproduce applicable checks
 
 ```sh
@@ -137,8 +189,9 @@ build; absence is a failure, not a silent success. It tests desktop **1440 px**,
 mobile **390 px** and narrow **320 px** rendering, keyboard start/skip-link,
 valid/invalid orders, virtual balance arithmetic, reset/end/navigation/reload,
 legacy-record preservation, no storage calls during practice, no external
-requests, no uncaught page errors and no horizontal overflow. Synthetic public
-sentinels are the only stored fixture. Screenshots can optionally go to an
+requests, no uncaught page errors and no horizontal overflow. A fourth case
+checks the byte-identical `.hts`/HTML serving comparison described above.
+Synthetic public sentinels are the only stored fixture. Screenshots can optionally go to an
 ignored local directory with `WAVES_SCREENSHOT_DIR`.
 
 `.github/workflows/waves-practice.yml` requires strict typecheck, the **whole**

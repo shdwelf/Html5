@@ -3,7 +3,10 @@
  * Only a local static fixture server is used; all external requests are blocked.
  */
 import assert from "node:assert/strict";
-import { mkdir } from "node:fs/promises";
+import { mkdir, mkdtemp, copyFile, readFile, rm } from "node:fs/promises";
+import { createServer } from "node:http";
+import { createHash } from "node:crypto";
+import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { test } from "node:test";
 import { browserDeps, serve, withBrowser, ROOT } from "./lib-browser.mjs";
@@ -135,6 +138,60 @@ try {
         } finally { await page.close(); }
       });
     }
+
+    await test("a byte-identical saved .hts copy runs paper practice when explicitly served as HTML, without external assets", { timeout: 60_000 }, async () => {
+      // A current, synthetic comparison only: never execute an archived wallet,
+      // import a key or claim to have recovered the user's historical page.
+      const dir = await mkdtemp(join(tmpdir(), "waves-saved-page-"));
+      let fixture, page;
+      try {
+        const source = join(ROOT, "dist", "bip39-haiku-workbench.html");
+        const saved = join(dir, "saved-market.hts");
+        await copyFile(source, saved);
+        const originalBytes = await readFile(source), savedBytes = await readFile(saved);
+        const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
+        assert.equal(digest(savedBytes), digest(originalBytes), "renaming changes no HTML bytes");
+        fixture = createServer((request, response) => {
+          if (request.url === "/saved-market.hts") {
+            response.writeHead(200, { "content-type": "text/html; charset=utf-8", "x-content-type-options": "nosniff" });
+            response.end(savedBytes);
+          } else if (request.url === "/favicon.ico") response.writeHead(204).end();
+          else response.writeHead(404).end();
+        });
+        await new Promise((done, reject) => { fixture.once("error", reject); fixture.listen(0, "127.0.0.1", done); });
+        const origin = `http://127.0.0.1:${fixture.address().port}`;
+        page = await browser.newPage();
+        await page.setViewport({ width: 1440, height: 1000 });
+        const unexpected = [], errors = [];
+        page.on("pageerror", (error) => errors.push(error.name));
+        await page.setRequestInterception(true);
+        page.on("request", (request) => {
+          const url = request.url();
+          if (/^https?:/.test(url) && ![`${origin}/saved-market.hts`, `${origin}/favicon.ico`].includes(url.split("#")[0])) {
+            unexpected.push(url); void request.abort();
+          } else void request.continue();
+        });
+        const response = await page.goto(`${origin}/saved-market.hts#codebase=suite`, { waitUntil: "networkidle0", timeout: 30_000 });
+        assert.equal(response.status(), 200);
+        assert.match(response.headers()["content-type"], /^text\/html\b/);
+        assert.equal(digest(await response.buffer()), digest(originalBytes));
+        assert.equal(new URL(page.url()).pathname, "/saved-market.hts");
+        async function click(name) {
+          const handle = await page.evaluateHandle((wanted) => [...document.querySelectorAll("button")].find((node) => node.textContent.trim().endsWith(wanted)), name);
+          assert.ok(handle.asElement(), `Saved-page button exists: ${name}`);
+          await handle.asElement().click(); await handle.dispose();
+        }
+        await click("Waves practice"); await page.waitForSelector("#waves-practice-title");
+        await click("Start paper portfolio"); await click("Simulate buy WAVES");
+        assert.equal(await page.$eval('[data-testid="paper-balance-CREDITS"]', (node) => node.textContent.trim()), "4990");
+        assert.deepEqual(unexpected, [], "the renamed synthetic UI needs no companion assets or exchange service");
+        assert.deepEqual(errors, []);
+      } finally {
+        if (page) await page.close();
+        if (fixture?.listening) await new Promise((done, reject) => fixture.close((error) => error ? reject(error) : done()));
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
   });
 } finally {
   await new Promise((done, reject) => server.close((error) => error ? reject(error) : done()));

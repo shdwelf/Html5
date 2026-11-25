@@ -204,10 +204,18 @@ Gopher account was established.
 
 The [source manifest](research/wordpress-waves-small-web-sources-2026-11-17.json)
 retains exact public URLs, archive capture times, three Waves tree checks and
-ten immutable source-file SHA-256/size records. Page extractions are identified
-as observations, not misrepresented as archived raw-byte hashes. The separate
-[Waves implementation note](waves-paper-practice-2026-11-17.md) retains the
-unresolved `.hts` extension and the paper-only UX boundary.
+fifteen immutable source-file SHA-256/size records, including the older local-use
+README and both historical build recipes. Page extractions are observations,
+not misrepresented as archived raw-byte hashes. The separate
+[Waves implementation note](waves-paper-practice-2026-11-17.md) investigates the
+clarified **save-page, rename `.hts`, serve locally** recollection. A synthetic
+current-page serving control passed; the particular old saved page is still
+unidentified, and a local frontend does not imply offline trading.
+
+The [Android SSH comparison](android-ssh-apk-size-comparison-2026-11-17.md)
+extends the shell-client research with size-sorted, version-pinned downloads,
+separate exact/rounded evidence and maintenance, flavor, ABI and split-bundle
+caveats. It does not create a shell account, install an APK or certify a device.
 
 Open decisions are hosting/maintenance access, approved wiki subset/destination,
 a proven save/restore design and any future public publication. Draft permission
