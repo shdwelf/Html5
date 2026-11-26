@@ -224,6 +224,17 @@ dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:
   decryption client. If the full original has unsupported public subkeys, first
   create the checked reduced PUBLIC export in Workbench; keep the original.
 
+The first step now emits an **`Android-recipient-inputs`** error explaining the
+specific missing/mismatched field, rather than an unexplained shell exit 1.
+For an ordinary build, leave **both recipient fields empty** and Drive upload
+off. For a 64-hex v6 fingerprint, explicitly select **`modern-v6`**; the default
+remains `classic-v4`. Do not shorten, pad or alter a fingerprint to make a run
+pass. This early guard checks input routing/armor shape only: the encryption
+script still must parse exactly one supported certificate, verify its full
+identity and usable encryption subkey, and check the ciphertext before export.
+Invalid recipient inputs fail closed; private plaintext is never a fallback.
+No private key, passphrase or account token should be supplied to Actions/chat.
+
 This dispatch uploads **only encrypted APKs** and UID-free checksums/receipts in
 `html5-offline-launcher-encrypted-debug-apks` (seven days). The locked Node 22 /
 OpenPGP.js 6.3.3 release script works without a native `gpg` install. It validates

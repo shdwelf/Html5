@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+import { validateRecipientInputs } from "../scripts/validate-html5-recipient-inputs.mjs";
 
 test("Drive ciphertext transport checks chunk state, exact release/recipient/digests, HTTPS sessions and rejects redirects without live network access", () => {
   const result = spawnSync("python3", [fileURLToPath(new URL("./drive-backup-upload.py", import.meta.url))], { encoding: "utf8", timeout: 15000 });
@@ -32,7 +33,12 @@ test("manual Actions encryption keeps all three builds and exposes an explicit v
   assert.match(workflow, /40-hex v4 or 64-hex v6/);
   assert.match(workflow, /for profile in public network private/);
   assert.match(workflow, /--profile "\$RECIPIENT_PROFILE"/);
-  assert.match(workflow, /classic-v4\) \[\[ \$\{#RECIPIENT_FINGERPRINT\} == 40 \]\]/);
-  assert.match(workflow, /modern-v6\) \[\[ \$\{#RECIPIENT_FINGERPRINT\} == 64 \]\]/);
+  assert.match(workflow, /run: node scripts\/validate-html5-recipient-inputs\.mjs/);
+  // Verify the extracted routing guard's behavior, not the old inline Bash spelling.
+  const key = "-----BEGIN PGP PUBLIC KEY BLOCK-----\nsynthetic routing only\n-----END PGP PUBLIC KEY BLOCK-----";
+  for (const [profile, length] of [["classic-v4", 40], ["modern-v6", 64]]) {
+    assert.equal(validateRecipientInputs({ RECIPIENT_PUBLIC_KEY: key, RECIPIENT_FINGERPRINT: "A".repeat(length), RECIPIENT_PROFILE: profile }).profile, profile);
+  }
+  assert.throws(() => validateRecipientInputs({ RECIPIENT_PUBLIC_KEY: key, RECIPIENT_FINGERPRINT: "A".repeat(64) }), /requires recipient_profile modern-v6/);
   for (const profile of ["Public", "Private", "Network"]) assert.ok(workflow.includes(`:app:assemble${profile}Debug`));
 });
