@@ -26,7 +26,7 @@ TARGET_PATH = "/siliconvalley/park/8099"
 TARGET_HOSTS = frozenset({"geocities.com", "geocities.ws", "oocities.org", "reocities.com"})
 BOOK_HOSTS = frozenset({"lpage.com", "saturn.guestworld.com", "saturn.guestworld.tripod.lycos.com"})
 FORBIDDEN = re.compile(r"(?:manage|private|sign|login|admin|recover|delete|remove)", re.I)
-PAGINATION_FIELD = re.compile(r"(?:start|first|last|offset|page|count|entries|records|num|n|next|previous)", re.I)
+PAGINATION_FIELD = re.compile(r"(?:start|startrow|pointer|first|last|offset|page|count|entries|records|num|n|next|previous)", re.I)
 BARRIER = re.compile(r"(?:access denied|bad gateway|verify you are human|too many requests|temporarily unavailable|captcha challenge|doesn't have that page archived)", re.I)
 
 
@@ -110,6 +110,7 @@ class PublicPage(HTMLParser):
         self.base = base
         self.links = []
         self.ring_links = []
+        self.view_links = []
         self.forms = []
         self.form = None
         self.ignored_depth = 0
@@ -131,6 +132,25 @@ class PublicPage(HTMLParser):
                 # Retain the canonical target, not arbitrary query fields,
                 # link labels, surrounding entries or visitor contacts.
                 self.links.append(found)
+                if found["kind"] == "guestbook" and not value.startswith("#"):
+                    original_view = original_url(value, self.base)
+                    parts_view = urlsplit(original_view)
+                    pairs = parse_qsl(parts_view.query, keep_blank_values=True)
+                    fields = []
+                    omitted = False
+                    for name, field_value in pairs:
+                        if name.lower() in {"owner", "list"} and field_value.lower() == "shadowelf":
+                            fields.append({"name": name, "value": field_value})
+                        elif PAGINATION_FIELD.fullmatch(name) and re.fullmatch(r"-?[0-9]{1,6}", field_value):
+                            fields.append({"name": name, "value": field_value})
+                        else:
+                            omitted = True
+                    safe_view = urlunsplit((parts_view.scheme, parts_view.netloc, parts_view.path, parts_view.query, ""))
+                    observed = {"fields": fields, "parametersOmitted": omitted,
+                                "observedUrl": safe_view if not omitted and len(safe_view) <= 2048 else None,
+                                "urlSha256": hashlib.sha256(original_view.encode()).hexdigest()}
+                    if observed not in self.view_links:
+                        self.view_links.append(observed)
             original = original_url(value, self.base)
             parts = urlsplit(original)
             fields = dict(parse_qsl(parts.query.replace(";", "&"), keep_blank_values=True))
@@ -156,9 +176,9 @@ class PublicPage(HTMLParser):
             value = attrs.get("value", "")
             field_type = attrs.get("type", tag).lower()
             field = {"name": name, "type": field_type if field_type in {"hidden", "text", "submit", "button", "select", "number"} else tag}
-            if name.lower() == "owner" and value.lower() == "shadowelf":
+            if name.lower() in {"owner", "list"} and value.lower() == "shadowelf":
                 field["value"] = "Shadowelf"
-            elif PAGINATION_FIELD.fullmatch(name) and re.fullmatch(r"[0-9]{1,6}", value):
+            elif PAGINATION_FIELD.fullmatch(name) and re.fullmatch(r"-?[0-9]{1,6}", value):
                 field["value"] = value
             if name.lower() == "action" and FORBIDDEN.search(value):
                 self.form["refused"] = True
@@ -187,7 +207,7 @@ class PublicPage(HTMLParser):
 
     def report(self):
         return {"targetLinks": self.links, "ringNavigation": self.ring_links,
-                "publicViewForms": self.forms, "formTagsSeen": self.form_tags_seen,
+                "publicViewForms": self.forms, "publicViewLinks": self.view_links, "formTagsSeen": self.form_tags_seen,
                 "refusedForms": self.refused_forms, "plainMentions": sorted(self.plain_mentions),
                 "inspection": "Entire fetched body parsed without executing scripts; no visitor text/contacts retained"}
 
@@ -286,8 +306,21 @@ def emit_actions_annotations(result):
     # The annotation message itself is capped at 4096 characters. Omit only
     # redundant resolved URLs and the constant hash-scope description here;
     # requested URLs, hashes, observations and source order remain explicit.
-    projected = [{key: value for key, value in row.items() if key != "hashScope" and
-                  not (key == "resolvedUrl" and value == row.get("requestedUrl"))} for row in result["sources"]]
+    projected = []
+    for row in result["sources"]:
+        value = {key: item for key, item in row.items() if key != "hashScope" and
+                 not (key == "resolvedUrl" and item == row.get("requestedUrl"))}
+        for key in ("targetLinks", "publicViewForms"):
+            if key in value:
+                unique = []
+                for item in value[key]:
+                    existing = next((entry for entry in unique if {name: item_value for name, item_value in entry.items() if name != "occurrences"} == item), None)
+                    if existing is None:
+                        unique.append({**item, "occurrences": 1})
+                    else:
+                        existing["occurrences"] += 1
+                value[key] = unique
+        projected.append(value)
     rows = []
     for stage in (1, 2, 3, 4):
         sources = [row for row in projected if row["stage"] == stage]
@@ -298,7 +331,7 @@ def emit_actions_annotations(result):
         else:
             rows.append((f"archive-stage-{stage}", {"stage": stage, "sources": sources}))
     rows.append(("audit-summary", {**{key: value for key, value in result.items() if key != "sources"},
-                                  "annotationProjection": "Identical resolvedUrl omitted; response hashes cover fetched HTTP bytes, not a CDX digest comparison"}))
+                                  "annotationProjection": "Identical resolvedUrl omitted; identical canonical target links/forms counted by occurrences; response hashes cover fetched HTTP bytes, not a CDX digest comparison"}))
     for title, row in rows:
         encoded = json.dumps(row, ensure_ascii=True, separators=(",", ":"))
         if len(encoded) > 3500:

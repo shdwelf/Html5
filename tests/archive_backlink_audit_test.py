@@ -63,6 +63,25 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertEqual(report["publicViewForms"][0]["action"], "http://www.lpage.com:80/wgb/wgbview.dbm")
         self.assertEqual(report["publicViewForms"][0]["fields"][1]["value"], "10")
 
+    def test_observed_public_pagination_links_and_pointer_fields_are_not_guessed_or_secret_exports(self):
+        report = audit.inspect_html(b'''
+          <a href="#older">Not a historical pagination URL</a>
+          <a href="/wgb/wgbview.dbm?owner=Shadowelf&amp;pointer=10#visitor@example.invalid">Older</a>
+          <a href="/wgb/wgbview.dbm?owner=Shadowelf&amp;pointer=10&amp;email=visitor@example.invalid">Do not expose URL</a>
+          <form action="/wgb/wgbview.dbm" method="post"><input name="list" value="Shadowelf">
+            <input name="startrow" value="10"><input name="pointer" value="-10"><input name="tot_unapproved" value="12345">
+          </form>
+        ''', "https://web.archive.org/web/20000525201144id_/http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf")
+        self.assertEqual(len(report["publicViewLinks"]), 2)
+        self.assertEqual(report["publicViewLinks"][0]["observedUrl"], "http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf&pointer=10")
+        self.assertFalse(report["publicViewLinks"][0]["parametersOmitted"])
+        self.assertIsNone(report["publicViewLinks"][1]["observedUrl"])
+        self.assertTrue(report["publicViewLinks"][1]["parametersOmitted"])
+        fields = report["publicViewForms"][0]["fields"]
+        self.assertEqual([field.get("value") for field in fields], ["Shadowelf", "10", "-10", None])
+        self.assertNotIn("visitor@example.invalid", json.dumps(report))
+        self.assertNotIn("12345", json.dumps(report))
+
     def test_ring_identity_requires_exact_ring_and_member(self):
         report = audit.inspect_html(b'''
           <a href="http://www.webring.org/cgi-bin/webring?ring=conquer&amp;id=4&amp;next5">Next</a>
