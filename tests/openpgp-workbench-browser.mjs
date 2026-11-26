@@ -181,12 +181,39 @@ try {
       assert.equal((exported.match(/BEGIN PGP PUBLIC KEY BLOCK/g) || []).length, 3);
       await field("expected-fingerprint", "");
     });
-    await test("real browser PUBLIC remembering is opt-in, survives reload with revalidation and restores no secrets", async () => {
+    await test("real Chromium fuzzy public search filters names locally, never corrects fingerprints and preserves the full export", async () => {
+      const whole = await page.$eval("#keyring-output", (node) => node.value);
+      await field("keyring-search", "chromuim");
+      assert.equal(await page.$$eval("#keyring-list li", (nodes) => nodes.length), 1);
+      assert.equal(await page.$eval("#keyring-list li", (node) => node.dataset.searchMatch), "fuzzy");
+      assert.match(await page.$eval("#keyring-search-status", (node) => node.textContent), /1 of 3/);
+      assert.equal(await page.$eval("#keyring-output", (node) => node.value), whole);
+      assert.equal(await page.$eval("#expected-fingerprint", (node) => node.value), "");
+      const wrong = (fingerprint[0] === "A" ? "B" : "A") + fingerprint.slice(1);
+      await field("keyring-search", wrong);
+      assert.equal(await page.$$eval("#keyring-list li", (nodes) => nodes.length), 0);
+      assert.equal(await page.$eval("#download-keyring", (node) => node.disabled), false);
+      assert.equal(await page.$eval("#keyring-output", (node) => node.value), whole);
+      await field("keyring-search", fingerprint.match(/.{4}/g).join(" ").toLowerCase());
+      assert.equal(await page.$$eval("#keyring-list li", (nodes) => nodes.length), 1);
+      assert.equal(await page.$eval("#keyring-list li", (node) => node.dataset.searchMatch), "fingerprint");
+      await page.focus("#keyring-search"); await page.keyboard.press("Escape");
+      assert.equal(await page.$eval("#keyring-search", (node) => node.value), "");
+      assert.equal(await page.$$eval("#keyring-list li", (nodes) => nodes.length), 3);
+      await page.setViewport({ width: 360, height: 800 }); await field("keyring-search", "chromuim");
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      await page.click("#clear-keyring-search");
+      assert.equal(await page.$eval("#keyring-search", (node) => document.activeElement === node), true);
+      await page.setViewport({ width: 1100, height: 900 });
+    });
+    await test("real browser PUBLIC remembering is opt-in, survives reload with revalidation and restores no secrets or search text", async () => {
       assert.equal(await page.evaluate(() => localStorage.length), 0);
+      await field("keyring-search", "chromuim");
       await page.click("#remember-public-keyring");
       const remembered = await page.evaluate(() => localStorage.getItem("openpgp-workbench.public-keyring.v1"));
       assert.doesNotMatch(remembered, /PRIVATE KEY|REVOCATION/);
       assert.ok(!remembered.includes(passphrase));
+      assert.ok(!remembered.includes("chromuim"), "query text is not stored alongside public certificates");
       assert.equal(Object.keys(JSON.parse(remembered)).length, 2);
       const consent = (dialog) => { if (dialog.type() === "beforeunload") void dialog.accept(); else void dialog.dismiss(); };
       page.on("dialog", consent);
@@ -195,7 +222,7 @@ try {
       await page.waitForFunction(() => document.querySelectorAll("#keyring-list li").length === 3);
       assert.equal(await page.$eval("#remember-public-keyring", (element) => element.checked), true);
       assert.match(await page.$eval("#keyring-status", (element) => element.textContent), /revalidation/);
-      for (const id of ["generated-public-output", "key-passphrase", "backup-fingerprint", "plaintext", "encrypted-output", "decrypted-output"]) assert.equal(await page.$eval(`#${id}`, (element) => element.value), "");
+      for (const id of ["generated-public-output", "key-passphrase", "backup-fingerprint", "plaintext", "encrypted-output", "decrypted-output", "keyring-search"]) assert.equal(await page.$eval(`#${id}`, (element) => element.value), "");
       await page.click("#keyring-tab");
     });
     await test("a secret-key paste is refused atomically and clearing drops all generated/ring fields", async () => {

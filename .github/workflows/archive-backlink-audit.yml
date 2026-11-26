@@ -1,0 +1,37 @@
+name: Public archive backlink audit
+
+on:
+  push:
+    branches: ['arena/**']
+    paths:
+      - 'tools/archive-backlink-audit.py'
+      - 'tests/archive_backlink_audit_test.py'
+      - 'tests/archive-backlink-audit.test.mjs'
+      - '.github/workflows/archive-backlink-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-archive-observations:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Offline parser, privacy and ordered-stage controls
+        run: python3 -m unittest discover -s tests -p archive_backlink_audit_test.py
+      - name: Attempt the four ordered public archival stages
+        # Network failures are recorded, not presented as proof of absence.
+        # Fixed public URLs only; no owner secrets or raw HTML in artifacts.
+        run: python3 tools/archive-backlink-audit.py --output .cache/archive-backlink-audit/receipt.json --actions-annotations
+      - name: Save sanitized source observations
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: archive-backlink-observations
+          path: .cache/archive-backlink-audit/receipt.json
+          if-no-files-found: error
+          retention-days: 14

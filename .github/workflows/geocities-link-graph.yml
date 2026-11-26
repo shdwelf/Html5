@@ -1,0 +1,78 @@
+name: GeoCities URL graph investigation
+
+on:
+  push:
+    branches: ['arena/**']
+    paths:
+      - 'tools/geocities-link-graph.py'
+      - 'tools/geocities-link-graph.cpp'
+      - 'tools/archive-backlink-audit.py'
+      - 'tests/geocities_link_graph_test.py'
+      - 'tests/geocities-link-graph.test.mjs'
+      - '.github/workflows/geocities-link-graph.yml'
+  pull_request:
+    paths:
+      - 'tools/geocities-link-graph.py'
+      - 'tools/geocities-link-graph.cpp'
+      - 'tools/archive-backlink-audit.py'
+      - 'tests/geocities_link_graph_test.py'
+      - 'tests/geocities-link-graph.test.mjs'
+      - '.github/workflows/geocities-link-graph.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Require actual native CSV, gzip, integrity and privacy controls without networking
+        run: python3 -m unittest discover -s tests -p geocities_link_graph_test.py
+
+  complete-public-graph-scan:
+    # The full 19-GB public-file investigation is explicitly dispatched after
+    # source review. Branch/PR synchronizations run offline controls only.
+    if: github.event_name == 'workflow_dispatch'
+    needs: offline-controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Build the bounded-memory native CSV prefilter
+        run: |
+          g++ --version
+          python3 --version
+          g++ -O3 -std=c++17 -Wall -Wextra -Werror tools/geocities-link-graph.cpp -o "$RUNNER_TEMP/geocities-link-graph"
+      - name: Source-check exact graph metadata and the actual CSV header
+        # Fixed public file only. No owner secrets, raw graph or anchor text artifact.
+        run: python3 tools/geocities-link-graph.py --probe --output .cache/geocities-link-graph/probe.json --actions-annotations
+      - name: Require a complete streamed graph search with matching size, MD5, SHA-1, gzip and CSV EOF
+        # Four ordered 64-MiB ranges maximum in flight; no 19-GB disk file.
+        # Interrupted, corrupt, over-budget or malformed streams fail, not "no links".
+        run: python3 tools/geocities-link-graph.py --scan --scanner "$RUNNER_TEMP/geocities-link-graph" --probe-receipt .cache/geocities-link-graph/probe.json --output .cache/geocities-link-graph/scan.json
+      - name: Expose sanitized observations through the Checks API, not a blocked artifact-only route
+        if: always()
+        shell: bash
+        run: |
+          if [ -f .cache/geocities-link-graph/scan.json ]; then
+            python3 tools/geocities-link-graph.py --publish-receipt --output .cache/geocities-link-graph/scan.json
+          else
+            echo '::warning title=graph-scan-no-receipt::The scan did not produce a receipt. No complete-search or absence finding is established.'
+          fi
+      - name: Save only the sanitized probe and scan receipts
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: geocities-link-graph-observations
+          path: |
+            .cache/geocities-link-graph/probe.json
+            .cache/geocities-link-graph/scan.json
+          if-no-files-found: error
+          retention-days: 14

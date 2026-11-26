@@ -389,7 +389,7 @@
     {
       "slug": "openpgp-workbench",
       "name": "OpenPGP Workbench",
-      "description": "Local OpenPGP text tools, RSA key generation, a public-only keyring and bounded wordlist-assisted private-key passphrase recovery.",
+      "description": "Local OpenPGP text tools, RSA key generation, fuzzy public-certificate search and bounded wordlist-assisted private-key passphrase recovery.",
       "href": "./openpgp-workbench/index.html"
     },
     {
