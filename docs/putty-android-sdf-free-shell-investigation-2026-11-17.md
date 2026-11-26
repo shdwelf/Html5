@@ -1,8 +1,14 @@
 # PuTTY → Android, SDF validation and free shell accounts
 
-Research date: **17 November 2026**. Public-documentation investigation plus a
-source-based Android review port. This is not an endorsement of a public shell
-provider, a production security certification or an account-validation result.
+Report-series date: **17 November 2026**; the dated filename is retained for
+continuity, not used as an acquisition timestamp. GitHub reports the successful
+build's start as **2026-11-26T14:31:55Z**. Individual page-fetch timestamps were
+not captured in the summarized source register; no same-day retrieval is inferred
+from the filename. Run IDs and exact source commits identify the build evidence.
+
+Public-documentation investigation plus a source-based Android review port.
+This is not an endorsement of a public shell provider, a production security
+certification or an account-validation result.
 
 ## 1. GitHub first, then metasearch
 
@@ -92,7 +98,7 @@ production update key. The installed review variant deliberately has Android
 
 ### Build and controls
 
-The [reproducible build workflow](../.github/workflows/putty-android.yml) requires
+The [source-build workflow](../.github/workflows/putty-android.yml) requires
 core controls, signed-source verification, two-ABI native compilation, Android
 lint, synthetic Android SSH/lifecycle tests, APK signature verification and a
 bounded delivery receipt. It checks 16 KiB ELF alignment, **not** a 16 KiB-page

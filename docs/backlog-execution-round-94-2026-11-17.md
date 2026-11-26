@@ -1,7 +1,10 @@
 # Backlog round 94 — PuTTY Android port and public-shell research
 
-17 November 2026. New user-directed follow-through on the mobile/SSH strand;
-**not** a re-closure of an existing normalized backlog row.
+17 November 2026 report-series label, **not** a build/acquisition timestamp.
+GitHub reports the successful build's start as `2026-11-26T14:31:55Z`;
+exact run IDs and source commits below identify the evidence independently of
+the retained filename. New user-directed follow-through on the mobile/SSH
+strand; **not** a re-closure of an existing normalized backlog row.
 
 ## Ordered work
 
@@ -90,3 +93,32 @@ aggregate stream labels are not treated as reopened task authorizations.
   rescan, personal guestbook expansion or LoC-inclusion claim is introduced.
 - Existing F2 preserve/inspect-only, unauthorized-key, owner-device, financial
   and draft-publication gates remain intact.
+
+## Completion follow-through: repository regression and PR handoff
+
+- Full **`npm test` exited 0** at
+  **`7e549caccdbab071d066ba17551a247c0c9491fa`**: **38 Vitest files / 338 tests
+  passed**; Node **1,327 tests, 1,308 passed, 19 skipped, zero failed or
+  cancelled**. Skipped optional/platform controls are not promoted to passes.
+- Focused artifact/corpus/privacy regression: **47/47 passed**. These tests
+  overlap the full Node suite; the counts are not added together.
+- Matching-head PR review at that commit succeeded:
+  [run 45843074346](https://github.com/shdwelf/Html5/actions/runs/45843074346),
+  check **139989551528**. It independently verified the exact delivered APK's
+  v2 signature/certificate, native bytes, successful measured build and unchanged
+  app/build source files, alongside core/source/focused controls. The independent
+  OpenPGP Go check also passed, check **139989550927**.
+- Delivery PR: **[#249](https://github.com/shdwelf/Html5/pull/249)**. Its live
+  metadata is authoritative for the final review head, check results and merge
+  state; historical merged PR #248 does not validate these changes. The PR was
+  initially a draft while the full repository regression was still running.
+- This final follow-through only clarifies report dating and records validation;
+  it does not change the measured application, source-fetch/native tooling or
+  APK. A matching-head delivered-APK review and independent Go check are required
+  before making #249 ready and merging. No replacement debug signer or APK
+  rebuild is needed for these documentation-only changes.
+
+The APK is delivered and the public-documentation investigation is complete
+within the stated scope. Production signing, full VT/key-import features,
+physical-device tests, authenticated SDF host keys and actual owner membership
+validation remain separate, **open** gates, not backlog completions.

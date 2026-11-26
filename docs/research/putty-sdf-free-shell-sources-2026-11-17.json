@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "researchDate": "2026-11-17",
+  "reportSeriesDate": "2026-11-17",
+  "timestampQualification": "The retained filename/date labels this report series, not every evidence acquisition. Individual page-fetch timestamps were not captured in this summarized register. GitHub build/review timestamps below are recorded as returned, not inferred from the filename.",
   "scope": "User-directed GitHub PuTTY search, then public metasearch, official source checking, Android port work and free-shell membership research",
   "evidenceKind": "Tool-returned page extractions and GitHub API/source inspection, summarized; not raw archived page bodies, uptime probes or account tests",
   "accountActions": {
@@ -182,10 +183,30 @@
     "apkSha256": "644b8c16d1a1fdf8cf77f336434d310b5075bc10304d7b9a3e91b132a314a9cd",
     "measuredSourceCommit": "cf84be50547cd4507a2bc5b732af9f525b6d92be",
     "buildRun": "https://github.com/shdwelf/Html5/actions/runs/45839948669",
+    "buildRunStartedAtAsReturned": "2026-11-26T14:31:55Z",
+    "buildRunUpdatedAtAsReturned": "2026-11-26T14:36:29Z",
     "javaCoreControlsPassed": 96,
     "pythonSourceControlsPassed": 9,
     "androidEmulatorControlsPassed": 8,
     "qualification": "Actual unofficial PuTTY/Plink source port, line-oriented review APK; API 35 x86_64 synthetic runtime only, not physical ARM64/16KiB, production signing or SDF validation"
+  },
+  "repositoryValidation": {
+    "testedCommit": "7e549caccdbab071d066ba17551a247c0c9491fa",
+    "npmTestExitCode": 0,
+    "vitest": {"filesPassed": 38, "testsPassed": 338},
+    "node": {"tests": 1327, "passed": 1308, "skipped": 19, "failed": 0, "cancelled": 0},
+    "focusedControlsPassed": 47,
+    "countQualification": "Focused controls overlap the full Node suite; skipped tests are not passes. Later completion changes only date/status documentation, not the measured APK/application/build sources.",
+    "deliveredApkReview": {
+      "headCommit": "7e549caccdbab071d066ba17551a247c0c9491fa",
+      "run": "https://github.com/shdwelf/Html5/actions/runs/45843074346",
+      "checkId": 139989551528,
+      "conclusion": "success",
+      "runUpdatedAtAsReturned": "2026-11-26T14:51:21Z"
+    },
+    "independentGoCheckId": 139989550927,
+    "pullRequest": "https://github.com/shdwelf/Html5/pull/249",
+    "handoff": "PR metadata is authoritative for the final review/merge head and matching-head checks. No later documentation head is mislabeled as a fresh Android APK build."
   },
   "researchLimits": [
     "Public documentation, not an exhaustive list or safety/uptime certification of any provider",
