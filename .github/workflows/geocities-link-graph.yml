@@ -1,0 +1,27 @@
+name: GeoCities URL graph investigation
+
+on:
+  push:
+    branches: ['arena/**']
+    paths:
+      - 'tools/geocities-link-graph.py'
+      - 'tools/geocities-link-graph.cpp'
+      - 'tests/geocities_link_graph_test.py'
+      - 'tests/geocities-link-graph.test.mjs'
+      - '.github/workflows/geocities-link-graph.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-graph-source-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Source-check exact graph metadata and the actual CSV header
+        # Fixed public file only. No owner secrets, raw graph or anchor text artifact.
+        run: python3 tools/geocities-link-graph.py --probe --output .cache/geocities-link-graph/probe.json --actions-annotations
