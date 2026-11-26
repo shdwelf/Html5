@@ -2,13 +2,13 @@
 
 A separate Android WebView/catalog wrapper for every current
 `public/apps/<directory>/index.html` entrypoint, with an additional, separately
-opt-in network flavor for live aircraft and RSS apps. This does **not** repurpose
+opt-in network flavor for live aircraft/RSS apps and explicit Keybase public-key lookup. This does **not** repurpose
 the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engine.
 
 ## Scope and packaging
 
-- The current builder discovers **96** HTML entrypoints and packages **8,510
-  files** (166,321,092 bytes uncompressed) inside those app directories. It
+- The current builder discovers **96** HTML entrypoints and packages **8,517
+  files** (166,429,544 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
@@ -58,6 +58,15 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
   it revalidates on restore, includes public User IDs, and never remembers
   secret keys, revocations, text or passphrases. It is not a backup, can be lost
   on uninstall/data clearing, and remains separate for each app/site origin.
+- OpenPGP Workbench's optional **Keybase** public-key lookup requires the
+  separate network flavor (or an HTTPS browser) and its own explicit in-page
+  disclosure/submit. Public/private offline profiles keep their network denial
+  and no INTERNET permission; the Workbench UI disables lookup there without a
+  connectivity probe. Discovery only previews locally validated public bytes;
+  staging, independent full-fingerprint comparison and import stay separate.
+  No Keybase login, proof-chain verification, secret upload or new permission
+  is added. Service availability/CORS and physical-device lookup are not
+  established by synthetic browser tests.
 - The `network` flavor stages the same public catalog plus two extra entrypoints:
   RadarScope (`apps/ads-b-radar-scope`) and News Globe (`apps/news-globe.html`).
   It displays a required startup warning that News Globe's OPML/RSS host set is

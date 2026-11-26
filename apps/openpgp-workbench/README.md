@@ -1,6 +1,6 @@
 # OpenPGP Workbench
 
-Local browser text tools, **conservative key creation, a public-only keyring and bounded wordlist-assisted private-key passphrase recovery**. This is not a general-purpose secure PGP client or a certification that every target app accepts every export.
+Local browser text tools, **conservative key creation, a public-only keyring with opt-in Keybase discovery, and bounded wordlist-assisted private-key passphrase recovery**. This is not a general-purpose secure PGP client or a certification that every target app accepts every export.
 
 ## Build and preview
 
@@ -19,12 +19,93 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 - **Protected private export:** both packets use AES-256, iterated/salted SHA-256 S2K, count `0xFF` (65,011,712 octets). A minimum 12-character passphrase is required, but length is not a strength guarantee. Generated private armor never becomes a page field or clipboard item. Download requires explicit acknowledgement and the full matching fingerprint, with a packet-protection recheck.
 - **Revocation backup:** a separate, explicit **unencrypted sensitive certificate**. Anyone holding it can revoke the key. Keep it private/offline; never bundle it with the public certificate you share.
 - **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted. Public fingerprints are 40 hex characters for v4 and 64 for v6; v6 still requires a modern destination client.
+- **Keybase discovery (optional network):** exact-username public-key lookup, bounded local certificate/fingerprint validation, and per-certificate review actions. No request until you acknowledge the network disclosure and press Look up. Loading a result only stages public input; import and independent fingerprint comparison remain separate. See the privacy/trust rules below.
 - **Fuzzy public search:** filter in-memory certificates by name/email with bounded typo tolerance, or exact-only fingerprint text. This changes the list only, never imports, recipient selection, confirmation fields, public remembering or full-keyring exports. Search text is not saved; Clear search / Escape restores the list. See the separate search rules below.
 - Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or blanket subkey audit. The display separately detects a currently usable bound encryption key; signing/authentication-only subkeys are not encryption keys.
 
 - **Recover passphrase:** a separate, explicit transient protected-key input with ranked wordlist/hint preview and optional small typo variants. At most 256 candidates / 120 seconds, a dedicated local module worker, full fingerprint and permission acknowledgement, exact all-secret-packet unlock/validation, Stop/Clear/navigation termination, and explicit result reveal only. It does not import secrets into the public keyring, reset a passphrase, decrypt messages/files or export an unlocked key. See bounds below.
 
-No public-key **message** encryption/decryption, persistent secret-key import, signing UI, attachments, modern AEAD message writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+No public-key **message** encryption/decryption, persistent secret-key import, signing UI, attachments, modern AEAD message writer, hardware cards, pairing, general keyserver search/publishing, Keybase login/proof-chain verification, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+
+## Keybase public-certificate discovery (explicit network opt-in)
+
+1. Open **Public keyring → Find public certificates on Keybase**. Enter an exact
+   Keybase username: 2–16 ASCII letters/digits, single underscores permitted but
+   not first (a trailing underscore is permitted by Keybase). No `@` prefix,
+   email, URL, wildcard, account autocomplete or fuzzy remote search.
+2. Read and check the network disclosure, then press **Look up on Keybase**.
+   Opening the panel, typing, checking the box, mounting/restoring the app and
+   local fuzzy search do **not** make a request. Each lookup needs an explicit
+   submit; consent/username/results are never remembered and Clear/navigation
+   resets consent. The checkbox does not authorize publishing or account access.
+3. Review locally calculated full primary fingerprints, User IDs, profile and
+   import-time self-certification/encryption-binding state for **every** returned
+   public certificate. Press **Load this PUBLIC certificate for review** on a
+   chosen certificate to replace only the local public import input. No import,
+   persistence, clipboard/download, recipient selection or owner trust follows.
+4. Obtain the full fingerprint through an **independent trusted channel** and
+   compare it in **Expected full fingerprint**, then explicitly **Import public
+   keys**. Keybase never fills or changes that confirmation field. The existing
+   optional-fingerprint import mode remains identity-unverified; even matching
+   independently supplied bytes do not assign an owner-trust policy here.
+   Fuzzy search after import filters local certificate User IDs, not Keybase
+   accounts, and never supplies cryptographic authorization.
+
+The only network adapter is `keybase.mjs`. It uses Keybase's documented
+[CORS-enabled public-key file endpoint](https://keybase.io/docs/api/1.0/call/user/pgp_keys.asc):
+`GET https://keybase.io/<username>/pgp_keys.asc`. Unlike a primary-only JSON
+lookup, this endpoint can contain multiple certificates. The username rules
+follow the [upstream kbun checker](https://github.com/keybase/client/blob/02a1da1c8a54c916a72b47d14c5e8e21a48cd99b/go/kbun/username.go).
+Only the normalized username is taken from the workspace. Keybase receives it,
+your network address and normal browser metadata (for example, Origin and User
+Agent); it may log them. Requests use CORS, `credentials: omit`, no referrer,
+`cache: no-store`, no request body and `redirect: error`. No API token/login,
+account cookie, remote avatar/script, proxy, fallback service, automatic retry
+or app background request is involved. Private keys, protected exports,
+messages, recovery hints/wordlists/guesses and passphrases never reach this
+adapter. A restrictive `connect-src` permits only this service and same-origin
+local assets; it is defense in depth, not protection against a compromised
+origin/browser or extensions.
+
+Network and local preview are bounded to **15 seconds** and a **1 MiB** streamed
+UTF-8 response (actual bytes, not a trusted Content-Length). There is no
+unbounded `.text()` fallback. The entire file goes through the **same read-only
+public parser** used by imports: at most 32 certificates, reviewed v4 RSA,
+legacy v4 Ed25519/Curve25519 or modern v6 Ed25519/X25519 profiles, no secret,
+mixed, malformed or unsupported packets. A bad later certificate refuses the
+whole preview, never silently selecting the first valid one. Multiple-key files
+are displayed separately for an explicit choice. Expired/revoked/invalid
+self-certifications remain marked archival-only; discovery never makes them
+usable encryption recipients. HTTP errors, missing public PGP keys, redirects,
+invalid encoding, oversize data, CORS/offline failure and timeout are visible
+without changing existing input, keyring or saved public data.
+
+Cancel, username/consent edits, lookup Clear, keyring/global Clear and navigation
+abort/discard pending requests and reject stale results. A request already sent
+cannot be recalled from Keybase; cancel drops app references but cannot promise
+server-log or browser-memory erasure. Local library validation is not a
+preemptible secure worker; its late results have no import/storage authority.
+
+**Discovery is not identity verification.** Fingerprints are computed from the
+returned public bytes, not trusted server metadata, but a malicious/wrong
+account can still publish the wrong key. Workbench does not verify Keybase's
+signature chain, Merkle tree, social/domain proofs, account ownership or current
+revocation history outside the returned certificate. A Keybase username,
+self-signed UID, HTTPS response or matching Keybase-supplied fingerprint would
+not constitute independent proof.
+
+**Android:** public/private offline profiles retain their existing network
+blocks and no INTERNET permission. The UI disables lookup in the offline
+launcher without making a connectivity probe; native policy remains authoritative.
+Use the separately opted-in network APK or an HTTPS browser for lookup, or
+load public `.asc` files locally. No Android permission or native network policy
+is relaxed. All other Workbench crypto/recovery remains local.
+
+Tests use synthetic certificates and intercepted CORS responses, including real
+Chromium with the shipped modules. Live Keybase availability/CORS from a user's
+origin and a physical-device Android Keybase lookup are **not** claimed by those
+controls; provider availability/policy can change. Official documentation and a
+public endpoint were inspected, but are not an identity or live-browser guarantee.
 
 ## Fuzzy public-certificate search
 
@@ -51,7 +132,7 @@ certificate**. Individual result actions remain bound to that certificate's
 original full fingerprint, not its ranked position. Search does not rewrite an
 opted-in PUBLIC snapshot and is cleared on ring/global Clear or navigation;
 reload restores only an explicitly remembered, revalidated public ring, not
-queries or secrets. No new engine, network request, dependency or store is added.
+queries or secrets. The local filter itself adds no engine, network request, dependency or store; it never invokes the separate opt-in Keybase lookup.
 
 This public metadata filter is distinct from the existing private-key recovery
 planner below. Fuzzy resemblance never authorizes cryptography or partially
@@ -186,6 +267,7 @@ Clear buttons and `pagehide` drop fields/references and suppress late async resu
 
 ```sh
 node --test tests/openpgp-workbench.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-search.test.mjs tests/openpgp-keyring-dom.test.mjs
+node --test tests/openpgp-keybase.test.mjs tests/openpgp-keybase-dom.test.mjs
 node --test tests/openpgp-key-interop.test.mjs
 # Full native GnuPG is separate from gpgv; requires gpg AND gpgconf:
 node --test tests/openpgp-native-interop.test.mjs
@@ -195,6 +277,7 @@ node --test tests/openpgp-native-interop.test.mjs
 # REQUIRE_OPENPGP_INTEROP=1 REQUIRE_OPENPGP_NATIVE_INTEROP=1 node --test tests/openpgp-key-interop.test.mjs tests/openpgp-native-interop.test.mjs
 # Optional existing Chromium harness dependencies:
 node tests/openpgp-workbench-browser.mjs
+REQUIRE_OPENPGP_BROWSER=1 node tests/openpgp-keybase-browser.mjs
 node --test tests/openpgp-v6.test.mjs
 node tests/openpgp-v6-browser.mjs
 node --test tests/openpgp-recovery.test.mjs tests/openpgp-recovery-worker.test.mjs tests/openpgp-recovery-dom.test.mjs

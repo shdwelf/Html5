@@ -1,12 +1,13 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
 import { searchPublicCertificates } from "./keyring-search.mjs";
+import { mountKeybaseLookup } from "./keybase-ui.mjs";
 import { generateLargeRsaKey } from "./large-rsa.mjs";
 import { mountPrivateKeyRecovery } from "./recovery-ui.mjs";
 import { readPublicSnapshot, writePublicSnapshot, forgetPublicSnapshot } from "./public-storage.mjs";
 
 /** No globals holding key material; dependencies are injectable for race/UI tests. */
-export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey, recoveryTools } = {}) {
+export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey, recoveryTools, keybaseLookup } = {}) {
   const byId = (id) => doc.getElementById(id);
   const supported = view.isSecureContext && Boolean(view.crypto?.subtle) && typeof TextEncoder === "function";
   const ring = keyTools.createPublicKeyring();
@@ -359,10 +360,21 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   });
   byId("forget-public-keyring").addEventListener("click", forgetRememberedRing);
 
+  // Discovery never receives secret/recovery state, storage or import authority.
+  const keybase = mountKeybaseLookup({ doc, view, supported, lookup: keybaseLookup, onStage(armored) {
+    fileEpoch++; // A pending file read must not overwrite an explicitly chosen result.
+    byId("public-key-file").value = "";
+    byId("public-key-input").value = armored;
+    // Never copy a remotely discovered fingerprint into independent confirmation.
+    setStatus("keyring-status", "Keybase PUBLIC certificate loaded into input only, not imported. The expected fingerprint is unchanged. Obtain/compare it independently, then explicitly Import public keys.");
+    byId("public-key-input").focus();
+  } });
+
   function importControls() {
     setBusy(byId("import-public-keys"), importing || publicVariantBusy);
     for (const id of ["export-full-public-input", "export-reduced-public-input"]) byId(id).disabled = !supported || importing || publicVariantBusy;
     generationControls();
+    keybase.setImportBusy(importing || publicVariantBusy);
   }
   async function importPublic(armored, expectedFingerprint, fromGenerated = false, restoring = false) {
     if (importing || publicVariantBusy || !supported) return;
@@ -437,6 +449,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   function clearRing({ forgetSaved = true } = {}) {
     saveEpochs["keyring-status"]++;
     if (forgetSaved) forgetRememberedRing();
+    keybase.clear();
     importEpoch++; fileEpoch++; importController?.abort(); ring.clear();
     resetForm(byId("keyring-import-form"));
     byId("keyring-search").value = "";

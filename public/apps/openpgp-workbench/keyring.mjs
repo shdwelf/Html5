@@ -449,6 +449,7 @@ export const KEY_COMPATIBILITY_CONFIG = tools.config;
 export const generateCompatibilityKey = tools.generateCompatibilityKey;
 export const checkedPrivateDownload = tools.checkedPrivateDownload;
 export const createPublicKeyring = tools.createPublicKeyring;
+export const parsePublicKeyring = tools.parsePublicKeyring; // Read-only public preview; never assigns trust or changes a ring.
 export const readEncryptionRecipient = tools.readEncryptionRecipient;
 
 export const publicCertificateVariants = tools.publicCertificateVariants;

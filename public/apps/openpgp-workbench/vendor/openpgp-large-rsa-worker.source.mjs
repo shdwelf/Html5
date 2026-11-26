@@ -26754,7 +26754,7 @@ function createOpenPgpKeyTools(library) {
     if (!blocks.length || armored.slice(cursor).trim()) throw new Error("Public keyrings only: provide complete ASCII-armored public certificates without extra text.");
     return blocks;
   }
-  async function parsePublicKeyring(armored) {
+  async function parsePublicKeyring2(armored) {
     const keys = [];
     for (const { data } of await readPublicBlocks(armored)) {
       let packets;
@@ -26804,7 +26804,7 @@ function createOpenPgpKeyTools(library) {
   async function readEncryptionRecipient2(armored, expectedFingerprint, { profile = "classic-v4", encryptionFingerprint = "" } = {}) {
     if (!["classic-v4", "modern-v6"].includes(profile)) throw new Error("Choose an explicit classic-v4 or modern-v6 recipient profile.");
     const expected = normalizePublicFingerprint(expectedFingerprint);
-    const entries = await parsePublicKeyring(armored);
+    const entries = await parsePublicKeyring2(armored);
     if (entries.length !== 1 || entries[0].fingerprint !== expected) {
       throw new Error("Recipient fingerprint mismatch, or multiple certificates supplied. Encryption refused.");
     }
@@ -26893,7 +26893,7 @@ function createOpenPgpKeyTools(library) {
         const startRevision = revision;
         assertNotAborted(signal);
         const expected = expectedFingerprint ? normalizePublicFingerprint(expectedFingerprint) : null;
-        const incoming = await parsePublicKeyring(armored);
+        const incoming = await parsePublicKeyring2(armored);
         if (expected && (incoming.length !== 1 || incoming[0].fingerprint !== expected)) throw new Error("Fingerprint mismatch, or multiple certificates supplied for a single expected fingerprint. Nothing was imported.");
         const updated = new Map(entries);
         for (const entry of incoming) {
@@ -26929,13 +26929,14 @@ function createOpenPgpKeyTools(library) {
       }
     });
   }
-  return Object.freeze({ config: config2, generateCompatibilityKey: generateCompatibilityKey2, checkedPrivateDownload: checkedPrivateDownload2, parsePublicKeyring, readEncryptionRecipient: readEncryptionRecipient2, publicCertificateVariants: publicCertificateVariants2, createPublicKeyring: createPublicKeyring2 });
+  return Object.freeze({ config: config2, generateCompatibilityKey: generateCompatibilityKey2, checkedPrivateDownload: checkedPrivateDownload2, parsePublicKeyring: parsePublicKeyring2, readEncryptionRecipient: readEncryptionRecipient2, publicCertificateVariants: publicCertificateVariants2, createPublicKeyring: createPublicKeyring2 });
 }
 var tools = createOpenPgpKeyTools(openpgp_6_3_exports);
 var KEY_COMPATIBILITY_CONFIG = tools.config;
 var generateCompatibilityKey = tools.generateCompatibilityKey;
 var checkedPrivateDownload = tools.checkedPrivateDownload;
 var createPublicKeyring = tools.createPublicKeyring;
+var parsePublicKeyring = tools.parsePublicKeyring;
 var readEncryptionRecipient = tools.readEncryptionRecipient;
 var publicCertificateVariants = tools.publicCertificateVariants;
 

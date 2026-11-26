@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Local OpenPGP text tools, RSA key generation, fuzzy public-certificate search and bounded wordlist-assisted private-key passphrase recovery.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://keybase.io; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="Local OpenPGP text tools, RSA key generation, fuzzy public-certificate search, optional Keybase lookup and bounded wordlist-assisted private-key passphrase recovery.">
   <title>OpenPGP Workbench</title>
   <link rel="stylesheet" href="./styles.css">
   <script type="importmap">
@@ -33,7 +35,7 @@
       <section class="hero" aria-labelledby="page-title">
         <div class="eyebrow"><span class="eyebrow-line"></span> LOCAL MESSAGES &amp; KEYRINGS</div>
         <h1 id="page-title">Keep the message<br><span>between you and the passphrase.</span></h1>
-        <p class="hero-copy">Protect text, create an RSA key, assemble a public keyring, or preview a small wordlist to help recover your own private-key passphrase. Processing stays in this tab and local workers; no upload, keyserver, telemetry, or automatic secret storage. Remembering PUBLIC certificates is a separate opt-in.</p>
+        <p class="hero-copy">Protect text, create an RSA key, assemble a public keyring, or preview a small wordlist to help recover your own private-key passphrase. Cryptography and recovery stay in this tab and local workers; no secret upload, telemetry, or automatic secret storage. Keybase PUBLIC-key lookup is an explicit network opt-in; device remembering is a separate opt-in.</p>
         <div id="capability-warning" class="notice notice-warning" role="alert" hidden>
           This browser needs Web Crypto in a secure context. Open the app over HTTPS or localhost, then reload.
         </div>
@@ -42,7 +44,7 @@
       <section class="workbench" aria-label="OpenPGP message tools">
         <div class="workbench-heading">
           <div>
-            <p class="section-kicker">OFFLINE WORKSPACE</p>
+            <p class="section-kicker">LOCAL-FIRST WORKSPACE</p>
             <h2>Messages &amp; keyrings</h2>
           </div>
           <span class="profile-chip"><span aria-hidden="true">◆</span> Classic profiles · explicit local saves</span>
@@ -232,6 +234,29 @@
         <section id="keyring-panel" class="panel" role="tabpanel" aria-labelledby="keyring-tab" data-panel="keyring-panel" hidden>
           <h3>Public-only keyring</h3>
           <p class="panel-intro">Import v4 RSA public certificates (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates. v6 needs a modern client; dropping subkeys does not convert it into v4. Both concatenated armor blocks and multiple certificates in a single block are read. Limit: 1 MiB and 32 certificates. Secret packets, photo IDs, other profiles, mixed content and unsupported packets are refused.</p>
+          <details id="keybase-discovery" class="keybase-discovery">
+            <summary>Find public certificates on Keybase <span class="field-hint">optional network lookup</span></summary>
+            <p id="keybase-help" class="panel-intro">Look up an <strong>exact Keybase username</strong>, not a name/email or fuzzy match. This fetches that account's published OpenPGP public-key file directly over HTTPS. No Keybase login, publishing or identity-proof verification. Local file import below works without it.</p>
+            <form id="keybase-lookup-form" autocomplete="off" novalidate>
+              <div class="field">
+                <label for="keybase-username">Keybase username</label>
+                <input id="keybase-username" maxlength="16" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" aria-describedby="keybase-help keybase-privacy" placeholder="Exact username, without @">
+              </div>
+              <label class="check-row" for="keybase-network-ack"><input id="keybase-network-ack" type="checkbox" aria-describedby="keybase-privacy"> Allow this public-key lookup on Keybase (network opt-in)</label>
+              <p id="keybase-privacy" class="field-hint">Keybase receives the username, your network address and normal browser request metadata. Only the username is taken from this workspace; no message, private key, recovery hint, wordlist or passphrase is sent. No account cookies, referrer, proxy, autocomplete, background request or automatic retry. Limit: 1 MiB / 32 certificates / 15 seconds. Public offline Android builds cannot connect; use the separate network build or an HTTPS browser.</p>
+              <div class="form-actions">
+                <button id="keybase-lookup" class="button button-secondary" type="submit" data-crypto-submit>Look up on Keybase</button>
+                <button id="keybase-cancel" class="button button-quiet" type="button" disabled>Cancel lookup</button>
+                <button id="keybase-clear" class="button button-quiet" type="button">Clear lookup</button>
+              </div>
+              <p id="keybase-status" class="status-message" role="status" aria-live="polite" aria-atomic="true">No request made. Keybase lookup is optional.</p>
+            </form>
+            <div id="keybase-result" hidden>
+              <p id="keybase-source" class="field-hint"></p>
+              <p class="field-hint">Choose a certificate to replace the public import input below. This does not import or remember it, fill the expected fingerprint, verify an identity, or select an encryption recipient. Compare its full fingerprint over an independent trusted channel before import. If Keybase returns several certificates, each is shown separately; unsupported/mixed files are refused as a whole.</p>
+              <ul id="keybase-results" class="keyring-list" aria-label="Untrusted Keybase public-certificate previews"></ul>
+            </div>
+          </details>
           <form id="keyring-import-form" novalidate>
             <div class="field">
               <label for="public-key-file">Load an ASCII-armored public key file (optional)</label>
@@ -255,7 +280,7 @@
               <button id="export-full-public-input" class="button button-secondary" type="button">Export full original PUBLIC .asc</button>
               <button id="export-reduced-public-input" class="button button-secondary" type="button">Export one-encryption-subkey PUBLIC .asc</button>
             </div>
-            <p class="status-message" id="keyring-status" role="status" aria-live="polite">Only public data is accepted. No keyserver lookup, publishing or private-key import. Device remembering is off until you opt in.</p>
+            <p class="status-message" id="keyring-status" role="status" aria-live="polite">Only public data is accepted. Keybase lookup above is optional; no publishing or private-key import into this ring. Device remembering is off until you opt in.</p>
           </form>
           <div class="notice" role="note">
             <label class="check-row" for="remember-public-keyring"><input id="remember-public-keyring" type="checkbox"> Remember PUBLIC certificates on this device (opt-in)</label>
