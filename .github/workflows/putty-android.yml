@@ -40,21 +40,21 @@ jobs:
           set -euo pipefail
           mkdir -p build/putty-android
           bash tools/putty-android/test-core.sh | tee build/putty-android/core-tests.tap
-          python3 tools/putty-android/fetch-source.py
+          python3 tools/putty-android/run-checked.py source python3 tools/putty-android/fetch-source.py
       - name: Install Android build requirements
         shell: bash
         run: |
           set -euo pipefail
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+          python3 tools/putty-android/run-checked.py sdk "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
             'platforms;android-35' 'build-tools;35.0.0' "ndk;$ANDROID_NDK_VERSION"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$ANDROID_NDK_VERSION" >> "$GITHUB_ENV"
       - name: Compile real PuTTY Plink and private PTY bridge for both ABIs
-        run: bash tools/putty-android/build-native.sh
+        run: python3 tools/putty-android/run-checked.py native bash tools/putty-android/build-native.sh
       - name: Assemble APK and instrumentation; enforce Android lint
         working-directory: apps/putty-android
-        run: gradle assembleDebug assembleDebugAndroidTest lintDebug --no-daemon --stacktrace
+        run: python3 ../../tools/putty-android/run-checked.py gradle gradle assembleDebug assembleDebugAndroidTest lintDebug --no-daemon --stacktrace
       - name: Start disposable loopback-only SSH fixture
-        run: bash tools/putty-android/ci-ssh.sh
+        run: python3 tools/putty-android/run-checked.py fixture bash tools/putty-android/ci-ssh.sh
       - name: Enable KVM for the synthetic Android test device
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -71,13 +71,13 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           script: |
             adb reverse tcp:2222 tcp:2222
-            cd apps/putty-android && gradle connectedDebugAndroidTest --no-daemon --stacktrace -Pandroid.testInstrumentationRunnerArguments.sshUser="$CI_SSH_USER" -Pandroid.testInstrumentationRunnerArguments.sshPin="$CI_SSH_PIN" -Pandroid.testInstrumentationRunnerArguments.sshPassword="$CI_SSH_PASSWORD"
+            cd apps/putty-android && python3 ../../tools/putty-android/run-checked.py android gradle connectedDebugAndroidTest --no-daemon --stacktrace -Pandroid.testInstrumentationRunnerArguments.sshUser="$CI_SSH_USER" -Pandroid.testInstrumentationRunnerArguments.sshPin="$CI_SSH_PIN" -Pandroid.testInstrumentationRunnerArguments.sshPassword="$CI_SSH_PASSWORD"
       - name: Verify APK bytes, signature, source licence, 16 KiB ELF alignment and test receipt
         shell: bash
         run: |
           set -euo pipefail
           test "$(sudo grep -c 'Accepted password for puttyci' /tmp/html5-putty-ci/sshd.log)" = 1
-          python3 tools/putty-android/package-receipt.py
+          python3 tools/putty-android/run-checked.py receipt python3 tools/putty-android/package-receipt.py
       - name: Store bounded test logs (never upload fixture secrets or home directories)
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
