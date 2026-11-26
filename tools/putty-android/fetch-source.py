@@ -48,6 +48,21 @@ def fetch(url, path, maximum):
     return body
 
 
+def validate_members(members):
+    if len(members) > 12000 or sum(member.size for member in members) > 80 * 1024 * 1024:
+        raise ValueError("Release extraction exceeded limits")
+    prefix = f"putty-{VERSION}"
+    for member in members:
+        # Tar archives normally include their root directory without a slash.
+        # Accept that directory, but never an unrelated root, traversal or file
+        # masquerading as the directory. tarfile's data filter adds link checks.
+        root_directory = member.name.rstrip("/") == prefix and member.isdir()
+        if not root_directory and not member.name.startswith(prefix + "/"):
+            raise ValueError("Unexpected release archive layout")
+        if ".." in member.name.split("/"):
+            raise ValueError("Release archive path traversal")
+
+
 def main():
     BUILD.mkdir(parents=True, exist_ok=True)
     archive = BUILD / f"putty-{VERSION}.tar.gz"
@@ -84,10 +99,7 @@ def main():
     destination.mkdir(exist_ok=True)
     with tarfile.open(archive, "r:gz") as package:
         members = package.getmembers()
-        if len(members) > 12000 or sum(member.size for member in members) > 80 * 1024 * 1024:
-            raise ValueError("Release extraction exceeded limits")
-        if any(not member.name.startswith(f"putty-{VERSION}/") for member in members):
-            raise ValueError("Unexpected release archive layout")
+        validate_members(members)
         package.extractall(destination, filter="data")
     receipt = {"version": VERSION, "sourceUrl": ARCHIVE_URL, "archiveSha256": SHA256,
                "releaseCertificateFingerprint": RELEASE_FINGERPRINT, "releaseSignatureVerified": True,

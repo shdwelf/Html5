@@ -6,6 +6,7 @@ on:
     paths:
       - 'apps/putty-android/**'
       - 'tools/putty-android/**'
+      - 'tests/putty_android_source_test.py'
       - '.github/workflows/putty-android.yml'
   workflow_dispatch:
 
@@ -40,6 +41,7 @@ jobs:
           set -euo pipefail
           mkdir -p build/putty-android
           bash tools/putty-android/test-core.sh | tee build/putty-android/core-tests.tap
+          python3 -m unittest discover -s tests -p putty_android_source_test.py -v
           python3 tools/putty-android/run-checked.py source python3 tools/putty-android/fetch-source.py
       - name: Install Android build requirements
         shell: bash
