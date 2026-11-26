@@ -120,6 +120,17 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertNotIn("value", report["publicViewForms"][0]["fields"][0])
         self.assertNotIn("visitor@example.invalid", json.dumps(report))
 
+    def test_actual_form_controls_get_separate_bounded_notices_not_one_truncated_stage(self):
+        rows = [{"stage": 3, "id": name, "publicViewForms": [{"syntheticFieldProjection": "x" * 2000}]} for name in ("may", "june")]
+        output = io.StringIO()
+        with redirect_stdout(output):
+            audit.emit_actions_annotations({"sources": rows})
+        lines = output.getvalue().splitlines()
+        self.assertEqual(len(lines), 6)
+        self.assertIn("title=archive-stage-3-may::", lines[2])
+        self.assertIn("title=archive-stage-3-june::", lines[3])
+        self.assertNotIn("annotationTruncated", output.getvalue())
+
     def test_check_annotations_escape_remote_workflow_commands_and_bound_receipts(self):
         result = {"sources": [{"stage": 1, "id": "synthetic", "value": "%0A\n::error::injection"}], "rawBodiesSaved": False}
         output = io.StringIO()

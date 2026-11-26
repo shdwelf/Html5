@@ -1,5 +1,6 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
+import { searchPublicCertificates } from "./keyring-search.mjs";
 import { generateLargeRsaKey } from "./large-rsa.mjs";
 import { mountPrivateKeyRecovery } from "./recovery-ui.mjs";
 import { readPublicSnapshot, writePublicSnapshot, forgetPublicSnapshot } from "./public-storage.mjs";
@@ -251,12 +252,22 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     });
   }
 
-  function renderRing() {
-    const entries = ring.list(), list = byId("keyring-list");
+  function renderRing({ updateExport = true } = {}) {
+    const entries = ring.list(), list = byId("keyring-list"), search = byId("keyring-search");
+    let matches = [], searchError = false;
+    try { matches = searchPublicCertificates(entries, search.value); }
+    catch { searchError = true; }
+    const active = Boolean(search.value.trim());
+    byId("clear-keyring-search").disabled = !search.value.length;
+    setStatus("keyring-search-status", searchError ? "Use at most 128 search characters and eight name/email terms. Clear search to show the full keyring."
+      : !entries.length ? "Keyring empty. Import a public certificate to search."
+        : active ? `${matches.length} of ${entries.length} public certificates shown. ${matches.length ? "Exact text matches rank before typo-tolerant matches." : "No matches; clear search to show all certificates."} Full-keyring exports are unchanged.`
+          : `Showing all ${entries.length} public certificates. Search is display-only, not identity verification.`, searchError ? "error" : "info");
     list.replaceChildren();
-    for (const entry of entries) {
+    for (const { entry, kind } of matches) {
       const item = doc.createElement("li");
       item.className = "keyring-item";
+      item.dataset.searchMatch = kind;
       const fingerprint = doc.createElement("code");
       fingerprint.className = "fingerprint";
       fingerprint.textContent = keyTools.formatFingerprint(entry.fingerprint);
@@ -288,14 +299,38 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
           await download(variants.reduced, `public-${entry.fingerprint}-one-encryption-subkey.asc`, "application/pgp-keys", "keyring-status", "Troubleshooting subset only, not a revocation or v6-to-v4 conversion. Keep the full certificate; previously encrypted files still require their original secret subkey.");
         } catch (error) { if (epoch === importEpoch) setStatus("keyring-status", friendlyError(error), "error"); }
       });
-      item.append(fingerprint, uid, state, remove, full, reduced);
+      item.append(fingerprint, uid);
+      if (active) {
+        const reason = doc.createElement("p");
+        reason.className = "field-hint";
+        reason.textContent = kind === "fuzzy" ? "Typo-tolerant name/email match only — verify the full fingerprint independently."
+          : kind === "fingerprint" ? "Exact fingerprint text match only — fragments are not identity verification or authorization."
+            : "Name/email text match only — User IDs are unverified claims.";
+        item.append(reason);
+      }
+      item.append(state, remove, full, reduced);
       list.append(item);
     }
     byId("keyring-count").textContent = `${entries.length} / ${keyTools.MAX_PUBLIC_KEYS} public certificates`;
-    byId("keyring-output").value = entries.length ? ring.exportKeys() : "";
-    byId("download-keyring").disabled = !entries.length;
-    byId("copy-keyring").disabled = !entries.length;
+    // Filtering never mutates the ring, its export, storage or crypto inputs.
+    if (updateExport) {
+      byId("keyring-output").value = entries.length ? ring.exportKeys() : "";
+      byId("download-keyring").disabled = !entries.length;
+      byId("copy-keyring").disabled = !entries.length;
+    }
   }
+  const filterRing = () => renderRing({ updateExport: false });
+  function clearRingSearch() {
+    byId("keyring-search").value = "";
+    filterRing();
+    byId("keyring-search").focus();
+  }
+  byId("keyring-search").addEventListener("input", filterRing);
+  byId("keyring-search").addEventListener("search", filterRing);
+  byId("keyring-search").addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && byId("keyring-search").value) { event.preventDefault(); clearRingSearch(); }
+  });
+  byId("clear-keyring-search").addEventListener("click", clearRingSearch);
   function rememberRing() {
     publicSnapshotCurrent = false;
     if (!rememberPublic) return;
@@ -404,6 +439,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     if (forgetSaved) forgetRememberedRing();
     importEpoch++; fileEpoch++; importController?.abort(); ring.clear();
     resetForm(byId("keyring-import-form"));
+    byId("keyring-search").value = "";
     renderRing();
     setStatus("keyring-status", "Public keyring and import fields cleared. In-progress imports will not repopulate them.");
   }

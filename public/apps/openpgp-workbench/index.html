@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Local OpenPGP text tools, RSA key generation, a public-only keyring and bounded wordlist-assisted private-key passphrase recovery.">
+  <meta name="description" content="Local OpenPGP text tools, RSA key generation, fuzzy public-certificate search and bounded wordlist-assisted private-key passphrase recovery.">
   <title>OpenPGP Workbench</title>
   <link rel="stylesheet" href="./styles.css">
   <script type="importmap">
@@ -265,6 +265,15 @@
           </div>
           <div class="output-block">
             <h3 id="keyring-count">0 / 32 public certificates</h3>
+            <div class="field keyring-search" role="search" aria-label="Filter public certificates">
+              <label for="keyring-search">Fuzzy search public certificates</label>
+              <div class="keyring-search-controls">
+                <input id="keyring-search" type="search" maxlength="128" autocomplete="off" autocapitalize="none" spellcheck="false" aria-controls="keyring-list" aria-describedby="keyring-search-help keyring-search-status" placeholder="Name, email, or exact fingerprint text">
+                <button id="clear-keyring-search" class="button button-quiet" type="button" disabled>Clear search</button>
+              </div>
+              <p id="keyring-search-help" class="field-hint">Local name/email words tolerate one typo at 3–5 characters, two at 6–64 (including adjacent swaps); shorter terms match literally. Hex fingerprint fragments of 8+ digits match exactly, never fuzzily. At most 128 search characters / eight words. Filtering does not verify identity, select a recipient, change fingerprint confirmations, or reduce the full-keyring export. Search text is not remembered.</p>
+              <p id="keyring-search-status" class="status-message" role="status" aria-live="polite" aria-atomic="true">Keyring empty. Import a public certificate to search.</p>
+            </div>
             <ul id="keyring-list" class="keyring-list" aria-label="Public certificates in memory"></ul>
             <p class="field-hint">A changed certificate with an existing fingerprint is refused rather than silently merged. Review updates/revocations in a dedicated client, then explicitly remove/reimport here. Expired/revoked/invalid self-certifications are marked archival-only.</p>
             <label for="keyring-output">Exported public keyring — separate armor block per certificate</label>

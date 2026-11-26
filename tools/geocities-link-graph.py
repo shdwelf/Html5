@@ -230,6 +230,10 @@ class EdgeCollector:
         except (ValueError, KeyError, TypeError, UnicodeError):
             with self.lock:
                 self.error = "invalid-native-response"
+        finally:
+            # An invalid response must break the pipe, not leave the producer
+            # blocked forever writing candidates to a reader that has stopped.
+            stream.close()
 
     def snapshot(self):
         with self.lock:

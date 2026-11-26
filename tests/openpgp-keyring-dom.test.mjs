@@ -270,6 +270,9 @@ test("PUBLIC remembering is opt-in, survives pagehide/reload, and never stores k
     assert.deepEqual(Object.keys(JSON.parse(snapshot)).sort(), ["armored", "version"]);
     assert.equal(JSON.parse(snapshot).armored, ui.get("keyring-output").value);
     for (const secret of [bundle.privateKey, bundle.revocationCertificate, passphrase, "private synthetic research text"]) assert.ok(!snapshot.includes(secret));
+    ui.input("keyring-search", "synthetci");
+    assert.equal(ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY), snapshot, "search never rewrites an opted-in public snapshot");
+    assert.ok(!snapshot.includes("synthetci"));
     ui.window.dispatchEvent(new ui.window.Event("pagehide"));
     assert.equal(ui.get("keyring-list").children.length, 0);
     assert.equal(ui.window.localStorage.getItem(PUBLIC_STORAGE_KEY), snapshot, "navigation must not erase the opted-in PUBLIC snapshot");
@@ -278,6 +281,7 @@ test("PUBLIC remembering is opt-in, survives pagehide/reload, and never stores k
   try {
     await until(() => restored.get("keyring-list").children.length === 1);
     assert.equal(restored.get("remember-public-keyring").checked, true);
+    assert.equal(restored.get("keyring-search").value, "", "remembering public certificates must not remember search text");
     assert.equal(restored.get("generated-public-output").value, "");
     assert.equal(restored.get("key-passphrase").value, "");
     assert.match(restored.get("keyring-status").textContent, /revalidation/);
@@ -409,4 +413,86 @@ test("a cleared or edited public subset request cannot create a late download", 
       assert.equal(ui.get("keyring-list").children.length, 0);
     } finally { ui.dom.window.close(); }
   }
+});
+
+test("fuzzy public filtering ranks exact names first, keeps whole-ring exports and targets each original certificate", async () => {
+  const original = [
+    { fingerprint: "A".repeat(40), userIDs: ["Bob Example"] },
+    { fingerprint: "B".repeat(40), userIDs: ["Alice Example <alice@example.invalid>"] },
+    { fingerprint: "C".repeat(40), userIDs: ["Alcie Exact"] },
+  ].map((entry) => ({ ...entry, algorithm: "v4 RSA-3072", selfCertification: "synthetic metadata only" }));
+  let entries = [];
+  const exported = [], removed = [];
+  const armor = (entry) => `-----BEGIN PGP PUBLIC KEY BLOCK-----\nsynthetic-${entry.fingerprint}\n-----END PGP PUBLIC KEY BLOCK-----`;
+  const ui = boot({ keyTools: { createPublicKeyring: () => ({
+    list: () => [...entries], importKeys: async () => { entries = [...original]; },
+    exportKeys: () => entries.map(armor).join("\n"),
+    exportCertificate: (fingerprint) => { exported.push(fingerprint); return armor(original.find((entry) => entry.fingerprint === fingerprint)); },
+    remove: (fingerprint) => { removed.push(fingerprint); entries = entries.filter((entry) => entry.fingerprint !== fingerprint); },
+    clear: () => { entries = []; },
+  }) } });
+  try {
+    assert.equal(ui.get("keyring-search").value, ""); assert.equal(ui.get("clear-keyring-search").disabled, true);
+    assert.equal(ui.get("keyring-search").getAttribute("aria-controls"), "keyring-list");
+    assert.equal(ui.get("keyring-search-status").getAttribute("role"), "status");
+    ui.submit("keyring-import-form"); await until(() => ui.get("keyring-list").children.length === 3);
+    const whole = ui.get("keyring-output").value;
+    ui.input("keyring-search", "alcie");
+    assert.deepEqual([...ui.get("keyring-list").children].map((node) => node.dataset.searchMatch), ["text", "fuzzy"]);
+    assert.match(ui.get("keyring-list").children[0].textContent, /Alcie Exact/);
+    assert.match(ui.get("keyring-list").children[1].textContent, /Alice Example/);
+    assert.match(ui.get("keyring-search-status").textContent, /2 of 3/);
+    assert.equal(ui.get("keyring-output").value, whole);
+    assert.equal(ui.get("expected-fingerprint").value, "", "search never fills a confirmation field");
+    ui.get("keyring-list").children[0].querySelectorAll("button")[1].click();
+    await until(() => ui.downloads.length === 1);
+    assert.deepEqual(exported, [original[2].fingerprint], "ranked positions never replace exact certificate identity");
+    assert.equal(await ui.downloads[0].blob.text(), armor(original[2]));
+    ui.input("keyring-search", "nobodymatches");
+    assert.equal(ui.get("keyring-list").children.length, 0);
+    assert.match(ui.get("keyring-search-status").textContent, /0 of 3.*No matches/);
+    assert.match(ui.get("keyring-count").textContent, /3 \/ 32/);
+    assert.equal(ui.get("download-keyring").disabled, false); assert.equal(ui.get("copy-keyring").disabled, false);
+    assert.equal(ui.get("keyring-output").value, whole);
+    ui.get("download-keyring").click(); await until(() => ui.downloads.length === 2);
+    assert.equal(await ui.downloads[1].blob.text(), whole, "zero visible results must not silently empty a backup");
+    ui.get("clear-keyring-search").click();
+    assert.equal(ui.get("keyring-list").children.length, 3); assert.equal(ui.get("keyring-search").value, "");
+    assert.equal(ui.window.document.activeElement, ui.get("keyring-search"));
+    ui.input("keyring-search", "alcie"); ui.get("keyring-list").children[1].querySelector("button").click();
+    assert.deepEqual(removed, [original[1].fingerprint]);
+    assert.match(ui.get("keyring-count").textContent, /2 \/ 32/);
+    assert.equal(ui.get("keyring-list").children.length, 1);
+    assert.equal((ui.get("keyring-output").value.match(/BEGIN PGP PUBLIC KEY BLOCK/g) || []).length, 2);
+    ui.api.clearAll();
+    assert.equal(ui.get("keyring-search").value, ""); assert.equal(ui.get("clear-keyring-search").disabled, true);
+    assert.equal(ui.get("keyring-output").value, "");
+  } finally { ui.dom.window.close(); }
+});
+
+test("search never weakens actual import fingerprint checks; fingerprint text remains exact-only", async () => {
+  const ui = boot();
+  try {
+    const wrong = (bundle.fingerprint[0] === "A" ? "B" : "A") + bundle.fingerprint.slice(1);
+    ui.input("keyring-search", "synthetci");
+    ui.input("public-key-input", bundle.publicKey); ui.input("expected-fingerprint", wrong); ui.submit("keyring-import-form");
+    await until(() => ui.get("keyring-status").dataset.kind === "error");
+    assert.equal(ui.get("keyring-list").children.length, 0); assert.equal(ui.get("keyring-output").value, "");
+    ui.input("expected-fingerprint", bundle.fingerprint); ui.submit("keyring-import-form");
+    await until(() => ui.get("keyring-list").children.length === 1);
+    assert.equal(ui.get("keyring-list").children[0].dataset.searchMatch, "fuzzy");
+    ui.input("keyring-search", wrong); assert.equal(ui.get("keyring-list").children.length, 0);
+    ui.input("keyring-search", keys.formatFingerprint(bundle.fingerprint));
+    assert.equal(ui.get("keyring-list").children.length, 1);
+    assert.equal(ui.get("keyring-list").children[0].dataset.searchMatch, "fingerprint");
+    assert.equal(ui.get("expected-fingerprint").value, bundle.fingerprint);
+    ui.input("keyring-search", "x".repeat(129));
+    assert.equal(ui.get("keyring-search-status").dataset.kind, "error");
+    assert.equal(ui.get("keyring-list").children.length, 0);
+    assert.match(ui.get("keyring-output").value, /BEGIN PGP PUBLIC KEY BLOCK/);
+    ui.get("keyring-search").dispatchEvent(new ui.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+    assert.equal(ui.get("keyring-search").value, ""); assert.equal(ui.get("keyring-list").children.length, 1);
+    assert.equal(ui.window.localStorage.length + ui.window.sessionStorage.length, 0);
+    assert.equal(ui.downloads.length, 0);
+  } finally { ui.dom.window.close(); }
 });

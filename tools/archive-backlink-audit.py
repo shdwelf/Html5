@@ -288,8 +288,15 @@ def emit_actions_annotations(result):
     # requested URLs, hashes, observations and source order remain explicit.
     projected = [{key: value for key, value in row.items() if key != "hashScope" and
                   not (key == "resolvedUrl" and value == row.get("requestedUrl"))} for row in result["sources"]]
-    rows = [(f"archive-stage-{stage}", {"stage": stage, "sources": [row for row in projected if row["stage"] == stage]})
-            for stage in (1, 2, 3, 4)]
+    rows = []
+    for stage in (1, 2, 3, 4):
+        sources = [row for row in projected if row["stage"] == stage]
+        # Actual public-view forms make the two controls larger than a single
+        # notice. Separate them without exceeding the ten-notice step limit.
+        if stage == 3 and sources:
+            rows.extend((f"archive-stage-3-{row['id']}", {"stage": 3, "sources": [row]}) for row in sources)
+        else:
+            rows.append((f"archive-stage-{stage}", {"stage": stage, "sources": sources}))
     rows.append(("audit-summary", {**{key: value for key, value in result.items() if key != "sources"},
                                   "annotationProjection": "Identical resolvedUrl omitted; response hashes cover fetched HTTP bytes, not a CDX digest comparison"}))
     for title, row in rows:

@@ -35,9 +35,9 @@ jobs:
         run: python3 -m unittest discover -s tests -p geocities_link_graph_test.py
 
   complete-public-graph-scan:
-    # Do not download 19 GB on each PR synchronization or on main. The exact
-    # public-file investigation is explicit branch work; PRs re-run offline gates.
-    if: github.event_name != 'pull_request'
+    # The full 19-GB public-file investigation is explicitly dispatched after
+    # source review. Branch/PR synchronizations run offline controls only.
+    if: github.event_name == 'workflow_dispatch'
     needs: offline-controls
     runs-on: ubuntu-24.04
     timeout-minutes: 100

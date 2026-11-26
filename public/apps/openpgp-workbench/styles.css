@@ -161,6 +161,14 @@ textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
 .backup-box h3 { color: var(--warning); }
 .check-row { display: flex; gap: 10px; align-items: flex-start; margin: 17px 0; font-size: 12px; line-height: 1.7; color: #d7e1ec; cursor: pointer; }
 .check-row input { width: 18px; min-height: 18px; flex: 0 0 18px; margin: 3px 0 0; accent-color: var(--mint-dark); }
+.keyring-search { margin-top: 18px; }
+.keyring-search-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.keyring-search-controls input { min-width: 0; }
+.keyring-search .field-hint { overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .keyring-search-controls { grid-template-columns: minmax(0, 1fr); }
+  .keyring-search-controls .button { justify-self: start; }
+}
 .keyring-list { list-style: none; margin: 16px 0; padding: 0; }
 .keyring-item { border: 1px solid var(--line); border-radius: 12px; padding: 15px; margin-top: 10px; background: rgba(7, 16, 28, 0.45); }
 .keyring-item p { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; line-height: 1.65; unicode-bidi: plaintext; }

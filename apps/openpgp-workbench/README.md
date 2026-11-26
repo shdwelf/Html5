@@ -19,11 +19,43 @@ Open `/apps/openpgp-workbench/`. The build copies the application and the unmodi
 - **Protected private export:** both packets use AES-256, iterated/salted SHA-256 S2K, count `0xFF` (65,011,712 octets). A minimum 12-character passphrase is required, but length is not a strength guarantee. Generated private armor never becomes a page field or clipboard item. Download requires explicit acknowledgement and the full matching fingerprint, with a packet-protection recheck.
 - **Revocation backup:** a separate, explicit **unencrypted sensitive certificate**. Anyone holding it can revoke the key. Keep it private/offline; never bundle it with the public certificate you share.
 - **Public keyring:** memory-only by default; optional device remembering for validated PUBLIC v4 RSA certificates (2048–16384 bits), v4 legacy Ed25519/Curve25519, or v6 Ed25519/X25519 certificates, 1 MiB / 32 certificates. Supports multiple keys inside one armor block and concatenated armor blocks. Secret packets, mixed/junk/unsupported packets and other key profiles are refused atomically. Full expected fingerprints may be supplied for a single-certificate import; short IDs are never accepted. Public fingerprints are 40 hex characters for v4 and 64 for v6; v6 still requires a modern destination client.
+- **Fuzzy public search:** filter in-memory certificates by name/email with bounded typo tolerance, or exact-only fingerprint text. This changes the list only, never imports, recipient selection, confirmation fields, public remembering or full-keyring exports. Search text is not saved; Clear search / Escape restores the list. See the separate search rules below.
 - Identical public certificates deduplicate; changed data with the same fingerprint requires explicit remove/reimport after reviewing updates/revocations in a dedicated client. Primary self-certification state is checked **at import time**, not continuously. Expired/revoked/invalid certificates are marked archival-only. Every User ID remains an unverified claim; there is no owner-trust assignment or blanket subkey audit. The display separately detects a currently usable bound encryption key; signing/authentication-only subkeys are not encryption keys.
 
 - **Recover passphrase:** a separate, explicit transient protected-key input with ranked wordlist/hint preview and optional small typo variants. At most 256 candidates / 120 seconds, a dedicated local module worker, full fingerprint and permission acknowledgement, exact all-secret-packet unlock/validation, Stop/Clear/navigation termination, and explicit result reveal only. It does not import secrets into the public keyring, reset a passphrase, decrypt messages/files or export an unlocked key. See bounds below.
 
 No public-key **message** encryption/decryption, persistent secret-key import, signing UI, attachments, modern AEAD message writer, hardware cards, pairing, keyserver lookup/publishing, telemetry, background request or automatic secret persistence is implemented. Add a generated public key to the keyring explicitly; nothing is downloaded or published automatically.
+
+## Fuzzy public-certificate search
+
+Open **Public keyring**, explicitly import your public certificates, then use
+**Fuzzy search public certificates**. Name/email words compare case-insensitively
+with NFC Unicode normalization: insertion, deletion, substitution or adjacent
+swap, one edit for 3–5 code points and two for 6–64. Shorter/longer terms match
+literally. Every word must match; literal text matches rank before fuzzy matches,
+with original ring order for ties. Up to 128 input characters / eight words;
+the existing 32-certificate, 32-UID/certificate and 2048-byte/UID model bounds
+still apply. Empty search shows the original list, and no-match/invalid input
+has its own accessible status. Punctuation is not a regular-expression wildcard.
+
+Hex-looking queries of eight or more digits (spaces/case allowed) filter primary
+fingerprint text **exactly**, without fuzzy name fallback. A fragment is only a
+display convenience: expected import/recipient/recovery/export fingerprints
+still require the existing exact full 40-hex v4 / 64-hex v6 value. No result is
+automatically trusted, imported, exported or selected as a recipient. User IDs
+remain unverified text, not HTML.
+
+The filter never edits certificates or the full-keyring `.asc` output. Even
+with zero visible results, **Download/Copy public keyring includes every stored
+certificate**. Individual result actions remain bound to that certificate's
+original full fingerprint, not its ranked position. Search does not rewrite an
+opted-in PUBLIC snapshot and is cleared on ring/global Clear or navigation;
+reload restores only an explicitly remembered, revalidated public ring, not
+queries or secrets. No new engine, network request, dependency or store is added.
+
+This public metadata filter is distinct from the existing private-key recovery
+planner below. Fuzzy resemblance never authorizes cryptography or partially
+unlocks a key.
 
 ## Bounded local passphrase recovery
 
@@ -153,7 +185,7 @@ Clear buttons and `pagehide` drop fields/references and suppress late async resu
 ## Verification
 
 ```sh
-node --test tests/openpgp-workbench.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-dom.test.mjs
+node --test tests/openpgp-workbench.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-search.test.mjs tests/openpgp-keyring-dom.test.mjs
 node --test tests/openpgp-key-interop.test.mjs
 # Full native GnuPG is separate from gpgv; requires gpg AND gpgconf:
 node --test tests/openpgp-native-interop.test.mjs
