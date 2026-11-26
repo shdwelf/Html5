@@ -18,6 +18,7 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   "docs/research/token-deployment-capture-sources-2026-11-17.json",
   "docs/research/wordpress-waves-small-web-sources-2026-11-17.json",
   "docs/research/android-ssh-apk-sizes-2026-11-17.json",
+  "docs/research/putty-sdf-free-shell-sources-2026-11-17.json",
 ]);
 
 export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
@@ -64,6 +65,10 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/waves-paper-practice-2026-11-17.md",
   "docs/wordpress-tiddlywiki-small-web-2026-11-17.md",
   "docs/android-ssh-apk-size-comparison-2026-11-17.md",
+  // Android port delivery and public-account investigation are operational
+  // research, not approved additions to the offline manual bundles.
+  "docs/putty-android-sdf-free-shell-investigation-2026-11-17.md",
+  "docs/backlog-execution-round-94-2026-11-17.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

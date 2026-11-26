@@ -74,6 +74,26 @@ named artifact; it does **not** by itself establish a trusted signing identity,
 absence of vulnerabilities or safe host-key behavior. This investigation does
 not recommend sending owner recovery phrases/OpenPGP keys to an SSH app.
 
+## Separate measured build: unofficial PuTTY/Plink review port
+
+A later user-directed [PuTTY Android implementation and investigation](putty-android-sdf-free-shell-investigation-2026-11-17.md)
+now has an actual locally retrieved, runner-built
+[review APK](../research/putty-android/unofficial-putty-0.85-review.apk):
+**792,988 bytes = 774.402 KiB = 0.756 MiB**, Android API 28 minimum, ARM64/x86-64.
+Its [receipt](../research/putty-android/build-receipt.json) records an official
+PuTTY 0.85 source digest/signature check, Android lint, APK v2 verification and
+eight passing API 35 x86-64 emulator controls, including a synthetic SSH login.
+The APK SHA-256 was recomputed after retrieval. ARM64 physical hardware, other
+Android versions, 16 KiB-page runtime and installed footprint were not tested.
+
+It is **not added to the general-purpose client ranking**: it is our unofficial,
+debug-signed, foreground-only **line-oriented Plink front end**, not a full
+PuTTY GUI/VT terminal and not a third-party distribution sample. It lacks SFTP,
+key import, saved sessions and tunnels. A smaller feature-limited review build
+is not a fair drop-in replacement for the clients above, a production signing
+identity or a reason to entrust it with sensitive credentials without review.
+The original sampled metadata/digests and their qualifications remain unchanged.
+
 ## Evidence and reproducibility
 
 [Machine-readable artifact/source manifest](research/android-ssh-apk-sizes-2026-11-17.json):
@@ -83,12 +103,16 @@ asset IDs, exact filenames, flavors, URLs and advertised digests are retained.
 The AnotherTerm API returned no digest; none is fabricated. Reported sizes and
 digests are **metadata**, not locally downloaded/measured/verified APKs.
 
-No APK was downloaded, installed or executed. No installed-footprint,
-signature-certificate, device/ABI, SSH connection, authentication or security
-acceptance result is claimed. Page/search extractions are labeled as such,
-not misrepresented as archived raw-page hashes. Upstream source inspection is
-not proof of reproducible binary correspondence. This is a sampled comparison,
-not proof that smaller/other clients or newer releases do not exist.
+For the **ranked third-party sample**, no APK was downloaded, installed or
+executed; its sizes remain metadata, not measured local artifacts. No installed
+footprint, signature-certificate, device/ABI, SSH authentication or security
+acceptance result is claimed for those samples. The separate source-built
+PuTTY/Plink review port above has its own measured artifact and narrowly scoped
+synthetic emulator evidence; it does not retroactively verify any ranked APK.
+Page/search extractions are labeled as such, not misrepresented as archived raw
+page hashes. Upstream source inspection is not proof of reproducible binary
+correspondence. This is a sampled comparison, not proof that smaller/other
+clients or newer releases do not exist.
 
 The separate [Waves note](waves-paper-practice-2026-11-17.md) addresses the
 remembered **saved-page renamed `.hts`** workflow and the synthetic serving
