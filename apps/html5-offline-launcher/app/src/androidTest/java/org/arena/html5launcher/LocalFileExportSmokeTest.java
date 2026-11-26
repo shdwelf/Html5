@@ -104,12 +104,21 @@ public final class LocalFileExportSmokeTest {
         try (OutputStream output = activity.getContentResolver().openOutputStream(chosen, "wt")) { output.write(synthetic); }
         Instrumentation.ActivityMonitor opening = picker(Intent.ACTION_OPEN_DOCUMENT, Activity.RESULT_OK, chosen);
         try {
-            evaluate(web, "document.getElementById('keyring-tab').click(); 'opened'");
+            evaluate(web, "document.getElementById('keyring-tab').click();" +
+                    "window.__syntheticFileGesture='none'; window.__syntheticFileEvents=[];" +
+                    "for (const type of ['pointerdown','pointerup','pointercancel','click']) document.addEventListener(type, event => {" +
+                    "if (__syntheticFileEvents.length < 8) __syntheticFileEvents.push({type,target:event.target.id || event.target.tagName," +
+                    "trusted:event.isTrusted,x:event.clientX,y:event.clientY}); }, {once:true,capture:true});" +
+                    "document.getElementById('public-key-file').addEventListener('click', event => {" +
+                    "window.__syntheticFileGesture=String(event.isTrusted) + '|' + String(navigator.userActivation.isActive); }, {once:true}); 'opened'");
             // A programmatic file-input click has no transient user activation
             // in Android WebView. Tap the real, visible HTML file control.
             WebViewTestInput.tapElement(instrumentation, web, "public-key-file");
             long pickerDeadline = SystemClock.uptimeMillis() + 10000;
             while (opening.getHits() == 0 && SystemClock.uptimeMillis() < pickerDeadline) SystemClock.sleep(100);
+            assertEquals("file control must receive a trusted click with transient user activation; " +
+                    WebViewTestInput.lastGesture + "; events=" + evaluate(web, "JSON.stringify(window.__syntheticFileEvents)"), "true|true",
+                    evaluate(web, "window.__syntheticFileGesture"));
             assertEquals("a real input gesture must open ACTION_OPEN_DOCUMENT", 1, opening.getHits());
             await(web, "document.getElementById('public-key-input').value + '|' + document.getElementById('keyring-status').textContent", "SYNTHETIC NOT-A-KEY");
             assertEquals("0", evaluate(web, "String(document.querySelectorAll('#keyring-list li').length)"));
@@ -302,12 +311,27 @@ public final class LocalFileExportSmokeTest {
     private void load(WebView web, String url) throws Exception {
         assertNotNull(web);
         Log.i("Html5LocalFileSmoke", "loading synthetic packaged page " + url);
-        // loadUrl schedules navigation; a same-URL reload can still report
-        // the old complete document. Mark it and wait until that mark is gone.
-        String token = java.util.UUID.randomUUID().toString();
-        evaluate(web, "window.__syntheticOldDocument=" + JSONObject.quote(token) + "; 'marked'");
-        instrumentation.runOnMainSync(() -> web.loadUrl(url));
-        await(web, "window.__syntheticOldDocument === " + JSONObject.quote(token) + " ? 'previous-document' : document.readyState + '|' + location.href + '|' + typeof Html5LocalFiles", "complete|" + url + "|object");
+        // Never evaluate JS in a provisional/initial navigation: Android may
+        // discard that document's callback. A unique query (ignored by the
+        // packaged asset resolver) distinguishes same-URL reloads without
+        // changing origins or adding a production test hook.
+        String requested = Uri.parse(url).buildUpon().appendQueryParameter("__androidSmokeNavigation",
+                java.util.UUID.randomUUID().toString()).build().toString();
+        instrumentation.runOnMainSync(() -> web.loadUrl(requested));
+        long deadline = SystemClock.uptimeMillis() + 30000;
+        boolean[] committed = new boolean[1];
+        do {
+            instrumentation.runOnMainSync(() -> {
+                android.webkit.WebHistoryItem current = web.copyBackForwardList().getCurrentItem();
+                committed[0] = current != null && requested.equals(current.getUrl()) &&
+                        requested.equals(web.getUrl()) && web.getProgress() == 100;
+            });
+            if (committed[0]) break;
+            SystemClock.sleep(100);
+        } while (SystemClock.uptimeMillis() < deadline);
+        assertTrue("requested packaged document must finish native navigation", committed[0]);
+        WebViewTestInput.awaitVisualState(instrumentation, web);
+        await(web, "document.readyState + '|' + location.href + '|' + typeof Html5LocalFiles", "complete|" + requested + "|object");
         Log.i("Html5LocalFileSmoke", "loaded synthetic packaged page " + url);
     }
     private String await(WebView web, String expression, String prefix) throws Exception {

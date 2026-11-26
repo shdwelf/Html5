@@ -224,6 +224,17 @@ dispatch `.github/workflows/html5-offline-launcher-build.yml` with both:
   decryption client. If the full original has unsupported public subkeys, first
   create the checked reduced PUBLIC export in Workbench; keep the original.
 
+The first step now emits an **`Android-recipient-inputs`** error explaining the
+specific missing/mismatched field, rather than an unexplained shell exit 1.
+For an ordinary build, leave **both recipient fields empty** and Drive upload
+off. For a 64-hex v6 fingerprint, explicitly select **`modern-v6`**; the default
+remains `classic-v4`. Do not shorten, pad or alter a fingerprint to make a run
+pass. This early guard checks input routing/armor shape only: the encryption
+script still must parse exactly one supported certificate, verify its full
+identity and usable encryption subkey, and check the ciphertext before export.
+Invalid recipient inputs fail closed; private plaintext is never a fallback.
+No private key, passphrase or account token should be supplied to Actions/chat.
+
 This dispatch uploads **only encrypted APKs** and UID-free checksums/receipts in
 `html5-offline-launcher-encrypted-debug-apks` (seven days). The locked Node 22 /
 OpenPGP.js 6.3.3 release script works without a native `gpg` install. It validates
@@ -253,8 +264,11 @@ called “public”; this label describes its app inventory, not cloud sharing.
 
 Automatic pull-request/main builds do not ask for a key. In GitHub Actions,
 choose **Run workflow** for a manual recipient dispatch; new input definitions
-appear in the web UI only once they are on the default branch. Every run still
-builds public, network and private regardless of recipient inputs. A 403
+appear in the web UI only once they are on the default branch. Every valid run
+builds public, network and private; recipient inputs do not select/drop profiles.
+Invalid recipient inputs stop before compilation/export with an explicit error.
+Start a **new** run from the fixed revision: rerunning an old failed job retains
+that old revision's workflow. A 403
 “Resource not accessible by integration” is a GitHub connection/permission issue,
 not a subkey parsing error: reconnect the GitHub integration in Arena rather
 than supplying a private key, access token or passphrase in chat. Build success,
