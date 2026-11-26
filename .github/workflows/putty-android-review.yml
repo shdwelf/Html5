@@ -1,0 +1,98 @@
+name: PuTTY Android — delivered APK review
+
+# Read-only validation of the exact delivered APK at the review head. Building
+# another debug-signed APK just for a documentation change would rotate its
+# disposable signing identity; instead require unchanged measured app sources.
+on:
+  pull_request:
+    paths:
+      - 'apps/putty-android/**'
+      - 'tools/putty-android/**'
+      - 'research/putty-android/**'
+      - 'tests/putty-android.test.mjs'
+      - 'tests/putty_android_source_test.py'
+      - 'docs/*putty*'
+      - 'docs/backlog-execution-round-94-2026-11-17.md'
+      - 'docs/research/putty-sdf-free-shell-sources-2026-11-17.json'
+      - 'tools/wikiinajar/public-corpus-policy.mjs'
+      - '.github/workflows/putty-android-review.yml'
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'research/putty-android/**'
+      - 'tests/putty-android.test.mjs'
+      - 'docs/*putty*'
+      - 'docs/backlog-execution-round-94-2026-11-17.md'
+      - 'docs/research/putty-sdf-free-shell-sources-2026-11-17.json'
+      - 'tools/wikiinajar/public-corpus-policy.mjs'
+      - '.github/workflows/putty-android-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: putty-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review-delivered-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 20
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - name: Verify byte-exact APK, native ELF, safety policies and research limitations
+        run: |
+          set -euo pipefail
+          bash tools/putty-android/test-core.sh
+          python3 -m unittest discover -s tests -p putty_android_source_test.py -v
+          node --test tests/putty-android.test.mjs tests/wikiinajar.test.mjs tests/webxdc-packages.test.mjs
+      - name: Require successful measured build and unchanged application/build sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          receipt = json.loads(Path('research/putty-android/build-receipt.json').read_text())
+          source = receipt['sourceCommit']
+          assert re.fullmatch('[0-9a-f]{40}', source)
+          match = re.fullmatch(r'https://github.com/shdwelf/Html5/actions/runs/(\d+)', receipt['buildRun'])
+          assert match
+          run = json.loads(subprocess.check_output(['gh', 'api', 'repos/shdwelf/Html5/actions/runs/' + match[1]]))
+          assert run['head_sha'] == source and run['status'] == 'completed' and run['conclusion'] == 'success'
+          assert run['path'] == '.github/workflows/putty-android.yml'
+          subprocess.run(['git', 'fetch', '--depth=1', 'origin', source], check=True)
+          subprocess.run(['git', 'diff', '--exit-code', source, 'HEAD', '--',
+                          'apps/putty-android', 'tools/putty-android', 'tests/putty_android_source_test.py'], check=True)
+          print('Delivered APK has a successful same-source measured Android build; later research/review-only changes are not mislabeled as a new build.')
+          PY
+      - name: Independently verify delivered APK v2 signature and certificate using Android build-tools
+        run: |
+          set -euo pipefail
+          if ! test -x "$ANDROID_HOME/build-tools/35.0.0/apksigner"; then
+            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'build-tools;35.0.0'
+          fi
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs \
+            research/putty-android/unofficial-putty-0.85-review.apk > /tmp/putty-apk-signature.txt
+          python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+          receipt = json.loads(Path('research/putty-android/build-receipt.json').read_text())
+          output = Path('/tmp/putty-apk-signature.txt').read_text()
+          assert 'Verified using v2 scheme (APK Signature Scheme v2): true' in output
+          actual = re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-f]{64})', output).group(1)
+          assert actual == receipt['debugCertificateSha256']
+          print('Delivered APK signature and exact review certificate verified. This is not a production/upstream signing identity.')
+          PY

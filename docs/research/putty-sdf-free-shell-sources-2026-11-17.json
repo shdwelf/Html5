@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "reportSeriesDate": "2026-11-17",
+  "timestampQualification": "The retained filename/date labels this report series, not every evidence acquisition. Individual page-fetch timestamps were not captured in this summarized register. GitHub build/review timestamps below are recorded as returned, not inferred from the filename.",
+  "scope": "User-directed GitHub PuTTY search, then public metasearch, official source checking, Android port work and free-shell membership research",
+  "evidenceKind": "Tool-returned page extractions and GitHub API/source inspection, summarized; not raw archived page bodies, uptime probes or account tests",
+  "accountActions": {
+    "publicAccountCreated": false,
+    "publicAccountLoginAttempted": false,
+    "credentialsTested": false,
+    "validationPerformed": false,
+    "paymentOrDonationMade": false,
+    "accountEnumerationPerformed": false,
+    "publicHostKeysScanned": false,
+    "note": "Android integration controls use only a disposable loopback SSH fixture on a hosted runner. No specific user-owned account or credentials were supplied."
+  },
+  "github": {
+    "order": "GitHub repository searches were performed before metasearch queries",
+    "queries": [
+      {"query": "putty in:name", "sort": "stars", "returnedSample": 10, "totalCountAsReturned": 1753},
+      {"query": "putty android", "sort": "updated", "returnedSample": 7, "totalCountAsReturned": 7}
+    ],
+    "inspected": [
+      {
+        "repository": "github/putty",
+        "url": "https://github.com/github/putty",
+        "finding": "Archived mirror, described as a client-testing mirror; not selected as the current release source."
+      },
+      {
+        "repository": "rhuijben/putty",
+        "url": "https://github.com/rhuijben/putty",
+        "inspectedCommit": "d2c178c49a0ae6fa9ef75ca84fb3c9d0d675ea85",
+        "inspectedReleaseTag": "0.83",
+        "observedMainCommit": "503d6139d5e1a7c727343e7c06c39778f18dfb25",
+        "finding": "Useful CMake/Unix Plink frontend inspection; tag listing as returned stopped at 0.83. Not substituted for the official 0.85 release. Direct guessed 0.85 tag endpoint returned 404."
+      },
+      {
+        "repository": "Windows-Search/PuttyForAndroid",
+        "url": "https://github.com/Windows-Search/PuttyForAndroid/tree/b62cf01918427125577c135e9944ea1478a90eed",
+        "treeCommit": "b62cf01918427125577c135e9944ea1478a90eed",
+        "finding": "Complete returned tree had README, licence, workflow and keystore-named entries, but no Android application/native build implementation. Not selected or represented as a functioning port. Keystore-named contents were not opened or used."
+      },
+      {
+        "repository": "teliy/SeaShell",
+        "url": "https://github.com/teliy/SeaShell/tree/5cf608b97306d64dba110781a7804f01308f0bcf",
+        "treeCommit": "5cf608b97306d64dba110781a7804f01308f0bcf",
+        "finding": "README and app/build.gradle identify Kotlin, xterm.js and com.github.mwiede:jsch 0.2.25, not PuTTY source. GPLv3 alternative; not copied, built, installed or endorsed here. Its README also discloses passwords in SharedPreferences."
+      },
+      {
+        "repository": "alexandrosnt/Reach",
+        "url": "https://github.com/alexandrosnt/Reach/blob/b6819691ea963ace7f24bf7ba9b99a596b5f9cc2/src-tauri/Cargo.toml",
+        "treeCommit": "b6819691ea963ace7f24bf7ba9b99a596b5f9cc2",
+        "finding": "Cargo manifest uses russh (0.63 declaration and vendored patch), not PuTTY. A cross-platform SSH alternative, not evidence of a PuTTY port."
+      },
+      {
+        "repository": "termux/termux-packages",
+        "url": "https://github.com/termux/termux-packages/blob/f917b2394074478ade9251ec8199d3f617bb5ec5/x11-packages/putty/build.sh",
+        "commit": "f917b2394074478ade9251ec8199d3f617bb5ec5",
+        "finding": "Actual x11-packages/putty recipe selects official 0.85 source and the same pinned SHA256 as the official checksum page; includes GTK/X11 dependencies. A real Android packaging lead, but not a standalone native Android-UI APK. The earlier packages/putty endpoint was the wrong directory and returned 404."
+      }
+    ]
+  },
+  "metasearch": {
+    "directory": {"url": "https://searx.space/", "observedOnlineCount": 75, "qualification": "Directory extraction, not an independent health test of all instances"},
+    "requests": [
+      {"url": "https://baresearch.org/search?q=%22PuTTY%22+%22Android%22", "outcome": "Rendered no-results page"},
+      {"url": "https://search.utilibre.org/search?q=%22PuTTY%22+%22Android%22+%21mwmbl", "outcome": "Rendered no-results page"},
+      {"url": "https://baresearch.org/search?q=%21mwmbl+PuTTY", "outcome": "Returned mwmbl result set; general PuTTY/puTTYgen links, not an authenticated Android build"},
+      {"url": "https://search.utilibre.org/search?q=%21mwmbl+PuTTY", "outcome": "Returned mwmbl result set including GitHub PuTTY topics; primary-source verification used instead of download-site claims"},
+      {"url": "https://baresearch.org/search?q=%21mwmbl+%22putty%22+%22android%22", "outcome": "Rendered no-results page"},
+      {"url": "https://search.utilibre.org/search?q=%21mwmbl+%22PuTTY%22+%22Android%22", "outcome": "Rendered no-results page"},
+      {"url": "https://search.utilibre.org/search?q=%21wiby+%22SDF%22+%22validate%22", "outcome": "Rendered no-results page"},
+      {"url": "https://baresearch.org/search?q=%21mwmbl+%22tty.sdf.org%22", "outcome": "Rendered no-results page"},
+      {"url": "https://search.utilibre.org/search?q=%21mwmbl+freeshell", "outcome": "Returned freeshell.de lead; provider home and get-started pages were then fetched directly"},
+      {"url": "https://baresearch.org/search?q=%21mwmbl+%22free+shell%22", "outcome": "Rendered no-results page"},
+      {"url": "https://www.isci.si/search?q=SDF+validation+account", "outcome": "Returned only front-page search UI, not a usable result set"},
+      {"url": "https://search.ctq.ro/search?q=%22freeshell%22+%22validation%22", "outcome": "Fetch failed"},
+      {"url": "https://searx.ononoki.org/search?q=PuTTY+Android", "outcome": "Usable multi-engine result set (bing, yahoo, fynd labels); official PuTTY home/download plus third-party alternatives and APK claims. No third-party APK downloaded."},
+      {"url": "https://searx.ononoki.org/search?q=SDF+account+validation+validate", "outcome": "Mixed, mostly irrelevant SDF acronym results; SDF tutorials link observed but no reliable validation fee or host key established"},
+      {"url": "https://searx.ononoki.org/search?q=%22sdf.org%22+%22validate%22", "outcome": "Mostly irrelevant results; not accepted as validation evidence"},
+      {"url": "https://searx.ononoki.org/search?q=%21bing+%22tty.sdf.org%22+fingerprint", "outcome": "Irrelevant retailer result set; not accepted as host-key evidence"},
+      {"url": "https://searx.ononoki.org/search?q=%22free+shell+accounts%22", "outcome": "Mixed results including Blinkenshell; primary signup/rules/supporter documentation fetched directly"}
+    ],
+    "limits": "No-results, failed fetches and irrelevant results are recorded distinctly. They do not prove the absence of ports, services, accounts or validation methods. Search excerpts about current PuTTY versions were overridden by official 0.85 pages."
+  },
+  "puttyPrimarySources": [
+    {"url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/", "finding": "Official home lists 0.85 released 2026-08-16"},
+    {"url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html", "finding": "Both chunks inspected; official Windows binaries, Unix source archive and canonical git.tartarus.org source links"},
+    {"url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/faq.html", "sections": ["A.2.3", "A.3.1", "A.3.3", "A.4.2", "A.5.4"], "finding": "No official Android/iOS port; Plink subprocess integration recommended; exact host-key checking and anti-spoofing Return prompt explained"},
+    {"url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html", "finding": "MIT; adaptation and redistribution allowed with copyright/licence notice, no warranty"},
+    {"url": "https://the.earth.li/~sgtatham/putty/0.85/sha256sums", "finding": "Pinned putty-0.85.tar.gz SHA256", "sha256": "13fd4db2936d03b73812a7bcc2a658e4dd29cc776a56c3670a7fc6f1a0ee8af8"},
+    {"url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/keys.html", "finding": "Official 2026 release certificate fingerprint", "fingerprint": "1A07DAC0F220CF12248EA7195C67D0F88BC3E5B5"}
+  ],
+  "sdf": {
+    "linkMismatch": {
+      "displayed": "freeshell.org",
+      "suppliedHref": "http://freewheel.org/",
+      "freeshellFetched": "https://freeshell.org/",
+      "freeshellFinding": "Served SDF Public Access UNIX System homepage with sdf.org signup/support links",
+      "freewheelFetchedResult": "https://forsale.godaddy.com/forsale/FREEWHEEL.ORG?traffic_type=TDFS&traffic_id=GoDaddy_DLS",
+      "freewheelFinding": "Public fetch of the supplied HTTP link redirected to a GoDaddy domain-for-sale page. It is not evidence of an SDF login or validation endpoint. No form submitted."
+    },
+    "primarySources": [
+      {"url": "https://sdf.org/?signup", "finding": "Official signup form, ssh new@sdf.org and browser alternatives; none submitted"},
+      {"url": "https://sdf.org/?ssh", "finding": "ssh menu@tty.sdf.org for vintage menu; replace menu with own username for own account"},
+      {"url": "https://sdf.org/?faq?BASICS?07", "finding": "Directs users to type validate at the shell for validation information"},
+      {"url": "https://sdf.org/?faq?BASICS?08", "finding": "tty.sdf.org shell access alias; ftp.sdf.org transfers; membership-specific hosts and limits"},
+      {"url": "https://sdf.org/?join", "finding": "USERS free with listed services after validation; ARPA $36 one-time; MetaARPA $11 quarterly requiring ARPA (waiver link) with ability to validate newcomers; qualifying instructor/student route"},
+      {"url": "https://sdf.org/?faq?MEMBERS?01", "finding": "Membership schedule distinguishes basic users, ARPA and MetaARPA; not a current basic-validation price quote"},
+      {"url": "https://wiki.sdf.org/doku.php?id=membership_levels", "finding": "User-contributed tutorial corroborates tiers and sponsorship; retained 2022 source revision and 2024 modification, so main join page preferred"},
+      {"url": "https://wiki.sdf.org/doku.php?id=logging_in_to_sdf_servers", "finding": "Signup/login instructions and an owner password-recovery route; recovery was not invoked"},
+      {"url": "https://wiki.sdf.org/doku.php?id=using_ssh_for_connections_transfer_to_from_sdf", "finding": "General SSH and public-key permissions guidance; legacy SSL terminology, endpoints and examples are not adopted as current secure connection settings"}
+    ],
+    "notEstablished": ["Current basic-validation fee or exact on-shell transaction", "Status or existence of any particular user's account", "Independently authenticated current tty.sdf.org SSH host-key fingerprints"],
+    "safeNextAction": "The owner obtains the exact current server host key from SDF over a trusted channel, logs into their own account, and runs validate to read current instructions. Any membership payment, sponsorship request or account change requires a separate informed owner action.",
+    "qualification": "Successful SSH authentication, account recovery, domain affiliation and SDF membership validation are different claims. None substitutes for another. Historical secondary claims of a $1 validation fee are not treated as a current quote."
+  },
+  "freeShellProviders": [
+    {
+      "id": "envs",
+      "name": "envs.net",
+      "primaryUrls": ["https://envs.net/", "https://envs.net/signup/", "https://help.envs.net/help/#ssh"],
+      "freeClaim": "Homepage says non-commercial shared Linux system, always free to use",
+      "signup": "Published request form: username, existing email/confirmation, interest statement, OpenSSH PUBLIC key and agreement; minimum 16 years",
+      "restrictions": "Community rules and manual response; signup form availability does not guarantee acceptance or turnaround",
+      "ssh": "Documentation lists envs.net ports 22 and 2222 and published SHA256 fingerprints; no live key comparison or login performed",
+      "androidPortCompatibility": "Current APK has no private-key import; public-key-oriented providers may require a maintained full SSH client instead",
+      "recommendation": "Practical Linux/community candidate subject to rules and approval; no signup performed"
+    },
+    {
+      "id": "tilde-club",
+      "name": "tilde.club",
+      "primaryUrls": ["https://tilde.club/", "https://tilde.club/signup/", "https://tilde.club/wiki/faq.html"],
+      "freeClaim": "Community-supported shared Unix service; sampled signup/FAQ has no mandatory payment step (no guaranteed future fee schedule inferred)",
+      "signup": "Published request form with username, email, interest statement and SSH PUBLIC key; minimum 13 years; reply with account information",
+      "restrictions": "Code of conduct and manual approval; FAQ describes 1 GB soft / 3 GB hard quota and one-week grace",
+      "androidPortCompatibility": "Public-key-oriented signup; private-key import is not implemented in this first APK",
+      "recommendation": "Community/web learning candidate, not an instantly provisioned free VPS"
+    },
+    {
+      "id": "freeshell-de",
+      "name": "freeshell.de",
+      "primaryUrls": ["https://freeshell.de/", "https://freeshell.de/get-started/"],
+      "freeClaim": "Homepage calls itself a non-profit free-shell provider; Ubuntu 24.04 LTS, web/email/database/container offerings advertised",
+      "signup": "Request login/email, receive activation token by email, physically mail a postcard containing it, await activation",
+      "restrictions": "Postal cost/time is not zero or instant; real resource quotas/approval not measured; no postcard requested or sent",
+      "recommendation": "Consider if physical-postcard validation is acceptable; unrelated to the freewheel.org typo"
+    },
+    {
+      "id": "tilde-institute",
+      "name": "tilde.institute",
+      "primaryUrls": ["https://tilde.institute/", "https://tilde.institute/signup", "https://tilde.institute/faq"],
+      "freeClaim": "Public-access OpenBSD community; sampled joining page lists no payment step, not a commercial free-VPS guarantee",
+      "signup": "Current joining page says join institute.tilde.chat:6697 with TLS, hang out and request an account there; not an automatic web signup",
+      "restrictions": "No third-party malicious scanning/abuse or mining; user services subject to resource limits; no firewall-port exceptions promised",
+      "recommendation": "OpenBSD/community-interest candidate subject to human approval"
+    },
+    {
+      "id": "blinkenshell",
+      "name": "Blinkenshell",
+      "primaryUrls": ["https://blinkenshell.org/docs/signup-process/", "https://blinkenshell.org/docs/supporter/", "https://blinkenshell.org/wiki/Info/Rules"],
+      "freeClaim": "Basic free account plus separate paid supporter tier",
+      "signup": "Published five-step process: email, rules/shell quiz, NickServ verification, two registered-user vouches (at least one-hour wait), SMS verification or contact admin if unavailable",
+      "restrictions": "Basic accounts restrict bots/bouncers/servers and resource use; no account sharing, third-party host scanning or for-profit use; IRC participation expected",
+      "paidEnhancements": "Supporter page quotes 3 EUR/month or 400 SEK/year via legacy PayPal route; signup page separately advertises optional 50 SEK instant activation. These are not unavoidable prices for the documented free route and no payment was made.",
+      "androidPortCompatibility": "Menu-driven signup may require a full VT-capable terminal; this line-oriented APK is not that",
+      "recommendation": "Suitable only if community vouch/SMS requirements and policy limits fit"
+    },
+    {
+      "id": "tilde-team",
+      "name": "tilde.team",
+      "primaryUrls": ["https://tilde.team/", "https://tilde.team/signup/"],
+      "freeClaim": "Homepage says always free; signup form remains published",
+      "currentAvailabilityCaution": "Homepage August 2026 outage notice reports a root compromise and explicitly says SSH access is currently disabled pending service migration, with a later update promised",
+      "signup": "A form alone does not establish restored SSH service; no current usable-shell recommendation",
+      "recommendation": "Hold: confirm an official restoration notice before considering; no operational probing performed"
+    }
+  ],
+  "androidDelivery": {
+    "artifactPath": "research/putty-android/unofficial-putty-0.85-review.apk",
+    "receiptPath": "research/putty-android/build-receipt.json",
+    "apkBytes": 792988,
+    "apkSha256": "644b8c16d1a1fdf8cf77f336434d310b5075bc10304d7b9a3e91b132a314a9cd",
+    "measuredSourceCommit": "cf84be50547cd4507a2bc5b732af9f525b6d92be",
+    "buildRun": "https://github.com/shdwelf/Html5/actions/runs/45839948669",
+    "buildRunStartedAtAsReturned": "2026-11-26T14:31:55Z",
+    "buildRunUpdatedAtAsReturned": "2026-11-26T14:36:29Z",
+    "javaCoreControlsPassed": 96,
+    "pythonSourceControlsPassed": 9,
+    "androidEmulatorControlsPassed": 8,
+    "qualification": "Actual unofficial PuTTY/Plink source port, line-oriented review APK; API 35 x86_64 synthetic runtime only, not physical ARM64/16KiB, production signing or SDF validation"
+  },
+  "repositoryValidation": {
+    "testedCommit": "7e549caccdbab071d066ba17551a247c0c9491fa",
+    "npmTestExitCode": 0,
+    "vitest": {"filesPassed": 38, "testsPassed": 338},
+    "node": {"tests": 1327, "passed": 1308, "skipped": 19, "failed": 0, "cancelled": 0},
+    "focusedControlsPassed": 47,
+    "countQualification": "Focused controls overlap the full Node suite; skipped tests are not passes. Later completion changes only date/status documentation, not the measured APK/application/build sources.",
+    "deliveredApkReview": {
+      "headCommit": "7e549caccdbab071d066ba17551a247c0c9491fa",
+      "run": "https://github.com/shdwelf/Html5/actions/runs/45843074346",
+      "checkId": 139989551528,
+      "conclusion": "success",
+      "runUpdatedAtAsReturned": "2026-11-26T14:51:21Z"
+    },
+    "independentGoCheckId": 139989550927,
+    "pullRequest": "https://github.com/shdwelf/Html5/pull/249",
+    "handoff": "PR metadata is authoritative for the final review/merge head and matching-head checks. No later documentation head is mislabeled as a fresh Android APK build."
+  },
+  "researchLimits": [
+    "Public documentation, not an exhaustive list or safety/uptime certification of any provider",
+    "No downloaded third-party APK/client binary or script-piped-to-shell signup was executed. The newly source-built Plink ran only in synthetic controls; no public SSH login or user credentials were used.",
+    "No root access or persistent compute is implied by a free shared shell account",
+    "Provider policies, fees and enrollment availability must be rechecked by the owner before signup"
+  ]
+}

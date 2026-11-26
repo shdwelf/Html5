@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "status": "built-apk-with-synthetic-android-integration-controls",
+  "sourceCommit": "cf84be50547cd4507a2bc5b732af9f525b6d92be",
+  "buildRun": "https://github.com/shdwelf/Html5/actions/runs/45839948669",
+  "buildRunAttempt": "1",
+  "applicationId": "org.html5.putty",
+  "versionName": "0.1.0-putty0.85",
+  "minSdk": 28,
+  "targetSdk": 35,
+  "apk": "unofficial-putty-0.85-review.apk",
+  "apkBytes": 792988,
+  "apkSha256": "644b8c16d1a1fdf8cf77f336434d310b5075bc10304d7b9a3e91b132a314a9cd",
+  "debugCertificateSha256": "a6251b98d1ca1b4020bd530e6fd1cf78f3478c43df3f030e02f76bc0776fb446",
+  "signing": "Disposable runner debug certificate; APK v2 verified; not a production identity",
+  "androidDebuggable": false,
+  "permissions": [
+    "android.permission.INTERNET"
+  ],
+  "source": {
+    "version": "0.85",
+    "sourceUrl": "https://the.earth.li/~sgtatham/putty/0.85/putty-0.85.tar.gz",
+    "archiveSha256": "13fd4db2936d03b73812a7bcc2a658e4dd29cc776a56c3670a7fc6f1a0ee8af8",
+    "releaseCertificateFingerprint": "1A07DAC0F220CF12248EA7195C67D0F88BC3E5B5",
+    "releaseSignatureVerified": true,
+    "keyProvenance": "https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/release-2026.asc",
+    "keyTrustCaution": "Fingerprint pinned from the official HTTPS keys page; no independent offline web-of-trust attestation is claimed."
+  },
+  "native": [
+    {
+      "abi": "arm64-v8a",
+      "file": "libplink.so",
+      "bytes": 858576,
+      "sha256": "ee47d25ab2ac675e64a10210120542b89e12ffef1f58bc67d450671cc85e50fa",
+      "loadAlignmentAtLeast16KiB": true
+    },
+    {
+      "abi": "arm64-v8a",
+      "file": "libputtypty.so",
+      "bytes": 8944,
+      "sha256": "c2be50896ee48dca0a00ab587c30a33b0fba8d1c76bf920b1f0a480e4d94a59a",
+      "loadAlignmentAtLeast16KiB": true
+    },
+    {
+      "abi": "x86_64",
+      "file": "libplink.so",
+      "bytes": 867272,
+      "sha256": "8c59596a085a7aee5bde7a80aa4bfa2067a5540f221ca0399265b5982689172f",
+      "loadAlignmentAtLeast16KiB": true
+    },
+    {
+      "abi": "x86_64",
+      "file": "libputtypty.so",
+      "bytes": 9024,
+      "sha256": "480fcdfbe9065cd6f0e50733b5833d06c00bfdf33abfd0873f1b7f5fca9a8280",
+      "loadAlignmentAtLeast16KiB": true
+    }
+  ],
+  "coreControlsPassed": 96,
+  "androidInstrumentedControlsPassed": 8,
+  "androidTests": [
+    "org.html5.putty.ActivitySafetyTest.backgroundAndRecreationDoNotRestoreInputOrOutput",
+    "org.html5.putty.ActivitySafetyTest.launchDefaultsDoNotConnectAndMaskInput",
+    "org.html5.putty.ActivitySafetyTest.togglingMaskClearsExistingSecret",
+    "org.html5.putty.PlinkInstrumentedTest.packagedPlinkIsReal085AndRunsUnderAndroidUid",
+    "org.html5.putty.PlinkInstrumentedTest.failedExecIsReportedAndChildReaped",
+    "org.html5.putty.PlinkInstrumentedTest.wrongHostKeyFailsBeforePasswordPrompt",
+    "org.html5.putty.PlinkInstrumentedTest.closeStopsForegroundSessionWithoutAuthentication",
+    "org.html5.putty.PlinkInstrumentedTest.trustedSyntheticSshAuthenticatesOverPtyAndRunsLineCommand"
+  ],
+  "testedAndroidEnvironment": "API 35 x86_64 emulator; 4 KiB pages",
+  "notVerified": [
+    "ARM64 runtime on a physical device",
+    "16 KiB-page runtime (ELF alignment checked only)",
+    "API 28\u201334 and 36 runtime coverage",
+    "Full-screen VT terminal functionality (not implemented)",
+    "User-owned or public shell logins",
+    "SDF membership validation",
+    "Production signing/release hardening"
+  ],
+  "terminalScope": "Foreground-only line-oriented TERM=dumb; no SFTP, key import, tunnels, saved profiles or agent forwarding",
+  "publicAccountActions": "No public signup, credential submission, login, validation, payment or host-key scan performed"
+}
