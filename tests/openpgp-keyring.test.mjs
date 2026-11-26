@@ -237,10 +237,14 @@ test("pinned source provenance is retained independently of ephemeral caches and
   assert.equal(createHash("sha256").update(bytes).digest("hex"), manifest.dependency.browserBundleSha256);
 });
 
-test("generated public app mirrors the reviewed modules; no private material or app network/storage API is shipped", () => {
-  for (const file of ["index.html", "app.js", "crypto.mjs", "keyring.mjs", "keyring-search.mjs", "public-storage.mjs", "large-rsa.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "styles.css"]) {
+test("generated app mirrors reviewed modules; only the isolated opt-in Keybase adapter can make requests", () => {
+  for (const file of ["index.html", "app.js", "crypto.mjs", "keyring.mjs", "keyring-search.mjs", "keybase.mjs", "keybase-ui.mjs", "public-storage.mjs", "large-rsa.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "styles.css"]) {
     const source = readFileSync(new URL(`../apps/openpgp-workbench/${file}`, import.meta.url), "utf8");
     assert.equal(readFileSync(new URL(`../public/apps/openpgp-workbench/${file}`, import.meta.url), "utf8"), source, `${file} stale; rebuild`);
-    if (file.endsWith(".mjs") || file.endsWith(".js")) assert.doesNotMatch(source, /\b(?:fetch|XMLHttpRequest|WebSocket|sessionStorage|indexedDB|sendBeacon)\b/);
+    if (file.endsWith(".mjs") || file.endsWith(".js")) {
+      assert.doesNotMatch(source, /\b(?:XMLHttpRequest|WebSocket|sessionStorage|indexedDB|sendBeacon)\b/);
+      if (file !== "keybase.mjs") assert.doesNotMatch(source, /\bfetch\b/);
+    }
+    if (file.startsWith("keybase")) assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage|indexedDB|console)\b|recovery-private-key|encrypt-passphrase|decrypt-passphrase|key-passphrase/);
   }
 });

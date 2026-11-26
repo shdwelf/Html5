@@ -80,11 +80,14 @@ jobs:
           python -m pip install --disable-pip-version-check --no-build-isolation --require-hashes -r tests/requirements/openpgp-interop.txt
           python -c 'import importlib.metadata; print("PGPy", importlib.metadata.version("PGPy")); print("cryptography", importlib.metadata.version("cryptography"))'
       - name: Check local app and vendored module freshness without modifying them
-        run: node --test tests/openpgp-interop-policy.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-search.test.mjs tests/openpgp-keyring-dom.test.mjs tests/openpgp-recipient.test.mjs tests/openpgp-v6.test.mjs tests/openpgp-large-rsa.test.mjs tests/openpgp-large-rsa-worker.test.mjs tests/openpgp-recovery.test.mjs tests/openpgp-recovery-worker.test.mjs tests/openpgp-recovery-dom.test.mjs
+        run: node --test tests/openpgp-interop-policy.test.mjs tests/openpgp-keyring.test.mjs tests/openpgp-keyring-search.test.mjs tests/openpgp-keyring-dom.test.mjs tests/openpgp-keybase.test.mjs tests/openpgp-keybase-dom.test.mjs tests/openpgp-recipient.test.mjs tests/openpgp-v6.test.mjs tests/openpgp-large-rsa.test.mjs tests/openpgp-large-rsa-worker.test.mjs tests/openpgp-recovery.test.mjs tests/openpgp-recovery-worker.test.mjs tests/openpgp-recovery-dom.test.mjs
       - name: Require actual Chromium fuzzy public discovery without changing full-fingerprint gates or full exports
         # Synthetic keys only. This fast lane must not depend on the optional
         # same-job 16384-bit public control exercised by the separate RSA lane.
         run: REQUIRE_OPENPGP_BROWSER=1 node tests/openpgp-workbench-browser.mjs
+      - name: Require opt-in Keybase lookup, local public validation and cancellation in actual Chromium
+        # Intercepted synthetic responses only. No live account, key, cookie or dependency on Keybase availability.
+        run: REQUIRE_OPENPGP_BROWSER=1 node tests/openpgp-keybase-browser.mjs
       - name: Require actual Chromium v6 public exports and synthetic modern recovery
         # Same-library JS v6 coverage, not a claim of independent native v6 support.
         run: node tests/openpgp-v6-browser.mjs

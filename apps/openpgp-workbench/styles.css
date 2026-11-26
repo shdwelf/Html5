@@ -161,6 +161,14 @@ textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
 .backup-box h3 { color: var(--warning); }
 .check-row { display: flex; gap: 10px; align-items: flex-start; margin: 17px 0; font-size: 12px; line-height: 1.7; color: #d7e1ec; cursor: pointer; }
 .check-row input { width: 18px; min-height: 18px; flex: 0 0 18px; margin: 3px 0 0; accent-color: var(--mint-dark); }
+/* The only online feature is visibly separate from local import/search. */
+.keybase-discovery { margin: 20px 0 24px; padding: 16px; border: 1px solid var(--line-bright); border-radius: 12px; background: rgba(18, 55, 57, 0.12); }
+.keybase-discovery summary { cursor: pointer; color: var(--mint); font-size: 13px; font-weight: 670; line-height: 1.7; }
+.keybase-discovery summary .field-hint { display: inline-block; margin-left: 8px; color: var(--muted); font-weight: 450; }
+.keybase-discovery summary:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
+.keybase-discovery .field { margin-top: 16px; max-width: 390px; }
+.keybase-discovery .field-hint, .keybase-discovery .status-message { overflow-wrap: anywhere; }
+.keybase-discovery .check-row { margin-bottom: 8px; }
 .keyring-search { margin-top: 18px; }
 .keyring-search-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .keyring-search-controls input { min-width: 0; }

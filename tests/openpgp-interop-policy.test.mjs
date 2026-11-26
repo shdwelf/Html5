@@ -45,6 +45,9 @@ test("the bounded native CI lane requires all readers and never uploads or cache
   for (const name of ["recovery", "recovery-worker", "recovery-dom"]) assert.ok(workflow.includes(`tests/openpgp-${name}.test.mjs`));
   assert.match(workflow, /REQUIRE_OPENPGP_BROWSER=1 node tests\/openpgp-recovery-browser\.mjs/);
   assert.ok(workflow.includes("tests/openpgp-keyring-search.test.mjs"));
+  for (const name of ["keybase", "keybase-dom"]) assert.ok(workflow.includes(`tests/openpgp-${name}.test.mjs`));
+  assert.match(workflow.split("  large-rsa:")[0], /REQUIRE_OPENPGP_BROWSER=1 node tests\/openpgp-keybase-browser\.mjs/,
+    "opt-in networking must require real browser/CORS controls with synthetic responses, never live Keybase accounts");
   assert.match(workflow.split("  large-rsa:")[0], /REQUIRE_OPENPGP_BROWSER=1 node tests\/openpgp-workbench-browser\.mjs/,
     "fast native CI must also require actual Chromium fuzzy public discovery, independent of the long RSA lane");
   assert.match(workflow, /OPENPGP_LARGE_RSA_PUBLIC_CONTROL_PATH: \.openpgp-synthetic-large-PUBLIC\.asc/);
