@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { PUBLIC_CORPUS_EXCLUDED_SOURCES } from "../tools/wikiinajar/public-corpus-policy.mjs";
 
 const read = (name) => readFileSync(new URL(`../${name}`, import.meta.url), "utf8");
 test("GeoCities graph has real compiled CSV, complete-gzip, transfer-integrity, privacy and overflow controls without networking", () => {
@@ -14,6 +15,8 @@ test("GeoCities graph has real compiled CSV, complete-gzip, transfer-integrity, 
 });
 
 test("the 19-GB graph run is explicit, read-only and retains only sanitized JSON, not raw graph or anchor text", () => {
+  assert.ok(PUBLIC_CORPUS_EXCLUDED_SOURCES.includes("docs/geocities-url-graph-investigation.md"),
+    "personal-site operational research is not automatically published inside offline app corpora");
   const workflow = read(".github/workflows/geocities-link-graph.yml");
   assert.match(workflow, /if: github\.event_name == 'workflow_dispatch'/);
   assert.match(workflow, /contents: read/);

@@ -32,6 +32,9 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/sgreeran-resume-chronology.md",
   "docs/ucsb-2001-first-quarter-research.md",
   "docs/ucsb-course-readers-2026-10-23.md",
+  // Personal-site archive investigation methods/evidence are operational
+  // research, not approved content for public offline Wiki/SITE-K manuals.
+  "docs/geocities-url-graph-investigation.md",
   // Operational backup and artifact-retrieval notes are not public app content.
   "docs/backlog-execution-round-63-2026-11-05.md",
   "docs/backlog-execution-round-65-2026-11-07.md",
