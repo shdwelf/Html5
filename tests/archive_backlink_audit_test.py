@@ -54,6 +54,15 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertNotIn("value", form["fields"][2])
         self.assertNotIn("visitor@example.invalid", json.dumps(report))
 
+    def test_raw_replay_root_relative_actions_use_the_original_not_archive_origin(self):
+        base = "https://web.archive.org/web/20000525201144id_/http://www.lpage.com:80/wgb/wgbview.dbm?owner=Shadowelf"
+        self.assertEqual(audit.original_url("/wgb/wgbview.dbm", base), "http://www.lpage.com:80/wgb/wgbview.dbm")
+        report = audit.inspect_html(b'<form action="/wgb/wgbview.dbm"><input name="owner" value="Shadowelf"><input name="offset" value="10"></form>', base)
+        self.assertEqual(report["formTagsSeen"], 1)
+        self.assertEqual(report["refusedForms"], 0)
+        self.assertEqual(report["publicViewForms"][0]["action"], "http://www.lpage.com:80/wgb/wgbview.dbm")
+        self.assertEqual(report["publicViewForms"][0]["fields"][1]["value"], "10")
+
     def test_ring_identity_requires_exact_ring_and_member(self):
         report = audit.inspect_html(b'''
           <a href="http://www.webring.org/cgi-bin/webring?ring=conquer&amp;id=4&amp;next5">Next</a>
@@ -124,7 +133,7 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertTrue(lines[4].startswith("::notice title=audit-summary::"))
         output = io.StringIO()
         with redirect_stdout(output):
-            audit.emit_actions_annotations({"sources": [{"stage": 4, "id": "large", "value": "x" * 40000}]})
+            audit.emit_actions_annotations({"sources": [{"stage": 4, "id": "large", "value": "x" * 4000}]})
         self.assertIn('"annotationTruncated": true', output.getvalue())
 
 

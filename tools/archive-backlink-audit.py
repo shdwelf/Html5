@@ -72,14 +72,18 @@ class ArchiveRedirect(HTTPRedirectHandler):
 
 
 def original_url(value: str, base: str = "") -> str:
-    absolute = urljoin(base, value)
-    # Remove only an actual Wayback replay wrapper, not a lookalike hostname.
-    parts = urlsplit(absolute)
-    if parts.hostname == "web.archive.org":
-        match = re.match(r"^/web/[^/]+/(https?://.+)$", parts.path)
-        if match:
-            return match.group(1) + ("?" + parts.query if parts.query else "")
-    return absolute
+    def unwrap(absolute):
+        # Remove only an actual Wayback replay wrapper, not a lookalike hostname.
+        parts = urlsplit(absolute)
+        if parts.hostname == "web.archive.org":
+            match = re.match(r"^/web/[^/]+/(https?://.+)$", parts.path)
+            if match:
+                return match.group(1) + ("?" + parts.query if parts.query else "")
+        return absolute
+
+    # Raw id_ replays can contain root-relative actions. Resolve those against
+    # the ORIGINAL origin, not web.archive.org's own /wgb/ path.
+    return unwrap(urljoin(unwrap(base), value))
 
 
 def target_link(value: str, base: str = "") -> dict | None:
@@ -111,6 +115,8 @@ class PublicPage(HTMLParser):
         self.ignored_depth = 0
         self.text_tail = ""
         self.plain_mentions = set()
+        self.form_tags_seen = 0
+        self.refused_forms = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -132,6 +138,7 @@ class PublicPage(HTMLParser):
                     and fields.get("ring") == "conquer" and fields.get("id") == "4"):
                 self.ring_links.append({"ring": "conquer", "id": "4", "actions": sorted(set(fields) & {"prev", "skip", "next5", "next", "random"})})
         if tag == "form":
+            self.form_tags_seen += 1
             action = original_url(attrs.get("action", ""), self.base)
             parts = urlsplit(action)
             host = (parts.hostname or "").removeprefix("www.").lower()
@@ -164,6 +171,8 @@ class PublicPage(HTMLParser):
             action_path = urlsplit(self.form["action"]).path.lower()
             if not self.form.get("refused") and action_path.endswith("/wgb/wgbview.dbm"):
                 self.forms.append(self.form)
+            else:
+                self.refused_forms += 1
             self.form = None
 
     def handle_data(self, data):
@@ -178,7 +187,8 @@ class PublicPage(HTMLParser):
 
     def report(self):
         return {"targetLinks": self.links, "ringNavigation": self.ring_links,
-                "publicViewForms": self.forms, "plainMentions": sorted(self.plain_mentions),
+                "publicViewForms": self.forms, "formTagsSeen": self.form_tags_seen,
+                "refusedForms": self.refused_forms, "plainMentions": sorted(self.plain_mentions),
                 "inspection": "Entire fetched body parsed without executing scripts; no visitor text/contacts retained"}
 
 
@@ -273,12 +283,18 @@ def emit_actions_annotations(result):
     """
     # GitHub retains only ten notice annotations per step, even if the API
     # requests 100. Group by the fixed four stages so the summary/controls survive.
-    rows = [(f"archive-stage-{stage}", {"stage": stage, "sources": [row for row in result["sources"] if row["stage"] == stage]})
+    # The annotation message itself is capped at 4096 characters. Omit only
+    # redundant resolved URLs and the constant hash-scope description here;
+    # requested URLs, hashes, observations and source order remain explicit.
+    projected = [{key: value for key, value in row.items() if key != "hashScope" and
+                  not (key == "resolvedUrl" and value == row.get("requestedUrl"))} for row in result["sources"]]
+    rows = [(f"archive-stage-{stage}", {"stage": stage, "sources": [row for row in projected if row["stage"] == stage]})
             for stage in (1, 2, 3, 4)]
-    rows.append(("audit-summary", {key: value for key, value in result.items() if key != "sources"}))
+    rows.append(("audit-summary", {**{key: value for key, value in result.items() if key != "sources"},
+                                  "annotationProjection": "Identical resolvedUrl omitted; response hashes cover fetched HTTP bytes, not a CDX digest comparison"}))
     for title, row in rows:
         encoded = json.dumps(row, ensure_ascii=True, separators=(",", ":"))
-        if len(encoded) > 32768:
+        if len(encoded) > 3500:
             encoded = json.dumps({"id": title, "outcome": row.get("outcome"), "annotationTruncated": True,
                                   "limitation": "Read the sanitized artifact for the complete source observation"})
         encoded = encoded.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")

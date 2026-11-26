@@ -47,7 +47,7 @@ std::string json(const std::string& value) {
 class Csv {
   std::array<std::string, 4> fields;
   std::size_t column = 0;
-  bool quoted = false, afterQuote = false, escaped = false, started = false, skipLF = false;
+  bool quoted = false, afterQuote = false, started = false, skipLF = false;
   bool header = false;
   std::array<std::string, 4> schema;
   std::uint64_t rows = 0, candidates = 0, repeats = 0, blank = 0, bytes = 0;
@@ -97,13 +97,10 @@ public:
       const char c = data[index]; ++bytes;
       if (skipLF) { skipLF = false; if (c == '\n') continue; }
       if (quoted) {
-        if (escaped) {
-          escaped = false;
-          if (c == '"' || c == '\\') { append(c); continue; }
-          append('\\'); // Preserve a non-escape backslash.
-        }
-        if (c == '\\') escaped = true;
-        else if (c == '"') { quoted = false; afterQuote = true; }
+        // AUT's source-checked CSV recipe sets escape to the quote itself
+        // (RFC doubled quotes), NOT backslash. Combining both dialects
+        // misframes a valid field whose last literal character is a slash.
+        if (c == '"') { quoted = false; afterQuote = true; }
         else append(c);
         continue;
       }
@@ -118,7 +115,7 @@ public:
     }
   }
   void finish() {
-    if (quoted || escaped) throw std::runtime_error("truncated-quoted-csv-record");
+    if (quoted) throw std::runtime_error("truncated-quoted-csv-record");
     if (column || started || afterQuote || !fields[0].empty()) recordEnd();
     if (!header) throw std::runtime_error("missing-csv-header");
     std::cout << "{\"type\":\"stats\",\"csvComplete\":true,\"rows\":" << rows

@@ -68,9 +68,9 @@ class GraphStreamingTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.temporary.cleanup()
 
-    def csv_bytes(self, rows, header=graph.SCHEMAS[1], spark=False):
+    def csv_bytes(self, rows, header=graph.SCHEMAS[1]):
         stream = io.StringIO(newline="")
-        writer = csv.writer(stream, lineterminator="\r\n", escapechar="\\" if spark else None, doublequote=not spark)
+        writer = csv.writer(stream, lineterminator="\r\n", doublequote=True)
         writer.writerow(header)
         writer.writerows(rows)
         return stream.getvalue().encode()
@@ -119,14 +119,23 @@ class GraphStreamingTests(unittest.TestCase):
         rows = [["20000101", "http://www.geocities.com/Elsewhere/1000/a,b.htm",
                  "http://WWW.GEOCITIES.COM/siliconvalley/park/%38%30%39%39/", 'Comma, "quote" and\nmultiline anchor'],
                 ["20000101", "http://example.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?owner=%53hadoWelf", "Private label omitted"]]
-        for spark in (False, True):
-            body = gzip.compress(self.csv_bytes(rows, spark=spark))
-            result, _ = self.scan(body)
-            self.assertTrue(result["completeGraphSearched"], result)
-            self.assertEqual(result["nativeStats"]["rows"], 2)
-            self.assertEqual(len(result["matches"]), 2)
-            self.assertEqual(result["counts"]["inboundSiteRows"], 1)
-            self.assertEqual(result["counts"]["inboundGuestbookRows"], 1)
+        body = gzip.compress(self.csv_bytes(rows))
+        result, _ = self.scan(body)
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertEqual(result["nativeStats"]["rows"], 2)
+        self.assertEqual(len(result["matches"]), 2)
+        self.assertEqual(result["counts"]["inboundSiteRows"], 1)
+        self.assertEqual(result["counts"]["inboundGuestbookRows"], 1)
+
+    def test_rfc_doublequotes_and_literal_backslashes_are_not_conflated_with_a_second_dialect(self):
+        target = "http://www.geocities.com/SiliconValley/Park/8099/"
+        rows = [["20000101", "http://example.invalid/", target, anchor]
+                for anchor in ['Comma, ending slash' + chr(92), 'Quote " and slash ' + chr(92) + '"',
+                               'A literal ' + chr(92) * 2 + ' followed by " doubled quotes, and a newline\n', 'regular']]
+        result, _ = self.scan(gzip.compress(self.csv_bytes(rows)), chunk=1)
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertEqual(result["nativeStats"]["rows"], 4)
+        self.assertEqual(result["counts"]["inboundSiteRows"], 4)
 
     def test_no_match_is_a_complete_file_result_only_after_all_integrity_and_parser_gates(self):
         body = gzip.compress(self.csv_bytes([["20000101", "http://example.invalid/", "http://elsewhere.invalid/", "not retained"]]))
