@@ -271,7 +271,10 @@ def emit_actions_annotations(result):
     second command. Oversized annotations are explicitly marked, never silently
     treated as a complete receipt; the full sanitized JSON remains the artifact.
     """
-    rows = [(row["id"], row) for row in result["sources"]]
+    # GitHub retains only ten notice annotations per step, even if the API
+    # requests 100. Group by the fixed four stages so the summary/controls survive.
+    rows = [(f"archive-stage-{stage}", {"stage": stage, "sources": [row for row in result["sources"] if row["stage"] == stage]})
+            for stage in (1, 2, 3, 4)]
     rows.append(("audit-summary", {key: value for key, value in result.items() if key != "sources"}))
     for title, row in rows:
         encoded = json.dumps(row, ensure_ascii=True, separators=(",", ":"))

@@ -112,18 +112,19 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertNotIn("visitor@example.invalid", json.dumps(report))
 
     def test_check_annotations_escape_remote_workflow_commands_and_bound_receipts(self):
-        result = {"sources": [{"id": "synthetic", "value": "%0A\n::error::injection"}], "rawBodiesSaved": False}
+        result = {"sources": [{"stage": 1, "id": "synthetic", "value": "%0A\n::error::injection"}], "rawBodiesSaved": False}
         output = io.StringIO()
         with redirect_stdout(output):
             audit.emit_actions_annotations(result)
         lines = output.getvalue().splitlines()
-        self.assertEqual(len(lines), 2)
-        self.assertTrue(lines[0].startswith("::notice title=synthetic::"))
+        self.assertEqual(len(lines), 5, "stay below GitHub's ten-notices-per-step cap")
+        self.assertTrue(lines[0].startswith("::notice title=archive-stage-1::"))
         self.assertIn("%250A", lines[0])
         self.assertIn("\\n::error::injection", lines[0])
+        self.assertTrue(lines[4].startswith("::notice title=audit-summary::"))
         output = io.StringIO()
         with redirect_stdout(output):
-            audit.emit_actions_annotations({"sources": [{"id": "large", "value": "x" * 40000}]})
+            audit.emit_actions_annotations({"sources": [{"stage": 4, "id": "large", "value": "x" * 40000}]})
         self.assertIn('"annotationTruncated": true', output.getvalue())
 
 
