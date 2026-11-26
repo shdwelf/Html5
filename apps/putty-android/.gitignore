@@ -1,0 +1,7 @@
+/.gradle/
+/.idea/
+/local.properties
+/app/build/
+/app/src/main/jniLibs/
+/app/src/main/assets/PUTTY-LICENCE.txt
+/app/src/main/assets/putty-source.json
