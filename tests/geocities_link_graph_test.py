@@ -1,5 +1,9 @@
 """Offline synthetic controls; do not fetch any real graph or visitor content."""
+import csv
 import gzip
+import io
+import subprocess
+import tempfile
 import hashlib
 import importlib.util
 import json
@@ -48,6 +52,141 @@ class GraphProbeTests(unittest.TestCase):
                 graph.archive_url(value)
         for value in ["https://archive.org/download/item/file.gz", "https://ia801.example.us.archive.org/file.gz"]:
             self.assertEqual(graph.archive_url(value), value)
+
+class GraphStreamingTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary = tempfile.TemporaryDirectory(prefix="synthetic-geocities-graph-")
+        cls.scanner = Path(cls.temporary.name) / "scanner"
+        compiled = subprocess.run(["g++", "-O2", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                                   str(Path(__file__).parents[1] / "tools/geocities-link-graph.cpp"), "-o", str(cls.scanner)],
+                                  capture_output=True, timeout=30)
+        if compiled.returncode:
+            raise AssertionError(compiled.stderr.decode())
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.temporary.cleanup()
+
+    def csv_bytes(self, rows, header=graph.SCHEMAS[1], spark=False):
+        stream = io.StringIO(newline="")
+        writer = csv.writer(stream, lineterminator="\r\n", escapechar="\\" if spark else None, doublequote=not spark)
+        writer.writerow(header)
+        writer.writerows(rows)
+        return stream.getvalue().encode()
+
+    def metadata(self, body):
+        return {"selectedFile": {"name": graph.GRAPH_FILES[0], "size": str(len(body)),
+                                 "md5": hashlib.md5(body).hexdigest(), "sha1": hashlib.sha1(body).hexdigest()}}
+
+    def scan(self, body, chunk=17, metadata=None):
+        chunks = (body[i:i + chunk] for i in range(0, len(body), chunk))
+        return graph.scan_chunks(chunks, metadata or self.metadata(body), self.scanner)
+
+    def test_all_records_and_gzip_members_are_scanned_and_only_target_edges_retained(self):
+        target = "http://www.geocities.com/SiliconValley/Park/8099/"
+        source = "http://www.geocities.com/SiliconValley/Other/1234/geobook.html?email=visitor@example.invalid"
+        rows = [
+            ["19991008", source, target, "Visitor name, email visitor@example.invalid\nwith a fake http://secret.invalid/ link"],
+            ["19991008", target, target + "intro.htm", "Self link"],
+            ["19991008", target, "http://unrelated.invalid/", "Original outlink"],
+            ["19991008", "http://example.invalid/", "http://www.geocities.com/TimesSquare/8099/", "Other neighborhood"],
+            ["19991008", "http://example.invalid/", "http://geocities.com.evil.invalid/SiliconValley/Park/8099/", "Lookalike"],
+            ["19991008", "http://example.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf", "Public book"],
+            ["19991008", "http://example.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?owner=Other", "Other book"],
+            ["19991008", "http://example.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf&action=private", "Not public"],
+            ["19991008", "http://example.invalid/", "http://unrelated.invalid/", "8099 Shadowelf only in anchor: not an edge"],
+        ]
+        body = gzip.compress(self.csv_bytes(rows[:4])) + gzip.compress(self.csv_bytes(rows[4:]))
+        result, _ = self.scan(body, chunk=1)
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertTrue(result["transferIntegrityVerified"])
+        self.assertEqual(result["gzipMembersCompleted"], 2)
+        self.assertEqual(result["nativeStats"]["rows"], 9)
+        self.assertEqual(result["nativeStats"]["repeatedHeaders"], 1)
+        self.assertEqual(result["counts"]["inboundSiteRows"], 1)
+        self.assertEqual(result["counts"]["inboundGuestbookRows"], 1)
+        self.assertEqual(result["counts"]["selfLinkRows"], 1)
+        self.assertEqual(result["counts"]["originalSourceRows"], 2)
+        self.assertEqual(len(result["matches"]), 2)
+        encoded = json.dumps(result)
+        for value in ["visitor@example.invalid", "Visitor name", "http://secret.invalid/", "Other book"]:
+            self.assertNotIn(value, encoded)
+        self.assertTrue(result["matches"][0]["source"]["queryRedacted"])
+        self.assertFalse(result["matches"][0]["sourcePageVerified"])
+
+    def test_percent_escapes_case_and_csv_quoting_do_not_drop_exact_url_targets(self):
+        rows = [["20000101", "http://www.geocities.com/Elsewhere/1000/a,b.htm",
+                 "http://WWW.GEOCITIES.COM/siliconvalley/park/%38%30%39%39/", 'Comma, "quote" and\nmultiline anchor'],
+                ["20000101", "http://example.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?owner=%53hadoWelf", "Private label omitted"]]
+        for spark in (False, True):
+            body = gzip.compress(self.csv_bytes(rows, spark=spark))
+            result, _ = self.scan(body)
+            self.assertTrue(result["completeGraphSearched"], result)
+            self.assertEqual(result["nativeStats"]["rows"], 2)
+            self.assertEqual(len(result["matches"]), 2)
+            self.assertEqual(result["counts"]["inboundSiteRows"], 1)
+            self.assertEqual(result["counts"]["inboundGuestbookRows"], 1)
+
+    def test_no_match_is_a_complete_file_result_only_after_all_integrity_and_parser_gates(self):
+        body = gzip.compress(self.csv_bytes([["20000101", "http://example.invalid/", "http://elsewhere.invalid/", "not retained"]]))
+        complete, _ = self.scan(body)
+        self.assertTrue(complete["completeGraphSearched"])
+        self.assertEqual(complete["matches"], [])
+        wrong = self.metadata(body)
+        wrong["selectedFile"]["sha1"] = "0" * 40
+        for payload, metadata in [(body[:-8], self.metadata(body)), (body + b"junk", self.metadata(body + b"junk")),
+                                  (body, wrong), (gzip.compress(b"wrong,header\n"), None),
+                                  (gzip.compress(b'crawl_date,source,target,anchor_text\n20000101,http://example.invalid/,http://elsewhere.invalid/,"unterminated'), None)]:
+            result, _ = self.scan(payload, metadata=metadata)
+            self.assertFalse(result["completeGraphSearched"], result)
+            self.assertEqual(result["status"], "partial-or-failed")
+
+    def test_late_target_after_large_multiline_anchor_is_seen_without_retaining_anchor(self):
+        anchor = ("unrelated visitor text, \"quotes\"\n" * 50000)
+        rows = [["20000101", "http://example.invalid/", "http://elsewhere.invalid/", anchor],
+                ["20000101", "http://www.geocities.com/Elsewhere/5678/", "http://www.geocities.com/SiliconValley/Park/8099/", "target"]]
+        body = gzip.compress(self.csv_bytes(rows))
+        result, _ = self.scan(body, chunk=100)
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertEqual(result["nativeStats"]["rows"], 2)
+        self.assertEqual(result["counts"]["inboundSiteRows"], 1)
+        self.assertLess(len(json.dumps(result)), 6000)
+
+    def test_bad_columns_oversized_url_and_unquoted_quote_fail_with_fixed_diagnostics_only(self):
+        header = b"crawl_date,source,target,anchor_text\n"
+        for record in [b"a,b,c,d,e\n", b'a,b"quote,c,d\n', b"a," + b"x" * 16385 + b",c,d\n"]:
+            result, _ = self.scan(gzip.compress(header + record))
+            self.assertFalse(result["completeGraphSearched"])
+            self.assertNotEqual(result["nativeExitStatus"], 0)
+            self.assertNotIn("x" * 200, json.dumps(result))
+
+    def test_parallel_ranges_are_consumed_in_order_and_do_not_write_payloads(self):
+        body = bytes(range(100))
+        calls = []
+        def fake(url, start, end, size):
+            calls.append((start, end, size))
+            return body[start:end + 1]
+        result = b"".join(graph.ranged_chunks("https://archive.org/synthetic", len(body), fetch=fake, part=9, workers=4))
+        self.assertEqual(result, body)
+        self.assertEqual(sorted(calls), [(start, min(99, start + 8), 100) for start in range(0, 100, 9)])
+
+    def test_url_evidence_redacts_contacts_and_rejects_credentials_controls_and_bad_ports(self):
+        row = graph.public_url("http://www.geocities.com/visitor%40example.invalid/geobook.html?email=visitor@example.invalid#fragment")
+        self.assertTrue(row["pathRedacted"])
+        self.assertTrue(row["queryRedacted"])
+        self.assertNotIn("visitor", json.dumps(row))
+        for value in ["http://user:password@geocities.com/SiliconValley/Park/8099/", "http://geocities.com:81/SiliconValley/Park/8099/", "http://geocities.com/a\nb", "javascript:alert(1)"]:
+            self.assertIsNone(graph.public_url(value))
+
+    def test_retained_edge_limit_never_stops_counting_or_becomes_an_exhaustive_edge_list(self):
+        collector = graph.EdgeCollector(maximum=1)
+        for i in range(3):
+            collector.accept({"type": "candidate", "row": i + 1, "crawlDate": "20000101", "source": f"http://www.geocities.com/Elsewhere/{i}/", "target": "http://www.geocities.com/SiliconValley/Park/8099/"})
+        receipt = collector.snapshot()
+        self.assertEqual(receipt["counts"]["inboundSiteRows"], 3)
+        self.assertEqual(receipt["counts"]["retainedEdgeLimitOmissions"], 2)
+        self.assertEqual(len(receipt["matches"]), 1)
 
 
 if __name__ == "__main__":
