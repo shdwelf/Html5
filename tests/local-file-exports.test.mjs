@@ -165,3 +165,16 @@ test("v6 Android save fixtures stay explicitly allowlisted and real gestures req
   assert.match(smoke, /Remembered PUBLIC certificates restored after revalidation/);
   assert.match(smoke, /v6PublicSubsetExportsSaveTwoPublicFilesAndRememberOnlyTheValidatedSubset/);
 });
+
+test("Android message round-trip cleanup preserves primary failures and never swallows a cleanup-only failure", () => {
+  const smoke = readFileSync(new URL("../apps/html5-offline-launcher/app/src/androidTest/java/org/arena/html5launcher/LocalFileExportSmokeTest.java", import.meta.url), "utf8");
+  assert.match(smoke, /Throwable primaryFailure = null/);
+  assert.match(smoke, /catch \(Exception \| AssertionError failure\) \{\s*primaryFailure = failure;/);
+  assert.match(smoke, /if \(primaryFailure == null\) throw cleanupFailure;/);
+  assert.match(smoke, /primaryFailure\.addSuppressed\(cleanupFailure\)/);
+  assert.match(smoke, /message round trip failed during/);
+  assert.match(smoke, /assertArrayEquals\(armor\.getBytes\(StandardCharsets\.UTF_8\), read\(destination\)\)/);
+  assert.match(smoke, /assertEquals\(submitted, evaluate\(web, "document.getElementById\('decrypted-output'\).value"\)\)/);
+  assert.match(smoke, /complete\.await\(10, TimeUnit\.SECONDS\)/, "the callback budget must not be increased just to hide this failure");
+  assert.doesNotMatch(smoke, /@Ignore|Assume\.|assumeTrue/);
+});

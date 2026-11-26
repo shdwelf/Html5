@@ -48,6 +48,21 @@ test("recovery milestones survive later audio/game stages without exposing page 
   assert.ok(output.length < 7000);
 });
 
+test("primary testcase failure and suppressed cleanup survive clipping and later test-stage noise", () => {
+  const output = report({
+    "instrumentation-reports/public-local-files/result.xml": '<testsuite><testcase classname="Synthetic" name="roundTrip"><failure message="primary callback timeout">at Synthetic.primary()\n' + "x".repeat(12000) + '\nSuppressed: secondary cleanup timeout at Synthetic.cleanup()</failure></testcase></testsuite>',
+    "android-webview-logcat.log": "Html5LocalFileSmoke: message round trip: submit local decryption\n" +
+      "Html5LocalFileSmoke: message round trip failed during wait for local decryption\n" +
+      "Html5LocalFileSmoke: message round trip: cleanup failure retained as suppressed\n" +
+      "Html5GestureSmoke: later game control\n".repeat(500),
+  });
+  assert.match(output, /Android-runner-testcase/);
+  assert.match(output, /primary callback timeout/); assert.match(output, /Suppressed: secondary cleanup timeout/);
+  assert.match(output, /local-file milestones/); assert.match(output, /failed during wait for local decryption/);
+  assert.match(output, /submit local decryption/); assert.match(output, /cleanup failure retained as suppressed/);
+  assert.ok(output.length < 10000);
+});
+
 test("annotation data is escaped and malformed or absent XML is not labeled a passing test", () => {
   const output = report({
     "instrumentation-reports/public-local-files/broken.xml": "<broken",

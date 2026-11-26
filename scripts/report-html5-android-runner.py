@@ -47,6 +47,17 @@ def collect(base):
             root = ET.fromstring(path.read_bytes())
         except (OSError, ET.ParseError):
             continue
+        # Keep primary AND suppressed cleanup failures. A short first-failure
+        # annotation or a suite tail can otherwise report only the finalizer.
+        for case in list(root.iter("testcase"))[:32]:
+            for failure in (list(case.findall("failure")) + list(case.findall("error")))[:2]:
+                detail = " ".join(list(failure.attrib.values()) + list(failure.itertext())).strip()
+                if not detail:
+                    continue
+                if len(detail) > CHUNK - 400:
+                    detail = detail[:1100] + "\n[bounded middle omitted]\n" + detail[-1100:]
+                label = case.get("classname", "") + "." + case.get("name", "")
+                evidence.append(("Android-runner-testcase", label[:180] + "\n" + detail))
         # Include suite-level output, not only children of a testcase. Preserve
         # the beginning (often the actual process death) as well as the tail.
         outputs = [" ".join(node.itertext()).strip() for node in root.iter()
@@ -63,6 +74,12 @@ def collect(base):
         chosen = list(dict.fromkeys(hits[:2] + hits[-4:]))
         for i in chosen:
             evidence.append(("Android-runner-process", name + "\n" + "\n".join(lines[max(0, i - 2):i + 8])[:CHUNK - 100]))
+        local = [line for line in lines if "Html5LocalFileSmoke" in line]
+        if local:
+            failed = [i for i, line in enumerate(local) if "failed during" in line or "cleanup failure" in line]
+            indices = sorted({j for i in failed[:2] for j in range(max(0, i - 6), min(len(local), i + 3))})
+            context = [local[i] for i in indices] if indices else local[-12:]
+            evidence.append(("Android-runner-stages", name + " [local-file milestones]\n" + "\n".join(context)[:CHUNK - 150]))
         recovery = [line for line in lines if "Html5RecoverySmoke" in line]
         if recovery:
             evidence.append(("Android-runner-stages", name + " [recovery milestones]\n" + "\n".join(recovery[-16:])[-CHUNK + 100:]))
@@ -71,6 +88,7 @@ def collect(base):
             evidence.append(("Android-runner-stages", name + "\n" + "\n".join(stages[-24:])[-CHUNK + 100:]))
     # Reserve room for suite-level causes AND last gesture phases before noisy
     # repeated process messages can use the annotation budget.
+    cases = [item for item in evidence if item[0] == "Android-runner-testcase"]
     xml = [item for item in evidence if item[0] == "Android-runner-XML"]
     stages = [item for item in evidence if item[0] == "Android-runner-stages"]
     processes = [item for item in evidence if item[0] == "Android-runner-process"]
@@ -78,7 +96,7 @@ def collect(base):
     if len(host) > 2600:
         host = host[:1200] + "\n[bounded middle omitted]\n" + host[-1200:]
     hosts = [("Android-runner-host", host)] if host else []
-    return (xml[:4] + stages + hosts + processes + xml[4:])[:MAX_ANNOTATIONS]
+    return (cases[:4] + xml[:4] + stages + hosts + processes + xml[4:])[:MAX_ANNOTATIONS]
 
 
 EXPECTED = {"public-local-files": 6, "network-local-files": 6,

@@ -65,22 +65,48 @@ public final class LocalFileExportSmokeTest {
         assertEquals(plaintext.replace("\r\n", "\n"), submitted);
         Uri destination = document("export.asc");
         Instrumentation.ActivityMonitor picker = picker(Intent.ACTION_CREATE_DOCUMENT, Activity.RESULT_OK, destination);
+        Throwable primaryFailure = null;
+        String phase = "request local save";
         try {
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             evaluate(web, "document.querySelector('[data-download]').click(); 'requested'");
+            phase = "wait for read-back-verified save";
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             await(web, "document.getElementById('encrypt-status').textContent", "Saved ");
+            phase = "compare saved ciphertext bytes";
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             assertEquals("exactly one ACTION_CREATE_DOCUMENT request", 1, picker.getHits());
             assertArrayEquals(armor.getBytes(StandardCharsets.UTF_8), read(destination));
             assertTrue(evaluate(web, "document.getElementById('encrypt-status').textContent").contains("read-back verified"));
+            phase = "submit local decryption";
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             evaluate(web, "document.getElementById('decrypt-tab').click();" +
                     "document.getElementById('armored-input').value=" + JSONObject.quote(new String(read(destination), StandardCharsets.UTF_8)) + ";" +
                     "document.getElementById('decrypt-passphrase').value='synthetic Android passphrase only';" +
                     "document.getElementById('decrypt-form').requestSubmit(); 'started'");
+            phase = "wait for local decryption";
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             await(web, "document.getElementById('decrypt-status').dataset.kind || ''", "success");
+            phase = "compare exact recovered text";
+            Log.i("Html5LocalFileSmoke", "message round trip: " + phase);
             assertEquals(submitted, evaluate(web, "document.getElementById('decrypted-output').value"));
+        } catch (Exception | AssertionError failure) {
+            primaryFailure = failure;
+            // Fixed phase names only: never page values, keys or passphrases.
+            Log.e("Html5LocalFileSmoke", "message round trip failed during " + phase);
+            throw failure;
         } finally {
-            instrumentation.removeMonitor(picker);
-            activity.getContentResolver().delete(destination, null, null);
-            evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+            try {
+                instrumentation.removeMonitor(picker);
+                activity.getContentResolver().delete(destination, null, null);
+                evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+            } catch (Exception | AssertionError cleanupFailure) {
+                // A second callback timeout must not erase the real failure.
+                // Cleanup-only failures still fail the test; nothing is skipped.
+                if (primaryFailure == null) throw cleanupFailure;
+                primaryFailure.addSuppressed(cleanupFailure);
+                Log.e("Html5LocalFileSmoke", "message round trip: cleanup failure retained as suppressed");
+            }
         }
     }
 
