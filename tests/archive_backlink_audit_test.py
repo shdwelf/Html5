@@ -1,7 +1,9 @@
 """Synthetic offline controls only; never fetch third-party pages in unit tests."""
 import importlib.util
+import io
 import json
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location("archive_audit", Path(__file__).parents[1] / "tools/archive-backlink-audit.py")
@@ -89,6 +91,40 @@ class ArchiveAuditTests(unittest.TestCase):
         self.assertFalse(report["positiveGuestbookControlsPassed"])
         self.assertFalse(report["rawBodiesSaved"])
         self.assertEqual(report["privateOrManagementRequests"], 0)
+
+    def test_http_200_barrier_is_not_a_completed_guestbook_inspection(self):
+        class Barrier:
+            def get(self, url):
+                return {"outcome": "fetched", "httpStatus": 200}, b"<html>Guestbook: verify you are human</html>"
+
+        report = audit.run_audit(Barrier())
+        self.assertEqual(report["fullyFetchedCandidatePages"], [])
+        self.assertFalse(report["positiveGuestbookControlsPassed"])
+
+    def test_private_lookalike_forms_and_numeric_contact_values_are_not_retained(self):
+        self.assertIsNone(audit.target_link("http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf&action=private"))
+        report = audit.inspect_html(b'''
+          <form action="https://evil.invalid/visitor@example.invalid/wgb/wgbview.dbm"><input name="first" value="10"></form>
+          <form action="http://www.lpage.com/wgb/wgbview.dbm"><input name="phone" value="123456"></form>
+        ''', "https://example.invalid/")
+        self.assertEqual(len(report["publicViewForms"]), 1)
+        self.assertNotIn("value", report["publicViewForms"][0]["fields"][0])
+        self.assertNotIn("visitor@example.invalid", json.dumps(report))
+
+    def test_check_annotations_escape_remote_workflow_commands_and_bound_receipts(self):
+        result = {"sources": [{"id": "synthetic", "value": "%0A\n::error::injection"}], "rawBodiesSaved": False}
+        output = io.StringIO()
+        with redirect_stdout(output):
+            audit.emit_actions_annotations(result)
+        lines = output.getvalue().splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertTrue(lines[0].startswith("::notice title=synthetic::"))
+        self.assertIn("%250A", lines[0])
+        self.assertIn("\\n::error::injection", lines[0])
+        output = io.StringIO()
+        with redirect_stdout(output):
+            audit.emit_actions_annotations({"sources": [{"id": "large", "value": "x" * 40000}]})
+        self.assertIn('"annotationTruncated": true', output.getvalue())
 
 
 if __name__ == "__main__":

@@ -264,9 +264,28 @@ def run_audit(fetcher=None):
                             "Bulk collection metadata is not a search of WARC/WAT/link-graph contents."]}
 
 
+def emit_actions_annotations(result):
+    """Expose sanitized observations via Checks API when artifact CDN is unreachable.
+
+    Workflow commands are escaped so a remote metadata value cannot inject a
+    second command. Oversized annotations are explicitly marked, never silently
+    treated as a complete receipt; the full sanitized JSON remains the artifact.
+    """
+    rows = [(row["id"], row) for row in result["sources"]]
+    rows.append(("audit-summary", {key: value for key, value in result.items() if key != "sources"}))
+    for title, row in rows:
+        encoded = json.dumps(row, ensure_ascii=True, separators=(",", ":"))
+        if len(encoded) > 32768:
+            encoded = json.dumps({"id": title, "outcome": row.get("outcome"), "annotationTruncated": True,
+                                  "limitation": "Read the sanitized artifact for the complete source observation"})
+        encoded = encoded.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+        print(f"::notice title={title}::{encoded}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--actions-annotations", action="store_true", help="Also emit sanitized receipts through the Checks API")
     args = parser.parse_args()
     result = run_audit()
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -275,6 +294,8 @@ def main():
     for row in result["sources"]:
         print(f"stage {row['stage']} {row['id']}: {row['outcome']}; target links {len(row.get('targetLinks', []))}")
     print("Positive guestbook controls:", result["positiveGuestbookControlsPassed"])
+    if args.actions_annotations:
+        emit_actions_annotations(result)
 
 
 if __name__ == "__main__":
