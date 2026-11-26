@@ -105,7 +105,10 @@ public final class LocalFileExportSmokeTest {
         Instrumentation.ActivityMonitor opening = picker(Intent.ACTION_OPEN_DOCUMENT, Activity.RESULT_OK, chosen);
         try {
             evaluate(web, "document.getElementById('keyring-tab').click();" +
-                    "window.__syntheticFileGesture='none';" +
+                    "window.__syntheticFileGesture='none'; window.__syntheticFileEvents=[];" +
+                    "for (const type of ['pointerdown','pointerup','pointercancel','click']) document.addEventListener(type, event => {" +
+                    "if (__syntheticFileEvents.length < 8) __syntheticFileEvents.push({type,target:event.target.id || event.target.tagName," +
+                    "trusted:event.isTrusted,x:event.clientX,y:event.clientY}); }, {once:true,capture:true});" +
                     "document.getElementById('public-key-file').addEventListener('click', event => {" +
                     "window.__syntheticFileGesture=String(event.isTrusted) + '|' + String(navigator.userActivation.isActive); }, {once:true}); 'opened'");
             // A programmatic file-input click has no transient user activation
@@ -113,7 +116,8 @@ public final class LocalFileExportSmokeTest {
             WebViewTestInput.tapElement(instrumentation, web, "public-key-file");
             long pickerDeadline = SystemClock.uptimeMillis() + 10000;
             while (opening.getHits() == 0 && SystemClock.uptimeMillis() < pickerDeadline) SystemClock.sleep(100);
-            assertEquals("file control must receive a trusted click with transient user activation", "true|true",
+            assertEquals("file control must receive a trusted click with transient user activation; " +
+                    WebViewTestInput.lastGesture + "; events=" + evaluate(web, "JSON.stringify(window.__syntheticFileEvents)"), "true|true",
                     evaluate(web, "window.__syntheticFileGesture"));
             assertEquals("a real input gesture must open ACTION_OPEN_DOCUMENT", 1, opening.getHits());
             await(web, "document.getElementById('public-key-input').value + '|' + document.getElementById('keyring-status').textContent", "SYNTHETIC NOT-A-KEY");

@@ -264,8 +264,11 @@ called “public”; this label describes its app inventory, not cloud sharing.
 
 Automatic pull-request/main builds do not ask for a key. In GitHub Actions,
 choose **Run workflow** for a manual recipient dispatch; new input definitions
-appear in the web UI only once they are on the default branch. Every run still
-builds public, network and private regardless of recipient inputs. A 403
+appear in the web UI only once they are on the default branch. Every valid run
+builds public, network and private; recipient inputs do not select/drop profiles.
+Invalid recipient inputs stop before compilation/export with an explicit error.
+Start a **new** run from the fixed revision: rerunning an old failed job retains
+that old revision's workflow. A 403
 “Resource not accessible by integration” is a GitHub connection/permission issue,
 not a subkey parsing error: reconnect the GitHub integration in Arena rather
 than supplying a private key, access token or passphrase in chat. Build success,

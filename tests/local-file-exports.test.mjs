@@ -149,6 +149,9 @@ test("v6 Android save fixtures stay explicitly allowlisted and real gestures req
   assert.match(smoke, /requested\.equals\(current\.getUrl\(\)\)/);
   assert.match(smoke, /web\.getProgress\(\) == 100/);
   assert.ok(smoke.indexOf("requested packaged document must finish native navigation") < smoke.indexOf("complete|\" + requested"));
+  assert.match(gestures, /web\.requestFocus\(\); viewFocused\[0\] = web\.hasFocus\(\)/);
+  assert.match(gestures, /window\.visualViewport/);
+  assert.match(gestures, /x-v\.offsetLeft,y-v\.offsetTop,v\.width/);
   assert.match(gestures, /postVisualStateCallback/);
   assert.match(gestures, /web\.postOnAnimation\(\(\) -> web\.postOnAnimation\(drawn::countDown\)\)/);
   assert.match(gestures, /document\.elementFromPoint\(x,y\)/);
