@@ -8,6 +8,7 @@ import hashlib
 import importlib.util
 import json
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location("geocities_graph", Path(__file__).parents[1] / "tools/geocities-link-graph.py")
@@ -162,13 +163,60 @@ class GraphStreamingTests(unittest.TestCase):
         self.assertEqual(result["counts"]["inboundSiteRows"], 1)
         self.assertLess(len(json.dumps(result)), 6000)
 
-    def test_bad_columns_oversized_url_and_unquoted_quote_fail_with_fixed_diagnostics_only(self):
+    def test_bad_columns_oversized_date_and_unquoted_quote_fail_with_fixed_diagnostics_only(self):
         header = b"crawl_date,source,target,anchor_text\n"
-        for record in [b"a,b,c,d,e\n", b'a,b"quote,c,d\n', b"a," + b"x" * 16385 + b",c,d\n"]:
+        for record in [b"a,b,c,d,e\n", b'a,b"quote,c,d\n', b"x" * 65537 + b",b,c,d\n"]:
             result, _ = self.scan(gzip.compress(header + record))
             self.assertFalse(result["completeGraphSearched"])
             self.assertNotEqual(result["nativeExitStatus"], 0)
             self.assertNotIn("x" * 200, json.dumps(result))
+
+    def test_oversized_non_http_urls_cannot_abort_or_become_target_edges(self):
+        target = "http://www.geocities.com/SiliconValley/Park/8099/"
+        rows = [["20000101", target, "javascript:" + "x" * 70000 + "8099Shadowelf", "not retained"],
+                ["20000101", "http://example.invalid/", target, "real edge after oversized URL"]]
+        result, _ = self.scan(gzip.compress(self.csv_bytes(rows)), chunk=97)
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertEqual(result["nativeStats"]["oversizedNonHttpFields"], 1)
+        self.assertEqual(result["counts"]["originalSourceRows"], 1)
+        self.assertEqual(result["counts"]["inboundSiteRows"], 1)
+        self.assertNotIn("x" * 500, json.dumps(result))
+
+    def test_oversized_http_fields_are_fully_prefiltered_without_false_completeness(self):
+        target = "http://www.geocities.com/SiliconValley/Park/8099/"
+        irrelevant = ["20000101", "http://example.invalid/", "http://elsewhere.invalid/" + "x" * 70000, "not retained"]
+        result, _ = self.scan(gzip.compress(self.csv_bytes([irrelevant])))
+        self.assertTrue(result["completeGraphSearched"], result)
+        self.assertEqual(result["nativeStats"]["oversizedHttpFields"], 1)
+        candidate = ["20000101", "http://elsewhere.invalid/" + "x" * 70000, target, "not retained"]
+        encoded_late = ["20000101", "http://elsewhere.invalid/", "http://elsewhere.invalid/" + "x" * 70000 + "%38%30%39%39", "not retained"]
+        guestbook_late = ["20000101", "http://elsewhere.invalid/", "http://www.lpage.com/wgb/wgbview.dbm?pad=" + "x" * 70000 + "&owner=%53haDoWelf", "not retained"]
+        body = gzip.compress(self.csv_bytes([irrelevant, candidate, encoded_late, guestbook_late]))
+        result, _ = self.scan(body, chunk=61)
+        self.assertFalse(result["completeGraphSearched"], result)
+        self.assertTrue(result["fullPayloadRead"])
+        self.assertTrue(result["transferIntegrityVerified"])
+        self.assertTrue(result["csvComplete"])
+        self.assertFalse(result["exactCandidateCoverageComplete"])
+        self.assertEqual(result["counts"]["unclassifiedCandidateRows"], 3)
+        self.assertEqual(result["nativeStats"]["unclassifiedCandidateRows"], 3)
+        self.assertEqual(result["nativeStats"]["rows"], 4)
+        self.assertNotIn("x" * 500, json.dumps(result))
+
+    def test_source_verification_is_kind_specific_and_never_upgrades_an_unseen_target_kind(self):
+        source = "http://www.geocities.com/Elsewhere/1234/geobook.html"
+        collector = graph.EdgeCollector()
+        for target in ["http://www.geocities.com/SiliconValley/Park/8099/", "http://www.lpage.com/wgb/wgbview.dbm?owner=Shadowelf"]:
+            collector.accept({"type": "candidate", "row": 1, "crawlDate": "20000101", "source": source, "target": target})
+        class Response(io.BytesIO):
+            url = "https://web.archive.org/web/20000101000000id_/" + source
+        body = b'<a href="http://www.geocities.com/SiliconValley/Park/8099/">omitted visitor text</a>'
+        result = collector.snapshot()
+        with patch.object(graph, "open_archive", return_value=Response(body)):
+            graph.validate_sources(result, collector)
+        self.assertEqual([edge["sourcePageVerified"] for edge in result["matches"]], [True, False])
+        self.assertEqual(result["verifiedSourcePages"], 1)
+        self.assertNotIn("omitted visitor text", json.dumps(result))
 
     def test_parallel_ranges_are_consumed_in_order_and_do_not_write_payloads(self):
         body = bytes(range(100))

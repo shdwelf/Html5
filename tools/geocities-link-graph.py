@@ -141,7 +141,7 @@ AUDIT = audit_tools()
 
 def public_url(value):
     """Drop queries/fragments/contacts; preserve a hash of the full observed URL."""
-    if not isinstance(value, str) or len(value) > 16384 or re.search(r"[\x00-\x20\x7f]", value):
+    if not isinstance(value, str) or len(value) > 65536 or re.search(r"[\x00-\x20\x7f]", value):
         return None
     try:
         original = AUDIT.original_url(value)
@@ -149,7 +149,7 @@ def public_url(value):
         if parts.scheme not in ("http", "https") or not parts.hostname or parts.username or parts.password or parts.port not in (None, 80, 443):
             return None
         path = parts.path or "/"
-        redacted_path = "@" in unquote(path) or bool(re.search(r"(?:password|token|session|private)", path, re.I))
+        redacted_path = len(path) > 4096 or "@" in unquote(path) or bool(re.search(r"(?:password|token|session|private)", path, re.I))
         safe_path = "/[redacted-public-path]" if redacted_path else path
         safe_query = "owner=Shadowelf" if AUDIT.target_link(original) and AUDIT.target_link(original)["kind"] == "guestbook" else ""
         safe = urlunsplit((parts.scheme, parts.netloc, safe_path, safe_query, ""))
@@ -166,7 +166,7 @@ class EdgeCollector:
         self.matches = {}
         self.source_inputs = {}  # Ephemeral, public URLs only; never serialized.
         self.counts = {"candidateRows": 0, "inboundSiteRows": 0, "inboundGuestbookRows": 0,
-                       "selfLinkRows": 0, "originalSourceRows": 0, "unrelatedCandidateRows": 0, "retainedEdgeLimitOmissions": 0}
+                       "selfLinkRows": 0, "originalSourceRows": 0, "unrelatedCandidateRows": 0, "retainedEdgeLimitOmissions": 0, "unclassifiedCandidateRows": 0}
         self.stats = {}
         self.progress = {}
         self.error = None
@@ -177,11 +177,15 @@ class EdgeCollector:
         if kind == "header":
             self.header = row.get("recognized") is True
         elif kind == "stats":
-            self.stats = {key: row[key] for key in ("csvComplete", "rows", "candidateRows", "repeatedHeaders", "blankRecords", "uncompressedBytes")}
+            self.stats = {key: row[key] for key in ("csvComplete", "rows", "candidateRows", "repeatedHeaders", "blankRecords", "uncompressedBytes",
+                                                                          "oversizedHttpFields", "oversizedNonHttpFields", "unclassifiedCandidateRows")}
         elif kind == "progress":
             self.progress = {key: row[key] for key in ("rows", "uncompressedBytes")}
         elif kind == "error":
             self.error = row.get("code", "native-parser-error")
+        elif kind == "unclassified":
+            self.counts["candidateRows"] += 1
+            self.counts["unclassifiedCandidateRows"] += 1
         elif kind == "candidate":
             source = public_url(row["source"])
             target = public_url(row["target"])
@@ -215,10 +219,10 @@ class EdgeCollector:
     def read(self, stream):
         try:
             while True:
-                line = stream.readline(262145)
+                line = stream.readline(BLOCK_BYTES + 1)
                 if not line:
                     break
-                if len(line) > 262144 or not line.endswith(b"\n"):
+                if len(line) > BLOCK_BYTES or not line.endswith(b"\n"):
                     raise ValueError("Native scanner response exceeded its framing bound")
                 row = json.loads(line)
                 with self.lock:
@@ -312,16 +316,21 @@ def scan_chunks(chunks, metadata, scanner, checkpoint=None, max_seconds=5400):
     integrity = input_eof and compressed == int(expected["size"]) and all(digests[name] == expected[name] for name in ("md5", "sha1"))
     csv_complete = (status == 0 and not result["nativeError"] and result["nativeHeaderRecognized"] and
                     result["nativeStats"].get("csvComplete") is True and result["nativeStats"].get("uncompressedBytes") == expanded_bytes)
-    complete = not error and integrity and gzip_complete and csv_complete
+    coverage = (result["nativeStats"].get("unclassifiedCandidateRows") == 0 and
+                result["counts"]["unclassifiedCandidateRows"] == 0 and
+                result["nativeStats"].get("candidateRows") == result["counts"]["candidateRows"])
+    complete = not error and integrity and gzip_complete and csv_complete and coverage
     return {**result, "status": "complete" if complete else "partial-or-failed", "completeGraphSearched": bool(complete),
+            "fullPayloadRead": bool(input_eof and integrity and gzip_complete and csv_complete), "exactCandidateCoverageComplete": coverage,
             "inputEof": input_eof, "gzipComplete": gzip_complete, "transferIntegrityVerified": integrity,
             "csvComplete": bool(csv_complete), "compressedResponseDigests": digests, "errorClass": error,
             "nativeExitStatus": status, "limits": {"compressedBytes": MAX_COMPRESSED, "uncompressedBytes": MAX_UNCOMPRESSED,
-                                                   "seconds": max_seconds, "retainedEdges": collector.maximum},
+                                                   "seconds": max_seconds, "retainedEdges": collector.maximum, "retainedUrlBytes": 65536},
             "limitations": ["Only the exact named graph/digest is searched, not the distinct v2 file or every archive collection.",
                             "A full checksum-verified scan is not a signed provenance attestation or proof that the original crawl was exhaustive.",
                             "Edges are leads until source HTML is fetched and parsed; a non-self URL is not independently verified ownership.",
-                            "Queries/contacts/fragments and all anchor text are omitted from retained evidence."]}, collector
+                            "Queries/contacts/fragments and all anchor text are omitted from retained evidence.",
+                            "Oversized HTTP fields are scanned incrementally for the same percent-decoded needles; any unclassifiable candidate prevents a completeGraphSearched finding."]}, collector
 
 
 RANGE_BYTES = 64 * 1024**2
@@ -372,8 +381,8 @@ def validate_sources(result, collector, maximum=16):
         parts = urlsplit(source)
         host = (parts.hostname or "").removeprefix("www.").lower()
         if (host not in AUDIT.TARGET_HOSTS or not date or
-                re.search(r"(?:^|/)(?:admin|private|manage|login)(?:/|\.|$)", parts.path, re.I) or
-                AUDIT.FORBIDDEN.search(parts.query)):
+                re.search(r"(?:^|/)(?:admin|private|manage|login)(?:/|\.|$)", unquote(parts.path), re.I) or
+                AUDIT.FORBIDDEN.search(unquote(parts.query))):
             row["outcome"] = "not-fetched-outside-public-source-profile"
             observations.append(row)
             continue
@@ -387,15 +396,16 @@ def validate_sources(result, collector, maximum=16):
             else:
                 page = AUDIT.inspect_html(body, replay)
                 row.update({"outcome": "fetched-and-parsed", "bytes": len(body), "responseBodySha256": hashlib.sha256(body).hexdigest(),
-                            "targetLinkCount": len(page["targetLinks"]), "accessBarrierDetected": page["accessBarrierDetected"],
+                            "targetLinkCount": len(page["targetLinks"]), "targetKindsObserved": sorted({link["kind"] for link in page["targetLinks"]}),
+                            "accessBarrierDetected": page["accessBarrierDetected"],
                             "sourcePageVerified": bool(page["targetLinks"]) and not page["accessBarrierDetected"],
                             "resolvedReplayTimestamp": (re.search(r"/web/(\d{8,14})", resolved).group(1) if re.search(r"/web/(\d{8,14})", resolved) else None)})
         except (OSError, ValueError, TimeoutError):
             row["outcome"] = "source-fetch-or-parse-error"
         observations.append(row)
-    verified = {row["sourceUrlSha256"] for row in observations if row["sourcePageVerified"]}
+    verified = {row["sourceUrlSha256"]: row["targetKindsObserved"] for row in observations if row["sourcePageVerified"]}
     for edge in result["matches"]:
-        edge["sourcePageVerified"] = edge["source"]["urlSha256"] in verified
+        edge["sourcePageVerified"] = edge["targetKind"] in verified.get(edge["source"]["urlSha256"], [])
     result["sourceVerification"] = observations
     result["verifiedSourcePages"] = len(verified)
     result["sourceVerificationLimit"] = maximum
