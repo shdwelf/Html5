@@ -1,303 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADS-B Radar Scope</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --radar-primary: #00ff41;
-            --radar-secondary: #00aa2a;
-            --radar-bg: #001100;
-            --radar-grid: rgba(0, 255, 65, 0.15);
-            --radar-sweep: rgba(0, 255, 65, 0.08);
-            --radar-glow: rgba(0, 255, 65, 0.4);
-            --radar-military: #ff3344;
-            --radar-ground: #ffaa00;
-        }
-        body {
-            background: var(--radar-bg);
-            color: var(--radar-primary);
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.5s;
-        }
-        .radar-container {
-            position: relative;
-            width: min(95vw, 95vh, 800px);
-            height: min(95vw, 95vh, 800px);
-        }
-        #radarCanvas {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            cursor: crosshair;
-        }
-        .hud-ring {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(100% + 20px); height: calc(100% + 20px);
-            border: 2px solid var(--radar-secondary);
-            border-radius: 50%;
-            pointer-events: none;
-            transition: border-color 0.5s;
-        }
-        .hud-ring::before {
-            content: '';
-            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border: 1px solid var(--radar-grid);
-            border-radius: 50%;
-        }
-        .info-panel {
-            position: absolute;
-            background: rgba(0, 10, 0, 0.9);
-            border: 1px solid var(--radar-secondary);
-            padding: 10px 14px;
-            font-size: 11px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 100;
-            backdrop-filter: blur(5px);
-        }
-        .info-panel.visible { opacity: 1; }
-        .top-left { top: 10px; left: 10px; }
-        .top-right { top: 10px; right: 10px; }
-        .bottom-left { bottom: 10px; left: 10px; }
-        .bottom-right { bottom: 10px; right: 10px; }
-        .info-panel h3 {
-            font-size: 10px; letter-spacing: 3px;
-            color: var(--radar-secondary);
-            margin-bottom: 6px;
-            border-bottom: 1px solid var(--radar-grid);
-            padding-bottom: 4px;
-        }
-        .info-row {
-            display: flex; justify-content: space-between;
-            gap: 16px; margin: 3px 0;
-        }
-        .info-label { color: var(--radar-secondary); }
-        .info-value {
-            color: var(--radar-primary);
-            text-shadow: 0 0 6px var(--radar-glow);
-            font-weight: bold;
-        }
-        .status-dot {
-            display: inline-block; width: 8px; height: 8px;
-            border-radius: 50%; margin-right: 6px;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        .status-dot.online { background: var(--radar-primary); box-shadow: 0 0 8px var(--radar-glow); }
-        .status-dot.offline { background: var(--radar-military); box-shadow: 0 0 8px rgba(255,51,68,0.4); animation: pulse 0.5s ease-in-out infinite; }
-        .status-dot.proxy { background: var(--radar-ground); box-shadow: 0 0 8px rgba(255,170,0,0.4); }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .feed-status-container {
-            display: flex; flex-direction: column; gap: 3px;
-            margin-top: 6px; padding-top: 6px;
-            border-top: 1px solid var(--radar-grid);
-        }
-        .feed-status-item {
-            display: flex; justify-content: space-between;
-            align-items: center; font-size: 9px; letter-spacing: 1px;
-        }
-        .feed-status-name { color: var(--radar-secondary); }
-        .feed-status-val { font-weight: bold; }
-        .feed-status-val.online { color: var(--radar-primary); }
-        .feed-status-val.offline { color: var(--radar-military); }
-        .feed-status-val.proxy { color: var(--radar-ground); }
-        .details-panel {
-            position: absolute; bottom: 70px; left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 10, 0, 0.95);
-            border: 1px solid var(--radar-primary);
-            padding: 12px 18px; font-size: 11px; display: none;
-            min-width: 300px; max-height: 60vh; overflow-y: auto;
-            box-shadow: 0 0 20px var(--radar-glow), inset 0 0 20px var(--radar-sweep);
-        }
-        .details-panel.active { display: block; }
-        .details-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px; padding-bottom: 8px;
-            border-bottom: 1px solid var(--radar-secondary);
-        }
-        .details-callsign {
-            font-size: 18px; font-weight: bold;
-            text-shadow: 0 0 12px var(--radar-glow);
-            letter-spacing: 2px;
-        }
-        .details-close {
-            background: none; border: 1px solid var(--radar-secondary);
-            color: var(--radar-secondary); padding: 2px 8px;
-            cursor: pointer; font-family: inherit;
-        }
-        .details-close:hover { border-color: var(--radar-primary); color: var(--radar-primary); }
-        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
-        .details-item { display: flex; flex-direction: column; gap: 2px; }
-        .details-item-label { font-size: 9px; color: var(--radar-secondary); letter-spacing: 1px; }
-        .details-item-value {
-            font-size: 13px; color: var(--radar-primary);
-            text-shadow: 0 0 4px var(--radar-glow);
-        }
-        .controls {
-            position: absolute; bottom: 10px; left: 50%;
-            transform: translateX(-50%);
-            display: flex; gap: 8px; z-index: 200;
-            flex-wrap: wrap; justify-content: center;
-        }
-        .ctrl-btn {
-            background: rgba(0, 20, 0, 0.9);
-            border: 1px solid var(--radar-secondary);
-            color: var(--radar-primary); padding: 6px 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 10px; letter-spacing: 1px;
-            cursor: pointer; transition: all 0.2s;
-            text-transform: uppercase; white-space: nowrap;
-        }
-        .ctrl-btn:hover {
-            background: var(--radar-sweep);
-            border-color: var(--radar-primary);
-            box-shadow: 0 0 10px var(--radar-glow);
-        }
-        .ctrl-btn.active { background: rgba(0, 255, 65, 0.3); border-color: var(--radar-primary); }
-        .minimal-btn {
-            position: absolute; top: 8px; right: 10px; z-index: 900;
-            background: rgba(0, 15, 0, 0.8);
-            border: 1px solid var(--radar-secondary);
-            color: var(--radar-secondary); width: 22px; height: 22px;
-            border-radius: 50%; font-size: 11px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s; font-family: inherit; line-height: 1;
-        }
-        .minimal-btn:hover {
-            border-color: var(--radar-primary);
-            color: var(--radar-primary);
-            box-shadow: 0 0 8px var(--radar-glow);
-        }
-        .minimal-btn.active {
-            background: var(--radar-sweep);
-            border-color: var(--radar-primary);
-            color: var(--radar-primary);
-        }
-        .hud-overlay { transition: opacity 0.4s, visibility 0.4s; }
-        .hud-overlay.minimal { opacity: 0; visibility: hidden; pointer-events: none; }
-        .model-selector {
-            position: absolute; top: 10px; left: 50%;
-            transform: translateX(-50%);
-            display: flex; gap: 6px; z-index: 200;
-        }
-        .feed-selector {
-            position: absolute; top: 40px; left: 50%;
-            transform: translateX(-50%);
-            display: flex; gap: 5px; align-items: center; z-index: 200;
-        }
-        .feed-label {
-            font-size: 9px; letter-spacing: 2px;
-            color: var(--radar-secondary);
-            text-transform: uppercase; margin-right: 4px;
-        }
-        .feed-btn {
-            background: rgba(0, 15, 0, 0.9);
-            border: 1px solid var(--radar-secondary);
-            color: var(--radar-secondary); padding: 4px 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 8px; letter-spacing: 1px;
-            cursor: pointer; transition: all 0.3s;
-            text-transform: uppercase; white-space: nowrap;
-        }
-        .feed-btn:hover { border-color: var(--radar-primary); color: var(--radar-primary); }
-        .feed-btn.active {
-            background: var(--radar-sweep);
-            border-color: var(--radar-primary);
-            color: var(--radar-primary);
-            box-shadow: 0 0 8px var(--radar-glow);
-        }
-        .feed-btn.combined { border-color: var(--radar-military); color: var(--radar-military); }
-        .feed-btn.combined.active {
-            background: rgba(255, 51, 68, 0.15);
-            border-color: var(--radar-military);
-            color: var(--radar-military);
-            box-shadow: 0 0 8px rgba(255, 51, 68, 0.3);
-        }
-        .model-btn {
-            background: rgba(0, 15, 0, 0.9);
-            border: 1px solid var(--radar-secondary);
-            color: var(--radar-secondary); padding: 5px 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 9px; letter-spacing: 1px;
-            cursor: pointer; transition: all 0.3s;
-            text-transform: uppercase; white-space: nowrap;
-        }
-        .model-btn:hover { border-color: var(--radar-primary); color: var(--radar-primary); }
-        .model-btn.active {
-            background: var(--radar-sweep);
-            border-color: var(--radar-primary);
-            color: var(--radar-primary);
-            box-shadow: 0 0 10px var(--radar-glow);
-            font-weight: bold;
-        }
-        .ac-list { max-height: 150px; overflow-y: auto; margin-top: 6px; }
-        .ac-list-item {
-            padding: 4px 6px; cursor: pointer;
-            display: flex; justify-content: space-between;
-            gap: 10px; border-bottom: 1px solid var(--radar-grid);
-        }
-        .ac-list-item:hover { background: var(--radar-sweep); }
-        .ac-list-item .cs { color: var(--radar-primary); font-weight: bold; font-size: 11px; }
-        .ac-list-item .alt { color: var(--radar-secondary); font-size: 10px; }
-        .ac-list-item .src { color: var(--radar-secondary); font-size: 9px; opacity: 0.7; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 10, 0, 0.5); }
-        ::-webkit-scrollbar-thumb { background: var(--radar-secondary); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--radar-primary); }
-        .crt-overlay {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 50;
-        }
-        .blink { animation: blink 1s step-end infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .proxy-badge {
-            font-size: 8px; color: var(--radar-ground);
-            letter-spacing: 1px; margin-top: 4px;
-            padding: 2px 6px;
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            display: inline-block;
-        }
-    </style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;--radar-primary:#00ff41;--radar-secondary:#68bc80;--radar-bg:#001100;--radar-grid:rgba(0,255,65,.15);--radar-sweep:rgba(0,255,65,.08);--radar-glow:rgba(0,255,65,.4);--radar-military:#ff7580;--radar-ground:#ffcd77;--radar-peer:#7fdfff;--wm-surface:#b8bbc5;--wm-edge:#555864;--wm-ink:#161e33;--wm-title:#344b80}
+body{background:#485369!important;color:#e5f5ea;font:14px/1.5 ui-monospace,'Courier New',monospace;min-width:0;min-height:100vh;min-height:100dvh}
+.radar-workspace{max-width:1440px;margin:auto;padding:clamp(8px,2vw,24px);display:grid;gap:14px;min-width:0}
+.desktop-title,.desktop-title>div{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.desktop-title h1{font-size:clamp(20px,3vw,28px);letter-spacing:-1px;color:#fff}.desktop-title p{color:#d0daec;font-size:12px}.app-mark{font-size:38px;color:#d4e5a7}
+.window-frame{border:3px solid;border-color:#e7e7ed #535967 #535967 #e7e7ed;background:#101e1a;box-shadow:1px 1px 0 #1e2637;min-width:0}
+.window-title{display:flex;align-items:center;gap:8px;background:var(--wm-title);color:#fff;padding:8px 10px;margin:0 0 12px;font-size:13px;font-weight:600;border-bottom:2px solid #122341}.window-title>span:first-child{color:#dee9b7}.window-tag{margin-left:auto;font-size:10px;color:#cbd9f6;letter-spacing:1px}
+.toolbar{background:var(--wm-surface);color:var(--wm-ink);padding:10px;display:grid;gap:8px}.model-selector,.feed-selector,.controls,.route-options{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.feed-label{font-size:11px;font-weight:bold;min-width:68px;letter-spacing:1px}
+button,select,input{font:inherit}button,select{min-height:44px}button{cursor:pointer}.ctrl-btn,.model-btn,.feed-btn,.send-btn,.details-close{position:static;transform:none;border:2px solid;border-color:#f2f2f5 #5c606f #5c606f #f2f2f5;background:#c7c9d1;color:#1a2235;padding:8px 12px;font-size:12px;line-height:1.3;white-space:normal;max-width:100%}.active,.primary{background:#cbd7ae;border-color:#5f6b56 #f0f5df #f0f5df #5f6b56}.ctrl-btn:hover,.model-btn:hover,.feed-btn:hover,.send-btn:hover,.details-close:hover{background:#e6eadb;color:#152b20}button:disabled{opacity:.6;cursor:default}*:focus-visible{outline:3px solid #ffdf7e;outline-offset:3px}kbd{font-size:10px;border:1px solid #596376;padding:1px 4px;margin-left:8px}.network-controls{border-top:1px solid #7b8191;padding-top:10px;display:grid;gap:8px}.route-heading{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.route-heading strong{font-size:12px}#networkStatus{background:#26354a;color:#fff;padding:4px 8px;font-size:11px;overflow-wrap:anywhere}.route-options label{display:grid;gap:4px;font-size:11px}.route-options select{padding:6px;color:#162239;background:#eef0f4;border:2px inset #a3a7b5;max-width:100%}.route-options .consent{display:flex;gap:8px;align-items:center;max-width:310px}.consent input{width:20px;height:20px;flex:0 0 auto}.network-note{font:11px/1.55 system-ui,sans-serif;overflow-wrap:anywhere}.toolbar .network-note{color:#313b50}
+.workspace-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(245px,310px);gap:14px;align-items:start;min-width:0}.scope-window{background:#07130f;overflow:hidden}.radar-container{position:relative;width:calc(100% - 36px);max-width:820px;aspect-ratio:1;margin:18px auto;min-width:0;isolation:isolate}#radarCanvas{display:block;width:100%;height:100%;border-radius:50%;cursor:crosshair;background:var(--radar-bg)}.hud-ring{position:absolute;inset:0;border:2px solid var(--radar-secondary);border-radius:50%;pointer-events:none}.crt-overlay{position:absolute;inset:0;border-radius:50%;pointer-events:none}.scope-caption{padding:12px 16px;border-top:1px solid #354d42;display:flex;flex-direction:column;gap:5px;font-size:11px;color:#b4c8bd}.scope-caption strong{color:#e1f7bd;letter-spacing:1px}.instrument-stack{display:grid;gap:12px;min-width:0}.info-panel{display:none;position:static;opacity:1;pointer-events:auto;padding:0 12px 12px;overflow-wrap:anywhere;min-width:0}.info-panel.visible{display:block}.info-panel>.window-title{margin-left:-12px;margin-right:-12px}.info-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:5px 0;font-size:12px}.info-label{color:#a8c2b3}.info-value{color:#e3f5d7;font-weight:bold;text-align:right;overflow-wrap:anywhere;min-width:0}.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:#95a0ac}.online{color:#bbebaa}.offline{color:#ffb3b7}.proxy{color:#ffda9a}.peer{color:#92dfff}.status-dot.online{background:#a6ed91}.status-dot.offline{background:#ff8a94}.status-dot.proxy{background:#ffd284}.status-dot.peer{background:#83d9ff}.feed-btn.peer{color:#24455d}.feed-status-container{display:grid;gap:5px;border-top:1px solid #3b5044;margin-top:10px;padding-top:8px;max-height:180px;overflow:auto}.feed-status-item{display:flex;gap:8px;justify-content:space-between;font-size:11px}.feed-status-name{min-width:0;overflow-wrap:anywhere}.proxy-badge,.peer-badge{font-size:10px;color:#ffda9a;display:inline-block;border:1px solid #6a6341;padding:2px 5px;margin-top:8px}.peer-badge{color:#9edbff}.ac-list{display:grid;gap:5px;max-height:340px;overflow:auto}.ac-list-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;border:1px solid #3c5a48;background:#162a20;color:#e4f8d5;padding:8px;text-align:left;min-height:48px;width:100%;overflow-wrap:anywhere}.ac-list-item .cs{font-weight:bold}.ac-list-item .alt{color:#d4ddab}.ac-list-item .src{font-size:10px;color:#9bc5b2;grid-column:1/-1}.ac-list-item:hover{background:#294331}.details-panel{display:none;position:static;transform:none;min-width:0;padding:12px;max-height:none;overflow-wrap:anywhere}.details-panel.active{display:block}.details-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.details-callsign{font-size:18px;font-weight:bold;color:#e7f5c1}.details-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.details-item{display:flex;flex-direction:column;gap:2px;min-width:0}.details-item-label{font-size:10px;color:#a8c2b3}.details-item-value{font-size:12px;color:#e5f3e5;overflow-wrap:anywhere}.details-source-badge{grid-column:1/-1}.actions{padding:12px;background:var(--wm-surface);color:var(--wm-ink);display:grid;gap:10px}.controls{justify-content:flex-start}.gps-dot,.gps-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;display:none;border-radius:50%}.gps-dot{width:12px;height:12px;background:#fff4a3;border:2px solid #78652e}.gps-ring{width:32px;height:32px;border:1px dashed #fff4a3}.gps-dot.active,.gps-ring.active{display:block}.gps-label{display:none;color:#fff0ae;font-size:11px;overflow-wrap:anywhere}.gps-label.active{display:block}.hud-overlay.minimal{display:none}.is-minimal .workspace-content{grid-template-columns:1fr}.is-minimal .scope-window{width:100%;max-width:920px;margin:auto}[hidden]{display:none!important}.skip-link{position:absolute;left:12px;top:-100px;background:#fff;color:#102039;padding:12px;z-index:10}.skip-link:focus{top:8px}.blink{animation:blink 1s step-end infinite}@keyframes blink{50%{opacity:.5}}
+@media(max-width:850px){.workspace-content{grid-template-columns:1fr}.instrument-stack{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.radar-container{max-width:620px}.window-tag{font-size:9px}}
+@media(max-width:480px){.instrument-stack{grid-template-columns:1fr}.desktop-title{align-items:flex-start}.desktop-title .ctrl-btn{width:100%}.model-selector,.feed-selector{gap:6px}.model-btn,.feed-btn{flex:1 1 70px}.feed-label{width:100%}.route-options{align-items:stretch}.route-options>label,.route-options>button{flex:1 1 150px}.radar-container{width:calc(100% - 20px);margin:10px auto}.window-title{font-size:12px}.radar-workspace{gap:10px}.controls>.ctrl-btn,.controls>.send-btn{flex:1 1 100px}.scope-caption{padding:10px}.window-tag{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
 </head>
-<body>
-    <div class="radar-container">
-        <canvas id="radarCanvas"></canvas>
-        <div class="hud-ring"></div>
-        <div class="crt-overlay" id="crtOverlay"></div>
-
-        <button class="minimal-btn" onclick="toggleMinimal()" id="btnMinimal" title="Toggle minimal (M)">◉</button>
-
-        <div class="hud-overlay" id="hudOverlay">
-
-        <div class="feed-selector">
+<body><a class="skip-link" href="#btnRange">Skip to radar actions</a><main class="radar-workspace" id="workspace"><header class="desktop-title"><div><span class="app-mark" aria-hidden="true">◈</span><div><h1>ADS-B Radar Scope</h1><p>4DWM / tiled instruments · not for navigation</p></div></div><button type="button" class="ctrl-btn" id="btnMinimal" onclick="toggleMinimal()" aria-controls="hudOverlay" aria-expanded="true">Hide instruments <kbd>M</kbd></button></header><section class="toolbar window-frame" aria-label="Radar display and feed controls"><div class="model-selector" role="group" aria-label="Display model"><span class="feed-label">DISPLAY</span>
+            <button class="model-btn active" onclick="setRadarModel('classic')" id="modelClassic" type="button" aria-pressed="true">CLASSIC</button>
+            <button class="model-btn" onclick="setRadarModel('military')" id="modelMilitary" type="button" aria-pressed="false">MILITARY</button>
+            <button class="model-btn" onclick="setRadarModel('atc')" id="modelATC" type="button" aria-pressed="false">ATC</button>
+            <button class="model-btn" onclick="setRadarModel('retro')" id="modelRetro" type="button" aria-pressed="false">RETRO</button>
+            <button class="model-btn" onclick="setRadarModel('stealth')" id="modelStealth" type="button" aria-pressed="false">STEALTH</button>
+        </div><div class="feed-selector" role="group" aria-label="Aircraft feed">
             <span class="feed-label">FEED:</span>
-            <button class="feed-btn active" onclick="setFeed('opensky')" id="feedOpenSky">OPNSKY</button>
-            <button class="feed-btn" onclick="setFeed('adsbfi')" id="feedADSBfi">ADS.FI</button>
-            <button class="feed-btn" onclick="setFeed('airplaneslive')" id="feedAirplanes">AIRPLN</button>
-            <button class="feed-btn" onclick="setFeed('adsblol')" id="feedADSBloL">ADS.LOL</button>
-            <button class="feed-btn combined" onclick="setFeed('combined')" id="feedCombined">COMBO</button>
-        </div>
-
-        <div class="model-selector">
-            <button class="model-btn active" onclick="setRadarModel('classic')" id="modelClassic">CLASSIC</button>
-            <button class="model-btn" onclick="setRadarModel('military')" id="modelMilitary">MILITARY</button>
-            <button class="model-btn" onclick="setRadarModel('atc')" id="modelATC">ATC</button>
-            <button class="model-btn" onclick="setRadarModel('retro')" id="modelRetro">RETRO</button>
-            <button class="model-btn" onclick="setRadarModel('stealth')" id="modelStealth">STEALTH</button>
-        </div>
-
-        <div class="info-panel top-left visible" id="statusPanel">
-            <h3>SYSTEM STATUS</h3>
+            <button class="feed-btn" onclick="setFeed('adsbfi')" id="feedADSBfi" type="button" aria-pressed="false">ADS.FI</button>
+            <button class="feed-btn" onclick="setFeed('airplaneslive')" id="feedAirplanes" type="button" aria-pressed="false">AIRPLN</button>
+            <button class="feed-btn" onclick="setFeed('adsblol')" id="feedADSBloL" type="button" aria-pressed="false">ADS.LOL</button>
+            <button class="feed-btn combined active" onclick="setFeed('combined')" id="feedCombined" type="button" aria-pressed="true">COMBO</button>
+            <button class="feed-btn peer" onclick="setFeed('peers')" id="feedPeers" type="button" aria-pressed="false">PEERS</button>
+            <button class="feed-btn peer combined" onclick="setFeed('all')" id="feedAll" type="button" aria-pressed="false">ALL</button>
+        </div><section class="network-controls"><div class="route-heading"><strong>Network path</strong><span id="networkStatus" role="status" aria-live="polite">DEMO — synthetic tracks; no feed requests</span></div><div class="route-options"><label for="networkMode">Connection<select id="networkMode"><option value="direct">Direct · no proxy</option><option value="proxy">Explicit HTTPS proxy</option></select></label><label for="proxyChoice" id="proxyChoiceLabel" hidden="">Proxy operator<select id="proxyChoice"><option value="allorigins">AllOrigins</option><option value="corsproxy">corsproxy.io</option></select></label><label class="consent" id="proxyConsentLabel" hidden=""><input type="checkbox" id="proxyConsent"> I consent to this proxy receiving the feed URL and query area.</label><button type="button" class="ctrl-btn primary" id="btnStart" onclick="startLive()">Start live</button><button type="button" class="ctrl-btn" id="btnPause" onclick="pauseLive()">Demo / stop requests</button></div><p class="network-note">Direct never falls back to a proxy. A proxy is not a VPN and does not hide GPS or secure other apps. Live requests go to the chosen feeds; GPS is optional. Changing path pauses live traffic.</p></section></section><div class="workspace-content"><section class="scope-window window-frame" id="scopeWindow" aria-label="Radar display"><h2 class="window-title"><span aria-hidden="true">▣</span> Radar display <span class="window-tag">LOCAL CANVAS</span></h2><div class="radar-container"><canvas id="radarCanvas" aria-label="Aircraft radar; the same targets are available in the Nearest tracks buttons" role="img"></canvas><div class="hud-ring"></div><div class="crt-overlay" id="crtOverlay"></div><div class="gps-dot" id="gpsDot"></div><div class="gps-ring" id="gpsRing"></div></div><div class="scope-caption"><strong id="scopeStatus">DEMO · synthetic tracks</strong><span>Select a track on the scope or in the list.</span><div class="gps-label" id="gpsLabel"></div></div></section><aside class="hud-overlay instrument-stack" id="hudOverlay" aria-label="Docked instruments"><div class="info-panel top-left visible window-frame" id="statusPanel">
+            <h3 class="window-title"><span aria-hidden="true">▣</span> SYSTEM STATUS</h3>
             <div class="info-row">
                 <span class="info-label"><span class="status-dot" id="statusDot"></span>FEED</span>
                 <span class="info-value" id="statusText">INIT</span>
@@ -307,8 +43,8 @@
                 <span class="info-value" id="trackCount">0</span>
             </div>
             <div class="info-row">
-                <span class="info-label">SOURCES</span>
-                <span class="info-value" id="sourceCount">1/1</span>
+                <span class="info-label">PEERS</span>
+                <span class="info-value" id="peerCount">0</span>
             </div>
             <div class="info-row">
                 <span class="info-label">RANGE</span>
@@ -320,10 +56,8 @@
             </div>
             <div id="feedStatusArea"></div>
             <div id="proxyInfo"></div>
-        </div>
-
-        <div class="info-panel top-right" id="statsPanel">
-            <h3>TRAFFIC SUMMARY</h3>
+        </div><div class="info-panel top-right window-frame visible" id="statsPanel">
+            <h3 class="window-title"><span aria-hidden="true">▣</span> TRAFFIC SUMMARY</h3>
             <div class="info-row">
                 <span class="info-label">AIRBORNE</span>
                 <span class="info-value" id="airborneCount">0</span>
@@ -340,10 +74,8 @@
                 <span class="info-label">FASTEST</span>
                 <span class="info-value" id="fastestSpd">---</span>
             </div>
-        </div>
-
-        <div class="info-panel bottom-left" id="selectedPanel">
-            <h3>TARGET</h3>
+        </div><div class="info-panel bottom-left window-frame" id="selectedPanel">
+            <h3 class="window-title"><span aria-hidden="true">▣</span> TARGET</h3>
             <div class="info-row">
                 <span class="info-label">CALLSIGN</span>
                 <span class="info-value" id="selCallsign">---</span>
@@ -365,20 +97,16 @@
                 <span class="info-value" id="selDist">---</span>
             </div>
             <div class="info-row">
-                <span class="info-label">SOURCE</span>
+                <span class="info-label">SRC</span>
                 <span class="info-value" id="selSource">---</span>
             </div>
-        </div>
-
-        <div class="info-panel bottom-right" id="listPanel">
-            <h3>NEAREST TRACKS</h3>
+        </div><div class="info-panel bottom-right window-frame visible" id="listPanel">
+            <h3 class="window-title"><span aria-hidden="true">▣</span> NEAREST TRACKS</h3>
             <div class="ac-list" id="acList"><div style="color: var(--radar-secondary); font-size: 10px;">Loading...</div></div>
-        </div>
-
-        <div class="details-panel" id="detailsPanel">
+        </div><div class="details-panel window-frame" id="detailsPanel">
             <div class="details-header">
                 <span class="details-callsign" id="detCallsign">---</span>
-                <button class="details-close" onclick="closeDetails()">CLOSE</button>
+                <button class="details-close" onclick="closeDetails()" type="button">CLOSE</button>
             </div>
             <div class="details-grid">
                 <div class="details-item"><span class="details-item-label">ICAO24</span><span class="details-item-value" id="detIcao">---</span></div>
@@ -394,86 +122,108 @@
                 <div class="details-item"><span class="details-item-label">REG</span><span class="details-item-value" id="detReg">---</span></div>
                 <div class="details-item"><span class="details-item-label">SOURCE</span><span class="details-item-value" id="detSource">---</span></div>
             </div>
-        </div>
-
-        <div class="controls">
-            <button class="ctrl-btn active" onclick="togglePanel('stats')" id="btnStats">STATS</button>
-            <button class="ctrl-btn active" onclick="togglePanel('list')" id="btnList">LIST</button>
-            <button class="ctrl-btn active" onclick="togglePanel('target')" id="btnTarget">TARGET</button>
-            <button class="ctrl-btn" onclick="cycleRange()" id="btnRange">RANGE +</button>
-            <button class="ctrl-btn" onclick="refreshData()" id="btnRefresh">REFRESH</button>
-        </div>
-        </div>
-    </div>
-
-    <script>
+        </div></aside></div><footer class="actions window-frame" aria-label="Radar actions"><div class="controls">
+            <button class="ctrl-btn active" onclick="togglePanel('stats')" id="btnStats" type="button" aria-pressed="true">STATS</button>
+            <button class="ctrl-btn active" onclick="togglePanel('list')" id="btnList" type="button" aria-pressed="true">LIST</button>
+            <button class="ctrl-btn active" onclick="togglePanel('target')" id="btnTarget" type="button" aria-pressed="true">TARGET</button>
+            <button class="ctrl-btn" onclick="cycleRange()" id="btnRange" type="button">RANGE +</button>
+            <button class="ctrl-btn" onclick="refreshData()" id="btnRefresh" type="button">REFRESH</button>
+            <button class="ctrl-btn" onclick="centerGPS()" id="btnGPS" type="button">GPS</button>
+        <button class="send-btn" onclick="shareToPeers()" id="btnShare" type="button">SHARE TO PEERS</button></div><p class="network-note">Keyboard: M instruments · R range · S stats · L list · T target · Esc clear target. Sharing is manual; live aircraft data is unverified and may be delayed.</p></footer></main><script>
     (function() {
         'use strict';
 
         // ============================================
-        // CORS PROXY LAYER - Cascading failover
+        // WEBXDC INITIALIZATION
         // ============================================
-        const CORS_PROXIES = [
-            { name: 'direct',   fn: u => u,                                      priority: 1 },
-            { name: 'allorigins', fn: u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, priority: 2 },
-            { name: 'corsproxy',  fn: u => `https://corsproxy.io/?${encodeURIComponent(u)}`,             priority: 3 },
-            { name: 'codetabs',   fn: u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`, priority: 4 },
-            { name: 'thingproxy', fn: u => `https://thingproxy.freeboard.io/fetch/${u}`,                  priority: 5 },
-        ];
+        let webxdc = null;
+        let myAddr = 0;
+        let myName = '';
 
-        const proxySuccessCount = {};  // Track which proxy works for which feed
-        const proxyFailureCount = {};  // Track failures
+        try {
+            webxdc = window.webxdc;
+            const selfAddrInfo = webxdc.getInfo();
+            myAddr = selfAddrInfo.selfAddr || 0;
+            myName = selfAddrInfo.selfName || 'Me';
+        } catch (e) {
+            // Running outside webxdc — simulate
+            console.log('Not in webxdc, running standalone mode');
+            myAddr = Math.floor(Math.random() * 10000);
+            myName = 'Standalone User';
+            webxdc = {
+                sendUpdate: function(update, description) {
+                    console.log('[WebXDC Sim] sendUpdate:', description, update);
+                },
+                setUpdateListener: function(callback) {
+                    // No-op in standalone
+                    console.log('[WebXDC Sim] Update listener registered (standalone)');
+                },
+                getInfo: function() {
+                    return { selfAddr: myAddr, selfName: myName };
+                }
+            };
+        }
+
+        // ============================================
+        // CORS PROXY LAYER
+        // ============================================
+        // A path is a user decision, never automatic fallback to third parties.
+        const CORS_PROXIES = [
+            { name: 'direct', fn: u => u },
+            { name: 'allorigins', fn: u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}` },
+            { name: 'corsproxy', fn: u => `https://corsproxy.io/?${encodeURIComponent(u)}` },
+        ];
+        const pendingControllers = new Set();
+
+        function cancelRequests() {
+            state.requestEpoch++;
+            state.fetchBusy = false;
+            for (const controller of pendingControllers) controller.abort();
+            pendingControllers.clear();
+        }
 
         async function fetchViaProxy(url, feedName, timeoutMs = 10000) {
-            // Sort proxies by past success rate for this feed
-            const sorted = [...CORS_PROXIES].sort((a, b) => {
-                const aScore = (proxySuccessCount[feedName + '_' + a.name] || 0) - (proxyFailureCount[feedName + '_' + a.name] || 0) * 2;
-                const bScore = (proxySuccessCount[feedName + '_' + b.name] || 0) - (proxyFailureCount[feedName + '_' + b.name] || 0) * 2;
-                // Higher priority (lower number) comes first, but boost by success
-                return (a.priority - aScore * 0.1) - (b.priority - bScore * 0.1);
-            });
-
-            let lastErr;
-            for (const proxy of sorted) {
-                const proxyUrl = proxy.fn(url);
+            const operator = state.networkMode === 'proxy' ? state.proxyOperator : 'direct';
+            const proxy = CORS_PROXIES.find(item => item.name === operator);
+            if (!state.liveEnabled || !proxy) throw new Error('Live requests are paused');
+            const controller = new AbortController();
+            pendingControllers.add(controller);
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const res = await fetch(proxy.fn(url), {
+                    signal: controller.signal, credentials: 'omit', referrerPolicy: 'no-referrer',
+                    cache: 'no-store', redirect: 'error', headers: { Accept: 'application/json' }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const limit = 4 * 1024 * 1024;
+                if (Number(res.headers.get('content-length')) > limit) throw new Error('Feed exceeds byte limit');
+                const reader = res.body.getReader();
+                let total = 0;
+                const chunks = [];
                 try {
-                    const controller = new AbortController();
-                    const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-                    const res = await fetch(proxyUrl, {
-                        signal: controller.signal,
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    clearTimeout(timer);
-
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-                    const text = await res.text();
-                    if (!text || text.trim().length < 10) throw new Error('Empty response');
-
-                    const data = JSON.parse(text);
-                    if (!data || Object.keys(data).length === 0) throw new Error('Empty JSON');
-
-                    // Record success
-                    proxySuccessCount[feedName + '_' + proxy.name] = (proxySuccessCount[feedName + '_' + proxy.name] || 0) + 1;
-
-                    return { data, proxyName: proxy.name };
-                } catch (err) {
-                    proxyFailureCount[feedName + '_' + proxy.name] = (proxyFailureCount[feedName + '_' + proxy.name] || 0) + 1;
-                    lastErr = err;
-                }
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) break;
+                        total += value.byteLength;
+                        if (total > limit) throw new Error('Feed exceeds byte limit');
+                        chunks.push(value);
+                    }
+                } finally { await reader.cancel(); }
+                const bytes = new Uint8Array(total);
+                let offset = 0;
+                for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+                const data = JSON.parse(new TextDecoder().decode(bytes));
+                if (!data || typeof data !== 'object') throw new Error('Invalid JSON feed');
+                return { data, proxyName: proxy.name };
+            } finally {
+                clearTimeout(timer);
+                pendingControllers.delete(controller);
             }
-            throw lastErr || new Error('All proxies exhausted');
         }
 
         // ============================================
-        // DATA NORMALIZER - Converts all feed formats to OpenSky array format
+        // DATA NORMALIZERS
         // ============================================
-        function normalizeOpenSky(states) {
-            // Already in OpenSky format [icao24, callsign, country, ...]
-            return states;
-        }
-
         function normalizeAdsbFi(acList, bounds) {
             return (acList || [])
                 .filter(ac => ac.lat != null && ac.lon != null)
@@ -483,23 +233,15 @@
                            ac.lon >= bounds.west && ac.lon <= bounds.east;
                 })
                 .map(ac => [
-                    ac.hex || '',
-                    ac.flight ? ac.flight.trim() : '',
-                    ac.r || '',
-                    ac.dbFlags || 0,
-                    ac.seen ?? ac.seen_pos ?? 0,
-                    ac.lon,
-                    ac.lat,
+                    ac.hex || '', ac.flight ? ac.flight.trim() : '', ac.r || '',
+                    ac.dbFlags || 0, ac.seen ?? ac.seen_pos ?? 0,
+                    ac.lon, ac.lat,
                     ac.alt_baro != null ? ac.alt_baro * 0.3048 : (ac.altitude != null ? ac.altitude * 0.3048 : null),
-                    ac.on_ground || false,
-                    ac.gs || null,
-                    ac.track || null,
+                    ac.on_ground || false, ac.gs || null, ac.track || null,
                     ac.baro_rate ?? ac.vert_rate ?? null,
                     ac.receiver_count != null ? [ac.receiver_count] : null,
                     ac.alt_geom != null ? ac.alt_geom * 0.3048 : null,
-                    ac.squawk || null,
-                    ac.alert || false,
-                    ac.type ?? ac.t ?? null,
+                    ac.squawk || null, ac.alert || false, ac.type ?? ac.t ?? null,
                 ]);
         }
 
@@ -507,23 +249,16 @@
             return (acList || [])
                 .filter(ac => ac.lat != null && ac.lon != null)
                 .map(ac => [
-                    ac.hex || '',
-                    ac.flight ? ac.flight.trim() : '',
-                    ac.r ?? '',
-                    ac.dbFlags ?? 0,
-                    ac.now ?? ac.seen ?? 0,
-                    ac.lon,
-                    ac.lat,
+                    ac.hex || '', ac.flight ? ac.flight.trim() : '', ac.r ?? '',
+                    ac.dbFlags ?? 0, ac.now ?? ac.seen ?? 0,
+                    ac.lon, ac.lat,
                     ac.alt_baro != null ? ac.alt_baro * 0.3048 : null,
-                    ac.on_ground || false,
-                    ac.gs ?? ac.spd ?? null,
+                    ac.on_ground || false, ac.gs ?? ac.spd ?? null,
                     ac.track ?? ac.heading ?? null,
                     ac.baro_rate ?? ac.vert_rate ?? null,
                     ac.rssi != null ? [ac.rssi] : null,
                     ac.alt_geom != null ? ac.alt_geom * 0.3048 : null,
-                    ac.squawk || null,
-                    ac.alert || false,
-                    ac.t ?? ac.type ?? null,
+                    ac.squawk || null, ac.alert || false, ac.t ?? ac.type ?? null,
                 ]);
         }
 
@@ -531,23 +266,15 @@
             return (acList || [])
                 .filter(ac => ac.lat != null && ac.lon != null)
                 .map(ac => [
-                    ac.hex || '',
-                    ac.flight ? ac.flight.trim() : '',
-                    ac.r ?? '',
-                    ac.dbFlags ?? 0,
-                    ac.seen ?? ac.seen_pos ?? 0,
-                    ac.lon,
-                    ac.lat,
+                    ac.hex || '', ac.flight ? ac.flight.trim() : '', ac.r ?? '',
+                    ac.dbFlags ?? 0, ac.seen ?? ac.seen_pos ?? 0,
+                    ac.lon, ac.lat,
                     ac.alt_baro != null ? ac.alt_baro * 0.3048 : (ac.altitude != null ? ac.altitude * 0.3048 : null),
-                    ac.on_ground || false,
-                    ac.gs ?? null,
-                    ac.track ?? null,
+                    ac.on_ground || false, ac.gs ?? null, ac.track ?? null,
                     ac.baro_rate ?? ac.vert_rate ?? null,
                     ac.msgs != null ? [ac.msgs] : null,
                     ac.alt_geom != null ? ac.alt_geom * 0.3048 : null,
-                    ac.squawk || null,
-                    ac.alert || false,
-                    ac.t ?? ac.type ?? null,
+                    ac.squawk || null, ac.alert || false, ac.t ?? ac.type ?? null,
                 ]);
         }
 
@@ -555,21 +282,8 @@
         // FEED DEFINITIONS
         // ============================================
         const FEEDS = {
-            opensky: {
-                name: 'OpenSky Network',
-                shortName: 'OPNSKY',
-                refreshMs: 10000,
-                async fetch(bounds) {
-                    const url = `https://opensky-network.org/api/states/all?lamin=${bounds.south}&lomin=${bounds.west}&lamax=${bounds.north}&lomax=${bounds.east}`;
-                    const { data, proxyName } = await fetchViaProxy(url, 'opensky');
-                    if (!data.states || data.states.length === 0) throw new Error('No aircraft');
-                    return { states: data.states, source: 'opensky', proxy: proxyName };
-                }
-            },
             adsbfi: {
-                name: 'ADSB.fi',
-                shortName: 'ADS.FI',
-                refreshMs: 8000,
+                name: 'ADSB.fi', shortName: 'ADS.FI', refreshMs: 8000,
                 async fetch(bounds) {
                     const url = 'https://api.adsb.fi/api/aircraft/json';
                     const { data, proxyName } = await fetchViaProxy(url, 'adsbfi');
@@ -579,9 +293,7 @@
                 }
             },
             airplaneslive: {
-                name: 'Airplanes.live',
-                shortName: 'AIRPLN',
-                refreshMs: 8000,
+                name: 'Airplanes.live', shortName: 'AIRPLN', refreshMs: 8000,
                 async fetch(bounds) {
                     const url = `https://api.airplanes.live/v2/points/${bounds.south}/${bounds.west}/${bounds.north}/${bounds.east}`;
                     const { data, proxyName } = await fetchViaProxy(url, 'airplaneslive');
@@ -591,9 +303,7 @@
                 }
             },
             adsblol: {
-                name: 'ADSB.lol',
-                shortName: 'ADS.LOL',
-                refreshMs: 10000,
+                name: 'ADSB.lol', shortName: 'ADS.LOL', refreshMs: 10000,
                 async fetch(bounds) {
                     const url = `https://api.adsb.lol/v2/ladd/${bounds.west.toFixed(2)}/${bounds.south.toFixed(2)}/${bounds.east.toFixed(2)}/${bounds.north.toFixed(2)}`;
                     const { data, proxyName } = await fetchViaProxy(url, 'adsblol');
@@ -602,17 +312,17 @@
                     return { states, source: 'adsblol', proxy: proxyName };
                 }
             },
+            peers: {
+                name: 'Peer Network', shortName: 'PEERS', refreshMs: 5000,
+                async fetch() {
+                    // Peers are handled via webxdc messaging, not API calls
+                    return { states: [], source: 'peers', peerOnly: true };
+                }
+            },
             combined: {
-                name: 'Combined (All Feeds)',
-                shortName: 'COMBO',
-                refreshMs: 12000,
+                name: 'Combined (API Feeds)', shortName: 'COMBO', refreshMs: 12000,
                 async fetch(bounds) {
                     const sources = [
-                        {
-                            key: 'opensky',
-                            url: `https://opensky-network.org/api/states/all?lamin=${bounds.south}&lomin=${bounds.west}&lamax=${bounds.north}&lomax=${bounds.east}`,
-                            normalize: (d) => d.states || []
-                        },
                         {
                             key: 'adsbfi',
                             url: 'https://api.adsb.fi/api/aircraft/json',
@@ -633,18 +343,41 @@
                         try {
                             const { data, proxyName } = await fetchViaProxy(src.url, src.key);
                             const states = src.normalize(data);
-                            feedStatuses[src.key] = { online: true, count: states.length, proxy: proxyName };
+                            feedStatuses[src.key] = { online: true, count: states.length, proxy: proxyName, type: 'api' };
                             proxiesUsed.push(proxyName);
                             states.forEach(s => { s._source = src.key; allStates.push(s); });
                         } catch (err) {
-                            feedStatuses[src.key] = { online: false, count: 0, proxy: null };
+                            feedStatuses[src.key] = { online: false, count: 0, proxy: null, type: 'api' };
                         }
                     }));
 
                     if (allStates.length === 0) throw new Error('All feeds failed');
-
                     const unique = deduplicateAircraft(allStates);
                     return { states: unique, source: 'combined', feedStatuses, proxiesUsed: [...new Set(proxiesUsed)] };
+                }
+            },
+            all: {
+                name: 'All Sources (API + Peers)', shortName: 'ALL', refreshMs: 12000,
+                async fetch(bounds) {
+                    // Fetch from combined APIs
+                    const result = await FEEDS.combined.fetch(bounds);
+                    // Add peer data
+                    const peerStates = state.peerAircraft || [];
+                    peerStates.forEach(s => {
+                        // Don't duplicate — only add if not already in result
+                        if (!result.states.some(existing => existing[0] === s[0])) {
+                            s._source = 'peer:' + (s._peerName || 'unknown');
+                            result.states.push(s);
+                        }
+                    });
+
+                    // Update feed statuses
+                    result.feedStatuses = result.feedStatuses || {};
+                    Object.entries(state.peerFeedStatuses).forEach(([key, info]) => {
+                        result.feedStatuses[key] = { ...info, type: 'peer' };
+                    });
+
+                    return result;
                 }
             }
         };
@@ -670,7 +403,7 @@
         }
 
         // ============================================
-        // DEMO DATA - Fallback when all feeds fail
+        // DEMO DATA
         // ============================================
         const DEMO_DATA = [
             { icao24: 'a8f3c1', callsign: 'UAL1234', country: 'United States', latitude: 37.77, longitude: -96.2, baroAlt: 10668, onGround: false, velocity: 250, heading: 270, vertRate: 0, squawk: '1200', typeCode: 'B738' },
@@ -694,6 +427,7 @@
             CENTER_LAT: 37.0902,
             CENTER_LON: -95.7129,
             MAX_BLIPS: 200,
+            PEER_DATA_EXPIRY: 60000, // 60s — peer data expires after this
         };
 
         // ============================================
@@ -701,59 +435,49 @@
         // ============================================
         const RADAR_MODELS = {
             classic: {
-                name: 'Classic Green',
-                primary: '#00ff41', secondary: '#00aa2a', bg: '#001100',
+                name: 'Classic Green', primary: '#00ff41', secondary: '#00aa2a', bg: '#001100',
                 grid: 'rgba(0, 255, 65, 0.15)', sweep: 'rgba(0, 255, 65, 0.08)',
-                glow: 'rgba(0, 255, 65, 0.4)', military: '#ff3344', ground: '#ffaa00',
+                glow: 'rgba(0, 255, 65, 0.4)', military: '#ff3344', ground: '#ffaa00', peer: '#00ccff',
                 selected: '#ffffff', sweepSpeed: 0.015, blipFade: 0.003, blipSize: 4,
                 hasScanlines: true, hasVignette: true, hasGrid: true, hasCrosshairs: true,
-                has45Lines: true, hasCardinal: true, hasSweepTrail: true,
-                sweepTrailAngle: 0.6, backgroundStyle: 'gradient', ringStyle: 'circle',
-                blipStyle: 'dot', dataBoxStyle: 'classic',
+                has45Lines: true, hasCardinal: true, hasSweepTrail: true, sweepTrailAngle: 0.6,
+                backgroundStyle: 'gradient', ringStyle: 'circle', blipStyle: 'dot', dataBoxStyle: 'classic',
             },
             military: {
-                name: 'Military Amber',
-                primary: '#ffaa00', secondary: '#aa7700', bg: '#0a0a00',
+                name: 'Military Amber', primary: '#ffaa00', secondary: '#aa7700', bg: '#0a0a00',
                 grid: 'rgba(255, 170, 0, 0.1)', sweep: 'rgba(255, 170, 0, 0.06)',
-                glow: 'rgba(255, 170, 0, 0.3)', military: '#ff0000', ground: '#ff6600',
+                glow: 'rgba(255, 170, 0, 0.3)', military: '#ff0000', ground: '#ff6600', peer: '#00ffcc',
                 selected: '#00ff00', sweepSpeed: 0.012, blipFade: 0.004, blipSize: 3,
                 hasScanlines: true, hasVignette: true, hasGrid: true, hasCrosshairs: true,
-                has45Lines: true, hasCardinal: true, hasSweepTrail: true,
-                sweepTrailAngle: 0.8, backgroundStyle: 'solid', ringStyle: 'circle',
-                blipStyle: 'diamond', dataBoxStyle: 'military',
+                has45Lines: true, hasCardinal: true, hasSweepTrail: true, sweepTrailAngle: 0.8,
+                backgroundStyle: 'solid', ringStyle: 'circle', blipStyle: 'diamond', dataBoxStyle: 'military',
             },
             atc: {
-                name: 'Air Traffic Control',
-                primary: '#00ddff', secondary: '#0088aa', bg: '#000a11',
+                name: 'Air Traffic Control', primary: '#00ddff', secondary: '#0088aa', bg: '#000a11',
                 grid: 'rgba(0, 200, 255, 0.12)', sweep: 'rgba(0, 200, 255, 0.06)',
-                glow: 'rgba(0, 200, 255, 0.3)', military: '#ff4466', ground: '#ffaa00',
+                glow: 'rgba(0, 200, 255, 0.3)', military: '#ff4466', ground: '#ffaa00', peer: '#ff8800',
                 selected: '#ffffff', sweepSpeed: 0.02, blipFade: 0.002, blipSize: 5,
                 hasScanlines: false, hasVignette: false, hasGrid: true, hasCrosshairs: true,
-                has45Lines: false, hasCardinal: true, hasSweepTrail: true,
-                sweepTrailAngle: 0.4, backgroundStyle: 'gradient', ringStyle: 'circle',
-                blipStyle: 'circle', dataBoxStyle: 'atc',
+                has45Lines: false, hasCardinal: true, hasSweepTrail: true, sweepTrailAngle: 0.4,
+                backgroundStyle: 'gradient', ringStyle: 'circle', blipStyle: 'circle', dataBoxStyle: 'atc',
             },
             retro: {
-                name: 'Retro CRT',
-                primary: '#33ff33', secondary: '#22aa22', bg: '#050505',
+                name: 'Retro CRT', primary: '#33ff33', secondary: '#22aa22', bg: '#050505',
                 grid: 'rgba(51, 255, 51, 0.1)', sweep: 'rgba(51, 255, 51, 0.1)',
-                glow: 'rgba(51, 255, 51, 0.5)', military: '#ff4444', ground: '#ffff00',
+                glow: 'rgba(51, 255, 51, 0.5)', military: '#ff4444', ground: '#ffff00', peer: '#88ff88',
                 selected: '#ffffff', sweepSpeed: 0.008, blipFade: 0.002, blipSize: 5,
                 hasScanlines: true, hasVignette: true, hasGrid: true, hasCrosshairs: true,
-                has45Lines: true, hasCardinal: true, hasSweepTrail: true,
-                sweepTrailAngle: 1.0, backgroundStyle: 'solid', ringStyle: 'circle',
-                blipStyle: 'dot', dataBoxStyle: 'retro',
+                has45Lines: true, hasCardinal: true, hasSweepTrail: true, sweepTrailAngle: 1.0,
+                backgroundStyle: 'solid', ringStyle: 'circle', blipStyle: 'dot', dataBoxStyle: 'retro',
             },
             stealth: {
-                name: 'Stealth Mode',
-                primary: '#224422', secondary: '#113311', bg: '#000000',
+                name: 'Stealth Mode', primary: '#224422', secondary: '#113311', bg: '#000000',
                 grid: 'rgba(34, 68, 34, 0.15)', sweep: 'rgba(34, 68, 34, 0.03)',
-                glow: 'rgba(34, 68, 34, 0.2)', military: '#331111', ground: '#333300',
+                glow: 'rgba(34, 68, 34, 0.2)', military: '#331111', ground: '#333300', peer: '#223344',
                 selected: '#446644', sweepSpeed: 0.01, blipFade: 0.005, blipSize: 3,
                 hasScanlines: false, hasVignette: false, hasGrid: false, hasCrosshairs: true,
-                has45Lines: false, hasCardinal: false, hasSweepTrail: false,
-                sweepTrailAngle: 0.3, backgroundStyle: 'solid', ringStyle: 'minimal',
-                blipStyle: 'dot', dataBoxStyle: 'minimal',
+                has45Lines: false, hasCardinal: false, hasSweepTrail: false, sweepTrailAngle: 0.3,
+                backgroundStyle: 'solid', ringStyle: 'minimal', blipStyle: 'dot', dataBoxStyle: 'minimal',
             },
         };
 
@@ -764,6 +488,8 @@
             rangeIdx: CONFIG.DEFAULT_RANGE_IDX,
             rangeNm: CONFIG.RANGES_NM[CONFIG.DEFAULT_RANGE_IDX],
             aircraft: new Map(),
+            peerAircraft: [],      // Aircraft received from peers
+            peerFeedStatuses: {},  // Status of each peer's data
             blips: [],
             selected: null,
             sweepAngle: 0,
@@ -774,10 +500,19 @@
             lastUpdate: null,
             demoMode: false,
             model: 'classic',
-            feed: 'opensky',
+            feed: 'combined',
             feedStatuses: {},
             refreshInterval: null,
             proxiesUsed: [],
+            liveEnabled: false, networkMode: 'direct', proxyOperator: 'allorigins',
+            requestEpoch: 0, fetchBusy: false,
+            // GPS
+            gpsEnabled: false,
+            gpsLat: null,
+            gpsLon: null,
+            gpsAccuracy: null,
+            gpsLastFix: null,
+            gpsWatchId: null,
         };
 
         // ============================================
@@ -798,6 +533,7 @@
         }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
+        if (typeof ResizeObserver === 'function') new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
 
         // ============================================
         // MODEL SWITCHING
@@ -815,6 +551,7 @@
             root.setProperty('--radar-glow', m.glow);
             root.setProperty('--radar-military', m.military);
             root.setProperty('--radar-ground', m.ground);
+            root.setProperty('--radar-peer', m.peer);
             updateCRTOverlay();
             document.body.style.background = m.bg;
             updateRingStyle();
@@ -822,6 +559,7 @@
             const btnMap = { classic: 'modelClassic', military: 'modelMilitary', atc: 'modelATC', retro: 'modelRetro', stealth: 'modelStealth' };
             const el = document.getElementById(btnMap[modelName]);
             if (el) el.classList.add('active');
+            document.querySelectorAll('.model-btn').forEach(btn => btn.setAttribute('aria-pressed', String(btn.classList.contains('active'))));
             state.blips = [];
         };
 
@@ -851,17 +589,19 @@
         // ============================================
         window.setFeed = function(feedName) {
             if (!FEEDS[feedName]) return;
+            cancelRequests();
             state.feed = feedName;
             document.querySelectorAll('.feed-btn').forEach(btn => btn.classList.remove('active'));
-            const btnMap = { opensky: 'feedOpenSky', adsbfi: 'feedADSBfi', airplaneslive: 'feedAirplanes', adsblol: 'feedADSBloL', combined: 'feedCombined' };
+            const btnMap = { adsbfi: 'feedADSBfi', airplaneslive: 'feedAirplanes', adsblol: 'feedADSBloL', combined: 'feedCombined', peers: 'feedPeers', all: 'feedAll' };
             const el = document.getElementById(btnMap[feedName]);
             if (el) el.classList.add('active');
+            document.querySelectorAll('.feed-btn').forEach(btn => btn.setAttribute('aria-pressed', String(btn.classList.contains('active'))));
             state.aircraft.clear();
             state.blips = [];
             state.feedStatuses = {};
             state.proxiesUsed = [];
             if (state.refreshInterval) clearInterval(state.refreshInterval);
-            state.refreshInterval = setInterval(fetchAircraft, FEEDS[feedName].refreshMs);
+            if (state.liveEnabled || feedName === 'peers') state.refreshInterval = setInterval(fetchAircraft, FEEDS[feedName].refreshMs);
             fetchAircraft();
         };
 
@@ -899,6 +639,12 @@
         // DATA FETCH
         // ============================================
         async function fetchAircraft() {
+            if (!state.liveEnabled && state.feed !== 'peers') {
+                loadDemoData(); state.demoMode = true; state.connected = false; updateUI(); return;
+            }
+            if (state.fetchBusy) return;
+            state.fetchBusy = true;
+            const epoch = state.requestEpoch;
             const feed = FEEDS[state.feed];
             const bounds = {
                 north: CONFIG.CENTER_LAT + (state.rangeNm / 60),
@@ -909,22 +655,34 @@
 
             try {
                 const result = await feed.fetch(bounds);
-                processAircraftData(result.states);
-                state.connected = true;
-                state.demoMode = false;
-                state.proxiesUsed = result.proxiesUsed || (result.proxy ? [result.proxy] : []);
-                if (result.feedStatuses) {
-                    state.feedStatuses = result.feedStatuses;
+                if (epoch !== state.requestEpoch) return;
+                if (result.peerOnly) {
+                    // Peers-only mode: just use peer data
+                    processPeerAircraft();
+                    state.connected = Object.keys(state.peerFeedStatuses).length > 0;
+                    state.demoMode = !state.connected;
                 } else {
-                    state.feedStatuses = { [feed.shortName]: { online: true, count: result.states.length, proxy: result.proxy } };
+                    processAircraftData(result.states);
+                    state.connected = true;
+                    state.demoMode = false;
+                    state.proxiesUsed = result.proxiesUsed || (result.proxy ? [result.proxy] : []);
+                    if (result.feedStatuses) {
+                        state.feedStatuses = result.feedStatuses;
+                    } else {
+                        state.feedStatuses = { [feed.shortName]: { online: true, count: result.states.length, proxy: result.proxy, type: 'api' } };
+                    }
                 }
             } catch (err) {
+                if (epoch !== state.requestEpoch) return;
                 console.warn(`Feed "${feed.name}" failed:`, err.message);
                 loadDemoData();
                 state.connected = false;
                 state.demoMode = true;
-                state.feedStatuses = { [feed.shortName]: { online: false, count: 0, proxy: null } };
+                state.feedStatuses = { [feed.shortName]: { online: false, count: 0, proxy: null, type: 'api' } };
+            } finally {
+                if (epoch === state.requestEpoch) state.fetchBusy = false;
             }
+            if (epoch !== state.requestEpoch) return;
             state.lastUpdate = new Date();
             updateUI();
         }
@@ -967,6 +725,122 @@
         }
 
         // ============================================
+        // PEER SHARING (webxdc messaging)
+        // ============================================
+        window.shareToPeers = function() {
+            // Collect current aircraft data and broadcast to all peers
+            const aircraftArray = [...state.aircraft.values()]
+                .filter(ac => ac.latitude != null && ac.longitude != null && ac.source !== 'peer')
+                .slice(0, 50) // Limit to avoid message size issues
+                .map(ac => ({
+                    icao24: ac.icao24,
+                    callsign: ac.callsign,
+                    country: ac.country,
+                    lat: ac.latitude,
+                    lon: ac.longitude,
+                    alt: ac.baroAlt,
+                    spd: ac.velocity,
+                    hdg: ac.heading,
+                    vr: ac.vertRate,
+                    squawk: ac.squawk,
+                    type: ac.typeCode,
+                    ground: ac.onGround,
+                    ts: Date.now()
+                }));
+
+            if (aircraftArray.length === 0) {
+                console.log('No aircraft to share');
+                return;
+            }
+
+            const update = {
+                payload: {
+                    type: 'aircraft_data',
+                    aircraft: aircraftArray,
+                    from: myAddr,
+                    fromName: myName,
+                    timestamp: Date.now()
+                },
+                info: `Shared ${aircraftArray.length} aircraft from ${myName}`
+            };
+
+            webxdc.sendUpdate(update, update.info);
+            console.log(`[Peer] Shared ${aircraftArray.length} aircraft`);
+        }
+
+        function receivePeerUpdate(update) {
+            const payload = update.payload;
+            if (!payload || payload.type !== 'aircraft_data') return;
+
+            const senderAddr = update.addr || payload.from;
+            const senderName = payload.fromName || 'Unknown Peer';
+
+            // Store peer aircraft
+            const peerAircraft = (payload.aircraft || []).map(ac => [
+                ac.icao24 || '',
+                ac.callsign || '',
+                ac.country || '',
+                0,
+                0,
+                ac.lon,
+                ac.lat,
+                ac.alt != null ? ac.alt : null,
+                ac.ground || false,
+                ac.spd || null,
+                ac.hdg || 0,
+                ac.vr || null,
+                null,
+                ac.alt != null ? ac.alt : null,
+                ac.squawk || null,
+                false,
+                ac.type || null,
+            ]).filter(s => s[5] != null && s[6] != null);
+
+            // Tag with source
+            peerAircraft.forEach(s => {
+                s._source = 'peer:' + senderName;
+                s._peerAddr = senderAddr;
+            });
+
+            // Update peer statuses
+            state.peerFeedStatuses[senderName] = {
+                online: true,
+                count: peerAircraft.length,
+                proxy: 'p2p',
+                type: 'peer',
+                lastUpdate: payload.timestamp
+            };
+
+            // Merge peer aircraft
+            if (state.feed === 'peers' || state.feed === 'all') {
+                state.peerAircraft = peerAircraft;
+                if (state.feed === 'peers') {
+                    state.aircraft.clear();
+                    processAircraftData(peerAircraft);
+                }
+                updateUI();
+            } else {
+                // Store for later
+                state.peerAircraft = peerAircraft;
+            }
+
+            console.log(`[Peer] Received ${peerAircraft.length} aircraft from ${senderName}`);
+        }
+
+        function processPeerAircraft() {
+            state.aircraft.clear();
+            // Merge all peer data
+            const allPeerStates = state.peerAircraft || [];
+            processAircraftData(allPeerStates);
+        }
+
+        // Listen for webxdc updates
+        webxdc.setUpdateListener((update, serial) => {
+            receivePeerUpdate(update);
+        });
+
+        // Auto-share periodically when in peer/all mode
+        // ============================================
         // RENDERING
         // ============================================
         function render() {
@@ -977,7 +851,6 @@
 
             ctx.fillStyle = m.bg;
             ctx.fillRect(0, 0, canvasSize, canvasSize);
-
             ctx.save();
             ctx.beginPath();
             ctx.arc(center, center, maxRadius + 10, 0, Math.PI * 2);
@@ -1053,7 +926,6 @@
                 ctx.fill();
             }
 
-            // Sweep line
             ctx.beginPath();
             ctx.moveTo(center, center);
             ctx.lineTo(center + maxRadius * Math.sin(state.sweepAngle), center - maxRadius * Math.cos(state.sweepAngle));
@@ -1064,7 +936,6 @@
             ctx.lineWidth = 6;
             ctx.stroke();
 
-            // Center dot
             ctx.beginPath();
             ctx.arc(center, center, 3, 0, Math.PI * 2);
             ctx.fillStyle = m.primary;
@@ -1145,10 +1016,12 @@
                     ac.typeCode?.match(/^(F1[56]|B52|B2|C17|C130|KC10|KC13|E3|E8|V22|E4|A400|C400)$/i) ||
                     ac.callsign?.match(/^(RCH|REACH|EVAC|ARMY|NAVY|MARINE|GUARD|SPAR|COAST|VIPER)/i)
                 );
+                const isPeer = ac.source && ac.source.startsWith('peer:');
 
                 let color = m.primary;
                 if (isMilitary) color = m.military;
                 else if (ac.onGround) color = m.ground;
+                else if (isPeer) color = m.peer;
                 if (isSelected) color = m.selected;
 
                 const heading = (ac.heading || 0) * Math.PI / 180;
@@ -1174,7 +1047,7 @@
                 const canvasSize = canvas.width / (window.devicePixelRatio || 1);
 
                 if (isSelected || distFromCenter < canvasSize * 0.35) {
-                    ctx.fillStyle = isSelected ? m.selected : m.primary;
+                    ctx.fillStyle = isSelected ? m.selected : (isPeer ? m.peer : m.primary);
                     ctx.font = `${isSelected ? 'bold 10' : '9'}px Courier New`;
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'bottom';
@@ -1184,7 +1057,7 @@
                     if (isSelected || distFromCenter < canvasSize * 0.25) {
                         ctx.fillStyle = m.secondary;
                         ctx.font = '8px Courier New';
-                        const altFt = ac.baroAlt ? Math.round(ac.baroAlt * 3.281) : '---';
+                        const altFt = ac.baroAlt != null ? Math.round(ac.baroAlt * 3.281) : '---';
                         ctx.fillText(altFt.toLocaleString() + 'ft', pos.x + 10, pos.y + 12);
                     }
                 }
@@ -1215,8 +1088,7 @@
 
             if (m.dataBoxStyle === 'military') {
                 ctx.fillStyle = 'rgba(10, 10, 0, 0.85)';
-                ctx.strokeStyle = m.secondary;
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = m.secondary; ctx.lineWidth = 1;
                 ctx.fillRect(dataX, dataY, boxW, boxH);
                 ctx.strokeRect(dataX, dataY, boxW, boxH);
                 ctx.setLineDash([5, 5]);
@@ -1224,28 +1096,23 @@
                 ctx.setLineDash([]);
             } else if (m.dataBoxStyle === 'retro') {
                 ctx.fillStyle = 'rgba(5, 10, 5, 0.9)';
-                ctx.strokeStyle = m.primary;
-                ctx.lineWidth = 2;
-                ctx.shadowColor = m.glow;
-                ctx.shadowBlur = 10;
+                ctx.strokeStyle = m.primary; ctx.lineWidth = 2;
+                ctx.shadowColor = m.glow; ctx.shadowBlur = 10;
                 ctx.fillRect(dataX, dataY, boxW, boxH);
                 ctx.strokeRect(dataX, dataY, boxW, boxH);
                 ctx.shadowBlur = 0;
             } else if (m.dataBoxStyle === 'minimal') {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                 ctx.fillRect(dataX, dataY, boxW, boxH);
-                ctx.strokeStyle = m.secondary;
-                ctx.lineWidth = 0.5;
+                ctx.strokeStyle = m.secondary; ctx.lineWidth = 0.5;
                 ctx.strokeRect(dataX, dataY, boxW, boxH);
             } else {
                 ctx.fillStyle = 'rgba(0, 15, 0, 0.85)';
-                ctx.strokeStyle = m.grid;
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = m.grid; ctx.lineWidth = 1;
                 ctx.fillRect(dataX, dataY, boxW, boxH);
                 ctx.strokeRect(dataX, dataY, boxW, boxH);
                 const cm = 6;
-                ctx.strokeStyle = m.primary;
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = m.primary; ctx.lineWidth = 2;
                 const corners = [
                     [dataX, dataY + cm, dataX, dataY, dataX + cm, dataY],
                     [dataX + boxW - cm, dataY, dataX + boxW, dataY, dataX + boxW, dataY + cm],
@@ -1253,9 +1120,7 @@
                     [dataX + boxW - cm, dataY + boxH, dataX + boxW, dataY + boxH, dataX + boxW, dataY + boxH - cm]
                 ];
                 corners.forEach(([x1, y1, x2, y2, x3, y3]) => {
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3);
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3); ctx.stroke();
                 });
             }
 
@@ -1264,13 +1129,14 @@
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
 
-            const altFt = ac.baroAlt ? Math.round(ac.baroAlt * 3.281) : '---';
-            const spdKts = ac.velocity ? Math.round(ac.velocity * 1.944) : '---';
+            const altFt = ac.baroAlt != null ? Math.round(ac.baroAlt * 3.281) : '---';
+            const spdKts = ac.velocity != null ? Math.round(ac.velocity * 1.944) : '---';
+
             ctx.fillText(`ALT: ${altFt.toLocaleString()} ft`, dataX + 8, dataY + 6);
             ctx.fillText(`SPD: ${spdKts} kts`, dataX + 8, dataY + 18);
             ctx.fillText(`HDG: ${Math.round(ac.heading || 0)}°`, dataX + 8, dataY + 30);
 
-            const vertFpm = ac.vertRate ? Math.round(ac.vertRate * 196.85) : 0;
+            const vertFpm = ac.vertRate != null ? Math.round(ac.vertRate * 196.85) : 0;
             const vertStr = vertFpm > 0 ? `CLB: +${vertFpm}` : vertFpm < 0 ? `DSC: ${vertFpm}` : 'LVL';
             ctx.fillText(vertStr, dataX + 8, dataY + 42);
         }
@@ -1281,8 +1147,15 @@
         function updateUI() {
             const dot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
-            dot.className = 'status-dot ' + (state.connected ? 'online' : (state.proxiesUsed.length > 0 ? 'proxy' : 'offline'));
-            statusText.textContent = state.demoMode ? 'DEMO' : 'LIVE';
+
+            if (state.feed === 'peers') {
+                const hasPeers = Object.keys(state.peerFeedStatuses).length > 0;
+                dot.className = 'status-dot ' + (hasPeers ? 'peer' : 'offline');
+                statusText.textContent = hasPeers ? 'P2P' : 'NO PEERS';
+            } else {
+                dot.className = 'status-dot ' + (state.connected ? (state.proxiesUsed.some(p => p !== 'direct') ? 'proxy' : 'online') : 'offline');
+                statusText.textContent = state.demoMode ? 'DEMO' : 'LIVE';
+            }
 
             const now = state.lastUpdate || new Date();
             document.getElementById('utcTime').textContent = now.toUTCString().split(' ')[4];
@@ -1301,71 +1174,53 @@
             document.getElementById('highestAlt').textContent = highest ? Math.round(highest * 3.281).toLocaleString() + ' ft' : '---';
             document.getElementById('fastestSpd').textContent = fastest ? Math.round(fastest * 1.944) + ' kts' : '---';
 
-            // Source count
-            const onlineFeeds = Object.values(state.feedStatuses).filter(f => f.online).length;
-            const totalFeeds = Object.keys(state.feedStatuses).length || 1;
-            document.getElementById('sourceCount').textContent = `${onlineFeeds}/${totalFeeds}`;
+            // Peer count
+            const peerCount = Object.keys(state.peerFeedStatuses).length;
+            document.getElementById('peerCount').textContent = peerCount;
 
-            // Feed status panel
+            const scopeStatus = document.getElementById('scopeStatus');
+            scopeStatus.textContent = state.demoMode ? 'DEMO · synthetic tracks, not live' : state.feed === 'peers' ? 'PEER DATA · unverified' : 'LIVE FEED · may be delayed';
+            const route = state.networkMode === 'proxy' ? 'explicit proxy: ' + state.proxyOperator : 'direct · no proxy fallback';
+            document.getElementById('networkStatus').textContent = !state.liveEnabled ? (state.feed === 'peers' ? 'PEERS ONLY — no feed requests' : 'DEMO — no feed requests') : state.demoMode ? 'DEMO — live feed unavailable · ' + route : 'LIVE — ' + route;
+
+            // Feed and peer values are untrusted text, never interpolated HTML.
             const feedArea = document.getElementById('feedStatusArea');
-            const proxyInfo = document.getElementById('proxyInfo');
-
-            if (state.feed === 'combined' && totalFeeds > 1) {
-                feedArea.innerHTML = '<div class="feed-status-container">' +
-                    Object.entries(state.feedStatuses).map(([name, info]) =>
-                        `<div class="feed-status-item">
-                            <span class="feed-status-name">${name}</span>
-                            <span class="feed-status-val ${info.online ? (info.proxy !== 'direct' ? 'proxy' : 'online') : 'offline'}">
-                                ${info.online ? info.count + ' ac' : 'OFFLINE'}
-                            </span>
-                        </div>`
-                    ).join('') +
-                    '</div>';
-                const proxies = state.proxiesUsed.filter(Boolean);
-                if (proxies.length > 0) {
-                    proxyInfo.innerHTML = proxies.map(p => `<span class="proxy-badge">via ${p}</span>`).join(' ');
-                } else {
-                    proxyInfo.innerHTML = '';
-                }
-            } else if (totalFeeds === 1) {
-                const info = Object.values(state.feedStatuses)[0];
-                const statusClass = info?.online ? (info?.proxy !== 'direct' ? 'proxy' : 'online') : 'offline';
-                feedArea.innerHTML = '<div class="feed-status-container">' +
-                    `<div class="feed-status-item">
-                        <span class="feed-status-name">${state.feed.toUpperCase()}</span>
-                        <span class="feed-status-val ${statusClass}">
-                            ${info?.online ? info.count + ' ac' : 'OFFLINE'}
-                        </span>
-                    </div>` +
-                    '</div>';
-                if (info?.online && info?.proxy && info.proxy !== 'direct') {
-                    proxyInfo.innerHTML = `<span class="proxy-badge">via ${info.proxy}</span>`;
-                } else {
-                    proxyInfo.innerHTML = '';
-                }
+            const container = document.createElement('div');
+            container.className = 'feed-status-container';
+            const addFeed = (name, info, peer) => {
+                const row = document.createElement('div'); row.className = 'feed-status-item';
+                const label = document.createElement('span'); label.className = 'feed-status-name';
+                label.textContent = (peer ? 'Peer: ' : '') + String(name).slice(0, 80);
+                const value = document.createElement('span');
+                value.className = 'feed-status-val ' + (peer ? 'peer' : info.online ? (info.proxy !== 'direct' ? 'proxy' : 'online') : 'offline');
+                value.textContent = peer || info.online ? String(Number(info.count) || 0) + ' ac' : 'OFFLINE';
+                row.append(label, value); container.append(row);
+            };
+            if (state.feed !== 'peers') for (const [name, info] of Object.entries(state.feedStatuses)) addFeed(name, info, false);
+            for (const [name, info] of Object.entries(state.peerFeedStatuses)) addFeed(name, info, true);
+            feedArea.replaceChildren(container);
+            const proxyInfo = document.getElementById('proxyInfo'); proxyInfo.replaceChildren();
+            for (const proxy of state.proxiesUsed.filter(Boolean)) {
+                const badge = document.createElement('span'); badge.className = 'proxy-badge';
+                badge.textContent = proxy === 'direct' ? 'Direct · no proxy' : 'via ' + proxy;
+                proxyInfo.append(badge);
             }
 
-            // Aircraft list
             const listEl = document.getElementById('acList');
             const nearest = [...state.aircraft.values()]
-                .map(ac => {
-                    const pos = latLonToRadar(ac.latitude, ac.longitude);
-                    return { ...ac, radarDist: pos?.dist || 9999 };
-                })
-                .filter(ac => ac.radarDist < 9999)
-                .sort((a, b) => a.radarDist - b.radarDist)
-                .slice(0, 10);
-
-            if (nearest.length === 0) {
-                listEl.innerHTML = '<div style="color: var(--radar-secondary); font-size: 10px;">No tracks in range</div>';
-            } else {
-                listEl.innerHTML = nearest.map(ac =>
-                    `<div class="ac-list-item" onclick="window.__select('${ac.icao24}')">
-                        <span class="cs">${ac.callsign !== 'N/A' ? ac.callsign : ac.icao24.toUpperCase()}</span>
-                        <span class="alt">${Math.round(ac.radarDist)} NM</span>
-                        <span class="src">${ac.source || state.feed}</span>
-                    </div>`
-                ).join('');
+                .map(ac => ({ ...ac, radarDist: latLonToRadar(ac.latitude, ac.longitude)?.dist ?? 9999 }))
+                .filter(ac => ac.radarDist < 9999).sort((a, b) => a.radarDist - b.radarDist).slice(0, 15);
+            listEl.replaceChildren();
+            if (!nearest.length) {
+                const empty = document.createElement('p'); empty.textContent = 'No tracks in range'; listEl.append(empty);
+            }
+            for (const ac of nearest) {
+                const button = document.createElement('button'); button.type = 'button'; button.className = 'ac-list-item';
+                button.addEventListener('click', () => window.__select(ac.icao24));
+                for (const [cls, text] of [['cs', ac.callsign !== 'N/A' ? ac.callsign : ac.icao24.toUpperCase()], ['alt', Math.round(ac.radarDist) + ' NM'], ['src', ac.source || state.feed]]) {
+                    const span = document.createElement('span'); span.className = cls; span.textContent = String(text).slice(0, 80); button.append(span);
+                }
+                listEl.append(button);
             }
 
             if (state.selected && state.showTarget) {
@@ -1390,8 +1245,7 @@
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            let closest = null;
-            let closestDist = 20;
+            let closest = null, closestDist = 20;
             state.aircraft.forEach(ac => {
                 const pos = latLonToRadar(ac.latitude, ac.longitude);
                 if (pos) {
@@ -1410,10 +1264,7 @@
             let hovered = false;
             state.aircraft.forEach(ac => {
                 const pos = latLonToRadar(ac.latitude, ac.longitude);
-                if (pos) {
-                    const d = Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2);
-                    if (d < 15) hovered = true;
-                }
+                if (pos && Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2) < 15) hovered = true;
             });
             canvas.style.cursor = hovered ? 'pointer' : 'crosshair';
         });
@@ -1437,6 +1288,15 @@
             document.getElementById('detStatus').textContent = ac.onGround ? 'ON GROUND' : 'AIRBORNE';
             document.getElementById('detReg').textContent = (ac.country && ac.country !== 'Unknown') ? ac.country : '---';
             document.getElementById('detSource').textContent = (ac.source || state.feed).toUpperCase();
+
+            const isPeer = ac.source && ac.source.startsWith('peer:');
+            const sourceEl = document.getElementById('detSource');
+            if (isPeer) {
+                sourceEl.className = 'details-item-value web';
+            } else {
+                sourceEl.className = 'details-item-value api';
+            }
+
             if (state.showTarget) document.getElementById('selectedPanel').classList.add('visible');
             updateUI();
         };
@@ -1453,10 +1313,12 @@
         };
 
         window.toggleMinimal = function() {
-            const overlay = document.getElementById('hudOverlay');
-            const btn = document.getElementById('btnMinimal');
-            overlay.classList.toggle('minimal');
-            btn.classList.toggle('active');
+            const minimal = document.getElementById('hudOverlay').classList.toggle('minimal');
+            document.getElementById('workspace').classList.toggle('is-minimal', minimal);
+            const button = document.getElementById('btnMinimal');
+            button.setAttribute('aria-expanded', String(!minimal));
+            button.textContent = minimal ? 'Show instruments (M)' : 'Hide instruments (M)';
+            resizeCanvas();
         };
 
         window.togglePanel = function(panel) {
@@ -1478,6 +1340,7 @@
                     else if (state.selected) document.getElementById('selectedPanel').classList.add('visible');
                     break;
             }
+            for (const id of ['btnStats', 'btnList', 'btnTarget']) { const button = document.getElementById(id); button.setAttribute('aria-pressed', String(button.classList.contains('active'))); }
         };
 
         window.cycleRange = function() {
@@ -1487,14 +1350,127 @@
             updateUI();
         };
 
-        window.refreshData = function() {
-            // Clear proxy cache to retry
-            Object.keys(proxySuccessCount).forEach(k => proxySuccessCount[k] = 0);
-            Object.keys(proxyFailureCount).forEach(k => proxyFailureCount[k] = 0);
+        window.refreshData = function() { cancelRequests(); fetchAircraft(); };
+
+        window.pauseLive = function() {
+            cancelRequests();
+            if (state.refreshInterval) clearInterval(state.refreshInterval);
+            state.refreshInterval = null;
+            state.liveEnabled = false; state.connected = false; state.demoMode = true;
+            state.feedStatuses = {}; state.proxiesUsed = [];
+            loadDemoData(); updateUI();
+        };
+        window.startLive = function() {
+            window.pauseLive();
+            const mode = document.getElementById('networkMode').value;
+            if (mode === 'proxy' && !document.getElementById('proxyConsent').checked) {
+                document.getElementById('networkStatus').textContent = 'PAUSED — proxy consent is required';
+                document.getElementById('proxyConsent').focus(); return;
+            }
+            state.networkMode = mode === 'proxy' ? 'proxy' : 'direct';
+            state.proxyOperator = document.getElementById('proxyChoice').value;
+            state.liveEnabled = true;
+            document.getElementById('networkStatus').textContent = 'REQUESTING — ' + (mode === 'proxy' ? state.proxyOperator : 'direct; no fallback');
             fetchAircraft();
+            state.refreshInterval = setInterval(fetchAircraft, FEEDS[state.feed].refreshMs);
+        };
+        function changeNetworkPath() {
+            window.pauseLive();
+            const proxy = document.getElementById('networkMode').value === 'proxy';
+            document.getElementById('proxyChoiceLabel').hidden = !proxy;
+            document.getElementById('proxyConsentLabel').hidden = !proxy;
+            document.getElementById('proxyConsent').checked = false;
+        }
+        for (const id of ['networkMode', 'proxyChoice']) document.getElementById(id).addEventListener('change', changeNetworkPath);
+        document.getElementById('proxyConsent').addEventListener('change', () => { if (!document.getElementById('proxyConsent').checked) window.pauseLive(); });
+        window.addEventListener('pagehide', () => {
+            window.pauseLive();
+            if (state.gpsWatchId !== null) navigator.geolocation.clearWatch(state.gpsWatchId);
+        });
+
+        // ============================================
+        // GPS
+        // ============================================
+        window.centerGPS = function() {
+            if (!navigator.geolocation) {
+                console.warn('[GPS] Geolocation not supported');
+                return;
+            }
+
+            if (state.gpsEnabled) {
+                // Disable GPS
+                state.gpsEnabled = false;
+                if (state.gpsWatchId !== null) {
+                    navigator.geolocation.clearWatch(state.gpsWatchId);
+                    state.gpsWatchId = null;
+                }
+                document.getElementById('gpsDot').classList.remove('active');
+                document.getElementById('gpsRing').classList.remove('active');
+                document.getElementById('gpsLabel').classList.remove('active');
+                document.getElementById('btnGPS').classList.remove('active');
+
+                // Reset center to default
+                CONFIG.CENTER_LAT = 37.0902;
+                CONFIG.CENTER_LON = -95.7129;
+                state.blips = [];
+                fetchAircraft();
+                return;
+            }
+
+            // Enable GPS — get fix and center
+            state.gpsEnabled = true;
+            document.getElementById('btnGPS').classList.add('active');
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    state.gpsLat = pos.coords.latitude;
+                    state.gpsLon = pos.coords.longitude;
+                    state.gpsAccuracy = pos.coords.accuracy;
+                    state.gpsLastFix = Date.now();
+
+                    // Update radar center
+                    CONFIG.CENTER_LAT = state.gpsLat;
+                    CONFIG.CENTER_LON = state.gpsLon;
+                    state.blips = [];
+                    fetchAircraft();
+                    updateGPSSpot();
+                },
+                (err) => {
+                    console.warn('[GPS] Error:', err.message);
+                    state.gpsEnabled = false;
+                    document.getElementById('btnGPS').classList.remove('active');
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
+            );
+
+            // Start watching for position updates
+            state.gpsWatchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    state.gpsLat = pos.coords.latitude;
+                    state.gpsLon = pos.coords.longitude;
+                    state.gpsAccuracy = pos.coords.accuracy;
+                    state.gpsLastFix = Date.now();
+                    updateGPSSpot();
+                },
+                (err) => {
+                    console.warn('[GPS] Watch error:', err.message);
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            );
         };
 
+        function updateGPSSpot() {
+            if (!state.gpsEnabled || state.gpsLat == null) return;
+
+            document.getElementById('gpsDot').classList.add('active');
+            document.getElementById('gpsRing').classList.add('active');
+            document.getElementById('gpsLabel').classList.add('active');
+            document.getElementById('gpsLabel').textContent =
+                `GPS ${state.gpsLat.toFixed(4)}, ${state.gpsLon.toFixed(4)} ±${Math.round(state.gpsAccuracy)}m`;
+        }
+
         document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.altKey || e.metaKey || e.target.closest('input, select, textarea, button, a, [contenteditable]')) return;
             switch (e.key) {
                 case 'r': case 'R': window.cycleRange(); break;
                 case 'Escape': window.__deselect(); window.closeDetails(); break;
@@ -1506,12 +1482,16 @@
                 case '3': window.setRadarModel('atc'); break;
                 case '4': window.setRadarModel('retro'); break;
                 case '5': window.setRadarModel('stealth'); break;
-                case '6': window.setFeed('opensky'); break;
+                case '6': window.setFeed('combined'); break;
                 case '7': window.setFeed('adsbfi'); break;
                 case '8': window.setFeed('airplaneslive'); break;
                 case '9': window.setFeed('adsblol'); break;
                 case '0': window.setFeed('combined'); break;
+                case 'p': case 'P': window.setFeed('peers'); break;
+                case 'a': case 'A': window.setFeed('all'); break;
                 case 'm': case 'M': window.toggleMinimal(); break;
+                case 'g': case 'G': window.centerGPS(); break;
+                case ' ': e.preventDefault(); window.shareToPeers(); break;
             }
         });
 
@@ -1520,14 +1500,12 @@
         // ============================================
         document.getElementById('btnRange').textContent = `RANGE ${CONFIG.RANGES_NM[CONFIG.DEFAULT_RANGE_IDX]}`;
         updateCRTOverlay();
-        fetchAircraft();
-        state.refreshInterval = setInterval(fetchAircraft, FEEDS[state.feed].refreshMs);
+        window.pauseLive();
         render();
         setInterval(() => {
             document.getElementById('utcTime').textContent = new Date().toUTCString().split(' ')[4];
         }, 1000);
 
+        console.log(`[webxdc] Radar Scope initialized — addr: ${myAddr}, name: ${myName}`);
     })();
-    </script>
-</body>
-</html>
+    </script></body></html>
