@@ -81,6 +81,13 @@ real native decompilation, the three requested literal markers and an AES S-box
 positive control must succeed before either ISO binary is analyzed. Auto-analysis
 is bounded to 180 seconds per original binary, at most 500,000 instructions are
 counted, and at most four functions are decompiled for 15 seconds each.
+Initialized loaded Ghidra ranges are copied once to **at most 64 MiB** of buffers;
+126 pattern scans use a bounded Boyer–Moore–Horspool search rather than repeated
+address-at-a-time database reads. Cross-range/unloaded-memory matches are not
+claimed. The exact Java search method also runs against a naive synthetic oracle
+(overlaps, caps, range boundaries and 250 seeded cases). Running all
+`kodachi_*test.py` controls therefore requires a JDK; CI explicitly sets Temurin 21.
+Fixed-label stage notices diagnose a timeout without publishing raw logs.
 Timeout/cap state is reported, not promoted to complete analysis.
 
 Only fixed-label crypto counts, addresses, input/tool/source hashes and completed

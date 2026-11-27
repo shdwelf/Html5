@@ -4,7 +4,9 @@ import importlib.util
 import io
 import os
 from pathlib import Path
+import shutil
 import struct
+import subprocess
 import tempfile
 import unittest
 
@@ -77,6 +79,56 @@ class NativeInputTests(unittest.TestCase):
                     native.copy_native_inputs(root/'unused.iso', {}, root/'new', targets=targets)
             self.assertFalse((root/'new').exists())
 
+    def test_exact_buffered_java_search_matches_naive_oracle_overlaps_caps_and_range_boundaries(self):
+        java, javac = shutil.which('java'), shutil.which('javac')
+        self.assertTrue(java and javac, 'Java 21 is an explicit ordered-control dependency; native evidence may not skip the search control')
+        script = (ROOT/'tools/ghidra_scripts/KodachiCryptoReport.java').read_text()
+        method = script[script.index('    private List<Address> findLoadedMatches('):script.index('    private void candidate(')]
+        harness = '''import java.util.*; import java.io.*;
+public class KodachiPatternHarness {
+  static final int MAX_HITS_PER_PATTERN=32;
+  static class Address { final int offset; Address(int n){offset=n;} Address add(int n){return new Address(offset+n);} }
+  static class Monitor {void checkCanceled(){}}
+  final Monitor monitor=new Monitor();
+  final List<Address> sliceStarts=new ArrayList<>(); final List<byte[]> sliceBytes=new ArrayList<>();
+METHOD
+  static void check(byte[][] buffers, byte[] needle) throws Exception {
+    KodachiPatternHarness h=new KodachiPatternHarness(); List<Integer> expected=new ArrayList<>(); int base=0;
+    for(byte[] bytes:buffers){
+      h.sliceStarts.add(new Address(base)); h.sliceBytes.add(bytes);
+      for(int i=0;i<=bytes.length-needle.length && expected.size()<32;i++){
+        boolean equal=true; for(int j=0;j<needle.length;j++)if(bytes[i+j]!=needle[j]){equal=false;break;}
+        if(equal)expected.add(base+i);
+      } base+=bytes.length;
+    }
+    List<Integer> actual=h.findLoadedMatches(needle).stream().map(a->a.offset).toList();
+    if(!actual.equals(expected))throw new AssertionError("Buffered match differs from naive oracle");
+  }
+  public static void main(String[] args) throws Exception {
+    check(new byte[][]{"aaaa".getBytes()},"aa".getBytes());
+    check(new byte[][]{new byte[100]},new byte[]{0});
+    check(new byte[][]{new byte[]{1,2},new byte[]{3,4}},new byte[]{2,3});
+    check(new byte[][]{new byte[]{1}},new byte[]{1,2});
+    Random random=new Random(20261117);
+    for(int n=0;n<250;n++){
+      byte[] bytes=new byte[32+random.nextInt(4096)], needle=new byte[1+random.nextInt(31)];
+      random.nextBytes(bytes); random.nextBytes(needle);
+      int at=n%2==0?bytes.length-needle.length:random.nextInt(bytes.length-needle.length+1);
+      System.arraycopy(needle,0,bytes,at,needle.length); check(new byte[][]{bytes},needle);
+    }
+    try {new KodachiPatternHarness().findLoadedMatches(new byte[0]);throw new AssertionError("empty accepted");}catch(IOException expected){}
+    System.out.println("Exact Java buffered-search oracle controls passed");
+  }
+}
+'''.replace('METHOD', method)
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory); source=p/'KodachiPatternHarness.java'; source.write_text(harness)
+            compiled=subprocess.run([javac,str(source)],capture_output=True,text=True,timeout=30)
+            self.assertEqual(compiled.returncode,0,compiled.stderr)
+            ran=subprocess.run([java,'-cp',str(p),'KodachiPatternHarness'],capture_output=True,text=True,timeout=30)
+            self.assertEqual(ran.returncode,0,ran.stderr)
+            self.assertIn('oracle controls passed',ran.stdout)
+
     def test_gated_native_script_keeps_decompiled_code_strings_and_keys_out_of_report(self):
         script = (ROOT/'tools/ghidra_scripts/KodachiCryptoReport.java').read_text()
         self.assertIn('extends HeadlessScript', script)
@@ -84,7 +136,10 @@ class NativeInputTests(unittest.TestCase):
         self.assertIn('engine.decompileFunction', script)
         self.assertIn('getC().getBytes', script)
         self.assertIn('cSha256', script)
-        self.assertIn('memory.findBytes', script)
+        self.assertIn('memory.getBytes(range.getMinAddress(), bytes)', script)
+        self.assertIn('findLoadedMatches', script)
+        self.assertNotIn('memory.findBytes(', script)
+        self.assertIn('KODACHI_NATIVE_STAGE', script)
         self.assertNotIn('emulate', script.lower().replace('emulation', ''))
         self.assertNotIn('getRuntime().exec', script)
         self.assertNotIn('out.println', script)

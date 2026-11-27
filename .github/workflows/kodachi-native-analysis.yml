@@ -47,6 +47,10 @@ jobs:
           node --test tests/radar-scope.test.mjs tests/radar-scope-browser.mjs
       - name: Then require format-aware VPN analysis interface controls
         run: node --test tests/vpn-analysis-tools.test.mjs tests/vpn-analysis-tools-browser.mjs
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
       - name: Require static ISO, redaction, literal and native-input bounds
         run: python3 -m unittest discover -s tests -p 'kodachi_*test.py' -v
 
@@ -136,8 +140,10 @@ jobs:
           p=pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/reports'
           n=json.loads((p/'native-control.json').read_text()); a=json.loads((p/'aes-control.json').read_text())
           assert n['functionsDefined'] > 0 and n['instructionsVisitedUpTo500000'] > 0 and any(d['completed'] for d in n['boundedDecompilations'])
-          assert all(any(r['literal']==token and r['loadedMemorySubstringMatchesUpTo32'] > 0 for r in n['fixedLiteralReferences']) for token in ['r00t0r','r00tor','r00t'])
-          assert any(r['label']=='AES_Encryption_SBox' for r in a['findCryptMatches'])
+          expected={'r00t0r':1,'r00tor':1,'r00t':3}
+          assert all(any(r['literal']==token and r['loadedMemorySubstringMatchesUpTo32']==count for r in n['fixedLiteralReferences']) for token,count in expected.items())
+          assert 0 < n['bufferedLoadedBytes'] <= n['loadedMemoryByteLimit'] == 64*1024**2
+          assert any(r['label']=='AES_Encryption_SBox' and r['matchesUpTo32']==1 for r in a['findCryptMatches'])
           print('Native Ghidra disassembly/decompilation, three literal markers and AES FindCrypt controls passed; synthetic control bytes were not executed.')
           PY
       - name: Statically analyze the two actual ISO binaries, never execute them
@@ -147,6 +153,7 @@ jobs:
           for name in online-auth routing-switch; do
             timeout --kill-after=10s 12m "$GHIDRA_HOME/support/analyzeHeadless" "$root/projects" "Kodachi_${name}" -import "$root/inputs/$name.elf" -analysisTimeoutPerFile 180 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript KodachiCryptoReport.java "$root/reports/$name.json" "$root/signatures.tsv" -deleteProject > "$root/logs/$name.log" 2>&1
             test -s "$root/reports/$name.json"
+            printf 'Completed bounded native report: %s\n' "$name"
           done
       - name: Validate exact input hashes and assemble measured redacted evidence
         run: |
@@ -160,6 +167,7 @@ jobs:
               name=target['flatName'].removesuffix('.elf'); r=json.loads((reports/(name+'.json')).read_text())
               assert r['inputSha256']==target['sha256'] and 'ELF' in r['format'] and r['ghidraVersion']=='12.1.4'
               assert r['functionsDefined'] > 0 and r['instructionsVisitedUpTo500000'] > 0 and any(d['completed'] for d in r['boundedDecompilations'])
+              assert 0 < r['bufferedLoadedBytes'] <= r['loadedMemoryByteLimit'] == 64*1024**2
               assert not r['inputExecuted'] and not r['credentialsUsed'] and not r['decryptionPerformed'] and not r['arbitraryStringsOrSourcePublished']
               programs.append({'input':target,'analysis':r})
           summary={'schema':1,'sourceCommit':os.environ['GITHUB_SHA'],'runId':os.environ['GITHUB_RUN_ID'],'observedAtRunnerClock':datetime.now(timezone.utc).isoformat(),'iso':manifest['iso'],'ghidra':{'version':'12.1.4','archiveSha256':os.environ['GHIDRA_SHA256']},'javaVersion':(root/'java-version.txt').read_text().strip(),'findCrypt':{'repository':'TorgoTorgo/ghidra-findcrypt','commit':'5c2fd5bb50d13a4092da136dc7004becd8129c7b','databaseBlob':'36e799563f152ba6e442a9bcd9dc71cd23a96309','databaseSha256':os.environ['FINDCRYPT_SHA256'],'signatures':126},'sourceSha256':{p:digest(p) for p in ['tools/kodachi/inspect-iso.py','tools/kodachi/prepare-native.py','tools/kodachi/inspect-requirements.txt','tools/ghidra_scripts/KodachiCryptoReport.java']},'positiveControls':{name:json.loads((reports/(name+'.json')).read_text()) for name in ['native-control','aes-control']},'programs':programs,'booted':False,'mounted':False,'imageBinariesExecuted':False,'connectedToVpn':False,'credentialsUsed':False,'decryptionPerformed':False,'privateKeysOrArbitraryStringsPublished':False}
@@ -183,19 +191,28 @@ jobs:
           compressed=zlib.compress(data,9); assert len(compressed) <= 16000
           chunks=[base64.b64encode(compressed[i:i+2000]).decode() for i in range(0,len(compressed),2000)]
           for i,chunk in enumerate(chunks): print('::notice title=Kodachi native evidence zlib '+str(i+1)+' of '+str(len(chunks))+'::'+chunk)
-      - name: Expose only trusted-script compilation diagnostics on failure
-        if: failure()
+      - name: Expose fixed-label stage progress and trusted-script compilation diagnostics
+        if: always()
         shell: python
         run: |
-          import os, pathlib, re
+          import json, os, pathlib, re
           root=pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/logs'
           messages=[]
-          for p in root.glob('*.log'):
+          for name in ['native-control','aes-control','online-auth','routing-switch']:
+              p=root/(name+'.log')
+              if not p.is_file(): continue
+              stages=[]
               for line in p.read_text(errors='replace').splitlines():
                   if re.search(r'KodachiCryptoReport\.java:[0-9]+:',line): messages.append(line[:400])
-          text='\n'.join(messages[:12]) or 'Native analysis did not produce validated complete evidence. Raw input/log/source content is not published.'
-          print('::error title=Kodachi native tool diagnostics::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+                  m=re.search(r'KODACHI_NATIVE_STAGE (start|memory-snapshot|symbol-categories|fixed-literals|instruction-count|findcrypt|decompile|complete)\b',line)
+                  if m: stages.append(m[1])
+              print('::notice title=Kodachi native fixed stages '+name+'::'+json.dumps(stages))
+          if messages:
+              text='\n'.join(messages[:12])
+              print('::error title=Kodachi native tool diagnostics::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+          print('Stage metadata is not a complete-analysis claim. Raw input/log/source content is not published.')
       - name: Preserve redacted metadata only, never ISO binaries, raw logs, strings or C output
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: kodachi-native-crypto-evidence-redacted

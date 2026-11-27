@@ -365,6 +365,9 @@ def preview(report):
     result['skippedCount'] = len(report.get('skipped', []))
     result['skippedExamples'] = report.get('skipped', [])[:8]
     result['credentialFieldStates'] = dict(fields)
+    literal_candidates = [{'path': f['path'], 'line': field['line'], 'field': field['field'], 'state': field['state'], 'valueRedacted': True} for f in report['files'] for field in f.get('credentialFields', []) if field['state'] == 'nonempty-literal']
+    result['credentialLiteralCandidatesCount'] = len(literal_candidates)
+    result['credentialLiteralCandidates'] = literal_candidates[:8]
     result['configurationInventoryCount'] = len(configs)
     result['configurationInventory'] = [{k: f[k] for k in ('path', 'kind', 'bytesRead', 'sha256')} for f in configs[:8]]
     result['knownOsLoginLiteralTotals'] = {key: sum(f.get('knownOsLoginLiteralOccurrences', {}).get(key, 0) for f in report['files']) for key in KNOWN_OS_DEFAULTS}
@@ -378,6 +381,7 @@ def preview(report):
     result['runtimeBinaryInventory'] = [{k: f[k] for k in ('path', 'bytesRead', 'sha256')} for f in runtime[:32]]
     template_states = Counter(field['state'] for f in report['files'] for item in f.get('providerAuthTemplates', []) for field in item.get('fields', {}).values())
     result['providerTemplateFieldStates'] = dict(template_states)
+    result['providerTemplateStates'] = dict(Counter(item.get('state', 'field-object') for f in report['files'] for item in f.get('providerAuthTemplates', [])))
     result['previewFiles'] = []
     result['previewOnly'] = True
     if len(json.dumps(result, separators=(',', ':')).encode()) > 14000:

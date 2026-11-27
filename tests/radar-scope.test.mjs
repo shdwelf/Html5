@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { JSDOM } from 'jsdom';
+import { JSDOM, VirtualConsole } from 'jsdom';
 
 const html = readFileSync(new URL('../apps/ads-b-radar-scope', import.meta.url), 'utf8');
 function boot() {
-  const requests = [], timers = new Map(); let sequence = 0;
+  const requests = [], timers = new Map(), errors = []; let sequence = 0;
+  const virtualConsole = new VirtualConsole(); virtualConsole.on('jsdomError', error => errors.push(error.message));
   const dom = new JSDOM(html, {
-    runScripts: 'dangerously', url: 'https://radar.invalid/',
+    runScripts: 'dangerously', url: 'https://radar.invalid/', virtualConsole,
     beforeParse(window) {
-      window.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: (_, key) => key === 'createRadialGradient' || key === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {} });
+      window.HTMLCanvasElement.prototype.getContext = () => new Proxy({}, { get: (_, key) => ['createRadialGradient', 'createLinearGradient', 'createConicGradient'].includes(key) ? () => ({ addColorStop() {} }) : () => {} });
       window.requestAnimationFrame = () => 1;
       window.setInterval = (fn, ms) => { timers.set(++sequence, { fn, ms }); return sequence; };
       window.clearInterval = id => timers.delete(id);
@@ -17,7 +18,7 @@ function boot() {
       window.AbortController = AbortController; window.TextDecoder = TextDecoder;
     }
   });
-  return { window: dom.window, document: dom.window.document, requests, timers, close: () => dom.window.close() };
+  return { window: dom.window, document: dom.window.document, requests, timers, close: () => { dom.window.close(); assert.deepEqual(errors, [], 'Radar must not hide a startup/event exception'); } };
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 0));
 

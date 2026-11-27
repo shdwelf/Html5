@@ -207,6 +207,28 @@ class InspectionTests(unittest.TestCase):
         self.assertEqual(result['binaryFormat'], 'ELF')
         self.assertEqual(result['pathReferences'], ['/etc/openvpn/auth.txt'])
 
+    def test_preview_identifies_redacted_literal_field_locations_and_all_template_states(self):
+        text=json.dumps({'vpn_password':'SYNTHETIC-SECRET','providers':[{'auth_user_pass_template':None},{'auth_user_pass_template':'{{USERNAME}}\\n{{PASSWORD}}'}]},indent=2)
+        item=review.inspect_content('/opt/kodachi/config/vpn-providers-public-api.json',text.encode(),'kodachi-runtime-or-config')
+        result=review.preview({'files':[item],'skipped':[]})
+        self.assertEqual(result['credentialLiteralCandidatesCount'],1)
+        self.assertEqual(result['credentialLiteralCandidates'][0]['field'],'vpn_password')
+        self.assertEqual(result['credentialLiteralCandidates'][0]['path'],item['path'])
+        self.assertTrue(result['credentialLiteralCandidates'][0]['valueRedacted'])
+        self.assertEqual(result['providerTemplateStates'],{'no-template':1,'placeholder':1})
+        self.assertNotIn('SYNTHETIC-SECRET',json.dumps(result))
+
+    def test_all_requested_literals_are_searched_in_utf16be_and_zero_match_summaries_are_explicit(self):
+        data='r00t0r r00tor r00t'.encode('utf-16be')
+        item=review.inspect_content('/opt/kodachi/config.json',data,'kodachi-runtime-or-config')
+        for token,count in [('r00t0r',1),('r00tor',1),('r00t',3)]:
+            self.assertEqual(item['requestedLiteralMatches'][token]['utf16beSubstringOccurrences'],count)
+            self.assertNotIn('utf8SubstringOccurrences',item['requestedLiteralMatches'][token])
+        preview=review.preview({'files':[item],'skipped':[]})
+        self.assertTrue(all(v['matchingScannedFiles']==1 for v in preview['requestedLiteralSearch'].values()))
+        empty=review.preview({'files':[],'skipped':[]})
+        self.assertTrue(all(v['matchingScannedFiles']==0 for v in empty['requestedLiteralSearch'].values()))
+
     def test_main_refuses_wrong_iso_size_before_parser_or_report_writes(self):
         with tempfile.TemporaryDirectory() as directory:
             iso = Path(directory) / 'wrong.iso'
