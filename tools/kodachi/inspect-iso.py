@@ -26,12 +26,12 @@ MAX_TOTAL_BYTES = 768 * 1024 * 1024
 MAX_FINDINGS = 100
 KNOWN_OS_DEFAULTS = ('r@@t00', 'Security4All')
 PRIVATE_BLOCK = re.compile(r'<(?:key|tls-auth|tls-crypt|pkcs12)>.*?</(?:key|tls-auth|tls-crypt|pkcs12)>|-----BEGIN [^-]*(?:PRIVATE KEY|SECRET)[^-]*-----.*?-----END [^-]+-----', re.I | re.S)
-ASSIGNMENT = re.compile(r'''(?im)^\s*(?:export\s+)?["']?([a-z_][\w.-]*(?:password|passwd|username|user_name|credential|auth_token|api_key)[\w.-]*|password|passwd|username)["']?\s*(?:=|:)\s*([^\r\n]{0,1024})''')
+ASSIGNMENT = re.compile(r'''(?im)^\s*(?:export\s+)?["']?([a-z_][\w.-]*(?:password|passwd|passphrase|pwd|pass|username|user_name|credential|auth_token|api_key)[\w.-]*|password|passwd|passphrase|pwd|pass|username)["']?\s*(?:=|:)\s*([^\r\n]{0,1024})''')
 INTEREST = re.compile(r'vpn|wireguard|cloak|auth|credential|password|provider', re.I)
 
 
 def safe_path(value):
-    if not isinstance(value, str) or len(value) > 4096 or not value.startswith('/') or '\\' in value or any(ord(c) < 32 or ord(c) == 127 or 0xd800 <= ord(c) <= 0xdfff for c in value):
+    if not isinstance(value, str) or len(value) > 4096 or not value.startswith('/') or '\0' in value:
         raise ValueError('Unsupported image path')
     if any(part in ('.', '..') for part in value.split('/')):
         raise ValueError('Image path traversal is not accepted')
@@ -119,7 +119,7 @@ def inspect_content(path, data, kind):
     if inline:
         result['inlineAuth'] = {'present': True, 'nonemptyLines': sum(bool(x.strip()) for x in inline[1].splitlines()), 'valuesRedacted': True}
     name = PurePosixPath(path.lower()).name
-    if INTEREST.search(path) and ('auth' in name or 'password' in name or name.endswith('.pass')) and len(data) <= 4096:
+    if INTEREST.search(path) and any(token in name for token in ('auth', 'pass', 'credential', 'login', 'secret')) and len(data) <= 4096:
         lines = [x.strip() for x in text.splitlines() if x.strip() and not x.lstrip().startswith('#')]
         if 1 <= len(lines) <= 2 and not any(re.search(r'[={}<>]|\b(?:echo|cat|sudo|exec)\b', x) for x in lines):
             result['shortAuthFileCandidate'] = {'nonemptyLines': len(lines), 'lineStates': [value_state(x) for x in lines], 'valuesRedacted': True, 'workingCredentialProven': False}
@@ -245,6 +245,7 @@ def inspect_iso(iso_path):
             'scope': 'All listed regular-file paths classified; bounded configuration text and selected Kodachi runtime bytes only. No symlink/device reads, nested archives, runtime downloads, decryption or network/authentication tests.',
             'booted': False, 'mounted': False, 'installed': False, 'executedImageFiles': False, 'connectedToVpn': False, 'credentialsUsed': False,
             'unknownCredentialValuesRedacted': True, 'privateKeysPublished': False,
+            'pathEncoding': 'Literal Linux image paths; JSON escapes control/non-UTF8 names. Never used as host extraction paths.',
             'limits': {'entries': MAX_ENTRIES, 'depth': MAX_DEPTH, 'candidateFiles': MAX_CANDIDATES, 'configBytes': MAX_CONFIG_BYTES, 'binaryBytes': MAX_BINARY_BYTES, 'totalBytes': MAX_TOTAL_BYTES}}
 
 

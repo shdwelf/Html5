@@ -43,11 +43,14 @@ def squash_fixture(files):
 
 
 class InspectionTests(unittest.TestCase):
-    def test_safe_virtual_paths_do_not_admit_traversal_or_control_commands(self):
-        for bad in ['relative', '/../etc/passwd', '/x/./vpn', '/x\\y', '/x\n::notice', '/x\x00', '/x\udcff']:
+    def test_virtual_paths_reject_traversal_and_json_escape_literal_linux_names(self):
+        for bad in ['relative', '/../etc/passwd', '/x/./vpn', '/x\x00']:
             with self.subTest(bad=repr(bad)), self.assertRaises(ValueError):
                 review.safe_path(bad)
         self.assertEqual(review.safe_path('/etc/café/vpn.conf'), '/etc/café/vpn.conf')
+        for literal in ['/x\\y', '/x\n::notice', '/x\udcff']:
+            self.assertEqual(review.safe_path(literal), literal)
+            self.assertNotIn('\n', json.dumps({'path': literal}))
 
     def test_candidate_scope_includes_profiles_auth_wireguard_and_kodachi_not_general_browser_data(self):
         for path in ['/any/provider.ovpn', '/etc/wireguard/wg0.conf', '/etc/openvpn/client/auth.txt', '/home/kodachi/Own_VPN_Config/myownvpnsetup', '/usr/bin/kodachi-vpn', '/opt/kodachi/config.json', '/home/kodachi/.config/kodachi/auth.json']:
@@ -133,6 +136,16 @@ class InspectionTests(unittest.TestCase):
         root.children = [Node('loop', 'dir', 1)]
         with self.assertRaisesRegex(ValueError, 'cyclic'):
             list(review.walk_files(root))
+
+    def test_vpn_pass_pwd_passphrase_and_alternate_auth_filenames_are_not_missed(self):
+        for field in ['VPN_PASS', 'vpn_pwd', 'vpn_passphrase', 'pass', 'pwd']:
+            result = review.inspect_content('/etc/openvpn/config.conf', (field + '=SYNTHETIC-SECRET\n').encode(), 'vpn-config')
+            self.assertEqual(result['credentialFields'][0]['state'], 'nonempty-literal')
+            self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
+        for name in ['pass.txt', 'credentials.txt', 'login', 'secret.txt']:
+            result = review.inspect_content('/etc/openvpn/' + name, b'SYNTHETIC-USER\nSYNTHETIC-SECRET\n', 'vpn-config')
+            self.assertEqual(result['shortAuthFileCandidate']['nonemptyLines'], 2)
+            self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
 
     def test_main_refuses_wrong_iso_size_before_parser_or_report_writes(self):
         with tempfile.TemporaryDirectory() as directory:

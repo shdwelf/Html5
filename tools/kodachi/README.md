@@ -43,6 +43,8 @@ needed; do not loosen pins or infer newer-build contents from an older result.
 ### Limits and evidence
 
 The tool has explicit entry/depth/file/byte bounds and reports skipped files.
+Linux filenames (including non-UTF8/control characters) remain literal virtual
+paths encoded safely in JSON, never host extraction paths or shell arguments.
 A bounded static search is not an exhaustive secret-recovery, decompilation,
 runtime/decryption or packet-path test. Runtime-fetched/derived secrets may not
 be present in the ISO. The report contains the measured ISO hashes, scanner and
