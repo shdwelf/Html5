@@ -1,0 +1,103 @@
+name: Kodachi — supplemental r@@t0r static search
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'tools/kodachi/search-candidate.py'
+      - 'tests/kodachi_candidate_test.py'
+      - '.github/workflows/kodachi-candidate-search.yml'
+  pull_request:
+    paths:
+      - 'tools/kodachi/search-candidate.py'
+      - 'tests/kodachi_candidate_test.py'
+      - '.github/workflows/kodachi-candidate-search.yml'
+      - 'docs/research/kodachi-supplemental-literal-2026-11-17.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: kodachi-candidate-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/kodachi
+            tests
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install hash-pinned static readers
+        run: |
+          python3 -m pip install --only-binary=:all: --require-hashes -r tools/kodachi/inspect-requirements.txt
+      - name: Require original parser, redaction and exact supplemental-literal controls
+        run: |
+          python3 -m unittest discover -s tests -p 'kodachi_iso*_test.py' -v
+          python3 -m unittest discover -s tests -p 'kodachi_candidate_test.py' -v
+
+  search-original-iso:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name != 'pull_request'
+    needs: controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/kodachi
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install hash-pinned static readers
+        run: |
+          python3 -m pip install --only-binary=:all: --require-hashes -r tools/kodachi/inspect-requirements.txt
+      - name: Retrieve only the exact original acquisition artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/15188898562" > "$RUNNER_TEMP/kodachi-artifact.json"
+          python3 - <<'PY'
+          import json, os, pathlib, shutil
+          a = json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-artifact.json').read_text())
+          assert a['id'] == 15188898562 and a['workflow_run']['id'] == 45981578258 and not a['expired'], 'Original artifact absent/expired; explicitly reacquire the exact pinned ISO, never substitute another build'
+          assert a.get('digest') == 'sha256:c67e74c915e032a21405c78e6c772d8e36f82d741e61890a6feade1d0097c775', 'Artifact identity changed'
+          assert shutil.disk_usage(os.environ['RUNNER_TEMP']).free > 11 * 1024**3, 'Insufficient private temporary space'
+          print('Original acquisition identity confirmed; size/SHA-256/SHA-512 will be recomputed before parsing.')
+          PY
+          gh run download 45981578258 --repo "$GITHUB_REPOSITORY" --name kodachi-desktop-10.0.3-build76-download-only --dir "$RUNNER_TEMP/kodachi-iso"
+      - name: Search the supplemental candidate as data, never authenticate or decrypt
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          ulimit -v 4194304
+          timeout --kill-after=10s 25m python3 tools/kodachi/search-candidate.py "$RUNNER_TEMP/kodachi-iso/kodachi-os-xfce-10.0.3-amd64.iso" "$RUNNER_TEMP/kodachi-candidate-report/supplemental-literal.json"
+      - name: Expose complete bounded fixed-literal metadata without file contents
+        shell: python
+        run: |
+          import base64, os, pathlib
+          path = pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-candidate-report/supplemental-literal.json'
+          value = path.read_bytes()
+          if len(value) > 16000: raise SystemExit('Supplemental report exceeds bounded transport')
+          chunks = [base64.b64encode(value[i:i+2000]).decode() for i in range(0, len(value), 2000)]
+          for i, chunk in enumerate(chunks):
+              print('::notice title=Kodachi supplemental literal report '+str(i+1)+' of '+str(len(chunks))+'::'+chunk)
+      - name: Preserve only fixed-literal metadata, never the ISO or temporary full inventory
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: kodachi-supplemental-literal-metadata
+          path: ${{ runner.temp }}/kodachi-candidate-report/supplemental-literal.json
+          retention-days: 14
+          if-no-files-found: error
