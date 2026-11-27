@@ -156,49 +156,59 @@ prerequisite assessment always leaves `workingRootVerified` false.
 The selected scope remains **full modern toolbox, lean startup**, with explicit
 owner approval for the **Termux-compatible `com.termux` package ID**. That build
 cannot coexist with Termux in the same Android user and is not signed by Termux
-or the original ZShaolin publisher. Back up an existing Termux installation;
-do not uninstall it merely to try an untested build.
+or the original ZShaolin publisher. Protect existing Termux data; a work profile,
+Secure Folder or secondary user is not a supported coexistence workaround.
 
-The in-progress source stages Zsh, GNU tools, Emacs/Vim, SSH/crypto, languages,
-media tools and games, using a pinned terminal engine and authenticated upstream
-Android packages. It removes private-client-key-over-HTTP provisioning at the
-helper source, requires a client-supplied public key, and defaults SSH to
-loopback. No server, SSH agent, root prompt or network download is supposed to
-start with the terminal. Obsolete game/keyserver-helper replacements are
-explicit in [the build specification](../tools/zshaolin-modern/inputs.json),
-not silently reported as reconstructed originals.
+**The x86_64 technical review build has now passed all mandatory gates** in
+[run **46063037718**](https://github.com/shdwelf/Html5/actions/runs/46063037718),
+source **`64218e56d82a3949d3884fca5cd912f9f405042a`**. This includes actual offline
+payload installation, all **five named Android 13 tests with no failures/skips**,
+release APK/JNI compilation, lint, signature verification and measurement of the
+packaged remediation/startup assets. CI published the APK; the locally retrieved
+[compact summary](research/zshaolin-modern-x86_64-apk-summary.json) was hash-checked
+with all 16 source-file hashes. The **253-package** closure retains **51 required
+commands**, including native shell/editors/crypto/media/SSH tools.
 
-The full **x86_64 release APK and test APK have now compiled and passed lint**
-in [run 46054704496](https://github.com/shdwelf/Html5/actions/runs/46054704496),
-from source `130910469950b67319046b808a4f5ec27a48b301`. The mandatory Android 13
-runtime step **failed**, so the measured delivery/artifact gate did not run.
-No final measured APK receipt or ARM APK has been delivered. Compilation alone
-is not a working full-toolbox claim. Bounded, explicitly disposable-emulator-only
-diagnostics subsequently identified the storage-identity setup gate
-(run **46056425429**); replacing canonical string comparison with identical owned
-inode/device checks passed that guard in **46057354939**, which then rejected a
-bootstrap archive path. The next correction normalizes benign `./` components
-while retaining parent-traversal, normalized-collision and containment checks.
-Rerun **46058615404** from **`fd9c0ddea99ed0385db4c481aabd58a35da09067`** then passed
-extraction/path validation but failed atomic prefix promotion. The next revision
-uses the same fixed `FILES` mount spelling for both sides of `Os.rename` rather
-than crossing bind-mount aliases. Run **46059585202** from
-**`64a10ccce1f3591269064168a509d41b0f584d73`** completed payload installation and
-all **five tests**, with **one failure** in the case-sensitive `sshd -T` policy
-assertion. The package/command, native-tools, synthetic public-key SSH and actual
-PTY/lifecycle tests passed, but the final measured APK/artifact gate stayed
-closed. This is progress beyond the earlier setup failures, not final acceptance.
+The [native build guide](zshaolin-modern-native-build.md) gives the artifact,
+APK/signer hashes, exact versions, target-28 tradeoff, licence/corresponding-source
+limits and retrieval boundary. The large APK/full receipt were measured in CI,
+**not downloaded or rehashed locally**. Do not try x86_64 on this Samsung.
+Separate **ARMv7/ARM64 APKs** compiled and passed lint, v2 signature verification
+and packaged-payload measurement in
+[run **46063968229**](https://github.com/shdwelf/Html5/actions/runs/46063968229).
+Both compact summaries were retrieved and verified against their hashes and
+all 16 source-file hashes; artifact links/checksums are in the guide. **Neither
+ARM variant was executed.** These measurements do not identify this phone's
+userspace ABI or prove exact-device compatibility. Each job has a different
+ephemeral signer, not an upstream or stable update identity.
 
-The pinned OpenSSH 10.6 source emits canonical CamelCase policy keywords (see
+The historical client-private-key-over-HTTP provisioning path is removed. The
+packaged replacement requires a client-supplied **public** key and foreground
+loopback-only SSH; no server, SSH agent, root prompt or network download starts
+with the terminal. Named legacy substitutions remain explicit in the
+[specification](../tools/zshaolin-modern/inputs.json). An observed new review
+signer is not an upstream identity or a stable update-signing service.
+
+For reproducibility, the failure chronology is retained rather than treating an
+earlier compile-only result as a runtime pass:
+
+| Run | Actual outcome |
+| --- | --- |
+| 46054704496 / 46056425429 | APK/JNI/lint progressed; runtime setup failed, later isolated to the private-directory identity gate. |
+| 46057354939 | Owned inode/device identity accepted; bootstrap path validation rejected an entry. |
+| 46058615404 | Benign-path normalization with traversal/collision guards progressed; atomic prefix promotion failed. |
+| 46059585202 | Same-mount `Os.rename` progressed through installation; five tests completed, one case-sensitive SSH dump assertion failed. |
+| 46061380083 | OpenSSH keyword-case normalization and disabled-network setup passed all five tests; final certificate-output parser rejected a standard signer-label format after successful signature verification. |
+| **46063037718** | **All runtime, signature, payload and delivery gates passed** after the parser repair and installed licence notices. |
+
+The pinned OpenSSH 10.6 source emits canonical CamelCase keywords (see
 [`servconf.h`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.h)
 and [`servconf.c`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.c)).
-Commit **`721ccd567d598a89cff00b36ee2a0b49196b517f`** normalizes output casing,
-still rejects password authentication and additionally requires the exact
-loopback-only listener set. It also disables emulator networking before setup,
-checks airplane/Wi-Fi state before installation, requires the exact five
-non-skipped test cases, and measures the actual packaged remediation/startup
-assets against reviewed source. Replacement run
-[**46061380083**](https://github.com/shdwelf/Html5/actions/runs/46061380083) is pending.
-No production SSH policy was relaxed, personal-device logs exposed or current
-pull request merged. There is still no accepted APK handoff.
-ZShaolin itself does not require root and will not provide root or VPN protection.
+Only dump casing was normalized; password/keyboard-interactive authentication
+must remain disabled and the listener set must be exactly loopback port 2222.
+No production SSH policy was relaxed and no personal-device logs were exposed.
+GitHub PR metadata, not a successful build, determines merge status.
+
+**ZShaolin does not require or provide root or VPN protection.** The successful
+emulator build does not change the Samsung bootloader, Knox Guard, Secure Folder
+or physical-root findings above.

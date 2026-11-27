@@ -8,16 +8,21 @@ release. The selected scope is **`full_tools_lean_startup`**: keep the full mode
 toolbox, but start only an interactive Zsh attached to a real terminal PTY.
 Lean startup does **not** mean a small APK or a small installed dependency tree.
 
-**Current validation:** the x86_64 APK, terminal JNI and test APK have compiled
-and passed Android lint. In
-[run **46061380083**](https://github.com/shdwelf/Html5/actions/runs/46061380083),
-source **`721ccd567d598a89cff00b36ee2a0b49196b517f`**, **all five Android 13
-runtime tests passed with networking disabled**. The final delivery step still
-failed: after `apksigner verify` exited zero, the certificate parser rejected the
-standard `Signer #1 certificate` output because it wrongly required a colon.
-The parser correction is regression-tested against actual earlier build-tools
-reports as well as synthetic formats. A new full validation is required; there
-is not yet an accepted APK handoff, ARM execution result or current merged delivery.
+**Validated x86_64 review build:**
+[run **46063037718**](https://github.com/shdwelf/Html5/actions/runs/46063037718),
+source **`64218e56d82a3949d3884fca5cd912f9f405042a`**, **passed every mandatory
+build, lint, five-test offline Android 13 runtime, signature, packaged-payload
+and delivery gate**. The compact measured summary was retrieved and verified;
+CI published the APK artifact. The **253-package** closure retains all **51
+required commands**. This is an emulator-tested technical review build, not a
+physical Samsung, ARM execution, root or distribution-complete release claim.
+
+Separate **ARMv7 and ARM64 APKs also compiled and passed lint, signature and
+packaged-payload measurement** in
+[run **46063968229**](https://github.com/shdwelf/Html5/actions/runs/46063968229)
+from the same source. Their summaries were retrieved and source/hash-verified.
+**Neither ARM APK has been runtime-tested.** They do not inherit the x86_64
+execution result. GitHub's PR metadata, not CI success, determines merge status.
 
 The [Secure Folder/Cydia report](samsung-secure-folder-saurik-cydia-review.md)
 and [SM-A037U1 report](android-a037u1-rooting-review.md) keep those investigations
@@ -47,9 +52,109 @@ protection**.
   deletes its private key. The measured certificate identifies that artifact,
   not Termux or the original publisher. Rebuilds/other ABI jobs need not share
   an update-compatible signing identity. Stable production signing is not set up.
-- The release app is non-debuggable, requests only `INTERNET`, disables backup
-  and cleartext network traffic, and does not export a command-execution API.
+- The release app is non-debuggable, requests only `INTERNET`, disables backup,
+  declares platform cleartext traffic disabled, and does not export a command
+  API. **Native tools can still make cleartext connections when explicitly
+  invoked**; the manifest is not a firewall for curl/OpenSSH/the whole toolbox.
   These are scoped safeguards, not a malware-free or whole-system security claim.
+
+## Measured x86_64 artifact — not a Samsung ABI choice
+
+- [Download the CI review artifact](https://github.com/shdwelf/Html5/actions/runs/46063037718/artifacts/15230695366).
+  GitHub login may be required; the workflow retains it for **14 days**. The ZIP
+  contains the APK, full receipt, compact summary, public signature output and
+  `SHA256SUMS.txt`. **Do not try the x86_64 APK on the Samsung.**
+- APK: **`zshaolin-modern-2.0.0-review-x86_64.apk`**, **285,549,547 bytes**
+  (about 272 MiB). First launch expands/configures the toolbox in app-private
+  storage; lean startup is not a small-download/storage promise.
+- APK SHA-256:
+  **`2e5d3bd17fa3f480c78d5c676b27d5b19c2c9a59f1cd11e6110ca33d7f78904a`**.
+- Verified signature: **APK Signature Scheme v2**. Observed unofficial review
+  certificate SHA-256:
+  **`69f9bc76ea51629c8c3ebb0d271381b93a412fa5ec014daf5a3730edf9634cf0`**.
+  This identifies this new signer; it is not independent upstream authentication.
+
+The [retrieved compact summary](research/zshaolin-modern-x86_64-apk-summary.json)
+is **22,860 bytes**, SHA-256
+**`ab4d5ab684d74d5405118a41370e7e1c9d46643a50effda068cfb4a39a8182b5`**.
+Five ordered compressed Checks chunks were reconstructed and checked against
+that length/hash, the successful run/job **140721890980**, source/run identity,
+all **16** listed source-file hashes, seven packaged helper/config/startup/notice
+hashes and all five named non-skipped test cases. Networking was disabled before
+installation; native tools, public-key SSH, PTY output and Exit actually ran.
+
+**Local retrieval boundary:** the summary is verified locally; the large APK and
+full receipt were measured by CI but not downloaded into this restricted
+sandbox. The full **120,521-byte** receipt is referenced by SHA-256
+**`bb81c50248ec5a0a1a8c5c4a30c9cbbf6a96633c343b4ef792aee5afde269ecd`**
+in the summary. That is a CI-reported hash, **not a local rehash of full receipt
+or APK bytes**. The earlier review-artifact download failed at its Azure Blob
+redirect; the public GitHub artifact link is the handoff path. After downloading,
+verify the extracted APK against its SHA-256; do not compare that hash to the ZIP.
+
+CI-reported upgraded binary versions include Zsh **5.9.2-2**, coreutils **9.12**,
+Emacs **31.1-3**, Vim **9.2.1400**, OpenSSH **10.6p2**, GnuPG **2.5.24**, OpenSSL
+**1:3.6.5**, Perl **5.44.0-1**, Lua **5.4.9**, FFmpeg **9.1**, ImageMagick
+**7.1.2.36**, SoX **14.9.0**, Git **2.56.1** and curl **8.23.0**. These are measured
+package labels, not a claim that every package is vulnerability-free or will
+remain the latest release.
+
+## ARM artifacts — compiled and measured, not runtime-tested
+
+Both artifacts below were published by successful run **46063968229**, using the
+same reviewed source **`64218e56d82a3949d3884fca5cd912f9f405042a`**. Each includes
+the **253-package / 51-command** toolbox, non-debuggable app, terminal JNI,
+verified v2 signature, the matching pinned bootstrap and all seven reviewed
+security/startup/licence assets. CI did **not execute** the ARM test APKs or tools.
+
+| ABI | GitHub artifact / APK inside | APK bytes |
+| --- | --- | ---: |
+| **`armeabi-v7a`** | [ARMv7 review download](https://github.com/shdwelf/Html5/actions/runs/46063968229/artifacts/15230136365) — `zshaolin-modern-2.0.0-review-armeabi-v7a.apk` | 265,398,239 |
+| **`arm64-v8a`** | [ARM64 review download](https://github.com/shdwelf/Html5/actions/runs/46063968229/artifacts/15230621287) — `zshaolin-modern-2.0.0-review-arm64-v8a.apk` | 273,688,885 |
+
+**Extracted APK SHA-256:**
+
+- ARMv7: **`7b03b4200854e47cf85fed3cb718616c908e7a2f95e35481f6d1422bea295b36`**.
+- ARM64: **`14e4cf1328f954ce075f3c851da64c17afee71f2d819c325cdb1164eecd54ebe`**.
+
+**Observed unofficial certificate SHA-256:**
+
+- ARMv7: **`41c50f095d3c9f8c9de4470bb2c6780195c24932bea3a73212e60988e94291c1`**.
+- ARM64: **`e12eded406adcc252bee6116e8031ca0e9071e82bf729b8ddf3bace0872acfce`**.
+
+The jobs generated **different ephemeral signers**; these are not upstream keys,
+a stable update identity, or interchangeable update-compatible APK variants.
+Artifact retention is 14 days. The large APKs/full receipts were measured by CI,
+**not downloaded/rehash-verified locally**.
+
+Retrieved measured compact summaries:
+
+- [ARMv7](research/zshaolin-modern-arm-apk-summary.json): **22,291 bytes**, SHA-256
+  **`8b0894321cdb977b6bbe30cdd5f3e3bac4bd00f14ec0bce613121990d4f8edd1`**,
+  job **140724866005**, four ordered Checks chunks.
+- [ARM64](research/zshaolin-modern-aarch64-apk-summary.json): **22,301 bytes**, SHA-256
+  **`69d39b6873cffba28bd876942ece3ac505dc7e55023db599a5591373830d4213`**,
+  job **140724866094**, four ordered Checks chunks.
+
+Both retain empty instrumentation suites and **false** ARM-execution,
+physical-Samsung, root and VPN-verification fields. All 16 source hashes and
+seven packaged asset hashes matched local reviewed source. The
+[local transport-verification record](research/zshaolin-modern-evidence-transport.json)
+records all three summaries, artifact metadata and retrieval boundaries; it is
+not a replacement full dependency receipt or local APK-byte verification.
+
+**Choose only after checking the actual userspace ABI.** For an already
+authorized debugging connection on the owner's own computer, this optional
+read-only query returns CPU ABI labels, not an IMEI/serial:
+
+```sh
+adb shell getprop ro.product.cpu.abilist
+```
+
+A 64-bit CPU is not proof of a 64-bit Android userspace. Do not force-install a
+mismatched APK, uninstall existing Termux, or change bootloader/profile/security
+state to try either review build. No exact-SM-A037U1 runtime compatibility is
+claimed; the APK does not root, decrypt or add Secure Folder support.
 
 ## Toolbox and startup
 

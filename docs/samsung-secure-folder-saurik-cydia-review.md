@@ -307,46 +307,47 @@ safety, current ownership or a working jailbreak.
 
 ## 7. ZShaolin continuation and remaining owner evidence
 
-The modern APK compilation, terminal JNI and lint gates have succeeded, but the
-mandatory Android 13 runtime gate has not yet succeeded. Diagnostic run
-**46056425429** failed in setup at the combined **package / primary-user /
-private-directory identity check**, before payload installation. Its bounded
-synthetic result made that failure visible; no phone logs were collected.
+**The full x86_64 technical review build has passed all mandatory gates** in
+[run **46063037718**](https://github.com/shdwelf/Html5/actions/runs/46063037718),
+source **`64218e56d82a3949d3884fca5cd912f9f405042a`**. Actual payload installation
+and all **five named Android 13 runtime tests** passed with networking disabled,
+without failures/skips. Release APK/JNI compilation, lint, `apksigner verify`,
+actual packaged bootstrap/dependency and reviewed-asset checks also passed, and
+CI published the APK artifact. The closure contains **253 packages** and all
+**51 required commands**, not a shell-only substitute.
 
-Commit **`3ae2e617f6d7955aeb4bd0192ef15a64458f071e`** replaces canonical-path-string
-comparison with **owned directory inode/device identity** to handle Android's
-`/data/data` and `/data/user/0` bind-mount aliases. It preserves the package-ID and
-primary-user restrictions and adds a negative cache-directory control. Rerun
-**46057354939** passed that identity guard and then failed at bootstrap path
-validation. The next correction normalizes benign `./` components, rejects all
-parent traversal before normalization, deduplicates normalized archive/link
-names and retains canonical containment checks. Rerun **46058615404** then passed
-extraction/path validation and failed the atomic stage-to-prefix rename. Commit
-**`64a10ccce1f3591269064168a509d41b0f584d73`** uses the fixed `FILES` spelling for
-both sides of that rename instead of crossing Android bind-mount aliases, and
-uses `Os.rename` so any remaining errno is visible. Rerun **46059585202** then
-completed payload installation and **all five tests**, with **one failure** at
-the first case-sensitive `sshd -T` policy assertion. The package/command,
-native-tools, synthetic public-key SSH and actual PTY/lifecycle tests passed.
-The measured APK/artifact delivery gate correctly stayed closed.
+The [retrieved compact summary](research/zshaolin-modern-x86_64-apk-summary.json)
+is **22,860 bytes**, SHA-256
+**`ab4d5ab684d74d5405118a41370e7e1c9d46643a50effda068cfb4a39a8182b5`**.
+Five ordered Checks chunks were reconstructed, with run/job/source identity,
+all 16 listed source hashes, seven packaged helper/config/startup/notice hashes
+and exact test cases checked. The **285,549,547-byte** APK and full dependency
+receipt were measured by CI, **not downloaded or rehashed in this sandbox**.
+The [native build guide](zshaolin-modern-native-build.md) gives the artifact link,
+APK/signer hashes, exact package versions and that retrieval limitation.
 
-The pinned OpenSSH 10.6 source emits canonical CamelCase policy keywords (see
-[`servconf.h`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.h)
-and [`servconf.c`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.c)).
-Commit **`721ccd567d598a89cff00b36ee2a0b49196b517f`** normalizes that output's
-casing without relaxing authentication values. It requires the exact loopback
-listener set, disables emulator networking before setup, rechecks airplane/Wi-Fi
-state before installation, and requires all five named, non-skipped tests plus
-actual packaged security/startup assets matching reviewed source. Replacement
-[run **46061380083**](https://github.com/shdwelf/Html5/actions/runs/46061380083)
-then **passed all five runtime tests with networking disabled**. Its final
-receipt step still failed: successful `apksigner verify` output used the standard
-`Signer #1 certificate` label, but the parser wrongly required a colon. That
-parser has been corrected with real prior build-tools-output regressions; a new
-validation is required. Delivery gates remain mandatory, with no validated APK
-handoff or current merge to report. No production SSH policy was relaxed.
-The [native build guide](zshaolin-modern-native-build.md) records the full toolbox,
-ABI/signing/target-SDK tradeoffs and licence/corresponding-source limitations.
+The earlier setup/test/parser failure chronology remains in the
+[Samsung report](android-a037u1-rooting-review.md#zshaolin-status-and-scope).
+Owned inode/device identity, parent-traversal/collision/containment guards,
+same-mount atomic promotion, exact loopback listeners and disabled password
+and keyboard-interactive authentication remain mandatory. Correcting OpenSSH
+output casing and the certificate label parser did not relax production SSH
+policy. No personal-device logs or private signing/client keys were published.
+The packaged replacement removes client-private-key-over-HTTP provisioning;
+only owner-supplied public-key SSH is available, explicitly started in foreground.
+
+Separate **ARMv7/ARM64 APKs** compiled and passed lint, v2 signature verification
+and packaged-payload measurements in
+[run **46063968229**](https://github.com/shdwelf/Html5/actions/runs/46063968229).
+Their compact summaries were reconstructed from four Checks chunks each and
+checked against source/run identity, all 16 source hashes and seven asset hashes.
+The guide provides both downloads and APK/signer checksums. **Neither ARM APK
+was executed**; these are not ARM-runtime, this-phone ABI, Secure Folder or root
+results. Each job uses a different ephemeral signer. The guide records the
+Termux conflict, primary-user restriction, target-28 tradeoff, named legacy
+substitutions and incomplete per-dependency corresponding-source/licence
+clearance. GitHub PR metadata determines merge status; a passing CI run is not
+itself a merge or a whole-program security audit.
 
 To narrow the phone questions without changing security state:
 

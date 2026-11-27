@@ -2,6 +2,8 @@
 
 **17 November 2026 is the report-series label.** Upstream commit dates, sandbox observations and GitHub runner clocks are preserved separately, not represented as observations made on that label date. Evidence: [ZShaolin source/review register](research/zshaolin-apk-investigation-2026-11-17.json) and [complete supplemental ISO report](research/kodachi-supplemental-literal-2026-11-17.json).
 
+> **Later, separate build:** the [unofficial ZShaolin Modern native review](zshaolin-modern-native-build.md) now supplies x86_64, ARMv7 and ARM64 APK artifacts with measured signatures/payloads; five offline Android 13 runtime tests passed on x86_64 only. That is a new Termux-compatible implementation, **not acquisition or verification of an original ZShaolin release APK**. The historical source-only findings and original-ISO literal results below are unchanged.
+
 ## Results first
 
 - **No exact ZShaolin APK was obtained or supplied.** This is a pinned source investigation plus static inspection of one upstream repository-shipped ARM shared object, **not** an APK signature/DEX/payload audit, runtime test, or safe/malicious verdict. No third-party “mod” APK was downloaded and no app was installed.

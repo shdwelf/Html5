@@ -26,6 +26,10 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   "docs/research/kodachi-vpn-iso-inspection-2026-11-17.json",
   // Follow-up APK/source security review and fixed-literal evidence, not manuals.
   "docs/research/zshaolin-apk-investigation-2026-11-17.json",
+  "docs/research/zshaolin-modern-x86_64-apk-summary.json",
+  "docs/research/zshaolin-modern-arm-apk-summary.json",
+  "docs/research/zshaolin-modern-aarch64-apk-summary.json",
+  "docs/research/zshaolin-modern-evidence-transport.json",
   "docs/research/android-root-static-review.json",
   "docs/research/cydia-static-review.json",
   "docs/research/kodachi-supplemental-literal-2026-11-17.json",

@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import io
 import json
@@ -331,6 +332,122 @@ class ZshaolinApkReceiptTests(unittest.TestCase):
         self.assertLess(java.index('Airplane mode must be enabled'), java.index('Toolbox.install(ctx'))
         self.assertLess(java.index('Wi-Fi must be disabled'), java.index('Toolbox.install(ctx'))
         for path in apk_receipt.SOURCE_FILES: self.assertTrue((ROOT/path).is_file(), path)
+
+
+class ZshaolinMeasuredApkTests(unittest.TestCase):
+    def record(self):
+        return json.loads((ROOT/'docs/research/zshaolin-modern-x86_64-apk-summary.json').read_text())
+
+    def test_retrieved_summary_keeps_exact_run_source_and_current_reviewed_file_hashes(self):
+        raw = (ROOT/'docs/research/zshaolin-modern-x86_64-apk-summary.json').read_bytes()
+        self.assertEqual(len(raw), 22860)
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), 'ab4d5ab684d74d5405118a41370e7e1c9d46643a50effda068cfb4a39a8182b5')
+        report = self.record()
+        self.assertEqual(report['runId'], '46063037718')
+        self.assertEqual(report['sourceCommit'], '64218e56d82a3949d3884fca5cd912f9f405042a')
+        self.assertEqual(set(report['sourceSha256']), set(apk_receipt.SOURCE_FILES))
+        for path, expected in report['sourceSha256'].items():
+            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), expected, path)
+        self.assertEqual(report['fullReceiptBytes'], 120521)
+        self.assertEqual(report['fullReceiptSha256'], 'bb81c50248ec5a0a1a8c5c4a30c9cbbf6a96633c343b4ef792aee5afde269ecd')
+
+    def test_actual_ci_measured_apk_signature_namespace_and_full_dependency_versions(self):
+        report = self.record(); apk = report['apk']; payload = report['payload']
+        self.assertEqual(apk['bytes'], 285549547)
+        self.assertEqual(apk['sha256'], '2e5d3bd17fa3f480c78d5c676b27d5b19c2c9a59f1cd11e6110ca33d7f78904a')
+        self.assertEqual(apk_receipt.certificate_fingerprints(report['apkSignatureVerification']), [apk['signerCertificateSha256']])
+        self.assertIn('Verified using v2 scheme (APK Signature Scheme v2): true', report['apkSignatureVerification'])
+        self.assertEqual(apk['applicationId'], 'com.termux'); self.assertEqual(apk['targetSdk'], 28)
+        self.assertEqual(apk['abi'], 'x86_64'); self.assertFalse(apk['debuggable'])
+        self.assertEqual(len(payload['packageVersions']), 253)
+        self.assertEqual(payload['packageVersions']['openssh'], '10.6p2')
+        self.assertEqual(payload['requiredCommands'], SPEC['requiredCommands'])
+        self.assertEqual(payload['bootstrapSha256'], SPEC['bootstrap']['x86_64'])
+        self.assertTrue(payload['aptSignatureVerificationRequired']); self.assertFalse(payload['missingCommands'])
+        self.assertFalse(payload['nativePackagesSelfCompiled'])
+
+    def test_all_five_actual_offline_android13_controls_completed_without_skips(self):
+        report = self.record()
+        self.assertTrue(report['testedOnAndroid13X86Emulator'])
+        self.assertTrue(report['android13EmulatorOfflineInstallVerified'])
+        self.assertEqual(len(report['androidInstrumentationSuites']), 1)
+        suite = report['androidInstrumentationSuites'][0]
+        self.assertEqual(suite['suite'], apk_receipt.TEST_SUITE)
+        self.assertEqual(suite['tests'], 5)
+        self.assertEqual(set(suite['testCases']), apk_receipt.REQUIRED_TEST_CASES)
+        for key in ['failures', 'errors', 'skipped', 'disabled']: self.assertEqual(suite[key], 0)
+        self.assertEqual(suite['xmlSha256'], '4fabf791718dca3edf8cb0600118a97ca29e8ef6af1d2bf038189bc57fcde989')
+
+    def test_actual_packaged_remediation_startup_and_notices_match_reviewed_sources(self):
+        report = self.record()
+        assets = report['packagedSecurityAssets']
+        self.assertEqual(set(assets), {'z-ssh', 'sshd_config', 'zshrc', 'COPYING', 'NOTICE', 'LICENSE-APACHE-2.0', 'TERMUX-LICENSE.md'})
+        for name, measured in assets.items():
+            data = (HELPER.read_bytes().replace(b'#!env zsh', b'#!/data/data/com.termux/files/usr/bin/zsh', 1)
+                    if name == 'z-ssh' else (ROOT/'tools/zshaolin-modern/assets'/name).read_bytes())
+            self.assertEqual(measured['bytes'], len(data), name)
+            self.assertEqual(measured['sha256'], hashlib.sha256(data).hexdigest(), name)
+
+    def test_both_actual_arm_apks_have_separate_measurements_and_no_inherited_runtime_pass(self):
+        expected = {
+            'arm': ('armeabi-v7a', 22291, '8b0894321cdb977b6bbe30cdd5f3e3bac4bd00f14ec0bce613121990d4f8edd1',
+                    265398239, '7b03b4200854e47cf85fed3cb718616c908e7a2f95e35481f6d1422bea295b36'),
+            'aarch64': ('arm64-v8a', 22301, '69d39b6873cffba28bd876942ece3ac505dc7e55023db599a5591373830d4213',
+                        273688885, '14e4cf1328f954ce075f3c851da64c17afee71f2d819c325cdb1164eecd54ebe'),
+        }
+        x86 = self.record(); signers = {x86['apk']['signerCertificateSha256']}
+        for arch, (abi, length, digest, apk_bytes, apk_hash) in expected.items():
+            raw = (ROOT/f'docs/research/zshaolin-modern-{arch}-apk-summary.json').read_bytes()
+            self.assertEqual(len(raw), length); self.assertEqual(hashlib.sha256(raw).hexdigest(), digest)
+            report = json.loads(raw); apk = report['apk']; payload = report['payload']
+            self.assertEqual(report['runId'], '46063968229')
+            self.assertEqual(report['sourceCommit'], x86['sourceCommit'])
+            self.assertEqual(report['sourceSha256'], x86['sourceSha256'])
+            self.assertEqual(report['packagedSecurityAssets'], x86['packagedSecurityAssets'])
+            self.assertEqual(apk['abi'], abi); self.assertEqual(apk['bytes'], apk_bytes)
+            self.assertEqual(apk['sha256'], apk_hash)
+            self.assertEqual(apk_receipt.certificate_fingerprints(report['apkSignatureVerification']), [apk['signerCertificateSha256']])
+            self.assertIn('Verified using v2 scheme (APK Signature Scheme v2): true', report['apkSignatureVerification'])
+            signers.add(apk['signerCertificateSha256'])
+            self.assertEqual(payload['arch'], arch); self.assertEqual(payload['bootstrapSha256'], SPEC['bootstrap'][arch])
+            self.assertEqual(payload['requiredCommands'], SPEC['requiredCommands'])
+            self.assertEqual(len(payload['packageVersions']), 253)
+            self.assertTrue(payload['aptSignatureVerificationRequired']); self.assertFalse(payload['missingCommands'])
+            self.assertEqual(report['androidInstrumentationSuites'], [])
+            for key in ['testedOnAndroid13X86Emulator', 'android13EmulatorOfflineInstallVerified',
+                        'armDeviceExecutionVerified', 'testedOnPhysicalSamsung', 'rootVerified', 'vpnProtectionProvided']:
+                self.assertFalse(report[key])
+        self.assertEqual(len(signers), 3, 'Different ephemeral review signers are not update-compatible identities')
+
+    def test_transport_record_preserves_checks_hashes_and_local_apk_retrieval_boundary(self):
+        transport = json.loads((ROOT/'docs/research/zshaolin-modern-evidence-transport.json').read_text())
+        self.assertFalse(transport['rawApkBytesDownloadedLocally'])
+        self.assertFalse(transport['fullDependencyReceiptsDownloadedLocally'])
+        self.assertEqual(len(transport['records']), 3)
+        self.assertEqual({row['arch'] for row in transport['records']}, {'x86_64', 'arm', 'aarch64'})
+        policy = (ROOT/'tools/wikiinajar/public-corpus-policy.mjs').read_text()
+        self.assertIn('"docs/research/zshaolin-modern-evidence-transport.json"', policy)
+        for row in transport['records']:
+            raw = (ROOT/row['summary']).read_bytes(); report = json.loads(raw)
+            self.assertEqual(len(raw), row['bytes']); self.assertEqual(hashlib.sha256(raw).hexdigest(), row['sha256'])
+            self.assertEqual(report['sourceCommit'], row['sourceCommit']); self.assertEqual(report['runId'], row['runId'])
+            self.assertEqual(row['checksChunks'], 5 if row['arch'] == 'x86_64' else 4)
+            self.assertFalse(row['localApkBytesDownloaded']); self.assertFalse(row['fullReceiptDownloaded'])
+            self.assertIn('/actions/runs/'+row['runId']+'/artifacts/'+str(row['artifactId']), row['artifactUrl'])
+            self.assertGreater(row['artifactZipBytesReportedByGitHub'], report['apk']['bytes'])
+            self.assertIn('"'+row['summary']+'"', policy)
+
+    def test_emulator_receipt_is_not_phone_root_arm_execution_vpn_or_blanket_licence_clearance(self):
+        report = self.record()
+        for key in ['testedOnPhysicalSamsung', 'armDeviceExecutionVerified', 'rootVerified', 'vpnProtectionProvided']:
+            self.assertFalse(report[key])
+        policy = (ROOT/'tools/wikiinajar/public-corpus-policy.mjs').read_text()
+        self.assertIn('"docs/research/zshaolin-modern-x86_64-apk-summary.json"', policy)
+        self.assertIn('"docs/zshaolin-modern-native-build.md"', policy)
+        guide = (ROOT/'docs/zshaolin-modern-native-build.md').read_text()
+        for text in ['Cannot coexist with Termux', 'Primary Android user only', 'targetSdk 28', 'ephemeral',
+                     'not a claim of distribution-complete clearance', 'not a firewall']:
+            self.assertIn(text, guide)
 
 
 if __name__ == '__main__':
