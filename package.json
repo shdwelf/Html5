@@ -82,7 +82,11 @@
     "check:sound-apps": "node scripts/build-sound-apps.mjs --check",
     "audit:app-sources": "node scripts/audit-app-source-inventory.mjs",
     "build:app-catalog": "node scripts/build-html5-browser-catalog.mjs",
-    "check:app-catalog": "node scripts/build-html5-browser-catalog.mjs --check"
+    "check:app-catalog": "node scripts/build-html5-browser-catalog.mjs --check",
+    "build:torrent-atlas": "node scripts/build-torrent-atlas.mjs",
+    "check:torrent-atlas": "node scripts/build-torrent-atlas.mjs --check",
+    "build:gateway-java": "node scripts/build-gateway-java.mjs",
+    "test:gateway-java": "GATEWAY_REQUIRE_JAVA=1 node --test tests/gateway-java.test.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",

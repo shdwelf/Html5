@@ -1,22 +1,32 @@
-# Riseup × InviZible Gateway — Android scaffold
+# Android Gateway Planner — NOT a VPN
 
-Single-module Android app for the combined-gateway side project
-(research: `docs/riseup-invizible-combined-gateway-research-2026-10-25.md`).
+Schema-v2 rewrite of the historical Riseup × InviZible scaffold. It is an **offline architecture planner**, not a working provider VPN, Tor router, DNS protector or kill switch. Do not replace a working VPN with it and do not configure it as always-on.
 
-- `org.arena.gateway.GatewayConfig` — the clean-room configuration
-  core (modes `vpn` / `tor-dnscrypt` / `combined`, optimised
-  decisions). The **same source file** is compiled into the CLI JAR
-  by `arena-gateway-build.yml`.
-- `org.arena.gateway.MainActivity` — mode picker + profile summary.
-- `org.arena.gateway.GatewayVpnService` — the single `VpnService`
-  front-end. It stages the profile and logs the TUN parameters; it
-  does **not** establish a tunnel, because the native engines
-  (OpenVPN/Tor/DNSCrypt from the GPL-3.0 upstreams
-  `leapcode/bitmask_android` and `Gedsh/InviZible`) are not bundled
-  in this scaffold.
+The [current investigation](../../docs/android-vpn-i2p-kodachi-research-2026-11-17.md) covers WireGuard, Proton-generated profiles, Bitmask/LEAP, InviZible stable/beta alternatives, I2P and the Kodachi/DistroWatch ISO side note. The old October report is historical and its incorrect TUN/security claims are explicitly superseded.
 
-Build (runner, see `.github/workflows/arena-gateway-build.yml`):
-debug APK with Gradle 8.7 + AGP 8.5.2, SDK 34, debug-signed. The APK
-and the CLI JAR are committed under `research/gateway-config/` with
-SHA-256 sums. No upstream code, gateway lists, or credentials are
-included.
+## Implemented boundary
+
+- One native interface selects a planned mode, **one** alternative provider (`proton-wireguard`, `bitmask`, `wireguard`), **one** InviZible channel (`stable` or `beta`) and optional I2P destination-network planning.
+- `GatewayConfig.java` and `js/gateway-config.js` produce matching schema-v2 JSON with mandatory **PLAN ONLY** warnings. IPv6, DNS/bootstrap, lockdown, transport and signing requirements are gates, not active protections. MTU is unspecified pending actual path measurements.
+- `MainActivity` never requests VPN consent or starts a service. The manifest has **no permissions and no VPN/service declaration**. The remaining unregistered `GatewayVpnService` is a defensive stop-only stub; it never creates a builder/TUN, opens sockets or logs configuration.
+- No provider login, gateway discovery, config/private-key import, engine binaries, upstream application code, root privileges or credentials are included. All generated `.plan.txt` fragments are comments, not runnable engine configs.
+- A shared interface does not chain independently running Android VPN apps. Android allows one active VPN per user/profile. Stable/beta are alternatives, I2P is not an Internet-wide provider VPN, and ordinary WireGuard UDP does not run through Tor's TCP SOCKS interface.
+
+## Build and check
+
+JDK 17, Gradle 8.7 / AGP 8.5.2, Android SDK 34; minSdk 24. Review APK version `0.2.0-plan-only` / code 2. It is debug-signed, not an upstream or production release.
+
+```sh
+npm ci --ignore-scripts
+node scripts/build-gateway-java.mjs
+node scripts/build-gateway-samples.mjs
+node scripts/build-gateway-war.mjs
+GATEWAY_REQUIRE_JAVA=1 node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs
+gradle -p apps/riseup-invizible-gateway assembleDebug lintDebug --no-daemon
+java -jar research/gateway-config/gateway-config.jar --json
+java -jar research/gateway-config/gateway-config.jar /tmp/plans combined false true false proton-wireguard stable cloudflare org.example.app
+```
+
+The JAR is original dependency-free planner code. Default builds use `javac --release 8`. The explicit `--legacy-ecj` script option is only a source/behavior-test fallback for a JRE-only sandbox; canonical distribution artifacts come from the JDK CI build. The WAR is a deterministic **static web app + library JAR**, no servlet execution. `WEB-INF/web.xml` targets Jakarta Servlet 6.0 (e.g. Tomcat 10.1), not an untested Tomcat 9 claim.
+
+The read-only `arena-gateway-build.yml` reviews the exact PR head, builds/lints the APK, inspects its manifest and signature, tests Java/JS parity and uploads a measured source/output receipt. It never auto-commits, rebases or pushes. A successful planner build is **not** a leak test or packet-path/device certification. Remaining implementation gates are in the research report and round-95 follow-through.

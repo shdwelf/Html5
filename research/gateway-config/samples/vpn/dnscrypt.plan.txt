@@ -1,0 +1,4 @@
+# PLAN ONLY — no DNS forwarder is installed.
+# Resolver catalog identifier: disabled.
+# Local listener: disabled.
+# Bootstrap, routing and no-fallback enforcement remain unimplemented.

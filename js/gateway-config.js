@@ -1,191 +1,77 @@
-/** Combined Riseup VPN × InviZible gateway configuration engine.
- *
- *  Clean-room rule core for the side project researched in
- *  docs/riseup-invizible-combined-gateway-research-2026-10-25.md.
- *  One Android VpnService front-end, three ways to stand it up:
- *
- *    vpn           Bitmask/LEAP-style provider tunnel (OpenVPN), DNS in-tunnel
- *    tor-dnscrypt  InviZible-style local routing into Tor + DNSCrypt
- *    combined      VPN tunnel first; DNSCrypt reached through the tunnel;
- *                  Tor as a per-app layer; I2P optional
- *
- *  buildGatewayConfig(input) -> { config, decisions, warnings }
- *  Every optimisation is a named decision with a rationale; conflicting
- *  inputs are resolved explicitly and echoed, never silently dropped.
- *  Pure functions only — the Android/Java core mirrors this contract.
- */
-
-export const GATEWAY_MODES = ["vpn", "tor-dnscrypt", "combined"];
-export const GATEWAY_PROFILE_VERSION = 1;
-
-const DEFAULTS = {
-  mode: "combined",
-  provider: { name: "Riseup", apiUrl: "https://riseup.net", transport: "openvpn" },
-  censorshipBridges: false,
-  enableI2p: false,
-  allowLan: false,
-  appExceptions: [],
-  dnscryptResolver: "cloudflare",
-};
-
-function isPlainObject(v) {
-  return typeof v === "object" && v !== null && !Array.isArray(v);
+/** Original, offline architecture planner. NEVER a tunnel engine or usable VPN configuration. */
+export const GATEWAY_MODES = Object.freeze(['vpn', 'tor-dnscrypt', 'combined']);
+export const GATEWAY_PROVIDERS = Object.freeze(['proton-wireguard', 'bitmask', 'wireguard']);
+export const GATEWAY_PROFILE_VERSION = 2;
+export const PLAN_WARNING = 'PLAN ONLY: no tunnel engines, routing, DNS protection or kill switch are active in this scaffold.';
+const plain = (v) => v !== null && typeof v === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(v));
+function choice(value, values, fallback, label) {
+  if (value === undefined) return fallback;
+  if (!values.includes(value)) throw new TypeError(`Unsupported ${label}.`);
+  return value;
 }
-
 export function normaliseInput(input = {}) {
-  if (!isPlainObject(input)) throw new TypeError("gateway input must be an object");
-  const provider = { ...DEFAULTS.provider, ...(isPlainObject(input.provider) ? input.provider : {}) };
+  if (!plain(input)) throw new TypeError('Gateway input must be a plain object.');
+  const allowed = ['mode', 'provider', 'invizibleChannel', 'enableI2p', 'allowLan', 'appExceptions', 'dnscryptResolver', 'censorshipBridges'];
+  if (Object.keys(input).some((k) => !allowed.includes(k))) throw new TypeError('Unknown input; never paste credentials or WireGuard configurations into this planner.');
+  for (const key of ['enableI2p', 'allowLan', 'censorshipBridges']) if (input[key] !== undefined && typeof input[key] !== 'boolean') throw new TypeError(`${key} must be boolean.`);
+  const list = input.appExceptions === undefined ? [] : input.appExceptions;
+  if (!Array.isArray(list) || list.length > 32 || Array.from(list).some((v) => typeof v !== 'string' || v.length > 200 || !/^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)+$/u.test(v))) throw new TypeError('Use at most 32 Android package names, without wildcards.');
+  const resolver = input.dnscryptResolver ?? 'cloudflare';
+  if (typeof resolver !== 'string' || !/^[a-z0-9][a-z0-9_-]{0,63}$/u.test(resolver)) throw new TypeError('Resolver must be a 1–64 character catalog identifier, not a URL or configuration line.');
   return {
-    mode: GATEWAY_MODES.includes(input.mode) ? input.mode : DEFAULTS.mode,
-    provider,
+    mode: choice(input.mode, GATEWAY_MODES, 'combined', 'mode'),
+    provider: choice(input.provider, GATEWAY_PROVIDERS, 'proton-wireguard', 'provider'),
+    invizibleChannel: choice(input.invizibleChannel, ['stable', 'beta'], 'stable', 'InviZible channel'),
+    enableI2p: input.enableI2p === true, allowLan: input.allowLan === true,
     censorshipBridges: input.censorshipBridges === true,
-    enableI2p: input.enableI2p === true,
-    allowLan: input.allowLan === true,
-    appExceptions: Array.isArray(input.appExceptions) ? [...new Set(input.appExceptions.map(String))].sort() : [],
-    dnscryptResolver: typeof input.dnscryptResolver === "string" && input.dnscryptResolver ? input.dnscryptResolver : DEFAULTS.dnscryptResolver,
+    appExceptions: [...new Set(list)].sort(), dnscryptResolver: resolver,
   };
 }
-
-/**
- * Build the unified profile. `decisions` records every optimisation the
- * engine applied (name, value, rationale); `warnings` records conflicts
- * it resolved against the caller's input.
- */
 export function buildGatewayConfig(input = {}) {
-  const opt = normaliseInput(input);
-  const decisions = [];
-  const warnings = [];
-  const decide = (name, value, rationale) => decisions.push({ name, value, rationale });
-
-  const useVpn = opt.mode === "vpn" || opt.mode === "combined";
-  const useTor = opt.mode === "tor-dnscrypt" || opt.mode === "combined";
-  const useDnscrypt = opt.mode !== "vpn";
-
-  if (opt.mode === "tor-dnscrypt" && opt.censorshipBridges) {
-    warnings.push("censorshipBridges set without a VPN tunnel: bridges apply to the provider transport and were ignored in tor-dnscrypt mode");
-  }
-  if (opt.enableI2p && opt.mode === "vpn") {
-    warnings.push("enableI2p set in vpn mode: I2P needs the local anonymity stack and was ignored; use tor-dnscrypt or combined");
-  }
-
-  decide("killSwitch", true, "Always-on VPN with block-without-VPN: traffic must never fall back to the bare interface when the tunnel drops.");
-  decide("blockIpv6", true, "No IPv6 routes are installed until the tunnel carries IPv6; an unrouted v6 stack is a silent leak.");
-  decide("allowLan", opt.allowLan, opt.allowLan
-    ? "Caller opted in to local-network access; recorded explicitly because it widens the leak surface."
-    : "Local-network bypass is off (InviZible-style firewall posture); exceptions must be requested per app.");
-  decide("tunMtu", 1400, "tun-mtu 1400 with mssfix 1360 avoids fragmentation/PMTU blackholes behind carrier NAT.");
-  decide("dnsLeakProtection", true, "All DNS is forced through the encrypted path selected below; no system resolver fallback.");
-
-  const dns = useDnscrypt
-    ? {
-        mode: "dnscrypt",
-        resolver: opt.dnscryptResolver,
-        listen: "127.0.0.1:53 (VpnService DNS)",
-        viaTunnel: opt.mode === "combined",
-        rationale: opt.mode === "combined"
-          ? "DNSCrypt is reached through the VPN tunnel, so the local network sees neither plaintext DNS nor the resolver choice."
-          : "DNSCrypt encrypts and authenticates DNS where no provider tunnel exists.",
-      }
-    : {
-        mode: "provider",
-        resolver: "provider-pushed",
-        listen: "tunnel DNS",
-        viaTunnel: true,
-        rationale: "Provider DNS stays inside the OpenVPN tunnel (block-outside-dns semantics).",
-      };
-  decide("dnsMode", dns.mode, dns.rationale);
-
+  const opt = normaliseInput(input), local = opt.mode !== 'vpn', vpn = opt.mode !== 'tor-dnscrypt';
+  const transport = opt.provider === 'bitmask' ? 'openvpn' : 'wireguard';
+  const warnings = [PLAN_WARNING];
+  if (local && opt.invizibleChannel === 'beta') warnings.push('Beta is an alternative release channel, not an extra anonymity layer. Verify package ID, signing identity and release notes; never start two InviZible VPN services.');
+  if (opt.censorshipBridges) warnings.push(vpn && transport === 'openvpn'
+    ? 'Bitmask obfuscation depends on the selected provider and transport. A bridge flag does not provision a working bridge.'
+    : 'No automatic bridge conversion: Tor bridges are not WireGuard transports. Select supported obfuscation in the official client.');
+  if (opt.allowLan || opt.appExceptions.length) warnings.push('LAN access and excluded apps widen bypass risk; lockdown may instead block them. This plan does not enforce either behavior.');
+  if (opt.enableI2p) warnings.push('I2P is a separate destination network, not an Internet-wide VPN. Keep .i2p lookups off public DNS; budget reseeding, peer traffic, battery and startup time.');
+  const decisions = [
+    { name: 'singleVpnOwner', value: 1, rationale: 'Android has one active VPN service per user/profile. Provider choices are alternatives, not simultaneous apps.' },
+    { name: 'killSwitch', value: 'required-not-enforced', rationale: 'Always-on and block-without-VPN require OS/user configuration and device failure-path tests. Do not set this planner as always-on.' },
+    { name: 'ipv6', value: 'capture-or-block-before-connect', rationale: 'Omitting IPv6 routes alone is not leak protection. Capture ::/0 and carry or explicitly block unsupported IPv6 in a real engine.' },
+    { name: 'dns', value: local ? 'local-encrypted-resolver-plan' : 'provider-dns-plan', rationale: 'DNS forwarding, bootstrap, .onion/.i2p separation and no-fallback policy need an implemented and tested packet path.' },
+    { name: 'mtu', value: 'engine-and-path-dependent', rationale: 'No universal MTU/MSS optimization is assumed. Measure the actual transport and mobile path.' },
+  ];
   const config = {
-    profileVersion: GATEWAY_PROFILE_VERSION,
-    mode: opt.mode,
-    provider: useVpn ? opt.provider : null,
-    vpnService: {
-      alwaysOn: true,
-      blockWithoutVpn: true,
-      mtu: 1400,
-      addresses: ["10.66.0.2/24"],
-      routes: ["0.0.0.0/0"],
-      dnsServers: useDnscrypt ? ["127.0.0.1"] : ["provider-pushed"],
-      allowLan: opt.allowLan,
-      appExceptions: opt.appExceptions,
-    },
-    openvpn: useVpn
-      ? {
-          transport: opt.provider.transport,
-          bridges: opt.censorshipBridges ? "obfs4/snowflake (pluggable transports)" : "none",
-          directives: [
-            "client",
-            "dev tun",
-            "tun-mtu 1400",
-            "mssfix 1360",
-            "redirect-gateway def1 block-local",
-            "block-ipv6",
-            opt.censorshipBridges ? "# pluggable transport: obfs4/snowflake bridge lines are provider-supplied" : "# direct transport (no bridges)",
-            "# remote and certificates are provider-supplied via the LEAP EIP service definition",
-          ],
-        }
-      : null,
-    tor: useTor
-      ? {
-          socks: "127.0.0.1:9050",
-          transProxy: "127.0.0.1:9040",
-          dnsPort: "127.0.0.1:9053",
-          perAppLayer: opt.mode === "combined",
-          rationale: opt.mode === "combined"
-            ? "Tor is a per-app layer above the tunnel (exit choice per app), not the default route."
-            : "Tor is the default route; the VpnService feeds its transproxy and DNS ports.",
-        }
-      : null,
-    dnscrypt: useDnscrypt
-      ? {
-          resolver: opt.dnscryptResolver,
-          requireDnssec: true,
-          requireNoLog: true,
-          requireNoFilter: false,
-          viaTunnel: opt.mode === "combined",
-        }
-      : null,
-    i2p: opt.enableI2p && opt.mode !== "vpn"
-      ? { enabled: true, note: "Purple I2P daemon for .i2p (eepsites); off the default route." }
-      : { enabled: false },
-    decisions,
-    warnings,
+    profileVersion: 2, mode: opt.mode,
+    readiness: { status: 'plan-only', protectionActive: false, enginesBundled: [], tunEstablished: false },
+    provider: vpn ? { id: opt.provider, transport, provisioning: opt.provider === 'bitmask' ? 'LEAP provider discovery and certificates required' : opt.provider === 'proton-wireguard' ? 'Owner-generated Proton WireGuard configuration required in a real client' : 'Owner-managed WireGuard peer configuration required in a real client' } : null,
+    invizible: local ? { channel: opt.invizibleChannel, execution: 'future embedded modules OR explicitly configured proxy-only companion; not a second VPN' } : null,
+    vpnService: { plannedOwner: 'one-future-integrated-service', maxActivePerProfile: 1, consentRequested: false, alwaysOnConfigured: false },
+    requirements: { defaultRoutes: ['0.0.0.0/0', '::/0'], unsupportedIpv6: 'block', fallback: 'deny', allowLan: opt.allowLan, appExceptions: opt.appExceptions, mtu: null },
+    openvpn: vpn && transport === 'openvpn' ? { engine: 'not-bundled', obfuscationRequested: opt.censorshipBridges } : null,
+    wireguard: vpn && transport === 'wireguard' ? { engine: 'not-bundled', overTor: false, privateKeyAccepted: false } : null,
+    tor: local ? { socks: '127.0.0.1:9050', scope: opt.mode === 'combined' ? 'selected TCP applications above provider tunnel' : 'selected TCP applications via local routing engine', udp: 'block-except-explicit-internal-dns-handling', egress: vpn ? 'provider tunnel required' : 'direct overlay transport' } : null,
+    dnscrypt: local ? { resolver: opt.dnscryptResolver, listen: '127.0.0.1:5354', egress: vpn ? 'provider tunnel required' : 'direct encrypted DNS; resolver can observe queries', enforced: false } : null,
+    i2p: { enabled: opt.enableI2p, implementation: opt.enableI2p ? 'Purple I2P / i2pd (not bundled)' : null, destinationScope: '.i2p only; no automatic clearnet outproxy', egress: vpn ? 'provider tunnel required' : 'direct overlay transport' },
+    gates: ['pinned-engines-and-license-review', 'single-tun-packet-router', 'authenticated-provider-provisioning', 'loop-and-dns-bootstrap-prevention', 'ipv4-ipv6-dns-udp-leak-tests', 'revocation-reboot-handover-lockdown-tests', 'signed-build-and-owner-device-validation'],
+    decisions, warnings,
   };
   return { config, decisions, warnings };
 }
-
+// All fragments are inert comments. Even externally altered objects cannot inject active lines.
+const commentValue = (value) => String(value).replace(/[\r\n\u2028\u2029]/gu, ' ');
 export function renderOpenVpn(config) {
-  if (!config.openvpn) return "# no OpenVPN profile in mode " + config.mode + "\n";
-  return config.openvpn.directives.join("\n") + "\n";
+  return `# PLAN ONLY — not an importable OpenVPN configuration.\n# Selected transport: ${commentValue(config.provider?.transport ?? 'none')}.\n# Provider discovery, keys, certificate validation and a tunnel engine are not supplied.\n`;
 }
-
+export function renderWireGuard(config) {
+  return `# PLAN ONLY — no WireGuard configuration or private key is accepted/generated.\n# Provider: ${commentValue(config.provider?.id ?? 'none')}.\n# Use an owner-generated profile in a trusted real client; do not publish it.\n# Standard WireGuard UDP cannot be sent through Tor SOCKS as if it were TCP.\n`;
+}
 export function renderTorrc(config) {
-  if (!config.tor) return "# tor disabled in mode " + config.mode + "\n";
-  const [socksHost, socksPort] = config.tor.socks.split(":");
-  const [transHost, transPort] = config.tor.transProxy.split(":");
-  const [dnsHost, dnsPort] = config.tor.dnsPort.split(":");
-  return [
-    `SocksPort ${socksHost}:${socksPort}`,
-    `TransPort ${transHost}:${transPort}`,
-    `DNSPort ${dnsHost}:${dnsPort}`,
-    "AutomapHostsOnResolve 1",
-    "VirtualAddrNetworkIPv4 10.192.0.0/10",
-    "# generated by js/gateway-config.js — addresses are the local VpnService listeners",
-    "",
-  ].join("\n");
+  return `# PLAN ONLY — no Tor daemon is started.\n# SOCKS listener: ${commentValue(config.tor?.socks ?? 'disabled')}.\n# TCP-only application routing; never send ordinary BitTorrent through Tor.\n# Proxy-only mode does not capture other apps automatically.\n`;
 }
-
 export function renderDnscryptToml(config) {
-  if (!config.dnscrypt) return "# dnscrypt disabled in mode " + config.mode + "\n";
-  return [
-    `server_names = ['${config.dnscrypt.resolver}']`,
-    "listen_addresses = ['127.0.0.1:53']",
-    "require_dnssec = true",
-    "require_nolog = true",
-    "require_nofilter = false",
-    config.dnscrypt.viaTunnel
-      ? "# resolver is reached through the VPN tunnel (combined mode)"
-      : "# resolver is reached directly; no provider tunnel in this mode",
-    "",
-  ].join("\n");
+  return `# PLAN ONLY — no DNS forwarder is installed.\n# Resolver catalog identifier: ${commentValue(config.dnscrypt?.resolver ?? 'disabled')}.\n# Local listener: ${commentValue(config.dnscrypt?.listen ?? 'disabled')}.\n# Bootstrap, routing and no-fallback enforcement remain unimplemented.\n`;
 }

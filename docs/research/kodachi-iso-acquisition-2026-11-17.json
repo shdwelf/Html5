@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "acquiredAtRunnerClock": "2026-11-27T10:23:45.906513+00:00",
+  "runnerSourceCommit": "f132219d538d53f68928f61f17cbc7e1fea0b952",
+  "runId": "45981578258",
+  "edition": "Desktop XFCE amd64",
+  "publisherVersion": "10.0.3",
+  "publisherBuild": 76,
+  "publisherClaimedUpdatedAt": "2026-11-19",
+  "reportCutoff": "2026-11-17",
+  "futureDatedRelativeToReportCutoff": true,
+  "files": {
+    "kodachi-os-xfce-10.0.3-amd64.iso.sha256": {
+      "requestedUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sha256",
+      "finalUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sha256",
+      "bytes": 99,
+      "sha256": "d22855c7418896b8d71cfb24ca888f2c8fed7a40ea5ac5fcf6c5327f2ffecbae",
+      "sha512": "8752fe300c43a470e7e165422d31311bd38d56a2f0646776ad269ee6497fc516575e4199de01b824fd434ad8b65ec0c2c918aa7933a7048c5fc9e446e78f4e62"
+    },
+    "kodachi-os-xfce-10.0.3-amd64.iso.sig": {
+      "requestedUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig",
+      "finalUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig",
+      "bytes": 512,
+      "sha256": "a4d0f34b2e772dea55ccb455388879e65d283738eed44cfccc18857c0e492b30",
+      "sha512": "7cfa89896dfe1449ce53095dee26d63518c7876370da6e9b7b865a843d178c5b80a4a1940bb4be51624027803900cea920b9a619a45d486b2b4d21a85968e593"
+    },
+    "kodachi-os-xfce-10.0.3-amd64.iso.sig.info": {
+      "requestedUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig.info",
+      "finalUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig.info",
+      "bytes": 316,
+      "sha256": "9a5758affc51e4792442730ae7d7883230e5245a0b54a083d4cd4ea9d81b7ba2",
+      "sha512": "8b107bfd7d683f7fe6a0b9b95b3f334719a0d30c0fadd8b31e1f9f6cb78348f59e3177e79fbebd3688257a1eaa36b79f1a1699e302577bee1914e7c12981a659"
+    },
+    "public_key_v10.0.3.pem": {
+      "requestedUrl": "https://kodachi.cloud/downloads/installers/desktop/public_key_v10.0.3.pem",
+      "finalUrl": "https://kodachi.cloud/downloads/installers/desktop/public_key_v10.0.3.pem",
+      "bytes": 800,
+      "sha256": "e452ac71bc91623fe541fdf1d0eaa268dbfbb70029e3f9fca6064663ffda028d",
+      "sha512": "e77d028102d2363e8594c852301e881e36d318b0f6c7dee8f113f06472d5dbbdea6c16540b878be961a32026e75c29f11bb30052bd8a1f63dbf66b715010232c"
+    },
+    "kodachi-os-xfce-10.0.3-amd64.iso": {
+      "requestedUrl": "https://kodachi.cloud/downloads/download.php?f=xfce-iso",
+      "finalUrl": "https://kodachi.cloud/downloads/download.php?f=xfce-iso",
+      "bytes": 4544303104,
+      "sha256": "57693b32079bef101b75f21f3391bd036f1aae72836b8a06c921d236df626c14",
+      "sha512": "ec45001c7f9f6fe288c478c4ed6b454b9effb4b9c1bf808a2c22750d7d5018b0ff96f1c8874988788335576f15d8c514a8fb4789a2d0e90e85d1de0509503628"
+    }
+  },
+  "isoAcquired": true,
+  "sha256AndSha512MatchPins": true,
+  "signatureVerifiedAgainstDownloadedKey": true,
+  "publisherKeySpkiSha256": "1c828cc3a3128a1f9b3f96c27a85d79567bd0ec1008159504fdfcdea1ec8da3b",
+  "publisherKeyIndependentlyAuthenticated": false,
+  "booted": false,
+  "installed": false,
+  "isoCommittedToGit": false,
+  "storage": "Short-lived Actions artifact only; no ISO bytes in Git or public app assets",
+  "trustCaveat": "Hashes and a valid signature establish consistency with the downloaded key, not independent publisher-key authentication or OS security. No boot, mount or installer execution.",
+  "actionsRunUrl": "https://github.com/shdwelf/Html5/actions/runs/45981578258",
+  "artifact": {
+    "id": 15188898562,
+    "name": "kodachi-desktop-10.0.3-build76-download-only",
+    "size_in_bytes": 4544310423,
+    "expires_at": "2026-11-28T10:23:46Z",
+    "digest": "sha256:c67e74c915e032a21405c78e6c772d8e36f82d741e61890a6feade1d0097c775",
+    "downloadPage": "https://github.com/shdwelf/Html5/actions/runs/45981578258/artifacts/15188898562"
+  },
+  "sandboxIsoCopy": false,
+  "retrievalCaveat": "The runner acquired and uploaded the ISO. The sandbox cannot reach the artifact CDN; metadata was retrieved through the authenticated GitHub Checks API. The ISO is not falsely presented as a persisted workspace file. Artifact retention is one day; use the official fixed-origin fetcher to reacquire after expiry."
+}

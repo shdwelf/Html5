@@ -2,7 +2,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
-import { inflateSync } from "node:zlib";
+import { inflateRawSync } from "node:zlib";
+import { unzipSync } from "fflate";
 import { execFileSync } from "node:child_process";
 
 const entries = (buf) => {
@@ -33,7 +34,17 @@ test("gateway-config.war layout: page, engine, web.xml, jar in WEB-INF/lib", () 
     "js/gateway-config.js",
   ]);
   const jarEntry = list[0];
-  const jar = inflateSync(buf.subarray(jarEntry.dataStart, jarEntry.dataStart + jarEntry.clen));
+  const jar = inflateRawSync(buf.subarray(jarEntry.dataStart, jarEntry.dataStart + jarEntry.clen));
   assert.equal(jar.readUInt32LE(0), 0x04034b50, "nested jar is a real zip");
   assert.equal(jarEntry.date, 0x21, "deterministic 1980-01-01 stamp");
+});
+
+// A standards-based independent ZIP reader catches accidental zlib-wrapped
+// DEFLATE streams that a matching custom decoder would mistakenly accept.
+test("WAR is a valid standard ZIP with source-exact assets and a schema-v2 planner JAR", () => {
+  const war = unzipSync(readFileSync("gateway-config.war"));
+  for (const path of ["gateway-config.html", "js/gateway-config.js"]) assert.deepEqual(Buffer.from(war[path]), readFileSync(path));
+  const jar = unzipSync(war["WEB-INF/lib/gateway-config.jar"]);
+  assert.equal(JSON.parse(new TextDecoder().decode(jar["META-INF/gateway-build.json"])).schema, 2);
+  assert.equal(JSON.parse(new TextDecoder().decode(jar["META-INF/gateway-build.json"])).protectionActive, false);
 });

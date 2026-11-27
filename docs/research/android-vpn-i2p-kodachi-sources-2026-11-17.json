@@ -1,0 +1,569 @@
+{
+  "schema": 1,
+  "reportDateAndGitHubCutoff": "2026-11-17",
+  "commitQueryCutoff": "2026-11-17T23:59:59Z",
+  "temporalCaveat": "The report label is not an acquisition timestamp. Repository head metadata and live page dates are source claims, not a reconstructed state at the cutoff. Future-dated Kodachi builds are isolated as unverified candidates.",
+  "scope": "Original offline planner plus bounded upstream/source research; no upstream tunnel engines, provider configs/accounts, upstream APKs, swarm or owner-device validation. Explicit later user request authorized Kodachi OS ISO acquisition on the review runner; see separate actual receipt.",
+  "upstreams": [
+    {
+      "requestedRepository": "Gedsh/InviZible",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "Gedsh/InviZible",
+      "url": "https://github.com/Gedsh/InviZible",
+      "sourceCommit": "265ea2117a6d5c322362403be78862d83f065128",
+      "commitDate": "2026-11-15T18:59:01Z",
+      "pinnedUrl": "https://github.com/Gedsh/InviZible/tree/265ea2117a6d5c322362403be78862d83f065128",
+      "readmeApiUrl": "https://api.github.com/repos/Gedsh/InviZible/readme?ref=265ea2117a6d5c322362403be78862d83f065128",
+      "readmeSha256": "f05b4673e8c6da175038192bcaab90ae354085bb208cdd4dec2782a5c5f10088",
+      "readmeBytesRead": 7744,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-26T22:15:58Z",
+        "licenseSpdx": "GPL-3.0"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": [
+        {
+          "path": "README.md",
+          "sha256": "f05b4673e8c6da175038192bcaab90ae354085bb208cdd4dec2782a5c5f10088",
+          "bytes": 7744,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/README.md"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "d62f065830aa3739cc031156b9690805c7b2e811b4a178c8b4acd8725d561c94",
+          "bytes": 35142,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/LICENSE"
+        },
+        {
+          "path": ".gitmodules",
+          "sha256": "05b02f9e1284702448aac792aa853011d8d1461f31458ec7f40fc7c3a3475434",
+          "bytes": 444,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/.gitmodules"
+        },
+        {
+          "path": "build.gradle",
+          "sha256": "81e1de818eb5b3405e8803bad6934cb3b5a525bb89117c5b47e3ce608207e114",
+          "bytes": 896,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/build.gradle"
+        },
+        {
+          "path": "settings.gradle",
+          "sha256": "4e3652dc0d015d756702fbb4d3b97128cbf881823591b9b58fc1ef97f2082deb",
+          "bytes": 234,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/settings.gradle"
+        },
+        {
+          "path": "tordnscrypt/build.gradle",
+          "sha256": "aa8a308fdb1862656e4e7d67070fc9c4402aa9e09f0fa234e471951256aca7cf",
+          "bytes": 5257,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/tordnscrypt/build.gradle"
+        },
+        {
+          "path": "tordnscrypt/src/main/AndroidManifest.xml",
+          "sha256": "9f59a3d2925cb00847946f24cc52ac9f41ab37837157496a3cd85c5fc08ce800",
+          "bytes": 10526,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/tordnscrypt/src/main/AndroidManifest.xml"
+        },
+        {
+          "path": "tordnscrypt/src/main/java/pan/alexander/tordnscrypt/vpn/service/ServiceVPN.java",
+          "sha256": "af95778c55780bb3b9f246b45d8a2a9016d730cc6727fc4e65a32f96715e431b",
+          "bytes": 35418,
+          "url": "https://github.com/Gedsh/InviZible/blob/265ea2117a6d5c322362403be78862d83f065128/tordnscrypt/src/main/java/pan/alexander/tordnscrypt/vpn/service/ServiceVPN.java"
+        }
+      ],
+      "gitlinksNotFetchedOrBuilt": [
+        {
+          "path": "Nflog-android",
+          "commit": "2a35f95e0350882f6c8dfeef7273cb5c42c9fa3d"
+        },
+        {
+          "path": "PurpleI2PBuildScript",
+          "commit": "828fb15a8ccbdfefb3fa7511f9111a169b32c2b5"
+        },
+        {
+          "path": "TorBuildScript",
+          "commit": "2c3fae83b07834d5e47f857435b19fa54228f605"
+        },
+        {
+          "path": "android-filepicker",
+          "commit": "8a33724b61313ae03906f1afd562628fd87ebd35"
+        }
+      ]
+    },
+    {
+      "requestedRepository": "leapcode/bitmask_android",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "leapcode/bitmask_android",
+      "url": "https://github.com/leapcode/bitmask_android",
+      "sourceCommit": "3d92e696a270e543566af2f8a8878cea2dd4db75",
+      "commitDate": "2026-11-06T18:08:55Z",
+      "pinnedUrl": "https://github.com/leapcode/bitmask_android/tree/3d92e696a270e543566af2f8a8878cea2dd4db75",
+      "readmeApiUrl": "https://api.github.com/repos/leapcode/bitmask_android/readme?ref=3d92e696a270e543566af2f8a8878cea2dd4db75",
+      "readmeSha256": "7c4a98c6cb95433bfed685ef40ea51fb40beb15a72c937aa706e8e646d1a0eb5",
+      "readmeBytesRead": 9274,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-07T00:11:01Z",
+        "licenseSpdx": "GPL-3.0"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": [
+        {
+          "path": "README.md",
+          "sha256": "7c4a98c6cb95433bfed685ef40ea51fb40beb15a72c937aa706e8e646d1a0eb5",
+          "bytes": 9274,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/README.md"
+        },
+        {
+          "path": "LICENSE.txt",
+          "sha256": "c53a65c2fd561c87eaabf1072ef5dcab8653042bc15308465f52413585eb6271",
+          "bytes": 35146,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/LICENSE.txt"
+        },
+        {
+          "path": ".gitmodules",
+          "sha256": "c2188a958728ac8b109a908f59ff5fdf56ab7154056ee17e8fb6f0ad9236363e",
+          "bytes": 368,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/.gitmodules"
+        },
+        {
+          "path": "build.gradle",
+          "sha256": "a5d78b5e561206635445b4303b5c0ff1e5b6511866b43e07b847c8dcbda441e9",
+          "bytes": 648,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/build.gradle"
+        },
+        {
+          "path": "settings.gradle",
+          "sha256": "0ea33b28d55d049a6a1001924460ae10cc3f0fda6cef0da062a0991175664a8d",
+          "bytes": 202,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/settings.gradle"
+        },
+        {
+          "path": "app/build.gradle",
+          "sha256": "870e61b72e4424c1452ec20ef1b67bd65e9a75939483277d4f5a4e8a0b11d756",
+          "bytes": 19691,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/app/build.gradle"
+        },
+        {
+          "path": "app/src/main/AndroidManifest.xml",
+          "sha256": "3a96daa4fddd81fe67e1aee0f21ace474c7d10986cdf830d121ca97d47228892",
+          "bytes": 6601,
+          "url": "https://github.com/leapcode/bitmask_android/blob/3d92e696a270e543566af2f8a8878cea2dd4db75/app/src/main/AndroidManifest.xml"
+        }
+      ],
+      "gitlinksNotFetchedOrBuilt": [
+        {
+          "path": "bitmask-core-android",
+          "commit": "b02968528cbbd299a160e6ac0f10dca278a217b4"
+        },
+        {
+          "path": "ics-openvpn",
+          "commit": "37e379d31338fdcbe3d4ac6b21bf15e45280cf1e"
+        },
+        {
+          "path": "tor-android",
+          "commit": "1ac8bee54e854564f3df3903e0fc929ab8c454d8"
+        }
+      ]
+    },
+    {
+      "requestedRepository": "ProtonVPN/android-app",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "ProtonVPN/android-app",
+      "url": "https://github.com/ProtonVPN/android-app",
+      "sourceCommit": "416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "commitDate": "2026-11-17T08:53:21Z",
+      "pinnedUrl": "https://github.com/ProtonVPN/android-app/tree/416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "readmeApiUrl": "https://api.github.com/repos/ProtonVPN/android-app/readme?ref=416d2ee1d979615d7c644f19338b56f82cb39b68",
+      "readmeSha256": "09491985cd2ff080d200760f11359daafe0c27bff2d69021e52dc42431d9e9b9",
+      "readmeBytesRead": 3719,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-17T17:58:07Z",
+        "licenseSpdx": "GPL-3.0"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": [
+        {
+          "path": "README.md",
+          "sha256": "09491985cd2ff080d200760f11359daafe0c27bff2d69021e52dc42431d9e9b9",
+          "bytes": 3719,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/README.md"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+          "bytes": 35148,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/LICENSE"
+        },
+        {
+          "path": "build.gradle",
+          "sha256": "3706833690d5564ce6ed7c2a32d1a3e48d80139f8df976f67dd45404ae0c1484",
+          "bytes": 2172,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/build.gradle"
+        },
+        {
+          "path": "settings.gradle.kts",
+          "sha256": "d4addec217b1ef67f7fd984ac42e077e2db44d08a4b5d1abcdb3bb5867c82a79",
+          "bytes": 2878,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/settings.gradle.kts"
+        },
+        {
+          "path": "app/build.gradle",
+          "sha256": "fc1e56418e8a3dbfc048248ff8390b1723e44b1b891bd015bcb8eb07f4a2c42d",
+          "bytes": 41878,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/app/build.gradle"
+        },
+        {
+          "path": "app/src/main/AndroidManifest.xml",
+          "sha256": "f04b8316b49d91b512801271d34b5024691beb0390c00ce7541cb93011591df4",
+          "bytes": 25652,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/app/src/main/AndroidManifest.xml"
+        },
+        {
+          "path": "gradle/libs.versions.toml",
+          "sha256": "246897261bed8cb316fa245479c074d23804f09e26338cea79fd83e2b4a04f4d",
+          "bytes": 31353,
+          "url": "https://github.com/ProtonVPN/android-app/blob/416d2ee1d979615d7c644f19338b56f82cb39b68/gradle/libs.versions.toml"
+        }
+      ],
+      "gitlinksNotFetchedOrBuilt": []
+    },
+    {
+      "requestedRepository": "WireGuard/wireguard-android",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "WireGuard/wireguard-android",
+      "url": "https://github.com/WireGuard/wireguard-android",
+      "sourceCommit": "e7b3a3c118836e112620b1302a8ba1873ad4daac",
+      "commitDate": "2026-03-17T00:50:01Z",
+      "pinnedUrl": "https://github.com/WireGuard/wireguard-android/tree/e7b3a3c118836e112620b1302a8ba1873ad4daac",
+      "readmeApiUrl": "https://api.github.com/repos/WireGuard/wireguard-android/readme?ref=e7b3a3c118836e112620b1302a8ba1873ad4daac",
+      "readmeSha256": "0fc46fb159a6b41d4ffab277fb905b780dc32b8f706694670a189364bc8e9ef5",
+      "readmeBytesRead": 1556,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-06-29T18:47:36Z",
+        "licenseSpdx": "Apache-2.0"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": [
+        {
+          "path": "README.md",
+          "sha256": "0fc46fb159a6b41d4ffab277fb905b780dc32b8f706694670a189364bc8e9ef5",
+          "bytes": 1556,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/README.md"
+        },
+        {
+          "path": "COPYING",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/COPYING"
+        },
+        {
+          "path": ".gitmodules",
+          "sha256": "f0e38d23cdd449f06f0fefb65a4467dc62dcc907d3455d8549fc1d2f2d8d8239",
+          "bytes": 249,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/.gitmodules"
+        },
+        {
+          "path": "build.gradle.kts",
+          "sha256": "41117cea170258fe7e6da3790b4b7afb5b182d367ba89c01f9f3aa1360facec9",
+          "bytes": 168,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/build.gradle.kts"
+        },
+        {
+          "path": "settings.gradle.kts",
+          "sha256": "5cffd5ec5106d76bcd4cb2b462d8442013366cf7ab8318b4522efccda7ec5550",
+          "bytes": 389,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/settings.gradle.kts"
+        },
+        {
+          "path": "tunnel/build.gradle.kts",
+          "sha256": "2e82edddfd2f8e298f43f56aa24a40efecc7b66275b9c65b6c488d08d8945e9d",
+          "bytes": 4403,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/tunnel/build.gradle.kts"
+        },
+        {
+          "path": "tunnel/src/main/AndroidManifest.xml",
+          "sha256": "233a8942447cb6e283e000a02b4ba4832b7eeba0df0ddb499cb1985bcec71997",
+          "bytes": 578,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/tunnel/src/main/AndroidManifest.xml"
+        },
+        {
+          "path": "tunnel/src/main/java/com/wireguard/android/backend/GoBackend.java",
+          "sha256": "7a672d0fe6d5772eabd86f78ceca61e7d71f857518c41c688bf41142ebcab598",
+          "bytes": 16129,
+          "url": "https://github.com/WireGuard/wireguard-android/blob/e7b3a3c118836e112620b1302a8ba1873ad4daac/tunnel/src/main/java/com/wireguard/android/backend/GoBackend.java"
+        }
+      ],
+      "gitlinksNotFetchedOrBuilt": [
+        {
+          "path": "tunnel/tools/elf-cleaner",
+          "commit": "7efc05090675ec6161b7def862728086a26c3b1f"
+        },
+        {
+          "path": "tunnel/tools/wireguard-tools",
+          "commit": "e2ecaaa739144997ccff89d6ad6ec81698ea6ced"
+        }
+      ]
+    },
+    {
+      "requestedRepository": "PurpleI2P/i2pd",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "PurpleI2P/i2pd",
+      "url": "https://github.com/PurpleI2P/i2pd",
+      "sourceCommit": "bfeb5bf1198b46e048a6fe3b1e11668bf5dae2bf",
+      "commitDate": "2026-11-17T23:40:02Z",
+      "pinnedUrl": "https://github.com/PurpleI2P/i2pd/tree/bfeb5bf1198b46e048a6fe3b1e11668bf5dae2bf",
+      "readmeApiUrl": "https://api.github.com/repos/PurpleI2P/i2pd/readme?ref=bfeb5bf1198b46e048a6fe3b1e11668bf5dae2bf",
+      "readmeSha256": "165ba2c6843cbb4d1ce8ff420811d1990f50b7829e8fe7e536119817443dbdf2",
+      "readmeBytesRead": 6199,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-26T21:14:07Z",
+        "licenseSpdx": "BSD-3-Clause"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": []
+    },
+    {
+      "requestedRepository": "PurpleI2P/i2pd-android",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "PurpleI2P/i2pd-android",
+      "url": "https://github.com/PurpleI2P/i2pd-android",
+      "sourceCommit": "df7e2420b6a5108caa7463bde420d3ab48ff2888",
+      "commitDate": "2026-10-24T01:31:24Z",
+      "pinnedUrl": "https://github.com/PurpleI2P/i2pd-android/tree/df7e2420b6a5108caa7463bde420d3ab48ff2888",
+      "readmeApiUrl": "https://api.github.com/repos/PurpleI2P/i2pd-android/readme?ref=df7e2420b6a5108caa7463bde420d3ab48ff2888",
+      "readmeSha256": "97aafa60b8c35b2ef4e25e2de29a387df4345595f45561378d450d2ffb0bda18",
+      "readmeBytesRead": 3885,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-26T19:25:23Z",
+        "licenseSpdx": "BSD-3-Clause"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": []
+    },
+    {
+      "requestedRepository": "i2p/i2p.android.base",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "i2p/i2p.android.base",
+      "url": "https://github.com/i2p/i2p.android.base",
+      "sourceCommit": "4273bd0ff4510f4ee4867577e2317580e9810cc7",
+      "commitDate": "2026-11-05T21:21:11Z",
+      "pinnedUrl": "https://github.com/i2p/i2p.android.base/tree/4273bd0ff4510f4ee4867577e2317580e9810cc7",
+      "readmeApiUrl": "https://api.github.com/repos/i2p/i2p.android.base/readme?ref=4273bd0ff4510f4ee4867577e2317580e9810cc7",
+      "readmeSha256": "d17c7fdc62f32832c00c6e255c63eaf93210343750bab5d07342d4e89835cf21",
+      "readmeBytesRead": 5112,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-05T22:18:49Z",
+        "licenseSpdx": "NOASSERTION"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": []
+    },
+    {
+      "requestedRepository": "i2p/i2p.i2p",
+      "scope": "Pinned README and repository metadata review; selected Android source files are enumerated separately. No installation, full audit, build or runtime certification.",
+      "repository": "i2p/i2p.i2p",
+      "url": "https://github.com/i2p/i2p.i2p",
+      "sourceCommit": "78272946cf4fce8c60a65561b2d23249ea7e88ad",
+      "commitDate": "2026-11-17T14:06:33Z",
+      "pinnedUrl": "https://github.com/i2p/i2p.i2p/tree/78272946cf4fce8c60a65561b2d23249ea7e88ad",
+      "readmeApiUrl": "https://api.github.com/repos/i2p/i2p.i2p/readme?ref=78272946cf4fce8c60a65561b2d23249ea7e88ad",
+      "readmeSha256": "94a07682ef2324029c07fd3bacb81583f68550aa727f3b44239c41c6f18ef43d",
+      "readmeBytesRead": 3027,
+      "metadataNotHistoricalState": {
+        "archived": false,
+        "pushedAt": "2026-11-24T00:27:50Z",
+        "licenseSpdx": "NOASSERTION"
+      },
+      "licenseCaveat": "GitHub license detection is a discovery hint, not component/transitive license clearance.",
+      "selectedSourceInspection": []
+    }
+  ],
+  "invizibleReleaseMetadata": [
+    {
+      "tag": "v2.7.7-beta",
+      "channel": "beta",
+      "name": "InviZible Pro Beta v2.7.7",
+      "url": "https://github.com/Gedsh/InviZible/releases/tag/v2.7.7-beta",
+      "publishedAt": "2026-11-15T20:17:24Z",
+      "prereleaseFlag": false,
+      "channelEvidence": "Canonical tag/name/assets/notes, NOT the prerelease boolean",
+      "assets": [
+        {
+          "name": "Invizible_Pro__beta_ver.2.7.7.apk",
+          "bytes": 46212675,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v2.7.7-beta/Invizible_Pro__beta_ver.2.7.7.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:d38db48d7618234751ac0dd3c853bffdc51a9208c81d92e0acc4055462a0cb0b"
+        },
+        {
+          "name": "Invizible_Pro__beta_ver.2.7.7_arm64.apk",
+          "bytes": 47119208,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v2.7.7-beta/Invizible_Pro__beta_ver.2.7.7_arm64.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:20883d5d9e9a5639789c93000259e6599e8df2a44325eb58293882f3c7767b3c"
+        },
+        {
+          "name": "Invizible_Pro__beta_ver.2.7.7_x86_64.apk",
+          "bytes": 49257476,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v2.7.7-beta/Invizible_Pro__beta_ver.2.7.7_x86_64.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:e299ff8717e8082840f933985d560f3b79c635dd645a34d1c150511404c0dd2c"
+        }
+      ],
+      "apkAcquired": false,
+      "signerVerified": false
+    },
+    {
+      "tag": "v7.6.0-stable",
+      "channel": "stable",
+      "name": "InviZible Pro Stable v7.6.0",
+      "url": "https://github.com/Gedsh/InviZible/releases/tag/v7.6.0-stable",
+      "publishedAt": "2026-10-27T21:22:41Z",
+      "prereleaseFlag": false,
+      "channelEvidence": "Canonical tag/name/assets/notes, NOT the prerelease boolean",
+      "assets": [
+        {
+          "name": "Invizible_Lite_ver.7.6.0.apk",
+          "bytes": 45518158,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v7.6.0-stable/Invizible_Lite_ver.7.6.0.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:e93726ad6bbd2666478193b5311dc121fab6b6ec83f948708f0d93cf04b06e42"
+        },
+        {
+          "name": "Invizible_Lite_ver.7.6.0_arm64.apk",
+          "bytes": 45861682,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v7.6.0-stable/Invizible_Lite_ver.7.6.0_arm64.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:edd5173da440b7d346791ecc345d79bbfda0e74b591a1a429ec9cc095df7d8c7"
+        },
+        {
+          "name": "Invizible_Lite_ver.7.6.0_x86_64.apk",
+          "bytes": 48491511,
+          "url": "https://github.com/Gedsh/InviZible/releases/download/v7.6.0-stable/Invizible_Lite_ver.7.6.0_x86_64.apk",
+          "upstreamDigestNotLocallyComputed": "sha256:713ecc81ee974faf8f6f815ecad26203b0e10a7f09fdc1336486e3cbb5e5e9db"
+        }
+      ],
+      "apkAcquired": false,
+      "signerVerified": false
+    }
+  ],
+  "pages": [
+    {
+      "id": "VP1",
+      "url": "https://developer.android.com/develop/connectivity/vpn",
+      "evidence": "Official Android VPN developer guide; relevant one-active-VPN/profile, consent and routing requirements inspected. No device test."
+    },
+    {
+      "id": "VP2",
+      "url": "https://www.wireguard.com/embedding/",
+      "evidence": "Official Android embeddable tunnel coordinate; not a completed integration or full dependency audit."
+    },
+    {
+      "id": "VP3",
+      "url": "https://protonvpn.com/support/wireguard-configurations",
+      "evidence": "Official owner-generated standard WireGuard profiles; no account login/config retrieval performed."
+    },
+    {
+      "id": "VP4",
+      "url": "https://protonvpn.com/support/wireguard-manual-android/",
+      "evidence": "Official manual Android import procedure; not performed."
+    },
+    {
+      "id": "VP5",
+      "url": "https://invizible.net/en/proxy-mode/",
+      "evidence": "Explicit per-application proxy setup; other traffic can bypass the local modules."
+    },
+    {
+      "id": "VP6",
+      "url": "https://invizible.net/en/invizible-with-vpn/",
+      "evidence": "VPN-owner plus proxy-only companion pattern, not two full VPN services."
+    },
+    {
+      "id": "VP7",
+      "url": "https://invizible.net/en/tor-over-vpn/",
+      "evidence": "Explicit documented proxy arrangements and exclusions; not tested stock Proton/WireGuard chaining."
+    },
+    {
+      "id": "VP8",
+      "url": "https://invizible.net/en/vpn-over-tor-proxy-mode/",
+      "evidence": "Specific documented HTTP-proxy arrangement; does not turn WireGuard UDP into Tor TCP."
+    },
+    {
+      "id": "VP9",
+      "url": "https://bitmask.net/en/why-use-bitmask/",
+      "evidence": "Bitmask provider model and platform caveats; future-protocol marketing is not shipped-engine evidence."
+    },
+    {
+      "id": "VP10",
+      "url": "https://bitmask.net/en/install/",
+      "evidence": "Official installation routes, no APK downloaded."
+    },
+    {
+      "id": "I1",
+      "url": "https://geti2p.net/en/about/intro",
+      "evidence": "I2P overlay/router introduction; not an Internet-wide provider VPN."
+    },
+    {
+      "id": "I2",
+      "url": "https://i2p.net/en/downloads/",
+      "evidence": "Download page has inconsistent Android-version/tarball links; not a verified Android APK."
+    },
+    {
+      "id": "I3",
+      "url": "https://docs.i2pd.website/en/latest/user-guide/run/",
+      "evidence": "i2pd private datadir, process lifetime and graceful stop; Unix instructions are not Android deployment evidence."
+    },
+    {
+      "id": "I4",
+      "url": "https://docs.i2pd.website/en/latest/user-guide/configuration/",
+      "evidence": "NTCP2 and SSU2 proxy/UDP distinctions; selected configuration section inspected."
+    },
+    {
+      "id": "K1",
+      "url": "https://distrowatch.com/table.php?distribution=kodachi",
+      "evidence": "DistroWatch 10.0.3 Debian Stable/x86_64/Xfce listing and official mirror link."
+    },
+    {
+      "id": "K2",
+      "url": "https://kodachi.cloud/downloads/",
+      "evidence": "Exact official ISO routes and publisher-provided checksum/signature material, not acquired ISO bytes. Live material includes future-dated claims relative to this report cutoff."
+    },
+    {
+      "id": "K3",
+      "url": "https://kodachi.cloud/docs/overview.html",
+      "evidence": "Publisher explicitly cautions metric routing may retain a clear fallback route. Not automatic fail-closed protection."
+    },
+    {
+      "id": "K4",
+      "url": "https://kodachi.cloud/tools/whitepaper.html",
+      "evidence": "Abstract and selected service/dashboard/limitations sections inspected (returned chunks 0,3,4,5,14); publisher architecture claims, not a source audit or runtime test."
+    },
+    {
+      "id": "K5",
+      "url": "https://kodachi.cloud/docs/security/file-verify.html",
+      "evidence": "Publisher verification instructions including RSA/OpenSSL detached signatures; SHA-256 for release packages vs BLAKE3 for individual binary manifests."
+    },
+    {
+      "id": "T1",
+      "url": "https://support.torproject.org/about-tor/using-and-sharing/torrent/",
+      "evidence": "Official warning against ordinary BitTorrent over Tor; old misc/misc-4 URL redirects here."
+    }
+  ],
+  "isoAcquisitionReceipt": "kodachi-iso-acquisition-2026-11-17.json",
+  "gatewayMetasearchQueries": [
+    {
+      "url": "https://baresearch.org/search?q=Android+I2P+WireGuard+Bitmask+InviZible+ProtonVPN&categories=general&language=en",
+      "result": "No results"
+    },
+    {
+      "url": "https://search.utilibre.org/search?q=Android+I2P+WireGuard+Bitmask+InviZible+ProtonVPN&categories=general&language=en",
+      "result": "Mixed generic Android and canonical i2p/i2p.android.base results; primary source checked separately"
+    },
+    {
+      "url": "https://libresearch.space/search?q=Android+I2P+WireGuard+Bitmask+InviZible+ProtonVPN&categories=general&language=en",
+      "result": "No results"
+    }
+  ]
+}

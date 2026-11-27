@@ -303,6 +303,7 @@ over the dev server's origin rather than `file://`:
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
 | `/apps/sound-sanctuary/` | Sound Sanctuary — complete local Noise Canceling Sanctuary snapshot; microphone opt-in, not hearing protection |
 | `/apps/aura-sound-studio/` | AURA Sound Studio — complete local DSP lab, with its alternate saved-settings snapshot; not certified branded processing |
+| `/apps/torrent-atlas/` | Torrent Atlas — local magnet/torrent inspection and v1 creation, explicit outbound search links and qualified password-manager research; no swarm activity |
 | `/apps/openpgp-workbench/` | Local OpenPGP tools, verified Android file saves and opt-in PUBLIC certificate remembering; no automatic secret storage |
 | `/apps/cyberchef/` | CyberChef Renovated Kitchen — 519 recipes after unioning the Html5 and Html5-sync-incoming recipe sets, plus file input and save. Includes QR/Aztec generation and image decoding, CueCat and postal barcode recipes, Avery LabelPro-style N-up labels, an educational multiplicative ElGamal demonstration (not FHE), and offline SFX support. See the [barcode notes](docs/cyberchef-aztec-cuecat.md), [SFX coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md), [field-cipher deep dive](docs/field-cipher-deep-dive-2026-10-14.md), and [recipe-sourcing notes](docs/recipe-sourcing-round-4-2026-10-14.md) and [round 5](docs/recipe-sourcing-round-5-2026-10-14.md) for the tested cryptography and historical recipes. |
 | `/apps/red-october-command-viewer/` | Offline fictionalized story-index globe and schematic profile viewer; exports VRML 2.0 and a Xena binary-preservation XML wrapper. No real submarine tracks or precise internal layouts. Ships as `red-october-command-viewer.xdc`. |
@@ -310,9 +311,9 @@ over the dev server's origin rather than `file://`:
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
 
 The complete browser catalog is generated with `npm run build:app-catalog` and
-contains the same 96 reviewed public entrypoints as the Android catalog, not
+contains the same 97 reviewed public entrypoints as the Android catalog, not
 only the highlights above. `npm run audit:app-sources` separately accounts for
-all 188 imported source documents without auto-publishing private research,
+all tracked imported and maintained source entrypoints without auto-publishing private research,
 wallet candidates or unbuilt shells. See the [Android save and data-retention
 notes](apps/html5-offline-launcher/README.md) before upgrading/reinstalling.
 

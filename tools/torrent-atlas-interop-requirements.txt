@@ -1,0 +1,2 @@
+# Test-only CPython 3.11 Linux x86_64 wheel. No session/peer/network APIs are used.
+libtorrent==2.0.11 --hash=sha256:ffc0a821ea9df5ce33efcd9c08f34fcf7302d0eaa772cf12d9245c69fed32aeb

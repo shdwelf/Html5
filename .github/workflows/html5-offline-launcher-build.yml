@@ -10,6 +10,9 @@ on:
       - 'apps/ads-b-radar-scope'
       - 'apps/news-globe.html'
       - 'public/apps/**'
+      - 'apps/torrent-atlas/**'
+      - 'scripts/build-torrent-atlas.mjs'
+      - 'tests/torrent-atlas*'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -47,6 +50,9 @@ on:
       - 'apps/ads-b-radar-scope'
       - 'apps/news-globe.html'
       - 'public/apps/**'
+      - 'apps/torrent-atlas/**'
+      - 'scripts/build-torrent-atlas.mjs'
+      - 'tests/torrent-atlas*'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -152,6 +158,9 @@ jobs:
 
       - name: Validate restored sound snapshots and local export adapter
         run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
+
+      - name: Validate Torrent Atlas static assets and safety controls
+        run: node scripts/build-torrent-atlas.mjs --check && node --test tests/torrent-atlas.test.mjs tests/torrent-atlas-worker.test.mjs && node tests/torrent-atlas-browser.mjs
 
       - name: Validate public app inventory
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
@@ -271,7 +280,7 @@ jobs:
                   raise SystemExit("Network APK catalog is missing its network-enabled marker")
               slugs = {app["slug"] for app in catalog["apps"]}
               expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio"}
-              if len(slugs) != 98 or not expected.issubset(slugs):
+              if len(slugs) != 99 or not expected.issubset(slugs):
                   raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
               for slug in expected:
                   if f"assets/apps/{slug}/index.html" not in apk.namelist():

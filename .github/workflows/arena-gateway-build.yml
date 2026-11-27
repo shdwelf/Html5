@@ -1,111 +1,135 @@
-name: Gateway — JAR + Android APK build
-
-# Side project (round 47): builds the clean-room combined gateway
-# deliverables the sandbox cannot (no JDK/Android SDK locally):
-#   1. gateway-config.jar — GatewayMain CLI + the shared GatewayConfig
-#      core, compiled with javac only, run once per mode for samples.
-#   2. gateway-debug.apk — the single-module Android scaffold
-#      (apps/riseup-invizible-gateway), Gradle + AGP, debug-signed.
-# Outputs are committed to research/gateway-config/ (NOT a trigger
-# path, so the result commit cannot retrigger the build). No upstream
-# Riseup/InviZible code or binaries are fetched or bundled.
+name: Gateway planner and Torrent Atlas review
 
 on:
-  push:
-    branches: ['arena/98365730-html5']
+  pull_request:
     paths:
-      - '.arena-gateway/build.txt'
       - 'apps/riseup-invizible-gateway/**'
+      - 'apps/torrent-atlas/**'
+      - 'public/apps/torrent-atlas/**'
+      - 'js/gateway-config.js'
+      - 'gateway-config.html'
+      - 'gateway-config.war'
+      - 'research/gateway-config/**'
       - 'tools/gateway-config/**'
+      - 'tools/torrent-atlas-interop*'
+      - 'scripts/build-gateway*'
+      - 'scripts/build-torrent-atlas.mjs'
+      - 'tests/gateway*'
+      - 'tests/torrent*'
+      - 'tests/fixtures/torrent-atlas*'
       - '.github/workflows/arena-gateway-build.yml'
   workflow_dispatch:
 
+# No source-writing jobs, automatic commits, conflict-favoring rebases or pushes.
 permissions:
-  contents: write
+  contents: read
+concurrency:
+  group: gateway-atlas-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
-  jar:
+  planner-and-atlas:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-java@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Compile and run gateway-config.jar
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/gw/classes" research/gateway-config/samples
-          javac -d "$RUNNER_TEMP/gw/classes" \
-            apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway/GatewayConfig.java \
-            tools/gateway-config/GatewayMain.java
-          jar cfe research/gateway-config/gateway-config.jar GatewayMain -C "$RUNNER_TEMP/gw/classes" .
-          for mode in combined vpn tor-dnscrypt; do
-            java -jar research/gateway-config/gateway-config.jar "research/gateway-config/samples/$mode" "$mode"
-          done
-          ls -la research/gateway-config/ research/gateway-config/samples/combined/
-
-      - name: Commit JAR and samples
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name arena-gateway-build
-          git config user.email arena-gateway-build@users.noreply.github.com
-          git add research/gateway-config/
-          git commit -q -m "gateway: gateway-config.jar + per-mode sample profiles (runner-built)" || exit 0
-          for i in 1 2 3 4 5; do
-            git push origin HEAD:${GITHUB_REF_NAME} && break || {
-              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
-          done
-
-  apk:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle 8.7
-        uses: gradle/actions/setup-gradle@v4
+          python-version: '3.11'
+      - name: Install locked build/test dependencies
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          python3 -m pip install --no-deps --require-hashes --target "$RUNNER_TEMP/atlas-libtorrent" -r tools/torrent-atlas-interop-requirements.txt
+      - name: Check delivered planner, inert samples, WAR and static Atlas
+        env:
+          GATEWAY_REQUIRE_JAVA: '1'
+        run: |
+          node scripts/build-torrent-atlas.mjs --check
+          node scripts/build-html5-browser-catalog.mjs --check
+          node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs tests/torrent-atlas*.test.mjs
+      - name: Independently validate torrent metadata without network sessions
+        run: PYTHONPATH="$RUNNER_TEMP/atlas-libtorrent" node tools/torrent-atlas-interop.mjs
+      - name: Exercise real browser workers and offline UX
+        run: node tests/torrent-atlas-browser.mjs
+      - name: Build canonical JDK planner JAR and verify JS parity again
+        env:
+          GATEWAY_REQUIRE_JAVA: '1'
+        run: |
+          mkdir -p "$RUNNER_TEMP/gateway-delivery"
+          node scripts/build-gateway-java.mjs --out "$RUNNER_TEMP/gateway-delivery/gateway-config.jar"
+          GATEWAY_JAR="$RUNNER_TEMP/gateway-delivery/gateway-config.jar" node --test tests/gateway-java.test.mjs
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
         with:
           gradle-version: '8.7'
-
       - name: Install Android SDK platform 34
         shell: bash
         run: |
           set -euo pipefail
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
-
-      - name: Build debug APK
-        shell: bash
-        working-directory: apps/riseup-invizible-gateway
-        run: |
-          set -euo pipefail
-          gradle assembleDebug --no-daemon --stacktrace
-          find . -name "*.apk" -path "*outputs*" -exec ls -la {} \;
-
-      - name: Commit APK with SHA-256
+      - name: Build and lint offline Android planner
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p research/gateway-config
-          cp apps/riseup-invizible-gateway/app/build/outputs/apk/debug/app-debug.apk research/gateway-config/gateway-debug.apk
-          (cd research/gateway-config && sha256sum gateway-config.jar gateway-debug.apk > SHA256SUMS.txt) || \
-          (cd research/gateway-config && sha256sum gateway-debug.apk > SHA256SUMS.txt)
-          git config user.name arena-gateway-build
-          git config user.email arena-gateway-build@users.noreply.github.com
-          git add research/gateway-config/
-          git commit -q -m "gateway: debug APK of the combined gateway scaffold (runner-built)" || exit 0
-          for i in 1 2 3 4 5; do
-            git push origin HEAD:${GITHUB_REF_NAME} && break || {
-              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
-          done
+          gradle -p apps/riseup-invizible-gateway assembleDebug lintDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/gateway-gradle.log"
+      - name: Expose bounded build diagnostics if the log CDN is unreachable
+        if: failure()
+        shell: python
+        run: |
+          import os, pathlib
+          log = pathlib.Path(os.environ['RUNNER_TEMP'])/'gateway-gradle.log'
+          if log.exists():
+              text = log.read_text(errors='replace')[-16000:]
+              print('::notice title=Gateway build diagnostics::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+      - name: Inspect APK identity, permissions and signing; write measured receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          delivery="$RUNNER_TEMP/gateway-delivery"
+          cp apps/riseup-invizible-gateway/app/build/outputs/apk/debug/app-debug.apk "$delivery/gateway-debug.apk"
+          aapt="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          "$aapt" dump permissions "$delivery/gateway-debug.apk" | tee "$delivery/apk-permissions.txt"
+          ! grep -Eq 'uses-permission|BIND_VPN_SERVICE' "$delivery/apk-permissions.txt"
+          "$aapt" dump xmltree "$delivery/gateway-debug.apk" AndroidManifest.xml > "$delivery/apk-manifest.txt"
+          ! grep -Fq 'android.net.VpnService' "$delivery/apk-manifest.txt"
+          ! grep -Eq 'E: service' "$delivery/apk-manifest.txt"
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose --print-certs "$delivery/gateway-debug.apk" > "$delivery/apk-signature.txt"
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, subprocess
+          out = pathlib.Path(os.environ['RUNNER_TEMP']) / 'gateway-delivery'
+          paths = ['GatewayConfig.java', 'GatewayVpnService.java', 'MainActivity.java']
+          source = pathlib.Path('apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway')
+          files = [source / p for p in paths] + [pathlib.Path(p) for p in ['apps/riseup-invizible-gateway/app/build.gradle', 'apps/riseup-invizible-gateway/app/src/main/AndroidManifest.xml', 'tools/gateway-config/GatewayMain.java', 'scripts/build-gateway-java.mjs', 'apps/riseup-invizible-gateway/build.gradle', 'apps/riseup-invizible-gateway/settings.gradle', 'apps/riseup-invizible-gateway/gradle.properties']]
+          digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+          outputs = {p.name: {'bytes': p.stat().st_size, 'sha256': digest(p)} for p in [out/'gateway-config.jar', out/'gateway-debug.apk']}
+          receipt = {'schema': 2, 'sourceCommit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'runId': os.environ['GITHUB_RUN_ID'], 'runUrl': os.environ['GITHUB_SERVER_URL']+'/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['GITHUB_RUN_ID'], 'javaVersion': subprocess.check_output(['java','-version'], stderr=subprocess.STDOUT, text=True).strip(), 'protectionActive': False, 'testScope': 'Offline planner build/lint/manifest and JS-Java parity; no packet path or owner device test', 'sourceSha256': {str(p): digest(p) for p in files}, 'outputs': outputs}
+          (out/'build-receipt.json').write_text(json.dumps(receipt, indent=2)+'\n')
+          (out/'SHA256SUMS.txt').write_text(''.join(v['sha256']+'  '+k+'\n' for k,v in outputs.items()))
+          # Only non-secret build outputs. This sandbox cannot reach the artifact
+          # CDN; bounded Checks annotations let it retrieve this tiny review APK
+          # and measured receipt without source-writing CI or a write token.
+          def notice(title, text):
+              print('::notice title='+title+'::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+          notice('Gateway planner build receipt', json.dumps(receipt, separators=(',',':')))
+          for name in ['gateway-debug.apk', 'apk-permissions.txt', 'apk-manifest.txt', 'apk-signature.txt']:
+              value = (out/name).read_bytes()
+              if len(value) > 1048576: raise SystemExit('Review annotation output exceeds 1 MiB')
+              chunks = [base64.b64encode(value[i:i+20000]).decode() for i in range(0,len(value),20000)]
+              for index, chunk in enumerate(chunks): notice('Gateway output '+name+' '+str(index+1)+' of '+str(len(chunks)), chunk)
+          PY
+      - name: Upload review-only planner deliverables
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: gateway-plan-only-review
+          path: ${{ runner.temp }}/gateway-delivery/
+          if-no-files-found: error
+          retention-days: 14

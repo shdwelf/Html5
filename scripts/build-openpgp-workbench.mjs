@@ -21,7 +21,7 @@ const largeWorker = await buildLargeRsaWorker(); // Fail closed before changing 
 
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(path.join(outputDir, "vendor"), { recursive: true });
-for (const name of ["index.html", "app.js", "crypto.mjs", "keyring.mjs", "keyring-search.mjs", "keybase.mjs", "keybase-ui.mjs", "public-storage.mjs", "large-rsa.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "styles.css", "THIRD_PARTY_NOTICES.md"]) {
+for (const name of ["index.html", "app.js", "crypto.mjs", "text-tools.mjs", "message-worker.mjs", "message-worker-client.mjs", "keyring.mjs", "keyring-search.mjs", "keybase.mjs", "keybase-ui.mjs", "public-storage.mjs", "large-rsa.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "styles.css", "THIRD_PARTY_NOTICES.md"]) {
   await copyFile(path.join(sourceDir, name), path.join(outputDir, name));
 }
 await copyFile(path.join(packageDir, "dist", "openpgp.min.mjs"), path.join(outputDir, "vendor", "openpgp.min.mjs"));
