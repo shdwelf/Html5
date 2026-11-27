@@ -6,7 +6,7 @@ Update this file whenever a new research document lands.*
 
 ## Secure Folder · Saurik/Cydia · Ghidra and Robtex
 
-- [Secure Folder, Saurik/Cydia and passive-domain deep dive](samsung-secure-folder-saurik-cydia-review.md) — Samsung's explicit A03s/SM-A037U1 Android–Others classification versus unverified installed Secure Folder support; dated `.net`/`.com` evidence; Cydia/Impactor/Eraser distinctions; Mach-O metadata versus decryption; bounded historical Cydia native-review workflow; Robtex attribution limits and named metasearch response quality. No phone changes, jailbreak, recovered keys or verified Samsung root.
+- [Secure Folder, Saurik/Cydia and passive-domain deep dive](samsung-secure-folder-saurik-cydia-review.md) — Samsung's explicit A03s/SM-A037U1 Android–Others classification versus unverified installed Secure Folder support; dated `.net`/`.com` evidence; Cydia/Impactor/Eraser distinctions; Mach-O metadata versus decryption; actual measured historical Cydia ARM/ARM64 Ghidra review; Robtex with registry RDAP/recursive-DNS cross-checks and named metasearch response quality. No phone changes, jailbreak, recovered keys or verified Samsung root.
 
 ## Galaxy A03s screenshot investigation · rooting prerequisites
 

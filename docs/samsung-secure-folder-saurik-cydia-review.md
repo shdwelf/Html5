@@ -174,16 +174,56 @@ SHA-256 before analysis; no binary-source reproducibility match is assumed.
    slice and the positive control. No arbitrary strings or decompiled source
    are published. Empty fixed-name API categories are **not negative proof**.
 
-**Initial measurement attempt:** workflow run **46057741990**, source
-**`46e1553ab4e1f6cbbf19b97b9d829edc3c35d41c`**, failed acquisition because the
-legacy package URL redirected from HTTPS to HTTP. No package was retained for
-analysis and no Ghidra/native result was produced. The revised redirect handler
-rejects plaintext hops **before requesting them**; it can substitute HTTPS only
-for the exact fixed Cydia asset on an explicit author-host allowlist. It records
-that substitution rather than claiming the old server never downgraded. A
-successful all-HTTPS retrieval and actual analysis are still required. No Cydia
-binary/Ghidra success, executed jailbreak or recovered encryption keys are
-claimed at this stage.
+### Validated actual native result
+
+[Run **46058618410**](https://github.com/shdwelf/Html5/actions/runs/46058618410),
+job **140707317346**, **succeeded** from source
+**`fd9c0ddea99ed0385db4c481aabd58a35da09067`**. The
+[complete measured receipt](research/cydia-static-review.json) is **15,820 bytes**,
+SHA-256 **`888262c79456f17b05c74273353ad307fce42c4185b02bf475a98a079b53043b`**.
+Its two ordered compressed Checks chunks were reconstructed and verified against
+that byte length/hash, run ID, actual source commit and all four listed source
+file hashes. The package/native inputs were never installed or executed.
+
+- Actual **1,292,624-byte `.deb` SHA-256**:
+  **`f80a5228b2bacbd8e2640d96dc1b15a5cf0db681d2ed976cf53f1f5c64a9b184`**.
+- The package URL returned a legacy redirect to
+  `http://cache.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb`. The successful run
+  substituted **HTTPS before requesting that hop**, fetched the exact asset from
+  **`cache.saurik.com`**, and recorded that transport decision. It did **not**
+  silently accept HTTP or claim the old redirect was secure.
+- Both slices have a Mach-O encryption command with **`cryptid: 0`**. This
+  historical executable did not require executable-range decryption for these
+  analyses. This is **not a device-data decryption result** or proof that the
+  program never encrypts resources/data.
+
+| Actual input | Bytes | Encryption-command range / cryptid | Ghidra instructions | Functions | Completed samples |
+| --- | ---: | --- | ---: | ---: | ---: |
+| ARM64 Mach-O | 1,503,984 | offset 16,384; size 1,310,720; **0** | 244,790 | 3,487 | 4 |
+| 32-bit ARM Mach-O, CPU subtype 6 | 566,928 | offset 16,384; size 442,368; **0** | 80,613 | 1,675 | 4 |
+| Inert native positive control | See receipt | Synthetic ELF, not an encrypted app | 91 | 18 | 4 |
+
+ARM64 slice SHA-256:
+**`14eb05af9c597b9ff3307bd719214009e53f2dd4d72e028fab807c8d9bd298c5`**.
+32-bit ARM slice SHA-256:
+**`8e0c9cadda181ab2a1ba6db9b3aeefd4637247e163a74ffd6a7d8cce6a1ee1a2`**.
+
+Fixed-name references included `getuid`, `geteuid`, `setuid`, `setgid`, `system`
+in the ARM64 slice and `system` in the ARM slice. Those symbols are leads, not
+proof of how/when a privileged action happens. The small fixed crypto/TLS/HTTP
+C-API lists had **no matches**; this is **not proof of no cryptography, network
+traffic or identifier handling**. Objective-C frameworks, C++/static code and
+unmatched/dynamically resolved APIs are outside that narrow name test.
+
+Embedded code-signature ranges were inventoried but **not cryptographically
+verified**. The repository-signature chain and publisher identity remain
+**unverified**, and the third-party source mirror was **not reproduced/matched
+to these binary bytes**. No current iOS compatibility, jailbreak, phone-data
+access, recovered key, whole-program audit or malware-free verdict is claimed.
+
+For chronology, initial run **46057741990** failed at the HTTPS→HTTP redirect
+before producing native analysis. The successful run used the stricter
+before-request handler described above; it did not weaken the transport gate.
 
 ## 5. Robtex domain deep dive — collector evidence, not attribution
 
@@ -199,7 +239,7 @@ addresses below are not addresses copied from the owner's phone.
 | `irc.saurik.com` | No current host A/CNAME in the fetched top/trace host tables; former A **`74.208.44.105`** observed **2015-08-22→2016-07-25**; former CNAME **`carrier.saurik.com`** observed **2015-08-22→2021-03-30**. [R3] | Collector observation intervals, not exact service lifetimes. Parent-domain records shown below the host are not the host's own records. |
 | `irc.saurik.net` | No host address shown; parent `.net` delegation appears separately. [R4] | An empty rendered response is not proof no IRC server ever existed. The dated 2003 message is independent historical evidence. |
 | `apt.saurik.com` | CNAME **`d35rlteizluyd2.cloudfront.net`** and edge addresses. [R5] | Consistent with CDN delivery, not independent package authenticity. Edge addresses can vary. |
-| `cydia.saurik.com` | An earlier retrieved trace included **`d185mnr38l0hna.cloudfront.net`** despite an empty top table; a later fetch returned only the page header. [R6] | Incomplete/changing collector rendering; do not promote either to independently validated live DNS. |
+| `cydia.saurik.com` | An earlier retrieved trace included **`d185mnr38l0hna.cloudfront.net`** despite an empty top table; a later fetch returned only the page header. [R6] | Incomplete/changing collector rendering. The separate resolver check below corroborates that CNAME; Robtex's empty header does not. |
 
 ### Reading the domain evidence correctly
 
@@ -217,12 +257,35 @@ addresses below are not addresses copied from the owner's phone.
 - Reputation badges and shared CDN/IP/NS infrastructure do not authenticate an
   app publisher, current domain registrant or software supply chain.
 - **No port scan, IRC connection, DNS zone transfer, password attempt, private-log
-  recovery, RDAP registrant verification or independent CT/DNS validation was
+  recovery, named-registrant identity verification or CT certificate audit was
   performed.** A fetch failure at the `.net` root says only that retrieval failed.
 
-A later infrastructure-verification phase could compare authoritative delegation,
-resolver results and public RDAP/CT records, keeping registrant privacy and
-historic/current records separate. That phase is **not completed evidence here**.
+### Registry RDAP and recursive-DNS cross-checks
+
+To test the most important Robtex leads, public **Verisign registry RDAP** and
+**Google Public DNS JSON-over-HTTPS** responses were fetched separately. These
+are distinct evidence channels from Robtex, not direct device/service probes.
+Only the relevant domain/record fields are retained; no registrar abuse contacts,
+registrant contact records or unrelated TXT tokens are reproduced.
+
+| Cross-check | Retrieved observation | Consequence / limit |
+| --- | --- | --- |
+| Verisign `.net` RDAP [R7] | `SAURIK.NET`; registry-reported registration **1998-12-13**; nameservers **NS.DOUGLASTHRIFT.NET**, **NS.SAURIK.COM**; `delegationSigned: false`; `client transfer prohibited`. | Corroborates the *delegation* names Robtex showed. The registry registration date is not a date when Freeman became the owner; transfer prohibition is not an allegation of abuse. |
+| Verisign `.com` RDAP [R8] | `SAURIK.COM`; registry-reported registration **1997-07-13**; the same four AWS nameservers shown by Robtex; `delegationSigned: false`; `client transfer prohibited`. | Confirms different registered domain objects, not interchangeable aliases or verified personal ownership. |
+| Google resolver: `saurik.net NS` [R9] | **DNS Status 2 / SERVFAIL**; the response says a nameserver did not respond and includes extended error **22** at the delegation. | Stronger explanation for the failed `.net` retrieval than a similarity list: the sampled recursive resolution failed. **Not NXDOMAIN**, proof of hijacking or a permanent global outage. |
+| Google resolver: `saurik.com NS` [R10] | **DNS Status 0**, four AWS NS answers matching registry RDAP and Robtex. | The `.com` delegation resolves through this resolver in this observation; still not software/signing-key authentication. |
+| Google resolver: `cydia.saurik.com CNAME` [R11] | **DNS Status 0**, **`d185mnr38l0hna.cloudfront.net.`**. | Independently corroborates the earlier Robtex CNAME lead despite its later sparse rendering. No claim the application/API is working or packages are trustworthy. |
+| Google resolver: `irc.saurik.com A` [R12] | **DNS Status 3 / NXDOMAIN**, with the parent SOA returned. | This resolver reports the exact hostname nonexistent at this observation, not merely an empty web table. It does not contradict the dated 2003 writing or prove no private/historical IRC logs exist. |
+
+**Important distinction:** a domain can have a registry record and delegated NS
+names while recursive resolution fails. The `.net` observations do not establish
+whether a server is temporarily unavailable, delegation is misconfigured or
+records changed. The sampled resolver returned `AD: false`; no signed negative
+answer or independently validated DNSSEC proof is claimed. These reads did not
+contact an IRC port or execute a scanner. More resolver vantage points, direct
+authoritative comparison and a CT/TLS audit remain **uncompleted**, and no
+current named registrant was authenticated. Registry/collector remote clock
+labels were not used as independently validated timestamps.
 
 ## 6. Continued metasearch — measured response quality
 
@@ -257,10 +320,14 @@ primary-user restrictions and adds a negative cache-directory control. Rerun
 **46057354939** passed that identity guard and then failed at bootstrap path
 validation. The next correction normalizes benign `./` components, rejects all
 parent traversal before normalization, deduplicates normalized archive/link
-names and retains canonical containment checks. These are measured failure-stage
-and source-correction results, **not a passing payload installation**. The runtime
-acceptance/delivery gates remain mandatory; there is no validated APK handoff or
-current merge to report.
+names and retains canonical containment checks. Rerun **46058615404** then passed
+extraction/path validation and failed the atomic stage-to-prefix rename. Commit
+**`64a10ccce1f3591269064168a509d41b0f584d73`** uses the fixed `FILES` spelling for
+both sides of that rename instead of crossing Android bind-mount aliases, and
+uses `Os.rename` so any remaining errno is visible. Rerun **46059585202** is
+pending. These are measured failure-stage and source-correction results,
+**not a passing payload installation**. The runtime acceptance/delivery gates
+remain mandatory; there is no validated APK handoff or current merge to report.
 
 To narrow the phone questions without changing security state:
 
@@ -312,7 +379,45 @@ To narrow the phone questions without changing security state:
 - **R4:** [Robtex `irc.saurik.net`](https://robtex.com/en/dns-lookup/net/saurik/irc).
 - **R5:** [Robtex `apt.saurik.com`](https://robtex.com/en/dns-lookup/com/saurik/apt).
 - **R6:** [Robtex `cydia.saurik.com`](https://robtex.com/en/dns-lookup/com/saurik/cydia); incomplete/changing rendered response.
+- **R7:** [Verisign registry RDAP `saurik.net`](https://rdap.verisign.com/net/v1/domain/saurik.net); registry object/delegation/date fields only, no named-owner authentication.
+- **R8:** [Verisign registry RDAP `saurik.com`](https://rdap.verisign.com/com/v1/domain/saurik.com); same scope.
+- **R9:** [Google Public DNS `saurik.net NS`](https://dns.google/resolve?name=saurik.net&type=NS&do=1); sampled SERVFAIL response, not a direct authoritative query.
+- **R10:** [Google Public DNS `saurik.com NS`](https://dns.google/resolve?name=saurik.com&type=NS&do=1); sampled four-NS response.
+- **R11:** [Google Public DNS `cydia.saurik.com CNAME`](https://dns.google/resolve?name=cydia.saurik.com&type=CNAME&do=1); sampled CloudFront CNAME.
+- **R12:** [Google Public DNS `irc.saurik.com A`](https://dns.google/resolve?name=irc.saurik.com&type=A&do=1); sampled NXDOMAIN response.
 
 Raw source archives, native inputs and Ghidra projects are disposable build/cache
 material, not committed binaries. This operational review and measured receipts
 are excluded from public offline Wiki/SITE-K manual bundles.
+
+<!-- Reference links for the compact in-text source labels. -->
+[S1]: https://www.samsungknox.com/en/blog/ending-support-for-knox-guard-agent-version-1.0
+[S2]: https://docs.samsungknox.com/admin/fundamentals/kbas/kba-349-about-android-others-android-go-devices/
+[S3]: https://docs.samsungknox.com/admin/knox-platform-for-enterprise/kbas/kba-362-features-unsupported-one-ui-core/
+[S4]: https://www.samsung.com/uk/support/mobile-devices/what-is-the-secure-folder-and-how-do-i-use-it/
+[S5]: https://support.google.com/android/answer/15341885?hl=en
+[F1]: https://www.saurik.com/
+[F2]: https://svn.haxx.se/dev/archive-2002-06/1614.shtml
+[F3]: https://seclists.org/nmap-dev/2003/q3/104
+[F4]: https://www.saurik.com/telesphoreo.html
+[F5]: https://www.cydiaimpactor.com/
+[F6]: https://apt.saurik.com/dists/ios/main/binary-iphoneos-arm/Packages
+[F7]: https://www.saurik.com/masterkey1.html
+[F8]: https://github.com/autopear/Cydia/tree/bb0ace74560c5c96c8dbefec00c8e3881c504558
+[E1]: https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/EXTERNAL_HEADERS/mach-o/loader.h
+[E2]: https://www.saurik.com/shsh.html
+[E3]: https://www.saurik.com/apticket.html
+[E4]: https://support.apple.com/guide/security/data-protection-overview-secf6276da8a/web
+[E5]: https://support.apple.com/guide/security/the-secure-enclave-sec59b0b31ff/web
+[R1]: https://robtex.com/en/dns-lookup/net/saurik
+[R2]: https://robtex.com/en/dns-lookup/com/saurik
+[R3]: https://robtex.com/en/dns-lookup/com/saurik/irc
+[R4]: https://robtex.com/en/dns-lookup/net/saurik/irc
+[R5]: https://robtex.com/en/dns-lookup/com/saurik/apt
+[R6]: https://robtex.com/en/dns-lookup/com/saurik/cydia
+[R7]: https://rdap.verisign.com/net/v1/domain/saurik.net
+[R8]: https://rdap.verisign.com/com/v1/domain/saurik.com
+[R9]: https://dns.google/resolve?name=saurik.net&type=NS&do=1
+[R10]: https://dns.google/resolve?name=saurik.com&type=NS&do=1
+[R11]: https://dns.google/resolve?name=cydia.saurik.com&type=CNAME&do=1
+[R12]: https://dns.google/resolve?name=irc.saurik.com&type=A&do=1

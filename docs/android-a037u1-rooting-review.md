@@ -169,7 +169,17 @@ in [run 46054704496](https://github.com/shdwelf/Html5/actions/runs/46054704496),
 from source `130910469950b67319046b808a4f5ec27a48b301`. The mandatory Android 13
 runtime step **failed**, so the measured delivery/artifact gate did not run.
 No final measured APK receipt or ARM APK has been delivered. Compilation alone
-is not a working full-toolbox claim. Bounded synthetic test diagnostics are
-being added without exposing personal-device logs or weakening the runtime
-gate. No pull request has been merged for this unfinished build.
+is not a working full-toolbox claim. Bounded, explicitly disposable-emulator-only
+diagnostics subsequently identified the storage-identity setup gate
+(run **46056425429**); replacing canonical string comparison with identical owned
+inode/device checks passed that guard in **46057354939**, which then rejected a
+bootstrap archive path. The next correction normalizes benign `./` components
+while retaining parent-traversal, normalized-collision and containment checks.
+Rerun **46058615404** from **`fd9c0ddea99ed0385db4c481aabd58a35da09067`** then passed
+extraction/path validation but failed atomic prefix promotion. The next revision
+uses the same fixed `FILES` mount spelling for both sides of `Os.rename` rather
+than crossing bind-mount aliases; **46059585202** from
+**`64a10ccce1f3591269064168a509d41b0f584d73`** is pending.
+No personal-device logs were exposed or runtime acceptance weakened. No pull
+request has been merged for this unfinished build.
 ZShaolin itself does not require root and will not provide root or VPN protection.

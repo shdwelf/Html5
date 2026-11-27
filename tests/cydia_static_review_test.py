@@ -170,6 +170,23 @@ class CydiaStaticReviewTests(unittest.TestCase):
                     stanza.replace(b'iphoneos-arm', b'android-arm')]:
             with self.subTest(bad=bad), self.assertRaises(ValueError): review.matching_stanza(bad)
 
+    def test_report_preserves_phone_model_and_domain_attribution_limits(self):
+        report = (ROOT/'docs/samsung-secure-folder-saurik-cydia-review.md').read_text()
+        for text in ['SM-A037U1', 'Android Enterprise (Generic)', 'not a test of Secure Folder',
+                     'current Knox Guard state', 'current-binary verdict', 'third-party',
+                     'not a claim it is the latest', 'not evidence of historical aliases',
+                     'No results', 'No port scan', 'no working Kodachi VPN']:
+            self.assertIn(text.lower(), report.lower())
+        self.assertIn('https://svn.haxx.se/dev/archive-2002-06/1614.shtml', report)
+        self.assertIn('https://www.saurik.com/masterkey1.html', report)
+        self.assertIn('https://support.apple.com/guide/security/data-protection-overview-secf6276da8a/web', report)
+        self.assertNotIn('/tmp/arena-coding-uploads/', report)
+
+    def test_new_operational_research_is_not_bundled_into_public_manuals(self):
+        policy = (ROOT/'tools/wikiinajar/public-corpus-policy.mjs').read_text()
+        self.assertIn('"docs/research/cydia-static-review.json"', policy)
+        self.assertIn('"docs/samsung-secure-folder-saurik-cydia-review.md"', policy)
+
     def test_ci_does_not_install_jailbreak_or_target_and_records_actual_analysis(self):
         workflow = (ROOT/'.github/workflows/cydia-static-review.yml').read_text()
         for required in ["github.event_name == 'workflow_dispatch'", 'distribution: temurin', "java-version: '21'",
@@ -182,6 +199,70 @@ class CydiaStaticReviewTests(unittest.TestCase):
                        'inputExecuted", false', 'deviceDataDecrypted", false', 'jailbreakVerified", false',
                        'malwareFreeVerdict", false', 'wholeProgramSecurityAudit", false']:
             self.assertIn(marker, java)
+
+
+class CydiaMeasuredEvidenceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.raw = (ROOT/'docs/research/cydia-static-review.json').read_bytes()
+        cls.report = json.loads(cls.raw)
+
+    def test_measured_receipt_hash_run_and_reviewed_source_files(self):
+        self.assertEqual(len(self.raw), 15820)
+        self.assertEqual(review.sha(self.raw), '888262c79456f17b05c74273353ad307fce42c4185b02bf475a98a079b53043b')
+        self.assertEqual(self.report['runId'], '46058618410')
+        self.assertEqual(self.report['sourceCommit'], 'fd9c0ddea99ed0385db4c481aabd58a35da09067')
+        self.assertEqual(len(self.report['sourceSha256']), 4)
+        for path, digest in self.report['sourceSha256'].items():
+            self.assertEqual(review.sha((ROOT/path).read_bytes()), digest, path)
+
+    def test_measured_acquisition_retains_https_upgrade_and_authenticity_limits(self):
+        acquisition = self.report['acquisition']
+        self.assertEqual(acquisition['package'], review.SPEC['cydia'])
+        self.assertEqual(acquisition['downloadedPackageSha256'], 'f80a5228b2bacbd8e2640d96dc1b15a5cf0db681d2ed976cf53f1f5c64a9b184')
+        transport = acquisition['httpsTransport'][1]
+        self.assertEqual(transport['finalHttpsHost'], 'cache.saurik.com')
+        self.assertEqual(len(transport['legacyRedirectsUpgradedBeforeRequest']), 1)
+        upgrade = transport['legacyRedirectsUpgradedBeforeRequest'][0]
+        self.assertEqual(upgrade['requestedInstead'], upgrade['from'].replace('http://', 'https://', 1))
+        self.assertFalse(upgrade['plaintextRequestMade'])
+        for key in ['repositorySignatureChainVerified', 'publisherSignatureVerified',
+                    'deviceDataAcquired', 'inputOrMaintainerScriptsExecuted']:
+            self.assertIs(acquisition[key], False)
+
+    def test_both_actual_native_slices_and_positive_control_recovered_code(self):
+        programs = self.report['programs']
+        self.assertEqual({p['slice']['bits'] for p in programs}, {32, 64})
+        self.assertEqual(len(programs), 2)
+        counts = {64: (244790, 3487), 32: (80613, 1675)}
+        for program in programs:
+            native, analysis = program['slice'], program['analysis']
+            self.assertEqual(native['sha256'], analysis['inputSha256'])
+            self.assertEqual(analysis['ghidraVersion'], review.SPEC['ghidra']['version'])
+            self.assertEqual((analysis['instructionsVisitedUpTo1000000'], analysis['functionsDefinedUpTo200000']), counts[native['bits']])
+            self.assertEqual(sum(x['completed'] for x in analysis['boundedDecompilations']), 4)
+            self.assertFalse(native['nonzeroEncryptionCryptid'])
+            self.assertEqual(len(native['encryptionInfo']), 1)
+            self.assertEqual(native['encryptionInfo'][0]['cryptid'], 0)
+            self.assertTrue(native['embeddedCodeSignatureRanges'])
+            self.assertFalse(native['codeSignatureCryptographicallyVerified'])
+        control = self.report['syntheticPositiveControl']
+        self.assertEqual(control['instructionsVisitedUpTo1000000'], 91)
+        self.assertEqual(sum(x['completed'] for x in control['boundedDecompilations']), 4)
+        self.assertIn('ELF', control['format'])
+
+    def test_native_measurement_never_becomes_decryption_jailbreak_or_safety_verdict(self):
+        self.assertTrue(all(value is False for value in self.report['guardrails'].values()))
+        for program in self.report['programs']:
+            analysis = program['analysis']
+            for key in ['inputExecuted', 'deviceDataDecrypted', 'jailbreakVerified',
+                        'malwareFreeVerdict', 'wholeProgramSecurityAudit']:
+                self.assertIs(analysis[key], False)
+            for key in ['symmetricAndDigestCrypto', 'trustAndTls', 'networkAndHttp']:
+                self.assertEqual(analysis['fixedNamedApiCategories'][key], [])
+        report = (ROOT/'docs/samsung-secure-folder-saurik-cydia-review.md').read_text()
+        self.assertIn('not proof of no cryptography', report)
+        self.assertIn('not a device-data decryption result', report)
 
 
 if __name__ == '__main__':

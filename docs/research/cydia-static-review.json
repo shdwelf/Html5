@@ -1,0 +1,446 @@
+{
+  "schema": 1,
+  "sourceCommit": "fd9c0ddea99ed0385db4c481aabd58a35da09067",
+  "runId": "46058618410",
+  "ghidra": {
+    "version": "12.1.4",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+    "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db"
+  },
+  "acquisition": {
+    "schema": 1,
+    "package": {
+      "package": "cydia",
+      "version": "1.1.30",
+      "architecture": "iphoneos-arm",
+      "url": "https://apt.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb",
+      "indexUrl": "https://apt.saurik.com/dists/ios/main/binary-iphoneos-arm/Packages",
+      "bytes": 1292624,
+      "md5FromHttpsIndex": "bb0cdc40d3abac5b874972ad8a8b70a1",
+      "nativeEntry": "Applications/Cydia.app/Cydia",
+      "provenanceLimit": "Historical version explicitly listed by the author-linked HTTPS repository. Index size/MD5 checks are not a modern authenticated repository-signature chain or independent publisher authentication. A measured SHA-256 is recorded before static analysis; no claim this is the latest Cydia or compatible with any current jailbreak."
+    },
+    "httpsTransport": [
+      {
+        "requested": "https://apt.saurik.com/dists/ios/main/binary-iphoneos-arm/Packages",
+        "finalHttpsHost": "apt.saurik.com",
+        "finalPath": "/dists/ios/main/binary-iphoneos-arm/Packages",
+        "legacyRedirectsUpgradedBeforeRequest": []
+      },
+      {
+        "requested": "https://apt.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb",
+        "finalHttpsHost": "cache.saurik.com",
+        "finalPath": "/debs/cydia_1.1.30_iphoneos-arm.deb",
+        "legacyRedirectsUpgradedBeforeRequest": [
+          {
+            "from": "http://cache.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb",
+            "requestedInstead": "https://cache.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb",
+            "plaintextRequestMade": false
+          }
+        ]
+      }
+    ],
+    "indexSha256": "20668a22ef840fee2c18eae9572c8d8120742fa143256d3dbd310bdfba65f6be",
+    "downloadedPackageSha256": "f80a5228b2bacbd8e2640d96dc1b15a5cf0db681d2ed976cf53f1f5c64a9b184",
+    "nativeEntrySha256": "4be7fd009f425de0936291d3c591a54512b3d538d40f78a8ce9876297d27c210",
+    "nativeSlicesAvailable": [
+      {
+        "cpuType": 12,
+        "cpuSubtype": 6,
+        "bits": 32,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 31,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO",
+            "offset": 16384,
+            "bytes": 442368,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 563024,
+            "bytes": 3904
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "8e0c9cadda181ab2a1ba6db9b3aeefd4637247e163a74ffd6a7d8cce6a1ee1a2",
+        "bytes": 566928,
+        "universalOffset": 16384
+      },
+      {
+        "cpuType": 16777228,
+        "cpuSubtype": 0,
+        "bits": 64,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 34,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO_64",
+            "offset": 16384,
+            "bytes": 1310720,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 1495520,
+            "bytes": 8464
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "14eb05af9c597b9ff3307bd719214009e53f2dd4d72e028fab807c8d9bd298c5",
+        "bytes": 1503984,
+        "universalOffset": 589824
+      }
+    ],
+    "selectedSlices": [
+      {
+        "cpuType": 16777228,
+        "cpuSubtype": 0,
+        "bits": 64,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 34,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO_64",
+            "offset": 16384,
+            "bytes": 1310720,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 1495520,
+            "bytes": 8464
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "14eb05af9c597b9ff3307bd719214009e53f2dd4d72e028fab807c8d9bd298c5",
+        "bytes": 1503984,
+        "universalOffset": 589824,
+        "file": "cydia-arm64.macho",
+        "executed": false
+      },
+      {
+        "cpuType": 12,
+        "cpuSubtype": 6,
+        "bits": 32,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 31,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO",
+            "offset": 16384,
+            "bytes": 442368,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 563024,
+            "bytes": 3904
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "8e0c9cadda181ab2a1ba6db9b3aeefd4637247e163a74ffd6a7d8cce6a1ee1a2",
+        "bytes": 566928,
+        "universalOffset": 16384,
+        "file": "cydia-arm.macho",
+        "executed": false
+      }
+    ],
+    "repositorySignatureChainVerified": false,
+    "publisherSignatureVerified": false,
+    "deviceDataAcquired": false,
+    "inputOrMaintainerScriptsExecuted": false
+  },
+  "programs": [
+    {
+      "slice": {
+        "cpuType": 16777228,
+        "cpuSubtype": 0,
+        "bits": 64,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 34,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO_64",
+            "offset": 16384,
+            "bytes": 1310720,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 1495520,
+            "bytes": 8464
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "14eb05af9c597b9ff3307bd719214009e53f2dd4d72e028fab807c8d9bd298c5",
+        "bytes": 1503984,
+        "universalOffset": 589824,
+        "file": "cydia-arm64.macho",
+        "executed": false
+      },
+      "analysis": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "14eb05af9c597b9ff3307bd719214009e53f2dd4d72e028fab807c8d9bd298c5",
+        "format": "Mac OS X Mach-O",
+        "language": "AARCH64:LE:64:AppleSilicon",
+        "imageBase": "100000000",
+        "instructionsVisitedUpTo1000000": 244790,
+        "fixedNamedApiCategories": {
+          "symmetricAndDigestCrypto": [],
+          "trustAndTls": [],
+          "networkAndHttp": [],
+          "processAndPrivilege": [
+            {
+              "fixedSymbol": "getuid",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 9
+            },
+            {
+              "fixedSymbol": "geteuid",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 5
+            },
+            {
+              "fixedSymbol": "setuid",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 4
+            },
+            {
+              "fixedSymbol": "setgid",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 4
+            },
+            {
+              "fixedSymbol": "system",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 15
+            }
+          ]
+        },
+        "functionsDefinedUpTo200000": 3487,
+        "boundedDecompilations": [
+          {
+            "address": "100034258",
+            "functionBytes": 552,
+            "completed": true,
+            "decompiledUtf8Bytes": 2209,
+            "decompiledSha256": "af2ef05998ac62e3d552f32a9ea38f2e0628e8ce6d21d15886b9d41197d2d8d5"
+          },
+          {
+            "address": "1000b61a4",
+            "functionBytes": 2256,
+            "completed": true,
+            "decompiledUtf8Bytes": 8972,
+            "decompiledSha256": "51f3d20197c6dca301f329fee3c66a6e2d8ec34546964cd74443a88e528ab2ea"
+          },
+          {
+            "address": "100036fd8",
+            "functionBytes": 2604,
+            "completed": true,
+            "decompiledUtf8Bytes": 14049,
+            "decompiledSha256": "8254888e5efdbe83777678f36b39a58efb7766292766abf4e10bafa030fc6c97"
+          },
+          {
+            "address": "1000b3f84",
+            "functionBytes": 324,
+            "completed": true,
+            "decompiledUtf8Bytes": 1348,
+            "decompiledSha256": "e6fbb2efd6253162c409b54afdde77696abfa60067ae02356c93d0d90bac1368"
+          }
+        ],
+        "inputExecuted": false,
+        "deviceDataDecrypted": false,
+        "jailbreakVerified": false,
+        "malwareFreeVerdict": false,
+        "wholeProgramSecurityAudit": false,
+        "arbitraryStringsOrDecompiledSourcePublished": false,
+        "limitation": "Fixed-name API references and at most four sampled function decompilations, prioritizing references to named APIs. API absence does not establish absence of crypto, networking or dangerous behavior. No private keys, decrypted app data, exploit execution or current iOS compatibility result."
+      }
+    },
+    {
+      "slice": {
+        "cpuType": 12,
+        "cpuSubtype": 6,
+        "bits": 32,
+        "byteOrder": "<",
+        "fileType": 2,
+        "loadCommandCount": 31,
+        "encryptionInfo": [
+          {
+            "command": "LC_ENCRYPTION_INFO",
+            "offset": 16384,
+            "bytes": 442368,
+            "cryptid": 0
+          }
+        ],
+        "nonzeroEncryptionCryptid": false,
+        "embeddedCodeSignatureRanges": [
+          {
+            "offset": 563024,
+            "bytes": 3904
+          }
+        ],
+        "codeSignatureCryptographicallyVerified": false,
+        "sha256": "8e0c9cadda181ab2a1ba6db9b3aeefd4637247e163a74ffd6a7d8cce6a1ee1a2",
+        "bytes": 566928,
+        "universalOffset": 16384,
+        "file": "cydia-arm.macho",
+        "executed": false
+      },
+      "analysis": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "8e0c9cadda181ab2a1ba6db9b3aeefd4637247e163a74ffd6a7d8cce6a1ee1a2",
+        "format": "Mac OS X Mach-O",
+        "language": "ARM:LE:32:v6",
+        "imageBase": "00004000",
+        "instructionsVisitedUpTo1000000": 80613,
+        "fixedNamedApiCategories": {
+          "symmetricAndDigestCrypto": [],
+          "trustAndTls": [],
+          "networkAndHttp": [],
+          "processAndPrivilege": [
+            {
+              "fixedSymbol": "system",
+              "symbolsUpTo32": 2,
+              "referencesUpTo10000": 12
+            }
+          ]
+        },
+        "functionsDefinedUpTo200000": 1675,
+        "boundedDecompilations": [
+          {
+            "address": "0002d938",
+            "functionBytes": 2636,
+            "completed": true,
+            "decompiledUtf8Bytes": 13959,
+            "decompiledSha256": "efbc8a62fd26c8800779a77cefd02220f21638bdab0166439d00a070a80cd0e6"
+          },
+          {
+            "address": "0004d120",
+            "functionBytes": 84,
+            "completed": true,
+            "decompiledUtf8Bytes": 381,
+            "decompiledSha256": "ef920457ce0a408415d700cc89e2453e1b4560596efd31652e811ef23534fa14"
+          },
+          {
+            "address": "0004f308",
+            "functionBytes": 1740,
+            "completed": true,
+            "decompiledUtf8Bytes": 8696,
+            "decompiledSha256": "529f4253658bcfbabec57d8e0fe33d5369a826a98ebe99d4b2574d0bb34f93c6"
+          },
+          {
+            "address": "0004fb44",
+            "functionBytes": 88,
+            "completed": true,
+            "decompiledUtf8Bytes": 449,
+            "decompiledSha256": "96f33b963bd64b8540b839d94c516805223a807c47cd8ed0af2faa1fb7aef9bd"
+          }
+        ],
+        "inputExecuted": false,
+        "deviceDataDecrypted": false,
+        "jailbreakVerified": false,
+        "malwareFreeVerdict": false,
+        "wholeProgramSecurityAudit": false,
+        "arbitraryStringsOrDecompiledSourcePublished": false,
+        "limitation": "Fixed-name API references and at most four sampled function decompilations, prioritizing references to named APIs. API absence does not establish absence of crypto, networking or dangerous behavior. No private keys, decrypted app data, exploit execution or current iOS compatibility result."
+      }
+    }
+  ],
+  "syntheticPositiveControl": {
+    "schema": 1,
+    "ghidraVersion": "12.1.4",
+    "inputSha256": "152da23c1e889b5f9b6efc417c56234b94dd2fc346d9913546c5e8b9783f28c6",
+    "format": "Executable and Linking Format (ELF)",
+    "language": "x86:LE:64:default",
+    "imageBase": "00100000",
+    "instructionsVisitedUpTo1000000": 91,
+    "fixedNamedApiCategories": {
+      "symmetricAndDigestCrypto": [],
+      "trustAndTls": [],
+      "networkAndHttp": [],
+      "processAndPrivilege": [
+        {
+          "fixedSymbol": "getuid",
+          "symbolsUpTo32": 1,
+          "referencesUpTo10000": 0
+        }
+      ]
+    },
+    "functionsDefinedUpTo200000": 18,
+    "boundedDecompilations": [
+      {
+        "address": "00101000",
+        "functionBytes": 27,
+        "completed": true,
+        "decompiledUtf8Bytes": 196,
+        "decompiledSha256": "bd40a6ead7cca5d022cd1d33c18094389f9f84b83fd456f2f59ffdd301299404"
+      },
+      {
+        "address": "00101060",
+        "functionBytes": 38,
+        "completed": true,
+        "decompiledUtf8Bytes": 297,
+        "decompiledSha256": "7b005be11afc7acf8050e7f03d0195c57f77c9754a2576534d6cb1fa723ab41a"
+      },
+      {
+        "address": "00101090",
+        "functionBytes": 34,
+        "completed": true,
+        "decompiledUtf8Bytes": 168,
+        "decompiledSha256": "3a4ac29f6db827bf3f71b47920e14523e617d9172c15cbb64f90e6b7f8e40702"
+      },
+      {
+        "address": "001010c0",
+        "functionBytes": 51,
+        "completed": true,
+        "decompiledUtf8Bytes": 166,
+        "decompiledSha256": "57ae64b7a6e552d2edcb34666d508dea8972e591c8534899a5ddfb74cee160f1"
+      }
+    ],
+    "inputExecuted": false,
+    "deviceDataDecrypted": false,
+    "jailbreakVerified": false,
+    "malwareFreeVerdict": false,
+    "wholeProgramSecurityAudit": false,
+    "arbitraryStringsOrDecompiledSourcePublished": false,
+    "limitation": "Fixed-name API references and at most four sampled function decompilations, prioritizing references to named APIs. API absence does not establish absence of crypto, networking or dangerous behavior. No private keys, decrypted app data, exploit execution or current iOS compatibility result."
+  },
+  "guardrails": {
+    "inputNativeOrMaintainerScriptsExecuted": false,
+    "packageInstalled": false,
+    "deviceConnected": false,
+    "jailbreakAttempted": false,
+    "samsungRootVerified": false,
+    "secureFolderBypassed": false,
+    "encryptionKeysRecovered": false,
+    "drmOrAccountBypassed": false,
+    "malwareFreeVerdict": false
+  },
+  "sourceSha256": {
+    "tools/cydia-static-review/inputs.json": "0399ae2700c4b7df1231c54d1da7997d79784d56e5bd9db27054af939b204e44",
+    "tools/cydia-static-review/review.py": "8c998923718bf056c845066fec66374c35b984a98c8a93ebc2457ace1b0b6356",
+    "tools/ghidra_scripts/CydiaCryptoReview.java": "2d926750d74542f457183734a7fcec3cfe5875c59321a62df32ad56ef95ee8da",
+    ".github/workflows/cydia-static-review.yml": "1fd3c10ec5562726162a6c28c2d4618e7dd9cac3d092b9e11d601d3f40934be1"
+  },
+  "conclusion": "Bounded static observations of historical Cydia 1.1.30 Mach-O only. Not current jailbreak compatibility, recovered encryption keys, a whole-program audit, Samsung root or Secure Folder access."
+}
