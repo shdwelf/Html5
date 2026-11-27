@@ -142,6 +142,27 @@ class CydiaStaticReviewTests(unittest.TestCase):
             with self.subTest(entries=entries), package_archive(entries) as archive:
                 with self.assertRaises(ValueError): review.native_from_tar(archive)
 
+    def test_redirects_never_follow_plaintext_and_only_upgrade_fixed_author_asset(self):
+        handler = review.HttpsOnlyRedirect()
+        request = review.urllib.request.Request(review.SPEC['cydia']['url'])
+        target = 'http://cache.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb'
+        redirected = handler.redirect_request(request, None, 302, 'Found', {}, target)
+        self.assertEqual(redirected.full_url, target.replace('http://', 'https://', 1))
+        self.assertFalse(handler.upgrades[0]['plaintextRequestMade'])
+        for unsafe in [target.replace('cache.saurik.com', 'evil.example'),
+                       target.replace('cache.saurik.com', 'cache.saurik.com.evil.example'),
+                       target.replace('cache.saurik.com', 'user@cache.saurik.com'),
+                       target+'?unreviewed=1', target+'#fragment',
+                       target.replace('http://', 'ftp://'), target.replace('1.1.30', 'unreviewed'),
+                       target.replace('cache.saurik.com', 'cache.saurik.com:80')]:
+            with self.subTest(unsafe=unsafe), self.assertRaises(ValueError):
+                handler.redirect_request(request, None, 302, 'Found', {}, unsafe)
+        with self.assertRaises(ValueError):
+            handler.redirect_request(review.urllib.request.Request(review.SPEC['cydia']['indexUrl']),
+                                     None, 302, 'Found', {}, target)
+        secure = 'https://github.com/public/fixed'
+        self.assertEqual(handler.redirect_request(request, None, 302, 'Found', {}, secure).full_url, secure)
+
     def test_index_matching_requires_exact_package_version_and_architecture(self):
         stanza = b'Package: cydia\nVersion: 1.1.30\nArchitecture: iphoneos-arm\nFilename: debs/example.deb\n'
         self.assertEqual(review.matching_stanza(stanza)['Version'], '1.1.30')

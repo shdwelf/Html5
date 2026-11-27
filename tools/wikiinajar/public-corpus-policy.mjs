@@ -27,6 +27,7 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   // Follow-up APK/source security review and fixed-literal evidence, not manuals.
   "docs/research/zshaolin-apk-investigation-2026-11-17.json",
   "docs/research/android-root-static-review.json",
+  "docs/research/cydia-static-review.json",
   "docs/research/kodachi-supplemental-literal-2026-11-17.json",
   "docs/research/password-managers-torrent-sources-2026-11-17.json",
 ]);
@@ -88,6 +89,7 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/zshaolin-apk-and-kodachi-candidate-2026-11-17.md",
   "docs/android-a037u1-rooting-review.md",
   "docs/android-work-profile-private-mode.md",
+  "docs/samsung-secure-folder-saurik-cydia-review.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

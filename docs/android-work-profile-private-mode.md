@@ -83,10 +83,19 @@ Space is not promised to be undiscoverable to apps, device logs or an ADB user.
 Samsung’s [official Secure Folder guide](https://www.samsung.com/uk/support/mobile-devices/what-is-the-secure-folder-and-how-do-i-use-it/)
 describes Knox-backed encrypted storage and shows the supported-device path
 **Settings → Security and privacy → More security settings → Secure Folder**.
-The guide is not a compatibility statement for this exact A03s build. Older
-A03s community reports describe missing/non-working Secure Folder, but these
-are **older community observations**, not an Android 13 support verdict.
-[1](https://r1.community.samsung.com/t5/galaxy-a/secure-folder/td-p/13525007)
+The guide is not a compatibility statement for this exact A03s build.
+
+**Stronger model-specific evidence:** the Samsung Knox team's
+[device list](https://www.samsungknox.com/en/blog/ending-support-for-knox-guard-agent-version-1.0)
+explicitly includes **SM-A037U1** in the A03s row marked **Android – Others / N/A**.
+Samsung's [category explanation](https://docs.samsungknox.com/admin/fundamentals/kbas/kba-349-about-android-others-android-go-devices/)
+says these devices have limited/no full Knox compatibility but can support
+**Android Enterprise (Generic)** and selected cloud products. This supports a
+Secure Folder compatibility caveat; it is **not** a test of the installed
+Secure Folder feature, proof of no ordinary Android encryption/TEE/work profile,
+or evidence of this phone's current Knox Guard enrollment. The device-list
+article concerns old client 1.0/P/Q enrollment policy, not this Android 13
+phone's lock state. See the [Secure Folder / Cydia / domain deep dive](samsung-secure-folder-saurik-cydia-review.md).
 
 Use Settings search for **Secure Folder**. If it is absent, report that; do not
 assume a random Secure Folder APK, enabling root or changing SELinux can

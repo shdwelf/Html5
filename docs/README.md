@@ -4,11 +4,15 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Secure Folder · Saurik/Cydia · Ghidra and Robtex
+
+- [Secure Folder, Saurik/Cydia and passive-domain deep dive](samsung-secure-folder-saurik-cydia-review.md) — Samsung's explicit A03s/SM-A037U1 Android–Others classification versus unverified installed Secure Folder support; dated `.net`/`.com` evidence; Cydia/Impactor/Eraser distinctions; Mach-O metadata versus decryption; bounded historical Cydia native-review workflow; Robtex attribution limits and named metasearch response quality. No phone changes, jailbreak, recovered keys or verified Samsung root.
+
 ## Galaxy A03s screenshot investigation · rooting prerequisites
 
 - [Work-profile briefcase and private-mode distinctions](android-work-profile-private-mode.md) — Android 13 versus Android 15 Private Space, model-dependent Secure Folder, read-only counts-only profile inspection, per-profile VPN boundaries, and why the approved Termux-compatible native prefix cannot run inside a work profile. Follow-up screenshot confirms July 1, 2025 Android patch level; Official status is not unlock/management-state proof.
 
-- [SM-A037U1/DS screenshot investigation](android-a037u1-rooting-review.md) — confirmed Android 13 / One UI Core 5.1 and exact firmware label, with phone identifiers and raw screenshots excluded. An available OEM-unlocking toggle, SELinux state, kernel label or static Ghidra report is not proof of working root. Download Mode OEM Lock/KnoxGuard and actual device testing remain open; the full modern ZShaolin APK is still in progress, not compiled or merged.
+- [SM-A037U1/DS screenshot investigation](android-a037u1-rooting-review.md) — confirmed Android 13 / One UI Core 5.1 and exact firmware label, with phone identifiers and raw screenshots excluded. An available OEM-unlocking toggle, SELinux state, kernel label or static Ghidra report is not proof of working root. Download Mode OEM Lock/KnoxGuard and actual device testing remain open; modern APK/JNI compilation and lint have passed, but mandatory emulator runtime validation, validated APK handoff and the current merge remain unfinished.
 
 ## ZShaolin APK follow-up · supplemental Kodachi literal
 

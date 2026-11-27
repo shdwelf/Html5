@@ -70,13 +70,22 @@ public final class Toolbox {
         return result.toArray(new String[0]);
     }
 
-    /** Reject traversal before touching the filesystem; links are added last. */
-    static File inside(File root, String name) throws IOException {
+    /** Normalize benign ./ components, but never resolve away parent traversal. */
+    static String archiveName(String name) throws IOException {
         if (name.isEmpty() || name.startsWith("/") || name.contains("\\") || name.indexOf('\0') >= 0)
             throw new IOException("Unsafe archive path");
-        for (String part : name.split("/"))
-            if (part.equals("..") || part.equals(".")) throw new IOException("Unsafe path component");
-        File target = new File(root, name);
+        ArrayList<String> parts = new ArrayList<>();
+        for (String part : name.split("/")) {
+            if (part.equals("..")) throw new IOException("Unsafe parent path component");
+            if (!part.isEmpty() && !part.equals(".")) parts.add(part);
+        }
+        if (parts.isEmpty()) throw new IOException("Empty archive path after normalization");
+        return String.join("/", parts);
+    }
+
+    /** Reject traversal before touching the filesystem; links are added last. */
+    static File inside(File root, String name) throws IOException {
+        File target = new File(root, archiveName(name));
         if (!target.getCanonicalPath().startsWith(root.getCanonicalPath() + "/"))
             throw new IOException("Archive escapes private staging directory");
         return target;
@@ -115,7 +124,8 @@ public final class Toolbox {
     private static void bootstrap(Context ctx, JSONObject spec, File stage) throws Exception {
         if (stage.exists()) throw new IOException("Staging directory already exists; previous installation needs explicit review");
         mkdir(stage);
-        ArrayList<String[]> links = new ArrayList<>(); HashSet<String> seen = new HashSet<>();
+        ArrayList<String[]> links = new ArrayList<>();
+        HashSet<String> seen = new HashSet<>(), linkNames = new HashSet<>();
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         long expanded = 0; int entries = 0;
         try (InputStream raw = ctx.getAssets().open("bootstrap.zip");
@@ -123,28 +133,30 @@ public final class Toolbox {
              ZipInputStream zip = new ZipInputStream(checked)) {
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
-                if (++entries > 100000 || !seen.add(entry.getName())) throw new IOException("Invalid bootstrap inventory");
-                if (entry.getName().equals("SYMLINKS.txt")) {
+                String name = archiveName(entry.getName());
+                if (++entries > 100000 || !seen.add(name)) throw new IOException("Invalid bootstrap inventory");
+                if (name.equals("SYMLINKS.txt")) {
                     String list = new String(readBounded(zip, 1024 * 1024), StandardCharsets.UTF_8);
                     for (String line : list.split("\n")) {
                         if (line.isEmpty()) continue;
                         String[] pair = line.split("←", -1);
                         if (pair.length != 2) throw new IOException("Invalid bootstrap symlink");
-                        File link = inside(stage, pair[1]);
+                        String linkName = archiveName(pair[1]);
+                        if (!linkNames.add(linkName)) throw new IOException("Duplicate normalized bootstrap symlink");
+                        File link = inside(stage, linkName);
                         String target = pair[0];
                         // Relative links may traverse within the prefix, not outside it.
                         File resolved = target.startsWith("/") ? new File(target) : new File(link.getParentFile(), target);
                         String canonical = resolved.getCanonicalPath();
-                        boolean allowed = target.startsWith(PREFIX + "/") ||
+                        boolean allowed = (target.startsWith("/") &&
+                            canonical.startsWith(new File(PREFIX).getCanonicalPath() + "/")) ||
                             canonical.startsWith(stage.getCanonicalPath() + "/") ||
                             target.equals("/system/bin/linker") || target.equals("/system/bin/linker64");
                         if (!allowed) throw new IOException("Bootstrap symlink escapes allowed prefix");
-                        links.add(pair);
+                        links.add(new String[]{target, linkName});
                     }
                     continue;
                 }
-                String name = entry.getName();
-                while (name.endsWith("/")) name = name.substring(0, name.length() - 1);
                 File target = inside(stage, name);
                 if (entry.isDirectory()) { mkdir(target); continue; }
                 mkdir(target.getParentFile());

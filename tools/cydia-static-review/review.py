@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath
 import struct
 import subprocess
 import tarfile
+import urllib.parse
 import urllib.request
 import zipfile
 import zlib
@@ -28,13 +29,45 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def download(url, maximum, expected_sha=None):
+class HttpsOnlyRedirect(urllib.request.HTTPRedirectHandler):
+    def __init__(self):
+        super().__init__()
+        self.upgrades = []
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        target = urllib.parse.urlsplit(newurl)
+        if target.scheme != 'https':
+            # Legacy author-hosted URLs may point at HTTP. Upgrade only this
+            # fixed public asset on the explicit author-host allowlist BEFORE
+            # making a request; never follow an actual plaintext hop.
+            allowed = (target.scheme == 'http' and target.hostname in
+                       {'apt.saurik.com', 'cache.saurik.com', 'cydia.saurik.com'} and
+                       target.path.rsplit('/', 1)[-1] == 'cydia_1.1.30_iphoneos-arm.deb' and
+                       not target.query and not target.fragment and not target.username and
+                       not target.password and target.port is None and
+                       req.full_url.rsplit('/', 1)[-1] == 'cydia_1.1.30_iphoneos-arm.deb')
+            if not allowed:
+                raise ValueError('Non-HTTPS redirect rejected before request: '+target.netloc+target.path)
+            upgraded = urllib.parse.urlunsplit(('https', target.hostname, target.path, '', ''))
+            self.upgrades.append({'from': newurl, 'requestedInstead': upgraded, 'plaintextRequestMade': False})
+            newurl = upgraded
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def download(url, maximum, expected_sha=None, transport=None):
     if not url.startswith('https://'):
         raise ValueError('HTTPS required')
-    with urllib.request.urlopen(url, timeout=120) as response:
+    redirects = HttpsOnlyRedirect()
+    opener = urllib.request.build_opener(redirects)
+    with opener.open(url, timeout=120) as response:
         if not response.geturl().startswith('https://'):
             raise ValueError('Non-HTTPS redirect rejected')
         raw = response.read(maximum + 1)
+        if transport is not None:
+            # Fixed public Cydia inputs only; do not publish signed CDN tokens.
+            final = urllib.parse.urlsplit(response.geturl())
+            transport.append({'requested': url, 'finalHttpsHost': final.hostname,
+                              'finalPath': final.path, 'legacyRedirectsUpgradedBeforeRequest': redirects.upgrades})
     if len(raw) > maximum or (expected_sha and sha(raw) != expected_sha):
         raise ValueError('Public input exceeds bound or pinned SHA-256 mismatch')
     return raw
@@ -152,12 +185,13 @@ def prepare():
     for part in ['inputs', 'reports', 'logs', 'projects']:
         (WORK/part).mkdir(parents=True, exist_ok=True)
     pin = SPEC['cydia']
-    index = download(pin['indexUrl'], 3*1024*1024)
+    transport = []
+    index = download(pin['indexUrl'], 3*1024*1024, transport=transport)
     fields = matching_stanza(index)
     if (fields.get('Filename') != 'debs/cydia_1.1.30_iphoneos-arm.deb' or
             fields.get('Size') != str(pin['bytes']) or fields.get('MD5sum') != pin['md5FromHttpsIndex']):
         raise ValueError('Selected index fields differ from the reviewed historical listing')
-    package = download(pin['url'], pin['bytes'])
+    package = download(pin['url'], pin['bytes'], transport=transport)
     if len(package) != pin['bytes'] or hashlib.md5(package, usedforsecurity=False).hexdigest() != pin['md5FromHttpsIndex']:
         raise ValueError('Historical package size/MD5 cross-check failed (MD5 is not authentication)')
     deb = WORK/'cydia_1.1.30_iphoneos-arm.deb'
@@ -189,7 +223,7 @@ def prepare():
         selected.append(dict(metadata, file=name, executed=False))
     if not selected:
         raise ValueError('No expected ARM Cydia slice found')
-    acquisition = {'schema': 1, 'package': pin, 'indexSha256': sha(index),
+    acquisition = {'schema': 1, 'package': pin, 'httpsTransport': transport, 'indexSha256': sha(index),
                    'downloadedPackageSha256': sha(package), 'nativeEntrySha256': sha(native),
                    'nativeSlicesAvailable': [m for m, _ in slices], 'selectedSlices': selected,
                    'repositorySignatureChainVerified': False, 'publisherSignatureVerified': False,

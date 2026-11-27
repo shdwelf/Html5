@@ -120,6 +120,19 @@ fi
         self.assertIn('Toolbox.samePrivateDirectory(ctx.getFilesDir(), new File(Toolbox.FILES))', control)
         self.assertIn('Toolbox.samePrivateDirectory(ctx.getCacheDir(), new File(Toolbox.FILES))', control)
 
+    def test_bootstrap_normalization_preserves_parent_traversal_and_collision_guards(self):
+        app = (ROOT/'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java').read_text()
+        for marker in ['static String archiveName(String name)', 'if (part.equals("..")) throw',
+                       '!part.isEmpty() && !part.equals(".")', 'if (parts.isEmpty()) throw',
+                       'String name = archiveName(entry.getName())', '!seen.add(name)',
+                       'String linkName = archiveName(pair[1])', '!linkNames.add(linkName)',
+                       'canonical.startsWith(new File(PREFIX).getCanonicalPath() + "/")']:
+            self.assertIn(marker, app)
+        control = (ROOT/'apps/zshaolin-android/app/src/androidTest/java/org/dyne/zshaolin/modern/ToolboxTest.java').read_text()
+        self.assertIn('Toolbox.archiveName("./bin/./zsh")', control)
+        self.assertIn('"bin/../outside"', control)
+        self.assertIn('Unsafe archive path accepted', control)
+
     def test_startup_is_lean_and_no_history_or_servers(self):
         text = (ROOT/'tools/zshaolin-modern/assets/zshrc').read_text()
         commands = '\n'.join(line for line in text.splitlines() if line and not line.startswith('#'))

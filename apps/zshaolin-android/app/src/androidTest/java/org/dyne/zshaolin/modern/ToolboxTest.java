@@ -49,6 +49,12 @@ public class ToolboxTest {
         catch (Exception e) { throw syntheticDiagnostic(e); }
     }
     @Test public void aAllDeclaredPackagesAndCommandsAreInstalled() throws Exception {
+        assertEquals("bin/zsh", Toolbox.archiveName("./bin/./zsh"));
+        assertEquals("share/man", Toolbox.archiveName("share//man/"));
+        for (String invalid : new String[]{"", ".", "./", "../outside", "bin/../outside", "/absolute", "bad\\name", "bad\0name"}) {
+            try { Toolbox.archiveName(invalid); fail("Unsafe archive path accepted"); }
+            catch (java.io.IOException expected) { /* fail closed */ }
+        }
         assertTrue("Android storage aliases must refer to the identical owned directory",
             Toolbox.samePrivateDirectory(ctx.getFilesDir(), new File(Toolbox.FILES)));
         assertFalse("Another app-private directory must not satisfy native-prefix identity",
