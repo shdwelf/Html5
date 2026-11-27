@@ -13,9 +13,10 @@ class AndroidSignatureReviewTests(unittest.TestCase):
     def test_old_and_new_verified_certificate_labels(self):
         for prefix in ['Signer #1', 'Signer #2', 'V2 Signer', 'V3 Signer', 'V3.1 Signer',
                        'Signer (minSdkVersion=28, maxSdkVersion=32)']:
-            with self.subTest(prefix=prefix):
-                text = f'Verifies\nNumber of signers: 1\n{prefix}: certificate SHA-256 digest: {DIGEST}\n'
-                self.assertEqual(mod.certificate_fingerprints(text), [DIGEST])
+            for separator in [': ', ' ']:
+                with self.subTest(prefix=prefix, separator=separator):
+                    text = f'Verifies\nNumber of signers: 1\n{prefix}{separator}certificate SHA-256 digest: {DIGEST}\n'
+                    self.assertEqual(mod.certificate_fingerprints(text), [DIGEST])
 
     def test_certificate_not_public_key_or_weak_digest(self):
         for label in ['public key SHA-256', 'certificate SHA-1', 'certificate MD5']:
@@ -32,6 +33,14 @@ class AndroidSignatureReviewTests(unittest.TestCase):
         self.assertEqual(mod.certificate_fingerprints(text), [DIGEST])
         text += 'Signer #2: certificate SHA-256 digest: '+('b2'*32)+'\n'
         self.assertEqual(mod.certificate_fingerprints(text), [DIGEST, 'b2'*32])
+
+    def test_measured_build_tools_output_not_only_synthetic_signer_labels(self):
+        for path, expected in [
+            ('research/putty-android/apk-signature.txt', 'a6251b98d1ca1b4020bd530e6fd1cf78f3478c43df3f030e02f76bc0776fb446'),
+            ('research/gateway-config/apk-signature.txt', '559c0fb5e0ad6b7735372a8ddc48ab9754987c8e7e94c6f9e116c85533e0ac54'),
+        ]:
+            with self.subTest(path=path):
+                self.assertEqual(mod.certificate_fingerprints((ROOT/path).read_text()), [expected])
 
     def test_both_receipts_use_parser_after_successful_apksigner_command(self):
         static = (ROOT/'tools/android-root-review/static-review.py').read_text()

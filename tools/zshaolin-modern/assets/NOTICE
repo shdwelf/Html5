@@ -1,0 +1,37 @@
+ZShaolin Modern — unofficial native review build
+
+This is not an official Termux release or an original ZShaolin update.
+
+Terminal emulator, terminal view and JNI source:
+  termux/termux-app
+  commit 8629e632fcb95da272221be327db653fb24befe9
+  https://github.com/termux/termux-app/tree/8629e632fcb95da272221be327db653fb24befe9
+The pinned upstream LICENSE.md is included as TERMUX-LICENSE.md. It specifies
+GPLv3-only with Apache-2.0 exceptions for inherited Android terminal code.
+Original source copyright/notice headers are retained. The native wrapper and
+integration changes are supplied with source under GPLv3. The GPLv3 text is
+included as COPYING, and the Apache 2.0 text as LICENSE-APACHE-2.0.
+
+Modified legacy z-ssh helper:
+  ZShaolin / dyne.org, Copyright (C) 2014 Denis Roio <jaromil@dyne.org>
+  Original source commit 9e4857a8fae42eb1e476a9a6ea26df172bf8e87e
+  https://github.com/dyne/ZShaolin/tree/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e
+  GPL version 3 or, at your option, any later version.
+  Modified 2026 to remove HTTP client-private-key provisioning and use only
+  owner-supplied public-key authentication with foreground loopback SSH.
+
+The app/helper build source is available in shdwelf/Html5; the exact source
+commit, upstream pins, binary package versions and hashes are recorded in this
+APK's assets/toolbox.json and the CI APK receipt. Pinned terminal/recipe archives
+and local app/helper build source accompany the review workflow's source-inputs
+artifact. Source reference: https://github.com/shdwelf/Html5
+
+The separately bundled upstream GNU, editor, media, crypto, network and game
+packages have their OWN licences. COPYING is not blanket permission for them.
+Their native binaries are authenticated repository inputs, not self-compiled
+here. The recipe snapshot is not a verified binary-to-source correspondence for
+every dependency. Matching full source tarballs, complete dependency-specific
+notices and all corresponding-source obligations remain a separate review;
+this notice is NOT a claim of distribution-complete licence clearance or a
+long-term source offer. Preserve notices and resolve exact-version source and
+licence requirements before wider redistribution.

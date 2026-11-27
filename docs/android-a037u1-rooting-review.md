@@ -89,7 +89,11 @@ is **12,956 bytes**, SHA-256
 It was recovered from three ordered compressed Checks annotations and checked
 against their declared byte length/hash, the run's source commit and run ID.
 The source-file hashes in the receipt also matched the local reviewed files at
-retrieval. No APK, firmware, device screenshot or device dump was saved here.
+retrieval. The original certificate-parser bytes are now retained in
+[`tools/android-ci/historical/`](../tools/android-ci/historical/) after a later
+format-compatibility repair; the old receipt is unchanged and does not pretend
+the new parser ran in that historical job. No APK, firmware, device screenshot
+or device dump was saved with this static receipt.
 
 Inputs: the pinned official **Magisk v31.1 APK**, SHA-256
 `89cefac0a318afa39fb3880c45c87b036c05bc1ebf02a7a715b7f8d7c26ac6e7`,
@@ -178,8 +182,23 @@ while retaining parent-traversal, normalized-collision and containment checks.
 Rerun **46058615404** from **`fd9c0ddea99ed0385db4c481aabd58a35da09067`** then passed
 extraction/path validation but failed atomic prefix promotion. The next revision
 uses the same fixed `FILES` mount spelling for both sides of `Os.rename` rather
-than crossing bind-mount aliases; **46059585202** from
-**`64a10ccce1f3591269064168a509d41b0f584d73`** is pending.
-No personal-device logs were exposed or runtime acceptance weakened. No pull
-request has been merged for this unfinished build.
+than crossing bind-mount aliases. Run **46059585202** from
+**`64a10ccce1f3591269064168a509d41b0f584d73`** completed payload installation and
+all **five tests**, with **one failure** in the case-sensitive `sshd -T` policy
+assertion. The package/command, native-tools, synthetic public-key SSH and actual
+PTY/lifecycle tests passed, but the final measured APK/artifact gate stayed
+closed. This is progress beyond the earlier setup failures, not final acceptance.
+
+The pinned OpenSSH 10.6 source emits canonical CamelCase policy keywords (see
+[`servconf.h`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.h)
+and [`servconf.c`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.c)).
+Commit **`721ccd567d598a89cff00b36ee2a0b49196b517f`** normalizes output casing,
+still rejects password authentication and additionally requires the exact
+loopback-only listener set. It also disables emulator networking before setup,
+checks airplane/Wi-Fi state before installation, requires the exact five
+non-skipped test cases, and measures the actual packaged remediation/startup
+assets against reviewed source. Replacement run
+[**46061380083**](https://github.com/shdwelf/Html5/actions/runs/46061380083) is pending.
+No production SSH policy was relaxed, personal-device logs exposed or current
+pull request merged. There is still no accepted APK handoff.
 ZShaolin itself does not require root and will not provide root or VPN protection.

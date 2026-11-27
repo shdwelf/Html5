@@ -25,11 +25,16 @@ REQUIRED_TEST_CASES = frozenset({
     'eForegroundTerminalPtyAndExitLifecycle',
 })
 SOURCE_FILES = (
+    'tools/android-ci/apk_signature.py',
     'tools/zshaolin-modern/inputs.json',
     'tools/zshaolin-modern/prepare.py',
     'tools/zshaolin-modern/apk-receipt.py',
     'tools/zshaolin-modern/assets/sshd_config',
     'tools/zshaolin-modern/assets/zshrc',
+    'tools/zshaolin-modern/assets/COPYING',
+    'tools/zshaolin-modern/assets/NOTICE',
+    'tools/zshaolin-modern/assets/LICENSE-APACHE-2.0',
+    'tools/zshaolin-modern/assets/TERMUX-LICENSE.md',
     'tools/zshaolin-legacy/overlay/z-ssh',
     'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java',
     'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/MainActivity.java',
@@ -88,9 +93,9 @@ def verify_security_assets(archive):
     expected = {
         'z-ssh': (ROOT/'tools/zshaolin-legacy/overlay/z-ssh').read_bytes().replace(
             b'#!env zsh', b'#!/data/data/com.termux/files/usr/bin/zsh', 1),
-        'sshd_config': (ROOT/'tools/zshaolin-modern/assets/sshd_config').read_bytes(),
-        'zshrc': (ROOT/'tools/zshaolin-modern/assets/zshrc').read_bytes(),
     }
+    for name in ('sshd_config', 'zshrc', 'COPYING', 'NOTICE', 'LICENSE-APACHE-2.0', 'TERMUX-LICENSE.md'):
+        expected[name] = (ROOT/'tools/zshaolin-modern/assets'/name).read_bytes()
     measured = {}
     for name, source in expected.items():
         data = archive.read('assets/' + name)
@@ -116,7 +121,7 @@ def main():
     signature = subprocess.check_output([str(signer), 'verify', '--verbose', '--print-certs', str(apk)], text=True)
     fingerprints = certificate_fingerprints(signature)
     if len(fingerprints) != 1:
-        raise ValueError('Missing verified APK signing certificate')
+        raise ValueError('Missing verified APK signing certificate; public signer output: ' + signature[-1800:])
     with zipfile.ZipFile(apk) as z:
         if len(z.namelist()) != len(set(z.namelist())):
             raise ValueError('Duplicate APK entries')
@@ -151,6 +156,7 @@ def main():
     report = {
         'schema': 1, 'sourceCommit': os.environ['GITHUB_SHA'], 'runId': os.environ['GITHUB_RUN_ID'],
         'sourceSha256': {name: sha(ROOT/name) for name in SOURCE_FILES},
+        'apkSignatureVerification': signature,
         'apk': {'file': name, 'bytes': dest.stat().st_size, 'sha256': sha(dest),
                 'applicationId': 'com.termux', 'versionName': '2.0.0-review', 'targetSdk': 28,
                 'debuggable': False, 'abi': receipt['abi'], 'signerCertificateSha256': fingerprints[0]},

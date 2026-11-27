@@ -74,6 +74,8 @@ public class ToolboxTest {
             assertTrue(commands.getString(i), new File(Toolbox.PREFIX + "/bin/" + commands.getString(i)).canExecute());
         String audit = control(Arrays.asList(Toolbox.PREFIX + "/bin/dpkg", "--audit"), 30);
         assertTrue("dpkg must report no unconfigured packages", audit.trim().isEmpty());
+        for (String name : new String[]{"NOTICE", "LICENSE-APACHE-2.0", "TERMUX-LICENSE.md"})
+            assertTrue("Upstream licence notices must be installed", new File(Toolbox.PREFIX + "/share/zshaolin/" + name).length() > 0);
     }
     @Test public void bRealNativeShellEditorsCryptoLanguagesAndMedia() throws Exception {
         String script = "set -eu; " +

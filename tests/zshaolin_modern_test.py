@@ -298,9 +298,9 @@ class ZshaolinApkReceiptTests(unittest.TestCase):
         self.assertFalse(apk_receipt.offline_emulator_verified('arm', False, {}))
 
     def test_packaged_remediation_and_lean_startup_must_equal_reviewed_sources(self):
-        assets = {'z-ssh': HELPER.read_bytes().replace(b'#!env zsh', b'#!/data/data/com.termux/files/usr/bin/zsh', 1),
-                  'sshd_config': (ROOT/'tools/zshaolin-modern/assets/sshd_config').read_bytes(),
-                  'zshrc': (ROOT/'tools/zshaolin-modern/assets/zshrc').read_bytes()}
+        assets = {'z-ssh': HELPER.read_bytes().replace(b'#!env zsh', b'#!/data/data/com.termux/files/usr/bin/zsh', 1)}
+        for name in ('sshd_config', 'zshrc', 'COPYING', 'NOTICE', 'LICENSE-APACHE-2.0', 'TERMUX-LICENSE.md'):
+            assets[name] = (ROOT/'tools/zshaolin-modern/assets'/name).read_bytes()
         for changed in [None, *assets]:
             data = io.BytesIO()
             with zipfile.ZipFile(data, 'w') as archive:

@@ -18,8 +18,13 @@ class AndroidRootEvidenceReviewTests(unittest.TestCase):
         record = self.record()
         self.assertEqual(record['sourceCommit'], '130910469950b67319046b808a4f5ec27a48b301')
         self.assertEqual(record['runId'], '46054707860')
+        # This is an immutable historical receipt, not evidence that a later
+        # parser revision ran in the old job. Retain its exact 570-byte source.
+        historical = {'tools/android-ci/apk_signature.py':
+                      'tools/android-ci/historical/apk_signature-130910469950.py'}
         for path, expected in record['sourceSha256'].items():
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), expected, path)
+            source = ROOT/historical.get(path, path)
+            self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), expected, path)
 
     def test_actual_input_pins_and_observed_certificate_match_receipt(self):
         record = self.record()

@@ -280,8 +280,13 @@ public final class Toolbox {
         for (int i = 0; i < commands.length(); i++)
             if (!new File(PREFIX + "/bin/" + commands.getString(i)).canExecute())
                 throw new IOException("A required full-toolbox command is missing");
-        for (String name : new String[]{"z-ssh", "sshd_config", "COPYING"}) {
-            File dest = new File(PREFIX, name.equals("z-ssh") ? "bin/z-ssh" : name.equals("sshd_config") ? "etc/ssh/sshd_config" : "share/ZSHAOLIN-COPYING");
+        for (String name : new String[]{"z-ssh", "sshd_config", "COPYING", "NOTICE", "LICENSE-APACHE-2.0", "TERMUX-LICENSE.md"}) {
+            String relative;
+            if (name.equals("z-ssh")) relative = "bin/z-ssh";
+            else if (name.equals("sshd_config")) relative = "etc/ssh/sshd_config";
+            else if (name.equals("COPYING")) relative = "share/ZSHAOLIN-COPYING";
+            else relative = "share/zshaolin/" + name;
+            File dest = new File(PREFIX, relative);
             mkdir(dest.getParentFile());
             try (InputStream in = ctx.getAssets().open(name)) { write(dest, readBounded(in, MAX_LOG), name.equals("z-ssh") ? 0700 : 0600); }
         }

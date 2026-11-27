@@ -324,10 +324,29 @@ names and retains canonical containment checks. Rerun **46058615404** then passe
 extraction/path validation and failed the atomic stage-to-prefix rename. Commit
 **`64a10ccce1f3591269064168a509d41b0f584d73`** uses the fixed `FILES` spelling for
 both sides of that rename instead of crossing Android bind-mount aliases, and
-uses `Os.rename` so any remaining errno is visible. Rerun **46059585202** is
-pending. These are measured failure-stage and source-correction results,
-**not a passing payload installation**. The runtime acceptance/delivery gates
-remain mandatory; there is no validated APK handoff or current merge to report.
+uses `Os.rename` so any remaining errno is visible. Rerun **46059585202** then
+completed payload installation and **all five tests**, with **one failure** at
+the first case-sensitive `sshd -T` policy assertion. The package/command,
+native-tools, synthetic public-key SSH and actual PTY/lifecycle tests passed.
+The measured APK/artifact delivery gate correctly stayed closed.
+
+The pinned OpenSSH 10.6 source emits canonical CamelCase policy keywords (see
+[`servconf.h`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.h)
+and [`servconf.c`](https://github.com/openssh/openssh-portable/blob/d449e662b6b8b8cb20e852d8084c269af1c5e8f1/servconf.c)).
+Commit **`721ccd567d598a89cff00b36ee2a0b49196b517f`** normalizes that output's
+casing without relaxing authentication values. It requires the exact loopback
+listener set, disables emulator networking before setup, rechecks airplane/Wi-Fi
+state before installation, and requires all five named, non-skipped tests plus
+actual packaged security/startup assets matching reviewed source. Replacement
+[run **46061380083**](https://github.com/shdwelf/Html5/actions/runs/46061380083)
+then **passed all five runtime tests with networking disabled**. Its final
+receipt step still failed: successful `apksigner verify` output used the standard
+`Signer #1 certificate` label, but the parser wrongly required a colon. That
+parser has been corrected with real prior build-tools-output regressions; a new
+validation is required. Delivery gates remain mandatory, with no validated APK
+handoff or current merge to report. No production SSH policy was relaxed.
+The [native build guide](zshaolin-modern-native-build.md) records the full toolbox,
+ABI/signing/target-SDK tradeoffs and licence/corresponding-source limitations.
 
 To narrow the phone questions without changing security state:
 
