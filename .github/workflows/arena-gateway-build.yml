@@ -122,8 +122,9 @@ jobs:
           notice('Gateway planner build receipt', json.dumps(receipt, separators=(',',':')))
           for name in ['gateway-debug.apk', 'apk-permissions.txt', 'apk-manifest.txt', 'apk-signature.txt']:
               value = (out/name).read_bytes()
-              if len(value) > 1048576: raise SystemExit('Review annotation output exceeds 1 MiB')
-              chunks = [base64.b64encode(value[i:i+20000]).decode() for i in range(0,len(value),20000)]
+              if len(value) > 65536: raise SystemExit('Review annotation output exceeds 64 KiB')
+              # Checks API messages are truncated at 4096 characters.
+              chunks = [base64.b64encode(value[i:i+2000]).decode() for i in range(0,len(value),2000)]
               for index, chunk in enumerate(chunks): notice('Gateway output '+name+' '+str(index+1)+' of '+str(len(chunks)), chunk)
           PY
       - name: Upload review-only planner deliverables
