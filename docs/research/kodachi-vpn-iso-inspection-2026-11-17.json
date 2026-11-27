@@ -1,0 +1,1494 @@
+{
+  "schema": 1,
+  "reportSeriesLabel": "2026-11-17",
+  "clockCaveat": "Report-series filenames are not acquisition, publication or measurement timestamps. Preserve the runner clocks below separately; no later observation is represented as known at the series date.",
+  "question": "Bounded original-ISO VPN configuration, requested literals and native crypto/decompiler evidence; no working VPN credential established.",
+  "sourceCommit": "6d8d91b24b09a823829530a8bfa9e7f1533d6098",
+  "iso": {
+    "name": "kodachi-os-xfce-10.0.3-amd64.iso",
+    "bytes": 4544303104,
+    "sha256": "57693b32079bef101b75f21f3391bd036f1aae72836b8a06c921d236df626c14",
+    "sha512": "ec45001c7f9f6fe288c478c4ed6b454b9effb4b9c1bf808a2c22750d7d5018b0ff96f1c8874988788335576f15d8c514a8fb4789a2d0e90e85d1de0509503628"
+  },
+  "originalAcquisition": {
+    "runId": "45981578258",
+    "runUrl": "https://github.com/shdwelf/Html5/actions/runs/45981578258",
+    "artifactId": 15188898562,
+    "artifactExpiresAtReportedByGitHub": "2026-11-28T10:23:46Z",
+    "archiveSha256": "c67e74c915e032a21405c78e6c772d8e36f82d741e61890a6feade1d0097c775",
+    "downloadedKeySignatureVerified": true,
+    "publisherKeyIndependentlyAuthenticated": false,
+    "receiptPath": "docs/research/kodachi-iso-acquisition-2026-11-17.json"
+  },
+  "staticInspection": {
+    "runId": "46037020264",
+    "runUrl": "https://github.com/shdwelf/Html5/actions/runs/46037020264",
+    "checkRunId": 140635210613,
+    "conclusion": "success",
+    "inspectedAtRunnerClock": "2026-11-27T16:53:14.505746+00:00",
+    "transport": "Ordered, complete base64 Checks annotations; source, script and dependency-lock hashes checked locally. Only bounded preview retrieved; full artifact not locally reviewed.",
+    "previewSha256": "eaa4eedeaea4898595635e61acf881b96d4d2e8e978123998da6f5db98e2f7a8",
+    "inspectionScriptSha256": "6c2e54f191943d4b14b3e45619a27a3d2f3d0d05f322a59eb8b6ff6d4ae633d5",
+    "dependencyLockSha256": "cb78707cd0894697e6b49a2761906783e8f6a2a42a5addce9c4967b0d381fe79",
+    "layers": [
+      {
+        "isoPath": "/live/filesystem.squashfs",
+        "bytesUsed": 3805964377,
+        "streamBytes": 3805966336,
+        "inodes": 279847,
+        "blockBytes": 262144,
+        "compressionId": 6
+      }
+    ],
+    "counts": {
+      "isoFiles": 1117,
+      "symlinkEntries": 57277,
+      "fileEntries": 200981,
+      "candidateFiles": 1178,
+      "scannedFiles": 1175,
+      "kodachi-runtime-or-config": 1147,
+      "os-release": 1,
+      "auth-or-vpn-reference": 26,
+      "vpn-config": 1,
+      "specialEntries": 9
+    },
+    "bytesRead": 491894381,
+    "limits": {
+      "entries": 700000,
+      "depth": 64,
+      "candidateFiles": 20000,
+      "configBytes": 8388608,
+      "binaryBytes": 67108864,
+      "totalBytes": 805306368
+    },
+    "skippedCount": 3,
+    "skippedExamples": [
+      {
+        "layer": "/live/filesystem.squashfs",
+        "path": "/opt/kodachi/dashboard/hooks/ai-cmd",
+        "bytes": 77920756,
+        "reason": "declared file/total byte bound"
+      },
+      {
+        "layer": "/live/filesystem.squashfs",
+        "path": "/opt/kodachi/dashboard/hooks/models/all-MiniLM-L6-v2.onnx",
+        "bytes": 90405214,
+        "reason": "declared file/total byte bound"
+      },
+      {
+        "layer": "/live/filesystem.squashfs",
+        "path": "/opt/kodachi/dashboard/hooks/models/kodachi-intent-classifier.onnx",
+        "bytes": 67408117,
+        "reason": "declared file/total byte bound"
+      }
+    ],
+    "authenticationRecordCounts": {
+      "authDirectives": 0,
+      "inlineAuth": 0,
+      "shortAuthFileCandidate": 0,
+      "providerAuthTemplates": 1
+    },
+    "credentialFieldStates": {
+      "runtime-expression": 22,
+      "empty": 1,
+      "nonempty-literal": 3,
+      "numeric-configuration": 1,
+      "boolean-not-credential": 7,
+      "structure-not-credential": 18,
+      "placeholder": 8
+    },
+    "credentialLiteralCandidatesCount": 3,
+    "credentialLiteralCandidates": [
+      {
+        "path": "/usr/local/libexec/kodachi/kodachi-repo-apt",
+        "line": 2468,
+        "field": "username",
+        "state": "nonempty-literal",
+        "valueRedacted": true
+      },
+      {
+        "path": "/usr/local/libexec/kodachi/kodachi-repo-apt",
+        "line": 2469,
+        "field": "password",
+        "state": "nonempty-literal",
+        "valueRedacted": true
+      },
+      {
+        "path": "/usr/local/bin/kodachi-verify-install-residue",
+        "line": 70,
+        "field": "LIVE_PASSWORD",
+        "state": "nonempty-literal",
+        "valueRedacted": true
+      }
+    ],
+    "providerTemplateStates": {
+      "no-template": 8,
+      "field-object": 5
+    },
+    "providerTemplateFieldStates": {},
+    "credentialFieldCaveat": "Line-oriented heuristic states include code/schema/template fields. Two redacted nonempty-literal fields occur in the APT helper and one LIVE_PASSWORD field in an install-residue checker; none is established as a working VPN provider credential. Values and runtime roles were not recovered or authenticated.",
+    "requestedLiteralSearch": {
+      "r00t0r": {
+        "matchingScannedFiles": 0,
+        "utf8SubstringOccurrences": 0,
+        "standaloneAsciiOccurrences": 0,
+        "roleUnproven": true,
+        "workingVpnCredentialProven": false
+      },
+      "r00tor": {
+        "matchingScannedFiles": 0,
+        "utf8SubstringOccurrences": 0,
+        "standaloneAsciiOccurrences": 0,
+        "roleUnproven": true,
+        "workingVpnCredentialProven": false
+      },
+      "r00t": {
+        "matchingScannedFiles": 0,
+        "utf8SubstringOccurrences": 0,
+        "standaloneAsciiOccurrences": 0,
+        "roleUnproven": true,
+        "workingVpnCredentialProven": false
+      }
+    },
+    "requestedLiteralEncodings": [
+      "UTF-8",
+      "UTF-16LE",
+      "UTF-16BE"
+    ],
+    "literalCaveat": "Case-sensitive byte searches only in the bounded scanned candidate files; r00t is also a substring of the longer two terms. Zero matching files means no match in any searched encoding, not absence from every ISO byte or runtime-derived/downloaded data.",
+    "knownOsLoginLiteralTotals": {
+      "r@@t00": 0,
+      "Security4All": 19
+    },
+    "configurationInventoryCount": 1,
+    "selectedMeasuredFiles": [
+      {
+        "path": "/etc/openvpn/update-resolv-conf",
+        "layer": "/live/filesystem.squashfs",
+        "kind": "vpn-config",
+        "bytesRead": 1468,
+        "sha256": "a6ff4776fdef05dabb51adf91ed3fb0bb45d41e8d364836c7cc2f8a7899585f1"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/config/vpn-providers-public-api.json",
+        "layer": "/live/filesystem.squashfs",
+        "kind": "kodachi-runtime-or-config",
+        "bytesRead": 39221,
+        "sha256": "57eff2cee49a931f3589310492f5596944b4131f59886335bc247ca6d8012aad",
+        "providerAuthTemplatesVisibleInPreview": [
+          {
+            "jsonPath": "$.providers.custom.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          },
+          {
+            "jsonPath": "$.providers.torguard.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          },
+          {
+            "jsonPath": "$.providers.expressvpn.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          },
+          {
+            "jsonPath": "$.providers.protonvpn.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          },
+          {
+            "jsonPath": "$.providers.windscribe.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          },
+          {
+            "jsonPath": "$.providers.mullvad.credentials.auth_user_pass_template",
+            "type": "NoneType",
+            "state": "no-template"
+          }
+        ],
+        "providerAuthTemplatesOmittedFromPreview": 7
+      }
+    ],
+    "runtimeBinaryInventoryCount": 28,
+    "runtimeBinaryInventory": [
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-admin",
+        "bytesRead": 8460168,
+        "sha256": "fc92ffe44c830c76dd10428951a20b916868540a1be2dfa9ab45f0bd753f2dd6"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-discovery",
+        "bytesRead": 1852112,
+        "sha256": "78eb41ba0bead09ff42d594e6139edaa8be63bf88279ba87be2eaeb4d30ba65f"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-gateway",
+        "bytesRead": 10563384,
+        "sha256": "a515b8f1cd6e7d1b38d4bc2c32867492c7c4408198704bb1fe3beb6b3eff3067"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-learner",
+        "bytesRead": 29836452,
+        "sha256": "146d951a096c84427145e854e9fb1fce154ce746040249fdcc350fab4bd0dedd"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-monitor",
+        "bytesRead": 8561576,
+        "sha256": "c9b1bf9845f8872349f1de63f0ca5d2db0a9356e305d47da5eac6e5b4f442b88"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-scheduler",
+        "bytesRead": 10132616,
+        "sha256": "bfefdfda27597b9ee40d49efb4f405eae063271b87ff89c2fa0854f0b7ea74b1"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ai-trainer",
+        "bytesRead": 8806280,
+        "sha256": "13570d46ea1d64514fa1decb30d995e054938b4211f29c269dd417765d37f28f"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/conky-status",
+        "bytesRead": 4662624,
+        "sha256": "a87c38c2544c6d9e71defe13d51b22cdfa3255a0d2b58a6a93e389eae9d81e9d"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/deps-checker",
+        "bytesRead": 3150784,
+        "sha256": "8c3aa265f9ca6768502db2fe47701729ba4c9d4fc9f70e1a17e52b9be4994cf4"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/dns-leak",
+        "bytesRead": 10253152,
+        "sha256": "89250cd1292f00d247f50bd302220ddf36d7b0ac5d28ef6f44421c68e95add59"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/dns-switch",
+        "bytesRead": 11682464,
+        "sha256": "12804aa92cbc6f84a8086d58f294a9b13760999f810383089efc08f4ac7a1457"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/global-launcher",
+        "bytesRead": 2298816,
+        "sha256": "d0be1bd8c5fca345d77ca93e1d5b9d553c38ad404fbd88632baa44061284430f"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/health-control",
+        "bytesRead": 23225024,
+        "sha256": "842b3e949f3724afb31abf8ac4c010cb9b3bad9cf2fd10e6f507751c0b7aede0"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/integrity-check",
+        "bytesRead": 4232256,
+        "sha256": "65a149490a000a0ee8b419ee3a89ed8cc5cd09d0474082ed1215d9908836aa53"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/ip-fetch",
+        "bytesRead": 9397888,
+        "sha256": "eda16ae1dc3fc231418a3319436c9968e1cb493a56db73b955897da2db47c171"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/kodachi-dashboard",
+        "bytesRead": 36479640,
+        "sha256": "ea9808ca7c75785cf5c9559ef5ec157d263c251c5881f8a5093ce9cc81781ab5"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/kodachi-session-helper",
+        "bytesRead": 2569088,
+        "sha256": "7032aaf0f6fb60ebe1c421d03d29f3e47ea6faa6da1a0b547994aadee1255863"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/kodachi-soc",
+        "bytesRead": 9520272,
+        "sha256": "252544f9d3fdfe608dc101e66c885767da72da8b2085a1af22775fcb91721287"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/kodachi-soc-notifier",
+        "bytesRead": 1425672,
+        "sha256": "428f2fa682f27c511eefc35b34debe9491986f1fa3feba17dc544a23488d3cd7"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/logs-hook",
+        "bytesRead": 1811264,
+        "sha256": "9797c13ff92aa3a74ecfb1e87f797cae50152797d7f5cb3c9e56b4a75cd76981"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/oniux",
+        "bytesRead": 25311568,
+        "sha256": "8e382a387cece7d1434abe7c7c759def6595cc946e41d7c71b84531af762b1f8"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/online-auth",
+        "bytesRead": 9458752,
+        "sha256": "0c812d83ce153460350e1cb4a631a8ae7567d9cb604d2077bc2c5b8f67fe906c"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/online-info-switch",
+        "bytesRead": 11105280,
+        "sha256": "06b9ac1ed2f388878dfb568b21c7e8d637bdb87f6c25e151bdee0d8c6a734438"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/permission-guard",
+        "bytesRead": 2184832,
+        "sha256": "dcb490a39fd36a106c9f0fb42488576fdb4b4d05f767fa5ba52d36ff9566b750"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/routing-switch",
+        "bytesRead": 15468736,
+        "sha256": "80bbbf29ea2ff222a60b9c85f9b6050accb1c806e0777689b336a90df4aeb62b"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/tor-switch",
+        "bytesRead": 14222624,
+        "sha256": "46c6d8d59b84464372c6cc575baffb7b6acb56d8db33469786eda521e2c93d63"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/tun2socks-linux-amd64",
+        "bytesRead": 11780222,
+        "sha256": "98d545a663b790b4a4100d0c796e1d43d82c5442efdb6e9c4d82e2e32e99c031"
+      },
+      {
+        "path": "/opt/kodachi/dashboard/hooks/workflow-manager",
+        "bytesRead": 9208328,
+        "sha256": "3dc27784f18aeb54d0067fe339de355b15c7f6379d7eeb01058e887bc4d8d59e"
+      }
+    ],
+    "scope": "All listed regular-file paths classified; bounded configuration text and selected Kodachi runtime bytes only. No symlink/device reads, nested archives, runtime downloads, decryption or network/authentication tests.",
+    "previewOnly": true
+  },
+  "nativeAnalysis": {
+    "schema": 1,
+    "sourceCommit": "6d8d91b24b09a823829530a8bfa9e7f1533d6098",
+    "runId": "46037020264",
+    "observedAtRunnerClock": "2026-11-27T16:53:52.493382+00:00",
+    "iso": {
+      "name": "kodachi-os-xfce-10.0.3-amd64.iso",
+      "bytes": 4544303104,
+      "sha256": "57693b32079bef101b75f21f3391bd036f1aae72836b8a06c921d236df626c14",
+      "sha512": "ec45001c7f9f6fe288c478c4ed6b454b9effb4b9c1bf808a2c22750d7d5018b0ff96f1c8874988788335576f15d8c514a8fb4789a2d0e90e85d1de0509503628"
+    },
+    "ghidra": {
+      "version": "12.1.4",
+      "archiveSha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db"
+    },
+    "javaVersion": "openjdk version \"21.0.13.1\" 2026-11-17 LTS\nOpenJDK Runtime Environment Temurin-21.0.13.1+2 (build 21.0.13.1+2-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.13.1+2 (build 21.0.13.1+2-LTS, mixed mode, sharing)",
+    "findCrypt": {
+      "repository": "TorgoTorgo/ghidra-findcrypt",
+      "commit": "5c2fd5bb50d13a4092da136dc7004becd8129c7b",
+      "databaseBlob": "36e799563f152ba6e442a9bcd9dc71cd23a96309",
+      "databaseSha256": "ec3f54412ea1a1ddca05ec39eaa8ad1a9c38ce021297f359dbc0a58b9c7a8897",
+      "signatures": 126
+    },
+    "sourceSha256": {
+      "tools/kodachi/inspect-iso.py": "6c2e54f191943d4b14b3e45619a27a3d2f3d0d05f322a59eb8b6ff6d4ae633d5",
+      "tools/kodachi/prepare-native.py": "eb8098260b9b79f5ea2157efc6e1d0de661db493a585421312e214ebb90a94ac",
+      "tools/kodachi/inspect-requirements.txt": "cb78707cd0894697e6b49a2761906783e8f6a2a42a5addce9c4967b0d381fe79",
+      "tools/ghidra_scripts/KodachiCryptoReport.java": "0e8ff6a87cd10e6d28b230af8d77a0703a08b6c12e62d3c4ee98a769d8786c4a"
+    },
+    "positiveControls": {
+      "native-control": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "a81a1ea898af14b47d3b5610e8bb7aedc59e46aa7dd411a20149dee8d1aeb813",
+        "format": "Executable and Linking Format (ELF)",
+        "language": "x86:LE:64:default",
+        "autoAnalysisTimedOut": false,
+        "automaticWholeProgramAnalysisRequested": false,
+        "disassemblySeedLimit": 4,
+        "disassemblyBytesPerSeedLimit": 4096,
+        "bufferedLoadedBytes": 2669,
+        "loadedMemoryByteLimit": 67108864,
+        "patternSearch": "Buffered loaded-initialized Ghidra ranges, Boyer-Moore-Horspool; no cross-range or unloaded-data claim",
+        "boundedDisassembly": [
+          {
+            "entry": "0010115c",
+            "selectedBy": "entry-point",
+            "windowBytes": 13,
+            "instructionCountInWindow": 4,
+            "disassemblyApplied": true,
+            "functionAvailable": true,
+            "automaticCodeAnalysisEnabled": false
+          },
+          {
+            "entry": "00101000",
+            "selectedBy": "imported-function",
+            "windowBytes": 27,
+            "instructionCountInWindow": 8,
+            "disassemblyApplied": true,
+            "functionAvailable": true,
+            "automaticCodeAnalysisEnabled": false
+          },
+          {
+            "entry": "00101040",
+            "selectedBy": "imported-function",
+            "windowBytes": 282,
+            "instructionCountInWindow": 13,
+            "disassemblyApplied": true,
+            "functionAvailable": true,
+            "automaticCodeAnalysisEnabled": false
+          },
+          {
+            "entry": "00101070",
+            "selectedBy": "imported-function",
+            "windowBytes": 234,
+            "instructionCountInWindow": 9,
+            "disassemblyApplied": true,
+            "functionAvailable": true,
+            "automaticCodeAnalysisEnabled": false
+          }
+        ],
+        "functionsDefined": 13,
+        "cryptoSymbolCategoryCounts": {},
+        "fixedLiteralReferences": [
+          {
+            "literal": "r00t0r",
+            "loadedMemorySubstringMatchesUpTo32": 1,
+            "matchCapReached": false,
+            "referencesVisited": 1,
+            "firstAddresses": [
+              "00102010"
+            ],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r00tor",
+            "loadedMemorySubstringMatchesUpTo32": 1,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [
+              "00102017"
+            ],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r00t",
+            "loadedMemorySubstringMatchesUpTo32": 3,
+            "matchCapReached": false,
+            "referencesVisited": 1,
+            "firstAddresses": [
+              "00102010",
+              "00102017",
+              "0010201e"
+            ],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r@@t00",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "Security4All",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "auth-user-pass",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "vpn-credentials.json",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          }
+        ],
+        "instructionsVisitedUpTo500000": 34,
+        "instructionCapReached": false,
+        "findCryptSignatures": 126,
+        "findCryptMatches": [],
+        "boundedDecompilations": [
+          {
+            "entry": "0010115c",
+            "selectedBy": "entry-point",
+            "completed": true,
+            "cBytesNotPublished": 34,
+            "cSha256": "fa8dee2a317eeaeb11527783a63a56bbd2c3878ec3eb5c27a101892a093b819d",
+            "cSourcePublished": false
+          },
+          {
+            "entry": "00101000",
+            "selectedBy": "imported-function",
+            "completed": true,
+            "cBytesNotPublished": 66,
+            "cSha256": "9530438ab808f7baa4c2a28d3552f10274a3e00072d3f47e7725cc05445ba373",
+            "cSourcePublished": false
+          },
+          {
+            "entry": "00101040",
+            "selectedBy": "imported-function",
+            "completed": true,
+            "cBytesNotPublished": 273,
+            "cSha256": "51793880970ea03f3e7c434f9f8642ab28c0ded2fb901ef89a0a98a765ade995",
+            "cSourcePublished": false
+          },
+          {
+            "entry": "00101070",
+            "selectedBy": "imported-function",
+            "completed": true,
+            "cBytesNotPublished": 288,
+            "cSha256": "0c083d3e4f4376b0d4706dc2bf271e860b729d1b4ba7c350ce1c98f93327e589",
+            "cSourcePublished": false
+          }
+        ],
+        "scope": "Automatic whole-program analysis disabled. At most four 4096-byte restricted disassembly windows, bounded function decompilation and initialized loaded-memory signatures only; no complete source/control-flow recovery, runtime tracing or decryption. A false auto-analysis timeout flag is not whole-program completion. Signature/symbol names are not algorithm/key/password proof. Full-file UTF8/UTF16 counts are in the ISO scan.",
+        "inputExecuted": false,
+        "credentialsUsed": false,
+        "decryptionPerformed": false,
+        "arbitraryStringsOrSourcePublished": false,
+        "privateKeysPublished": false
+      },
+      "aes-control": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "c2d8e5eed6cbebd8625fc18f81486a7733c04f9b0129ffbe974c68b90308b4f2",
+        "format": "Raw Binary",
+        "language": "x86:LE:64:default",
+        "autoAnalysisTimedOut": false,
+        "automaticWholeProgramAnalysisRequested": false,
+        "disassemblySeedLimit": 4,
+        "disassemblyBytesPerSeedLimit": 4096,
+        "bufferedLoadedBytes": 256,
+        "loadedMemoryByteLimit": 67108864,
+        "patternSearch": "Buffered loaded-initialized Ghidra ranges, Boyer-Moore-Horspool; no cross-range or unloaded-data claim",
+        "boundedDisassembly": [],
+        "functionsDefined": 0,
+        "cryptoSymbolCategoryCounts": {},
+        "fixedLiteralReferences": [
+          {
+            "literal": "r00t0r",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r00tor",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r00t",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "r@@t00",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "Security4All",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "auth-user-pass",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          },
+          {
+            "literal": "vpn-credentials.json",
+            "loadedMemorySubstringMatchesUpTo32": 0,
+            "matchCapReached": false,
+            "referencesVisited": 0,
+            "firstAddresses": [],
+            "workingVpnCredentialProven": false
+          }
+        ],
+        "instructionsVisitedUpTo500000": 0,
+        "instructionCapReached": false,
+        "findCryptSignatures": 126,
+        "findCryptMatches": [
+          {
+            "label": "AES_Encryption_SBox",
+            "matchesUpTo32": 1,
+            "matchCapReached": false,
+            "firstAddresses": [
+              "00000000"
+            ]
+          }
+        ],
+        "boundedDecompilations": [],
+        "scope": "Automatic whole-program analysis disabled. At most four 4096-byte restricted disassembly windows, bounded function decompilation and initialized loaded-memory signatures only; no complete source/control-flow recovery, runtime tracing or decryption. A false auto-analysis timeout flag is not whole-program completion. Signature/symbol names are not algorithm/key/password proof. Full-file UTF8/UTF16 counts are in the ISO scan.",
+        "inputExecuted": false,
+        "credentialsUsed": false,
+        "decryptionPerformed": false,
+        "arbitraryStringsOrSourcePublished": false,
+        "privateKeysPublished": false
+      }
+    },
+    "programs": [
+      {
+        "input": {
+          "isoPath": "/opt/kodachi/dashboard/hooks/online-auth",
+          "layer": "/live/filesystem.squashfs",
+          "flatName": "online-auth.elf",
+          "bytes": 9458752,
+          "sha256": "0c812d83ce153460350e1cb4a631a8ae7567d9cb604d2077bc2c5b8f67fe906c",
+          "executableBit": false,
+          "executed": false
+        },
+        "analysis": {
+          "schema": 1,
+          "ghidraVersion": "12.1.4",
+          "inputSha256": "0c812d83ce153460350e1cb4a631a8ae7567d9cb604d2077bc2c5b8f67fe906c",
+          "format": "Executable and Linking Format (ELF)",
+          "language": "x86:LE:64:default",
+          "autoAnalysisTimedOut": false,
+          "automaticWholeProgramAnalysisRequested": false,
+          "disassemblySeedLimit": 4,
+          "disassemblyBytesPerSeedLimit": 4096,
+          "bufferedLoadedBytes": 9451340,
+          "loadedMemoryByteLimit": 67108864,
+          "patternSearch": "Buffered loaded-initialized Ghidra ranges, Boyer-Moore-Horspool; no cross-range or unloaded-data claim",
+          "boundedDisassembly": [
+            {
+              "entry": "001e406f",
+              "selectedBy": "entry-point",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 137,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "001c6000",
+              "selectedBy": "imported-function",
+              "windowBytes": 8,
+              "instructionCountInWindow": 4,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "001e4290",
+              "selectedBy": "imported-function",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 20,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "001e4300",
+              "selectedBy": "imported-function",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 9,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            }
+          ],
+          "functionsDefined": 5,
+          "cryptoSymbolCategoryCounts": {},
+          "fixedLiteralReferences": [
+            {
+              "literal": "r00t0r",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r00tor",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r00t",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r@@t00",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "Security4All",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "auth-user-pass",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "vpn-credentials.json",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            }
+          ],
+          "instructionsVisitedUpTo500000": 174,
+          "instructionCapReached": false,
+          "findCryptSignatures": 126,
+          "findCryptMatches": [
+            {
+              "label": "AES_Encryption_SBox",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086ad00",
+                "0086ae00",
+                "0086af00"
+              ]
+            },
+            {
+              "label": "AES_Decryption_SBox_Inverse",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086b940",
+                "0086ba60",
+                "0086bb80"
+              ]
+            },
+            {
+              "label": "SHA_1",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007fb100"
+              ]
+            },
+            {
+              "label": "MD4",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d9a70",
+                "007fb100"
+              ]
+            },
+            {
+              "label": "HAVAL",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e760"
+              ]
+            },
+            {
+              "label": "TEA_DELTA",
+              "matchesUpTo32": 24,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "001d0456",
+                "001d078f",
+                "001d0acb"
+              ]
+            },
+            {
+              "label": "SHACAL2_K",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d9680",
+                "0088f320"
+              ]
+            },
+            {
+              "label": "KeccakF1600Constants",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0088e740"
+              ]
+            },
+            {
+              "label": "ChaChaInitStates_expanded32k",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d8e50",
+                "007d9f40",
+                "007d9f50"
+              ]
+            },
+            {
+              "label": "BLAKE2_IV",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d9aa0",
+                "007e2a00"
+              ]
+            },
+            {
+              "label": "BLAKE2_IV_64",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d9b80"
+              ]
+            },
+            {
+              "label": "Blowfish_p_init",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e760"
+              ]
+            },
+            {
+              "label": "Blowfish_s_init",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e7a8"
+              ]
+            },
+            {
+              "label": "CRC32_m_tab",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007e87cc",
+                "00841bc0",
+                "008450f0"
+              ]
+            },
+            {
+              "label": "HAVAL_mc2",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e780"
+              ]
+            },
+            {
+              "label": "HAVAL_mc3",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e800"
+              ]
+            },
+            {
+              "label": "HAVAL_mc4",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e880"
+              ]
+            },
+            {
+              "label": "HAVAL_mc5",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0086e900"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_MD5",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "008622e0"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_RIPEMD160",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "008622b8"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA256",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00862270"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA384",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00862250"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA512",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00862230"
+              ]
+            },
+            {
+              "label": "rc2_PITABLE",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0088e3c0"
+              ]
+            },
+            {
+              "label": "SHA256_K",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "007d9680",
+                "0088f320"
+              ]
+            },
+            {
+              "label": "SHA512_K",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "0088fcc0"
+              ]
+            }
+          ],
+          "boundedDecompilations": [
+            {
+              "entry": "001e406f",
+              "selectedBy": "entry-point",
+              "completed": true,
+              "cBytesNotPublished": 4422,
+              "cSha256": "4cf28769ffed87925c2d0ee8e9f6fe0ede61dc8442d4d7116e55503d05e69659",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "001c6000",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 95,
+              "cSha256": "428bcf6679d8763c6ceca86e39b03b030d64eecb86e9dc95e29684e1a8e24bc5",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "001e4290",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 458,
+              "cSha256": "a327ff0cbfa17f3554a314d75e63c4cd3ebd4fcd5c8fb2cbe78e160754f85dfa",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "001e4300",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 157,
+              "cSha256": "d457170b97910f2659cbd9442163f0ee9ef6e9489ed986d46edc012a5b80fae5",
+              "cSourcePublished": false
+            }
+          ],
+          "scope": "Automatic whole-program analysis disabled. At most four 4096-byte restricted disassembly windows, bounded function decompilation and initialized loaded-memory signatures only; no complete source/control-flow recovery, runtime tracing or decryption. A false auto-analysis timeout flag is not whole-program completion. Signature/symbol names are not algorithm/key/password proof. Full-file UTF8/UTF16 counts are in the ISO scan.",
+          "inputExecuted": false,
+          "credentialsUsed": false,
+          "decryptionPerformed": false,
+          "arbitraryStringsOrSourcePublished": false,
+          "privateKeysPublished": false
+        }
+      },
+      {
+        "input": {
+          "isoPath": "/opt/kodachi/dashboard/hooks/routing-switch",
+          "layer": "/live/filesystem.squashfs",
+          "flatName": "routing-switch.elf",
+          "bytes": 15468736,
+          "sha256": "80bbbf29ea2ff222a60b9c85f9b6050accb1c806e0777689b336a90df4aeb62b",
+          "executableBit": false,
+          "executed": false
+        },
+        "analysis": {
+          "schema": 1,
+          "ghidraVersion": "12.1.4",
+          "inputSha256": "80bbbf29ea2ff222a60b9c85f9b6050accb1c806e0777689b336a90df4aeb62b",
+          "format": "Executable and Linking Format (ELF)",
+          "language": "x86:LE:64:default",
+          "autoAnalysisTimedOut": false,
+          "automaticWholeProgramAnalysisRequested": false,
+          "disassemblySeedLimit": 4,
+          "disassemblyBytesPerSeedLimit": 4096,
+          "bufferedLoadedBytes": 15459492,
+          "loadedMemoryByteLimit": 67108864,
+          "patternSearch": "Buffered loaded-initialized Ghidra ranges, Boyer-Moore-Horspool; no cross-range or unloaded-data claim",
+          "boundedDisassembly": [
+            {
+              "entry": "002284e9",
+              "selectedBy": "entry-point",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 137,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "001e9000",
+              "selectedBy": "imported-function",
+              "windowBytes": 8,
+              "instructionCountInWindow": 4,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "00228700",
+              "selectedBy": "imported-function",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 20,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            },
+            {
+              "entry": "00228770",
+              "selectedBy": "imported-function",
+              "windowBytes": 4096,
+              "instructionCountInWindow": 9,
+              "disassemblyApplied": true,
+              "functionAvailable": true,
+              "automaticCodeAnalysisEnabled": false
+            }
+          ],
+          "functionsDefined": 5,
+          "cryptoSymbolCategoryCounts": {},
+          "fixedLiteralReferences": [
+            {
+              "literal": "r00t0r",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r00tor",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r00t",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "r@@t00",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "Security4All",
+              "loadedMemorySubstringMatchesUpTo32": 0,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "auth-user-pass",
+              "loadedMemorySubstringMatchesUpTo32": 16,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [
+                "00c729b5",
+                "00c78a82",
+                "00c78a9a"
+              ],
+              "workingVpnCredentialProven": false
+            },
+            {
+              "literal": "vpn-credentials.json",
+              "loadedMemorySubstringMatchesUpTo32": 2,
+              "matchCapReached": false,
+              "referencesVisited": 0,
+              "firstAddresses": [
+                "00d65bda",
+                "00d6ee9c"
+              ],
+              "workingVpnCredentialProven": false
+            }
+          ],
+          "instructionsVisitedUpTo500000": 174,
+          "instructionCapReached": false,
+          "findCryptSignatures": 126,
+          "findCryptMatches": [
+            {
+              "label": "AES_Encryption_SBox",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dca600",
+                "00dca700",
+                "00dca800"
+              ]
+            },
+            {
+              "label": "AES_Decryption_SBox_Inverse",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dcb240",
+                "00dcb360",
+                "00dcb480"
+              ]
+            },
+            {
+              "label": "MD4",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c96000"
+              ]
+            },
+            {
+              "label": "HAVAL",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce060"
+              ]
+            },
+            {
+              "label": "TEA_DELTA",
+              "matchesUpTo32": 24,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "001f6606",
+                "001f693f",
+                "001f6c7b"
+              ]
+            },
+            {
+              "label": "SHACAL2_K",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c95ba0",
+                "00deec20"
+              ]
+            },
+            {
+              "label": "KeccakF1600Constants",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dee040"
+              ]
+            },
+            {
+              "label": "ChaChaInitStates_expanded32k",
+              "matchesUpTo32": 4,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c93d10",
+                "00c964e0",
+                "00c964f0"
+              ]
+            },
+            {
+              "label": "BLAKE2_IV",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c96030",
+                "00cce678"
+              ]
+            },
+            {
+              "label": "BLAKE2_IV_64",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c96110"
+              ]
+            },
+            {
+              "label": "Blowfish_p_init",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce060"
+              ]
+            },
+            {
+              "label": "Blowfish_s_init",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce0a8"
+              ]
+            },
+            {
+              "label": "CRC32_m_tab",
+              "matchesUpTo32": 3,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00ca833c",
+                "00da43b0",
+                "00da63b0"
+              ]
+            },
+            {
+              "label": "HAVAL_mc2",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce080"
+              ]
+            },
+            {
+              "label": "HAVAL_mc3",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce100"
+              ]
+            },
+            {
+              "label": "HAVAL_mc4",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce180"
+              ]
+            },
+            {
+              "label": "HAVAL_mc5",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dce200"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_MD5",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dc1be0"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_RIPEMD160",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dc1bb8"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA256",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dc1b70"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA384",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dc1b50"
+              ]
+            },
+            {
+              "label": "PKCS_DigestDecoration_SHA512",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dc1b30"
+              ]
+            },
+            {
+              "label": "rc2_PITABLE",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00dedcc0"
+              ]
+            },
+            {
+              "label": "SHA256_K",
+              "matchesUpTo32": 2,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00c95ba0",
+                "00deec20"
+              ]
+            },
+            {
+              "label": "SHA512_K",
+              "matchesUpTo32": 1,
+              "matchCapReached": false,
+              "firstAddresses": [
+                "00def5c0"
+              ]
+            }
+          ],
+          "boundedDecompilations": [
+            {
+              "entry": "002284e9",
+              "selectedBy": "entry-point",
+              "completed": true,
+              "cBytesNotPublished": 4422,
+              "cSha256": "a2041799c1f3b7bbfdf141a00ab8e3dbd9894bc33bfb18db50bf179bfc077dd2",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "001e9000",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 95,
+              "cSha256": "1147c7c0e9fe9f6aeb238e9d4ad5a1a94866d35fc6cde4bb9bbbe28773c791e1",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "00228700",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 458,
+              "cSha256": "cdc352854bf8905f67f708b1d4e5f69302bcb83b766787821d7f3b19699ccb54",
+              "cSourcePublished": false
+            },
+            {
+              "entry": "00228770",
+              "selectedBy": "imported-function",
+              "completed": true,
+              "cBytesNotPublished": 157,
+              "cSha256": "2cc70afced7458461d6d9c9c73d4b8e7ae7016ba4a705712e8e1b2bd0f2d7427",
+              "cSourcePublished": false
+            }
+          ],
+          "scope": "Automatic whole-program analysis disabled. At most four 4096-byte restricted disassembly windows, bounded function decompilation and initialized loaded-memory signatures only; no complete source/control-flow recovery, runtime tracing or decryption. A false auto-analysis timeout flag is not whole-program completion. Signature/symbol names are not algorithm/key/password proof. Full-file UTF8/UTF16 counts are in the ISO scan.",
+          "inputExecuted": false,
+          "credentialsUsed": false,
+          "decryptionPerformed": false,
+          "arbitraryStringsOrSourcePublished": false,
+          "privateKeysPublished": false
+        }
+      }
+    ],
+    "booted": false,
+    "mounted": false,
+    "imageBinariesExecuted": false,
+    "connectedToVpn": false,
+    "credentialsUsed": false,
+    "decryptionPerformed": false,
+    "privateKeysOrArbitraryStringsPublished": false
+  },
+  "nativeEvidenceTransport": {
+    "runId": "46037020264",
+    "runUrl": "https://github.com/shdwelf/Html5/actions/runs/46037020264",
+    "checkRunId": 140635210613,
+    "conclusion": "success",
+    "transport": "Complete ordered zlib/base64 native-summary Checks chunks, decoded locally; source, input, tool and database hashes checked. Original native input binaries, Ghidra projects, C output and raw logs not retrieved/published.",
+    "summarySha256": "9fe5ecb466ad2809048986b0e0736e0788d94a9e8a0082360b5e6b3f89d23e8b",
+    "nativeWorkflowSha256": "aec596b853a99145b25a94b2b06be1de2d36bc7a3f2717eb5201c1da607bf204",
+    "redactedMetadataArtifact": {
+      "id": 15218580752,
+      "name": "kodachi-native-crypto-evidence-redacted",
+      "archiveBytes": 87044,
+      "archiveSha256": "67b8245c969f5f3c7325986201406b6e00981940546e92e435c5db7c5c8e41d6",
+      "expiresAtReportedByGitHub": "2026-12-11T16:53:52Z",
+      "contents": "Redacted inventory and bounded native metadata only; no original input binaries, raw logs, arbitrary binary string dumps, keys, source output or projects. Full artifact not retrieved locally."
+    },
+    "incompletePredecessors": [
+      {
+        "runId": "46030444593",
+        "sourceCommit": "45c7a9c9d45c0f122bcbec2ee59fa0c1e7e9f88e",
+        "conclusion": "failure",
+        "reason": "Outer 12-minute actual-input command limit, exit 124; synthetic positive controls succeeded, actual native evidence not validated."
+      },
+      {
+        "runId": "46033629633",
+        "sourceCommit": "015b0868b65985a0d912c705850e3a9948419794",
+        "conclusion": "failure",
+        "reason": "Outer 12-minute limit, exit 124; both synthetic controls reached all report stages, actual online-auth did not reach the post-script. Whole-program analysis not called complete."
+      }
+    ]
+  },
+  "publicSourceCrossCheck": {
+    "repository": "WMAL/kodachios",
+    "commit": "b9cddada130b57e81926b343d8b7720b95eac1c2",
+    "url": "https://github.com/WMAL/kodachios/tree/b9cddada130b57e81926b343d8b7720b95eac1c2",
+    "osLoginDefault": {
+      "username": "kodachi",
+      "password": "Security4All",
+      "role": "Published OS login, not an established VPN provider password"
+    },
+    "sourceLimits": "README and selected v10 workflow profiles only; omitted closed-source/runtime credentials and keys. Older Kodachi 8 source/default findings are separate and do not establish ISO 10 contents. No source command was executed."
+  },
+  "conclusion": {
+    "workingVpnPasswordEstablished": false,
+    "requestedLiteralsAreEstablishedPasswords": false,
+    "cryptoSignatureIsKeyOrDecryptionProof": false,
+    "noMatchProvesAbsenceFromEntireIsoOrRuntime": false,
+    "unknownCredentialValuesRedacted": true,
+    "booted": false,
+    "mounted": false,
+    "installed": false,
+    "imageBinariesExecuted": false,
+    "connectedToVpn": false,
+    "credentialsUsed": false,
+    "decryptionPerformed": false,
+    "privateKeysOrArbitraryStringsPublished": false
+  }
+}

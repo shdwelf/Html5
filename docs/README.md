@@ -4,6 +4,11 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Round 96 · tiled radar, analysis toolbox and original Kodachi ISO
+
+- [Kodachi ISO VPN / literal / native-analysis evidence](kodachi-vpn-iso-inspection-2026-11-17.md) and [structured register](research/kodachi-vpn-iso-inspection-2026-11-17.json) — bounded actual-image inspection, requested `r00t0r` / `r00tor` / `r00t` searches and separately gated Ghidra evidence. Published OS defaults, crypto signatures and working VPN passwords are distinct; no authentication, boot or decryption.
+- [Round 96 ordered delivery and gates](backlog-execution-round-96-2026-11-17.md) — responsive 4DWM radar first, offline Ghidra/ILSpy/JDK/direct/proxy setup interface next, original-ISO analysis next, documentation/validation last. Original 31 terminal tasks and the gateway's plan-only boundary remain intact. Review reports/registers stay outside public offline manual corpora.
+
 ## Round 95 · Android gateway, Kodachi ISO and Torrent Atlas
 
 - [Android VPN / I2P / Kodachi investigation](android-vpn-i2p-kodachi-research-2026-11-17.md) — one-VPN-owner architecture, alternative provider/channel adapters, pinned source/license boundaries and DistroWatch → official ISO provenance. The implemented gateway is **plan-only**, with no VPN consent or packet protection. The owner-requested desktop ISO was acquired on a runner and hashed/signature-checked against a downloaded key; independent key authentication remains open, no boot.
