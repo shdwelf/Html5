@@ -1,0 +1,3 @@
+# PLAN ONLY — not an importable OpenVPN configuration.
+# Selected transport: wireguard.
+# Provider discovery, keys, certificate validation and a tunnel engine are not supplied.

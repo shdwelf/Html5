@@ -1,5 +1,10 @@
 # apps/
 
+## Maintained addition: Torrent Atlas
+
+[`torrent-atlas/`](torrent-atlas/README.md) is an original local-first magnet/torrent metadata workbench, bounded v1 creator, explicit outbound search launchpad and password-manager research directory. Its deterministic public copy is `public/apps/torrent-atlas/`; it does not join swarms or load remote code. See the [research report](../docs/password-managers-and-torrent-research-2026-11-17.md). The historical imported-source table below is not a public-packaging allowlist.
+
+
 Standalone HTML5 apps synced from the personal Nextcloud share on 2026-08-31.
 
 Files originally saved as `index (N).html` on a mobile device were renamed from their `<title>` (original name kept in the last column).

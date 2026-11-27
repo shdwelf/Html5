@@ -110,9 +110,15 @@
           <form id="decrypt-form" novalidate>
             <div class="field-heading">
               <label for="armored-input">Armored OpenPGP message</label>
-              <span class="field-hint">Paste a passphrase-protected message</span>
+              <span class="field-hint">Paste armor OR choose an encrypted file · no private key for passphrase messages</span>
             </div>
-            <textarea id="armored-input" name="armored" rows="10" spellcheck="false" autocomplete="off" placeholder="-----BEGIN PGP MESSAGE-----&#10;…&#10;-----END PGP MESSAGE-----"></textarea>
+            <textarea id="armored-input" name="armored" rows="10" maxlength="2097152" spellcheck="false" autocomplete="off" placeholder="-----BEGIN PGP MESSAGE-----&#10;…&#10;-----END PGP MESSAGE-----"></textarea>
+
+            <div class="field">
+              <label for="encrypted-message-file">Alternative input: armored .asc or binary .pgp / .gpg encrypted file</label>
+              <input id="encrypted-message-file" type="file" accept=".asc,.pgp,.gpg,application/pgp-encrypted,application/octet-stream">
+              <p id="message-file-status" class="field-hint" role="status">No file selected. Maximum 2 MiB. Content is checked, not trusted by its filename. Nothing is uploaded or opened automatically.</p>
+            </div>
 
             <div class="field decrypt-passphrase-field">
               <label for="decrypt-passphrase">Passphrase</label>
@@ -121,12 +127,13 @@
                 <button class="reveal-button" type="button" data-toggle-password="decrypt-passphrase" aria-pressed="false">Show</button>
               </div>
             </div>
-            <p class="field-hint passphrase-hint">The message tools do not decrypt public-key messages or verify signatures. Key creation is a separate export workflow.</p>
+            <p class="field-hint passphrase-hint">A passphrase-encrypted message needs its passphrase, not a private key. A message encrypted only to a public key still requires the matching private key or authorized hardware key in a trusted client; public keys, fingerprints and unrelated passwords cannot substitute. This workflow never imports a private key or verifies a sender signature. One explicit attempt per local worker · 30-second limit · 1 MiB decrypted payload.</p>
 
             <div class="form-actions">
               <button class="button button-primary" type="submit" data-crypto-submit>
                 <span aria-hidden="true">↙</span> Decrypt message
               </button>
+              <button id="cancel-message-decrypt" class="button button-quiet" type="button" disabled>Stop worker</button>
               <button class="button button-quiet" type="button" data-clear-form="decrypt-form">Clear</button>
             </div>
             <p class="status-message" id="decrypt-status" role="status" aria-live="polite">Only a compatible passphrase-protected OpenPGP message can be opened here.</p>
@@ -142,6 +149,9 @@
               <button class="button button-secondary" type="button" data-copy="decrypted-output">Copy plaintext</button>
               <button class="button button-quiet" type="button" data-clear-output="decrypted-output">Clear output</button>
             </div>
+            <p id="decrypted-payload-status" class="field-hint" role="status">No decrypted payload retained. Valid UTF-8 appears as inert text; binary bytes are never rendered or executed. Embedded filenames are ignored.</p>
+            <label class="check-row"><input id="decrypted-save-ack" type="checkbox" disabled> I understand the saved payload is unencrypted and may be unsafe. I will choose a trusted local destination.</label>
+            <button id="download-decrypted-file" class="button button-secondary" type="button" disabled>Save decrypted bytes as .bin</button>
           </div>
         </section>
 
@@ -397,7 +407,7 @@
 
       <section class="scope-note" aria-label="Version one scope">
         <span class="scope-mark" aria-hidden="true">i</span>
-        <p><strong>Scope:</strong> classic passphrase text tools, export-only RSA key creation, a public-only keyring, and a separate bounded, local wordlist-assisted private-key recovery check. Recovery input is transient and never added to that keyring; no unlocked key export. Public-key message encryption/decryption, signing UI, attachments, persistent secret-key import, hardware cards, owner trust and modern AEAD message output are not included. No app-level upload. Only validated PUBLIC certificates may be remembered after explicit opt-in. Android Save confirms write/read-back verification; browser downloads are requests, not proof of a saved file. Choose “On this device” for local-only destinations: cloud document providers may upload selected exports. Clearing/Stop drops references and terminates recovery workers, not a guaranteed memory/clipboard/disk erase. Page navigation clears secrets and unsaved tab state, not an opted-in public device copy.</p>
+        <p><strong>Scope:</strong> classic passphrase text encryption, armored/binary password-message and file decryption, export-only RSA key creation, a public-only keyring, and a separate bounded, local wordlist-assisted private-key recovery check. Recovery input is transient and never added to that keyring; no unlocked key export. Public-key message encryption/decryption, signing UI, archive/attachment extraction, persistent secret-key import, hardware cards, owner trust and modern AEAD message output are not included. No app-level upload. Only validated PUBLIC certificates may be remembered after explicit opt-in. Android Save confirms write/read-back verification; browser downloads are requests, not proof of a saved file. Choose “On this device” for local-only destinations: cloud document providers may upload selected exports. Clearing/Stop drops references and terminates recovery workers, not a guaranteed memory/clipboard/disk erase. Page navigation clears secrets and unsaved tab state, not an opted-in public device copy.</p>
       </section>
     </main>
 

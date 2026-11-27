@@ -1,5 +1,6 @@
 import * as textCrypto from "./crypto.mjs";
 import * as keyCrypto from "./keyring.mjs";
+import { decryptMessageInput } from "./message-worker-client.mjs";
 import { searchPublicCertificates } from "./keyring-search.mjs";
 import { mountKeybaseLookup } from "./keybase-ui.mjs";
 import { generateLargeRsaKey } from "./large-rsa.mjs";
@@ -7,7 +8,7 @@ import { mountPrivateKeyRecovery } from "./recovery-ui.mjs";
 import { readPublicSnapshot, writePublicSnapshot, forgetPublicSnapshot } from "./public-storage.mjs";
 
 /** No globals holding key material; dependencies are injectable for race/UI tests. */
-export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey, recoveryTools, keybaseLookup } = {}) {
+export function mountWorkbench({ doc = globalThis.document, view = globalThis.window, textTools = textCrypto, keyTools = keyCrypto, largeKeyGenerator = generateLargeRsaKey, recoveryTools, keybaseLookup, messageDecryptor = decryptMessageInput } = {}) {
   const byId = (id) => doc.getElementById(id);
   const supported = view.isSecureContext && Boolean(view.crypto?.subtle) && typeof TextEncoder === "function";
   const ring = keyTools.createPublicKeyring();
@@ -22,11 +23,13 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   let importController = null;
   let generatedImport = false;
   const textEpochs = { encrypt: 0, decrypt: 0 };
+  let decryptionController = null;
+  let decryptedBytes = null; // Transient; never persisted, rendered as HTML or automatically saved.
   const objectURLs = new Set();
   let rememberPublic = false;
   let publicSnapshotCurrent = false;
   let fileSaveBusy = false;
-  const saveEpochs = { "keygen-status": 0, "keyring-status": 0, "encrypt-status": 0 };
+  const saveEpochs = { "keygen-status": 0, "keyring-status": 0, "encrypt-status": 0, "decrypt-status": 0 };
 
   function setStatus(id, message, kind = "info") {
     const status = byId(id);
@@ -51,6 +54,9 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
         const receipt = await view.Html5LocalFiles.save(blob, filename);
         if (epoch !== saveEpochs[status]) return;
         if (receipt.status === "saved" && receipt.bytes === blob.size && /^[a-f0-9]{64}$/.test(receipt.sha256)) {
+          const expected = [...new Uint8Array(await view.crypto.subtle.digest("SHA-256", await blob.arrayBuffer()))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+          if (epoch !== saveEpochs[status]) return;
+          if (receipt.sha256 !== expected) throw new Error("Read-back SHA-256 does not match this export. No completed save is confirmed.");
           setStatus(status, `Saved ${receipt.bytes.toLocaleString()} bytes and read-back verified. SHA-256: ${receipt.sha256}. ${requestedMessage}`, "success");
         } else if (receipt.status === "canceled") {
           setStatus(status, "Save canceled. No completed save is confirmed; the export remains in this tab.");
@@ -88,6 +94,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
         candidate.tabIndex = selected ? 0 : -1;
       }
       for (const panel of doc.querySelectorAll("[data-panel]")) panel.hidden = panel.id !== tab.dataset.tab;
+      if (decryptionController && tab.dataset.tab !== "decrypt-panel") invalidateMessage("Tool switched. Message worker terminated; no late result retained.");
     });
     tab.addEventListener("keydown", (event) => {
       const index = tabs.indexOf(tab);
@@ -115,6 +122,30 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     }
   }
 
+  function clearMessagePayload() {
+    decryptedBytes?.fill(0); decryptedBytes = null;
+    byId("decrypted-output").value = "";
+    byId("decrypted-save-ack").checked = false; byId("decrypted-save-ack").disabled = true;
+    byId("download-decrypted-file").disabled = true;
+    byId("decrypted-payload-status").textContent = "No decrypted payload retained. Binary bytes are never rendered or executed; embedded filenames are ignored.";
+  }
+  function invalidateMessage(message = "Inputs changed. Any pending worker result was discarded.") {
+    textEpochs.decrypt++; saveEpochs["decrypt-status"]++;
+    decryptionController?.abort(); clearMessagePayload();
+    byId("cancel-message-decrypt").disabled = true;
+    setStatus("decrypt-status", message);
+  }
+  byId("armored-input").addEventListener("input", () => { byId("encrypted-message-file").value = ""; byId("message-file-status").textContent = "Using pasted armor, not a file. Nothing is uploaded."; invalidateMessage(); });
+  byId("decrypt-passphrase").addEventListener("input", () => invalidateMessage());
+  byId("encrypted-message-file").addEventListener("change", () => {
+    byId("armored-input").value = ""; invalidateMessage();
+    const file = byId("encrypted-message-file").files?.[0];
+    byId("message-file-status").textContent = !file ? "No file selected. Paste armor or choose an encrypted file." : file.size < 1 || file.size > textCrypto.MAX_ENCRYPTED_BYTES
+      ? "File is empty or larger than 2 MiB; it will not be read. Choose a supported encrypted message."
+      : `${file.size.toLocaleString()} encrypted input bytes selected. Press Decrypt for one local attempt; the filename does not establish the format or trust.`;
+  });
+  byId("cancel-message-decrypt").addEventListener("click", () => invalidateMessage("Message worker terminated. No plaintext result retained."));
+
   for (const kind of ["encrypt", "decrypt"]) {
     byId(`${kind}-form`).addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -129,30 +160,63 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
         setStatus("encrypt-status", "The passphrases do not match. Nothing was encrypted.", "error");
         return;
       }
+      const controller = kind === "decrypt" ? new AbortController() : null;
+      if (kind === "decrypt") {
+        clearMessagePayload(); decryptionController = controller;
+        byId("cancel-message-decrypt").disabled = false;
+        byId("decrypt-passphrase").value = "";
+      }
       setBusy(button, true);
-      setStatus(`${kind}-status`, kind === "encrypt" ? "Encrypting locally…" : "Decrypting locally…");
+      setStatus(`${kind}-status`, kind === "encrypt" ? "Encrypting locally…" : "Decrypting one password message in a local worker…");
       try {
-        const value = kind === "encrypt" ? await textTools.encryptClassicText(input, passphrase) : await textTools.decryptOpenPgpText(input, passphrase);
-        if (epoch !== textEpochs[kind]) return;
-        output.value = value;
-        setStatus(`${kind}-status`, kind === "encrypt" ? "Encrypted. Copy or download the armored message." : "Decrypted. Integrity is not sender authentication; review before using.", "success");
+        if (kind === "encrypt") {
+          const value = await textTools.encryptClassicText(input, passphrase);
+          if (epoch !== textEpochs[kind]) return;
+          output.value = value;
+          setStatus("encrypt-status", "Encrypted. Copy or download the armored message.", "success");
+        } else {
+          const file = byId("encrypted-message-file").files?.[0];
+          if (file && input.trim()) throw new Error("Choose one message source: pasted armor OR a file, not both.");
+          // Injectable legacy text tools are only for deterministic UI tests.
+          // Real UI requests always use the terminating local worker, never a
+          // silent main-thread fallback or private-key import.
+          const bytes = textTools === textCrypto
+            ? await messageDecryptor(file || input, passphrase, { signal: controller.signal, WorkerClass: view.Worker })
+            : new TextEncoder().encode(await textTools.decryptOpenPgpText(file || input, passphrase));
+          if (epoch !== textEpochs[kind]) { bytes?.fill?.(0); return; }
+          if (!(bytes instanceof Uint8Array) || bytes.length > textCrypto.MAX_PLAINTEXT_BYTES) throw new Error("Invalid or oversized decrypted payload. Nothing retained.");
+          decryptedBytes = bytes;
+          let binary = false;
+          try { output.value = new TextDecoder("utf-8", { fatal: true }).decode(bytes); } catch { output.value = ""; binary = true; }
+          byId("decrypted-save-ack").disabled = false;
+          byId("decrypted-payload-status").textContent = `${bytes.length.toLocaleString()} decrypted bytes retained only in this tab. ${binary ? "Binary payload: no text preview." : "UTF-8 preview shown above; display/clipboard line endings may normalize. Use byte save for the original payload."} Embedded filenames are ignored; saving requires separate acknowledgement.`;
+          setStatus("decrypt-status", `Decrypted. ${binary ? "Binary bytes are available for explicit save; never opened automatically." : "Text shown without HTML execution."} Integrity is not sender authentication; review before using.`, "success");
+        }
       } catch (error) {
         if (epoch === textEpochs[kind]) setStatus(`${kind}-status`, friendlyError(error), "error");
-      } finally { setBusy(button, false); }
+      } finally {
+        if (decryptionController === controller) { decryptionController = null; byId("cancel-message-decrypt").disabled = true; }
+        setBusy(button, false);
+      }
     });
   }
   function clearText(kind) {
     if (kind === "encrypt") saveEpochs["encrypt-status"]++;
+    else invalidateMessage();
     textEpochs[kind]++;
     resetForm(byId(`${kind}-form`));
+    if (kind === "decrypt") byId("message-file-status").textContent = "No file selected. Paste armor or choose an encrypted file. Maximum 2 MiB.";
     byId(kind === "encrypt" ? "encrypted-output" : "decrypted-output").value = "";
-    setStatus(`${kind}-status`, "Fields cleared. Any in-progress result will be discarded; memory erasure is not guaranteed.");
+    setStatus(`${kind}-status`, fileSaveBusy
+      ? "Fields cleared. A save already handed to the system may still finish; check its destination. Stale status is discarded, not bytes already exported; memory/disk erasure is not guaranteed."
+      : "Fields cleared. Any in-progress result will be discarded; memory erasure is not guaranteed.");
   }
   for (const button of doc.querySelectorAll("[data-clear-form]")) button.addEventListener("click", () => clearText(button.dataset.clearForm === "encrypt-form" ? "encrypt" : "decrypt"));
-  for (const button of doc.querySelectorAll("[data-clear-output]")) button.addEventListener("click", () => {
-    textEpochs.decrypt++;
-    byId(button.dataset.clearOutput).value = "";
-    setStatus("decrypt-status", "Decrypted output cleared; any in-progress result will be discarded.");
+  for (const button of doc.querySelectorAll("[data-clear-output]")) button.addEventListener("click", () => invalidateMessage("Decrypted output cleared; any in-progress result will be discarded."));
+  byId("decrypted-save-ack").addEventListener("change", () => { byId("download-decrypted-file").disabled = !decryptedBytes || !byId("decrypted-save-ack").checked || !supported; });
+  byId("download-decrypted-file").addEventListener("click", () => {
+    if (!decryptedBytes || !byId("decrypted-save-ack").checked || !supported) return;
+    void download(decryptedBytes, "openpgp-decrypted.bin", "application/octet-stream", "decrypt-status", "This payload is UNENCRYPTED. Its embedded name was ignored; review it safely before opening. A cloud document provider may upload it.");
   });
 
   function rsaSizeControls() {
@@ -484,7 +548,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
   byId("clear-all").addEventListener("click", () => clearAll());
   view.addEventListener("pagehide", () => clearAll({ forgetSaved: false }));
   view.addEventListener("beforeunload", (event) => {
-    if (!generated && !recovery.hasSensitiveState() && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
+    if (decryptedBytes === null && !generated && !recovery.hasSensitiveState() && !byId("plaintext").value && !byId("encrypted-output").value && !byId("decrypted-output").value && !(ring.list().length && !publicSnapshotCurrent)) return;
     event.preventDefault(); event.returnValue = "";
   });
   if (!supported) byId("capability-warning").hidden = false;

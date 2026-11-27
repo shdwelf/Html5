@@ -1,11 +1,99 @@
 {
-  "profileVersion": 1,
+  "profileVersion": 2,
   "mode": "combined",
-  "provider": {"name": "Riseup", "apiUrl": "https://riseup.net", "transport": "openvpn"},
-  "vpnService": {"alwaysOn": true, "blockWithoutVpn": true, "mtu": 1400, "addresses": ["10.66.0.2/24"], "routes": ["0.0.0.0/0"], "dnsServers": ["127.0.0.1"], "allowLan": false},
-  "tor": {"socks": "127.0.0.1:9050", "transProxy": "127.0.0.1:9040", "dnsPort": "127.0.0.1:9053", "perAppLayer": true},
-  "dnscrypt": {"resolver": "cloudflare", "requireDnssec": true, "viaTunnel": true},
-  "i2p": {"enabled": false},
-  "decisions": [{"decision":"killSwitch=true — Always-on VPN with block-without-VPN: no fallback to the bare interface on tunnel drop."}, {"decision":"blockIpv6=true — No IPv6 routes until the tunnel carries IPv6; an unrouted v6 stack leaks silently."}, {"decision":"allowLan=false — LAN bypass off (InviZible-style firewall posture); exceptions are per-app and explicit."}, {"decision":"tunMtu=1400 — tun-mtu 1400 / mssfix 1360 avoids fragmentation blackholes behind carrier NAT."}, {"decision":"dnsLeakProtection=true — All DNS forced through the encrypted path; no system resolver fallback."}, {"decision":"dnsMode=dnscrypt — DNSCrypt is reached through the VPN tunnel; the local network sees neither plaintext DNS nor the resolver choice."}],
-  "warnings": []
+  "readiness": {
+    "status": "plan-only",
+    "protectionActive": false,
+    "enginesBundled": [],
+    "tunEstablished": false
+  },
+  "provider": {
+    "id": "proton-wireguard",
+    "transport": "wireguard",
+    "provisioning": "Owner-generated Proton WireGuard configuration required in a real client"
+  },
+  "invizible": {
+    "channel": "stable",
+    "execution": "future embedded modules OR explicitly configured proxy-only companion; not a second VPN"
+  },
+  "vpnService": {
+    "plannedOwner": "one-future-integrated-service",
+    "maxActivePerProfile": 1,
+    "consentRequested": false,
+    "alwaysOnConfigured": false
+  },
+  "requirements": {
+    "defaultRoutes": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "unsupportedIpv6": "block",
+    "fallback": "deny",
+    "allowLan": false,
+    "appExceptions": [],
+    "mtu": null
+  },
+  "openvpn": null,
+  "wireguard": {
+    "engine": "not-bundled",
+    "overTor": false,
+    "privateKeyAccepted": false
+  },
+  "tor": {
+    "socks": "127.0.0.1:9050",
+    "scope": "selected TCP applications above provider tunnel",
+    "udp": "block-except-explicit-internal-dns-handling",
+    "egress": "provider tunnel required"
+  },
+  "dnscrypt": {
+    "resolver": "cloudflare",
+    "listen": "127.0.0.1:5354",
+    "egress": "provider tunnel required",
+    "enforced": false
+  },
+  "i2p": {
+    "enabled": false,
+    "implementation": null,
+    "destinationScope": ".i2p only; no automatic clearnet outproxy",
+    "egress": "provider tunnel required"
+  },
+  "gates": [
+    "pinned-engines-and-license-review",
+    "single-tun-packet-router",
+    "authenticated-provider-provisioning",
+    "loop-and-dns-bootstrap-prevention",
+    "ipv4-ipv6-dns-udp-leak-tests",
+    "revocation-reboot-handover-lockdown-tests",
+    "signed-build-and-owner-device-validation"
+  ],
+  "decisions": [
+    {
+      "name": "singleVpnOwner",
+      "value": 1,
+      "rationale": "Android has one active VPN service per user/profile. Provider choices are alternatives, not simultaneous apps."
+    },
+    {
+      "name": "killSwitch",
+      "value": "required-not-enforced",
+      "rationale": "Always-on and block-without-VPN require OS/user configuration and device failure-path tests. Do not set this planner as always-on."
+    },
+    {
+      "name": "ipv6",
+      "value": "capture-or-block-before-connect",
+      "rationale": "Omitting IPv6 routes alone is not leak protection. Capture ::/0 and carry or explicitly block unsupported IPv6 in a real engine."
+    },
+    {
+      "name": "dns",
+      "value": "local-encrypted-resolver-plan",
+      "rationale": "DNS forwarding, bootstrap, .onion/.i2p separation and no-fallback policy need an implemented and tested packet path."
+    },
+    {
+      "name": "mtu",
+      "value": "engine-and-path-dependent",
+      "rationale": "No universal MTU/MSS optimization is assumed. Measure the actual transport and mobile path."
+    }
+  ],
+  "warnings": [
+    "PLAN ONLY: no tunnel engines, routing, DNS protection or kill switch are active in this scaffold."
+  ]
 }

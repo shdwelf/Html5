@@ -4,6 +4,13 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Round 95 · Android gateway, Kodachi ISO and Torrent Atlas
+
+- [Android VPN / I2P / Kodachi investigation](android-vpn-i2p-kodachi-research-2026-11-17.md) — one-VPN-owner architecture, alternative provider/channel adapters, pinned source/license boundaries and DistroWatch → official ISO provenance. The implemented gateway is **plan-only**, with no VPN consent or packet protection. The owner-requested desktop ISO was acquired on a runner and hashed/signature-checked against a downloaded key; independent key authentication remains open, no boot.
+- [Password managers and browser torrent research](password-managers-and-torrent-research-2026-11-17.md) — all named discovery sites, 37-row manager landscape, qualified **1Password** recommendation, full-paper malicious-server caveats, source/index/client/gateway distinctions and the local Torrent Atlas workbench.
+- [Round 95 validation and open gates](backlog-execution-round-95-2026-11-17.md) — executed tests versus unimplemented packet/device/signing gates; no re-closure of the 31 terminal original tasks.
+- Structured registers: [Android upstreams and web sources](research/android-vpn-i2p-kodachi-sources-2026-11-17.json), [Kodachi ISO provenance](research/kodachi-iso-provenance-2026-11-17.json), [actual ISO acquisition receipt](research/kodachi-iso-acquisition-2026-11-17.json), [password/torrent sources](research/password-managers-torrent-sources-2026-11-17.json). Review notes stay out of public offline Wiki/SITE-K manual bundles.
+
 ## Country / planet viewer and research continuation (2026-11-15)
 
 - [Island/place coverage update](research/island-place-coverage-2026-11-15.md) — Tasmania and named island examples, coordinate/source caveats, and GNIS geographic scope.
@@ -15,7 +22,9 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
-## Current OpenPGP continuation · bounded owner-authorized wordlist recovery
+## Current OpenPGP continuation · message inputs and separate owner-authorized recovery
+
+- [OpenPGP Workbench message/file inputs](../apps/openpgp-workbench/README.md) — pasted armor or armored/binary files, one password attempt in a terminating local worker, inert byte-preserving output and separately acknowledged `.bin` save. No private key required for password-recipient messages; public-key-only ciphertext still requires the matching secret/hardware key in an appropriate trusted client.
 
 - [Local wordlist recovery and engine investigation](openpgp-wordlist-recovery-2026-11-17.md) — explicit ranked/typo preview, exact all-secret-packet validation, stoppable local worker, strict limits and non-persistence; SearXNG discovery kept separate from source-reviewed cryptographic engines. Not unbounded cracking, owner-key recovery or device/GUI certification.
 - [Pinned engine/source observations](research/openpgp-recovery-engines-2026-11-17.json) — GnuPG/GPGME, Sequoia, RNP, rPGP, Bouncy Castle and the existing Go harness; source claims distinguished from executed controls. No new runtime dependency or metasearch integration.

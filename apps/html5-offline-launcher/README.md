@@ -7,8 +7,10 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 
 ## Scope and packaging
 
-- The current builder discovers **96** HTML entrypoints and packages **8,517
-  files** (166,429,544 bytes uncompressed) inside those app directories. It
+**Torrent Atlas** is included for local metadata tools only. Its external searches are explicit outbound links, not an embedded result service. Offline profiles may block those links; no native network, picker or origin policy is relaxed. It is not added to the two-app private profile or microphone allowlist.
+
+- The current builder discovers **97** HTML entrypoints and packages **8,528
+  files** (166,552,812 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
@@ -91,7 +93,7 @@ runtime code is preserved, and the unbuilt 738-byte AURA shell is not shipped
 in place of a working app. Self-HTML export is not a guaranteed runtime-session
 backup; export preset JSON where available and verify the saved file.
 
-`npm run audit:app-sources` accounts for **188** tracked imported HTML sources,
+`npm run audit:app-sources` accounts for **189** tracked imported HTML sources,
 including extensionless imports and canonical directory entrypoints. It reports
 all unbuilt, dependency/security/privacy-review and other pending sources instead
 of silently treating the mixed `apps/` archive as public-ready. Run with
@@ -129,14 +131,14 @@ cd apps/html5-offline-launcher
 On Windows, use `gradlew.bat` instead of `./gradlew`. The first wrapper run
 fetches the pinned Gradle 8.7 distribution and validates its SHA-256 before use.
 
-The **public** profile packages all 96 approved local HTML entrypoints. The
+The **public** profile packages all 97 approved local HTML entrypoints. The
 **private Android** profile is a separate, reduced build with a fixed two-app
 allowlist (Helios Observatory and Prime Viewer), a distinct application ID, and
 no audio permissions. This Android allowlist is separate from the four-app
 private browser bundle. Both profiles omit network permission.
 
-The **network Android** profile keeps the same 96 public apps and adds
-RadarScope and News Globe (98 catalog entries total), with a distinct
+The **network Android** profile keeps the same 97 public apps and adds
+RadarScope and News Globe (99 catalog entries total), with a distinct
 application ID and the only `INTERNET` permission. Build/install this APK only
 when the user wants live network access; its network warning must be accepted
 at startup. Public and private flavor behavior remains offline. All APKs are
@@ -173,9 +175,9 @@ On failure, bounded synthetic diagnostics include suite-level `system-err` /
 activation phases. An empty JUnit `<failure/>` or a partial testcase count is
 not a passing phase and does not establish an emulator-only root cause. These
 diagnostics do not change the tests, permission/save policies or time limits.
-CI additionally requires complete results: six public file/save cases, six
+CI additionally requires complete results: seven public file/save cases, seven
 network file/save cases, three protected-key recovery cases, one audio-policy
-case and one game-boot case. All **17** must pass with zero skips and all five
+case and one game-boot case. All **19** must pass with zero skips and all five
 phase exits zero; missing/partial runner output cannot yield a green device gate. The CI guest is limited to 2 GiB and
 connected-test Gradle invocations to a 1-GiB heap / one worker; normal APK build
 settings are unchanged. On failure the runner captures bounded host memory,
@@ -194,7 +196,7 @@ it; the captured host snapshot had ample available memory and no matching OOM
 kernel evidence. A related external renderer-crash report [1](https://github.com/expo/eas-cli/issues/4928)
 is a discovery clue, not proof of our exact native crash or universal hardware
 compatibility. The renderer change passed the original 14-case, zero-skip gate
-in PR239. The expanded 17-case gate retains every one of those cases; no packaged
+in PR239. The expanded 19-case gate retains all 17 preceding cases and adds password-message binary-file selection/decryption/save in both public and network profiles; no packaged
 game/WebView/app behavior or graphics-success assertion is changed.
 
 The three additional recovery cases exercise protected v4 legacy-25519 and
@@ -219,7 +221,7 @@ sidecar. Before either artifact is uploaded, CI verifies the sidecar against the
 APK bytes and enforces a **100,000,000-byte per-APK limit** for Dropbox-sized
 handoffs. This is a conservative source-file gate, not a claim about the size of
 a service-generated archive. Separate artifacts avoid combining both profiles
-in one 120 MB handoff. The network package retains all 96 approved public apps
+in one 120 MB handoff. The network package retains all 97 approved public apps
 plus RadarScope and News Globe. The private APK is never published as plaintext.
 A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
 the three profiles separately. To back up **all three profiles**, manually

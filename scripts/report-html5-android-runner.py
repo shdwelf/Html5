@@ -99,12 +99,12 @@ def collect(base):
     return (cases[:4] + xml[:4] + stages + hosts + processes + xml[4:])[:MAX_ANNOTATIONS]
 
 
-EXPECTED = {"public-local-files": 6, "network-local-files": 6,
+EXPECTED = {"public-local-files": 7, "network-local-files": 7,
             "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1}
 
 
 def incomplete(summary):
-    """A zero Gradle exit without all 17 actual results must never turn green."""
+    """A zero Gradle exit without all 19 actual results must never turn green."""
     if not isinstance(summary, dict) or type(summary.get("schema")) is not int or summary["schema"] != 1:
         return ["Missing or unsupported Android WebView result schema."]
     phases = summary.get("phases")
@@ -141,7 +141,7 @@ def main():
         for error in errors:
             print(annotation("Android-WebView-incomplete", error))
         if not errors:
-            print("All five Android WebView phases: 17 passed, zero failed/skipped, all exits zero.")
+            print("All five Android WebView phases: 19 passed, zero failed/skipped, all exits zero.")
         return 1 if errors else 0
     if len(sys.argv) != 2:
         raise SystemExit("usage: report-html5-android-runner.py <synthetic app/build directory> | --require-complete <summary.json>")

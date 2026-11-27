@@ -92,10 +92,10 @@ test("recovery adds a separate mandatory three-case phase without removing or le
   ]) assert.ok(lines.includes(original), original);
   assert.ok(lines.includes("run_tests public-openpgp-recovery 3m :app:connectedPublicDebugAndroidTest org.arena.html5launcher.RecoveryWebViewSmokeTest"));
   assert.ok(runner.indexOf("run_tests public-openpgp-recovery") < runner.indexOf("run_tests public-headline-harry"));
-  for (const [phase, count] of Object.entries({ "public-local-files": 6, "network-local-files": 6, "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1 })) {
+  for (const [phase, count] of Object.entries({ "public-local-files": 7, "network-local-files": 7, "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1 })) {
     assert.ok(reporter.includes(`"${phase}": ${count}`)); assert.ok(workflow.includes(`"${phase}"`));
   }
-  assert.match(reporter, /17 passed, zero failed\/skipped, all exits zero/);
+  assert.match(reporter, /19 passed, zero failed\/skipped, all exits zero/);
   assert.match(workflow, /timeout-minutes: 20/);
   assert.match(workflow, /-gpu swangle -skin 720x1280 -memory 2048 -cores 2/);
 });

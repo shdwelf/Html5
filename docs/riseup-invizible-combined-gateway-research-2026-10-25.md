@@ -1,5 +1,8 @@
 # Riseup VPN × InviZible — combined gateway research (side project, 2026-10-25)
 
+> **Superseded / historical claims corrected.** Use the [schema-v2 investigation and plan-only rewrite](https://github.com/shdwelf/Html5/blob/main/docs/android-vpn-i2p-kodachi-research-2026-11-17.md), not the security/default claims below. That current review stays outside public offline manual bundles; the link is an explicit repository visit, not an offline page. Source inspection found that the old service deliberately **never called `Builder.establish()`**, contrary to this report. It nevertheless requested VPN consent, which could displace a working VPN. The rewrite removes consent/service registration and all network permissions. No DNS protection, kill switch, IPv6 blocking or MTU optimization was implemented; omitting IPv6 routes is **not** IPv6 leak prevention. Tor bridge flags do not provision WireGuard/Bitmask transports. GPL metadata alone is not a completed transitive-license review. The old source-writing workflow has been replaced by read-only exact-head review. Historical descriptions below are retained as a record, not current instructions or evidence of protection.
+
+
 **Ask:** search GitHub for Riseup VPN and `Gedsh/InviZible`; try creating
 a single Android app + WAR + JAR combining their functionality with an
 optimised configuration. **Status:** researched; combined deliverables
@@ -62,7 +65,7 @@ tells one VpnService what to become:
   DNSCrypt binaries) are **not** bundled — the service is the
   orchestration shell a GPL fork of the upstreams would fill; the UI
   says so. The runner builds `gateway-debug.apk` (debug-signed).
-- **`gateway-config.war`** — `scripts/build-gateway-config-war.mjs`
+- **`gateway-config.war`** — `scripts/build-gateway-war.mjs`
   repackages the web UI (`gateway-config.html` + the JS engine) with
   the JAR under `WEB-INF/lib/`, following the repo's deterministic
   xdc→WAR pattern (static web.xml, Tomcat 9/10, provenance manifest).

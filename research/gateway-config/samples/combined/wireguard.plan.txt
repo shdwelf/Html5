@@ -1,0 +1,4 @@
+# PLAN ONLY — no WireGuard configuration or private key is accepted/generated.
+# Provider: proton-wireguard.
+# Use an owner-generated profile in a trusted real client; do not publish it.
+# Standard WireGuard UDP cannot be sent through Tor SOCKS as if it were TCP.

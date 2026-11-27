@@ -1,0 +1,4 @@
+# PLAN ONLY — no DNS forwarder is installed.
+# Resolver catalog identifier: cloudflare.
+# Local listener: 127.0.0.1:5354.
+# Bootstrap, routing and no-fallback enforcement remain unimplemented.

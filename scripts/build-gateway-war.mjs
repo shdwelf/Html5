@@ -13,12 +13,12 @@
  *                                 research/gateway-config/)
  *
  * The WAR is a static web app + library jar: no servlet execution of
- * user input, no upstream code. Entries are STORED, sorted, stamped
+ * user input, no upstream code. Entries use raw DEFLATE, are sorted, stamped
  * 1980-01-01 so the archive is byte-reproducible from identical inputs.
  * Run with --check to verify the committed WAR matches current inputs.
  */
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
-import { deflateSync } from "node:zlib";
+import { deflateRawSync } from "node:zlib";
 
 const args = process.argv.slice(2);
 const check = args.includes("--check");
@@ -55,7 +55,7 @@ let offset = 0;
 const names = [...files.keys()].sort();
 for (const name of names) {
   const data = files.get(name);
-  const compressed = deflateSync(data, { level: 9 });
+  const compressed = deflateRawSync(data, { level: 9 });
   const nb = Buffer.from(name, "utf8");
   const lh = Buffer.alloc(30);
   lh.writeUInt32LE(0x04034b50, 0);

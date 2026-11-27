@@ -1,0 +1,4 @@
+# PLAN ONLY — no Tor daemon is started.
+# SOCKS listener: 127.0.0.1:9050.
+# TCP-only application routing; never send ordinary BitTorrent through Tor.
+# Proxy-only mode does not capture other apps automatically.

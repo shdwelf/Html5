@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "reportCutoff": "2026-11-17",
+  "discoveryChain": [
+    "https://distrowatch.com/table.php?distribution=kodachi",
+    "https://kodachi.cloud/downloads/"
+  ],
+  "listingVersion": "10.0.3",
+  "listingArchitecture": "x86_64 / amd64; not an Android installer",
+  "warning": "Exact build/hash/signature/key must match. Live filenames can be reused. Page candidates are dated after the report cutoff and are not certified as available at that cutoff. The desktop ISO was subsequently acquired on explicit user request; see the source/output/run receipt. It was not booted.",
+  "verificationSchemeAdvertised": "RSA-4096/OpenSSL detached signature over SHA-256; not a GPG command inferred from older mirrors. A checksum/key on the same site is not independent publisher-key authentication.",
+  "candidates": [
+    {
+      "edition": "desktop-xfce",
+      "publisherVersion": "10.0.3",
+      "publisherBuild": 76,
+      "filename": "kodachi-os-xfce-10.0.3-amd64.iso",
+      "publisherClaimedBytes": 4544303104,
+      "publisherClaimedUpdatedAt": "2026-11-19T08:49:29Z",
+      "futureDatedRelativeToCutoff": true,
+      "latestAsOfCutoff": null,
+      "downloadRoute": "https://kodachi.cloud/downloads/download.php?f=xfce-iso",
+      "redirectResolved": true,
+      "publisherClaimedSha256": "57693b32079bef101b75f21f3391bd036f1aae72836b8a06c921d236df626c14",
+      "hashComputedFromIso": true,
+      "checksumUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sha256",
+      "signatureUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig",
+      "signatureInfoUrl": "https://kodachi.cloud/downloads/installers/desktop/kodachi-os-xfce-10.0.3-amd64.iso.sig.info",
+      "publicKeyUrl": "https://kodachi.cloud/downloads/installers/desktop/public_key_v10.0.3.pem",
+      "isoAcquired": true,
+      "signatureVerified": true,
+      "publicKeyIndependentlyAuthenticated": false,
+      "booted": false,
+      "signatureVerificationScope": "Against same-site downloaded v10.0.3 PEM key; independent publisher-key authentication remains false.",
+      "storage": "Short-lived Actions artifact, not Git or a persisted sandbox ISO copy.",
+      "acquisitionRun": "https://github.com/shdwelf/Html5/actions/runs/45981578258"
+    },
+    {
+      "edition": "terminal-server",
+      "publisherVersion": "10.0.3",
+      "publisherBuild": 54,
+      "filename": "kodachi-os-terminal-10.0.3-amd64.iso",
+      "publisherClaimedBytes": 3245793280,
+      "publisherClaimedUpdatedAt": "2026-11-19T12:43:34Z",
+      "futureDatedRelativeToCutoff": true,
+      "latestAsOfCutoff": null,
+      "downloadRoute": "https://kodachi.cloud/downloads/download.php?f=terminal-iso",
+      "redirectResolved": false,
+      "publisherClaimedSha256": "19432bb6d719ea5b9eebe1ede7c7caf107ddd187a68eafe3e3170b12402784ac",
+      "hashComputedFromIso": false,
+      "checksumUrl": "https://kodachi.cloud/downloads/installers/terminal/kodachi-os-terminal-10.0.3-amd64.iso.sha256",
+      "signatureUrl": "https://kodachi.cloud/downloads/installers/terminal/kodachi-os-terminal-10.0.3-amd64.iso.sig",
+      "signatureInfoUrl": "https://kodachi.cloud/downloads/installers/terminal/kodachi-os-terminal-10.0.3-amd64.iso.sig.info",
+      "publicKeyUrl": "https://kodachi.cloud/downloads/installers/terminal/public_key_v10.0.3.pem",
+      "isoAcquired": false,
+      "signatureVerified": false,
+      "publicKeyIndependentlyAuthenticated": false,
+      "booted": false
+    }
+  ],
+  "acquisitionReceipt": "kodachi-iso-acquisition-2026-11-17.json"
+}

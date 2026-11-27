@@ -10,6 +10,9 @@ on:
       - 'apps/ads-b-radar-scope'
       - 'apps/news-globe.html'
       - 'public/apps/**'
+      - 'apps/torrent-atlas/**'
+      - 'scripts/build-torrent-atlas.mjs'
+      - 'tests/torrent-atlas*'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -47,6 +50,9 @@ on:
       - 'apps/ads-b-radar-scope'
       - 'apps/news-globe.html'
       - 'public/apps/**'
+      - 'apps/torrent-atlas/**'
+      - 'scripts/build-torrent-atlas.mjs'
+      - 'tests/torrent-atlas*'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -152,6 +158,9 @@ jobs:
 
       - name: Validate restored sound snapshots and local export adapter
         run: node scripts/build-sound-apps.mjs --check && node scripts/build-html5-browser-catalog.mjs --check && node --test tests/local-file-exports.test.mjs tests/sound-apps.test.mjs && node tests/sound-apps-browser.mjs
+
+      - name: Validate Torrent Atlas static assets and safety controls
+        run: node scripts/build-torrent-atlas.mjs --check && node --test tests/torrent-atlas.test.mjs tests/torrent-atlas-worker.test.mjs && node tests/torrent-atlas-browser.mjs
 
       - name: Validate public app inventory
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
@@ -271,7 +280,7 @@ jobs:
                   raise SystemExit("Network APK catalog is missing its network-enabled marker")
               slugs = {app["slug"] for app in catalog["apps"]}
               expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio"}
-              if len(slugs) != 98 or not expected.issubset(slugs):
+              if len(slugs) != 99 or not expected.issubset(slugs):
                   raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
               for slug in expected:
                   if f"assets/apps/{slug}/index.html" not in apk.namelist():
@@ -283,7 +292,7 @@ jobs:
                   source = Path(f"config/{name}.json").read_bytes()
                   if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
                       raise SystemExit(f"Stale coin/network registry in network APK: {name}")
-              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
+              for name in ("app.js", "index.html", "crypto.mjs", "text-tools.mjs", "message-worker.mjs", "message-worker-client.mjs", "styles.css", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
                   source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
@@ -299,16 +308,25 @@ jobs:
 
           root = Path("apps/html5-offline-launcher/app")
           fixture = root.joinpath("src/androidTest/assets/openpgp-recovery-smoke.js").read_bytes()
+          message = root.joinpath("src/androidTest/assets/openpgp-message-smoke.json").read_bytes()
           for profile in ("public", "network", "private"):
               path = root / f"build/outputs/apk/{profile}/debug/app-{profile}-debug.apk"
               with zipfile.ZipFile(path) as apk:
-                  if any(name.rsplit("/", 1)[-1] == "openpgp-recovery-smoke.js" for name in apk.namelist()):
+                  if any(name.rsplit("/", 1)[-1] in {"openpgp-recovery-smoke.js", "openpgp-message-smoke.json"} for name in apk.namelist()):
                       raise SystemExit("Synthetic recovery fixture leaked into a production APK")
+                  if profile != "private":
+                      for app in ("openpgp-workbench", "torrent-atlas"):
+                          source_root = Path("public/apps") / app
+                          for source in source_root.rglob("*"):
+                              if source.is_file() and apk.read(f"assets/apps/{app}/"+source.relative_to(source_root).as_posix()) != source.read_bytes():
+                                  raise SystemExit(f"Stale/missing {app} runtime asset in {profile} APK: {source.name}")
           for profile in ("public", "network"):
               path = root / f"build/outputs/apk/androidTest/{profile}/debug/app-{profile}-debug-androidTest.apk"
               with zipfile.ZipFile(path) as apk:
                   if apk.read("assets/openpgp-recovery-smoke.js") != fixture:
                       raise SystemExit("Synthetic recovery fixture missing or stale in test APK")
+                  if apk.read("assets/openpgp-message-smoke.json") != message:
+                      raise SystemExit("Synthetic encrypted-message fixture missing or stale in test APK")
           print("Fresh synthetic recovery source is in test APKs only; no generated private fixture is packaged.")
           PY
 

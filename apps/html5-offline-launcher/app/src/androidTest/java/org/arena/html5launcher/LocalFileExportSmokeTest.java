@@ -156,6 +156,66 @@ public final class LocalFileExportSmokeTest {
         }
     }
 
+    @Test(timeout = 120000)
+    public void binaryEncryptedFileNeedsOnlyItsPassphraseAndSavesExactAcknowledgedBytes() throws Exception {
+        MainActivity activity = activityRule.launchActivity(null);
+        acceptNetworkWarning();
+        WebView web = find(activity.getWindow().getDecorView());
+        load(web, PGP_URL);
+        evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+        // A small, byte-checked synthetic encrypted fixture is confined to the
+        // instrumentation APK. Do not add a production test hook, depend on
+        // evaluateJavascript's relative module base, or hide setup exceptions
+        // inside an unobserved asynchronous encryption task.
+        JSONObject fixture;
+        try (InputStream input = instrumentation.getContext().getAssets().open("openpgp-message-smoke.json")) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream(); byte[] buffer = new byte[1024]; int count;
+            while ((count = input.read(buffer)) != -1) {
+                output.write(buffer, 0, count); assertTrue("bounded synthetic fixture", output.size() <= 4096);
+            }
+            fixture = new JSONObject(new String(output.toByteArray(), StandardCharsets.UTF_8));
+        }
+        assertEquals("00fffe01", fixture.getString("plaintextHex"));
+        byte[] encrypted = android.util.Base64.decode(fixture.getString("ciphertextBase64"), android.util.Base64.DEFAULT);
+        assertEquals("bounded pre-checked encrypted control", 123, encrypted.length);
+        Uri chosen = document("import.asc"), destination = document("export.asc");
+        try (OutputStream output = activity.getContentResolver().openOutputStream(chosen, "wt")) { output.write(encrypted); }
+        Instrumentation.ActivityMonitor opening = picker(Intent.ACTION_OPEN_DOCUMENT, Activity.RESULT_OK, chosen);
+        try {
+            evaluate(web, "document.getElementById('decrypt-tab').click();" +
+                    "window.__syntheticMessageGesture='none';" +
+                    "document.getElementById('encrypted-message-file').addEventListener('click',event => {" +
+                    "window.__syntheticMessageGesture=String(event.isTrusted)+'|'+String(navigator.userActivation.isActive); },{once:true}); 'ready'");
+            WebViewTestInput.tapElement(instrumentation, web, "encrypted-message-file");
+            await(web, "String(document.getElementById('encrypted-message-file').files.length)", "1");
+            assertEquals("file selection must keep trusted transient activation", "true|true", evaluate(web, "window.__syntheticMessageGesture"));
+            assertEquals("one explicit file-open request", 1, opening.getHits());
+            assertEquals("selection is not an automatic decrypt", "", evaluate(web, "document.getElementById('decrypted-output').value"));
+            assertEquals("true", evaluate(web, "String(document.getElementById('download-decrypted-file').disabled)"));
+            assertEquals("no private key is requested", "", evaluate(web, "document.getElementById('recovery-private-key').value"));
+            evaluate(web, "document.getElementById('decrypt-passphrase').value=" + JSONObject.quote(fixture.getString("passphrase")) + ";" +
+                    "document.getElementById('decrypt-form').requestSubmit(); 'started'");
+            await(web, "document.getElementById('decrypt-status').dataset.kind || ''", "success");
+            assertEquals("binary data is not rendered as text or HTML", "", evaluate(web, "document.getElementById('decrypted-output').value"));
+            assertTrue(evaluate(web, "document.getElementById('decrypted-payload-status').textContent").contains("Binary payload"));
+            assertEquals("acknowledgement is separate from decrypt", "true", evaluate(web, "String(document.getElementById('download-decrypted-file').disabled)"));
+            Instrumentation.ActivityMonitor saving = picker(Intent.ACTION_CREATE_DOCUMENT, Activity.RESULT_OK, destination);
+            try {
+                evaluate(web, "document.getElementById('decrypted-save-ack').click(); document.getElementById('download-decrypted-file').click(); 'requested'");
+                await(web, "document.getElementById('decrypt-status').textContent", "Saved ");
+                assertEquals(1, saving.getHits());
+                assertArrayEquals(new byte[] {0, (byte)255, (byte)254, 1}, read(destination));
+                assertTrue(evaluate(web, "document.getElementById('decrypt-status').textContent").contains("UNENCRYPTED"));
+            } finally { instrumentation.removeMonitor(saving); }
+            assertEquals("no remembered secrets", "0", evaluate(web, "String(localStorage.length + sessionStorage.length)"));
+        } finally {
+            instrumentation.removeMonitor(opening);
+            activity.getContentResolver().delete(chosen, null, null);
+            activity.getContentResolver().delete(destination, null, null);
+            evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+        }
+    }
+
     @Test(timeout = 90000)
     public void providerWriteRefusalAndReadbackMismatchNeverClaimSuccessAndRetryWorks() throws Exception {
         MainActivity activity = activityRule.launchActivity(null);

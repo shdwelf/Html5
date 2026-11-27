@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; worker-src 'self'; connect-src 'none'; img-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="description" content="Local magnet and torrent inspection, bounded torrent creation, a sourced search directory, and password-manager research. No swarm connections or automatic external requests.">
+  <title>Torrent Atlas — Search, inspect, create</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <div class="shell">
+    <header class="masthead">
+      <a class="brand" href="./index.html" aria-label="Torrent Atlas home"><span class="brand-mark" aria-hidden="true">ta<span>↗</span></span><span>TORRENT ATLAS<small>A LOCAL-FIRST FIELD GUIDE</small></span></a>
+      <div class="header-actions"><span class="local-badge"><span aria-hidden="true"></span>NO SWARM CONNECTIONS</span><a class="library-link" href="../index.html">App library ↗</a></div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div><p class="eyebrow">DISCOVERY WITHOUT THE GUESSWORK <span> / 01</span></p><h1 id="hero-title">Know what<br>you’re <em>sharing.</em></h1><p class="intro">Find a source. Read the metadata. Make an informed choice.<br class="wide-only"> Your files stay here; external searches leave only when you choose.</p></div>
+        <aside class="field-note"><div class="orbit" aria-hidden="true"><span class="orbit-center">↗</span><i></i><i></i><i></i></div><span class="eyebrow">THE ATLAS PRINCIPLE</span><p>A magnet is an identifier.<br><strong>Not a seal of trust.</strong></p><p class="muted">No trackers contacted. No payloads downloaded. No search history saved.</p></aside>
+      </section>
+      <div class="facts" aria-label="Workbench capabilities"><span><strong id="source-total">—</strong> reviewed sources</span><span><strong>v1 + v2</strong> metadata inspection</span><span><strong>256 MiB</strong> local creation limit</span><span><strong>0</strong> automatic external requests</span></div>
+      <section id="workspace" class="workspace" aria-label="Torrent Atlas tools">
+        <div class="workspace-top"><p class="eyebrow">YOUR WORKSPACE</p><button id="clear-all" class="quiet" type="button">Clear session <span aria-hidden="true">↺</span></button></div>
+        <nav class="tabs" aria-label="Tools">
+          <button type="button" data-panel="discover" aria-current="page">01 <span>Discover</span></button>
+          <button type="button" data-panel="magnet">02 <span>Magnet lab</span></button>
+          <button type="button" data-panel="inspect">03 <span>Inspect .torrent</span></button>
+          <button type="button" data-panel="create">04 <span>Create .torrent</span></button>
+          <button type="button" data-panel="passwords">05 <span>Password managers</span></button>
+        </nav>
+        <p id="global-status" class="sr-only" role="status" aria-live="polite"></p>
+        <p id="android-note" class="notice" hidden>Android launcher: local tools need no network permission. External sites/new tabs may be blocked by the launcher. Copy a prepared HTTPS link into your normal browser; no native policy is bypassed.</p>
+        <section id="panel-discover" class="panel" aria-labelledby="discover-heading">
+          <div class="section-heading"><div><p class="eyebrow">A MAP, NOT A LIVE INDEX</p><h2 id="discover-heading" tabindex="-1">Start with a better source.</h2></div><span class="pill">EXPLICIT OUTBOUND SEARCH</span></div>
+          <p class="muted">A searchable directory and one-provider search launchpad—not aggregated results. Status notes are research observations, not live uptime or safety ratings.</p>
+          <form id="search-form" class="search-box" autocomplete="off">
+            <div class="search-fields"><label>What are you looking for?<input id="search-query" type="search" maxlength="256" placeholder="e.g. open climate datasets" required></label><label>Search destination<select id="search-provider"></select></label></div>
+            <label class="check"><input id="search-consent" type="checkbox" required><span>I understand the selected site will receive my query, IP address and browser metadata when I open the link. Never search passwords or other secrets.</span></label>
+            <div class="actions"><button type="submit" class="primary">Prepare search link <span aria-hidden="true">↗</span></button><span class="muted small">Preparing a link makes no external request.</span></div>
+            <div id="search-preview" class="search-preview" hidden><p id="search-destination"></p><label>Review the exact outbound URL<input id="search-url" type="text" readonly autocomplete="off" spellcheck="false"></label><div class="actions"><a id="search-open" class="button primary" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Open selected search ↗</a><button id="search-copy" type="button">Copy search URL</button></div></div>
+            <p id="search-status" class="status" role="status" aria-live="polite"></p>
+          </form>
+          <div class="directory-toolbar"><label>Filter the local directory<input id="source-filter" type="search" maxlength="100" placeholder="Search engines, clients, archives…" autocomplete="off"></label><label>Source type<select id="source-category"><option value="all">All source types</option><option value="metasearch">Metasearch</option><option value="public-index">Public indexes</option><option value="open-content">Open-content sources</option><option value="self-hosted">Self-hosted search</option><option value="client">Clients &amp; gateways</option><option value="directory">Research directories</option></select></label></div>
+          <p id="directory-count" class="result-count" role="status" aria-live="polite"></p><div id="source-cards" class="cards"></div>
+          <aside class="notice"><strong>Read the distinctions.</strong> Searx.space lists instances; it is not a search engine. Utilibre’s metasearch lives at <code>search.utilibre.org</code>. A WebTorrent client is not a search engine, and a cloud gateway is not local-only. Check distribution rights and publisher signatures independently. Swarms can expose your IP and upload data.</aside>
+        </section>
+        <section id="panel-magnet" class="panel" aria-labelledby="magnet-heading" hidden>
+          <div class="section-heading"><div><p class="eyebrow">PARSE, DON’T LAUNCH</p><h2 id="magnet-heading" tabindex="-1">Look inside a magnet.</h2></div><span class="pill">NO PEER LOOKUP</span></div>
+          <p class="muted">Inspect v1 hex/base32, SHA-256 v2 and hybrid claims. Copy a minimal identifier with all trackers, web seeds, explicit peers and unknown parameters removed. This does not anonymize a later download.</p>
+          <form id="magnet-form" autocomplete="off"><label for="magnet-input">Magnet URI <span class="muted">· up to 16,384 characters</span></label><textarea id="magnet-input" rows="5" maxlength="16384" placeholder="magnet:?xt=urn:btih:…" spellcheck="false" required></textarea><div class="actions"><button type="submit" class="primary">Inspect magnet</button><button id="magnet-example" type="button">Load synthetic example</button></div></form>
+          <p id="magnet-status" class="status" role="status" aria-live="polite"></p><div id="magnet-result" class="result" hidden></div>
+        </section>
+        <section id="panel-inspect" class="panel" aria-labelledby="inspect-heading" hidden>
+          <div class="section-heading"><div><p class="eyebrow">VERIFY THE METADATA</p><h2 id="inspect-heading" tabindex="-1">A file list. Not a leap of faith.</h2></div><span class="pill">LOCAL MODULE WORKER</span></div>
+          <p class="muted">Read a local v1, v2 or consistent hybrid torrent. Hashes are computed from the original encoded info bytes. v2 piece layers are checked against their Merkle roots; payload bytes and publisher identity are not verified.</p>
+          <form id="inspect-form" autocomplete="off"><label class="file-picker">Select a .torrent file <span class="muted">· maximum 4 MiB</span><input id="inspect-file" type="file" accept=".torrent,application/x-bittorrent" required></label><label>Expected infohash <span class="muted">· optional, full 40-hex v1 or 64-hex v2 from an independent source</span><input id="expected-hash" type="text" maxlength="64" spellcheck="false" placeholder="Leave blank to inspect without an independent comparison"></label><div class="actions"><button type="submit" class="primary">Inspect locally</button><button type="button" id="inspect-cancel" disabled>Cancel worker</button></div></form>
+          <p id="inspect-status" class="status" role="status" aria-live="polite"></p><div id="inspect-result" class="result" hidden></div>
+        </section>
+        <section id="panel-create" class="panel" aria-labelledby="create-heading" hidden>
+          <div class="section-heading"><div><p class="eyebrow">YOUR FILES, YOUR DECISION</p><h2 id="create-heading" tabindex="-1">Create metadata. Not a swarm.</h2></div><span class="pill">V1 CREATION</span></div>
+          <p class="muted">Build a real v1 .torrent from 1–256 explicitly selected files, up to 256 MiB total. Flat multi-file collections are ordered by UTF-8 filename. Piece hashes span file boundaries. Creation never uploads or seeds the files.</p>
+          <aside class="notice warning">Only choose files you intend and have permission to share. Torrent metadata exposes filenames and sizes. Do not add password vaults, private keys or confidential files. A torrent needs a separate seeding client to make the payload available.</aside>
+          <form id="create-form" autocomplete="off"><label class="file-picker">Choose source files<input id="create-files" type="file" multiple required></label><p id="create-selection" class="muted small">No files selected.</p><div class="search-fields"><label>Torrent name<input id="create-name" type="text" maxlength="200" placeholder="Defaults to filename or shared-files" spellcheck="false"></label><label>Piece size<select id="piece-size"><option value="262144">256 KiB · recommended</option><option value="16384">16 KiB</option><option value="65536">64 KiB</option><option value="1048576">1 MiB</option><option value="4194304">4 MiB</option></select></label></div><label>Trackers <span class="muted">· optional, one URL per line; none are contacted</span><textarea id="create-trackers" rows="3" maxlength="8192" spellcheck="false" placeholder="Leave empty for a public trackerless torrent. Private tracker URLs may contain secret passkeys."></textarea></label><label class="check"><input id="create-private" type="checkbox"><span>Private torrent. Requires a tracker and keeps the private flag. Minimal magnet export is disabled.</span></label><label class="check"><input id="create-consent" type="checkbox" required><span>I intend to create sharing metadata for these files and understand that saving a torrent does not publish or seed them.</span></label><div class="actions"><button type="submit" class="primary">Build .torrent locally</button><button type="button" id="create-cancel" disabled>Cancel worker</button></div><progress id="create-progress" value="0" max="1" hidden aria-label="Source bytes hashed"></progress></form>
+          <p id="create-status" class="status" role="status" aria-live="polite"></p><div id="create-result" class="result" hidden></div><button id="save-torrent" class="primary" type="button" hidden>Save .torrent file ↓</button><p id="save-status" class="status" role="status" aria-live="polite"></p>
+        </section>
+        <section id="panel-passwords" class="panel" aria-labelledby="passwords-heading" hidden>
+          <div class="section-heading"><div><p class="eyebrow">A SEPARATE SECURITY DECISION</p><h2 id="passwords-heading" tabindex="-1">Choose a manager.<br>Not a marketing promise.</h2></div><span class="pill">RESEARCH, NOT A VAULT</span></div>
+          <div class="recommendation"><p class="eyebrow">OUR BEST-OVERALL PICK · PAID, CROSS-PLATFORM</p><h3>1Password <span>↗</span></h3><p>Our recommendation for a general Android/browser/desktop user willing to pay: documented dual-key design, broad platform support, sharing and recovery workflows. It is proprietary, hosted, and not immune to malicious-server attacks.</p><a href="https://1password.com/security" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Read the security design ↗</a></div>
+          <div class="mini-grid"><div><h3>Prefer open source &amp; value?</h3><p><strong>Bitwarden.</strong> Broad cross-device coverage, published audits and a useful free plan. Official self-hosting and the separate Vaultwarden project need operational care.</p></div><div><h3>Want direct local control?</h3><p><strong>KeePassXC + KeePassDX on Android.</strong> Portable encrypted databases. You manage backups, sync conflicts, recovery and the trustworthiness of each client.</p></div><div><h3>Already in Proton?</h3><p><strong>Proton Pass.</strong> Open-source clients and integrated aliases. Check account recovery, exports and passkey portability before migrating.</p></div></div>
+          <aside class="notice warning"><strong>Important research correction.</strong> The full August 2026 revision of IACR 2026/058 reports attacks on <em>all four</em> studied cloud managers, including six for 1Password. “No new attack vectors” is a vendor characterization—not “zero attacks” or proof of immunity. Audit coverage and remediation differ. <a href="https://eprint.iacr.org/2026/058" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Read the primary paper ↗</a></aside>
+          <label>Filter the reviewed manager landscape<input id="manager-filter" type="search" maxlength="100" autocomplete="off" placeholder="Hosted, offline, Android, discontinued…"></label><p id="manager-count" class="result-count" role="status" aria-live="polite"></p><div id="manager-cards" class="cards"></div>
+          <details><summary>Before putting real credentials in any manager</summary><ol><li>Install the current signed app/extension from the official vendor or store. Do not get password managers from torrents, mirrors or Internet Archive snapshots.</li><li>Choose a unique, long random account passphrase. Keep recovery materials/Secret Key offline in a secure place.</li><li>Enable phishing-resistant MFA with two registered hardware keys where supported. Keep an independent recovery route; do not rely on the locked vault to unlock itself.</li><li>Trial autofill on your actual devices with dummy logins; match full domains. Check exports, attachments and passkey transfer limitations.</li><li>Test an encrypted backup and restore before deleting an old vault. CSV and many migration exports are plaintext—handle locally and carefully; deletion is not guaranteed secure erasure.</li><li>Keep high-value account recovery and independent second factors separate where your threat model requires it. No manager protects an already-compromised unlocked endpoint.</li></ol></details>
+        </section>
+      </section>
+      <section class="method"><div><p class="eyebrow">RESEARCH NOTE / 2026-11-17</p><h2>Useful evidence.<br>Honest boundaries.</h2></div><p>This is a bounded landscape review, not “every manager” or an uptime/security certification. Named metasearch services, primary specifications, dated GitHub source snapshots and Archive metadata were inspected. Search snippets and project claims are not audit findings. Full methods, source pins and limitations are in the repository research report.</p><a href="https://github.com/shdwelf/Html5/blob/main/docs/password-managers-and-torrent-research-2026-11-17.md" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Read the research ↗</a></section>
+    </main>
+    <footer><span>TORRENT ATLAS <span class="muted">/ Know the source. Keep control.</span></span><span>LOCAL TOOLS · EXPLICIT LINKS · NO SAVED HISTORY</span></footer>
+    <noscript>This app requires JavaScript modules for local tools. No automatic external request is made. The repository research report is available through the link above.</noscript>
+  </div>
+</body>
+</html>

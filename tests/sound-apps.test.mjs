@@ -57,7 +57,7 @@ test("source audit accounts for every imported app without silently publishing p
 
 test("the browser catalog lists the same complete public inventory as Android, not only handpicked highlights", async () => {
   const { browserCatalog, buildBrowserCatalog } = await import("../scripts/build-html5-browser-catalog.mjs");
-  assert.equal(buildBrowserCatalog({ check: true }), 96);
+  assert.equal(buildBrowserCatalog({ check: true }), 97);
   const catalog = browserCatalog();
   assert.deepEqual(catalog.apps.map((app) => app.slug), buildCatalog("public").map((app) => app.slug));
   assert.ok(catalog.apps.every((app) => app.href === `./${encodeURIComponent(app.slug)}/index.html`));

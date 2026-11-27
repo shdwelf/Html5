@@ -1,0 +1,35 @@
+name: Kodachi ISO — download only, never boot
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'tools/kodachi/fetch-iso.py'
+      - '.github/workflows/kodachi-iso-acquire.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: kodachi-iso-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acquire:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Check bounded fixed-origin acquisition controls
+        run: python3 -m unittest discover -s tests -p kodachi_iso_test.py -v
+      - name: Acquire pinned desktop ISO and verify hashes and downloaded-key signature
+        run: python3 tools/kodachi/fetch-iso.py "$RUNNER_TEMP/kodachi-iso"
+      - name: Keep the original ISO and verification material outside Git
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: kodachi-desktop-10.0.3-build76-download-only
+          path: ${{ runner.temp }}/kodachi-iso/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error

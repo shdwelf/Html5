@@ -77,6 +77,10 @@ textarea, input, select { width: 100%; background: rgba(7, 16, 28, 0.78); border
 textarea { display: block; resize: vertical; min-height: 126px; padding: 14px 15px; line-height: 1.55; font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 textarea::placeholder, input::placeholder { color: #65768c; opacity: 1; }
 input, select { min-height: 43px; padding: 10px 12px; font-size: 13px; }
+/* A full-height native file-selector button, not tiny UA chrome surrounded by
+   inert padding. Keep genuine user activation for Android's system picker. */
+input[type="file"] { padding: 0; min-height: 44px; cursor: pointer; }
+input[type="file"]::file-selector-button { min-height: 44px; padding: 10px 14px; margin-right: 10px; border: 0; border-right: 1px solid var(--line); color: var(--text); background: rgba(36, 56, 81, 0.7); font: inherit; cursor: pointer; }
 textarea:focus, input:focus, select:focus { border-color: rgba(134, 240, 212, 0.65); box-shadow: 0 0 0 3px rgba(46, 208, 174, 0.1); background: rgba(7, 16, 28, 0.96); }
 textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
 #encrypted-output, #decrypted-output { min-height: 152px; }
@@ -155,7 +159,6 @@ textarea[readonly] { color: #c0d8d3; background: rgba(6, 16, 28, 0.62); }
 .output-actions, .form-actions { flex-wrap: wrap; }
 .expiry-field { margin-top: 20px; max-width: 270px; }
 .key-input-field { margin-top: 18px; }
-#public-key-file { padding: 12px; }
 .fingerprint { display: block; direction: ltr; unicode-bidi: isolate; overflow-wrap: anywhere; color: var(--mint); font: 600 13px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace; }
 .backup-box { margin-top: 24px; padding: 19px; border: 1px solid rgba(255, 211, 140, 0.27); border-radius: 12px; background: rgba(92, 61, 16, 0.12); }
 .backup-box h3 { color: var(--warning); }

@@ -507,6 +507,12 @@
       "href": "./toronto-subsurface/index.html"
     },
     {
+      "slug": "torrent-atlas",
+      "name": "Torrent Atlas — Search, inspect, create",
+      "description": "Local magnet and torrent inspection, bounded torrent creation, a sourced search directory, and password-manager research. No swarm connections or automatic external requests.",
+      "href": "./torrent-atlas/index.html"
+    },
+    {
       "slug": "renga-camouflage",
       "name": "Two Voices at Harvest — a renga haibun",
       "description": "A complete story camouflaged as tan-renga. The verses are the whole of it.",

@@ -14,6 +14,8 @@ try {
     ["tests/07-browser.mjs", `http://127.0.0.1:${port}/keyspace.html`],
     ["tests/10-lens3d-wasm.mjs"],
     ["tests/openpgp-workbench-browser.mjs"],
+    ["tests/openpgp-message-browser.mjs"],
+    ["tests/torrent-atlas-browser.mjs"],
     ["tests/openpgp-keybase-browser.mjs"],
     ["tests/openpgp-recovery-browser.mjs"],
     ["--test", "tests/subsurface-viewers-browser.test.mjs"],

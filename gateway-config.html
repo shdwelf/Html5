@@ -1,90 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <title>GATEWAY CONFIG — Riseup VPN × InviZible combined profile builder</title>
-  <meta name="description" content="Clean-room combined configuration engine for a single VpnService front-end: Bitmask/LEAP provider VPN, InviZible-style Tor+DNSCrypt routing, or both layered. Every optimisation is a named, reasoned decision." />
-  <style>
-    :root { --bg:#0a1016; --panel:#0e1a22; --line:#24414f; --ink:#d7e3e8; --dim:#8a9aa3; --accent:#5cd6ff; --warn:#ffb020; --mono:"IBM Plex Mono",Menlo,Consolas,monospace; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono); font-size:13px; }
-    header { padding:14px 18px; border-bottom:1px solid var(--line); }
-    header h1 { margin:0; font-size:15px; letter-spacing:.16em; color:var(--accent); }
-    header p { margin:5px 0 0; color:var(--dim); max-width:75ch; line-height:1.5; }
-    main { display:grid; grid-template-columns:320px 1fr; gap:14px; padding:14px 18px; }
-    @media (max-width:800px){ main{ grid-template-columns:1fr; } }
-    section { background:var(--panel); border:1px solid var(--line); padding:12px 14px; }
-    h2 { font-size:11px; letter-spacing:.14em; color:var(--accent); margin:0 0 10px; }
-    label { display:block; margin:9px 0; color:var(--dim); }
-    select, input[type="text"] { width:100%; margin-top:4px; background:#08131a; color:var(--ink); border:1px solid var(--line); padding:6px; font-family:var(--mono); }
-    pre { white-space:pre-wrap; word-break:break-word; background:#08131a; border:1px solid var(--line); padding:10px; font-size:11px; max-height:340px; overflow:auto; }
-    li { margin:5px 0; line-height:1.45; }
-    .warn { color:var(--warn); }
-    code { color:var(--accent); }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>GATEWAY CONFIG · RISEUP VPN × INVIZIBLE</h1>
-    <p>One Android <code>VpnService</code> front-end, three configurations: provider VPN (Bitmask/LEAP model), local Tor+DNSCrypt routing (InviZible model), or the combined layering. Clean-room configuration engine — no upstream code or binaries. Research: <code>docs/riseup-invizible-combined-gateway-research-2026-10-25.md</code>.</p>
-  </header>
-  <main>
-    <section>
-      <h2>INPUT</h2>
-      <label>Mode
-        <select id="modeSelect">
-          <option value="combined" selected>combined — VPN tunnel, DNSCrypt via tunnel, Tor per-app</option>
-          <option value="vpn">vpn — provider tunnel only (Bitmask-style)</option>
-          <option value="tor-dnscrypt">tor-dnscrypt — local Tor + DNSCrypt (InviZible-style)</option>
-        </select>
-      </label>
-      <label><input type="checkbox" id="bridgesToggle" /> Censorship bridges (obfs4/snowflake)</label>
-      <label><input type="checkbox" id="i2pToggle" /> Enable Purple I2P (.i2p)</label>
-      <label><input type="checkbox" id="lanToggle" /> Allow LAN access</label>
-      <label>Per-app exceptions (package names, comma-separated)
-        <input type="text" id="exceptionsInput" placeholder="org.example.banking" />
-      </label>
-      <h2 style="margin-top:16px">DECISIONS</h2>
-      <ul id="decisionList"></ul>
-      <div id="warningList"></div>
-    </section>
-    <section>
-      <h2>UNIFIED PROFILE (JSON)</h2>
-      <pre id="profileOut"></pre>
-      <h2>OPENVPN DIRECTIVES</h2>
-      <pre id="ovpnOut"></pre>
-      <h2>TORRC</h2>
-      <pre id="torrcOut"></pre>
-      <h2>DNSCRYPT-PROXY.TOML</h2>
-      <pre id="dnscryptOut"></pre>
-    </section>
-  </main>
-  <script type="module">
-    import { buildGatewayConfig, renderDnscryptToml, renderOpenVpn, renderTorrc } from "./js/gateway-config.js";
-    const $ = (id) => document.getElementById(id);
-    function render() {
-      const input = {
-        mode: $("modeSelect").value,
-        censorshipBridges: $("bridgesToggle").checked,
-        enableI2p: $("i2pToggle").checked,
-        allowLan: $("lanToggle").checked,
-        appExceptions: $("exceptionsInput").value.split(",").map((s) => s.trim()).filter(Boolean),
-      };
-      const { config, decisions, warnings } = buildGatewayConfig(input);
-      $("profileOut").textContent = JSON.stringify(config, null, 2);
-      $("ovpnOut").textContent = renderOpenVpn(config);
-      $("torrcOut").textContent = renderTorrc(config);
-      $("dnscryptOut").textContent = renderDnscryptToml(config);
-      $("decisionList").innerHTML = decisions.map((d) => `<li><code>${d.name}</code> = ${JSON.stringify(d.value)} — ${d.rationale}</li>`).join("");
-      $("warningList").innerHTML = warnings.map((w) => `<p class="warn">⚠ ${w}</p>`).join("");
-    }
-    for (const id of ["modeSelect", "bridgesToggle", "i2pToggle", "lanToggle", "exceptionsInput"]) {
-      $(id).addEventListener("input", render);
-      $(id).addEventListener("change", render);
-    }
-    render();
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"><title>Gateway Planner — Android VPN, Tor &amp; I2P architecture</title><meta name="description" content="Offline plan-only Android gateway comparison: alternative WireGuard/Proton/Bitmask transports, InviZible stable or beta, and I2P. No active VPN protection.">
+<style>body{margin:0;background:#101a20;color:#e4efed;font:14px/1.7 system-ui,sans-serif}header,main,footer{max-width:1120px;margin:auto;padding:24px}h1{font-size:29px;line-height:1.2}h2{font-size:17px;color:#bfea9c}a{color:#8ee0df}header{border-bottom:1px solid #435455}.notice{border-left:3px solid #f3bc77;background:#27302b;padding:16px;color:#ffe4bd}main{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,2fr);gap:24px}label{display:block;margin:15px 0}select,input[type=text]{display:block;box-sizing:border-box;width:100%;padding:10px;margin-top:5px;background:#19272d;color:#f1f6e8;border:1px solid #5a7472;border-radius:4px;font:inherit}input[type=checkbox]{accent-color:#bfea9c}pre{font-size:11px;background:#091318;padding:15px;border:1px solid #435455;white-space:pre-wrap;overflow-wrap:anywhere;max-height:550px;overflow:auto}li{margin:12px 0}button{padding:10px;background:#bfea9c;color:#101a20;border:0;cursor:pointer}.warn{color:#ffcf9e}.small{font-size:12px;color:#adbfbc}*:focus-visible{outline:2px solid #bfea9c;outline-offset:3px}@media(max-width:700px){main{grid-template-columns:1fr}header,main,footer{padding:18px}}</style></head>
+<body><header><p class="small">OFFLINE RESEARCH WORKBENCH / NO TUNNEL ENGINE</p><h1>One interface. Explicit traffic paths.</h1><p>WireGuard and Proton VPN, Bitmask/LEAP, InviZible Pro stable or beta, and I2P are different layers—not five VPN apps to start together.</p><p class="notice"><strong>PLAN ONLY — this page and the Android scaffold do not connect, route, protect DNS, or enforce a kill switch.</strong> No private keys/config imports are accepted. Do not replace your working VPN with this planner.</p></header>
+<main><section aria-labelledby="inputs-heading"><h2 id="inputs-heading">Choose an architecture</h2>
+<label>Planned mode<select id="modeSelect"><option value="combined">Provider tunnel + selected local overlays</option><option value="vpn">Provider tunnel only</option><option value="tor-dnscrypt">Local Tor/DNSCrypt stack without provider</option></select></label>
+<label>Alternative provider engine<select id="providerSelect"><option value="proton-wireguard">Proton-generated WireGuard profile</option><option value="bitmask">Bitmask / LEAP OpenVPN provisioning</option><option value="wireguard">Owner-managed standard WireGuard</option></select></label>
+<label>Alternative InviZible channel<select id="channelSelect"><option value="stable">Stable (default)</option><option value="beta">Beta — test channel, not an extra layer</option></select></label>
+<label><input id="i2pToggle" type="checkbox"> Include a separate I2P destination-network plan</label><label><input id="bridgesToggle" type="checkbox"> Request transport-specific censorship review</label><label><input id="lanToggle" type="checkbox"> Request LAN bypass review (risk)</label><label>Excluded app packages, comma-separated (max 32)<input id="exceptionsInput" type="text" maxlength="6431" placeholder="org.example.app" autocomplete="off"></label>
+<p class="small">Exclusions can bypass protection or stop working under lockdown. This planner enforces neither. Standard WireGuard UDP is not a Tor SOCKS stream.</p><h2>Decisions</h2><ul id="decisionList"></ul><div id="warningList" role="status" aria-live="polite"></div>
+</section><section aria-labelledby="plan-heading"><h2 id="plan-heading">Proposed architecture · JSON</h2><pre id="profileOut"></pre><h2>OpenVPN notes · inert comments</h2><pre id="ovpnOut"></pre><h2>WireGuard notes · inert comments</h2><pre id="wireguardOut"></pre><h2>Tor notes · inert comments</h2><pre id="torrcOut"></pre><h2>DNSCrypt notes · inert comments</h2><pre id="dnscryptOut"></pre></section></main>
+<footer><h2>Research &amp; constraints</h2><p>Android allows one active VPN service per user/profile. A future integrated build needs one TUN owner, authenticated provider provisioning, DNS/IPv6/UDP handling, process isolation and failure-path tests. Proxy-only companions require explicit per-application configuration. Never send ordinary BitTorrent through Tor.</p><p><strong>Kodachi side note:</strong> its Linux dashboard is a useful unified-control-plane example, not evidence that Android VPN apps can be stacked. <a href="https://distrowatch.com/table.php?distribution=kodachi" target="_blank" rel="noopener noreferrer">DistroWatch listing ↗</a> · <a href="https://kodachi.cloud/downloads/" target="_blank" rel="noopener noreferrer">Official ISO editions and verification material ↗</a>. No ISO was downloaded or verified in this review.</p><p><a href="https://github.com/shdwelf/Html5/blob/main/docs/android-vpn-i2p-kodachi-research-2026-11-17.md" target="_blank" rel="noopener noreferrer">Full investigation and open implementation gates ↗</a> · <a href="https://github.com/shdwelf/Html5/tree/main/apps/torrent-atlas" target="_blank" rel="noopener noreferrer">Torrent Atlas source and build</a></p></footer>
+<script type="module">
+import {buildGatewayConfig,renderOpenVpn,renderWireGuard,renderTorrc,renderDnscryptToml} from './js/gateway-config.js';
+const $=id=>document.getElementById(id);
+function render(){
+  for(const id of ['profileOut','ovpnOut','wireguardOut','torrcOut','dnscryptOut']) $(id).textContent='';
+  $('decisionList').replaceChildren();$('warningList').replaceChildren();
+  try{
+    const {config,decisions,warnings}=buildGatewayConfig({mode:$('modeSelect').value,provider:$('providerSelect').value,invizibleChannel:$('channelSelect').value,enableI2p:$('i2pToggle').checked,censorshipBridges:$('bridgesToggle').checked,allowLan:$('lanToggle').checked,appExceptions:$('exceptionsInput').value.split(',').map(s=>s.trim()).filter(Boolean)});
+    $('profileOut').textContent=JSON.stringify(config,null,2);
+    for(const [id,fn] of [['ovpnOut',renderOpenVpn],['wireguardOut',renderWireGuard],['torrcOut',renderTorrc],['dnscryptOut',renderDnscryptToml]]) $(id).textContent=fn(config);
+    for(const d of decisions){const li=document.createElement('li');li.textContent=`${d.name} = ${JSON.stringify(d.value)} — ${d.rationale}`;$('decisionList').append(li);}
+    for(const w of warnings){const p=document.createElement('p');p.className='warn';p.textContent=w;$('warningList').append(p);}
+  }catch(error){$('warningList').textContent=error.message;}
+}
+for(const id of ['modeSelect','providerSelect','channelSelect','i2pToggle','bridgesToggle','lanToggle','exceptionsInput']) for(const event of ['input','change']) $(id).addEventListener(event,render);
+render();
+</script></body></html>
