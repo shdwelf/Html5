@@ -12,17 +12,21 @@ import java.security.MessageDigest;
 import java.util.*;
 import com.google.gson.*;
 import ghidra.app.decompiler.*;
+import ghidra.app.cmd.disassemble.DisassembleCommand;
 import ghidra.app.util.headless.HeadlessScript;
 import ghidra.framework.Application;
 import ghidra.program.model.address.*;
 import ghidra.program.model.listing.*;
 import ghidra.program.model.mem.Memory;
+import ghidra.program.model.mem.MemoryBlock;
 import ghidra.program.model.symbol.*;
 
 public class KodachiCryptoReport extends HeadlessScript {
     private static final int MAX_INSTRUCTIONS = 500000;
     private static final int MAX_HITS_PER_PATTERN = 32;
     private static final int MAX_LOADED_BYTES = 64 * 1024 * 1024;
+    private static final int MAX_DISASSEMBLY_SEEDS = 4;
+    private static final int MAX_SEED_BYTES = 4096;
     private static final String[] LITERALS = {"r00t0r", "r00tor", "r00t", "r@@t00", "Security4All", "auth-user-pass", "vpn-credentials.json"};
     private static final String[] CATEGORIES = {"aes", "chacha", "rsa", "sha256", "sha512", "hmac", "pbkdf", "argon2", "scrypt", "evp_", "encrypt", "decrypt", "tls", "ssl"};
     private final LinkedHashMap<String, Function> candidates = new LinkedHashMap<>();
@@ -69,6 +73,62 @@ public class KodachiCryptoReport extends HeadlessScript {
             }
         }
         return hits;
+    }
+
+    private void seed(Map<Address, String> seeds, Address address, String by) {
+        if (seeds.size() >= MAX_DISASSEMBLY_SEEDS) return;
+        MemoryBlock block = currentProgram.getMemory().getBlock(address);
+        if (block != null && block.isInitialized() && block.isExecute()) seeds.putIfAbsent(address, by);
+    }
+
+    private JsonArray boundedDisassembly() throws Exception {
+        // Invoked with -noanalysis. Default whole-program native analysis did
+        // not reach this script within the previous 12-minute outer bound.
+        // Explicitly restrict disassembly flow to four <=4-KiB code windows;
+        // disable automatic code analysis rather than merely raising a timer.
+        LinkedHashMap<Address, String> seeds = new LinkedHashMap<>();
+        AddressIterator entries = currentProgram.getSymbolTable().getExternalEntryPointIterator();
+        while (entries.hasNext() && seeds.isEmpty()) seed(seeds, entries.next(), "entry-point");
+        SymbolIterator symbols = currentProgram.getSymbolTable().getAllSymbols(true); int visited = 0;
+        while (symbols.hasNext() && seeds.size() < MAX_DISASSEMBLY_SEEDS) {
+            monitor.checkCanceled();
+            if (++visited > 100000) throw new IOException("Symbol seed bound exceeded");
+            Symbol symbol = symbols.next(); String name = symbol.getName().toLowerCase(Locale.ROOT);
+            for (String category : CATEGORIES) if (name.contains(category)) { seed(seeds, symbol.getAddress(), "crypto-symbol-category"); break; }
+        }
+        FunctionIterator defined = currentProgram.getFunctionManager().getFunctions(true);
+        while (defined.hasNext() && seeds.size() < MAX_DISASSEMBLY_SEEDS) seed(seeds, defined.next().getEntryPoint(), "imported-function");
+        if (seeds.isEmpty() && currentProgram.getExecutableFormat().contains("ELF")) {
+            for (MemoryBlock block : currentProgram.getMemory().getBlocks()) {
+                seed(seeds, block.getStart(), "executable-block-start");
+                if (!seeds.isEmpty()) break;
+            }
+        }
+        JsonArray rows = new JsonArray();
+        for (Map.Entry<Address, String> seed : seeds.entrySet()) {
+            monitor.checkCanceled(); Address start = seed.getKey();
+            MemoryBlock block = currentProgram.getMemory().getBlock(start);
+            Address end = start.add(Math.min(MAX_SEED_BYTES - 1L, block.getEnd().subtract(start)));
+            AddressSet window = new AddressSet(start, end);
+            DisassembleCommand command = new DisassembleCommand(start, window, true);
+            command.enableCodeAnalysis(false);
+            boolean applied = command.applyTo(currentProgram, monitor);
+            FunctionManager functions = currentProgram.getFunctionManager();
+            Function f = functions.getFunctionContaining(start);
+            AddressSet body = new AddressSet(); int instructions = 0;
+            InstructionIterator listing = currentProgram.getListing().getInstructions(window, true);
+            while (listing.hasNext()) {
+                Instruction instruction = listing.next(); instructions++;
+                if (functions.getFunctionContaining(instruction.getMinAddress()) == null) body.addRange(instruction.getMinAddress(), instruction.getMaxAddress());
+            }
+            if (f == null && body.contains(start)) f = functions.createFunction(null, start, body, SourceType.ANALYSIS);
+            candidate(f, seed.getValue());
+            JsonObject row = new JsonObject(); row.addProperty("entry", start.toString()); row.addProperty("selectedBy", seed.getValue());
+            row.addProperty("windowBytes", window.getNumAddresses()); row.addProperty("instructionCountInWindow", instructions);
+            row.addProperty("disassemblyApplied", applied); row.addProperty("functionAvailable", f != null);
+            row.addProperty("automaticCodeAnalysisEnabled", false); rows.add(row);
+        }
+        return rows;
     }
 
     private void candidate(Function f, String reason) {
@@ -169,6 +229,7 @@ public class KodachiCryptoReport extends HeadlessScript {
     @Override public void run() throws Exception {
         String[] args = getScriptArgs();
         if (args.length != 2) throw new IllegalArgumentException("usage: KodachiCryptoReport.java <fresh-json> <pinned-signatures-tsv>");
+        if (isHeadlessAnalysisEnabled()) throw new IllegalStateException("This bounded report requires explicit -noanalysis");
         println("KODACHI_NATIVE_STAGE start");
         JsonObject root = new JsonObject();
         root.addProperty("schema", 1); root.addProperty("ghidraVersion", Application.getApplicationVersion());
@@ -176,11 +237,16 @@ public class KodachiCryptoReport extends HeadlessScript {
         root.addProperty("format", currentProgram.getExecutableFormat());
         root.addProperty("language", currentProgram.getLanguageID().getIdAsString());
         root.addProperty("autoAnalysisTimedOut", analysisTimeoutOccurred());
-        root.addProperty("functionsDefined", currentProgram.getFunctionManager().getFunctionCount());
+        root.addProperty("automaticWholeProgramAnalysisRequested", false);
+        root.addProperty("disassemblySeedLimit", MAX_DISASSEMBLY_SEEDS);
+        root.addProperty("disassemblyBytesPerSeedLimit", MAX_SEED_BYTES);
         root.addProperty("bufferedLoadedBytes", snapshotLoadedMemory());
         root.addProperty("loadedMemoryByteLimit", MAX_LOADED_BYTES);
         root.addProperty("patternSearch", "Buffered loaded-initialized Ghidra ranges, Boyer-Moore-Horspool; no cross-range or unloaded-data claim");
         println("KODACHI_NATIVE_STAGE memory-snapshot");
+        root.add("boundedDisassembly", boundedDisassembly());
+        root.addProperty("functionsDefined", currentProgram.getFunctionManager().getFunctionCount());
+        println("KODACHI_NATIVE_STAGE bounded-disassembly");
         AddressIterator entryPoints = currentProgram.getSymbolTable().getExternalEntryPointIterator();
         while (entryPoints.hasNext()) candidate(currentProgram.getFunctionManager().getFunctionAt(entryPoints.next()), "entry-point");
         root.add("cryptoSymbolCategoryCounts", categoryCounts());
@@ -199,7 +265,7 @@ public class KodachiCryptoReport extends HeadlessScript {
         println("KODACHI_NATIVE_STAGE findcrypt");
         root.add("boundedDecompilations", decompile());
         println("KODACHI_NATIVE_STAGE decompile");
-        root.addProperty("scope", "Static loaded Ghidra memory and bounded functions only; no full-source recovery, runtime tracing or decryption. Signatures/symbol names need contextual review, not algorithm/key/password proof. Full-file UTF8/UTF16 literal counts are in the separate ISO scan.");
+        root.addProperty("scope", "Automatic whole-program analysis disabled. At most four 4096-byte restricted disassembly windows, bounded function decompilation and initialized loaded-memory signatures only; no complete source/control-flow recovery, runtime tracing or decryption. A false auto-analysis timeout flag is not whole-program completion. Signature/symbol names are not algorithm/key/password proof. Full-file UTF8/UTF16 counts are in the ISO scan.");
         root.addProperty("inputExecuted", false); root.addProperty("credentialsUsed", false); root.addProperty("decryptionPerformed", false);
         root.addProperty("arbitraryStringsOrSourcePublished", false); root.addProperty("privateKeysPublished", false);
         try (Writer writer = Files.newBufferedWriter(Path.of(args[0]), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW)) {

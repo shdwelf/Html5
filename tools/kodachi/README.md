@@ -78,9 +78,15 @@ The runner uses SHA-256-pinned **Ghidra 12.1.4**, **Temurin Java 21**, and the
 126-signature FindCrypt database pinned to commit
 `5c2fd5bb50d13a4092da136dc7004becd8129c7b`. Original synthetic ELF disassembly,
 real native decompilation, the three requested literal markers and an AES S-box
-positive control must succeed before either ISO binary is analyzed. Auto-analysis
-is bounded to 180 seconds per original binary, at most 500,000 instructions are
-counted, and at most four functions are decompiled for 15 seconds each.
+positive control must succeed before either ISO binary is analyzed. Default
+whole-program auto-analysis did not reach the report stage within the previous
+12-minute outer limit; **it is now explicitly disabled with `-noanalysis`**, not
+called complete. The script requires that mode and disassembles at most **four
+restricted 4-KiB code windows** selected from entry points/imported crypto symbols
+(or explicitly labeled fallbacks), with automatic code analysis disabled. At
+most 500,000 existing instructions are counted and at most four functions are
+decompiled for 15 seconds each. The original-input command has a six-minute
+outer bound. A false auto-analysis-timeout flag does not mean full analysis ran.
 Initialized loaded Ghidra ranges are copied once to **at most 64 MiB** of buffers;
 126 pattern scans use a bounded Boyer–Moore–Horspool search rather than repeated
 address-at-a-time database reads. Cross-range/unloaded-memory matches are not

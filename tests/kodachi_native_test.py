@@ -83,7 +83,7 @@ class NativeInputTests(unittest.TestCase):
         java, javac = shutil.which('java'), shutil.which('javac')
         self.assertTrue(java and javac, 'Java 21 is an explicit ordered-control dependency; native evidence may not skip the search control')
         script = (ROOT/'tools/ghidra_scripts/KodachiCryptoReport.java').read_text()
-        method = script[script.index('    private List<Address> findLoadedMatches('):script.index('    private void candidate(')]
+        method = script[script.index('    private List<Address> findLoadedMatches('):script.index('    private void seed(')]
         harness = '''import java.util.*; import java.io.*;
 public class KodachiPatternHarness {
   static final int MAX_HITS_PER_PATTERN=32;
@@ -140,6 +140,11 @@ METHOD
         self.assertIn('findLoadedMatches', script)
         self.assertNotIn('memory.findBytes(', script)
         self.assertIn('KODACHI_NATIVE_STAGE', script)
+        self.assertIn('command.enableCodeAnalysis(false)', script)
+        self.assertIn('new DisassembleCommand(start, window, true)', script)
+        self.assertIn('MAX_DISASSEMBLY_SEEDS = 4', script)
+        self.assertIn('MAX_SEED_BYTES = 4096', script)
+        self.assertIn('if (isHeadlessAnalysisEnabled()) throw', script)
         self.assertNotIn('emulate', script.lower().replace('emulation', ''))
         self.assertNotIn('getRuntime().exec', script)
         self.assertNotIn('out.println', script)
@@ -150,6 +155,8 @@ METHOD
         self.assertNotIn('contents: write', workflow)
         self.assertIn('Original acquisition expired', workflow)
         self.assertIn('Native Ghidra disassembly/decompilation', workflow)
+        self.assertEqual(workflow.count(' -noanalysis '), 3)
+        self.assertNotIn('-analysisTimeoutPerFile', workflow)
 
 
 if __name__ == '__main__':

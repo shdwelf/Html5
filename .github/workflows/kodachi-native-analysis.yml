@@ -133,7 +133,7 @@ jobs:
           root="$RUNNER_TEMP/kodachi-native"
           headless="$GHIDRA_HOME/support/analyzeHeadless"
           scripts="$GITHUB_WORKSPACE/tools/ghidra_scripts"
-          timeout --kill-after=10s 8m "$headless" "$root/projects" KodachiNativeControl -import "$root/native-control.elf" -analysisTimeoutPerFile 120 -max-cpu 2 -scriptPath "$scripts" -postScript KodachiCryptoReport.java "$root/reports/native-control.json" "$root/signatures.tsv" -deleteProject > "$root/logs/native-control.log" 2>&1
+          timeout --kill-after=10s 8m "$headless" "$root/projects" KodachiNativeControl -import "$root/native-control.elf" -noanalysis -max-cpu 2 -scriptPath "$scripts" -postScript KodachiCryptoReport.java "$root/reports/native-control.json" "$root/signatures.tsv" -deleteProject > "$root/logs/native-control.log" 2>&1
           timeout --kill-after=10s 8m "$headless" "$root/projects" KodachiAesControl -import "$root/aes-control.bin" -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:64:default -noanalysis -scriptPath "$scripts" -postScript KodachiCryptoReport.java "$root/reports/aes-control.json" "$root/signatures.tsv" -deleteProject > "$root/logs/aes-control.log" 2>&1
           python3 - <<'PY'
           import json, os, pathlib
@@ -143,6 +143,8 @@ jobs:
           expected={'r00t0r':1,'r00tor':1,'r00t':3}
           assert all(any(r['literal']==token and r['loadedMemorySubstringMatchesUpTo32']==count for r in n['fixedLiteralReferences']) for token,count in expected.items())
           assert 0 < n['bufferedLoadedBytes'] <= n['loadedMemoryByteLimit'] == 64*1024**2
+          assert not n['automaticWholeProgramAnalysisRequested'] and any(r['instructionCountInWindow'] > 0 for r in n['boundedDisassembly'])
+          assert len(n['boundedDisassembly']) <= 4 and all(r['windowBytes'] <= 4096 for r in n['boundedDisassembly'])
           assert any(r['label']=='AES_Encryption_SBox' and r['matchesUpTo32']==1 for r in a['findCryptMatches'])
           print('Native Ghidra disassembly/decompilation, three literal markers and AES FindCrypt controls passed; synthetic control bytes were not executed.')
           PY
@@ -151,7 +153,7 @@ jobs:
           set -euo pipefail
           root="$RUNNER_TEMP/kodachi-native"
           for name in online-auth routing-switch; do
-            timeout --kill-after=10s 12m "$GHIDRA_HOME/support/analyzeHeadless" "$root/projects" "Kodachi_${name}" -import "$root/inputs/$name.elf" -analysisTimeoutPerFile 180 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript KodachiCryptoReport.java "$root/reports/$name.json" "$root/signatures.tsv" -deleteProject > "$root/logs/$name.log" 2>&1
+            timeout --kill-after=10s 6m "$GHIDRA_HOME/support/analyzeHeadless" "$root/projects" "Kodachi_${name}" -import "$root/inputs/$name.elf" -noanalysis -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript KodachiCryptoReport.java "$root/reports/$name.json" "$root/signatures.tsv" -deleteProject > "$root/logs/$name.log" 2>&1
             test -s "$root/reports/$name.json"
             printf 'Completed bounded native report: %s\n' "$name"
           done
@@ -168,6 +170,8 @@ jobs:
               assert r['inputSha256']==target['sha256'] and 'ELF' in r['format'] and r['ghidraVersion']=='12.1.4'
               assert r['functionsDefined'] > 0 and r['instructionsVisitedUpTo500000'] > 0 and any(d['completed'] for d in r['boundedDecompilations'])
               assert 0 < r['bufferedLoadedBytes'] <= r['loadedMemoryByteLimit'] == 64*1024**2
+              assert not r['automaticWholeProgramAnalysisRequested'] and any(d['instructionCountInWindow'] > 0 for d in r['boundedDisassembly'])
+              assert len(r['boundedDisassembly']) <= 4 and all(d['windowBytes'] <= 4096 and not d['automaticCodeAnalysisEnabled'] for d in r['boundedDisassembly'])
               assert not r['inputExecuted'] and not r['credentialsUsed'] and not r['decryptionPerformed'] and not r['arbitraryStringsOrSourcePublished']
               programs.append({'input':target,'analysis':r})
           summary={'schema':1,'sourceCommit':os.environ['GITHUB_SHA'],'runId':os.environ['GITHUB_RUN_ID'],'observedAtRunnerClock':datetime.now(timezone.utc).isoformat(),'iso':manifest['iso'],'ghidra':{'version':'12.1.4','archiveSha256':os.environ['GHIDRA_SHA256']},'javaVersion':(root/'java-version.txt').read_text().strip(),'findCrypt':{'repository':'TorgoTorgo/ghidra-findcrypt','commit':'5c2fd5bb50d13a4092da136dc7004becd8129c7b','databaseBlob':'36e799563f152ba6e442a9bcd9dc71cd23a96309','databaseSha256':os.environ['FINDCRYPT_SHA256'],'signatures':126},'sourceSha256':{p:digest(p) for p in ['tools/kodachi/inspect-iso.py','tools/kodachi/prepare-native.py','tools/kodachi/inspect-requirements.txt','tools/ghidra_scripts/KodachiCryptoReport.java']},'positiveControls':{name:json.loads((reports/(name+'.json')).read_text()) for name in ['native-control','aes-control']},'programs':programs,'booted':False,'mounted':False,'imageBinariesExecuted':False,'connectedToVpn':False,'credentialsUsed':False,'decryptionPerformed':False,'privateKeysOrArbitraryStringsPublished':False}
@@ -201,12 +205,13 @@ jobs:
           for name in ['native-control','aes-control','online-auth','routing-switch']:
               p=root/(name+'.log')
               if not p.is_file(): continue
-              stages=[]
-              for line in p.read_text(errors='replace').splitlines():
+              stages=[]; log=p.read_text(errors='replace')
+              for line in log.splitlines():
                   if re.search(r'KodachiCryptoReport\.java:[0-9]+:',line): messages.append(line[:400])
-                  m=re.search(r'KODACHI_NATIVE_STAGE (start|memory-snapshot|symbol-categories|fixed-literals|instruction-count|findcrypt|decompile|complete)\b',line)
-                  if m: stages.append(m[1])
-              print('::notice title=Kodachi native fixed stages '+name+'::'+json.dumps(stages))
+                  m=re.search(r'KODACHI_NATIVE_STAGE (start|memory-snapshot|bounded-disassembly|symbol-categories|fixed-literals|instruction-count|findcrypt|decompile|complete)\b',line)
+                  if m and len(stages)<16: stages.append(m[1])
+              progress={'stages':stages,'importPhaseSeen':'IMPORTING' in log,'analysisPhaseSeen':'ANALYZING' in log,'importSuccessMarkerSeen':'Import succeeded' in log}
+              print('::notice title=Kodachi native fixed stages '+name+'::'+json.dumps(progress))
           if messages:
               text='\n'.join(messages[:12])
               print('::error title=Kodachi native tool diagnostics::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
