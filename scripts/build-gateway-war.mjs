@@ -6,6 +6,7 @@
  *   gateway-config.war
  *     gateway-config.html        (UI; loads js/gateway-config.js)
  *     js/gateway-config.js       (the pure configuration engine)
+ *     js/vpn-analysis-tools.js   (offline header triage / setup templates only)
  *     WEB-INF/web.xml            (welcome file only)
  *     WEB-INF/lib/gateway-config.jar
  *                                (GatewayMain CLI + shared GatewayConfig core,
@@ -37,6 +38,7 @@ files.set("WEB-INF/web.xml", Buffer.from(`<?xml version="1.0" encoding="UTF-8"?>
 `));
 files.set("gateway-config.html", readFileSync("gateway-config.html"));
 files.set("js/gateway-config.js", readFileSync("js/gateway-config.js"));
+files.set("js/vpn-analysis-tools.js", readFileSync("js/vpn-analysis-tools.js"));
 files.set("WEB-INF/lib/gateway-config.jar", readFileSync(jarPath));
 
 const crcTable = new Int32Array(256).map((_, n) => {
