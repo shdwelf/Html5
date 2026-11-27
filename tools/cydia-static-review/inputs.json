@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "purpose": "Non-executing static review of a historical public Cydia package, not a jailbreak, DRM decryption, Samsung-root method or Secure Folder bypass.",
+  "cydia": {
+    "package": "cydia",
+    "version": "1.1.30",
+    "architecture": "iphoneos-arm",
+    "url": "https://apt.saurik.com/debs/cydia_1.1.30_iphoneos-arm.deb",
+    "indexUrl": "https://apt.saurik.com/dists/ios/main/binary-iphoneos-arm/Packages",
+    "bytes": 1292624,
+    "md5FromHttpsIndex": "bb0cdc40d3abac5b874972ad8a8b70a1",
+    "nativeEntry": "Applications/Cydia.app/Cydia",
+    "provenanceLimit": "Historical version explicitly listed by the author-linked HTTPS repository. Index size/MD5 checks are not a modern authenticated repository-signature chain or independent publisher authentication. A measured SHA-256 is recorded before static analysis; no claim this is the latest Cydia or compatible with any current jailbreak."
+  },
+  "ghidra": {
+    "version": "12.1.4",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+    "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db"
+  },
+  "appleMachOReference": {
+    "repository": "apple-oss-distributions/xnu",
+    "commit": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+    "path": "EXTERNAL_HEADERS/mach-o/loader.h",
+    "url": "https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/EXTERNAL_HEADERS/mach-o/loader.h",
+    "limit": "LC_ENCRYPTION_INFO and LC_ENCRYPTION_INFO_64 describe a binary range/cryptid. A zero or absent command is not proof of no application-data encryption, and a nonzero cryptid is not decrypted by this workflow."
+  },
+  "sourceMirror": {
+    "repository": "autopear/Cydia",
+    "commit": "bb0ace74560c5c96c8dbefec00c8e3881c504558",
+    "file": "MobileCydia.mm",
+    "blob": "76a3a3f1e71d0d7f4b0b5d2eebc8d5093100b9b0",
+    "limit": "Third-party 2017 mirror claiming git.saurik.com origin; not an authenticated official GitHub account and not verified to reproduce the downloaded binary."
+  },
+  "guardrails": {
+    "inputNativeOrMaintainerScriptsExecuted": false,
+    "packageInstalled": false,
+    "deviceConnected": false,
+    "jailbreakAttempted": false,
+    "samsungRootVerified": false,
+    "secureFolderBypassed": false,
+    "encryptionKeysRecovered": false,
+    "drmOrAccountBypassed": false,
+    "malwareFreeVerdict": false
+  }
+}
