@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "recordType": "Local bounded Checks-summary retrieval verification, not a CI-produced full APK receipt",
+  "sourceCommit": "64218e56d82a3949d3884fca5cd912f9f405042a",
+  "verified": [
+    "Successful workflow and selected build job; exact source/run identity",
+    "One metadata record and all ordered unique compressed Checks chunks within bounds",
+    "Declared compact-summary byte length and SHA-256",
+    "All sixteen reviewed source-file hashes against the local worktree",
+    "Seven packaged security/startup/licence asset hashes against reviewed source",
+    "APK certificate fingerprint parsed from successful CI signature-verification output",
+    "Full 253-package version inventory, all 51 required commands, authenticated-bootstrap pin",
+    "Exact five non-skipped offline runtime tests only on the x86_64 build",
+    "ARM summaries preserve empty test suites and false runtime/device/root/VPN claims",
+    "Unexpired published artifact metadata from the same successful run"
+  ],
+  "records": [
+    {
+      "summary": "docs/research/zshaolin-modern-x86_64-apk-summary.json",
+      "bytes": 22860,
+      "sha256": "ab4d5ab684d74d5405118a41370e7e1c9d46643a50effda068cfb4a39a8182b5",
+      "checksChunks": 5,
+      "runId": "46063037718",
+      "jobId": "140721890980",
+      "sourceCommit": "64218e56d82a3949d3884fca5cd912f9f405042a",
+      "artifactId": 15230695366,
+      "artifactZipBytesReportedByGitHub": 285694678,
+      "artifactUrl": "https://github.com/shdwelf/Html5/actions/runs/46063037718/artifacts/15230695366",
+      "localApkBytesDownloaded": false,
+      "fullReceiptDownloaded": false,
+      "arch": "x86_64"
+    },
+    {
+      "summary": "docs/research/zshaolin-modern-arm-apk-summary.json",
+      "bytes": 22291,
+      "sha256": "8b0894321cdb977b6bbe30cdd5f3e3bac4bd00f14ec0bce613121990d4f8edd1",
+      "checksChunks": 4,
+      "runId": "46063968229",
+      "jobId": "140724866005",
+      "sourceCommit": "64218e56d82a3949d3884fca5cd912f9f405042a",
+      "artifactId": 15230136365,
+      "artifactZipBytesReportedByGitHub": 265539535,
+      "artifactUrl": "https://github.com/shdwelf/Html5/actions/runs/46063968229/artifacts/15230136365",
+      "localApkBytesDownloaded": false,
+      "fullReceiptDownloaded": false,
+      "arch": "arm"
+    },
+    {
+      "summary": "docs/research/zshaolin-modern-aarch64-apk-summary.json",
+      "bytes": 22301,
+      "sha256": "69d39b6873cffba28bd876942ece3ac505dc7e55023db599a5591373830d4213",
+      "checksChunks": 4,
+      "runId": "46063968229",
+      "jobId": "140724866094",
+      "sourceCommit": "64218e56d82a3949d3884fca5cd912f9f405042a",
+      "artifactId": 15230621287,
+      "artifactZipBytesReportedByGitHub": 273833146,
+      "artifactUrl": "https://github.com/shdwelf/Html5/actions/runs/46063968229/artifacts/15230621287",
+      "localApkBytesDownloaded": false,
+      "fullReceiptDownloaded": false,
+      "arch": "aarch64"
+    }
+  ],
+  "rawApkBytesDownloadedLocally": false,
+  "fullDependencyReceiptsDownloadedLocally": false,
+  "limitation": "APK/full-receipt hashes are CI measurements, not a local byte rehash, independent reproduction, upstream signer authentication, ARM/physical-phone execution, root or licence-clearance proof. Azure Blob artifact retrieval was blocked in this sandbox; use the GitHub artifact links."
+}

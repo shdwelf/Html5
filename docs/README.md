@@ -4,6 +4,26 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Secure Folder · Saurik/Cydia · Ghidra and Robtex
+
+- [Secure Folder, Saurik/Cydia and passive-domain deep dive](samsung-secure-folder-saurik-cydia-review.md) — Samsung's explicit A03s/SM-A037U1 Android–Others classification versus unverified installed Secure Folder support; dated `.net`/`.com` evidence; Cydia/Impactor/Eraser distinctions; Mach-O metadata versus decryption; actual measured historical Cydia ARM/ARM64 Ghidra review; Robtex with registry RDAP/recursive-DNS cross-checks and named metasearch response quality. No phone changes, jailbreak, recovered keys or verified Samsung root.
+
+## Galaxy A03s screenshot investigation · rooting prerequisites
+
+- [Work-profile briefcase and private-mode distinctions](android-work-profile-private-mode.md) — Android 13 versus Android 15 Private Space, model-dependent Secure Folder, read-only counts-only profile inspection, per-profile VPN boundaries, and why the approved Termux-compatible native prefix cannot run inside a work profile. Follow-up screenshot confirms July 1, 2025 Android patch level; Official status is not unlock/management-state proof.
+
+- [SM-A037U1/DS screenshot investigation](android-a037u1-rooting-review.md) — confirmed Android 13 / One UI Core 5.1 and exact firmware label, with phone identifiers and raw screenshots excluded. An available OEM-unlocking toggle, SELinux state, kernel label or static Ghidra report is not proof of working root. Download Mode OEM Lock/KnoxGuard and actual device testing remain open. The separate ZShaolin x86_64 APK passed all five offline Android 13 tests and measured delivery gates; ARM execution and exact-phone compatibility are not established.
+
+## ZShaolin Modern · full native toolbox, lean startup
+
+- [Native review-build guide](zshaolin-modern-native-build.md) — x86_64, ARMv7 and ARM64 review APKs: 253 packages and all 51 required commands each, verified signatures and packaged-remediation measurements. All five offline Android 13 runtime tests passed **on x86_64 only**; ARM APKs are compiled/measured but not executed. Includes downloads/checksums, retrieval boundary, ABI/primary-user/Termux conflict, target-28/ephemeral-signing tradeoffs, legacy substitutions and corresponding-source/licence limits. No exact-phone, root or distribution-complete claim.
+- Measured summaries: [x86_64](research/zshaolin-modern-x86_64-apk-summary.json), [ARMv7](research/zshaolin-modern-arm-apk-summary.json), [ARM64](research/zshaolin-modern-aarch64-apk-summary.json), [local transport verification](research/zshaolin-modern-evidence-transport.json). All run/source and 16 source-file hashes verified; large APKs/full receipts measured by CI, not downloaded locally. Operational report/evidence stay outside public offline manual bundles.
+
+## ZShaolin APK follow-up · supplemental Kodachi literal
+
+- [ZShaolin APK/source investigation and `r@@t0r` result](zshaolin-apk-and-kodachi-candidate-2026-11-17.md) — no exact APK obtained; pinned legacy source and one repository-shipped ARM shared object inspected as data. Source-confirmed SSH private-key-over-HTTP provisioning concern is distinct from dormant Java HTTP code, an APK audit or a live exploit. The new original-ISO scan found no `r@@t0r` in its bounded candidates; no login acceptance/rejection or VPN password is established.
+- Registers: [ZShaolin source identity/findings and transport](research/zshaolin-apk-investigation-2026-11-17.json), [complete supplemental original-ISO report](research/kodachi-supplemental-literal-2026-11-17.json). Historical three-term/Ghidra evidence is unchanged; these operational reports remain outside public manual packages.
+
 ## Round 96 · tiled radar, analysis toolbox and original Kodachi ISO
 
 - [Kodachi ISO VPN / literal / native-analysis evidence](kodachi-vpn-iso-inspection-2026-11-17.md) and [structured register](research/kodachi-vpn-iso-inspection-2026-11-17.json) — bounded actual-image inspection, requested `r00t0r` / `r00tor` / `r00t` searches and separately gated Ghidra evidence. Published OS defaults, crypto signatures and working VPN passwords are distinct; no authentication, boot or decryption.

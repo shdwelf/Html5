@@ -1,0 +1,107 @@
+name: Cydia — historical Mach-O static crypto review, no jailbreak execution
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'tools/cydia-static-review/**'
+      - 'tools/ghidra_scripts/CydiaCryptoReview.java'
+      - 'tests/cydia_static_review_test.py'
+      - '.github/workflows/cydia-static-review.yml'
+  pull_request:
+    paths:
+      - 'tools/cydia-static-review/**'
+      - 'tools/ghidra_scripts/CydiaCryptoReview.java'
+      - 'tests/cydia_static_review_test.py'
+      - '.github/workflows/cydia-static-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cydia-static-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Synthetic Mach-O, encryption metadata, malformed archive and provenance controls
+        run: python3 -m unittest discover -s tests -p cydia_static_review_test.py -v
+
+  static-review:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name == 'workflow_dispatch'
+    needs: controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cydia-static-review
+            tools/ghidra_scripts
+            tools/android-ci
+            .github/workflows
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Measure fixed public Cydia package, inventory encryption commands and hash-check Ghidra
+        run: python3 tools/android-ci/run-checked.py cydia-inputs python3 tools/cydia-static-review/review.py prepare
+      - name: Compile inert native positive control, never execute it
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n' '#include <unistd.h>' 'int mix(int x){return (x^43)+7;} int main(void){return mix((int)getuid());}' > "$RUNNER_TEMP/cydia-static-review/control.c"
+          cc -O0 -g "$RUNNER_TEMP/cydia-static-review/control.c" -o "$RUNNER_TEMP/cydia-static-review/control.elf"
+      - name: Bounded Ghidra analysis and sampled decompilation of actual Cydia ARM slices
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/cydia-static-review"
+          headless="$root/ghidra_12.1.4_PUBLIC/support/analyzeHeadless"
+          timeout --kill-after=15s 8m "$headless" "$root/projects" CydiaControl -import "$root/control.elf" -analysisTimeoutPerFile 180 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript CydiaCryptoReview.java "$root/reports/control.json" -deleteProject > "$root/logs/control.log" 2>&1
+          for input in "$root"/inputs/cydia-*.macho; do
+            test -f "$input"
+            name="$(basename "$input")"
+            timeout --kill-after=15s 10m "$headless" "$root/projects" "Cydia-${name%.macho}" -import "$input" -analysisTimeoutPerFile 240 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript CydiaCryptoReview.java "$root/reports/$name.json" -deleteProject > "$root/logs/$name.log" 2>&1
+          done
+      - name: Validate measured native analysis and publish bounded JSON evidence
+        run: python3 tools/android-ci/run-checked.py cydia-receipt python3 tools/cydia-static-review/review.py summarize
+      - name: Retain only public-input metadata, never Cydia binaries or phone files
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cydia-static-review-${{ github.run_id }}
+          path: ${{ runner.temp }}/cydia-static-review/reports/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Bounded fixed-script failure diagnostics
+        if: failure()
+        shell: python
+        run: |
+          import json, os, pathlib, re
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'cydia-static-review'
+          lines=[]
+          for name in ['control.log','cydia-arm.macho.log','cydia-arm64.macho.log']:
+              p=root/'logs'/name
+              if not p.is_file(): continue
+              for line in p.read_text(errors='replace').splitlines():
+                  if re.search(r'CydiaCryptoReview\.java:[0-9]+:|CYDIA_STATIC_REVIEW_COMPLETE|Analysis timed out',line):
+                      lines.append(name+': '+line[:500])
+          message='\n'.join(lines[:15]) or 'No expected trusted-script marker present.'
+          message=message.replace('%','%25').replace('\r','%0D').replace('\n','%0A')
+          print('::notice title=Cydia trusted-script diagnostics::'+message)
+          stages={}
+          for name in ['acquisition.json','control.json','cydia-arm.macho.json','cydia-arm64.macho.json']:
+              p=root/'reports'/name
+              if not p.is_file(): stages[name]={'exists':False}; continue
+              r=json.loads(p.read_text())
+              stages[name]={'exists':True,'inputSha256':r.get('inputSha256'),'packageSha256':r.get('downloadedPackageSha256'),'instructions':r.get('instructionsVisitedUpTo1000000'),'functions':r.get('functionsDefinedUpTo200000'),'decompilations':sum(x.get('completed',False) for x in r.get('boundedDecompilations',[]))}
+          print('::notice title=Cydia fixed-stage metadata::'+json.dumps(stages,separators=(',',':')))

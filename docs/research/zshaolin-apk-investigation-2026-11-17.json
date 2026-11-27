@@ -1,0 +1,459 @@
+{
+  "schema": 1,
+  "reportSeriesLabel": "2026-11-17; not the upstream publication or runner observation clock",
+  "sourceObservationAtSandboxClock": "2026-11-27T17:30:27.470545+00:00",
+  "request": {
+    "apk": "ZShaolin",
+    "additionalLiteral": "r@@t0r",
+    "literalHasDigitZero": true,
+    "interpretation": "Source/APK investigation plus offline Kodachi ISO literal search, not authorization for a live account/provider login."
+  },
+  "apk": {
+    "obtained": false,
+    "installed": false,
+    "executed": false,
+    "binaryManifestDecoded": false,
+    "dexDecompiled": false,
+    "signatureVerified": false,
+    "signerCertificateSha256": null,
+    "fileSha256": null,
+    "versionObservedFromApk": null,
+    "literalSearchRun": false,
+    "safeOrMaliciousVerdictEstablished": false,
+    "boundary": "No exact APK was supplied or acquired from a verified primary binary source. Source metadata below is not an APK inspection receipt. No third-party/mod APK was downloaded."
+  },
+  "upstream": {
+    "repository": "dyne/ZShaolin",
+    "url": "https://github.com/dyne/ZShaolin",
+    "sourceCommit": "9e4857a8fae42eb1e476a9a6ea26df172bf8e87e",
+    "committedAt": "2014-12-21T22:52:28Z",
+    "defaultBranchAtObservation": "master",
+    "archivedAtObservation": false,
+    "githubReleasesAtObservation": 0,
+    "githubReleaseQuery": "https://api.github.com/repos/dyne/ZShaolin/releases?per_page=100",
+    "pinnedTree": {
+      "url": "https://api.github.com/repos/dyne/ZShaolin/git/trees/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e?recursive=1",
+      "gitTree": "9e4857a8fae42eb1e476a9a6ea26df172bf8e87e",
+      "entries": 392,
+      "truncated": false,
+      "apkPaths": 0
+    },
+    "licenseReportedByGithub": "GPL-3.0",
+    "licenseBoundary": "Framework/source license, not a blanket license clearance for every bundled command or an authenticated APK publisher certificate."
+  },
+  "sourceArchive": {
+    "archiveBytes": 443706,
+    "archiveSha256": "3d0dc8aad25032f5f2635a9f83ff9ac9ba73f85bf52175037a139fe7b74d6b37",
+    "regularFiles": 321,
+    "uncompressedBytes": 1568698,
+    "url": "https://codeload.github.com/dyne/ZShaolin/tar.gz/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e",
+    "gitBlobIdentityCheckedForEveryRegularFile": true,
+    "symlinks": [
+      {
+        "path": "wrap/static-c++",
+        "target": "static-cc",
+        "followed": false,
+        "extracted": false
+      },
+      {
+        "path": "wrap/static-ld",
+        "target": "static-cc",
+        "followed": false,
+        "extracted": false
+      }
+    ],
+    "symlinksFollowed": false,
+    "regularFilesCopiedAsMode": "0600 data only",
+    "buildScriptsExecuted": false,
+    "binariesExecuted": false,
+    "nestedArchivesExpanded": false,
+    "sourceOrBinariesCommittedToThisRepository": false
+  },
+  "sourceManifest": {
+    "path": "termapk/AndroidManifest.xml",
+    "package": "org.dyne.zshaolin",
+    "versionName": "1.1",
+    "versionCode": 18,
+    "minSdkVersion": 4,
+    "targetSdkVersion": 14,
+    "maxSdkVersion": 20,
+    "usesPermissions": [
+      "android.permission.INTERNET",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.WAKE_LOCK",
+      "android.permission.VIBRATE"
+    ],
+    "vpnServiceDeclared": false,
+    "inputMethodServicePermission": "android.permission.BIND_INPUT_METHOD",
+    "notDecodedFromApk": true,
+    "currentAndroidCompatibilityTested": false
+  },
+  "sourceNativeComponent": {
+    "path": "termapk/libs/armeabi/libjackpal-androidterm2.so",
+    "bytes": 13860,
+    "sha256": "47ed51afb295215f959361929470628d8c23ec2773c4b578aa961d4f6ed4174c",
+    "elfClass": 32,
+    "endianness": "little",
+    "machine": "ARM",
+    "type": "ET_DYN",
+    "dynamicTextRelocations": true,
+    "needed": [
+      "libdl.so",
+      "liblog.so",
+      "libstdc++.so",
+      "libm.so",
+      "libc.so"
+    ],
+    "relevantImportedSymbols": [
+      "waitpid",
+      "ioctl",
+      "execl",
+      "kill",
+      "fork"
+    ],
+    "jniOnLoadDefined": true,
+    "ndkSourceAppAbi": "armeabi-v7a",
+    "arm64LibraryPresentInPinnedTree": false,
+    "executed": false,
+    "disassembledOrDecompiled": false,
+    "method": "System readelf header/dynamic-section/dynamic-symbol inspection; source comparison, not Ghidra or APK execution."
+  },
+  "sourceLiteralSearch": {
+    "literal": "r@@t0r",
+    "regularFileBlobsScanned": 321,
+    "bytesScanned": 1568698,
+    "matchingFiles": 0,
+    "substringOccurrencesByEncoding": {
+      "utf-8": 0,
+      "utf-16le": 0,
+      "utf-16be": 0
+    },
+    "apkBytesSearched": false,
+    "scope": "Raw bytes of every regular file in this pinned source tree, including its checked-in ARM shared object and compressed JAR blob. No symlink following or nested JAR/member decompression; not the absent system payload or a distributed APK.",
+    "passwordRoleEstablished": false
+  },
+  "findings": [
+    {
+      "id": "ZSHAOLIN-SOURCE-01",
+      "title": "SSH provisioning helper serves generated client private-key material over plain HTTP",
+      "status": "Confirmed source flow; not reproduced against an APK, running device or reachable service",
+      "risk": "High if this legacy helper is run and its HTTP provisioning endpoint is reachable by an untrusted peer. Not a new CVE or a measured exploitation claim.",
+      "evidence": [
+        {
+          "path": "conf/helpers/z-ssh",
+          "lines": "88-115",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/conf/helpers/z-ssh#L88-L115"
+        },
+        {
+          "path": "conf/etc/ssh/sshd_config",
+          "lines": "41-69",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/conf/etc/ssh/sshd_config#L41-L69"
+        }
+      ],
+      "observations": [
+        "Creates a client RSA key with an empty passphrase when absent.",
+        "Copies its public key to authorized_keys only when that file is absent.",
+        "Embeds the client private key into a generated provisioning script.",
+        "After starting SSHD on port 2222, invokes an HTTP server on port 2221 for the provisioning directory; this helper configures neither TLS nor HTTP authentication.",
+        "A separate secure action stops the HTTP server. This is distinct from the dormant Java webserver scaffold."
+      ],
+      "actualPrivateKeyValuesRetrieved": false,
+      "actualPrivateKeyValuesPublished": false,
+      "recommendedBoundary": "Do not enable this legacy HTTP-key provisioning flow. Use a maintained SSH implementation, generate/transfer public keys through an authenticated channel, and rotate keys if this flow was used on an exposed network."
+    },
+    {
+      "id": "ZSHAOLIN-SOURCE-02",
+      "title": "The source SSH default is public-key authentication, not a universal password",
+      "status": "Source configuration only",
+      "evidence": [
+        {
+          "path": "conf/etc/ssh/sshd_config",
+          "lines": "13-69",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/conf/etc/ssh/sshd_config#L13-L69"
+        }
+      ],
+      "observations": [
+        "Port 2222; PubkeyAuthentication yes; PasswordAuthentication no; PermitEmptyPasswords no; ChallengeResponseAuthentication no.",
+        "Legacy StrictModes no and UsePrivilegeSeparation no are present; this is not a current hardening recommendation.",
+        "No source evidence establishes r@@t0r as a ZShaolin or Kodachi VPN password."
+      ]
+    },
+    {
+      "id": "ZSHAOLIN-SOURCE-03",
+      "title": "Native Linux/Android process boundary and legacy compatibility",
+      "status": "Source plus one repository-shipped ELF inspected as data",
+      "evidence": [
+        {
+          "path": "termapk/jni/termExec.cpp",
+          "lines": "90-130",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/jni/termExec.cpp#L90-L130"
+        },
+        {
+          "path": "termapk/AndroidManifest.xml",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/AndroidManifest.xml"
+        },
+        {
+          "path": "termapk/jni/Application.mk",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/jni/Application.mk"
+        }
+      ],
+      "observations": [
+        "PTY /dev/ptmx, fork and execl require a native process environment, not browser JavaScript.",
+        "Source declares SDK min 4 / target 14 / max 20 and a 32-bit ARM build; a checked-in shared object has DT_TEXTREL.",
+        "These are compatibility/review concerns, not proof of an exploitable APK or a tested current-device outcome."
+      ]
+    },
+    {
+      "id": "ZSHAOLIN-SOURCE-04",
+      "title": "System payload is compressed data disguised by an asset suffix, not a demonstrated password cipher",
+      "status": "Source packaging/installer flow only; release payload absent",
+      "evidence": [
+        {
+          "path": "pack/conf.zsh",
+          "lines": "105-116",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/pack/conf.zsh#L105-L116"
+        },
+        {
+          "path": "termapk/src/org/dyne/zshaolin/startup/installer.java",
+          "lines": "31-35,147-193",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/org/dyne/zshaolin/startup/installer.java#L31-L35"
+        }
+      ],
+      "observations": [
+        "Packages a tar with LZMA and copies it to assets/system.tar.lzma.mp3.",
+        "Installer copies busybox.mp3 and the system asset into app-private storage, makes BusyBox executable, then invokes its tar command. These source commands were not executed during this review.",
+        "Pinned assets directory contains only .keep, not the system payload. The suffix does not establish encryption or a password."
+      ]
+    },
+    {
+      "id": "ZSHAOLIN-SOURCE-05",
+      "title": "Do not mistake dormant Java HTTP scaffold for a measured open port",
+      "status": "Dormant in the reviewed source path",
+      "evidence": [
+        {
+          "path": "termapk/src/com/spartacusrex/spartacuside/TermService.java",
+          "lines": "204-206",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/com/spartacusrex/spartacuside/TermService.java#L204-L206"
+        },
+        {
+          "path": "termapk/src/com/spartacusrex/spartacuside/web/sockethandler.java",
+          "lines": "120-132",
+          "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/com/spartacusrex/spartacuside/web/sockethandler.java#L120-L132"
+        }
+      ],
+      "observations": [
+        "Java helper has a port-10000 ServerSocket constructor, but TermService construction/start calls are commented out.",
+        "The file-serving handler branch is additionally guarded by if(false && ...).",
+        "No listening port or active file disclosure was measured. The separate z-ssh shell helper above has its own HTTP provisioning path."
+      ]
+    }
+  ],
+  "primaryWebCrossChecks": [
+    {
+      "url": "https://dyne.org/software/zshaolin/",
+      "fetched": true,
+      "takeaway": "Official project describes an unrooted Android command-line environment, links the Play listing, source and build inputs. Its historical no-risk badge is not accepted as a current safety verdict."
+    },
+    {
+      "url": "https://files.dyne.org/zshaolin/",
+      "fetched": true,
+      "takeaway": "Observed directory view lists README, packages, sources and toolchains, not a top-level APK."
+    },
+    {
+      "url": "https://files.dyne.org/zshaolin/.xda-dev/",
+      "fetched": false,
+      "takeaway": "Historical light-release path could not be fetched; HTTP status and APK availability were not established."
+    }
+  ],
+  "reviewedSourceFiles": [
+    {
+      "path": "README",
+      "bytes": 1105,
+      "gitBlob": "ea9d2f2a3f2d5df5812e48df8232ebc93e32402f",
+      "sha256": "b2221ea462210b709786a3dd37328d660c1d769c25b324983984f5497eb6cd1b",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/README"
+    },
+    {
+      "path": "COPYING",
+      "bytes": 35147,
+      "gitBlob": "94a9ed024d3859793618152ea559a168bbcbb5e2",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/COPYING"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 4,
+      "gitBlob": "9459d4ba2a0d3cc475f89ed03a13a1517c04798e",
+      "sha256": "1523e9e982ff804c6d979e1bb2c6f3d7bae35307e8ce458bffc0d12a442b98da",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/VERSION"
+    },
+    {
+      "path": "termapk/AndroidManifest.xml",
+      "bytes": 2701,
+      "gitBlob": "46843aa8d205924b06f0895a242f7c0199f7a53a",
+      "sha256": "fdf329c25ba6f9efc8e050d38f023e63d5cba4157b00ffb55bb76988a572ebea",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/AndroidManifest.xml"
+    },
+    {
+      "path": "termapk/jni/Application.mk",
+      "bytes": 121,
+      "gitBlob": "4e76d4ac520b0d8d8c1fc2b83802353e6e3578ba",
+      "sha256": "c6ad93f64d296e17cf0522b66aca1337ac760e7e0e531a0b1b1166ea075c8561",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/jni/Application.mk"
+    },
+    {
+      "path": "termapk/jni/Android.mk",
+      "bytes": 1049,
+      "gitBlob": "177f7b1a692af473e121d2133c262813a37fbc3e",
+      "sha256": "12e9619d218e088af7de0639fa2866b80f27ade4775c02eccf0f89110a0f42f7",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/jni/Android.mk"
+    },
+    {
+      "path": "termapk/jni/termExec.cpp",
+      "bytes": 9966,
+      "gitBlob": "c5009c7ec24fc032d1b3f9f440200e2314e1015b",
+      "sha256": "71fb2597d2b900792ac27720eeab5a56544156de34128ec795866b02ccbc15f3",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/jni/termExec.cpp"
+    },
+    {
+      "path": "termapk/libs/armeabi/libjackpal-androidterm2.so",
+      "bytes": 13860,
+      "gitBlob": "c5a2fe108c1471edbbdb148152ef59815de6d65f",
+      "sha256": "47ed51afb295215f959361929470628d8c23ec2773c4b578aa961d4f6ed4174c",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/libs/armeabi/libjackpal-androidterm2.so"
+    },
+    {
+      "path": "termapk/assets/.keep",
+      "bytes": 0,
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/assets/.keep"
+    },
+    {
+      "path": "termapk/src/org/dyne/zshaolin/startup/installer.java",
+      "bytes": 12427,
+      "gitBlob": "486a0edc77549a86800c53c4807415b793f8c92b",
+      "sha256": "7c2749b07ec7b373c946de3de4629e0e62e91eebc66554412ec37650b8e52e4f",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/org/dyne/zshaolin/startup/installer.java"
+    },
+    {
+      "path": "termapk/src/org/dyne/zshaolin/startup/setup/assetextract.java",
+      "bytes": 3650,
+      "gitBlob": "df5f9914b845ef0171f9e64835930219b975735e",
+      "sha256": "ac899438a5e1771ae28432bc5187235259d5f87d1f7e77b7afbb43d3ad1b0664",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/org/dyne/zshaolin/startup/setup/assetextract.java"
+    },
+    {
+      "path": "termapk/src/org/dyne/zshaolin/startup/setup/filemanager.java",
+      "bytes": 5737,
+      "gitBlob": "3665b73d2204189588627fff4f42fdb4ef890a10",
+      "sha256": "e6cdeef6034e673a82db8da7545d7a8724d27baccecb9f11ba1ecec72c8bba7b",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/org/dyne/zshaolin/startup/setup/filemanager.java"
+    },
+    {
+      "path": "termapk/src/com/spartacusrex/spartacuside/TermService.java",
+      "bytes": 14730,
+      "gitBlob": "fffc648283f3294a617be6f4e4235772e454e3b0",
+      "sha256": "46ab9157d2492862f8bfe509aaf0588c8400ca2e66dd72d40820d4c9a8f744b5",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/com/spartacusrex/spartacuside/TermService.java"
+    },
+    {
+      "path": "termapk/src/com/spartacusrex/spartacuside/web/webserver.java",
+      "bytes": 3166,
+      "gitBlob": "52e5482049060c95fe56b5d1ec298220632dae40",
+      "sha256": "37c5c7eed33a08c6d9ce9e398a63f319f2696a4d6260a633afb661c212afcb98",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/com/spartacusrex/spartacuside/web/webserver.java"
+    },
+    {
+      "path": "termapk/src/com/spartacusrex/spartacuside/web/sockethandler.java",
+      "bytes": 11666,
+      "gitBlob": "be2c20ee426aa61257f52913f47e1bc20d72e883",
+      "sha256": "babd663a2e0fe5cd8042a3554ce40221f21104792a38da0fbb8d02b2343f0a7c",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/termapk/src/com/spartacusrex/spartacuside/web/sockethandler.java"
+    },
+    {
+      "path": "conf/helpers/z-ssh",
+      "bytes": 3243,
+      "gitBlob": "d368f2a15e5f71b460706f0ef45cd24f3469ce80",
+      "sha256": "619d8221e479080c1cd2c838fc17e69e8d05f58874b47e9af7afcf87fd691fb3",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/conf/helpers/z-ssh"
+    },
+    {
+      "path": "conf/etc/ssh/sshd_config",
+      "bytes": 3657,
+      "gitBlob": "a0048252ef08b3b4fb56d55f8ef60c2f79527732",
+      "sha256": "9e5edd6570560921f37b7f04d357aa9b525fd2e5ec620c5bba9d67fdaa130da8",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/conf/etc/ssh/sshd_config"
+    },
+    {
+      "path": "pack/conf.zsh",
+      "bytes": 4532,
+      "gitBlob": "dd717cba9a5fd3536c22ecd9e39f70894e55446e",
+      "sha256": "1c6ed1a98e0e087cf2af6c8b58c0c405844fdb94c36ca109f507d7bce800f604",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/pack/conf.zsh"
+    },
+    {
+      "path": "pack/dojos/1.1/network.tree",
+      "bytes": 386,
+      "gitBlob": "6e3c7e4e1da7f5cd2631e05629578d7bdb216aa5",
+      "sha256": "471dc58a8eebb100ab719ff7bf7cab78027225871d87e823ebbe1fd675d19290",
+      "url": "https://github.com/dyne/ZShaolin/blob/9e4857a8fae42eb1e476a9a6ea26df172bf8e87e/pack/dojos/1.1/network.tree"
+    }
+  ],
+  "kodachiSupplementalEvidenceTransport": {
+    "runId": 46041752784,
+    "runUrl": "https://github.com/shdwelf/Html5/actions/runs/46041752784",
+    "sourceCommit": "dd40f8a70ad19f4ea3658f85ca03de9ec37e7aad",
+    "checkRunId": 140651111904,
+    "conclusion": "success",
+    "controlJobs": [
+      {
+        "id": 140650926201,
+        "name": "controls",
+        "conclusion": "success"
+      },
+      {
+        "id": 140651111904,
+        "name": "search-original-iso",
+        "conclusion": "success"
+      }
+    ],
+    "method": "Complete ordered GitHub Checks base64 notice chunks",
+    "chunks": 3,
+    "decodedBytes": 4334,
+    "decodedSha256": "61ac0019cd7c2d2c5e13ceda4c7fb0962fbaf04fcb750944cd18b4a2fbcfc96e",
+    "workflowPath": ".github/workflows/kodachi-candidate-search.yml",
+    "workflowSha256": "019a2d4ea22752efe531af8dfb9d5737bcacfbc40e1874785878a1163f84c334",
+    "artifact": {
+      "id": 15220316928,
+      "name": "kodachi-supplemental-literal-metadata",
+      "size_in_bytes": 1975,
+      "digest": "sha256:f4cae8e0841163d90763251271ba18977915e7fa556dbeaf91896f3c19de5801",
+      "expires_at": "2026-12-11T17:27:47Z",
+      "expired": false,
+      "fullArchiveRetrievedLocally": false
+    },
+    "completeDecodedReportPreservedAt": "docs/research/kodachi-supplemental-literal-2026-11-17.json"
+  },
+  "validation": {
+    "localPythonControls": 43,
+    "remoteStaticAndCandidatePythonControls": 38,
+    "historicalEvidenceNodeControls": 5,
+    "newFollowupEvidenceNodeControls": 6,
+    "combinedEvidenceAndPackageNodeControls": 15,
+    "countsOverlapOtherSuites": true,
+    "yamlShellAndEmbeddedPythonParsed": true,
+    "actionlintRun": false,
+    "apkRuntimeOrCertificateAcceptancePerformed": false
+  },
+  "conclusion": {
+    "workingVpnPasswordEstablished": false,
+    "rAtAtT0rPasswordAccepted": null,
+    "rAtAtT0rPasswordRejected": null,
+    "liveAuthenticationAttempted": false,
+    "apkSpecificSecurityVerdictEstablished": false,
+    "exactApkStillRequiredForCertificateDexAndPayloadReview": true,
+    "originalGhidraEvidenceRewrittenOrRerun": false,
+    "gatewayRemainsOfflinePlanner": true
+  }
+}

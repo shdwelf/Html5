@@ -1,0 +1,87 @@
+#!env zsh
+# Copyright (C) 2014 Denis Roio <jaromil@dyne.org>
+# Modified 2026: replace HTTP/client-private-key provisioning with explicit,
+# foreground, loopback-only SSH using an owner-supplied public key.
+# GNU GPL version 3 or (at your option) any later version. See COPYING.
+# Executable and compatible with Zsh autoloaded functions.
+
+_zshaolin_key_only_ssh() (
+    umask 077
+    set -eu
+    fail() { printf '%s\n' "$1" >&2; return 1; }
+    FILES=${ZSHAOLIN_FILES:-${HOME:-}}
+    SYS=${ZSHAOLIN_PREFIX:-${PREFIX:-$FILES/system}}
+    for p in "$FILES" "$SYS"; do
+        case "$p" in /*) ;; *) fail 'An absolute app-private directory is required.'; return 1 ;; esac
+        case "$p" in *[!A-Za-z0-9_./-]*|*/../*|*/./*|*/..|*/.) fail 'Unsupported app-private path.'; return 1 ;; esac
+        [ -d "$p" ] && [ ! -L "$p" ] || { fail 'App-private paths must be real directories.'; return 1; }
+    done
+    MODE=${1:-help}
+    [ "$#" -le 1 ] || { fail 'Use z-ssh help or start; no key-export or remote provisioning arguments.'; return 1; }
+    case "$MODE" in
+        help|-h|--help)
+            printf '%s\n' 'z-ssh start: foreground SSH on 127.0.0.1:2222, public-key authentication only.' \
+                'Keep the client private key on the client; install only its PUBLIC key in $HOME/.ssh/authorized_keys.' \
+                'Stop with Ctrl-C. No HTTP setup service, background autostart or client-key export exists.'
+            return 0 ;;
+        secure)
+            printf '%s\n' 'HTTP key provisioning was removed. Rotate any old exposed client keys; copied private keys cannot be retracted.'
+            return 0 ;;
+        start) ;;
+        *) fail 'Unknown action; use z-ssh help or start. Stop the foreground daemon with Ctrl-C.'; return 1 ;;
+    esac
+    VAR=$FILES/.ssh
+    AUTH=$VAR/authorized_keys
+    HOST=$VAR/zshaolin_host_rsa_key
+    CONF=$VAR/zshaolin-key-only.conf
+    [ ! -L "$VAR" ] || { fail 'Refusing a symlinked .ssh directory.'; return 1; }
+    mkdir -p "$VAR"
+    chmod 700 "$VAR"
+    for p in "$AUTH" "$HOST" "$HOST.pub" "$CONF"; do
+        [ ! -L "$p" ] || { fail 'Refusing symlinked SSH state.'; return 1; }
+        [ ! -e "$p" ] || [ -f "$p" ] || { fail 'SSH state must be regular files.'; return 1; }
+    done
+    SSHD=$SYS/bin/sshd
+    KEYGEN=$SYS/bin/ssh-keygen
+    [ -x "$SSHD" ] && [ -x "$KEYGEN" ] || { fail 'The complete OpenSSH payload is missing.'; return 1; }
+    [ -s "$AUTH" ] || { fail 'Install a client PUBLIC key in app-private .ssh/authorized_keys first.'; return 1; }
+    # No authorized_keys options, private-key blocks or generated client keys.
+    # OpenSSH also parses the supplied public-key material.
+    awk '
+        /^[[:space:]]*#/ || /^[[:space:]]*$/ {next}
+        { if (NF < 2 || $1 !~ /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp(256|384|521))$/ || $2 !~ /^[A-Za-z0-9+\/=]+$/) bad=1; count++ }
+        END {exit (bad || !count)}
+    ' "$AUTH" || { fail 'authorized_keys must contain raw PUBLIC keys, not private keys or command/options records.'; return 1; }
+    "$KEYGEN" -l -f "$AUTH" >/dev/null 2>&1 || { fail 'OpenSSH rejected the public-key file.'; return 1; }
+    chmod 600 "$AUTH"
+    if [ ! -e "$HOST" ]; then
+        "$KEYGEN" -q -t rsa -b 4096 -N '' -f "$HOST" >/dev/null 2>&1 || { fail 'Private host-key generation failed.'; return 1; }
+    fi
+    [ -s "$HOST" ] && [ ! -L "$HOST" ] || { fail 'Missing private host key.'; return 1; }
+    chmod 600 "$HOST"
+    cat > "$CONF" <<EOF
+Port 2222
+ListenAddress 127.0.0.1
+HostKey $HOST
+PidFile $VAR/zshaolin-sshd.pid
+AuthorizedKeysFile $AUTH
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+PermitEmptyPasswords no
+StrictModes yes
+AllowTcpForwarding no
+AllowAgentForwarding no
+GatewayPorts no
+X11Forwarding no
+PermitTunnel no
+PermitUserEnvironment no
+UseDNS no
+ForceCommand $SYS/bin/zsh -l
+EOF
+    chmod 600 "$CONF"
+    "$SSHD" -t -f "$CONF" >/dev/null 2>&1 || { fail 'SSH configuration validation failed; daemon not started.'; return 1; }
+    printf '%s\n' 'Starting loopback-only, public-key SSH in the foreground. Ctrl-C stops it.'
+    exec "$SSHD" -D -e -f "$CONF"
+)
+_zshaolin_key_only_ssh "$@"

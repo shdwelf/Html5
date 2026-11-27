@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+def arch = providers.gradleProperty('toolboxArch').getOrElse('x86_64')
+def abi = providers.gradleProperty('toolboxAbi').getOrElse('x86_64')
+android {
+    namespace 'org.dyne.zshaolin.modern'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.termux'
+        minSdk 28
+        // Required for unprivileged exec from the app-private prefix on Android 10+.
+        // Not a claim of target-35 hardening or Play Store eligibility.
+        targetSdk 28
+        versionCode 20000
+        versionName '2.0.0-review'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        ndk { abiFilters abi }
+    }
+    signingConfigs {
+        review {
+            storeFile file(System.getenv('ZSHAOLIN_KEYSTORE') ?: '../../../build/zshaolin/review.jks')
+            storePassword System.getenv('ZSHAOLIN_KEY_PASSWORD') ?: 'unused-local-placeholder'
+            keyAlias 'zshaolin-review'
+            keyPassword System.getenv('ZSHAOLIN_KEY_PASSWORD') ?: 'unused-local-placeholder'
+        }
+    }
+    buildTypes {
+        release { debuggable false; minifyEnabled false; signingConfig signingConfigs.review }
+    }
+    testBuildType 'release'
+    sourceSets { main { assets.srcDirs = ["../../../build/zshaolin/${arch}/assets"] } }
+    androidResources { noCompress 'deb', 'zip' }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    packaging { jniLibs { useLegacyPackaging true } }
+    lint { abortOnError true; disable 'ExpiredTargetSdkVersion', 'OldTargetApi' }
+}
+dependencies {
+    implementation project(':view')
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+}
