@@ -162,12 +162,22 @@ public final class LocalFileExportSmokeTest {
         acceptNetworkWarning();
         WebView web = find(activity.getWindow().getDecorView());
         load(web, PGP_URL);
-        evaluate(web, "document.getElementById('clear-all').click(); (async () => { const pgp=await import('openpgp'), tools=await import('./crypto.mjs');" +
-                "const bytes=await pgp.encrypt({message:await pgp.createMessage({binary:Uint8Array.of(0,255,254,1),filename:'../../untrusted.html'})," +
-                "passwords:['synthetic Android binary message only'],format:'binary',config:tools.CLASSIC_OPENPGP_CONFIG});" +
-                "window.__syntheticMessageFile=btoa(String.fromCharCode(...bytes)); })(); 'started'");
-        await(web, "String(typeof window.__syntheticMessageFile === 'string')", "true");
-        byte[] encrypted = android.util.Base64.decode(evaluate(web, "window.__syntheticMessageFile"), android.util.Base64.DEFAULT);
+        evaluate(web, "document.getElementById('clear-all').click(); 'cleared'");
+        // A small, byte-checked synthetic encrypted fixture is confined to the
+        // instrumentation APK. Do not add a production test hook, depend on
+        // evaluateJavascript's relative module base, or hide setup exceptions
+        // inside an unobserved asynchronous encryption task.
+        JSONObject fixture;
+        try (InputStream input = instrumentation.getContext().getAssets().open("openpgp-message-smoke.json")) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream(); byte[] buffer = new byte[1024]; int count;
+            while ((count = input.read(buffer)) != -1) {
+                output.write(buffer, 0, count); assertTrue("bounded synthetic fixture", output.size() <= 4096);
+            }
+            fixture = new JSONObject(new String(output.toByteArray(), StandardCharsets.UTF_8));
+        }
+        assertEquals("00fffe01", fixture.getString("plaintextHex"));
+        byte[] encrypted = android.util.Base64.decode(fixture.getString("ciphertextBase64"), android.util.Base64.DEFAULT);
+        assertEquals("bounded pre-checked encrypted control", 123, encrypted.length);
         Uri chosen = document("import.asc"), destination = document("export.asc");
         try (OutputStream output = activity.getContentResolver().openOutputStream(chosen, "wt")) { output.write(encrypted); }
         Instrumentation.ActivityMonitor opening = picker(Intent.ACTION_OPEN_DOCUMENT, Activity.RESULT_OK, chosen);
@@ -183,7 +193,7 @@ public final class LocalFileExportSmokeTest {
             assertEquals("selection is not an automatic decrypt", "", evaluate(web, "document.getElementById('decrypted-output').value"));
             assertEquals("true", evaluate(web, "String(document.getElementById('download-decrypted-file').disabled)"));
             assertEquals("no private key is requested", "", evaluate(web, "document.getElementById('recovery-private-key').value"));
-            evaluate(web, "document.getElementById('decrypt-passphrase').value='synthetic Android binary message only';" +
+            evaluate(web, "document.getElementById('decrypt-passphrase').value=" + JSONObject.quote(fixture.getString("passphrase")) + ";" +
                     "document.getElementById('decrypt-form').requestSubmit(); 'started'");
             await(web, "document.getElementById('decrypt-status').dataset.kind || ''", "success");
             assertEquals("binary data is not rendered as text or HTML", "", evaluate(web, "document.getElementById('decrypted-output').value"));

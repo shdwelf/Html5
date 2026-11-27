@@ -120,13 +120,24 @@ jobs:
           def notice(title, text):
               print('::notice title='+title+'::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
           notice('Gateway planner build receipt', json.dumps(receipt, separators=(',',':')))
-          for name in ['gateway-debug.apk', 'apk-permissions.txt', 'apk-manifest.txt', 'apk-signature.txt']:
+          for name in ['apk-permissions.txt', 'apk-manifest.txt', 'apk-signature.txt']:
               value = (out/name).read_bytes()
-              if len(value) > 65536: raise SystemExit('Review annotation output exceeds 64 KiB')
+              if len(value) > 4000: raise SystemExit('Review text output exceeds its annotation bound')
               # Checks API messages are truncated at 4096 characters.
               chunks = [base64.b64encode(value[i:i+2000]).decode() for i in range(0,len(value),2000)]
               for index, chunk in enumerate(chunks): notice('Gateway output '+name+' '+str(index+1)+' of '+str(len(chunks)), chunk)
           PY
+      - name: Expose the tiny original review APK without source-writing CI
+        # Ten notices per step and 4096 characters per message are hard API
+        # limits, not just log-viewer limits. Do not mix these with metadata.
+        shell: python
+        run: |
+          import base64, os, pathlib
+          value = (pathlib.Path(os.environ['RUNNER_TEMP'])/'gateway-delivery/gateway-debug.apk').read_bytes()
+          if len(value) > 20000: raise SystemExit('APK exceeds bounded review transport; use its artifact instead')
+          chunks = [base64.b64encode(value[i:i+2000]).decode() for i in range(0,len(value),2000)]
+          for index, chunk in enumerate(chunks):
+              print('::notice title=Gateway output gateway-debug.apk '+str(index+1)+' of '+str(len(chunks))+'::'+chunk)
       - name: Upload review-only planner deliverables
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

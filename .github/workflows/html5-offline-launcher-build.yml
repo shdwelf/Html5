@@ -292,7 +292,7 @@ jobs:
                   source = Path(f"config/{name}.json").read_bytes()
                   if apk.read(f"assets/apps/keyspace/config/{name}.json") != source:
                       raise SystemExit(f"Stale coin/network registry in network APK: {name}")
-              for name in ("app.js", "index.html", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
+              for name in ("app.js", "index.html", "crypto.mjs", "text-tools.mjs", "message-worker.mjs", "message-worker-client.mjs", "styles.css", "keyring.mjs", "public-storage.mjs", "recovery.mjs", "recovery-ui.mjs", "recovery-worker-client.mjs", "recovery-worker.mjs", "vendor/openpgp.min.mjs"):
                   source = Path(f"public/apps/openpgp-workbench/{name}").read_bytes()
                   if apk.read(f"assets/apps/openpgp-workbench/{name}") != source:
                       raise SystemExit(f"Stale OpenPGP asset in network APK: {name}")
@@ -308,16 +308,19 @@ jobs:
 
           root = Path("apps/html5-offline-launcher/app")
           fixture = root.joinpath("src/androidTest/assets/openpgp-recovery-smoke.js").read_bytes()
+          message = root.joinpath("src/androidTest/assets/openpgp-message-smoke.json").read_bytes()
           for profile in ("public", "network", "private"):
               path = root / f"build/outputs/apk/{profile}/debug/app-{profile}-debug.apk"
               with zipfile.ZipFile(path) as apk:
-                  if any(name.rsplit("/", 1)[-1] == "openpgp-recovery-smoke.js" for name in apk.namelist()):
+                  if any(name.rsplit("/", 1)[-1] in {"openpgp-recovery-smoke.js", "openpgp-message-smoke.json"} for name in apk.namelist()):
                       raise SystemExit("Synthetic recovery fixture leaked into a production APK")
           for profile in ("public", "network"):
               path = root / f"build/outputs/apk/androidTest/{profile}/debug/app-{profile}-debug-androidTest.apk"
               with zipfile.ZipFile(path) as apk:
                   if apk.read("assets/openpgp-recovery-smoke.js") != fixture:
                       raise SystemExit("Synthetic recovery fixture missing or stale in test APK")
+                  if apk.read("assets/openpgp-message-smoke.json") != message:
+                      raise SystemExit("Synthetic encrypted-message fixture missing or stale in test APK")
           print("Fresh synthetic recovery source is in test APKs only; no generated private fixture is packaged.")
           PY
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import * as openpgp from 'openpgp';
-import { checkedMessageInput, CLASSIC_OPENPGP_CONFIG, decryptOpenPgpBytes, decryptOpenPgpText, MAX_ENCRYPTED_BYTES, MAX_PLAINTEXT_BYTES } from '../apps/openpgp-workbench/crypto.mjs';
+import { checkedMessageInput, CLASSIC_OPENPGP_CONFIG, decryptOpenPgpBytes, decryptOpenPgpText, encryptClassicText, MAX_ENCRYPTED_BYTES, MAX_PLAINTEXT_BYTES } from '../apps/openpgp-workbench/crypto.mjs';
 const armor = readFileSync('tests/fixtures/openpgp/gnupg-enc-sym-cfb-1.asc', 'utf8');
 const raw = (await openpgp.unarmor(armor)).data;
 
@@ -47,4 +47,18 @@ test('compressed output beyond 1 MiB does not produce a partial payload', async 
   const ciphertext = await openpgp.encrypt({ message: await openpgp.createMessage({ binary: new Uint8Array(MAX_PLAINTEXT_BYTES + 1) }), passwords: ['synthetic bound test'], format: 'binary', config: { ...CLASSIC_OPENPGP_CONFIG, preferredCompressionAlgorithm: openpgp.enums.compression.zlib } });
   assert.ok(ciphertext.length < MAX_ENCRYPTED_BYTES);
   await assert.rejects(decryptOpenPgpBytes(ciphertext, 'synthetic bound test'), /limit|size|larger|more than|decompress|too big/i);
+});
+
+test('the exact advertised 1 MiB payload boundary remains usable, not merely an oversize rejection', async () => {
+  const armor = await encryptClassicText('x'.repeat(MAX_PLAINTEXT_BYTES), 'synthetic boundary control');
+  const bytes = await decryptOpenPgpBytes(armor, 'synthetic boundary control');
+  assert.equal(bytes.length, MAX_PLAINTEXT_BYTES); assert.ok(bytes.every((byte) => byte === 120));
+});
+
+test('Android test-only encrypted file fixture decrypts to its exact four synthetic bytes', async () => {
+  const path = 'apps/html5-offline-launcher/app/src/androidTest/assets/openpgp-message-smoke.json';
+  const fixture = JSON.parse(readFileSync(path, 'utf8'));
+  assert.equal(fixture.schema, 1); assert.equal(fixture.plaintextHex, '00fffe01');
+  const bytes = Buffer.from(fixture.ciphertextBase64, 'base64'); assert.equal(bytes.length, 123);
+  assert.deepEqual(await decryptOpenPgpBytes(bytes, fixture.passphrase), new Uint8Array(Buffer.from(fixture.plaintextHex, 'hex')));
 });

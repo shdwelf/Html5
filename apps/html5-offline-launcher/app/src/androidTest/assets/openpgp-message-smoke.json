@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "scope": "Synthetic password-only encrypted binary message. Test APK only; no owner keys, credentials or production data.",
+  "writer": "OpenPGP.js 6.3.3 browser control; same-library fixture, not independent implementation evidence.",
+  "passphrase": "synthetic Android binary message only",
+  "plaintextHex": "00fffe01",
+  "ciphertextBase64": "wy4ECQMIAAsdIiq/wAj/3obnSaXH4cyuC431TInAlmNtpHp5bI1jrlvauMLrd5YE0kkB0JnUbeE8NCfESwNPEAzq53fpajx1T/NSFHzs/VoC402hwDGmwdt7S/eCDA7gZPgwTlskhvaGfMm6JK2Me/kfogWOLNMa52kE"
+}

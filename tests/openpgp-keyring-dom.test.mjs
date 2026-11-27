@@ -328,7 +328,7 @@ test("Android export waits for the save receipt, reports cancellation/errors hon
     assert.equal(ui.get("keygen-status").dataset.kind, "info");
     assert.equal(ui.downloads.length, 0, "Android does not use an unhandled Blob anchor download");
     assert.equal(await saved.blob.text(), bundle.publicKey);
-    pending.resolve({ status: "saved", bytes: saved.blob.size, sha256: "a".repeat(64) });
+    pending.resolve({ status: "saved", bytes: saved.blob.size, sha256: Buffer.from(await webcrypto.subtle.digest("SHA-256", await saved.blob.arrayBuffer())).toString("hex") });
     await until(() => ui.get("keygen-status").dataset.kind === "success");
     assert.match(ui.get("keygen-status").textContent, /read-back verified/);
   } finally { ui.dom.window.close(); }

@@ -10,7 +10,7 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 **Torrent Atlas** is included for local metadata tools only. Its external searches are explicit outbound links, not an embedded result service. Offline profiles may block those links; no native network, picker or origin policy is relaxed. It is not added to the two-app private profile or microphone allowlist.
 
 - The current builder discovers **97** HTML entrypoints and packages **8,528
-  files** (166,551,543 bytes uncompressed) inside those app directories. It
+  files** (166,552,561 bytes uncompressed) inside those app directories. It
   excludes data-only directories without an `index.html`. Gradle stages the
   files under this module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,

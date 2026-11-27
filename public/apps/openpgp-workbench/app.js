@@ -54,6 +54,9 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
         const receipt = await view.Html5LocalFiles.save(blob, filename);
         if (epoch !== saveEpochs[status]) return;
         if (receipt.status === "saved" && receipt.bytes === blob.size && /^[a-f0-9]{64}$/.test(receipt.sha256)) {
+          const expected = [...new Uint8Array(await view.crypto.subtle.digest("SHA-256", await blob.arrayBuffer()))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+          if (epoch !== saveEpochs[status]) return;
+          if (receipt.sha256 !== expected) throw new Error("Read-back SHA-256 does not match this export. No completed save is confirmed.");
           setStatus(status, `Saved ${receipt.bytes.toLocaleString()} bytes and read-back verified. SHA-256: ${receipt.sha256}. ${requestedMessage}`, "success");
         } else if (receipt.status === "canceled") {
           setStatus(status, "Save canceled. No completed save is confirmed; the export remains in this tab.");
@@ -204,7 +207,9 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
     resetForm(byId(`${kind}-form`));
     if (kind === "decrypt") byId("message-file-status").textContent = "No file selected. Paste armor or choose an encrypted file. Maximum 2 MiB.";
     byId(kind === "encrypt" ? "encrypted-output" : "decrypted-output").value = "";
-    setStatus(`${kind}-status`, "Fields cleared. Any in-progress result will be discarded; memory erasure is not guaranteed.");
+    setStatus(`${kind}-status`, fileSaveBusy
+      ? "Fields cleared. A save already handed to the system may still finish; check its destination. Stale status is discarded, not bytes already exported; memory/disk erasure is not guaranteed."
+      : "Fields cleared. Any in-progress result will be discarded; memory erasure is not guaranteed.");
   }
   for (const button of doc.querySelectorAll("[data-clear-form]")) button.addEventListener("click", () => clearText(button.dataset.clearForm === "encrypt-form" ? "encrypt" : "decrypt"));
   for (const button of doc.querySelectorAll("[data-clear-output]")) button.addEventListener("click", () => invalidateMessage("Decrypted output cleared; any in-progress result will be discarded."));

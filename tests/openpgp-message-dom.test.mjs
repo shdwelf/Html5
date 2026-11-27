@@ -9,13 +9,14 @@ const html = readFileSync('apps/openpgp-workbench/index.html', 'utf8');
 const armor = readFileSync('tests/fixtures/openpgp/gnupg-enc-sym-cfb-1.asc', 'utf8');
 const password = 'synthetic message-only test';
 async function until(fn) { for (let i = 0; i < 300; i++) { if (fn()) return; await delay(5); } assert.fail('UI did not settle'); }
-function boot(messageDecryptor) {
+function boot(messageDecryptor, { nativeSave } = {}) {
   const dom = new JSDOM(html, { url: 'https://example.test/apps/openpgp-workbench/' }), view = dom.window;
   Object.defineProperty(view, 'isSecureContext', { value: true }); Object.defineProperty(view.crypto, 'subtle', { value: webcrypto.subtle });
   const downloads = [], blobs = new Map();
   view.URL.createObjectURL = (blob) => { const key = `blob:synthetic-message-${blobs.size}`; blobs.set(key, blob); return key; };
   view.URL.revokeObjectURL = () => {};
   view.HTMLAnchorElement.prototype.click = function () { downloads.push({ filename: this.download, blob: blobs.get(this.href) }); };
+  if (nativeSave) Object.defineProperty(view, "Html5LocalFiles", { value: { version: 1, save: nativeSave } });
   mountWorkbench({ doc: view.document, view, ...(messageDecryptor ? { messageDecryptor } : {}) });
   const get = (id) => view.document.getElementById(id);
   const input = (id, value) => { get(id).value = value; get(id).dispatchEvent(new view.Event('input', { bubbles: true })); };
@@ -78,5 +79,36 @@ test('unavailable local workers fail honestly with no fallback or private-key re
     assert.match(ui.get('decrypt-status').textContent, /requires a local module worker/);
     assert.equal(ui.get('decrypted-output').value, ''); assert.equal(ui.get('recovery-private-key').value, '');
     assert.equal(ui.get('cancel-message-decrypt').disabled, true);
+  } finally { ui.dom.window.close(); }
+});
+
+for (const correct of [true, false]) test(`native decrypted-byte save ${correct ? 'confirms only the matching digest' : 'rejects a wrong-hash receipt'}`, async () => {
+  let calls = 0;
+  const ui = boot(async () => Uint8Array.of(0, 255, 254, 1), { nativeSave: async (blob, filename) => {
+    calls++; assert.equal(filename, 'openpgp-decrypted.bin');
+    return { status: 'saved', bytes: blob.size, sha256: correct ? Buffer.from(await webcrypto.subtle.digest('SHA-256', await blob.arrayBuffer())).toString('hex') : '0'.repeat(64) };
+  } });
+  try {
+    ui.input('armored-input', armor); ui.input('decrypt-passphrase', password); ui.submit(); await until(() => ui.get('decrypt-status').dataset.kind === 'success');
+    ui.get('download-decrypted-file').click(); assert.equal(calls, 0);
+    ui.get('decrypted-save-ack').checked = true; ui.get('decrypted-save-ack').dispatchEvent(new ui.view.Event('change'));
+    ui.get('download-decrypted-file').click(); await until(() => /Saved |Save failed/.test(ui.get('decrypt-status').textContent));
+    assert.equal(calls, 1); assert.equal(ui.get('decrypt-status').dataset.kind, correct ? 'success' : 'error');
+    assert.match(ui.get('decrypt-status').textContent, correct ? /read-back verified.*UNENCRYPTED/ : /SHA-256 does not match/);
+    assert.deepEqual(ui.downloads, []);
+  } finally { ui.dom.window.close(); }
+});
+test('Clear invalidates a pending save receipt without promising to retract plaintext already handed to the system', async () => {
+  let resolve, handed;
+  const bytes = Uint8Array.of(0, 255, 254, 1);
+  const ui = boot(async () => bytes.slice(), { nativeSave: (blob) => { handed = blob; return new Promise((done) => { resolve = done; }); } });
+  try {
+    ui.input('armored-input', armor); ui.input('decrypt-passphrase', password); ui.submit(); await until(() => ui.get('decrypt-status').dataset.kind === 'success');
+    ui.get('decrypted-save-ack').checked = true; ui.get('decrypted-save-ack').dispatchEvent(new ui.view.Event('change')); ui.get('download-decrypted-file').click();
+    ui.get('clear-all').click(); assert.match(ui.get('decrypt-status').textContent, /already handed.*may still finish/);
+    assert.deepEqual(new Uint8Array(await handed.arrayBuffer()), bytes, 'Clear cannot retract an already-exported Blob');
+    resolve({ status: 'saved', bytes: handed.size, sha256: Buffer.from(await webcrypto.subtle.digest('SHA-256', await handed.arrayBuffer())).toString('hex') }); await delay(5);
+    assert.match(ui.get('decrypt-status').textContent, /Fields cleared/); assert.equal(ui.get('decrypted-output').value, '');
+    assert.equal(ui.get('download-decrypted-file').disabled, true); assert.equal(ui.get('decrypted-save-ack').checked, false);
   } finally { ui.dom.window.close(); }
 });
