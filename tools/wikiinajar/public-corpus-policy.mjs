@@ -86,6 +86,7 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/backlog-execution-round-96-2026-11-17.md",
   "docs/zshaolin-apk-and-kodachi-candidate-2026-11-17.md",
   "docs/android-a037u1-rooting-review.md",
+  "docs/android-work-profile-private-mode.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

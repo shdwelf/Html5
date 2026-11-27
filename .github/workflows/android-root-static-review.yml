@@ -7,6 +7,8 @@ on:
       - 'tools/android-root-review/**'
       - 'tools/ghidra_scripts/AndroidRootingReview.java'
       - 'tests/android_root_review_test.py'
+      - 'tests/android_profile_review_test.py'
+      - 'tools/android-ci/**'
       - '.github/workflows/android-root-static-review.yml'
   workflow_dispatch:
   pull_request:
@@ -14,6 +16,8 @@ on:
       - 'tools/android-root-review/**'
       - 'tools/ghidra_scripts/AndroidRootingReview.java'
       - 'tests/android_root_review_test.py'
+      - 'tests/android_profile_review_test.py'
+      - 'tools/android-ci/**'
       - '.github/workflows/android-root-static-review.yml'
 
 permissions:
@@ -32,7 +36,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Whitelist, screenshot interpretation and fail-closed root-prerequisite controls
-        run: python3 -m unittest discover -s tests -p android_root_review_test.py -v
+        run: python3 -m unittest discover -s tests -p 'android_*_review_test.py' -v
 
   static-review:
     if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name == 'workflow_dispatch'
@@ -59,7 +63,7 @@ jobs:
           set -euo pipefail
           signer="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)"
           test -n "$signer"
-          "$signer" verify --verbose --print-certs "$RUNNER_TEMP/android-root-review/Magisk-v31.1.apk" > "$RUNNER_TEMP/android-root-review/reports/apk-signature.txt"
+          "$signer" verify --verbose --print-certs "$RUNNER_TEMP/android-root-review/Magisk-v31.1.apk" > "$RUNNER_TEMP/android-root-review/reports/apk-signature.txt" 2>&1
       - name: Compile an inert native decompiler control, never execute it
         run: |
           set -euo pipefail

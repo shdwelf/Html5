@@ -16,14 +16,18 @@ this report or its [sanitized evidence record](../tools/android-root-review/scre
 | Kernel | `4.19.191-27242513-abA037U1UESBDYI1` |
 | Kernel build label | September 16, 2025 |
 | SE for Android | **Enforcing** |
-| Google Play system update | August 1, 2024 |
+| Android security patch level | **July 1, 2025**, directly visible in the follow-up |
+| Google Play system update | August 1, 2024 — a separate field |
+| Phone status | **Official** — not bootloader or management-state evidence |
+| Sales model code | `SM-A037UZKLLLA` — a product SKU, distinct from the Settings model-name label |
 | Security-software release label | `SMR Jul-2025 Release 1` |
 
-The **Android security patch level row's date is cut off**. Do not treat the
-visible Google Play system-update date as that patch level. A third-party
-firmware catalog separately lists this firmware with Android 13, SW revision
-**B** and patch level **2025-07-01**; that agrees with the general release label
-but does not replace an on-device reading or authenticate a firmware archive.
+The first screenshot cut off the Android patch-date value; the **follow-up
+shows July 1, 2025 directly**, resolving that earlier limitation. Do not confuse
+it with the Google Play system-update date. A third-party firmware catalog
+separately lists this firmware with Android 13, SW revision **B** and patch
+level **2025-07-01**. Agreement does not authenticate a firmware archive or
+measure the phone's rollback fuses.
 [1](https://samfw.com/firmware/SM-A037U1)
 
 ## Rooting implications
@@ -63,9 +67,16 @@ the Knox Warranty Bit and that first installation requires a full data wipe,
 separate from any bootloader-unlocking wipe. Back up first; this investigation
 has **not** authorized or performed any wipe, unlock or flash.
 
+The **Official** phone-status label does not establish an unlocked bootloader,
+an unmanaged device or absence of a work profile. The product SKU and Settings
+model name are different kinds of labels; their spelling is not by itself
+proof of tampering or permission to cross-flash.
+
 The key-shaped status-bar icon is not proof of a particular VPN provider,
 configuration, working tunnel or absence of leaks. Nothing here establishes a
-working Kodachi VPN configuration.
+working Kodachi VPN configuration. See the [work-profile briefcase / private-mode
+investigation](android-work-profile-private-mode.md) for profile isolation,
+Android 15 Private Space versus this Android 13 device, and VPN scope.
 
 ## Next non-destructive evidence
 

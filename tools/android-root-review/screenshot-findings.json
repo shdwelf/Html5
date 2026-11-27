@@ -1,11 +1,13 @@
 {
   "schema": 1,
-  "evidenceKind": "Visual transcription of owner-provided Settings screenshots; not an ADB capture or binary/firmware measurement.",
+  "evidenceKind": "Visual transcription of owner-provided Settings screenshots, including the follow-up Status/Software screens; not an ADB capture or binary/firmware measurement.",
   "observed": {
     "product": "Samsung Galaxy A03s",
     "modelLabel": "SM-A037U1/DS",
+    "salesModelCode": "SM-A037UZKLLLA",
     "oneUiCore": "5.1",
     "android": "13",
+    "androidSecurityPatchLevel": "2025-07-01",
     "googlePlaySystemUpdate": "2024-08-01",
     "baseband": "A037U1UESBDYI1",
     "buildDisplay": "TP1A.220624.014.A037U1UESBDYI1",
@@ -13,15 +15,21 @@
     "kernel": "4.19.191-27242513-abA037U1UESBDYI1",
     "kernelBuildLabel": "#1 Tue Sep 16 20:25:33 KST 2025",
     "selinux": "Enforcing",
+    "phoneStatusLabel": "Official",
     "securitySoftwareReleaseLabel": "SMR Jul-2025 Release 1"
   },
+  "captureProgression": {
+    "initialScreenshotAndroidPatchDateVisible": false,
+    "followUpScreenshotAndroidPatchDateVisible": true,
+    "note": "The first Software information screenshot cut off the Android patch-date value. The follow-up shows July 1, 2025 directly; the older missing-value qualification is superseded."
+  },
   "notVisible": [
-    "Exact Android security patch level date: its row title is visible but its value is cut off.",
     "Developer Options OEM unlocking setting.",
     "Download Mode OEM Lock and KnoxGuard/RMM states.",
     "Download Mode rollback/SW revision fuse state.",
     "Android supported CPU ABIs.",
-    "Working Magisk installation or measured uid=0 result."
+    "Working Magisk installation or measured uid=0 result.",
+    "Work-profile administrator, profile policies or Private mode/Secure Folder configuration."
   ],
   "ownerReportedSeparately": {
     "oemUnlockToggle": "available; not independently confirmed by these screenshots"
@@ -32,19 +40,22 @@
     "android": "13",
     "listedSwRevision": "B",
     "listedAndroidSecurityPatchLevel": "2025-07-01",
-    "limit": "Third-party catalog metadata is not an authenticated firmware download or an on-device patch/fuse measurement. The exact security-patch field is not visible in the screenshots."
+    "limit": "Third-party catalog metadata is not an authenticated firmware download or an on-device fuse measurement. Its patch date now agrees with the visible follow-up screenshot."
   },
   "assessment": {
     "firmwareTranscriptionResolved": true,
     "bootloaderUnlockConfirmed": false,
+    "officialStatusLabelProvesUnlockedOrUnmanaged": false,
     "magiskInstallabilityConfirmed": false,
     "knownWorkingRootMethodForThisDeviceVerified": false,
     "vulnerabilityProvedByKernelVersion": false,
     "selinuxEnforcingProvesUnrooted": false,
+    "profileAdministratorOrSpywareIdentified": false,
+    "secureFolderSupportConfirmed": false,
     "vpnProviderOrProtectionVerified": false,
     "ghidraAnalysisPerformed": false,
     "firmwarePatchedOrFlashed": false,
     "screenshotsCopiedIntoRepository": false,
-    "phoneIdentifiersRetainedInThisRecord": false
+    "phoneIdentifiersOrNetworkAddressesRetainedInThisRecord": false
   }
 }

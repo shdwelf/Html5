@@ -30,12 +30,22 @@ class AndroidRootReviewTests(unittest.TestCase):
         self.assertEqual(record['observed']['android'], '13')
         self.assertEqual(record['observed']['selinux'], 'Enforcing')
 
-    def test_cut_off_patch_date_is_not_invented(self):
+    def test_follow_up_confirms_patch_date_without_inventing_initial_visibility(self):
         record = json.loads((ROOT / 'tools/android-root-review/screenshot-findings.json').read_text())
-        self.assertNotIn('androidSecurityPatchLevel', record['observed'])
-        self.assertTrue(any('cut off' in row for row in record['notVisible']))
+        self.assertEqual(record['observed']['androidSecurityPatchLevel'], '2025-07-01')
+        self.assertEqual(record['observed']['googlePlaySystemUpdate'], '2024-08-01')
+        self.assertFalse(record['captureProgression']['initialScreenshotAndroidPatchDateVisible'])
+        self.assertTrue(record['captureProgression']['followUpScreenshotAndroidPatchDateVisible'])
+        self.assertFalse(any('cut off' in row for row in record['notVisible']))
         self.assertEqual(record['externalCatalogCrossCheck']['listedAndroidSecurityPatchLevel'], '2025-07-01')
         self.assertIn('not an authenticated firmware', record['externalCatalogCrossCheck']['limit'])
+
+    def test_official_label_and_model_sku_do_not_prove_unlock_or_management_state(self):
+        record = json.loads((ROOT / 'tools/android-root-review/screenshot-findings.json').read_text())
+        self.assertEqual(record['observed']['phoneStatusLabel'], 'Official')
+        self.assertEqual(record['observed']['salesModelCode'], 'SM-A037UZKLLLA')
+        for key in ['officialStatusLabelProvesUnlockedOrUnmanaged', 'profileAdministratorOrSpywareIdentified', 'secureFolderSupportConfirmed']:
+            self.assertFalse(record['assessment'][key])
 
     def test_screenshot_does_not_claim_root_or_ghidra_execution(self):
         record = json.loads((ROOT / 'tools/android-root-review/screenshot-findings.json').read_text())
@@ -43,7 +53,7 @@ class AndroidRootReviewTests(unittest.TestCase):
                       'knownWorkingRootMethodForThisDeviceVerified', 'vulnerabilityProvedByKernelVersion',
                       'selinuxEnforcingProvesUnrooted', 'vpnProviderOrProtectionVerified',
                       'ghidraAnalysisPerformed', 'firmwarePatchedOrFlashed',
-                      'screenshotsCopiedIntoRepository', 'phoneIdentifiersRetainedInThisRecord']:
+                      'screenshotsCopiedIntoRepository', 'phoneIdentifiersOrNetworkAddressesRetainedInThisRecord']:
             self.assertIs(record['assessment'][field], False, field)
 
     def test_no_download_state_means_stop_even_when_owner_reports_oem_toggle(self):

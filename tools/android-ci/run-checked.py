@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bounded, secret-redacted CI diagnostics through Checks when log CDN is blocked.
 
-Streams normal command output. On failure, publishes at most 10 kB of the tail
+Streams normal command output. On failure, publishes at most 3 kB of the tail
 as a Checks annotation. Never prints environment values or command arguments.
 Only use for trusted build/test commands, never personal device probes or keys.
 """
@@ -20,7 +20,7 @@ def main():
     while chunk := child.stdout.read1(4096):
         sys.stdout.buffer.write(chunk)
         sys.stdout.buffer.flush()
-        tail = (tail + chunk)[-10000:]
+        tail = (tail + chunk)[-3000:]
     result = child.wait()
     if result:
         message = tail.decode('utf-8', errors='replace')

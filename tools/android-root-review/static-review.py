@@ -5,6 +5,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -74,6 +75,13 @@ def prepare():
     print('Pinned official APK and Ghidra distribution verified; no APK/native input executed.')
 
 
+def certificate_fingerprints(text):
+    # New apksigner versions can label a signer by SDK range rather than #1.
+    # Keep the certificate SHA-256 requirement, accept only Signer-labelled lines.
+    return sorted(set(value.lower() for value in re.findall(
+        r'(?im)^Signer[^\r\n]*certificate SHA-256 digest:\s*([0-9a-f]{64})[ \t]*$', text)))
+
+
 def summarize():
     programs = []
     manifest = json.loads((WORK / 'inputs/manifest.json').read_text())
@@ -93,12 +101,14 @@ def summarize():
     if control['instructionsVisitedUpTo1000000'] <= 0 or not any(x['completed'] for x in control['boundedDecompilations']):
         raise ValueError('Synthetic positive control failed')
     signature = (WORK / 'reports/apk-signature.txt').read_text()
-    if 'Signer #1 certificate SHA-256 digest:' not in signature:
-        raise ValueError('Missing measured APK signer receipt')
+    fingerprints = certificate_fingerprints(signature)
+    if not fingerprints:
+        raise ValueError('Missing measured APK signer receipt; public signer output: ' + signature[-1500:])
     summary = {
         'schema': 1, 'sourceCommit': os.environ.get('GITHUB_SHA'), 'runId': os.environ.get('GITHUB_RUN_ID'),
         'magisk': PIN['magisk'], 'ghidra': PIN['ghidra'], 'programs': programs,
         'syntheticPositiveControl': control, 'apkSignatureVerification': signature,
+        'apkSignerCertificateSha256': fingerprints,
         'signatureLimit': 'Internal APK-signature consistency and an observed certificate fingerprint; not independent authentication of the author signing key or a complete APK audit.',
         'screenshotEvidence': json.loads((ROOT / 'tools/android-root-review/screenshot-findings.json').read_text()),
         'sourceSha256': {p: sha(ROOT / p) for p in ['tools/android-root-review/static-review.py',

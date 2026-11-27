@@ -8,6 +8,8 @@ on:
       - 'tools/zshaolin-modern/**'
       - 'tools/zshaolin-legacy/**'
       - 'tests/zshaolin_modern_test.py'
+      - 'tests/android_profile_review_test.py'
+      - 'tools/android-ci/**'
       - '.github/workflows/zshaolin-modern-apk.yml'
   workflow_dispatch:
     inputs:
@@ -22,6 +24,8 @@ on:
       - 'tools/zshaolin-modern/**'
       - 'tools/zshaolin-legacy/**'
       - 'tests/zshaolin_modern_test.py'
+      - 'tests/android_profile_review_test.py'
+      - 'tools/android-ci/**'
       - '.github/workflows/zshaolin-modern-apk.yml'
 
 permissions:
@@ -42,7 +46,7 @@ jobs:
       - name: Source bounds and security controls before native input downloads
         run: |
           python3 -m unittest discover -s tests -p zshaolin_modern_test.py -v
-          python3 -m unittest discover -s tests -p android_root_review_test.py -v
+          python3 -m unittest discover -s tests -p 'android_*_review_test.py' -v
 
   build:
     if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name == 'workflow_dispatch'
