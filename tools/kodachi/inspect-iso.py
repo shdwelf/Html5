@@ -26,7 +26,7 @@ MAX_TOTAL_BYTES = 768 * 1024 * 1024
 MAX_FINDINGS = 100
 KNOWN_OS_DEFAULTS = ('r@@t00', 'Security4All')
 PRIVATE_BLOCK = re.compile(r'<(?:key|tls-auth|tls-crypt|pkcs12)>.*?</(?:key|tls-auth|tls-crypt|pkcs12)>|-----BEGIN [^-]*(?:PRIVATE KEY|SECRET)[^-]*-----.*?-----END [^-]+-----', re.I | re.S)
-ASSIGNMENT = re.compile(r'''(?im)^\s*(?:export\s+)?["']?([a-z_][\w.-]*(?:password|passwd|passphrase|pwd|pass|username|user_name|credential|auth_token|api_key)[\w.-]*|password|passwd|passphrase|pwd|pass|username)["']?\s*(?:=|:)\s*([^\r\n]{0,1024})''')
+ASSIGNMENT = re.compile(r'''(?im)^\s*(?:export\s+)?["']?([a-z_][\w.-]{0,127})["']?\s*(?:=|:)\s*([^\r\n]{0,1024})''')
 INTEREST = re.compile(r'vpn|wireguard|cloak|auth|credential|password|provider', re.I)
 
 
@@ -57,12 +57,63 @@ def candidate_kind(path):
     return None
 
 
+def credential_field(name):
+    return bool(re.search(r'password|passwd|passphrase|username|user_name|credential|auth_token|api_key', name, re.I) or re.search(r'(?:^|[_-])(?:pass|pwd)(?:$|[_-])', name, re.I))
+
+
+def reference_rank(value):
+    runtime = value.startswith(('/etc/', '/run/', '/var/', '/home/', '/root/', '/opt/', '/usr/', '/tmp/', '/.config/'))
+    source = '/.cargo/' in value or '/rustc/' in value or '/.rustup/' in value
+    return (not runtime or source, not bool(re.search(r'vpn|wireguard|cloak|online-auth', value, re.I)), value)
+
+
+def provider_templates(text):
+    """Only type/states of provider API templates, never instantiated logins."""
+    try:
+        document = json.loads(text)
+    except ValueError:
+        return []
+    found, stack, nodes = [], [('$', document, 0)], 0
+    while stack:
+        path, value, depth = stack.pop()
+        nodes += 1
+        if nodes > 65536 or depth > 32:
+            raise ValueError('Provider metadata JSON bound exceeded')
+        if isinstance(value, dict):
+            for key, child in value.items():
+                label = path + '.' + key[:80]
+                if key == 'auth_user_pass_template':
+                    record = {'jsonPath': label, 'type': type(child).__name__}
+                    if isinstance(child, dict):
+                        record['fields'] = {k: value_state(json.dumps(v)) for k, v in child.items() if credential_field(k)}
+                    elif child is None:
+                        record['state'] = 'no-template'
+                    else:
+                        record['state'] = value_state(json.dumps(child))['state']
+                    found.append(record)
+                if isinstance(child, (dict, list)):
+                    stack.append((label, child, depth + 1))
+        elif isinstance(value, list):
+            stack.extend((path + '[' + str(i) + ']', child, depth + 1) for i, child in enumerate(value) if isinstance(child, (dict, list)))
+    return found[:40]
+
+
 def value_state(raw):
     value = raw.strip().rstrip(',').strip()
-    if value[:1] in ('"', "'") and value[-1:] == value[:1]:
+    quoted = value[:1] in ('"', "'") and value[-1:] == value[:1]
+    if quoted:
         value = value[1:-1]
     elif ' #' in value:
         value = value.split(' #', 1)[0].strip()
+    if not quoted:
+        if value.lower() in ('true', 'false'):
+            return {'state': 'boolean-not-credential', 'boolean': value.lower() == 'true'}
+        if value in ('{', '[', '{}', '[]'):
+            return {'state': 'structure-not-credential'}
+        if re.fullmatch(r'[-+]?\d+(?:\.\d+)?', value):
+            return {'state': 'numeric-configuration'}
+        if any(token in value for token in ('(', ')', '[', ' * ', ' + ', ' == ', ' >= ')):
+            return {'state': 'runtime-expression'}
     if not value:
         return {'state': 'empty'}
     if value.lower() in ('...', 'changeme', 'your_password', 'your_username', 'null', 'none', '<password>', '<username>') or re.fullmatch(r'<[^>]+>|\{\{.*\}\}', value):
@@ -90,9 +141,9 @@ def inspect_content(path, data, kind):
             value = match[0].decode('ascii')
             if INTEREST.search(value) and len(value) < 240:
                 paths.add(value)
-            if len(paths) >= MAX_FINDINGS:
+            if len(paths) >= 2000:
                 break
-        result['pathReferences'] = sorted(paths)
+        result['pathReferences'] = sorted(paths, key=reference_rank)[:MAX_FINDINGS]
         result['passwordKeywordOccurrences'] = len(re.findall(rb'password|passwd|auth-user-pass', data, re.I))
         result['limitation'] = 'Static path/literal search, not decompilation, runtime tracing or a complete secret search.'
         return result
@@ -109,8 +160,10 @@ def inspect_content(path, data, kind):
             if parts:
                 directives.append({'line': index, 'directive': parts[0], 'argument': parts[1] if len(parts) == 2 and len(parts[1]) <= 256 else None, 'interactiveOrInlineReviewNeeded': len(parts) != 2})
         match = ASSIGNMENT.match(line)
-        if match and len(assignments) < MAX_FINDINGS:
+        if match and credential_field(match[1]) and len(assignments) < MAX_FINDINGS:
             assignments.append({'line': index, 'field': match[1], **value_state(match[2])})
+    if path.endswith('vpn-providers-public-api.json'):
+        result['providerAuthTemplates'] = provider_templates(text)
     if directives:
         result['authDirectives'] = directives[:MAX_FINDINGS]
     if assignments:
@@ -127,12 +180,12 @@ def inspect_content(path, data, kind):
         result['osRelease'] = {m[1]: m[2].strip('"') for line in text.splitlines() if (m := re.fullmatch(r'(ID|VERSION_ID|VERSION_CODENAME|PRETTY_NAME)=(.{0,200})', line))}
     # Report relevant literal paths rather than printing full configuration or
     # arbitrary context which can include private keys, tokens or auth values.
-    reference_text = ASSIGNMENT.sub(lambda m: m[1] + '=<redacted>', text)
+    reference_text = ASSIGNMENT.sub(lambda m: m[1] + '=<redacted>' if credential_field(m[1]) or re.search(r'private.?key|preshared.?key|secret', m[1], re.I) else m[0], text)
     reference_text = re.sub(r'<auth-user-pass>.*?</auth-user-pass>', '', reference_text, flags=re.I | re.S)
     if result.get('shortAuthFileCandidate'):
         reference_text = ''
     references = set(re.findall(r'/(?:[A-Za-z0-9_.+~-]+/)*[A-Za-z0-9_.+~-]+', reference_text))
-    refs = sorted(x for x in references if INTEREST.search(x) and len(x) <= 240)
+    refs = sorted((x for x in references if INTEREST.search(x) and len(x) <= 240), key=reference_rank)
     if refs:
         result['pathReferences'] = refs[:MAX_FINDINGS]
     return result
@@ -249,21 +302,54 @@ def inspect_iso(iso_path):
             'limits': {'entries': MAX_ENTRIES, 'depth': MAX_DEPTH, 'candidateFiles': MAX_CANDIDATES, 'configBytes': MAX_CONFIG_BYTES, 'binaryBytes': MAX_BINARY_BYTES, 'totalBytes': MAX_TOTAL_BYTES}}
 
 
+def preview_priority(record):
+    path = record['path']
+    if record['kind'] in ('vpn-profile', 'vpn-config'):
+        rank = 0
+    elif record.get('binary') and re.search(r'vpn|wireguard|cloak|online-auth', path, re.I):
+        rank = 1
+    elif record.get('providerAuthTemplates'):
+        rank = 2
+    elif re.search(r'vpn|wireguard|cloak|online-auth', path, re.I):
+        rank = 3
+    elif record.get('knownOsLoginLiteralOccurrences'):
+        rank = 4
+    elif record.get('osRelease'):
+        rank = 5
+    elif record.get('credentialFields') or record.get('shortAuthFileCandidate') or record.get('inlineAuth'):
+        rank = 6
+    else:
+        rank = 7
+    return rank, path
+
+
 def preview(report):
     fields = Counter(field['state'] for item in report['files'] for field in item.get('credentialFields', []))
-    priorities = sorted(report['files'], key=lambda f: (not bool(f.get('credentialFields') or f.get('shortAuthFileCandidate') or f.get('inlineAuth')), not bool(f.get('authDirectives')), f['path']))
+    configs = [f for f in report['files'] if f['kind'] in ('vpn-profile', 'vpn-config')]
     result = {k: v for k, v in report.items() if k not in ('files', 'skipped')}
     result['skippedCount'] = len(report.get('skipped', []))
     result['skippedExamples'] = report.get('skipped', [])[:8]
     result['credentialFieldStates'] = dict(fields)
+    result['configurationInventoryCount'] = len(configs)
+    result['configurationInventory'] = [{k: f[k] for k in ('path', 'kind', 'bytesRead', 'sha256')} for f in configs[:8]]
+    result['knownOsLoginLiteralTotals'] = {key: sum(f.get('knownOsLoginLiteralOccurrences', {}).get(key, 0) for f in report['files']) for key in KNOWN_OS_DEFAULTS}
+    result['authenticationRecordCounts'] = {
+        key: sum(bool(f.get(key)) for f in report['files'])
+        for key in ('authDirectives', 'inlineAuth', 'shortAuthFileCandidate', 'providerAuthTemplates')
+    }
     result['previewFiles'] = []
     result['previewOnly'] = True
-    for record in priorities:
-        if not (record.get('credentialFields') or record.get('shortAuthFileCandidate') or record.get('authDirectives') or record.get('inlineAuth') or record.get('knownOsLoginLiteralOccurrences') or record.get('pathReferences') or record.get('osRelease')):
+    if len(json.dumps(result, separators=(',', ':')).encode()) > 14000:
+        raise ValueError('Preview metadata exceeds transport bound; use full redacted report')
+    for original in sorted(report['files'], key=preview_priority):
+        if preview_priority(original)[0] == 7:
             continue
-        record = dict(record)
-        if 'pathReferences' in record:
-            record['pathReferences'] = record['pathReferences'][:16]
+        record = dict(original)
+        for field, limit in [('pathReferences', 12), ('credentialFields', 12), ('providerAuthTemplates', 6)]:
+            if field in record:
+                record[field] = record[field][:limit]
+                if len(original[field]) > limit:
+                    record[field + 'OmittedFromPreview'] = len(original[field]) - limit
         result['previewFiles'].append(record)
         if len(json.dumps(result, separators=(',', ':')).encode()) > 14000:
             result['previewFiles'].pop()

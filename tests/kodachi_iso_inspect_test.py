@@ -109,12 +109,53 @@ class InspectionTests(unittest.TestCase):
                 review.validated_superblock(io.BytesIO(bad))
 
     def test_preview_is_bounded_and_does_not_hide_later_small_findings_behind_one_large_record(self):
-        large = {'path': '/opt/kodachi/a', 'pathReferences': ['/etc/openvpn/' + 'x' * 220] * 100, 'credentialFields': []}
+        large = {'path': '/opt/kodachi/a', 'kind': 'kodachi-runtime-or-config', 'pathReferences': ['/etc/openvpn/' + 'x' * 220] * 100, 'credentialFields': []}
         small = review.inspect_content('/etc/openvpn/b.conf', b'vpn_password=""\n', 'vpn-config')
         report = {'files': [large] * 100 + [small], 'skipped': []}
         result = review.preview(report)
         self.assertLess(len(json.dumps(result, separators=(',', ':')).encode()), 14001)
         self.assertTrue(any(r['path'] == '/etc/openvpn/b.conf' for r in result['previewFiles']))
+
+    def test_flags_structures_and_code_are_not_mistaken_for_literal_passwords(self):
+        for raw, state in [('false', 'boolean-not-credential'), ('{', 'structure-not-credential'), ('4096', 'numeric-configuration'), ('16 * 1024', 'runtime-expression'), ('read_password()', 'runtime-expression')]:
+            self.assertEqual(review.value_state(raw)['state'], state)
+        for name in ['password', 'VPN_PASS', 'pwd', 'username', 'auth_user_pass_template']:
+            self.assertTrue(review.credential_field(name))
+        for name in ['keepassxc', 'compass', 'bypass']:
+            self.assertFalse(review.credential_field(name))
+        result = review.inspect_content('/opt/kodachi/settings.json', b'keepassxc="/usr/bin/keepassxc"\novpn_uses_auth_user_pass: false\n', 'kodachi-runtime-or-config')
+        self.assertEqual(len(result['credentialFields']), 1)
+        self.assertEqual(result['credentialFields'][0]['state'], 'boolean-not-credential')
+
+    def test_provider_auth_templates_report_empty_placeholder_or_redacted_states_only(self):
+        text = json.dumps({'providers': [{'auth_user_pass_template': {'username': '{{USERNAME}}', 'password': ''}}, {'auth_user_pass_template': None}, {'auth_user_pass_template': {'username': 'SYNTHETIC-USER', 'password': 'SYNTHETIC-SECRET'}}]})
+        result = review.inspect_content('/opt/kodachi/config/vpn-providers-public-api.json', text.encode(), 'kodachi-runtime-or-config')
+        templates = result['providerAuthTemplates']
+        self.assertEqual(len(templates), 3)
+        self.assertTrue(any(t.get('state') == 'no-template' for t in templates))
+        self.assertTrue(any(t.get('fields', {}).get('password', {}).get('state') == 'empty' for t in templates))
+        self.assertTrue(any(t.get('fields', {}).get('username', {}).get('state') == 'placeholder' for t in templates))
+        self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
+        self.assertNotIn('SYNTHETIC-USER', json.dumps(result))
+
+    def test_runtime_paths_are_prioritized_over_compiler_sources_without_losing_config_references(self):
+        data = b'\x7fELF\0/home/build/.cargo/registry/auth/src/lib.rs\0/etc/openvpn/auth.txt\0/run/kodachi/vpn.sock\0'
+        result = review.inspect_content('/opt/kodachi/vpn-manager', data, 'kodachi-runtime-or-config')
+        self.assertEqual(result['pathReferences'][0], '/etc/openvpn/auth.txt')
+        text = b'VPN_CONFIG="/etc/openvpn/client.conf"\nVPN_PASSWORD="/auth/SYNTHETIC-SECRET"\n'
+        result = review.inspect_content('/opt/kodachi/setup.sh', text, 'kodachi-runtime-or-config')
+        self.assertIn('/etc/openvpn/client.conf', result['pathReferences'])
+        self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
+
+    def test_preview_inventories_config_without_auth_fields_and_summarizes_entire_search(self):
+        configs = [review.inspect_content('/etc/openvpn/config' + str(i) + '.conf', b'client\n', 'vpn-config') for i in range(100)]
+        binary = review.inspect_content('/opt/kodachi/vpn-manager', b'\x7fELF\0/etc/openvpn/auth.txt\0', 'kodachi-runtime-or-config')
+        result = review.preview({'files': configs + [binary], 'skipped': []})
+        self.assertEqual(result['configurationInventoryCount'], 100)
+        self.assertEqual(len(result['configurationInventory']), 8)
+        self.assertEqual(result['authenticationRecordCounts']['shortAuthFileCandidate'], 0)
+        self.assertLessEqual(len(json.dumps(result, separators=(',', ':')).encode()), 14000)
+        self.assertTrue(any(f['path'] == configs[0]['path'] for f in result['previewFiles']))
 
     def test_path_shaped_credential_values_do_not_reappear_as_path_references(self):
         result = review.inspect_content('/etc/openvpn/settings.conf', b'vpn_password="/auth/SYNTHETIC-SECRET"\n', 'vpn-config')
