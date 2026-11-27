@@ -43,6 +43,16 @@ to investigate an icon. [2](https://support.google.com/work/android/answer/70295
 
 ### Where to look without changing anything
 
+**Location and label matter.** A named **Work mode** under Samsung **Modes and
+Routines**, if that feature exists on the device, is an automation/focus preset;
+it is not itself proof of an Android managed work profile. Samsung documents
+custom mode names/icons and a separate Quick Settings Modes tile, and warns
+that feature availability varies by device/software. A status-bar symbol or
+custom tile alone is therefore less specific than a briefcase badge on an app
+and a confirmed Work tab. Do not assume this A03s has Modes and Routines just
+because another Galaxy does.
+[1](https://www.samsung.com/us/support/answer/ANS10002538/)
+
 - Open the app drawer and look for a **Work** tab or briefcase-badged apps.
 - Expand Quick Settings and read the label under the suspected briefcase tile.
 - On Samsung, inspect **Settings → Accounts and backup → Manage accounts** for

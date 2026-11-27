@@ -121,7 +121,10 @@ jobs:
           ram-size: 2048M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
-          script: cd apps/zshaolin-android && python3 ../../tools/android-ci/run-checked.py android-runtime gradle :app:connectedReleaseAndroidTest --no-daemon --stacktrace -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
+          script: cd apps/zshaolin-android && python3 ../../tools/android-ci/run-checked.py android-runtime gradle :app:connectedReleaseAndroidTest --no-daemon -Pandroid.testInstrumentationRunnerArguments.zshaolinDisposableCi=true -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
+      - name: Publish bounded synthetic instrumentation results even on failure
+        if: always() && matrix.arch == 'x86_64'
+        run: python3 tools/android-ci/publish-test-summary.py
       - name: Measure exact APK, signature, payload and actual test results
         shell: bash
         run: |

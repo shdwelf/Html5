@@ -2,11 +2,14 @@ package org.dyne.zshaolin.modern;
 
 import static org.junit.Assert.*;
 import android.content.Context;
+import android.os.Build;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalView;
 import java.io.File;
+import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.lang.reflect.Field;
 import java.net.*;
 import java.util.*;
@@ -21,8 +24,29 @@ public class ToolboxTest {
     static Context ctx;
     @Rule public ActivityTestRule<MainActivity> activity = new ActivityTestRule<>(MainActivity.class, false, false);
     @BeforeClass public static void installFullOfflinePayload() throws Exception {
+        assertEquals("Explicit disposable-CI consent is mandatory", "true",
+            InstrumentationRegistry.getArguments().getString("zshaolinDisposableCi"));
+        assertTrue("Never run this control against a physical/personal device",
+            Build.HARDWARE.equals("ranchu") || Build.HARDWARE.equals("goldfish"));
         ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        Toolbox.install(ctx, text -> { /* no private install logs */ });
+        try { Toolbox.install(ctx, text -> { /* no normal install logs */ }); }
+        catch (Exception e) { throw syntheticDiagnostic(e); }
+    }
+    private static AssertionError syntheticDiagnostic(Exception e) {
+        // Test APK only, after both disposable-emulator gates. This file contains
+        // fixed offline-install/synthetic-control output, not logcat or user data.
+        String details = "";
+        File file = new File(Toolbox.HOME, ".zshaolin-install-error.log");
+        if (file.isFile()) try (RandomAccessFile in = new RandomAccessFile(file, "r")) {
+            int length = (int)Math.min(1800, in.length());
+            byte[] tail = new byte[length]; in.seek(in.length() - length); in.readFully(tail);
+            details = "\nDisposable-control command output:\n" + new String(tail, StandardCharsets.UTF_8);
+        } catch (Exception ignored) { /* Preserve the original control failure. */ }
+        return new AssertionError(e.getClass().getSimpleName() + ": " + e.getMessage() + details, e);
+    }
+    private static String control(List<String> args, int seconds) throws Exception {
+        try { return Toolbox.run(args, seconds); }
+        catch (Exception e) { throw syntheticDiagnostic(e); }
     }
     @Test public void aAllDeclaredPackagesAndCommandsAreInstalled() throws Exception {
         JSONObject receipt = Toolbox.receipt(ctx);
@@ -34,7 +58,7 @@ public class ToolboxTest {
         assertTrue(commands.length() >= 50);
         for (int i = 0; i < commands.length(); i++)
             assertTrue(commands.getString(i), new File(Toolbox.PREFIX + "/bin/" + commands.getString(i)).canExecute());
-        String audit = Toolbox.run(Arrays.asList(Toolbox.PREFIX + "/bin/dpkg", "--audit"), 30);
+        String audit = control(Arrays.asList(Toolbox.PREFIX + "/bin/dpkg", "--audit"), 30);
         assertTrue("dpkg must report no unconfigured packages", audit.trim().isEmpty());
     }
     @Test public void bRealNativeShellEditorsCryptoLanguagesAndMedia() throws Exception {
@@ -50,12 +74,12 @@ public class ToolboxTest {
             "rm $TMPDIR/zshaolin-synthetic.png; " +
             "ffmpeg -v error -f lavfi -i 'sine=frequency=440:duration=0.1' -f null -; " +
             "sox -n -t null /dev/null synth 0.1 sine 440; print -r -- MEDIA_NATIVE_OK";
-        String result = Toolbox.run(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc", script), 180);
+        String result = control(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc", script), 180);
         for (String marker : new String[]{"ZSH_NATIVE_OK", "EMACS_NATIVE_OK", "PERL_NATIVE_OK", "LUA_NATIVE_OK", "MEDIA_NATIVE_OK"})
             assertTrue(marker, result.contains(marker));
     }
     @Test public void cNoAutomaticListenersAndMissingKeyRefusesToStart() throws Exception {
-        Toolbox.run(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc",
+        control(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc",
             "if z-ssh start >/dev/null 2>&1; then exit 42; fi; z-ssh help >/dev/null"), 30);
         for (int port : new int[]{2221, 2222, 10000}) {
             try (Socket socket = new Socket()) {
@@ -64,7 +88,7 @@ public class ToolboxTest {
                 catch (SocketTimeoutException expected) { /* no accepting listener */ }
             }
         }
-        String config = Toolbox.run(Arrays.asList(Toolbox.PREFIX + "/bin/sshd", "-T", "-f", Toolbox.PREFIX + "/etc/ssh/sshd_config"), 30);
+        String config = control(Arrays.asList(Toolbox.PREFIX + "/bin/sshd", "-T", "-f", Toolbox.PREFIX + "/etc/ssh/sshd_config"), 30);
         assertTrue(config.contains("passwordauthentication no"));
         assertTrue(config.contains("pubkeyauthentication yes"));
         assertTrue(config.contains("listenaddress 127.0.0.1:2222"));
@@ -85,7 +109,7 @@ public class ToolboxTest {
             "ssh -T -p 2222 -i $T/client -o BatchMode=yes -o ConnectTimeout=10 " +
             "-o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$T/known_hosts " +
             "$(id -un)@127.0.0.1";
-        String result = Toolbox.run(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc", script), 120);
+        String result = control(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc", script), 120);
         assertTrue(result.contains("SSH_KEY_ONLY_CONTROL_OK"));
         try (Socket socket = new Socket()) {
             try { socket.connect(new InetSocketAddress("127.0.0.1", 2221), 300); fail("HTTP provisioning unexpectedly exists"); }

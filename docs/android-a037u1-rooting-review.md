@@ -57,8 +57,9 @@ measure the phone's rollback fuses.
    pins an official Magisk release and Ghidra, verifies input hashes and APK
    signature consistency, then inspects two ARM init binaries. A successful
    report would still not prove a malware-free APK, an exploitable bootloader
-   or functioning root on this physical device. Do not relabel a configured
-   workflow as an executed analysis: its measured receipt must be obtained.
+   or functioning root on this physical device. The **bounded review has now
+   executed successfully**; the measured receipt below is evidence of that
+   analysis, not a device-root test.
 
 Primary source: [official Magisk Samsung requirements, pinned to the selected
 release](https://github.com/topjohnwu/Magisk/blob/0972f67d97f9b6302b67c5171283330c74114b4a/docs/install.md#samsung-devices).
@@ -77,6 +78,46 @@ configuration, working tunnel or absence of leaks. Nothing here establishes a
 working Kodachi VPN configuration. See the [work-profile briefcase / private-mode
 investigation](android-work-profile-private-mode.md) for profile isolation,
 Android 15 Private Space versus this Android 13 device, and VPN scope.
+
+## Executed Magisk / Ghidra static review
+
+The validated [GitHub Actions run 46054707860](https://github.com/shdwelf/Html5/actions/runs/46054707860)
+executed from **`130910469950b67319046b808a4f5ec27a48b301`**, not from later
+documentation commits. The [retrieved measured report](research/android-root-static-review.json)
+is **12,956 bytes**, SHA-256
+**`f1ad4aae4e63e88ccb6e48cd12cf02313009af1f85102194b7d7a12246325cfd`**.
+It was recovered from three ordered compressed Checks annotations and checked
+against their declared byte length/hash, the run's source commit and run ID.
+The source-file hashes in the receipt also matched the local reviewed files at
+retrieval. No APK, firmware, device screenshot or device dump was saved here.
+
+Inputs: the pinned official **Magisk v31.1 APK**, SHA-256
+`89cefac0a318afa39fb3880c45c87b036c05bc1ebf02a7a715b7f8d7c26ac6e7`,
+and **Ghidra 12.1.4**, running with Temurin 21 on a disposable CI host. Android's
+`apksigner verify` succeeded using APK signature scheme v2. The observed signer
+certificate SHA-256 was
+`b4cb83b4dad99f997dbe872f013aa16c14eec41d167021f371f7e1330f273ee6`.
+That is signature consistency plus an observed certificate, **not independent
+authentication of the author's signing key**.
+
+| Static input | Instructions visited | Functions defined | Completed sampled decompilations |
+| --- | ---: | ---: | ---: |
+| `lib/arm64-v8a/libmagiskinit.so` | 36,712 | 1,233 | 4 |
+| `lib/armeabi-v7a/libmagiskinit.so` | 43,203 | 713 | 4 |
+| Inert compiled positive control | 91 | 18 | 4 |
+
+The report records input hashes, fixed imported-API categories and the size/hash
+of the sampled decompiled output. It does not publish arbitrary strings or
+execute the APK/native inputs. Sampling four functions is **not a whole-program
+or whole-APK security audit**. The positive control verifies that the analysis
+pipeline actually disassembled/decompiled native code; it does not prove
+Magisk's behavior or compatibility with the phone.
+
+The report explicitly leaves **device connected, firmware acquired/flashed,
+root verified, and malware-free verdict false**. The embedded screenshot
+observations retain their original screenshot-only limits; an executed CI
+analysis does not retroactively turn a Settings screenshot into device-side
+root evidence.
 
 ## Next non-destructive evidence
 
@@ -123,7 +164,12 @@ start with the terminal. Obsolete game/keyserver-helper replacements are
 explicit in [the build specification](../tools/zshaolin-modern/inputs.json),
 not silently reported as reconstructed originals.
 
-**The APK is not yet compiled or runtime-validated.** Source, configured tests
-and planned dependencies are not an installable deliverable. No pull request
-has been merged for this unfinished build. ZShaolin itself does not require
-root and will not provide root or VPN protection.
+The full **x86_64 release APK and test APK have now compiled and passed lint**
+in [run 46054704496](https://github.com/shdwelf/Html5/actions/runs/46054704496),
+from source `130910469950b67319046b808a4f5ec27a48b301`. The mandatory Android 13
+runtime step **failed**, so the measured delivery/artifact gate did not run.
+No final measured APK receipt or ARM APK has been delivered. Compilation alone
+is not a working full-toolbox claim. Bounded synthetic test diagnostics are
+being added without exposing personal-device logs or weakening the runtime
+gate. No pull request has been merged for this unfinished build.
+ZShaolin itself does not require root and will not provide root or VPN protection.

@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "sourceCommit": "130910469950b67319046b808a4f5ec27a48b301",
+  "runId": "46054707860",
+  "magisk": {
+    "repository": "topjohnwu/Magisk",
+    "tag": "v31.1",
+    "commit": "0972f67d97f9b6302b67c5171283330c74114b4a",
+    "url": "https://github.com/topjohnwu/Magisk/releases/download/v31.1/Magisk-v31.1.apk",
+    "bytes": 10679283,
+    "sha256": "89cefac0a318afa39fb3880c45c87b036c05bc1ebf02a7a715b7f8d7c26ac6e7",
+    "assetId": 673844395,
+    "documentation": "https://github.com/topjohnwu/Magisk/blob/0972f67d97f9b6302b67c5171283330c74114b4a/docs/install.md#samsung-devices"
+  },
+  "ghidra": {
+    "version": "12.1.4",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+    "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db"
+  },
+  "programs": [
+    {
+      "input": {
+        "apkEntry": "lib/arm64-v8a/libmagiskinit.so",
+        "flatName": "magiskinit-0.elf",
+        "bytes": 184376,
+        "sha256": "c0c7cc1c8e1afb92bff602164f6aa1bb4103f5028d076216d8bef48496e2f4dc",
+        "executed": false
+      },
+      "analysis": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "c0c7cc1c8e1afb92bff602164f6aa1bb4103f5028d076216d8bef48496e2f4dc",
+        "format": "Executable and Linking Format (ELF)",
+        "language": "AARCH64:LE:64:v8A",
+        "imageBase": "00200000",
+        "instructionsVisitedUpTo1000000": 36712,
+        "functionsDefinedUpTo200000": 1233,
+        "fixedImportedApiCategories": {
+          "privilegeAndIdentity": [],
+          "processAndExecution": [],
+          "network": [],
+          "filesystemAndBoot": []
+        },
+        "boundedDecompilations": [
+          {
+            "address": "00207a90",
+            "functionBytes": 68,
+            "completed": true,
+            "decompiledUtf8Bytes": 397,
+            "decompiledSha256": "66a0bde0de42d05ba31d1c3897cb02109306ea46b169ea9959388e22a2729b4c"
+          },
+          {
+            "address": "00207ac0",
+            "functionBytes": 20,
+            "completed": true,
+            "decompiledUtf8Bytes": 52,
+            "decompiledSha256": "336b197cf5d55d08cc96037178bfa0b80859825d3b733917c0c41e829f597e0d"
+          },
+          {
+            "address": "00207ad4",
+            "functionBytes": 88,
+            "completed": true,
+            "decompiledUtf8Bytes": 209,
+            "decompiledSha256": "f8727d1d21c73c4f29a6623a5d1552b7bfaa22cd718df1589316c31cb6cdcba8"
+          },
+          {
+            "address": "00207b2c",
+            "functionBytes": 24,
+            "completed": true,
+            "decompiledUtf8Bytes": 77,
+            "decompiledSha256": "5640e9c2e0674b3a2bfbe96e1b1674218f29095d24f0d17fb94f884b35a0fdbd"
+          }
+        ],
+        "inputExecuted": false,
+        "firmwarePatchedOrFlashed": false,
+        "deviceRootVerified": false,
+        "malwareFreeOrSafeVerdict": false,
+        "wholeProgramSecurityAudit": false,
+        "arbitraryStringsOrDecompiledSourcePublished": false,
+        "limitation": "Imported APIs and four sampled decompilations are static observations, not a proof of safety, exploitable firmware or working root. Automatic analysis is time-bounded by the runner."
+      }
+    },
+    {
+      "input": {
+        "apkEntry": "lib/armeabi-v7a/libmagiskinit.so",
+        "flatName": "magiskinit-1.elf",
+        "bytes": 148776,
+        "sha256": "8cd3bdeeeb43588bbdddfbab28a13f543dcc0706e5e6cab0d4c6cdb53be4c8d1",
+        "executed": false
+      },
+      "analysis": {
+        "schema": 1,
+        "ghidraVersion": "12.1.4",
+        "inputSha256": "8cd3bdeeeb43588bbdddfbab28a13f543dcc0706e5e6cab0d4c6cdb53be4c8d1",
+        "format": "Executable and Linking Format (ELF)",
+        "language": "ARM:LE:32:v8",
+        "imageBase": "00010000",
+        "instructionsVisitedUpTo1000000": 43203,
+        "functionsDefinedUpTo200000": 713,
+        "fixedImportedApiCategories": {
+          "privilegeAndIdentity": [],
+          "processAndExecution": [],
+          "network": [],
+          "filesystemAndBoot": []
+        },
+        "boundedDecompilations": [
+          {
+            "address": "000168f8",
+            "functionBytes": 64,
+            "completed": true,
+            "decompiledUtf8Bytes": 304,
+            "decompiledSha256": "ebe82ced936695f80ae43fc53bdc45c916c1c38fac63320047363ab8767107c3"
+          },
+          {
+            "address": "0001692c",
+            "functionBytes": 16,
+            "completed": true,
+            "decompiledUtf8Bytes": 150,
+            "decompiledSha256": "225d2cb33f066212124aa1f316dc8f63520773339f52ffe5882670e6b291f148"
+          },
+          {
+            "address": "0001693c",
+            "functionBytes": 20,
+            "completed": true,
+            "decompiledUtf8Bytes": 59,
+            "decompiledSha256": "68f319b0ae59bd3c8d49d530aea977ea605dd42219e7b484631264a1a5a526f0"
+          },
+          {
+            "address": "00016958",
+            "functionBytes": 114,
+            "completed": true,
+            "decompiledUtf8Bytes": 913,
+            "decompiledSha256": "d4fab4e5d673d31185ce323dc551a4ffa8bc8fbce29655e15069d67247c63b30"
+          }
+        ],
+        "inputExecuted": false,
+        "firmwarePatchedOrFlashed": false,
+        "deviceRootVerified": false,
+        "malwareFreeOrSafeVerdict": false,
+        "wholeProgramSecurityAudit": false,
+        "arbitraryStringsOrDecompiledSourcePublished": false,
+        "limitation": "Imported APIs and four sampled decompilations are static observations, not a proof of safety, exploitable firmware or working root. Automatic analysis is time-bounded by the runner."
+      }
+    }
+  ],
+  "syntheticPositiveControl": {
+    "schema": 1,
+    "ghidraVersion": "12.1.4",
+    "inputSha256": "7c03cd161312d1173a28442f50bcd9fd1bf5e6ea7db80c8365399e5fdc8c7cb2",
+    "format": "Executable and Linking Format (ELF)",
+    "language": "x86:LE:64:default",
+    "imageBase": "00100000",
+    "instructionsVisitedUpTo1000000": 91,
+    "functionsDefinedUpTo200000": 18,
+    "fixedImportedApiCategories": {
+      "privilegeAndIdentity": [
+        {
+          "fixedSymbol": "getuid",
+          "symbolsUpTo32": 1,
+          "referencesUpTo10000": 1
+        }
+      ],
+      "processAndExecution": [],
+      "network": [],
+      "filesystemAndBoot": []
+    },
+    "boundedDecompilations": [
+      {
+        "address": "00101000",
+        "functionBytes": 27,
+        "completed": true,
+        "decompiledUtf8Bytes": 196,
+        "decompiledSha256": "bd40a6ead7cca5d022cd1d33c18094389f9f84b83fd456f2f59ffdd301299404"
+      },
+      {
+        "address": "00101060",
+        "functionBytes": 38,
+        "completed": true,
+        "decompiledUtf8Bytes": 297,
+        "decompiledSha256": "7b005be11afc7acf8050e7f03d0195c57f77c9754a2576534d6cb1fa723ab41a"
+      },
+      {
+        "address": "00101090",
+        "functionBytes": 34,
+        "completed": true,
+        "decompiledUtf8Bytes": 168,
+        "decompiledSha256": "3a4ac29f6db827bf3f71b47920e14523e617d9172c15cbb64f90e6b7f8e40702"
+      },
+      {
+        "address": "001010c0",
+        "functionBytes": 51,
+        "completed": true,
+        "decompiledUtf8Bytes": 166,
+        "decompiledSha256": "57ae64b7a6e552d2edcb34666d508dea8972e591c8534899a5ddfb74cee160f1"
+      }
+    ],
+    "inputExecuted": false,
+    "firmwarePatchedOrFlashed": false,
+    "deviceRootVerified": false,
+    "malwareFreeOrSafeVerdict": false,
+    "wholeProgramSecurityAudit": false,
+    "arbitraryStringsOrDecompiledSourcePublished": false,
+    "limitation": "Imported APIs and four sampled decompilations are static observations, not a proof of safety, exploitable firmware or working root. Automatic analysis is time-bounded by the runner."
+  },
+  "apkSignatureVerification": "Verifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): true\nVerified using v3 scheme (APK Signature Scheme v3): false\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v3.2 scheme (APK Signature Scheme v3.2): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nV2 Signer: certificate DN: CN=John Wu, L=Taipei, C=TW\nV2 Signer: certificate SHA-256 digest: b4cb83b4dad99f997dbe872f013aa16c14eec41d167021f371f7e1330f273ee6\nV2 Signer: certificate SHA-1 digest: dc0f2b61cbd7e9d3dbbe060b2b870d46bb060211\nV2 Signer: certificate MD5 digest: ceda68c1e174710aef58897dae6eab4f\nV2 Signer: key algorithm: RSA\nV2 Signer: key size (bits): 2048\nV2 Signer: public key SHA-256 digest: 742e17790ff20fb983e033e77c71fcf5f64b4805a3d99ce54f10f08b50bbba98\nV2 Signer: public key SHA-1 digest: 9ce8b7a617cc807347b4fc92e7a9d6d380aed62b\nV2 Signer: public key MD5 digest: 2008751f6da60cddd9fb9a4d76ec76dd\n",
+  "apkSignerCertificateSha256": [
+    "b4cb83b4dad99f997dbe872f013aa16c14eec41d167021f371f7e1330f273ee6"
+  ],
+  "signatureLimit": "Internal APK-signature consistency and an observed certificate fingerprint; not independent authentication of the author signing key or a complete APK audit.",
+  "screenshotEvidence": {
+    "schema": 1,
+    "evidenceKind": "Visual transcription of owner-provided Settings screenshots, including the follow-up Status/Software screens; not an ADB capture or binary/firmware measurement.",
+    "observed": {
+      "product": "Samsung Galaxy A03s",
+      "modelLabel": "SM-A037U1/DS",
+      "salesModelCode": "SM-A037UZKLLLA",
+      "oneUiCore": "5.1",
+      "android": "13",
+      "androidSecurityPatchLevel": "2025-07-01",
+      "googlePlaySystemUpdate": "2024-08-01",
+      "baseband": "A037U1UESBDYI1",
+      "buildDisplay": "TP1A.220624.014.A037U1UESBDYI1",
+      "firmwareSuffix": "A037U1UESBDYI1",
+      "kernel": "4.19.191-27242513-abA037U1UESBDYI1",
+      "kernelBuildLabel": "#1 Tue Sep 16 20:25:33 KST 2025",
+      "selinux": "Enforcing",
+      "phoneStatusLabel": "Official",
+      "securitySoftwareReleaseLabel": "SMR Jul-2025 Release 1"
+    },
+    "captureProgression": {
+      "initialScreenshotAndroidPatchDateVisible": false,
+      "followUpScreenshotAndroidPatchDateVisible": true,
+      "note": "The first Software information screenshot cut off the Android patch-date value. The follow-up shows July 1, 2025 directly; the older missing-value qualification is superseded."
+    },
+    "notVisible": [
+      "Developer Options OEM unlocking setting.",
+      "Download Mode OEM Lock and KnoxGuard/RMM states.",
+      "Download Mode rollback/SW revision fuse state.",
+      "Android supported CPU ABIs.",
+      "Working Magisk installation or measured uid=0 result.",
+      "Work-profile administrator, profile policies or Private mode/Secure Folder configuration."
+    ],
+    "ownerReportedSeparately": {
+      "oemUnlockToggle": "available; not independently confirmed by these screenshots"
+    },
+    "externalCatalogCrossCheck": {
+      "url": "https://samfw.com/firmware/SM-A037U1",
+      "build": "A037U1UESBDYI1",
+      "android": "13",
+      "listedSwRevision": "B",
+      "listedAndroidSecurityPatchLevel": "2025-07-01",
+      "limit": "Third-party catalog metadata is not an authenticated firmware download or an on-device fuse measurement. Its patch date now agrees with the visible follow-up screenshot."
+    },
+    "assessment": {
+      "firmwareTranscriptionResolved": true,
+      "bootloaderUnlockConfirmed": false,
+      "officialStatusLabelProvesUnlockedOrUnmanaged": false,
+      "magiskInstallabilityConfirmed": false,
+      "knownWorkingRootMethodForThisDeviceVerified": false,
+      "vulnerabilityProvedByKernelVersion": false,
+      "selinuxEnforcingProvesUnrooted": false,
+      "profileAdministratorOrSpywareIdentified": false,
+      "secureFolderSupportConfirmed": false,
+      "vpnProviderOrProtectionVerified": false,
+      "ghidraAnalysisPerformed": false,
+      "firmwarePatchedOrFlashed": false,
+      "screenshotsCopiedIntoRepository": false,
+      "phoneIdentifiersOrNetworkAddressesRetainedInThisRecord": false
+    }
+  },
+  "sourceSha256": {
+    "tools/android-root-review/static-review.py": "626b3f113c5ac31564c4e99368ac4e8f2c08b89e9d24b8dd630e3ab748627c81",
+    "tools/ghidra_scripts/AndroidRootingReview.java": "b0d5548752b653a7935e3e0917b40b21e266f1b91719370e5d10e64730e459db",
+    "tools/android-root-review/inputs.json": "5fc69f36f6648ace3b6790455c1b52e0faa02b96bedfbe7e3c61104475387159",
+    "tools/android-ci/apk_signature.py": "c4e47455426c77fc92c928542a6b028776dd432052a9f2cb35e671e1e950622f"
+  },
+  "deviceConnected": false,
+  "firmwareAcquired": false,
+  "firmwareFlashed": false,
+  "rootVerifiedOnDevice": false,
+  "wholeApkAudited": false,
+  "identifierCollection": false,
+  "conclusion": "Bounded static observations of two public Magisk init binaries only. Screenshots confirm firmware labels, not unlockability or working root. Download Mode OEM Lock/KnoxGuard and exact firmware remain device-side gates."
+}
