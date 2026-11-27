@@ -61,6 +61,7 @@ jobs:
             apps/zshaolin-android
             tools/zshaolin-modern
             tools/zshaolin-legacy
+            tools/android-ci
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
@@ -81,7 +82,7 @@ jobs:
               f.write('TOOLBOX_ARCH='+arch+'\nTOOLBOX_ABI='+aliases[arch]+'\n')
           PY
       - name: Fetch pinned terminal source and authenticate full native dependency closure
-        run: python3 tools/zshaolin-modern/prepare.py "$TOOLBOX_ARCH"
+        run: python3 tools/android-ci/run-checked.py package-staging python3 tools/zshaolin-modern/prepare.py "$TOOLBOX_ARCH"
       - name: Android SDK and modern native compiler
         run: |
           set -euo pipefail
@@ -97,7 +98,7 @@ jobs:
           ZSHAOLIN_KEY_PASSWORD="$password" keytool -genkeypair -noprompt -keystore "$RUNNER_TEMP/zshaolin-review.jks" -storetype JKS -alias zshaolin-review -storepass:env ZSHAOLIN_KEY_PASSWORD -keypass:env ZSHAOLIN_KEY_PASSWORD -keyalg RSA -keysize 4096 -validity 3650 -dname 'CN=Unofficial ZShaolin Modern Review'
       - name: Compile actual non-debuggable APK, terminal JNI and test APK; enforce lint
         working-directory: apps/zshaolin-android
-        run: gradle :app:assembleRelease :app:assembleReleaseAndroidTest :app:lintRelease --no-daemon --stacktrace -PtoolboxArch="$TOOLBOX_ARCH" -PtoolboxAbi="$TOOLBOX_ABI"
+        run: python3 ../../tools/android-ci/run-checked.py apk-compilation gradle :app:assembleRelease :app:assembleReleaseAndroidTest :app:lintRelease --no-daemon --stacktrace -PtoolboxArch="$TOOLBOX_ARCH" -PtoolboxAbi="$TOOLBOX_ABI"
       - name: Enable KVM for disposable Android 13 x86_64 test device
         if: matrix.arch == 'x86_64'
         run: |
@@ -116,14 +117,14 @@ jobs:
           ram-size: 2048M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
-          script: cd apps/zshaolin-android && gradle :app:connectedReleaseAndroidTest --no-daemon --stacktrace -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
+          script: cd apps/zshaolin-android && python3 ../../tools/android-ci/run-checked.py android-runtime gradle :app:connectedReleaseAndroidTest --no-daemon --stacktrace -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
       - name: Measure exact APK, signature, payload and actual test results
         shell: bash
         run: |
           set -euo pipefail
           args=()
           if test "$TOOLBOX_ARCH" = x86_64; then args+=(--android-tests-required); fi
-          python3 tools/zshaolin-modern/apk-receipt.py "$TOOLBOX_ARCH" "${args[@]}"
+          python3 tools/android-ci/run-checked.py apk-receipt python3 tools/zshaolin-modern/apk-receipt.py "$TOOLBOX_ARCH" "${args[@]}"
       - name: Preserve compiled APK and measured provenance only after mandatory gates
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
