@@ -121,7 +121,14 @@ jobs:
           ram-size: 2048M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
-          script: cd apps/zshaolin-android && python3 ../../tools/android-ci/run-checked.py android-runtime gradle :app:connectedReleaseAndroidTest --no-daemon -Pandroid.testInstrumentationRunnerArguments.zshaolinDisposableCi=true -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
+          script: |
+            adb shell cmd connectivity airplane-mode enable
+            adb shell svc wifi disable
+            adb shell svc data disable
+            test "$(adb shell settings get global airplane_mode_on | tr -d '\r')" = 1
+            test "$(adb shell settings get global wifi_on | tr -d '\r')" = 0
+            echo 'ZSHAOLIN_EMULATOR_OFFLINE=1' >> "$GITHUB_ENV"
+            cd apps/zshaolin-android && python3 ../../tools/android-ci/run-checked.py android-runtime gradle :app:connectedReleaseAndroidTest --no-daemon -Pandroid.testInstrumentationRunnerArguments.zshaolinDisposableCi=true -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
       - name: Publish bounded synthetic instrumentation results even on failure
         if: always() && matrix.arch == 'x86_64'
         run: python3 tools/android-ci/publish-test-summary.py

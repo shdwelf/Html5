@@ -1,11 +1,15 @@
 import importlib.util
+import io
 import json
 import os
+import re
 from pathlib import Path
 import stat
 import subprocess
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / 'tools/zshaolin-legacy/overlay/z-ssh'
@@ -13,6 +17,9 @@ SPEC = json.loads((ROOT / 'tools/zshaolin-modern/inputs.json').read_text())
 module_spec = importlib.util.spec_from_file_location('zshaolin_prepare', ROOT / 'tools/zshaolin-modern/prepare.py')
 prepare = importlib.util.module_from_spec(module_spec)
 module_spec.loader.exec_module(prepare)
+receipt_spec = importlib.util.spec_from_file_location('zshaolin_apk_receipt', ROOT/'tools/zshaolin-modern/apk-receipt.py')
+apk_receipt = importlib.util.module_from_spec(receipt_spec)
+receipt_spec.loader.exec_module(apk_receipt)
 
 
 class ZshaolinModernTests(unittest.TestCase):
@@ -238,6 +245,92 @@ exit 0
             self.assertEqual(result.returncode, 0)
             self.assertIn('copied private keys cannot be retracted', result.stdout)
             self.assertFalse(events.exists())
+
+
+class ZshaolinApkReceiptTests(unittest.TestCase):
+    def suite(self):
+        root = ET.Element('testsuite', name=apk_receipt.TEST_SUITE, tests='5', failures='0', errors='0', skipped='0')
+        for name in sorted(apk_receipt.REQUIRED_TEST_CASES):
+            ET.SubElement(root, 'testcase', name=name, classname=apk_receipt.TEST_SUITE)
+        return root
+
+    def results(self, root, required=True):
+        with tempfile.TemporaryDirectory() as tmp:
+            ET.ElementTree(root).write(Path(tmp)/'TEST-control.xml')
+            return apk_receipt.android_test_results(tmp, required=required)
+
+    def test_exact_five_control_methods_must_match_actual_instrumentation(self):
+        java = (ROOT/'apps/zshaolin-android/app/src/androidTest/java/org/dyne/zshaolin/modern/ToolboxTest.java').read_text()
+        self.assertEqual(set(re.findall(r'@Test public void (\w+)\(', java)), apk_receipt.REQUIRED_TEST_CASES)
+        report = self.results(self.suite())
+        self.assertEqual(report[0]['testCases'], sorted(apk_receipt.REQUIRED_TEST_CASES))
+        self.assertEqual(report[0]['tests'], 5)
+        self.assertRegex(report[0]['xmlSha256'], r'^[a-f0-9]{64}$')
+
+    def test_no_skipped_failed_or_disabled_cases_even_with_zero_suite_counters(self):
+        for tag in ['skipped', 'failure', 'error']:
+            root = self.suite(); ET.SubElement(root[0], tag)
+            with self.subTest(tag=tag), self.assertRaises(ValueError): self.results(root)
+        for counter in ['skipped', 'failures', 'errors', 'disabled']:
+            root = self.suite(); root.set(counter, '1')
+            with self.subTest(counter=counter), self.assertRaises(ValueError): self.results(root)
+
+    def test_inflated_duplicate_wrong_or_absent_control_results_cannot_pass(self):
+        for attribute, value in [('tests', '10'), ('tests', '-1'), ('name', 'unrelated')]:
+            root = self.suite(); root.set(attribute, value)
+            with self.subTest(attribute=attribute), self.assertRaises(ValueError): self.results(root)
+        for attribute, value in [('name', 'unrelated'), ('name', sorted(apk_receipt.REQUIRED_TEST_CASES)[1]),
+                                 ('classname', 'unrelated')]:
+            root = self.suite(); root[0].set(attribute, value)
+            with self.subTest(attribute=attribute, value=value), self.assertRaises(ValueError): self.results(root)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ValueError): apk_receipt.android_test_results(tmp, required=True)
+            self.assertEqual(apk_receipt.android_test_results(tmp, required=False), [])
+            (Path(tmp)/'TEST-control.xml').write_bytes(b'x'*(2*1024*1024+1))
+            with self.assertRaises(ValueError): apk_receipt.android_test_results(tmp, required=True)
+
+    def test_offline_gate_is_explicit_and_not_a_physical_or_arm_execution_claim(self):
+        self.assertTrue(apk_receipt.offline_emulator_verified('x86_64', True, {'ZSHAOLIN_EMULATOR_OFFLINE': '1'}))
+        for arch, env in [('x86_64', {}), ('x86_64', {'ZSHAOLIN_EMULATOR_OFFLINE': '0'}),
+                          ('arm', {'ZSHAOLIN_EMULATOR_OFFLINE': '1'}), ('aarch64', {'ZSHAOLIN_EMULATOR_OFFLINE': '1'})]:
+            with self.subTest(arch=arch, env=env), self.assertRaises(ValueError):
+                apk_receipt.offline_emulator_verified(arch, True, env)
+        self.assertFalse(apk_receipt.offline_emulator_verified('arm', False, {}))
+
+    def test_packaged_remediation_and_lean_startup_must_equal_reviewed_sources(self):
+        assets = {'z-ssh': HELPER.read_bytes().replace(b'#!env zsh', b'#!/data/data/com.termux/files/usr/bin/zsh', 1),
+                  'sshd_config': (ROOT/'tools/zshaolin-modern/assets/sshd_config').read_bytes(),
+                  'zshrc': (ROOT/'tools/zshaolin-modern/assets/zshrc').read_bytes()}
+        for changed in [None, *assets]:
+            data = io.BytesIO()
+            with zipfile.ZipFile(data, 'w') as archive:
+                for name, raw in assets.items(): archive.writestr('assets/'+name, raw if name != changed else raw+b'\nUNREVIEWED\n')
+            with zipfile.ZipFile(io.BytesIO(data.getvalue())) as archive:
+                if changed is None:
+                    measured = apk_receipt.verify_security_assets(archive)
+                    self.assertEqual(set(measured), set(assets))
+                    self.assertEqual(measured['z-ssh']['bytes'], len(assets['z-ssh']))
+                else:
+                    with self.subTest(asset=changed), self.assertRaises(ValueError): apk_receipt.verify_security_assets(archive)
+
+    def test_sshd_output_case_is_normalized_without_weakening_values_or_bind_checks(self):
+        java = (ROOT/'apps/zshaolin-android/app/src/androidTest/java/org/dyne/zshaolin/modern/ToolboxTest.java').read_text()
+        self.assertIn('line.trim().toLowerCase(Locale.ROOT)', java)
+        self.assertIn('sshConfigRows("PasswordAuthentication yes").contains("passwordauthentication no")', java)
+        self.assertIn('config.contains("kbdinteractiveauthentication no")', java)
+        self.assertIn('Collections.singleton("listenaddress 127.0.0.1:2222"), listeners', java)
+        self.assertIn('2221, 2222, 8022, 10000', java)
+
+    def test_workflow_and_test_verify_offline_setup_before_installation(self):
+        workflow = (ROOT/'.github/workflows/zshaolin-modern-apk.yml').read_text()
+        for marker in ['adb shell cmd connectivity airplane-mode enable', 'adb shell svc wifi disable',
+                       'adb shell svc data disable', "ZSHAOLIN_EMULATOR_OFFLINE=1", 'settings get global airplane_mode_on',
+                       'settings get global wifi_on']:
+            self.assertLess(workflow.index(marker), workflow.index('gradle :app:connectedReleaseAndroidTest'))
+        java = (ROOT/'apps/zshaolin-android/app/src/androidTest/java/org/dyne/zshaolin/modern/ToolboxTest.java').read_text()
+        self.assertLess(java.index('Airplane mode must be enabled'), java.index('Toolbox.install(ctx'))
+        self.assertLess(java.index('Wi-Fi must be disabled'), java.index('Toolbox.install(ctx'))
+        for path in apk_receipt.SOURCE_FILES: self.assertTrue((ROOT/path).is_file(), path)
 
 
 if __name__ == '__main__':

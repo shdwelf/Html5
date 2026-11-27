@@ -29,6 +29,10 @@ public class ToolboxTest {
         assertTrue("Never run this control against a physical/personal device",
             Build.HARDWARE.equals("ranchu") || Build.HARDWARE.equals("goldfish"));
         ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        assertEquals("Airplane mode must be enabled before the offline payload install", 1,
+            android.provider.Settings.Global.getInt(ctx.getContentResolver(), "airplane_mode_on", -1));
+        assertEquals("Wi-Fi must be disabled before the offline payload install", 0,
+            android.provider.Settings.Global.getInt(ctx.getContentResolver(), "wifi_on", -1));
         try { Toolbox.install(ctx, text -> { /* no normal install logs */ }); }
         catch (Exception e) { throw syntheticDiagnostic(e); }
     }
@@ -88,21 +92,33 @@ public class ToolboxTest {
         for (String marker : new String[]{"ZSH_NATIVE_OK", "EMACS_NATIVE_OK", "PERL_NATIVE_OK", "LUA_NATIVE_OK", "MEDIA_NATIVE_OK"})
             assertTrue(marker, result.contains(marker));
     }
+    private static Set<String> sshConfigRows(String dump) {
+        // OpenSSH 10.6 prints canonical CamelCase keywords; older releases used
+        // lowercase. Normalize text casing only; password-enabled policy fails.
+        Set<String> rows = new HashSet<>();
+        for (String line : dump.split("\n")) rows.add(line.trim().toLowerCase(Locale.ROOT));
+        return rows;
+    }
     @Test public void cNoAutomaticListenersAndMissingKeyRefusesToStart() throws Exception {
+        assertEquals(sshConfigRows("passwordauthentication no"), sshConfigRows("PasswordAuthentication no"));
+        assertFalse(sshConfigRows("PasswordAuthentication yes").contains("passwordauthentication no"));
         control(Arrays.asList(Toolbox.PREFIX + "/bin/zsh", "-fc",
             "if z-ssh start >/dev/null 2>&1; then exit 42; fi; z-ssh help >/dev/null"), 30);
-        for (int port : new int[]{2221, 2222, 10000}) {
+        for (int port : new int[]{2221, 2222, 8022, 10000}) {
             try (Socket socket = new Socket()) {
                 try { socket.connect(new InetSocketAddress("127.0.0.1", port), 500); fail("Unexpected automatic listener: " + port); }
                 catch (ConnectException expected) { /* expected */ }
                 catch (SocketTimeoutException expected) { /* no accepting listener */ }
             }
         }
-        String config = control(Arrays.asList(Toolbox.PREFIX + "/bin/sshd", "-T", "-f", Toolbox.PREFIX + "/etc/ssh/sshd_config"), 30);
-        assertTrue(config.contains("passwordauthentication no"));
-        assertTrue(config.contains("pubkeyauthentication yes"));
-        assertTrue(config.contains("listenaddress 127.0.0.1:2222"));
-        assertFalse(config.contains("listenaddress 0.0.0.0"));
+        Set<String> config = sshConfigRows(control(Arrays.asList(Toolbox.PREFIX + "/bin/sshd", "-T", "-f", Toolbox.PREFIX + "/etc/ssh/sshd_config"), 30));
+        assertTrue("sshd -T must disable password authentication", config.contains("passwordauthentication no"));
+        assertTrue("sshd -T must enable public-key authentication", config.contains("pubkeyauthentication yes"));
+        assertTrue("sshd -T must disable keyboard-interactive authentication", config.contains("kbdinteractiveauthentication no"));
+        Set<String> listeners = new HashSet<>();
+        for (String row : config) if (row.startsWith("listenaddress ")) listeners.add(row);
+        assertEquals("No extra wildcard, IPv6 or non-loopback SSH bind is allowed",
+            Collections.singleton("listenaddress 127.0.0.1:2222"), listeners);
     }
     @Test public void dSyntheticLoopbackKeyOnlySshWithoutHttpProvisioning() throws Exception {
         String script = "set -eu; umask 077; " +
