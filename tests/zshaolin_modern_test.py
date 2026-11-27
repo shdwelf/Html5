@@ -106,6 +106,20 @@ fi
         self.assertNotIn('testkey_untrusted', gradle)
         self.assertNotIn('sharedUserId', (ROOT/'apps/zshaolin-android/app/src/main/AndroidManifest.xml').read_text())
 
+    def test_private_prefix_accepts_only_same_owned_directory_not_path_string_alias(self):
+        app = (ROOT/'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java').read_text()
+        guard = app[app.index('static boolean samePrivateDirectory'):app.index('JSONObject spec = receipt(ctx);')]
+        for marker in ['Os.stat(actual.getAbsolutePath())', 'Os.stat(expected.getAbsolutePath())',
+                       'a.st_uid == uid && b.st_uid == uid', 'a.st_dev == b.st_dev', 'a.st_ino == b.st_ino',
+                       'OsConstants.S_ISDIR(a.st_mode)', 'OsConstants.S_ISDIR(b.st_mode)',
+                       '!ctx.getPackageName().equals("com.termux")', 'android.os.Process.myUid() / 100000 != 0',
+                       'samePrivateDirectory(ctx.getFilesDir(), new File(FILES))']:
+            self.assertIn(marker, guard)
+        self.assertNotIn('getCanonicalPath().equals', guard)
+        control = (ROOT/'apps/zshaolin-android/app/src/androidTest/java/org/dyne/zshaolin/modern/ToolboxTest.java').read_text()
+        self.assertIn('Toolbox.samePrivateDirectory(ctx.getFilesDir(), new File(Toolbox.FILES))', control)
+        self.assertIn('Toolbox.samePrivateDirectory(ctx.getCacheDir(), new File(Toolbox.FILES))', control)
+
     def test_startup_is_lean_and_no_history_or_servers(self):
         text = (ROOT/'tools/zshaolin-modern/assets/zshrc').read_text()
         commands = '\n'.join(line for line in text.splitlines() if line and not line.startswith('#'))

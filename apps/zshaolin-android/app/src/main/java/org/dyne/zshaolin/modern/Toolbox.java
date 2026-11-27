@@ -3,6 +3,8 @@ package org.dyne.zshaolin.modern;
 import android.content.Context;
 import android.os.Build;
 import android.system.Os;
+import android.system.OsConstants;
+import android.system.StructStat;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -204,10 +206,24 @@ public final class Toolbox {
         return text;
     }
 
+    static boolean samePrivateDirectory(File actual, File expected) throws Exception {
+        // Android can expose /data/user/0 and /data/data as bind-mount aliases,
+        // not symlinks. Canonical path strings need not match. Require the same
+        // owned directory inode/device instead; never accept a secondary prefix.
+        StructStat a = Os.stat(actual.getAbsolutePath());
+        StructStat b = Os.stat(expected.getAbsolutePath());
+        int uid = android.os.Process.myUid();
+        return OsConstants.S_ISDIR(a.st_mode) && OsConstants.S_ISDIR(b.st_mode) &&
+            a.st_uid == uid && b.st_uid == uid && a.st_dev == b.st_dev && a.st_ino == b.st_ino;
+    }
+
     public static synchronized void install(Context ctx, Progress progress) throws Exception {
-        if (!ctx.getPackageName().equals("com.termux") || android.os.Process.myUid() / 100000 != 0 ||
-            !ctx.getFilesDir().getCanonicalPath().equals(new File(FILES).getCanonicalPath()))
-            throw new IOException("Install on the primary Android user with the approved package-compatible ID");
+        if (!ctx.getPackageName().equals("com.termux"))
+            throw new IOException("Install with the approved package-compatible ID");
+        if (android.os.Process.myUid() / 100000 != 0)
+            throw new IOException("Install on the primary Android user, not a work/secondary profile");
+        if (!samePrivateDirectory(ctx.getFilesDir(), new File(FILES)))
+            throw new IOException("Private files directory does not match the owned native-toolbox prefix");
         JSONObject spec = receipt(ctx);
         if (!Arrays.asList(Build.SUPPORTED_ABIS).contains(spec.getString("abi")))
             throw new IOException("This APK is for a different CPU ABI");

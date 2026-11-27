@@ -49,6 +49,10 @@ public class ToolboxTest {
         catch (Exception e) { throw syntheticDiagnostic(e); }
     }
     @Test public void aAllDeclaredPackagesAndCommandsAreInstalled() throws Exception {
+        assertTrue("Android storage aliases must refer to the identical owned directory",
+            Toolbox.samePrivateDirectory(ctx.getFilesDir(), new File(Toolbox.FILES)));
+        assertFalse("Another app-private directory must not satisfy native-prefix identity",
+            Toolbox.samePrivateDirectory(ctx.getCacheDir(), new File(Toolbox.FILES)));
         JSONObject receipt = Toolbox.receipt(ctx);
         assertFalse(receipt.getBoolean("rootRequired"));
         assertFalse(receipt.getBoolean("vpnProtectionProvided"));
