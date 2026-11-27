@@ -245,9 +245,12 @@ public final class Toolbox {
         File prefix = new File(PREFIX);
         if (!prefix.exists()) {
             progress.update("Verifying and extracting pinned offline bootstrap…");
-            File stage = new File(ctx.getFilesDir(), ".zshaolin-staging");
+            // Use the same mount namespace spelling for both sides of rename.
+            // Bind-mount aliases may stat identically but cross-alias rename can
+            // still fail with EXDEV. The owned primary-prefix guard ran above.
+            File stage = new File(FILES, ".zshaolin-staging");
             bootstrap(ctx, spec, stage);
-            if (!stage.renameTo(prefix)) throw new IOException("Could not atomically install private prefix");
+            Os.rename(stage.getAbsolutePath(), prefix.getAbsolutePath());
             write(new File(prefix, ".zshaolin-owned"), new byte[]{1}, 0600);
         } else if (!new File(prefix, ".zshaolin-owned").isFile()) {
             throw new IOException("Refusing to overwrite an existing unrecognized toolbox");

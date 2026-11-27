@@ -120,6 +120,15 @@ fi
         self.assertIn('Toolbox.samePrivateDirectory(ctx.getFilesDir(), new File(Toolbox.FILES))', control)
         self.assertIn('Toolbox.samePrivateDirectory(ctx.getCacheDir(), new File(Toolbox.FILES))', control)
 
+    def test_atomic_bootstrap_promotion_does_not_cross_bind_mount_aliases_or_copy(self):
+        app = (ROOT/'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java').read_text()
+        self.assertIn('File stage = new File(FILES, ".zshaolin-staging")', app)
+        self.assertIn('File prefix = new File(PREFIX)', app)
+        self.assertIn('public static final String PREFIX = FILES + "/usr"', app)
+        self.assertIn('Os.rename(stage.getAbsolutePath(), prefix.getAbsolutePath())', app)
+        self.assertNotIn('stage.renameTo(prefix)', app)
+        self.assertNotIn('new File(ctx.getFilesDir(), ".zshaolin-staging")', app)
+
     def test_bootstrap_normalization_preserves_parent_traversal_and_collision_guards(self):
         app = (ROOT/'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java').read_text()
         for marker in ['static String archiveName(String name)', 'if (part.equals("..")) throw',
