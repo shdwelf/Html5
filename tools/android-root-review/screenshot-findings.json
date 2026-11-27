@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "evidenceKind": "Visual transcription of owner-provided Settings screenshots; not an ADB capture or binary/firmware measurement.",
+  "observed": {
+    "product": "Samsung Galaxy A03s",
+    "modelLabel": "SM-A037U1/DS",
+    "oneUiCore": "5.1",
+    "android": "13",
+    "googlePlaySystemUpdate": "2024-08-01",
+    "baseband": "A037U1UESBDYI1",
+    "buildDisplay": "TP1A.220624.014.A037U1UESBDYI1",
+    "firmwareSuffix": "A037U1UESBDYI1",
+    "kernel": "4.19.191-27242513-abA037U1UESBDYI1",
+    "kernelBuildLabel": "#1 Tue Sep 16 20:25:33 KST 2025",
+    "selinux": "Enforcing",
+    "securitySoftwareReleaseLabel": "SMR Jul-2025 Release 1"
+  },
+  "notVisible": [
+    "Exact Android security patch level date: its row title is visible but its value is cut off.",
+    "Developer Options OEM unlocking setting.",
+    "Download Mode OEM Lock and KnoxGuard/RMM states.",
+    "Download Mode rollback/SW revision fuse state.",
+    "Android supported CPU ABIs.",
+    "Working Magisk installation or measured uid=0 result."
+  ],
+  "ownerReportedSeparately": {
+    "oemUnlockToggle": "available; not independently confirmed by these screenshots"
+  },
+  "externalCatalogCrossCheck": {
+    "url": "https://samfw.com/firmware/SM-A037U1",
+    "build": "A037U1UESBDYI1",
+    "android": "13",
+    "listedSwRevision": "B",
+    "listedAndroidSecurityPatchLevel": "2025-07-01",
+    "limit": "Third-party catalog metadata is not an authenticated firmware download or an on-device patch/fuse measurement. The exact security-patch field is not visible in the screenshots."
+  },
+  "assessment": {
+    "firmwareTranscriptionResolved": true,
+    "bootloaderUnlockConfirmed": false,
+    "magiskInstallabilityConfirmed": false,
+    "knownWorkingRootMethodForThisDeviceVerified": false,
+    "vulnerabilityProvedByKernelVersion": false,
+    "selinuxEnforcingProvesUnrooted": false,
+    "vpnProviderOrProtectionVerified": false,
+    "ghidraAnalysisPerformed": false,
+    "firmwarePatchedOrFlashed": false,
+    "screenshotsCopiedIntoRepository": false,
+    "phoneIdentifiersRetainedInThisRecord": false
+  }
+}

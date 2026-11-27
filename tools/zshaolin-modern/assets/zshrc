@@ -1,0 +1,10 @@
+# Lean startup: no compinit, persistent history, agents, servers or downloads.
+umask 077
+HISTFILE=/dev/null
+HISTSIZE=0
+SAVEHIST=0
+PROMPT='%F{green}zshaolin%f %~ %# '
+setopt NO_BEEP
+print 'Unofficial ZShaolin Modern — full offline toolbox, unprivileged Zsh.'
+print 'No VPN or root provided. Servers are off. z-ssh help describes key-only loopback SSH.'
+print 'Editors/media/games run only when invoked. Exit closes this foreground session.'

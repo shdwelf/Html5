@@ -4,6 +4,10 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Galaxy A03s screenshot investigation · rooting prerequisites
+
+- [SM-A037U1/DS screenshot investigation](android-a037u1-rooting-review.md) — confirmed Android 13 / One UI Core 5.1 and exact firmware label, with phone identifiers and raw screenshots excluded. An available OEM-unlocking toggle, SELinux state, kernel label or static Ghidra report is not proof of working root. Download Mode OEM Lock/KnoxGuard and actual device testing remain open; the full modern ZShaolin APK is still in progress, not compiled or merged.
+
 ## ZShaolin APK follow-up · supplemental Kodachi literal
 
 - [ZShaolin APK/source investigation and `r@@t0r` result](zshaolin-apk-and-kodachi-candidate-2026-11-17.md) — no exact APK obtained; pinned legacy source and one repository-shipped ARM shared object inspected as data. Source-confirmed SSH private-key-over-HTTP provisioning concern is distinct from dormant Java HTTP code, an APK audit or a live exploit. The new original-ISO scan found no `r@@t0r` in its bounded candidates; no login acceptance/rejection or VPN password is established.

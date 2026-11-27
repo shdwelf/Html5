@@ -1,0 +1,169 @@
+name: ZShaolin Modern — full offline toolbox APK, lean startup
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'apps/zshaolin-android/**'
+      - 'tools/zshaolin-modern/**'
+      - 'tools/zshaolin-legacy/**'
+      - 'tests/zshaolin_modern_test.py'
+      - '.github/workflows/zshaolin-modern-apk.yml'
+  workflow_dispatch:
+    inputs:
+      architectures:
+        description: 'JSON array of Termux architectures; first prove x86_64, then build ARM variants'
+        required: true
+        default: '["x86_64"]'
+        type: string
+  pull_request:
+    paths:
+      - 'apps/zshaolin-android/**'
+      - 'tools/zshaolin-modern/**'
+      - 'tools/zshaolin-legacy/**'
+      - 'tests/zshaolin_modern_test.py'
+      - '.github/workflows/zshaolin-modern-apk.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zshaolin-modern-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Source bounds and security controls before native input downloads
+        run: |
+          python3 -m unittest discover -s tests -p zshaolin_modern_test.py -v
+          python3 -m unittest discover -s tests -p android_root_review_test.py -v
+
+  build:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name == 'workflow_dispatch'
+    needs: controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ${{ fromJSON(inputs.architectures) }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            apps/zshaolin-android
+            tools/zshaolin-modern
+            tools/zshaolin-legacy
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+        with:
+          gradle-version: '8.7'
+      - name: Resolve architecture from a fixed allowlist
+        env:
+          TOOLBOX_ARCH: ${{ matrix.arch }}
+        run: |
+          python3 - <<'PY'
+          import os
+          aliases={'arm':'armeabi-v7a','aarch64':'arm64-v8a','x86_64':'x86_64'}
+          arch=os.environ['TOOLBOX_ARCH']
+          assert arch in aliases
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write('TOOLBOX_ARCH='+arch+'\nTOOLBOX_ABI='+aliases[arch]+'\n')
+          PY
+      - name: Fetch pinned terminal source and authenticate full native dependency closure
+        run: python3 tools/zshaolin-modern/prepare.py "$TOOLBOX_ARCH"
+      - name: Android SDK and modern native compiler
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
+      - name: Generate a private ephemeral review signer; never use upstream's public test key
+        shell: bash
+        run: |
+          set -euo pipefail
+          password="$(openssl rand -hex 32)"
+          echo "::add-mask::$password"
+          echo "ZSHAOLIN_KEY_PASSWORD=$password" >> "$GITHUB_ENV"
+          echo "ZSHAOLIN_KEYSTORE=$RUNNER_TEMP/zshaolin-review.jks" >> "$GITHUB_ENV"
+          ZSHAOLIN_KEY_PASSWORD="$password" keytool -genkeypair -noprompt -keystore "$RUNNER_TEMP/zshaolin-review.jks" -storetype JKS -alias zshaolin-review -storepass:env ZSHAOLIN_KEY_PASSWORD -keypass:env ZSHAOLIN_KEY_PASSWORD -keyalg RSA -keysize 4096 -validity 3650 -dname 'CN=Unofficial ZShaolin Modern Review'
+      - name: Compile actual non-debuggable APK, terminal JNI and test APK; enforce lint
+        working-directory: apps/zshaolin-android
+        run: gradle :app:assembleRelease :app:assembleReleaseAndroidTest :app:lintRelease --no-daemon --stacktrace -PtoolboxArch="$TOOLBOX_ARCH" -PtoolboxAbi="$TOOLBOX_ABI"
+      - name: Enable KVM for disposable Android 13 x86_64 test device
+        if: matrix.arch == 'x86_64'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android 13 — offline installation, full native tools, key-only SSH and actual PTY lifecycle
+        if: matrix.arch == 'x86_64'
+        uses: reactivecircus/android-emulator-runner@4c44018e59b437e86cdfc41da381398f93ed8808 # v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          disk-size: 8G
+          ram-size: 2048M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          script: cd apps/zshaolin-android && gradle :app:connectedReleaseAndroidTest --no-daemon --stacktrace -PtoolboxArch=x86_64 -PtoolboxAbi=x86_64
+      - name: Measure exact APK, signature, payload and actual test results
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if test "$TOOLBOX_ARCH" = x86_64; then args+=(--android-tests-required); fi
+          python3 tools/zshaolin-modern/apk-receipt.py "$TOOLBOX_ARCH" "${args[@]}"
+      - name: Preserve compiled APK and measured provenance only after mandatory gates
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: zshaolin-modern-${{ matrix.arch }}-${{ github.run_id }}
+          path: |
+            build/zshaolin/${{ matrix.arch }}/zshaolin-modern-*.apk
+            build/zshaolin/${{ matrix.arch }}/apk-receipt.json
+            build/zshaolin/${{ matrix.arch }}/apk-summary.json
+            build/zshaolin/${{ matrix.arch }}/apk-signature.txt
+            build/zshaolin/${{ matrix.arch }}/SHA256SUMS.txt
+          compression-level: 0
+          retention-days: 14
+          if-no-files-found: error
+      - name: Retain bounded build/test evidence even when a gate fails
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: zshaolin-modern-review-${{ matrix.arch }}-${{ github.run_id }}
+          path: |
+            build/zshaolin/${{ matrix.arch }}/package-receipt.json
+            build/zshaolin/${{ matrix.arch }}/apt-plan.txt
+            apps/zshaolin-android/app/build/reports/lint-results-release.html
+            apps/zshaolin-android/app/build/outputs/androidTest-results/connected/**/TEST-*.xml
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve pinned source archives and rebuild inputs, not private keys or runtime homes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: zshaolin-modern-source-inputs-${{ matrix.arch }}-${{ github.run_id }}
+          path: |
+            build/zshaolin/sources/
+            apps/zshaolin-android/
+            tools/zshaolin-modern/
+            tools/zshaolin-legacy/
+            !apps/zshaolin-android/**/build/**
+            !apps/zshaolin-android/.gradle/**
+            !apps/zshaolin-android/local.properties
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Remove private review signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/zshaolin-review.jks"

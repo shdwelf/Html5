@@ -1,0 +1,98 @@
+name: Android rooting — official Magisk static review, no device execution
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'tools/android-root-review/**'
+      - 'tools/ghidra_scripts/AndroidRootingReview.java'
+      - 'tests/android_root_review_test.py'
+      - '.github/workflows/android-root-static-review.yml'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/android-root-review/**'
+      - 'tools/ghidra_scripts/AndroidRootingReview.java'
+      - 'tests/android_root_review_test.py'
+      - '.github/workflows/android-root-static-review.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-root-static-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Whitelist, screenshot interpretation and fail-closed root-prerequisite controls
+        run: python3 -m unittest discover -s tests -p android_root_review_test.py -v
+
+  static-review:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name == 'workflow_dispatch'
+    needs: controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/android-root-review
+            tools/ghidra_scripts
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Download and hash-check only official pinned APK and Ghidra inputs
+        run: python3 tools/android-root-review/static-review.py prepare
+      - name: Verify APK signature consistency, not device-root compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          signer="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)"
+          test -n "$signer"
+          "$signer" verify --verbose --print-certs "$RUNNER_TEMP/android-root-review/Magisk-v31.1.apk" > "$RUNNER_TEMP/android-root-review/reports/apk-signature.txt"
+      - name: Compile an inert native decompiler control, never execute it
+        run: |
+          set -euo pipefail
+          printf '%s\n' '#include <unistd.h>' 'int mix(int a){return (a^37)+5;} int main(void){return mix((int)getuid());}' > "$RUNNER_TEMP/android-root-review/control.c"
+          cc -O0 -g "$RUNNER_TEMP/android-root-review/control.c" -o "$RUNNER_TEMP/android-root-review/control.elf"
+      - name: Native Ghidra positive control and two actual Magisk ARM init binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/android-root-review"
+          headless="$root/ghidra_12.1.4_PUBLIC/support/analyzeHeadless"
+          timeout --kill-after=15s 8m "$headless" "$root/projects" RootReviewControl -import "$root/control.elf" -analysisTimeoutPerFile 180 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript AndroidRootingReview.java "$root/reports/control.json" -deleteProject > "$root/logs/control.log" 2>&1
+          for n in 0 1; do
+            timeout --kill-after=15s 10m "$headless" "$root/projects" "MagiskInit$n" -import "$root/inputs/magiskinit-$n.elf" -analysisTimeoutPerFile 240 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript AndroidRootingReview.java "$root/reports/magiskinit-$n.elf.json" -deleteProject > "$root/logs/magiskinit-$n.log" 2>&1
+          done
+      - name: Validate measured hashes/decompilations and publish bounded evidence, never a working-root claim
+        run: python3 tools/android-root-review/static-review.py summarize
+      - name: Preserve only public-input review metadata (no APK, firmware or device files)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: android-root-static-review-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-root-review/reports/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Bounded trusted-script diagnostics if analysis failed
+        if: failure()
+        shell: python
+        run: |
+          import os, pathlib, re
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'android-root-review/logs'
+          for name in ['control.log','magiskinit-0.log','magiskinit-1.log']:
+              p=root/name
+              if not p.is_file(): continue
+              for line in p.read_text(errors='replace').splitlines():
+                  if re.search(r'AndroidRootingReview\.java:[0-9]+:|ANDROID_ROOT_REVIEW_COMPLETE|Analysis timed out',line):
+                      print(line[:500])

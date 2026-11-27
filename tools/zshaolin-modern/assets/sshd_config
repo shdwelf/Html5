@@ -1,0 +1,15 @@
+# Harden the directly invoked daemon too, not only its helper.
+Port 2222
+ListenAddress 127.0.0.1
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+PermitEmptyPasswords no
+StrictModes yes
+AllowTcpForwarding no
+AllowAgentForwarding no
+GatewayPorts no
+X11Forwarding no
+PermitTunnel no
+PermitUserEnvironment no
+UseDNS no

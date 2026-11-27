@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "product": "ZShaolin Modern (unofficial, Termux-compatible)",
+  "applicationId": "com.termux",
+  "namespaceConsent": "User explicitly selected termux_compatible_full; not installable alongside Termux in the same Android user.",
+  "scope": "Full modern toolbox, lean Zsh-only startup. Not an original ZShaolin release, root exploit, VPN or Termux release.",
+  "terminalSource": {
+    "repository": "termux/termux-app",
+    "commit": "8629e632fcb95da272221be327db653fb24befe9",
+    "url": "https://codeload.github.com/termux/termux-app/tar.gz/8629e632fcb95da272221be327db653fb24befe9",
+    "sha256": "4cf32d922bd62fdc01c483e569b86c75b116b410c8b0d796252e76b1a09a361d",
+    "bytes": 1027997
+  },
+  "packageRecipes": {
+    "repository": "termux/termux-packages",
+    "commit": "da1cbc97abdce550d7d1c1ca2914f7818190d243",
+    "url": "https://codeload.github.com/termux/termux-packages/tar.gz/da1cbc97abdce550d7d1c1ca2914f7818190d243",
+    "sha256": "2c74dc90a67ec44f853def33607ab95fa72c94f898b356277fafbe49237dea25",
+    "bytes": 9648049,
+    "limitation": "Pins repository signing keys and reference recipes, not a claim that every live repository binary was built from this exact source commit. Measured binary versions and signed-index hashes are recorded separately."
+  },
+  "aptRepository": "https://packages.termux.dev/apt/termux-main",
+  "bootstrap": {
+    "version": "2026.02.12-r1+apt.android-7",
+    "aarch64": "ea2aeba8819e517db711f8c32369e89e7c52cee73e07930ff91185e1ab93f4f3",
+    "arm": "a38f4d3b2f735f83be2bf54eff463e86dc32a3e2f9f861c1557c4378d249c018",
+    "x86_64": "b7fd0f2e3a4de534be3144f9f91acc768630fc463eaf134ab2e64c545e834f7a"
+  },
+  "packageGroups": {
+    "system": ["apt", "termux-keyring", "termux-tools", "termux-exec", "zsh", "busybox", "coreutils", "findutils", "util-linux", "htop", "most", "nano", "gawk", "diffutils", "grep", "sed", "mandoc", "file", "tmux", "ncurses-utils"],
+    "text": ["groff", "vim", "emacs"],
+    "crypto": ["gnupg", "libgpg-error", "pinentry", "steghide", "openssl-tool"],
+    "fileManager": ["mc"],
+    "languages": ["lua54", "perl"],
+    "media": ["ffmpeg", "speex-utils", "liboggz", "x264", "imagemagick", "dcraw", "jhead", "sox"],
+    "network": ["git", "curl", "rsync", "openssh", "lynx", "ncdu", "testdisk"],
+    "games": ["libcaca", "sl", "curseofwar", "vitetris", "nethack"]
+  },
+  "legacyChanges": [
+    {"old": "gpgkeys_hkp/gpgkeys_finger/gpgkeys_curl", "replacement": "Current GnuPG/dirmngr", "reason": "GnuPG 1.x external keyserver-helper layout is obsolete."},
+    {"old": "srm", "replacement": "coreutils shred (no secure-erasure promise)", "reason": "Flash wear levelling, snapshots and filesystem journalling prevent reliable per-file physical erasure."},
+    {"old": "mongoose HTTP provisioning", "replacement": "REMOVED; z-ssh uses owner-supplied public keys and loopback-only SSH", "reason": "Never serve or generate a client private key for network provisioning."},
+    {"old": "matanza/ctris/cryptoslam", "replacement": "curseofwar, vitetris, nethack, sl and libcaca", "reason": "Explicit modern game substitutions, not a claim that unavailable legacy games were rebuilt."},
+    {"old": "ImageMagick 6 animate/display/import X11 UI", "replacement": "Current ImageMagick CLI", "reason": "No X server is bundled or automatically launched; graphical viewers need a separately configured display."}
+  ],
+  "requiredCommands": ["zsh", "busybox", "sort", "find", "htop", "most", "nano", "gawk", "diff", "grep", "sed", "mandoc", "file", "tmux", "nroff", "vim", "emacs", "gpg", "gpgv", "pinentry", "steghide", "mc", "perl", "ffmpeg", "ffprobe", "speexdec", "speexenc", "oggz", "x264", "magick", "dcraw", "jhead", "sox", "git", "curl", "rsync", "ssh", "scp", "sftp", "ssh-keygen", "sshd", "lynx", "ncdu", "photorec", "testdisk", "cacafire", "sl", "curseofwar", "vitetris", "nethack"]
+}

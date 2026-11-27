@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "purpose": "Static review of an official public rooting-tool release, not an exploit/rootkit build, firmware patch or device-rooting claim.",
+  "model": "SM-A037U1",
+  "androidVersionReportedByOwner": "13",
+  "oemUnlockToggleReportedByOwner": "available",
+  "candidateFirmware": "A037U1UESBDYI1",
+  "candidateFirmwareMeasuredOnDevice": false,
+  "firmwareConfirmedInOwnerScreenshot": true,
+  "screenshotEvidence": "screenshot-findings.json",
+  "screenshotModelLabel": "SM-A037U1/DS",
+  "imeiOrSerialCollected": false,
+  "magisk": {
+    "repository": "topjohnwu/Magisk",
+    "tag": "v31.1",
+    "commit": "0972f67d97f9b6302b67c5171283330c74114b4a",
+    "url": "https://github.com/topjohnwu/Magisk/releases/download/v31.1/Magisk-v31.1.apk",
+    "bytes": 10679283,
+    "sha256": "89cefac0a318afa39fb3880c45c87b036c05bc1ebf02a7a715b7f8d7c26ac6e7",
+    "assetId": 673844395,
+    "documentation": "https://github.com/topjohnwu/Magisk/blob/0972f67d97f9b6302b67c5171283330c74114b4a/docs/install.md#samsung-devices"
+  },
+  "ghidra": {
+    "version": "12.1.4",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+    "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db"
+  },
+  "analysisTargets": ["lib/arm64-v8a/libmagiskinit.so", "lib/armeabi-v7a/libmagiskinit.so"],
+  "guardrails": {
+    "deviceCommandsInCI": false,
+    "apkOrNativeInputsExecuted": false,
+    "rootExploitDeveloped": false,
+    "firmwareFlashed": false,
+    "rootVerifiedOnDevice": false,
+    "accountOrManagementBypass": false
+  }
+}
