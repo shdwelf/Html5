@@ -1,0 +1,170 @@
+"""Synthetic static-inspection controls. No network, real ISO or credentials."""
+import hashlib
+import importlib.util
+import io
+import json
+from pathlib import Path
+import struct
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location('kodachi_inspect', ROOT / 'tools/kodachi/inspect-iso.py')
+review = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(review)
+
+
+def squash_fixture(files):
+    """Small, original uncompressed SquashFS v4 fixture, not distro bytes."""
+    data = bytearray(96)
+    inode_data = bytearray(32)
+    entries = bytearray(struct.pack('<III', len(files) - 1, 0, 2))
+    for i, (name, content) in enumerate(files.items(), 2):
+        position = len(data)
+        data.extend(content)
+        inode_offset = len(inode_data)
+        inode_data.extend(struct.pack('<HHHHIIIIII', 2, 0o644, 0, 0, 0, i, position, 0xffffffff, 0, len(content)))
+        if content:
+            inode_data.extend(struct.pack('<I', len(content) | (1 << 24)))
+        encoded = name.encode()
+        entries.extend(struct.pack('<HhHH', inode_offset, i - 2, 2, len(encoded) - 1) + encoded)
+    inode_data[:32] = struct.pack('<HHHHIIIIHHI', 1, 0o755, 0, 0, 0, 1, 0, 2, len(entries) + 3, 0, 1)
+    inode_start = len(data)
+    data.extend(struct.pack('<H', len(inode_data) | 0x8000) + inode_data)
+    dir_start = len(data)
+    data.extend(struct.pack('<H', len(entries) | 0x8000) + entries)
+    id_block = len(data)
+    data.extend(struct.pack('<HI', 4 | 0x8000, 0))
+    id_table = len(data)
+    data.extend(struct.pack('<Q', id_block))
+    invalid = 0xffffffffffffffff
+    data[:96] = struct.pack('<5I6H8Q', 0x73717368, len(files) + 1, 0, 4096, 0, 1, 12, 16, 1, 4, 0, 0, len(data), id_table, invalid, inode_start, dir_start, invalid, invalid)
+    return bytes(data)
+
+
+class InspectionTests(unittest.TestCase):
+    def test_safe_virtual_paths_do_not_admit_traversal_or_control_commands(self):
+        for bad in ['relative', '/../etc/passwd', '/x/./vpn', '/x\\y', '/x\n::notice', '/x\x00', '/x\udcff']:
+            with self.subTest(bad=repr(bad)), self.assertRaises(ValueError):
+                review.safe_path(bad)
+        self.assertEqual(review.safe_path('/etc/café/vpn.conf'), '/etc/café/vpn.conf')
+
+    def test_candidate_scope_includes_profiles_auth_wireguard_and_kodachi_not_general_browser_data(self):
+        for path in ['/any/provider.ovpn', '/etc/wireguard/wg0.conf', '/etc/openvpn/client/auth.txt', '/home/kodachi/Own_VPN_Config/myownvpnsetup', '/usr/bin/kodachi-vpn', '/opt/kodachi/config.json', '/home/kodachi/.config/kodachi/auth.json']:
+            self.assertIsNotNone(review.candidate_kind(path), path)
+        for path in ['/home/kodachi/.mozilla/firefox/bookmarks.sqlite', '/etc/shadow', '/usr/lib/other.so', '/opt/kodachi/wallpaper.png']:
+            self.assertIsNone(review.candidate_kind(path), path)
+
+    def test_empty_placeholder_and_runtime_fields_are_not_password_findings(self):
+        for raw, expected in [("''", 'empty'), ('""', 'empty'), ('...', 'placeholder'), ('<password>', 'placeholder'), ('"your_password"', 'placeholder'), ('"${VPN_PASSWORD}"', 'runtime-expression'), ('$(read_password)', 'runtime-expression')]:
+            self.assertEqual(review.value_state(raw)['state'], expected)
+
+    def test_unknown_literals_are_redacted_even_if_the_user_is_looking_for_a_password(self):
+        result = review.inspect_content('/etc/openvpn/config.json', b'vpn_password="SYNTHETIC-NOT-REAL-CREDENTIAL"\n', 'vpn-config')
+        self.assertEqual(result['credentialFields'][0]['state'], 'nonempty-literal')
+        self.assertNotIn('SYNTHETIC-NOT-REAL-CREDENTIAL', json.dumps(result))
+        self.assertTrue(result['credentialFields'][0]['valueRedacted'])
+
+    def test_known_public_os_login_literal_is_never_recast_as_a_working_vpn_password(self):
+        result = review.inspect_content('/opt/kodachi/setup.sh', b'vpn_password="r@@t00"\n', 'kodachi-runtime-or-config')
+        field = result['credentialFields'][0]
+        self.assertEqual(field['knownPublishedOsLoginDefault'], 'r@@t00')
+        self.assertFalse(field['vpnPasswordProven'])
+        self.assertEqual(result['knownOsLoginLiteralOccurrences'], {'r@@t00': 1})
+
+    def test_ovpn_auth_targets_are_inventory_only_and_inline_private_keys_are_not_published(self):
+        text = b'client\nauth-user-pass ../auth.txt\n<key>\nSYNTHETIC-PRIVATE-MATERIAL\n</key>\n'
+        result = review.inspect_content('/etc/openvpn/example.ovpn', text, 'vpn-profile')
+        self.assertEqual(result['authDirectives'][0]['argument'], '../auth.txt')
+        self.assertNotIn('SYNTHETIC-PRIVATE-MATERIAL', json.dumps(result))
+        self.assertFalse(result['binary'])
+
+    def test_inline_auth_and_two_line_auth_files_never_publish_values(self):
+        for path, data, field in [('/etc/openvpn/a.ovpn', b'<auth-user-pass>\nSYNTHETIC-USER\nSYNTHETIC-PASSWORD\n</auth-user-pass>', 'inlineAuth'), ('/etc/openvpn/auth.txt', b'SYNTHETIC-USER\nSYNTHETIC-PASSWORD\n', 'shortAuthFileCandidate')]:
+            result = review.inspect_content(path, data, 'vpn-config')
+            self.assertEqual(result[field]['nonemptyLines'], 2)
+            self.assertNotIn('SYNTHETIC-PASSWORD', json.dumps(result))
+            self.assertNotIn('SYNTHETIC-USER', json.dumps(result))
+
+    def test_binary_search_reports_paths_not_arbitrary_strings_or_credentials(self):
+        data = b'\x7fELF\0password=SYNTHETIC-SECRET\0/etc/openvpn/auth.txt\0https://example.invalid/?token=SYNTHETIC-TOKEN'
+        result = review.inspect_content('/usr/bin/kodachi-vpn', data, 'kodachi-runtime-or-config')
+        self.assertIn('/etc/openvpn/auth.txt', result['pathReferences'])
+        self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
+        self.assertNotIn('SYNTHETIC-TOKEN', json.dumps(result))
+
+    def test_superblock_rejects_wrong_magic_bad_block_sizes_out_of_range_tables_and_truncation(self):
+        data = squash_fixture({'example.ovpn': b'client\n'})
+        self.assertEqual(review.validated_superblock(io.BytesIO(data))['inodes'], 2)
+        for offset, value in [(0, 0), (4, review.MAX_ENTRIES + 1), (12, 1), (28, 3)]:
+            bad = bytearray(data)
+            struct.pack_into('<I', bad, offset, value)
+            with self.subTest(offset=offset), self.assertRaises(ValueError):
+                review.validated_superblock(io.BytesIO(bad))
+        for bad in [data[:95], data[:-1]]:
+            with self.assertRaises(ValueError):
+                review.validated_superblock(io.BytesIO(bad))
+
+    def test_preview_is_bounded_and_does_not_hide_later_small_findings_behind_one_large_record(self):
+        large = {'path': '/opt/kodachi/a', 'pathReferences': ['/etc/openvpn/' + 'x' * 220] * 100, 'credentialFields': []}
+        small = review.inspect_content('/etc/openvpn/b.conf', b'vpn_password=""\n', 'vpn-config')
+        report = {'files': [large] * 100 + [small], 'skipped': []}
+        result = review.preview(report)
+        self.assertLess(len(json.dumps(result, separators=(',', ':')).encode()), 14001)
+        self.assertTrue(any(r['path'] == '/etc/openvpn/b.conf' for r in result['previewFiles']))
+
+    def test_path_shaped_credential_values_do_not_reappear_as_path_references(self):
+        result = review.inspect_content('/etc/openvpn/settings.conf', b'vpn_password="/auth/SYNTHETIC-SECRET"\n', 'vpn-config')
+        self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
+        self.assertNotIn('pathReferences', result)
+
+    def test_virtual_walk_never_resolves_links_and_rejects_cyclic_directories(self):
+        class Node:
+            def __init__(self, name, type, block, children=()):
+                self.name, self.type, self.block, self.offset, self.children = name, type, block, 0, children
+            def is_symlink(self): return self.type == 'symlink'
+            def is_dir(self): return self.type == 'dir'
+            def is_file(self): return self.type == 'file'
+            def iterdir(self): return iter(self.children)
+        link = Node('vpn-link', 'symlink', 2)
+        special = Node('device', 'special', 3)
+        root = Node('/', 'dir', 1, [link, special])
+        self.assertEqual([(path, kind) for path, node, kind in review.walk_files(root)], [('/vpn-link', 'symlink'), ('/device', 'special')])
+        root.children = [Node('loop', 'dir', 1)]
+        with self.assertRaisesRegex(ValueError, 'cyclic'):
+            list(review.walk_files(root))
+
+    def test_main_refuses_wrong_iso_size_before_parser_or_report_writes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            iso = Path(directory) / 'wrong.iso'
+            iso.write_bytes(b'not an ISO')
+            out = Path(directory) / 'report.json'
+            with self.assertRaisesRegex(ValueError, 'pinned original ISO'):
+                review.main(iso, out)
+            self.assertFalse(out.exists())
+
+    def test_real_readers_inspect_original_synthetic_iso_and_squashfs_without_extracting_or_executing(self):
+        import pycdlib
+        fixture = squash_fixture({'vpn.ovpn': b'client\nauth-user-pass vpn-auth.txt\n', 'vpn-auth.txt': b'SYNTHETIC-USER\nSYNTHETIC-PASSWORD\n', 'kodachi-vpn': b'\x7fELF\0/etc/openvpn/client.conf\0'})
+        with tempfile.TemporaryDirectory() as directory:
+            iso_path = Path(directory) / 'synthetic.iso'
+            iso = pycdlib.PyCdlib()
+            iso.new(interchange_level=3, rock_ridge='1.09', joliet=3)
+            iso.add_directory(iso_path='/LIVE', rr_name='live')
+            iso.add_fp(io.BytesIO(fixture), len(fixture), iso_path='/LIVE/FILESYSTEM.SQUASHFS;1', rr_name='filesystem.squashfs')
+            iso.write(str(iso_path))
+            iso.close()
+            result = review.inspect_iso(iso_path)
+            self.assertEqual(result['counts']['scannedFiles'], 3)
+            self.assertEqual(result['counts']['vpn-profile'], 1)
+            self.assertFalse(result['booted'])
+            self.assertFalse(result['mounted'])
+            self.assertFalse(result['executedImageFiles'])
+            self.assertEqual(sorted(p.name for p in Path(directory).iterdir()), ['synthetic.iso'])
+            self.assertNotIn('SYNTHETIC-PASSWORD', json.dumps(result))
+            auth = next(f for f in result['files'] if f['path'] == '/vpn-auth.txt')
+            self.assertEqual(auth['shortAuthFileCandidate']['nonemptyLines'], 2)
+
+
+if __name__ == '__main__':
+    unittest.main()

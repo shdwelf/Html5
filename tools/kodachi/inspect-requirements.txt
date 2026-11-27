@@ -1,0 +1,5 @@
+backports.zstd==1.8.1 --hash=sha256:9051ff7f83c471e7bae74ffe668bbe78bb056e397c6f4d0bed1a9b42b9866a94
+dissect.cstruct==4.7 --hash=sha256:0427621ce67baa3106df2dc63a320d0a7f5c2da88ba3faf2ef5886a1a6b458fd
+dissect.squashfs[full]==1.12 --hash=sha256:af8d39f55c210069c56a15779da0929818eeddfc25298e397de2e0e70abb1ac4
+dissect.util==3.24 --hash=sha256:edca81239873a3bd6b5f0a702fc0fde453e9b3c2cce37f2c166cdd5e235ccd20
+pycdlib==1.22.0 --hash=sha256:bfa0b3631345a14b2741fe088398b6b8dc2838442ea607fd07d027dcc67b9e94
