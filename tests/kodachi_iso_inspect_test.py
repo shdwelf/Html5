@@ -188,6 +188,25 @@ class InspectionTests(unittest.TestCase):
             self.assertEqual(result['shortAuthFileCandidate']['nonemptyLines'], 2)
             self.assertNotIn('SYNTHETIC-SECRET', json.dumps(result))
 
+    def test_requested_root_variants_are_literal_evidence_not_password_or_role_claims(self):
+        result = review.inspect_content('/opt/kodachi/settings', b'r00t0r r00tor r00t xr00ty ' + 'r00tor'.encode('utf-16le'), 'kodachi-runtime-or-config')
+        self.assertEqual(result['requestedLiteralMatches']['r00tor']['utf8SubstringOccurrences'], 1)
+        self.assertEqual(result['requestedLiteralMatches']['r00tor']['utf16leSubstringOccurrences'], 1)
+        self.assertEqual(result['requestedLiteralMatches']['r00t']['standaloneAsciiOccurrences'], 1)
+        self.assertFalse(result['workingVpnCredentialProven'])
+        self.assertTrue(result['literalRoleUnproven'])
+        result = review.preview({'files': [result], 'skipped': []})
+        self.assertEqual(result['requestedLiteralSearch']['r00t0r']['matchingScannedFiles'], 1)
+        self.assertFalse(result['requestedLiteralSearch']['r00t0r']['workingVpnCredentialProven'])
+        self.assertEqual(review.candidate_kind('/somewhere/r00t0r.txt'), 'requested-literal-path')
+
+    def test_path_references_exclude_url_components_and_arbitrary_slash_shaped_tokens(self):
+        data = b'\x7fELF\0https://host.invalid/auth/SYNTHETIC-TOKEN\0/etc/openvpn/auth.txt\0'
+        result = review.inspect_content('/opt/kodachi/vpn', data, 'kodachi-runtime-or-config')
+        self.assertNotIn('SYNTHETIC-TOKEN', json.dumps(result))
+        self.assertEqual(result['binaryFormat'], 'ELF')
+        self.assertEqual(result['pathReferences'], ['/etc/openvpn/auth.txt'])
+
     def test_main_refuses_wrong_iso_size_before_parser_or_report_writes(self):
         with tempfile.TemporaryDirectory() as directory:
             iso = Path(directory) / 'wrong.iso'

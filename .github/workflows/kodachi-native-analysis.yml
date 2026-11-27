@@ -1,0 +1,204 @@
+name: Kodachi — native Ghidra crypto and literal evidence
+
+on:
+  push:
+    branches: ['arena/74f27a74-html5']
+    paths:
+      - 'tools/kodachi/prepare-native.py'
+      - 'tools/ghidra_scripts/KodachiCryptoReport.java'
+      - 'tests/kodachi_native_test.py'
+      - '.github/workflows/kodachi-native-analysis.yml'
+  pull_request:
+    paths:
+      - 'tools/kodachi/**'
+      - 'tools/ghidra_scripts/KodachiCryptoReport.java'
+      - 'tests/kodachi_*test.py'
+      - '.github/workflows/kodachi-native-analysis.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: kodachi-native-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ordered-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install locked review dependencies
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          python3 -m pip install --only-binary=:all: --require-hashes -r tools/kodachi/inspect-requirements.txt
+      - name: First require radar layout and direct/proxy controls
+        run: |
+          node scripts/build-radar-scope.mjs --check
+          node --test tests/radar-scope.test.mjs tests/radar-scope-browser.mjs
+      - name: Then require format-aware VPN analysis interface controls
+        run: node --test tests/vpn-analysis-tools.test.mjs tests/vpn-analysis-tools-browser.mjs
+      - name: Require static ISO, redaction, literal and native-input bounds
+        run: python3 -m unittest discover -s tests -p 'kodachi_*test.py' -v
+
+  native-evidence:
+    if: github.repository == 'shdwelf/Html5' && github.ref == 'refs/heads/arena/74f27a74-html5' && github.event_name != 'pull_request'
+    needs: ordered-controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GHIDRA_SHA256: ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db
+      FINDCRYPT_SHA256: ec3f54412ea1a1ddca05ec39eaa8ad1a9c38ce021297f359dbc0a58b9c7a8897
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/kodachi
+            tools/ghidra_scripts
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install hash-pinned ISO readers
+        run: |
+          python3 -m pip install --only-binary=:all: --require-hashes -r tools/kodachi/inspect-requirements.txt
+      - name: Retrieve only the original authorized acquisition
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/15188898562" > "$RUNNER_TEMP/original-artifact.json"
+          python3 - <<'PY'
+          import json, os, pathlib, shutil
+          a = json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'original-artifact.json').read_text())
+          assert a['id'] == 15188898562 and a['workflow_run']['id'] == 45981578258 and not a['expired'], 'Original acquisition expired; explicitly reacquire the pinned image, do not substitute'
+          assert a['digest'] == 'sha256:c67e74c915e032a21405c78e6c772d8e36f82d741e61890a6feade1d0097c775'
+          assert shutil.disk_usage(os.environ['RUNNER_TEMP']).free > 11 * 1024**3
+          PY
+          gh run download 45981578258 --repo "$GITHUB_REPOSITORY" --name kodachi-desktop-10.0.3-build76-download-only --dir "$RUNNER_TEMP/kodachi-iso"
+      - name: Rehash ISO, repeat bounded scan and copy only two fixed native ELF data inputs
+        run: |
+          set -euo pipefail
+          ulimit -v 4194304
+          mkdir -p "$RUNNER_TEMP/kodachi-native/reports" "$RUNNER_TEMP/kodachi-native/projects" "$RUNNER_TEMP/kodachi-native/logs"
+          timeout --kill-after=10s 25m python3 tools/kodachi/prepare-native.py "$RUNNER_TEMP/kodachi-iso/kodachi-os-xfce-10.0.3-amd64.iso" "$RUNNER_TEMP/kodachi-native/reports/vpn-inspection.json" "$RUNNER_TEMP/kodachi-native/inputs"
+          # Only this runner's temporary duplicate, never the acquisition artifact.
+          rm -rf "$RUNNER_TEMP/kodachi-iso"
+      - name: Verify official Ghidra and pinned FindCrypt database
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/kodachi-native"
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 30 "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip" -o "$RUNNER_TEMP/ghidra.zip"
+          printf '%s  %s\n' "$GHIDRA_SHA256" "$RUNNER_TEMP/ghidra.zip" | sha256sum --check --strict
+          unzip -q "$RUNNER_TEMP/ghidra.zip" -d "$RUNNER_TEMP"
+          rm "$RUNNER_TEMP/ghidra.zip"
+          echo "GHIDRA_HOME=$RUNNER_TEMP/ghidra_12.1.4_PUBLIC" >> "$GITHUB_ENV"
+          gh api repos/TorgoTorgo/ghidra-findcrypt/git/blobs/36e799563f152ba6e442a9bcd9dc71cd23a96309 --jq .content | base64 -d > "$root/findcrypt-database.json"
+          printf '%s  %s\n' "$FINDCRYPT_SHA256" "$root/findcrypt-database.json" | sha256sum --check --strict
+          python3 - <<'PY'
+          import json, os, pathlib
+          root = pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native'
+          rows = json.loads((root/'findcrypt-database.json').read_text())
+          assert len(rows) == 126
+          assert all('\t' not in r['name'] and '\n' not in r['name'] and r['name'] and bytes.fromhex(r['hexBytes']) for r in rows)
+          (root/'signatures.tsv').write_text(''.join(r['name']+'\t'+r['hexBytes']+'\n' for r in rows))
+          aes = next(r for r in rows if r['name'] == 'AES_Encryption_SBox')
+          (root/'aes-control.bin').write_bytes(bytes.fromhex(aes['hexBytes']))
+          (root/'native-control.c').write_text('volatile const char probe[]="r00t0r r00tor r00t"; int synthetic_mix(int x){return (x ^ 37) + 5;} int main(void){return synthetic_mix(probe[0]);}\n')
+          PY
+          java -version > "$root/java-version.txt" 2>&1
+          cc -O0 -g "$root/native-control.c" -o "$root/native-control.elf"
+      - name: Prove native disassembly, decompilation and AES-signature positive controls first
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/kodachi-native"
+          headless="$GHIDRA_HOME/support/analyzeHeadless"
+          scripts="$GITHUB_WORKSPACE/tools/ghidra_scripts"
+          timeout --kill-after=10s 8m "$headless" "$root/projects" KodachiNativeControl -import "$root/native-control.elf" -analysisTimeoutPerFile 120 -max-cpu 2 -scriptPath "$scripts" -postScript KodachiCryptoReport.java "$root/reports/native-control.json" "$root/signatures.tsv" -deleteProject > "$root/logs/native-control.log" 2>&1
+          timeout --kill-after=10s 8m "$headless" "$root/projects" KodachiAesControl -import "$root/aes-control.bin" -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:64:default -noanalysis -scriptPath "$scripts" -postScript KodachiCryptoReport.java "$root/reports/aes-control.json" "$root/signatures.tsv" -deleteProject > "$root/logs/aes-control.log" 2>&1
+          python3 - <<'PY'
+          import json, os, pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/reports'
+          n=json.loads((p/'native-control.json').read_text()); a=json.loads((p/'aes-control.json').read_text())
+          assert n['functionsDefined'] > 0 and n['instructionsVisitedUpTo500000'] > 0 and any(d['completed'] for d in n['boundedDecompilations'])
+          assert all(any(r['literal']==token and r['loadedMemorySubstringMatchesUpTo32'] > 0 for r in n['fixedLiteralReferences']) for token in ['r00t0r','r00tor','r00t'])
+          assert any(r['label']=='AES_Encryption_SBox' for r in a['findCryptMatches'])
+          print('Native Ghidra disassembly/decompilation, three literal markers and AES FindCrypt controls passed; synthetic control bytes were not executed.')
+          PY
+      - name: Statically analyze the two actual ISO binaries, never execute them
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/kodachi-native"
+          for name in online-auth routing-switch; do
+            timeout --kill-after=10s 12m "$GHIDRA_HOME/support/analyzeHeadless" "$root/projects" "Kodachi_${name}" -import "$root/inputs/$name.elf" -analysisTimeoutPerFile 180 -max-cpu 2 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" -postScript KodachiCryptoReport.java "$root/reports/$name.json" "$root/signatures.tsv" -deleteProject > "$root/logs/$name.log" 2>&1
+            test -s "$root/reports/$name.json"
+          done
+      - name: Validate exact input hashes and assemble measured redacted evidence
+        run: |
+          python3 - <<'PY'
+          from datetime import datetime, timezone
+          import hashlib, json, os, pathlib
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native'; reports=root/'reports'
+          manifest=json.loads((root/'inputs/manifest.json').read_text()); programs=[]
+          digest=lambda p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+          for target in manifest['inputs']:
+              name=target['flatName'].removesuffix('.elf'); r=json.loads((reports/(name+'.json')).read_text())
+              assert r['inputSha256']==target['sha256'] and 'ELF' in r['format'] and r['ghidraVersion']=='12.1.4'
+              assert r['functionsDefined'] > 0 and r['instructionsVisitedUpTo500000'] > 0 and any(d['completed'] for d in r['boundedDecompilations'])
+              assert not r['inputExecuted'] and not r['credentialsUsed'] and not r['decryptionPerformed'] and not r['arbitraryStringsOrSourcePublished']
+              programs.append({'input':target,'analysis':r})
+          summary={'schema':1,'sourceCommit':os.environ['GITHUB_SHA'],'runId':os.environ['GITHUB_RUN_ID'],'observedAtRunnerClock':datetime.now(timezone.utc).isoformat(),'iso':manifest['iso'],'ghidra':{'version':'12.1.4','archiveSha256':os.environ['GHIDRA_SHA256']},'javaVersion':(root/'java-version.txt').read_text().strip(),'findCrypt':{'repository':'TorgoTorgo/ghidra-findcrypt','commit':'5c2fd5bb50d13a4092da136dc7004becd8129c7b','databaseBlob':'36e799563f152ba6e442a9bcd9dc71cd23a96309','databaseSha256':os.environ['FINDCRYPT_SHA256'],'signatures':126},'sourceSha256':{p:digest(p) for p in ['tools/kodachi/inspect-iso.py','tools/kodachi/prepare-native.py','tools/kodachi/inspect-requirements.txt','tools/ghidra_scripts/KodachiCryptoReport.java']},'positiveControls':{name:json.loads((reports/(name+'.json')).read_text()) for name in ['native-control','aes-control']},'programs':programs,'booted':False,'mounted':False,'imageBinariesExecuted':False,'connectedToVpn':False,'credentialsUsed':False,'decryptionPerformed':False,'privateKeysOrArbitraryStringsPublished':False}
+          (reports/'native-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+          print('Two measured original-ISO native reports validated; no password/decryption or VPN-protection claim.')
+          PY
+      - name: Expose the bounded static scan preview
+        shell: python
+        run: |
+          import base64, os, pathlib
+          data=(pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/reports/vpn-inspection-preview.json').read_bytes()
+          assert len(data) <= 16000
+          chunks=[base64.b64encode(data[i:i+2000]).decode() for i in range(0,len(data),2000)]
+          for i,chunk in enumerate(chunks): print('::notice title=Kodachi static VPN preview '+str(i+1)+' of '+str(len(chunks))+'::'+chunk)
+      - name: Expose compressed redacted native evidence without input binaries or source output
+        shell: python
+        run: |
+          import base64, os, pathlib, zlib
+          data=(pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/reports/native-summary.json').read_bytes()
+          assert len(data) <= 131072
+          compressed=zlib.compress(data,9); assert len(compressed) <= 16000
+          chunks=[base64.b64encode(compressed[i:i+2000]).decode() for i in range(0,len(compressed),2000)]
+          for i,chunk in enumerate(chunks): print('::notice title=Kodachi native evidence zlib '+str(i+1)+' of '+str(len(chunks))+'::'+chunk)
+      - name: Expose only trusted-script compilation diagnostics on failure
+        if: failure()
+        shell: python
+        run: |
+          import os, pathlib, re
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'kodachi-native/logs'
+          messages=[]
+          for p in root.glob('*.log'):
+              for line in p.read_text(errors='replace').splitlines():
+                  if re.search(r'KodachiCryptoReport\.java:[0-9]+:',line): messages.append(line[:400])
+          text='\n'.join(messages[:12]) or 'Native analysis did not produce validated complete evidence. Raw input/log/source content is not published.'
+          print('::error title=Kodachi native tool diagnostics::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+      - name: Preserve redacted metadata only, never ISO binaries, raw logs, strings or C output
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: kodachi-native-crypto-evidence-redacted
+          path: ${{ runner.temp }}/kodachi-native/reports/
+          if-no-files-found: error
+          retention-days: 14

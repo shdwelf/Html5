@@ -25,6 +25,8 @@ MAX_BINARY_BYTES = 64 * 1024 * 1024
 MAX_TOTAL_BYTES = 768 * 1024 * 1024
 MAX_FINDINGS = 100
 KNOWN_OS_DEFAULTS = ('r@@t00', 'Security4All')
+REQUESTED_LITERALS = ('r00t0r', 'r00tor', 'r00t')
+RUNTIME_ROOT = '/opt/kodachi/dashboard/hooks/'
 PRIVATE_BLOCK = re.compile(r'<(?:key|tls-auth|tls-crypt|pkcs12)>.*?</(?:key|tls-auth|tls-crypt|pkcs12)>|-----BEGIN [^-]*(?:PRIVATE KEY|SECRET)[^-]*-----.*?-----END [^-]+-----', re.I | re.S)
 ASSIGNMENT = re.compile(r'''(?im)^\s*(?:export\s+)?["']?([a-z_][\w.-]{0,127})["']?\s*(?:=|:)\s*([^\r\n]{0,1024})''')
 INTEREST = re.compile(r'vpn|wireguard|cloak|auth|credential|password|provider', re.I)
@@ -38,9 +40,33 @@ def safe_path(value):
     return value
 
 
+
+def literal_matches(data):
+    result = {}
+    for literal in REQUESTED_LITERALS:
+        matches = {}
+        for label, encoding in [('utf8', 'utf-8'), ('utf16le', 'utf-16le'), ('utf16be', 'utf-16be')]:
+            pattern = literal.encode(encoding)
+            count = data.count(pattern)
+            if count:
+                matches[label + 'SubstringOccurrences'] = count
+                if label == 'utf8':
+                    matches['standaloneAsciiOccurrences'] = len(re.findall(rb'(?<![A-Za-z0-9_])' + re.escape(pattern) + rb'(?![A-Za-z0-9_])', data))
+        if matches:
+            result[literal] = matches
+    return result
+
+
+def reportable_reference(value):
+    # Do not publish URL components or arbitrary slash-shaped strings/tokens.
+    return value.startswith(('/etc/', '/run/', '/var/', '/home/', '/root/', '/opt/', '/usr/', '/tmp/', '/.config/', '/.ssh/'))
+
+
 def candidate_kind(path):
     p = path.lower()
     name = PurePosixPath(p).name
+    if any(literal in p for literal in REQUESTED_LITERALS):
+        return 'requested-literal-path'
     if p.endswith(('.ovpn', '.wg')):
         return 'vpn-profile'
     if p.startswith(('/etc/openvpn/', '/etc/wireguard/', '/etc/networkmanager/system-connections/')) or '/own_vpn_config/' in p:
@@ -133,13 +159,20 @@ def inspect_content(path, data, kind):
     known = {value: data.count(value.encode()) for value in KNOWN_OS_DEFAULTS if value.encode() in data}
     if known:
         result['knownOsLoginLiteralOccurrences'] = known
+    requested = literal_matches(data)
+    if requested:
+        result['requestedLiteralMatches'] = requested
+        result['literalRoleUnproven'] = True
+        result['workingVpnCredentialProven'] = False
+    if data.startswith(b'\x7fELF'):
+        result['binaryFormat'] = 'ELF'
     if binary:
         # Path references only, never arbitrary strings/keys or a claim that a
         # nearby "password" symbol is an embedded working VPN password.
         paths = set()
         for match in re.finditer(rb'/[A-Za-z0-9_./+~-]{4,240}', data):
             value = match[0].decode('ascii')
-            if INTEREST.search(value) and len(value) < 240:
+            if reportable_reference(value) and INTEREST.search(value) and len(value) < 240:
                 paths.add(value)
             if len(paths) >= 2000:
                 break
@@ -185,7 +218,7 @@ def inspect_content(path, data, kind):
     if result.get('shortAuthFileCandidate'):
         reference_text = ''
     references = set(re.findall(r'/(?:[A-Za-z0-9_.+~-]+/)*[A-Za-z0-9_.+~-]+', reference_text))
-    refs = sorted((x for x in references if INTEREST.search(x) and len(x) <= 240), key=reference_rank)
+    refs = sorted((x for x in references if reportable_reference(x) and INTEREST.search(x) and len(x) <= 240), key=reference_rank)
     if refs:
         result['pathReferences'] = refs[:MAX_FINDINGS]
     return result
@@ -304,6 +337,8 @@ def inspect_iso(iso_path):
 
 def preview_priority(record):
     path = record['path']
+    if record.get('requestedLiteralMatches'):
+        return -1, path
     if record['kind'] in ('vpn-profile', 'vpn-config'):
         rank = 0
     elif record.get('binary') and re.search(r'vpn|wireguard|cloak|online-auth', path, re.I):
@@ -337,6 +372,12 @@ def preview(report):
         key: sum(bool(f.get(key)) for f in report['files'])
         for key in ('authDirectives', 'inlineAuth', 'shortAuthFileCandidate', 'providerAuthTemplates')
     }
+    result['requestedLiteralSearch'] = {literal: {'matchingScannedFiles': sum(literal in f.get('requestedLiteralMatches', {}) for f in report['files']), 'utf8SubstringOccurrences': sum(f.get('requestedLiteralMatches', {}).get(literal, {}).get('utf8SubstringOccurrences', 0) for f in report['files']), 'standaloneAsciiOccurrences': sum(f.get('requestedLiteralMatches', {}).get(literal, {}).get('standaloneAsciiOccurrences', 0) for f in report['files']), 'roleUnproven': True, 'workingVpnCredentialProven': False} for literal in REQUESTED_LITERALS}
+    runtime = [f for f in report['files'] if f.get('binaryFormat') == 'ELF' and f['path'].startswith(RUNTIME_ROOT) and '/' not in f['path'][len(RUNTIME_ROOT):]]
+    result['runtimeBinaryInventoryCount'] = len(runtime)
+    result['runtimeBinaryInventory'] = [{k: f[k] for k in ('path', 'bytesRead', 'sha256')} for f in runtime[:32]]
+    template_states = Counter(field['state'] for f in report['files'] for item in f.get('providerAuthTemplates', []) for field in item.get('fields', {}).values())
+    result['providerTemplateFieldStates'] = dict(template_states)
     result['previewFiles'] = []
     result['previewOnly'] = True
     if len(json.dumps(result, separators=(',', ':')).encode()) > 14000:
@@ -390,4 +431,4 @@ def main(iso_path, output):
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         raise SystemExit('usage: inspect-iso.py PINNED_ORIGINAL_ISO FRESH_REPORT_JSON')
-    main(Path(sys.argv[1]).resolve(), Path(sys.argv[2]).absolute())
+    main(Path(sys.argv[1]).absolute(), Path(sys.argv[2]).absolute())

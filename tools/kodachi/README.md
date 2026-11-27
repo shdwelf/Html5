@@ -56,3 +56,38 @@ prioritized preview is also exposed in <=2,000-byte Checks chunks (separate
 step, at most eight notices) for a reviewer unable to reach the artifact CDN.
 The preview is explicitly not the full inventory. No raw profiles, private
 keys, credential values or ISO bytes are committed or uploaded by inspection.
+
+## Ordered native Ghidra / crypto follow-through
+
+The separate `kodachi-native-analysis.yml` first gates the corrected radar UI,
+then the format-aware VPN setup interface, then the ISO/native-input controls.
+Only the required session branch may retrieve the original acquisition artifact.
+It rehashes and rescans that same image, including case-sensitive `r00t0r`,
+`r00tor` and `r00t` searches in UTF-8 / UTF-16LE / UTF-16BE. Counts are literal
+occurrences, not credential-role or working-password proof. Arbitrary URL
+components are not published as filesystem path references.
+
+`prepare-native.py` then copies **only** `online-auth` and `routing-switch` from
+`/opt/kodachi/dashboard/hooks/` to fixed flat `.elf` filenames in a fresh private
+runner directory, with mode **0600** and matching per-file hashes. This is a new,
+explicit analysis step, not a claim that the original scan extracted a tree.
+No symlink is followed and neither input is executed. Inputs/projects/raw logs
+are temporary and are never uploaded or committed.
+
+The runner uses SHA-256-pinned **Ghidra 12.1.4**, **Temurin Java 21**, and the
+126-signature FindCrypt database pinned to commit
+`5c2fd5bb50d13a4092da136dc7004becd8129c7b`. Original synthetic ELF disassembly,
+real native decompilation, the three requested literal markers and an AES S-box
+positive control must succeed before either ISO binary is analyzed. Auto-analysis
+is bounded to 180 seconds per original binary, at most 500,000 instructions are
+counted, and at most four functions are decompiled for 15 seconds each.
+Timeout/cap state is reported, not promoted to complete analysis.
+
+Only fixed-label crypto counts, addresses, input/tool/source hashes and completed
+C-output lengths/hashes are published. Decompiled C, arbitrary binary strings,
+raw operands, keys and credentials are not published. FindCrypt/signature or
+symbol-name matches are leads for review, **not** evidence of a usable key or an
+automatically decrypted VPN password. No runtime network login, key guessing,
+VPN connection or OS boot is performed. The Zulu/OpenJDK interface choices are
+setup templates; the measured native workflow uses Temurin, not an invented
+three-vendor execution matrix.
