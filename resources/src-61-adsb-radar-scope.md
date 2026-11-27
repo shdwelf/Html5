@@ -38,3 +38,27 @@ TYPE · STATUS · REG · SOURCE.
 The `ADSB.LOL` feed is the same public source the GODSEYE globe in this repository uses for
 its aircraft layer, so this scope is the flat-panel counterpart to that globe's live traffic
 view — same data, drawn as a radar instead of a sphere.
+
+## Current interface correction
+
+The canonical `apps/ads-b-radar-scope` is now a **tiled 4DWM-style workbench**:
+controls, scope and instruments occupy separate layout cells instead of covering
+one another. Narrow screens scroll; target details stay in the instrument stack.
+`apps/radar_scope.html` is a source-exact browser alias, refreshed with
+`node scripts/build-radar-scope.mjs` (`--check` verifies it).
+
+The app starts with labeled **synthetic demo data and zero feed requests**.
+Select **Start live** explicitly. **Direct** never falls back to any proxy.
+**Explicit HTTPS proxy** uses only the selected operator, requires consent, and
+is not a VPN. Changing route/revoking consent pauses and aborts pending requests;
+old replies cannot replace the demo. Feed/proxy queries can reveal the area being
+queried, especially if optional GPS is enabled. Sharing to Webxdc peers is manual.
+Feed text is rendered inertly; keyboard-accessible track buttons mirror the canvas.
+No live provider availability or owner-device/Android rendering is inferred from
+browser tests using synthetic intercepted replies. This remains unsuitable for
+navigation or safety-critical tracking.
+
+Validation entrypoints: `node --test tests/radar-scope.test.mjs` and
+`node --test tests/radar-scope-browser.mjs`. The latter exercises six viewport
+sizes, open details, no overlap/horizontal clipping, direct failure with no proxy
+fallback, explicit proxy consent and hostile-text rendering without real requests.

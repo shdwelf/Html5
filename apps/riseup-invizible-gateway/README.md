@@ -34,7 +34,27 @@ The read-only `arena-gateway-build.yml` reviews the exact PR head, builds/lints 
 ## Measured review delivery
 
 - [Plan-only APK](../../research/gateway-config/gateway-debug.apk), **15,361 bytes**, version **0.2.0-plan-only / code 2**; **no permissions or registered service**. This debug build is **not a VPN**. Remove/unselect the old scaffold if it had been configured as always-on and return to a known-working, tested VPN; this replacement cannot supply packet protection.
-- [JAR](../../research/gateway-config/gateway-config.jar), **8,861 bytes**, and [static WAR](../../gateway-config.war), **15,822 bytes**; [SHA-256 list](../../research/gateway-config/SHA256SUMS.txt).
+- [JAR](../../research/gateway-config/gateway-config.jar), **8,861 bytes**, and [static WAR](../../gateway-config.war), **20,330 bytes / five entries** after the browser-only static-analysis toolbox update; [SHA-256 list](../../research/gateway-config/SHA256SUMS.txt).
 - Measured source **`a9c71e001ef6cb99bd8b6a035af00add7f623707`**, successful [run 45990944063](https://github.com/shdwelf/Html5/actions/runs/45990944063), check **140478329727**. [Build/current-source receipt](../../research/gateway-config/build-receipt.json), [manifest](../../research/gateway-config/apk-manifest.txt), [permissions](../../research/gateway-config/apk-permissions.txt), [apksigner output](../../research/gateway-config/apk-signature.txt).
 - APK SHA-256 **`de85273b93cd176dfd5a00edc6a58109d209e30d3646d36bbbaa714a9864d8ac`**. Review certificate SHA-256 **`559c0fb5e0ad6b7735372a8ddc48ab9754987c8e7e94c6f9e116c85533e0ac54`** — disposable Android Debug identity, **not** upstream or production signing. A different old debug signer can prevent in-place installation; uninstalling loses local app data. No installation/owner-device acceptance was performed.
 - The delivered binary was retrieved in bounded non-secret Checks chunks and its complete size/hash checked **before replacing** the old APK. The final read-only CI re-verifies the committed APK's v2 signature/manifest and successful measured run, current build-source hashes, Java parity and a fresh build. Later documentation/delivery heads are not falsely substituted for the measured compilation commit.
+
+## Browser-only static-analysis setup
+
+`gateway-config.html` and its static WAR now include local ELF/PE/CLI/Java-header
+triage and explicit **Ghidra / ILSpy / javap** setup templates. Java 21 runtime
+choices are **Temurin**, **Zulu**, or compatible **OpenJDK**, not alternate
+cryptographic/decompiler engines. ILSpy needs a managed .NET input and a .NET
+runtime; a native Rust ELF does not become .NET by renaming it.
+
+The optional local file is at most 64 MiB; only its first 64 KiB are read.
+No input is uploaded, executed, decompiled, persisted or decrypted in the planner.
+Template paths are symbolic, never interpolated from a filename. Offline is the
+default; forced-direct and explicit approved HTTPS-proxy acquisition examples do
+not cause downloads or change system proxy/VPN settings. Ghidra crypto references
+and FindCrypt constants are not a key, proof of encryption, or decryption.
+
+The measured APK/JAR and their ten Java/Android source inputs remain unchanged.
+The rebuilt **static web WAR** is a separate updated output, not an assertion that
+the original native APK gained a decompiler. See the [ISO inspection report](../../docs/kodachi-vpn-iso-inspection-2026-11-17.md)
+for actual measured analysis scope, tool pins and limits.

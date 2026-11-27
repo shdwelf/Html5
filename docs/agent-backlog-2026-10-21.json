@@ -297,9 +297,13 @@
         "tools/build_xdc_wars.mjs",
         "docs/github-jdk-runtime-research-2026-10-23.md",
         "docs/backlog-execution-round-19-2026-10-23.md",
-        "docs/backlog-execution-round-63-2026-11-05.md"
+        "docs/backlog-execution-round-63-2026-11-05.md",
+        "docs/kodachi-vpn-iso-inspection-2026-11-17.md",
+        "docs/research/kodachi-vpn-iso-inspection-2026-11-17.json",
+        "docs/backlog-execution-round-96-2026-11-17.md"
       ],
       "next_actions": [
+        "Round 96 owner-directed follow-through: radar tiling and offline decompiler/runtime/direct/proxy setup delivered; actual Kodachi ISO bounded Ghidra run 46037020264 succeeded under Temurin 21.0.13.1+2. Four restricted entry/imported-function windows and four decompilations per ELF are not credential-function tracing, whole-program analysis, VPN password recovery or decryption. Zulu/OpenJDK/ILSpy remain setup alternatives, not an unrun execution matrix. Original 31 terminal task states and boot/account/device gates are unchanged; historical stream labels do not reopen every completed row.",
         "QEMU Android lab (SDK/ADB sideload and boot a selected Android/LineageOS QEMU target; replacement-OS survey delivered in docs/backlog-execution-round-63-2026-11-05.md; exact handset required for installation choice)",
         "XPort Pro BDM/JTAG hardware test and Evolution OS app conversion (vendor docs identify BDM, not a production-module JTAG interface; exact SKU, Dev Board, SDK/probe, and app subset required)",
         "HackRF/SDR hardware tests (Mayhem Capture/Replay source review delivered in docs/backlog-execution-round-63-2026-11-05.md; exact SDR models and safe modification targets required)",
@@ -566,7 +570,7 @@
       "stream": "S8",
       "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu",
       "status": "done",
-      "note": "Closed 2026-11-12 (docs/github-jdk-runtime-research-2026-10-23.md + docs/imei-sim-lock-lnp-metasearch-research-2026-11-11.md): Android virtualization lab architecture documented (SDK/AVD QEMU-based emulator, rootless ADB sideload, replacement OS/LineageOS AVB invariants); Ghidra whole toolchain proven via Temurin 21 CI workflow; SIM lock and number porting caselaw completed under T8.4."
+      "note": "Closed 2026-11-12 (docs/github-jdk-runtime-research-2026-10-23.md + docs/imei-sim-lock-lnp-metasearch-research-2026-11-11.md): Android virtualization lab architecture documented (SDK/AVD QEMU-based emulator, rootless ADB sideload, replacement OS/LineageOS AVB invariants); Ghidra whole toolchain proven via Temurin 21 CI workflow; SIM lock and number porting caselaw completed under T8.4. Additional owner-directed round 96: original Kodachi ISO static/literal scan and two actual ELF bounded Ghidra 12.1.4 analyses passed at run 46037020264 / source 6d8d91b24b09a823829530a8bfa9e7f1533d6098, using Temurin 21.0.13.1+2 with whole-program auto-analysis disabled. Entry/imported-function decompilation and crypto patterns are not credential recovery; no working VPN password established. See docs/kodachi-vpn-iso-inspection-2026-11-17.md. Status remains done; no Zulu/.NET/boot/device run is invented."
     },
     {
       "id": "T8.2",

@@ -16,6 +16,8 @@ try {
     ["tests/openpgp-workbench-browser.mjs"],
     ["tests/openpgp-message-browser.mjs"],
     ["tests/torrent-atlas-browser.mjs"],
+    ["--test", "tests/radar-scope-browser.mjs"],
+    ["--test", "tests/vpn-analysis-tools-browser.mjs"],
     ["tests/openpgp-keybase-browser.mjs"],
     ["tests/openpgp-recovery-browser.mjs"],
     ["--test", "tests/subsurface-viewers-browser.test.mjs"],

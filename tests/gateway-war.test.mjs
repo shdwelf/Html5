@@ -32,6 +32,7 @@ test("gateway-config.war layout: page, engine, web.xml, jar in WEB-INF/lib", () 
     "WEB-INF/web.xml",
     "gateway-config.html",
     "js/gateway-config.js",
+    "js/vpn-analysis-tools.js",
   ]);
   const jarEntry = list[0];
   const jar = inflateRawSync(buf.subarray(jarEntry.dataStart, jarEntry.dataStart + jarEntry.clen));
@@ -43,7 +44,7 @@ test("gateway-config.war layout: page, engine, web.xml, jar in WEB-INF/lib", () 
 // DEFLATE streams that a matching custom decoder would mistakenly accept.
 test("WAR is a valid standard ZIP with source-exact assets and a schema-v2 planner JAR", () => {
   const war = unzipSync(readFileSync("gateway-config.war"));
-  for (const path of ["gateway-config.html", "js/gateway-config.js"]) assert.deepEqual(Buffer.from(war[path]), readFileSync(path));
+  for (const path of ["gateway-config.html", "js/gateway-config.js", "js/vpn-analysis-tools.js"]) assert.deepEqual(Buffer.from(war[path]), readFileSync(path));
   const jar = unzipSync(war["WEB-INF/lib/gateway-config.jar"]);
   assert.equal(JSON.parse(new TextDecoder().decode(jar["META-INF/gateway-build.json"])).schema, 2);
   assert.equal(JSON.parse(new TextDecoder().decode(jar["META-INF/gateway-build.json"])).protectionActive, false);

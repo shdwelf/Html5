@@ -165,6 +165,10 @@ On the subsequent explicit **download the ISO** request, the read-only [acquisit
 
 The current [official verification scheme](https://kodachi.cloud/docs/security/file-verify.html) advertises RSA-4096/OpenSSL detached signatures, not a GPG command inferred from old mirrors. The page's v10.0.3 / v9.0.1 keys and BLAKE3 per-binary manifests must not be conflated with the exact desktop ISO/key/signature checked here. Before any boot, independently authenticate the key and review the OS's privilege/update/routing model; then use isolated failure-path tests. ISO integrity does not prove privacy, fail-closed networking or Android suitability.
 
+### Follow-up: actual original-ISO inspection and native analysis
+
+The owner subsequently requested VPN configuration/password evidence from the acquired ISO, then ordered the tiled radar correction, the decompiler/proxy setup interface, and actual Ghidra follow-through. The [dedicated inspection report](kodachi-vpn-iso-inspection-2026-11-17.md), [measured register](research/kodachi-vpn-iso-inspection-2026-11-17.json) and [round 96](backlog-execution-round-96-2026-11-17.md) preserve those distinct stages and their exact source/run/input/tool hashes. This acquisition section is not retroactively labeled a boot, decryption or working-password result. OS login defaults and crypto/table/string matches are not validated VPN credentials; the gateway still provides no packet protection.
+
 ## 6. Explicit remaining gates
 
 | Gate | Required evidence before enabling a real VPN | Present status |
