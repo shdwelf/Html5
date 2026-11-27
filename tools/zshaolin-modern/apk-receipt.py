@@ -6,13 +6,15 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import re
+import sys
 import subprocess
 import xml.etree.ElementTree as ET
 import zipfile
 import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools/android-ci'))
+from apk_signature import certificate_fingerprints
 
 
 def sha(path):
@@ -36,8 +38,8 @@ def main():
     sdk = Path(os.environ['ANDROID_HOME'])
     signer = sdk / 'build-tools/35.0.0/apksigner'
     signature = subprocess.check_output([str(signer), 'verify', '--verbose', '--print-certs', str(apk)], text=True)
-    cert = re.search(r'Signer #1 certificate SHA-256 digest: ([a-f0-9]{64})', signature)
-    if not cert:
+    fingerprints = certificate_fingerprints(signature)
+    if len(fingerprints) != 1:
         raise ValueError('Missing verified APK signing certificate')
     with zipfile.ZipFile(apk) as z:
         if len(z.namelist()) != len(set(z.namelist())):
@@ -77,7 +79,7 @@ def main():
         'schema': 1, 'sourceCommit': os.environ['GITHUB_SHA'], 'runId': os.environ['GITHUB_RUN_ID'],
         'apk': {'file': name, 'bytes': dest.stat().st_size, 'sha256': sha(dest),
                 'applicationId': 'com.termux', 'versionName': '2.0.0-review', 'targetSdk': 28,
-                'debuggable': False, 'abi': receipt['abi'], 'signerCertificateSha256': cert[1]},
+                'debuggable': False, 'abi': receipt['abi'], 'signerCertificateSha256': fingerprints[0]},
         'payload': receipt, 'androidInstrumentationSuites': tests,
         'testedOnAndroid13X86Emulator': bool(tests), 'testedOnPhysicalSamsung': False,
         'armDeviceExecutionVerified': False, 'rootVerified': False, 'vpnProtectionProvided': False,

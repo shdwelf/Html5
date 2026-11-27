@@ -6,8 +6,7 @@ on:
     paths:
       - 'tools/android-root-review/**'
       - 'tools/ghidra_scripts/AndroidRootingReview.java'
-      - 'tests/android_root_review_test.py'
-      - 'tests/android_profile_review_test.py'
+      - 'tests/android_*_review_test.py'
       - 'tools/android-ci/**'
       - '.github/workflows/android-root-static-review.yml'
   workflow_dispatch:
@@ -15,8 +14,7 @@ on:
     paths:
       - 'tools/android-root-review/**'
       - 'tools/ghidra_scripts/AndroidRootingReview.java'
-      - 'tests/android_root_review_test.py'
-      - 'tests/android_profile_review_test.py'
+      - 'tests/android_*_review_test.py'
       - 'tools/android-ci/**'
       - '.github/workflows/android-root-static-review.yml'
 

@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shlex
 import shutil
 import subprocess
 import tarfile
@@ -99,6 +100,40 @@ def run(args, **kwargs):
     return subprocess.run([str(x) for x in args], check=True, text=True, **kwargs)
 
 
+def configured_command_links(script):
+    """Inventory literal alternatives in an authenticated postinst, never run it.
+
+    Vim lives in libexec/vim/vim; its bin/vim link appears during dpkg
+    configuration. Only literal in-prefix bin names/targets are accepted here.
+    The device installer must still verify the actual executable after dpkg.
+    """
+    links = []
+    text = script.decode('utf-8', errors='strict').replace('\\\n', ' ')
+    absolute = '/' + PREFIX + '/'
+    for line in text.splitlines():
+        if not re.match(r'^\s*(?:' + re.escape(absolute + 'bin/') + r')?update-alternatives\s', line):
+            continue
+        args = shlex.split(line, comments=True)
+        if len(args) < 6 or args[1] != '--install':
+            continue
+        link, name, target, priority = args[2:6]
+        if (not re.fullmatch(r'[A-Za-z0-9+_.-]+', name) or
+                link != absolute + 'bin/' + name or not target.startswith(absolute) or
+                not priority.isdecimal()):
+            continue
+        rel = str(safe_path(target[len(absolute):]))
+        if rel == '.':
+            continue
+        links.append({'command': name, 'link': 'bin/' + name, 'target': rel})
+    return links
+
+
+def missing_commands(commands, owned, configured):
+    alternatives = {entry['command'] for entry in configured
+                    if entry['target'] in owned and 'bin/update-alternatives' in owned}
+    return [name for name in commands if 'bin/' + name not in owned and name not in alternatives]
+
+
 def packages(arch):
     work = BUILD / arch
     assets = work / 'assets'
@@ -155,6 +190,7 @@ def packages(arch):
     inventory = []
     owned = set()
     scripts = []
+    configured = []
     for f in archives:
         uri, size, hashfield = expected_files[f.name]
         if not hashfield.startswith('SHA256:') or digest(f) != hashfield[7:] or f.stat().st_size != size:
@@ -175,7 +211,8 @@ def packages(arch):
                     raise ValueError('Special files are not allowed in Android packages')
                 rel = str(p)
                 if rel.startswith(PREFIX + '/'):
-                    owned.add(rel[len(PREFIX) + 1:])
+                    if (m.isfile() and m.mode & 0o111) or m.issym() or m.islnk():
+                        owned.add(rel[len(PREFIX) + 1:])
                 elif m.isfile() and m.size:
                     raise ValueError('Package file outside the Termux private prefix')
         if listing.wait() != 0:
@@ -186,8 +223,12 @@ def packages(arch):
                 if m.isfile() and PurePosixPath(m.name).name in ('preinst', 'postinst', 'prerm', 'postrm', 'triggers'):
                     raw = tf.extractfile(m).read()
                     scriptname = PurePosixPath(m.name).name
+                    script_sha = hashlib.sha256(raw).hexdigest()
                     scripts.append({'package': fields['Package'], 'script': scriptname,
-                                    'sha256': hashlib.sha256(raw).hexdigest()})
+                                    'sha256': script_sha})
+                    if scriptname == 'postinst':
+                        configured.extend(dict(entry, package=fields['Package'], postinstSha256=script_sha)
+                                          for entry in configured_command_links(raw))
                     # No network provisioning/listeners during offline setup.
                     if scriptname in ('preinst', 'postinst') and re.search(
                         rb'(?m)^\s*(?:exec\s+)?(?:[^\s]*\/)?(?:curl|wget|sshd|httpd|nc|ncat|socat)\s', raw):
@@ -198,7 +239,7 @@ def packages(arch):
         inventory.append({'package': fields['Package'], 'version': fields['Version'],
                           'architecture': fields['Architecture'], 'asset': 'packages/' + f.name,
                           'sha256': digest(f), 'bytes': size, 'url': uri})
-    missing = [cmd for cmd in SPEC['requiredCommands'] if f'bin/{cmd}' not in owned]
+    missing = missing_commands(SPEC['requiredCommands'], owned, configured)
     if missing:
         raise ValueError('Full-toolbox command coverage missing: ' + ', '.join(missing))
     version = urllib.parse.quote(SPEC['bootstrap']['version'], safe='')
@@ -216,6 +257,7 @@ def packages(arch):
         'aptRepository': SPEC['aptRepository'], 'aptSignatureVerificationRequired': True,
         'repositoryKeyringSha256': digest(keyring), 'signedIndexFilesSha256': indices,
         'requestedPackages': requested, 'packages': inventory, 'maintainerScripts': scripts,
+        'postInstallCommandLinks': configured,
         'requiredCommands': SPEC['requiredCommands'], 'missingCommands': missing,
         'terminalSource': SPEC['terminalSource'], 'packageRecipes': SPEC['packageRecipes'],
         'legacyChanges': SPEC['legacyChanges'], 'rootRequired': False,

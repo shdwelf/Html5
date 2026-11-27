@@ -5,7 +5,7 @@ import base64
 import hashlib
 import json
 import os
-import re
+import sys
 from pathlib import Path
 import shutil
 import subprocess
@@ -14,6 +14,8 @@ import zipfile
 import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools/android-ci'))
+from apk_signature import certificate_fingerprints
 PIN = json.loads((ROOT / 'tools/android-root-review/inputs.json').read_text())
 WORK = Path(os.environ.get('RUNNER_TEMP', ROOT / 'build')) / 'android-root-review'
 
@@ -75,13 +77,6 @@ def prepare():
     print('Pinned official APK and Ghidra distribution verified; no APK/native input executed.')
 
 
-def certificate_fingerprints(text):
-    # New apksigner versions can label a signer by SDK range rather than #1.
-    # Keep the certificate SHA-256 requirement, accept only Signer-labelled lines.
-    return sorted(set(value.lower() for value in re.findall(
-        r'(?im)^Signer[^\r\n]*certificate SHA-256 digest:\s*([0-9a-f]{64})[ \t]*$', text)))
-
-
 def summarize():
     programs = []
     manifest = json.loads((WORK / 'inputs/manifest.json').read_text())
@@ -113,7 +108,8 @@ def summarize():
         'screenshotEvidence': json.loads((ROOT / 'tools/android-root-review/screenshot-findings.json').read_text()),
         'sourceSha256': {p: sha(ROOT / p) for p in ['tools/android-root-review/static-review.py',
                                                   'tools/ghidra_scripts/AndroidRootingReview.java',
-                                                  'tools/android-root-review/inputs.json']},
+                                                  'tools/android-root-review/inputs.json',
+                                                  'tools/android-ci/apk_signature.py']},
         'deviceConnected': False, 'firmwareAcquired': False, 'firmwareFlashed': False,
         'rootVerifiedOnDevice': False, 'wholeApkAudited': False, 'identifierCollection': False,
         'conclusion': 'Bounded static observations of two public Magisk init binaries only. Screenshots confirm firmware labels, not unlockability or working root. Download Mode OEM Lock/KnoxGuard and exact firmware remain device-side gates.',

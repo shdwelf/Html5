@@ -5,7 +5,7 @@ android {
     ndkVersion '27.2.12479018'
     defaultConfig {
         minSdk 28
-        externalNativeBuild { ndkBuild { cFlags '-std=c11', '-Wall', '-Wextra', '-Werror', '-Os', '-fstack-protector-strong', '-Wl,-z,max-page-size=16384' } }
+        externalNativeBuild { ndkBuild { cFlags '-std=c11', '-Wall', '-Wextra', '-Werror', '-Os', '-fstack-protector-strong'; arguments 'APP_LDFLAGS=-Wl,-z,max-page-size=16384' } }
         ndk { abiFilters providers.gradleProperty('toolboxAbi').getOrElse('x86_64') }
     }
     sourceSets { main { java.srcDirs = ['../../../build/zshaolin/terminal-source/terminal-emulator/src/main/java'] } }

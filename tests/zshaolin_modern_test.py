@@ -52,6 +52,36 @@ class ZshaolinModernTests(unittest.TestCase):
         self.assertIn('Full-toolbox command coverage missing:', text)
         self.assertIn("'nativePackagesSelfCompiled': False", text)
 
+    def test_postinst_command_links_require_literal_prefix_target_and_provider(self):
+        script = b'''#!/data/data/com.termux/files/usr/bin/sh
+if [ "$1" = 'configure' ]; then
+    update-alternatives \\
+      --install "/data/data/com.termux/files/usr/bin/vim" "vim" "/data/data/com.termux/files/usr/libexec/vim/vim" 50
+fi
+'''
+        links = prepare.configured_command_links(script)
+        self.assertEqual(links, [{'command': 'vim', 'link': 'bin/vim', 'target': 'libexec/vim/vim'}])
+        self.assertEqual(prepare.missing_commands(['vim'], {'libexec/vim/vim', 'bin/update-alternatives'}, links), [])
+        self.assertEqual(prepare.missing_commands(['vim'], {'libexec/vim/vim'}, links), ['vim'])
+        self.assertEqual(prepare.missing_commands(['vim'], {'bin/update-alternatives'}, links), ['vim'])
+        self.assertEqual(prepare.missing_commands(['vim', 'tetris'], {'bin/vim', 'bin/tetris'}, []), [])
+        for invalid in [script.replace(b'/usr/bin/vim"', b'/usr/bin/wrong"'),
+                        script.replace(b'/usr/libexec/vim/vim', b'/other/libexec/vim/vim'),
+                        script.replace(b'"/data/data/com.termux/files/usr/libexec/vim/vim"', b'"$PREFIX/libexec/vim/vim"')]:
+            self.assertEqual(prepare.configured_command_links(invalid), [])
+        with self.assertRaises(ValueError):
+            prepare.configured_command_links(script.replace(b'/usr/libexec/vim/vim', b'/usr/../../outside'))
+
+    def test_package_names_and_command_names_are_not_confused_or_silently_omitted(self):
+        self.assertIn('vitetris', SPEC['packageGroups']['games'])
+        self.assertIn('tetris', SPEC['requiredCommands'])
+        self.assertNotIn('vitetris', SPEC['requiredCommands'])
+        self.assertIn('vim', SPEC['requiredCommands'])
+        self.assertIn('lua5.4', SPEC['requiredCommands'])
+        app = (ROOT/'apps/zshaolin-android/app/src/main/java/org/dyne/zshaolin/modern/Toolbox.java').read_text()
+        self.assertIn('canExecute()', app)
+        self.assertIn('A required full-toolbox command is missing', app)
+
     def test_app_has_only_internet_permission_and_no_exported_command_api(self):
         manifest = (ROOT/'apps/zshaolin-android/app/src/main/AndroidManifest.xml').read_text()
         self.assertEqual(manifest.count('<uses-permission'), 1)

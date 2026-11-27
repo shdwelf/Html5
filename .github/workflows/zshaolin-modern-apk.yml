@@ -8,7 +8,7 @@ on:
       - 'tools/zshaolin-modern/**'
       - 'tools/zshaolin-legacy/**'
       - 'tests/zshaolin_modern_test.py'
-      - 'tests/android_profile_review_test.py'
+      - 'tests/android_*_review_test.py'
       - 'tools/android-ci/**'
       - '.github/workflows/zshaolin-modern-apk.yml'
   workflow_dispatch:
@@ -24,7 +24,7 @@ on:
       - 'tools/zshaolin-modern/**'
       - 'tools/zshaolin-legacy/**'
       - 'tests/zshaolin_modern_test.py'
-      - 'tests/android_profile_review_test.py'
+      - 'tests/android_*_review_test.py'
       - 'tools/android-ci/**'
       - '.github/workflows/zshaolin-modern-apk.yml'
 
