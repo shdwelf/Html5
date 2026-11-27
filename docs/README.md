@@ -4,6 +4,11 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## ZShaolin APK follow-up · supplemental Kodachi literal
+
+- [ZShaolin APK/source investigation and `r@@t0r` result](zshaolin-apk-and-kodachi-candidate-2026-11-17.md) — no exact APK obtained; pinned legacy source and one repository-shipped ARM shared object inspected as data. Source-confirmed SSH private-key-over-HTTP provisioning concern is distinct from dormant Java HTTP code, an APK audit or a live exploit. The new original-ISO scan found no `r@@t0r` in its bounded candidates; no login acceptance/rejection or VPN password is established.
+- Registers: [ZShaolin source identity/findings and transport](research/zshaolin-apk-investigation-2026-11-17.json), [complete supplemental original-ISO report](research/kodachi-supplemental-literal-2026-11-17.json). Historical three-term/Ghidra evidence is unchanged; these operational reports remain outside public manual packages.
+
 ## Round 96 · tiled radar, analysis toolbox and original Kodachi ISO
 
 - [Kodachi ISO VPN / literal / native-analysis evidence](kodachi-vpn-iso-inspection-2026-11-17.md) and [structured register](research/kodachi-vpn-iso-inspection-2026-11-17.json) — bounded actual-image inspection, requested `r00t0r` / `r00tor` / `r00t` searches and separately gated Ghidra evidence. Published OS defaults, crypto signatures and working VPN passwords are distinct; no authentication, boot or decryption.

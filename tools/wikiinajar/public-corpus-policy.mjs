@@ -24,6 +24,9 @@ export const PUBLIC_CORPUS_EXCLUDED_ASSETS = Object.freeze([
   "docs/research/kodachi-iso-provenance-2026-11-17.json",
   "docs/research/kodachi-iso-acquisition-2026-11-17.json",
   "docs/research/kodachi-vpn-iso-inspection-2026-11-17.json",
+  // Follow-up APK/source security review and fixed-literal evidence, not manuals.
+  "docs/research/zshaolin-apk-investigation-2026-11-17.json",
+  "docs/research/kodachi-supplemental-literal-2026-11-17.json",
   "docs/research/password-managers-torrent-sources-2026-11-17.json",
 ]);
 
@@ -81,6 +84,7 @@ export const PUBLIC_CORPUS_EXCLUDED_SOURCES = Object.freeze([
   "docs/backlog-execution-round-95-2026-11-17.md",
   "docs/kodachi-vpn-iso-inspection-2026-11-17.md",
   "docs/backlog-execution-round-96-2026-11-17.md",
+  "docs/zshaolin-apk-and-kodachi-candidate-2026-11-17.md",
   // Encrypted release handoff is operational, not public offline app content.
   "docs/openpgp-recipient-release-review-2026-11-17.md",
   "docs/chipwright-restore-status-2026-10-22.md",

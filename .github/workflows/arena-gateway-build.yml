@@ -18,7 +18,11 @@ on:
       - 'tests/gateway*'
       - 'tests/vpn-analysis*'
       - 'tests/kodachi-evidence.test.mjs'
+      - 'tests/zshaolin-kodachi-followup.test.mjs'
       - 'docs/research/kodachi-vpn-iso-inspection-2026-11-17.json'
+      - 'docs/research/kodachi-supplemental-literal-2026-11-17.json'
+      - 'docs/research/zshaolin-apk-investigation-2026-11-17.json'
+      - 'docs/zshaolin-apk-and-kodachi-candidate-2026-11-17.md'
       - 'tools/kodachi/**'
       - 'tools/ghidra_scripts/KodachiCryptoReport.java'
       - '.github/workflows/kodachi-native-analysis.yml'
@@ -65,7 +69,7 @@ jobs:
         run: |
           node scripts/build-torrent-atlas.mjs --check
           node scripts/build-html5-browser-catalog.mjs --check
-          node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs tests/gateway-delivery.test.mjs tests/vpn-analysis-tools.test.mjs tests/kodachi-evidence.test.mjs tests/torrent-atlas*.test.mjs
+          node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs tests/gateway-delivery.test.mjs tests/vpn-analysis-tools.test.mjs tests/kodachi-evidence.test.mjs tests/zshaolin-kodachi-followup.test.mjs tests/torrent-atlas*.test.mjs
       - name: Independently validate torrent metadata without network sessions
         run: PYTHONPATH="$RUNNER_TEMP/atlas-libtorrent" node tools/torrent-atlas-interop.mjs
       - name: Exercise real browser workers and offline UX
