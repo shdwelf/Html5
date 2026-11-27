@@ -112,3 +112,15 @@ test('Clear invalidates a pending save receipt without promising to retract plai
     assert.equal(ui.get('download-decrypted-file').disabled, true); assert.equal(ui.get('decrypted-save-ack').checked, false);
   } finally { ui.dom.window.close(); }
 });
+
+test('UTF-8 text-file byte export preserves CRLF even though the HTML preview normalizes display line endings', async () => {
+  const original = new TextEncoder().encode('Synthetic first line\r\nsecond line\r\n');
+  const ui = boot(async () => original.slice());
+  try {
+    ui.input('armored-input', armor); ui.input('decrypt-passphrase', password); ui.submit(); await until(() => ui.get('decrypt-status').dataset.kind === 'success');
+    assert.equal(ui.get('decrypted-output').value, 'Synthetic first line\nsecond line\n');
+    assert.match(ui.get('decrypted-payload-status').textContent, /line endings may normalize/);
+    ui.get('decrypted-save-ack').checked = true; ui.get('decrypted-save-ack').dispatchEvent(new ui.view.Event('change')); ui.get('download-decrypted-file').click();
+    assert.equal(ui.downloads.length, 1); assert.deepEqual(new Uint8Array(await ui.downloads[0].blob.arrayBuffer()), original);
+  } finally { ui.dom.window.close(); }
+});

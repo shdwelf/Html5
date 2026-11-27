@@ -23,6 +23,7 @@ on:
 # No source-writing jobs, automatic commits, conflict-favoring rebases or pushes.
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: gateway-atlas-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
@@ -56,7 +57,7 @@ jobs:
         run: |
           node scripts/build-torrent-atlas.mjs --check
           node scripts/build-html5-browser-catalog.mjs --check
-          node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs tests/torrent-atlas*.test.mjs
+          node --test tests/gateway-config.test.mjs tests/gateway-java.test.mjs tests/gateway-war.test.mjs tests/gateway-delivery.test.mjs tests/torrent-atlas*.test.mjs
       - name: Independently validate torrent metadata without network sessions
         run: PYTHONPATH="$RUNNER_TEMP/atlas-libtorrent" node tools/torrent-atlas-interop.mjs
       - name: Exercise real browser workers and offline UX
@@ -76,6 +77,30 @@ jobs:
         run: |
           set -euo pipefail
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+      - name: Reverify delivered planner APK and successful measured source build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=research/gateway-config/gateway-debug.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/delivered-gateway-signature.txt"
+          diff -u research/gateway-config/apk-signature.txt "$RUNNER_TEMP/delivered-gateway-signature.txt"
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump permissions "$apk" > "$RUNNER_TEMP/delivered-gateway-permissions.txt"
+          diff -u research/gateway-config/apk-permissions.txt "$RUNNER_TEMP/delivered-gateway-permissions.txt"
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump xmltree "$apk" AndroidManifest.xml > "$RUNNER_TEMP/delivered-gateway-manifest.txt"
+          diff -u research/gateway-config/apk-manifest.txt "$RUNNER_TEMP/delivered-gateway-manifest.txt"
+          run_id="$(node -p 'JSON.parse(require("fs").readFileSync("research/gateway-config/build-receipt.json")).runId')"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" > "$RUNNER_TEMP/gateway-measured-run.json"
+          python3 - <<'PY'
+          import json, os, pathlib
+          receipt = json.loads(pathlib.Path('research/gateway-config/build-receipt.json').read_text())
+          run = json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'gateway-measured-run.json').read_text())
+          assert run['status'] == 'completed' and run['conclusion'] == 'success', 'measured build did not succeed'
+          assert str(run['id']) == receipt['runId'] and run['head_sha'] == receipt['sourceCommit'], 'source/run mismatch'
+          assert run['path'].split('@')[0] == '.github/workflows/arena-gateway-build.yml', 'unexpected build workflow'
+          print('Delivered original planner APK signature, manifest, exact hashes/current inputs and successful measured source build verified. No packet protection claimed.')
+          PY
       - name: Build and lint offline Android planner
         shell: bash
         run: |

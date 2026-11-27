@@ -1,0 +1,37 @@
+{
+  "schema": 2,
+  "sourceCommit": "a9c71e001ef6cb99bd8b6a035af00add7f623707",
+  "runId": "45990944063",
+  "runUrl": "https://github.com/shdwelf/Html5/actions/runs/45990944063",
+  "javaVersion": "openjdk version \"17.0.21\" 2026-10-20\nOpenJDK Runtime Environment Temurin-17.0.21+9 (build 17.0.21+9)\nOpenJDK 64-Bit Server VM Temurin-17.0.21+9 (build 17.0.21+9, mixed mode, sharing)",
+  "protectionActive": false,
+  "testScope": "Offline planner build/lint/manifest and JS-Java parity; no packet path or owner device test",
+  "sourceSha256": {
+    "apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway/GatewayConfig.java": "11433e4e7c4728a5ee550f6df59308de66387977366de47087deda0635ffc813",
+    "apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway/GatewayVpnService.java": "6f239139473538170e646e54469a79fc5cf16d1af1d531efbc8b3385a706a06a",
+    "apps/riseup-invizible-gateway/app/src/main/java/org/arena/gateway/MainActivity.java": "67693ca741a58a2768b96ff56f49197ae12459f35f09462f8505bac38aa26332",
+    "apps/riseup-invizible-gateway/app/build.gradle": "f738692d8e834769392006fe4824059510f859af631f79ccda8cbea1f868b0c8",
+    "apps/riseup-invizible-gateway/app/src/main/AndroidManifest.xml": "ec415702f5cc7eb1783ed23d5a04a76228213887ff164a862f15721d060a2051",
+    "tools/gateway-config/GatewayMain.java": "4c93a577dc7cf7bb6508431472b0acc57d590a10eb9d1af6d23c3940e1296e84",
+    "scripts/build-gateway-java.mjs": "8f371f4f7ccf865b1fb97eff249bc85152d9b9adbb585db120a3fabb2b9290f5",
+    "apps/riseup-invizible-gateway/build.gradle": "27f5fbc0368123fc1de99abd51afbf2e22b6a29df1a8404a1e9a30e24fe42582",
+    "apps/riseup-invizible-gateway/settings.gradle": "1348f0c0612343585763b1b4bc0e3de6555f62b86989828da4a357840033a5e1",
+    "apps/riseup-invizible-gateway/gradle.properties": "2075aa0841b3f521904744f0401a7fdaefe5606b44c21f250cd3f3101e5cebe1"
+  },
+  "outputs": {
+    "gateway-config.jar": {
+      "bytes": 8861,
+      "sha256": "217b35809b048c6d1b7b5f6ebe1a169183fdd01a34f20db6533ae3bd1c06c7b5"
+    },
+    "gateway-debug.apk": {
+      "bytes": 15361,
+      "sha256": "de85273b93cd176dfd5a00edc6a58109d209e30d3646d36bbbaa714a9864d8ac"
+    }
+  },
+  "retrieval": {
+    "method": "Authenticated GitHub Checks annotations; original non-secret build-output chunks decoded, byte count/SHA-256 verified against measured receipt before replacement.",
+    "checkRunId": 140478329727,
+    "buildConclusion": "success",
+    "ownerDeviceTested": false
+  }
+}

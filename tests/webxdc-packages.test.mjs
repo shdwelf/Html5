@@ -74,6 +74,9 @@ test("SITE-K archive contains the current shell and complete Project Y exhibit",
 
   assert.match(text(files, "manifest.toml"), /SITE-K · Offline Site Collection/);
   assertPublicDocs(files, "the public SITE-K archive");
+  for (const corrected of ["js/gateway-config.js", "docs/riseup-invizible-combined-gateway-research-2026-10-25.md"]) {
+    assert.equal(text(files, corrected), source(corrected), `${corrected}: do not redistribute superseded protection claims or the old planner`);
+  }
   assert.equal(text(files, "index.html"), source("index.html"));
   assert.equal(text(files, "4dwm-ports.html"), source("4dwm-ports.html"));
   assert.equal(text(files, "js/sitek-modes.js"), source("js/sitek-modes.js"));
@@ -113,6 +116,9 @@ test("ADL Gazetteer archive uses the privacy-filtered public docs tree", () => {
   assert.ok(files["index.html"] && files["manifest.toml"]);
   assert.ok(files["docs/research/03_GAZBEAN_ARCHITECTURE.md"], "public ADL architecture note remains available offline");
   assertPublicDocs(files, "the ADL archive");
+  for (const corrected of ["js/gateway-config.js", "docs/riseup-invizible-combined-gateway-research-2026-10-25.md"]) {
+    assert.equal(text(files, corrected), source(corrected), `${corrected}: do not redistribute superseded protection claims or the old planner`);
+  }
 });
 
 test("focused Project Y archive ships all six sites and their local dependencies", () => {

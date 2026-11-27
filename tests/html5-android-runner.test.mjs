@@ -128,7 +128,7 @@ test("build failure annotations escape untrusted log data and retain early cause
   assert.ok(result.stdout.length < 13000);
 });
 
-const completeSummary = () => ({ schema: 1, phases: Object.entries({ "public-local-files": 6, "network-local-files": 6, "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1 })
+const completeSummary = () => ({ schema: 1, phases: Object.entries({ "public-local-files": 7, "network-local-files": 7, "public-openpgp-recovery": 3, "public-audio-policy": 1, "public-headline-harry": 1 })
   .map(([phase, tests]) => ({ phase, exit: 0, tests, passed: tests, failed: 0, skipped: 0, firstFailure: null })) });
 function validate(summary) {
   const dir = mkdtempSync(join(tmpdir(), "synthetic-android-complete-"));
@@ -139,10 +139,20 @@ function validate(summary) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("Android completion gate requires all 17 passing actual results and five zero exits", () => {
+test("Android completion gate requires all 19 passing actual results and five zero exits", () => {
   const result = validate(completeSummary());
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /17 passed, zero failed\/skipped/);
+  assert.match(result.stdout, /19 passed, zero failed\/skipped/);
+});
+
+test("Android completion gate counts match every current local-file instrumentation test, including the binary-message picker", () => {
+  const source = readFileSync(new URL("../apps/html5-offline-launcher/app/src/androidTest/java/org/arena/html5launcher/LocalFileExportSmokeTest.java", import.meta.url), "utf8");
+  const actual = (source.match(/@Test\b/gu) || []).length;
+  assert.equal(actual, 7);
+  for (const phase of completeSummary().phases.filter((phase) => phase.phase.endsWith("local-files"))) assert.equal(phase.tests, actual);
+  // An old six-case result must no longer satisfy the seven-case phase gate.
+  const stale = completeSummary(); stale.phases[0].tests = 6; stale.phases[0].passed = 6;
+  assert.equal(validate(stale).status, 1);
 });
 
 test("Android completion gate refuses partial/no results, skips, failures or nonzero phase exit even if a runner claims success", () => {

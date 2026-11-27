@@ -189,7 +189,7 @@ export function mountWorkbench({ doc = globalThis.document, view = globalThis.wi
           let binary = false;
           try { output.value = new TextDecoder("utf-8", { fatal: true }).decode(bytes); } catch { output.value = ""; binary = true; }
           byId("decrypted-save-ack").disabled = false;
-          byId("decrypted-payload-status").textContent = `${bytes.length.toLocaleString()} decrypted bytes retained only in this tab. ${binary ? "Binary payload: no text preview." : "Exact UTF-8 text preview shown above."} Embedded filenames are ignored; saving requires separate acknowledgement.`;
+          byId("decrypted-payload-status").textContent = `${bytes.length.toLocaleString()} decrypted bytes retained only in this tab. ${binary ? "Binary payload: no text preview." : "UTF-8 preview shown above; display/clipboard line endings may normalize. Use byte save for the original payload."} Embedded filenames are ignored; saving requires separate acknowledgement.`;
           setStatus("decrypt-status", `Decrypted. ${binary ? "Binary bytes are available for explicit save; never opened automatically." : "Text shown without HTML execution."} Integrity is not sender authentication; review before using.`, "success");
         }
       } catch (error) {

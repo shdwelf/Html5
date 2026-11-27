@@ -145,7 +145,7 @@ A particularly important limitation is explicit in the [official overview](https
 2. Official download page: desktop XFCE and terminal/server editions; ISO, SHA-256/SHA-512, detached signature, `.sig.info`, PEM keys and release manifest links. Current route handlers are `download.php?f=xfce-iso` and `download.php?f=terminal-iso`; the initial review did not acquire them; the subsequent owner-authorized desktop acquisition is measured below.
 3. Exact metadata candidates below. **Both claim November 19, later than the report cutoff.** They are not labeled “latest as of November 17.” The November 26 `10.0.3-60` APT metapackage / binary build 86 is a different identifier, not desktop ISO build 76 or terminal build 54.
 
-| Edition | Filename / claimed build | Claimed exact bytes from `.sig.info` | Publisher SHA-256, not locally computed |
+| Edition | Filename / claimed build | Claimed exact bytes from `.sig.info` | Publisher SHA-256 (desktop subsequently computed below) |
 | --- | --- | ---: | --- |
 | Desktop XFCE | `kodachi-os-xfce-10.0.3-amd64.iso` / `10.0.3.76` | 4,544,303,104 | `57693b32079bef101b75f21f3391bd036f1aae72836b8a06c921d236df626c14` |
 | Terminal/server | `kodachi-os-terminal-10.0.3-amd64.iso` / `10.0.3.54` | 3,245,793,280 | `19432bb6d719ea5b9eebe1ede7c7caf107ddd187a68eafe3e3170b12402784ac` |

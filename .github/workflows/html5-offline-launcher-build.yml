@@ -314,6 +314,12 @@ jobs:
               with zipfile.ZipFile(path) as apk:
                   if any(name.rsplit("/", 1)[-1] in {"openpgp-recovery-smoke.js", "openpgp-message-smoke.json"} for name in apk.namelist()):
                       raise SystemExit("Synthetic recovery fixture leaked into a production APK")
+                  if profile != "private":
+                      for app in ("openpgp-workbench", "torrent-atlas"):
+                          source_root = Path("public/apps") / app
+                          for source in source_root.rglob("*"):
+                              if source.is_file() and apk.read(f"assets/apps/{app}/"+source.relative_to(source_root).as_posix()) != source.read_bytes():
+                                  raise SystemExit(f"Stale/missing {app} runtime asset in {profile} APK: {source.name}")
           for profile in ("public", "network"):
               path = root / f"build/outputs/apk/androidTest/{profile}/debug/app-{profile}-debug-androidTest.apk"
               with zipfile.ZipFile(path) as apk:
