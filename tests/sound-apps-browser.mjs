@@ -32,7 +32,7 @@ try {
       const page = await browser.newPage();
       try {
         await page.goto(`${origin}/apps/index.html`, { waitUntil: "networkidle0" });
-        await page.waitForFunction(() => document.querySelectorAll("#app-list .card").length === 97);
+        await page.waitForFunction(() => document.querySelectorAll("#app-list .card").length === 98);
         await page.type("#app-search", "sanctuary");
         assert.equal(await page.$$eval("#app-list .card", (cards) => cards.length), 1);
         assert.match(await page.$eval("#app-list a", (link) => link.href), /sound-sanctuary\/index\.html$/);
