@@ -1,2 +1,6 @@
 # Unified-diff context-only blank lines are represented by one leading space.
 patches/*.patch whitespace=-blank-at-eol
+
+# Retained Gutenberg byte excerpts deliberately preserve source CRLF and EOF spacing.
+docs/research/armstrong-madison-1808/gutenberg-*.txt -text whitespace=cr-at-eol,-blank-at-eof
+public/apps/armstrong-madison/evidence/gutenberg-*.txt -text whitespace=cr-at-eol,-blank-at-eof

@@ -1,0 +1,89 @@
+Armstrong–Madison source-review build
+
+SUPPLIED WORKBENCH AND ARTWORK
+The complete workbench and icon were supplied by the user in
+armstrong-madison-cipher.xdc.xml (a ZIP archive despite the suffix).
+The exact input is retained for requested review/modification. No authoring
+source or separate redistribution license for the complete workbench/icon
+was supplied. This notice does NOT invent an open-source grant for them.
+The old manifest's blog URL is a research reference, not proof of code authorship.
+The generated manifest points to the repository containing the actual build sources.
+
+EMBEDDED REACT / REACT DOM
+The supplied bundle reports React/React DOM version 19.2.6. The version string
+is an observation, not independent binary-to-source authentication.
+React's upstream MIT notice (also present in the installed dependency notices):
+
+MIT License
+
+Copyright (c) Meta Platforms, Inc. and affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+HISTORICAL TEXT AND RESEARCH
+The Founders Online letters and the Jefferson historical excerpt are
+credited to their source editions in the source register and SOURCE-CHECK.md.
+Editorial extraction is not manuscript collation or a raw HTTP byte capture.
+The GITenberg edition labels its historical text public domain in the USA;
+other jurisdictions and Project Gutenberg trademark/license terms may differ.
+Only bounded historical excerpts/metadata are redistributed here, not a new
+claim of authorship over the source edition.
+
+AFIO's factual 56-entry mapping table and short proposed plaintext are retained
+for verification and attributed to Yaacov Apelbaum / AFIO, 27 May 2025.
+Retention is not endorsement or proof that the cipher was solved.
+Cryptiana/Satoshi Tomokiyo and Klaus Schmeh/commenters are credited as secondary
+research; their articles and manuscript images are not wholesale republished.
+
+GITHUB COMPARISON TRANSCRIPT
+The pinned dbourdeau/cyphersolver comparison transcript is retained with its
+upstream notice at evidence/github-MIT-LICENSE.txt in the full build. The
+embedded review also retains this comparison input for recomputation; portable
+exports omit the separate file but include this complete notice:
+
+MIT License
+
+Copyright (c) 2026 Dan Bourdeau
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+No external cryptanalytic program was executed or incorporated as the local
+analysis implementation.
+
+NEW REVIEW CODE
+analysis.mjs, research.mjs, workspace.mjs, the reader template/styles and the
+build/test integration are separately authored for this repository. They do
+not change the provenance/license boundaries of the supplied workbench or
+claim an independently recovered historical key.

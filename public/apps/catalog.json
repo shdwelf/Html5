@@ -39,6 +39,12 @@
       "href": "./arkansas-subsurface/index.html"
     },
     {
+      "slug": "armstrong-madison",
+      "name": "Armstrong–Madison Cipher · Source Review",
+      "description": "Original workbench plus primary-source research, honest uncertainty and a reproducible AFIO key audit. Offline; guesses saved or shared only on request.",
+      "href": "./armstrong-madison/index.html"
+    },
+    {
       "slug": "atlanta-subsurface",
       "name": "ATLANTA SUBSURFACE 4Dwm",
       "description": "Chattahoochee · South River · Midtown / Downtown — Fulton County, Georgia. Schematic city subsurface theater with an offline gazetteer and a separate geocache source tier.",

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="__CSP__">
+<title>Armstrong–Madison · Source-checked research</title>
+<meta name="description" content="Offline primary-source dossier and reproducible audit of Armstrong's 20 February 1808 cipher letter. Published claims, hypotheses and unresolved evidence remain separate.">
+<style>__STYLE__</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to research</a>
+<header>
+  <div class="masthead"><span>ARMSTRONG / MADISON</span><span>RESEARCH NOTE · 1808.02.20</span></div>
+  <div class="hero"><div><p class="eyebrow">THE FEBRUARY OUTLIER</p><h1>A letter. A missing key.<br>A claim worth checking.</h1><p class="lede">John Armstrong Jr. → Secretary of State James Madison.<br>Primary evidence, reproducible counts, and room for uncertainty.</p></div><div class="seal" aria-hidden="true"><span>453 · 240</span><strong>1808</strong><span>760 · 1480</span></div></div>
+  <p class="status-line"><span class="dot" aria-hidden="true"></span> No complete, independently verified decipherment established by this review.</p>
+  <p class="offline-note">Bundled evidence · no remote requests · no saved guesses · external references open only when selected</p>
+</header>
+<nav role="tablist" aria-label="Research sections">
+  <button id="tab-review" role="tab" aria-selected="true" aria-controls="panel-review" data-view="review">01 · Findings</button>
+  <button id="tab-transcript" role="tab" aria-selected="false" aria-controls="panel-transcript" tabindex="-1" data-view="transcript">02 · Read the letter</button>
+  <button id="tab-audit" role="tab" aria-selected="false" aria-controls="panel-audit" tabindex="-1" data-view="audit">03 · Test the key</button>
+  <button id="tab-sources" role="tab" aria-selected="false" aria-controls="panel-sources" tabindex="-1" data-view="sources">04 · Sources</button>
+  <button id="tab-trail" role="tab" aria-selected="false" aria-controls="panel-trail" tabindex="-1" data-view="trail">05 · Search trail</button>
+  <button id="tab-evidence" role="tab" aria-selected="false" aria-controls="panel-evidence" tabindex="-1" data-view="evidence">06 · Evidence</button>
+</nav>
+<main id="main" tabindex="-1">
+<section id="panel-review" role="tabpanel" aria-labelledby="tab-review">
+  <div class="section-title"><h2>What the evidence supports</h2><span class="edition">SOURCE-CHECKED · NOT A SOLUTION</span></div>
+  <p id="identity"></p>
+  <div id="baseline-stats" class="stats"></div>
+  <p class="caption">Counts describe the retained Founders editorial text, not a newly collated manuscript. Coverage is not correctness.</p>
+  <div id="findings" class="cards"></div>
+</section>
+<section id="panel-transcript" role="tabpanel" aria-labelledby="tab-transcript" hidden>
+  <div class="section-title"><h2>Read without filling the gaps</h2><span class="edition">FOUNDERS ONLINE · NORMALIZED EXTRACTION</span></div>
+  <p>Every numeric reading stays in order. Brackets mark descriptions of graphical writing, <strong>not decoded words</strong>. The line numbers below are local editorial-body line numbers, not manuscript coordinates. No facsimile images are bundled.</p>
+  <div class="notice"><strong>Source variants:</strong> Founders prints <code>203</code>; the attachment and Cryptiana suggest <code>1203</code>. The damaged <code>17⟨   ⟩</code> is not a complete established group. See the source register before emending either.</div>
+  <div class="controls"><label for="highlight-code">Highlight a code <input id="highlight-code" type="search" inputmode="numeric" maxlength="4" placeholder="e.g. 1480" autocomplete="off"></label><label class="check"><input id="show-labels" type="checkbox"> Overlay current audit labels (unverified)</label></div>
+  <p id="highlight-status" class="caption" role="status" aria-live="polite"></p>
+  <div class="manuscript"><p class="salutation">Paris 20th feby 1808<br>Sir,<br>The</p><div id="transcript-lines"></div><p class="salutation">I have the honor to be, sir, with very high consideration, your most obedient &amp; very humble servant<br>John Armstrong</p></div>
+</section>
+<section id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" hidden>
+  <div class="section-title"><h2>Does the published key account for the text?</h2><span class="edition">LITERAL, ORDER-PRESERVING AUDIT</span></div>
+  <p>The default is AFIO's 56-entry claimed key, <strong>not an accepted plaintext</strong>. The audit does not alter the original workbench's working key. Unknown numbers and graphics are never silently discarded from the reader.</p>
+  <details><summary>What AFIO published as “Decrypted Text”</summary><blockquote id="afio-claim"></blockquote><p class="caption">Yaacov Apelbaum / AFIO, 27 May 2025. Quoted for verification; not endorsed.</p></details>
+  <div class="notice"><strong>Why 365, 366, and 369?</strong> There are 365 fully printed readings plus one damaged prefix. Including that prefix gives 366. The pinned GitHub stream has 369 because it also counts three editorial line-count numerals. Its 133 mapped occurrences become 131 with those removed, or 130 when the damaged prefix is excluded.</div>
+  <label class="check"><input id="include-damaged" type="checkbox"> Provisionally count the damaged prefix as code 17 (366 readings)</label>
+  <div class="audit-layout"><div><label for="key-editor">Number → label JSON <span class="caption">(1–1900; labels ≤80 characters; exported JSON ≤96,000 characters)</span></label><textarea id="key-editor" rows="13" spellcheck="false" autocomplete="off" aria-describedby="key-status"></textarea><div class="actions"><button id="apply-key">Apply labels</button><button id="reset-key" class="secondary">Restore AFIO claim</button><button id="empty-key" class="secondary">Empty key</button></div><p id="key-status" role="status" aria-live="polite"></p></div><div id="audit-results" aria-live="polite"><div id="audit-stats" class="stats compact"></div><p id="absent-codes"></p><p id="alignment-score"></p><p class="caption">The subsequence score allows omissions, so even a high score would not establish a complete solution. It assumes the publisher's number-to-one-word labels; clear “The” and untranscribed graphics are not wildcard matches. The comparison paragraph remains AFIO's even when you test custom labels.</p></div></div>
+  <h3>Frequency and accounting</h3><label for="frequency-filter">Find a number or label <input id="frequency-filter" type="search" maxlength="80" autocomplete="off"></label><div class="table-scroll"><table><thead><tr><th scope="col">Code</th><th scope="col">Occurrences</th><th scope="col">Proposed label</th></tr></thead><tbody id="frequency-body"></tbody></table></div>
+</section>
+<section id="panel-sources" role="tabpanel" aria-labelledby="tab-sources" hidden>
+  <div class="section-title"><h2>Trace the claim to its source</h2><span class="edition">PRIMARY ≠ MIRROR ≠ COMMENT</span></div>
+  <p>Links are references, not background requests. Offline Webxdc and Android hosts may block outbound navigation. Source notes and relevant excerpts remain readable here. A GitHub fork, mirror, or a second search engine is not an additional independent witness.</p>
+  <div class="controls"><label for="source-filter">Search the register <input id="source-filter" type="search" maxlength="160" placeholder="Madison, AFIO, Gutenberg…" autocomplete="off"></label><label for="source-kind">Evidence family <select id="source-kind"><option value="all">All sources</option><option value="primary">Primary / official</option><option value="secondary">Secondary / claims / GitHub</option><option value="discovery">Search / directories</option><option value="limits">Failed or limited retrieval</option></select></label></div>
+  <p id="source-count" class="caption" role="status" aria-live="polite"></p><div id="source-cards" class="source-cards"></div>
+</section>
+<section id="panel-trail" role="tabpanel" aria-labelledby="tab-trail" hidden>
+  <div class="section-title"><h2>Searches made, limits kept</h2><span class="edition">NO LIVE METASEARCH CLIENT</span></div>
+  <p>All four named services were checked in their actual roles. Search outcomes are session observations, not exhaustive coverage of the web. No query is sent by this viewer.</p>
+  <div id="query-trail" class="timeline"></div><h2>What would move the investigation forward?</h2><div id="next-steps" class="cards"></div>
+</section>
+<section id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+  <div class="section-title"><h2>Evidence you can take offline</h2><span class="edition">TEXT + METHOD + PROVENANCE</span></div>
+  <div id="letter-excerpts"></div>
+  <details><summary>Project Gutenberg context · Jefferson → Armstrong, 2 May 1808</summary><p>Retrieved through a pinned GITenberg mirror after direct Gutenberg endpoints failed. Context only; not a February plaintext witness.</p><pre id="gutenberg-excerpt"></pre><p class="caption">Public-domain historical text in the U.S.; the source edition's metadata and full-text/excerpt hashes are recorded.</p></details>
+  <details><summary>Provenance and third-party notices</summary><pre id="third-party-notices"></pre></details>
+  <details><summary>Local evidence integrity register</summary><p>SHA-256 values identify the retained local files. They do not authenticate the publisher or turn a normalized extraction into raw HTTP bytes.</p><pre id="integrity-list"></pre></details>
+  <div class="actions"><button id="show-receipt">Show reproducible audit JSON</button><button id="download-receipt" class="secondary">Request JSON download</button></div><p id="export-status" role="status" aria-live="polite"></p><textarea id="receipt-output" aria-label="Recomputed audit JSON" rows="16" readonly hidden></textarea>
+  <p id="method" class="caption"></p>
+</section>
+</main>
+<footer><strong>Source-checked does not mean deciphered.</strong> This is a bounded source review and offline integration. Missing manuscript collation, an independent key, and a verified full plaintext remain open. The imported workbench's unrelated historical narratives are not certified by this review.</footer>
+<noscript><p class="notice">JavaScript is required for the interactive audit. The XDC also includes a readable SOURCE-CHECK.md report and the evidence text files; no network service is needed.</p></noscript>
+<script>__SCRIPT__</script>
+</body>
+</html>

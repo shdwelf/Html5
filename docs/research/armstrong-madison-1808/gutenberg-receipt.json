@@ -1,0 +1,69 @@
+{
+  "repo": "GITenberg/The-Writings-of-Thomas-Jefferson-Vol-5-of-9-Being-His-Autobiography-Correspondence-Reports-Me__53767",
+  "commit": "714c07904a75b84e7191cc9d1e5dfb48e1def1bb",
+  "retrieval": "GitHub Contents/Blobs API; not a direct Gutenberg download",
+  "files": [
+    {
+      "path": "53767-0.txt",
+      "gitBlob": "050f8ea9c2418c893e94389dc886a94f30e8eb03",
+      "bytes": 1300025,
+      "sha256": "a78bf4a35b07dd2ff3ced0c4079c2a7a9897509718928f2e9d1286033545819e"
+    },
+    {
+      "path": "metadata.yaml",
+      "gitBlob": "642306a3c0a15c638a519a97ee0319e175b573bc",
+      "bytes": 1486,
+      "sha256": "b3a03db38e0934d9720088ae1bfdfe5e33a3c785345969bf4d4b51c35c823132"
+    },
+    {
+      "path": "pg53767.rdf",
+      "gitBlob": "3fbf33d63764ac866192bd1b70d15a544980fb56",
+      "bytes": 13070,
+      "sha256": "0de8949c6307ade7df6cebbe7dabf5fc1c3e38e9437b9d5ef876757ada9b139e"
+    }
+  ],
+  "directGutenbergFetch": "Failed: ebook, HTML and plain-text endpoints through fetch_page. Full text obtained from this pinned GITenberg mirror instead; not independently authenticated to a fresh Gutenberg download.",
+  "excerpt": {
+    "path": "gutenberg-jefferson-may2.txt",
+    "startByte": 584129,
+    "endByteExclusive": 586611,
+    "bytes": 2482,
+    "sha256": "3ecac47767eb90765e9cfd83133938a26f37646b1237cdaad9fae6776903e0a6"
+  },
+  "scope": "Contextual May 2 1808 letter only. A bounded full-text string search found no February 20 plaintext/key witness; this is not a proof of absence from Project Gutenberg.",
+  "boundedStringSearch": [
+    {
+      "literal": "Armstrong",
+      "caseInsensitiveOccurrences": 22
+    },
+    {
+      "literal": "Madison",
+      "caseInsensitiveOccurrences": 67
+    },
+    {
+      "literal": "cipher",
+      "caseInsensitiveOccurrences": 0
+    },
+    {
+      "literal": "cypher",
+      "caseInsensitiveOccurrences": 4
+    },
+    {
+      "literal": "misaddressed",
+      "caseInsensitiveOccurrences": 0
+    },
+    {
+      "literal": "undecyphered",
+      "caseInsensitiveOccurrences": 0
+    },
+    {
+      "literal": "petitions of your seamen",
+      "caseInsensitiveOccurrences": 0
+    },
+    {
+      "literal": "The bearer of this",
+      "caseInsensitiveOccurrences": 1
+    }
+  ],
+  "openingFormulaHit": "The single case-insensitive hit for the bearer of this is Jefferson to Dupont de Nemours, 2 March 1809, referring to Mr. Coles; not Armstrong to Jefferson, 15 February 1808. The formula-hit excerpt is retained for checking."
+}

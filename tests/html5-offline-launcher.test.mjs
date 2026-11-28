@@ -39,15 +39,16 @@ const expectedSlugs = readdirSync(join(ROOT, "public", "apps"), { withFileTypes:
 test("catalog includes every current HTML entrypoint and no data-only sibling", () => {
   const discovered = discoverApps().map((app) => app.slug).sort();
   const catalog = buildCatalog();
-  assert.equal(expectedSlugs.length, 97);
+  assert.equal(expectedSlugs.length, 98);
   assert.deepEqual(discovered, expectedSlugs);
   assert.deepEqual(catalog.map((app) => app.slug).sort(), expectedSlugs);
-  assert.equal(catalog.length, 97);
+  assert.equal(catalog.length, 98);
   assert.ok(expectedSlugs.includes("newyork-subsurface"));
   assert.ok(expectedSlugs.includes("helios-observatory"));
   assert.ok(expectedSlugs.includes("prime-viewer"));
   assert.ok(expectedSlugs.includes("keyspace"));
   assert.ok(expectedSlugs.includes("torrent-atlas"));
+  assert.ok(expectedSlugs.includes("armstrong-madison"));
   assert.equal(catalog.some((app) => app.slug === "greeran-family-bible"), false);
 });
 
@@ -66,7 +67,7 @@ test("private Android profile contains only its fixed two-app allowlist", () => 
 
 test("opt-in network profile adds RadarScope and News Globe without changing offline inventories", () => {
   const network = buildCatalog("network");
-  assert.equal(network.length, 99);
+  assert.equal(network.length, 100);
   assert.ok(network.some((app) => app.slug === "ads-b-radar-scope"));
   assert.match(RADAR_SCOPE, /feed: 'combined'/);
   assert.doesNotMatch(RADAR_SCOPE, /opensky-network\.org|OpenSky Network|feedOpenSky/);
@@ -77,7 +78,7 @@ test("opt-in network profile adds RadarScope and News Globe without changing off
   const networkPublicSlugs = network
     .filter((app) => !["ads-b-radar-scope", "news-globe"].includes(app.slug))
     .map((app) => app.slug);
-  assert.equal(publicSlugs.length, 97);
+  assert.equal(publicSlugs.length, 98);
   assert.deepEqual(networkPublicSlugs, publicSlugs, "network profile retains every approved public app, including existing coin apps");
   assert.deepEqual(buildCatalog("private").map((app) => app.slug).sort(), ["helios-observatory", "prime-viewer"]);
   assert.match(GRADLE, /create\('network'\)/);
@@ -246,7 +247,7 @@ test("Android emulator tests exercise microphone capture and Headline Harry boot
   }
   assert.match(ANDROID_WORKFLOW, /timeout-minutes: 20/);
   assert.match(README, /private Android[\s\S]*?two-app[\s\S]*?Helios Observatory and Prime Viewer/);
-  assert.match(README, /97\*\* HTML entrypoints/);
+  assert.match(README, /98\*\* HTML entrypoints/);
   assert.match(README, /Sound Sanctuary/);
   assert.match(README, /AURA Sound Studio/);
   assert.match(README, /ANC Studio microphone capture is opt-in/);

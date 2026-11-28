@@ -85,6 +85,9 @@
     "check:app-catalog": "node scripts/build-html5-browser-catalog.mjs --check",
     "build:torrent-atlas": "node scripts/build-torrent-atlas.mjs",
     "check:torrent-atlas": "node scripts/build-torrent-atlas.mjs --check",
+    "build:armstrong-madison": "node scripts/build-armstrong-madison.mjs",
+    "check:armstrong-madison": "node scripts/build-armstrong-madison.mjs --check",
+    "test:armstrong-madison": "node --test tests/armstrong-madison.test.mjs && node tests/armstrong-madison-browser.mjs",
     "build:gateway-java": "node scripts/build-gateway-java.mjs",
     "test:gateway-java": "GATEWAY_REQUIRE_JAVA=1 node --test tests/gateway-java.test.mjs"
   },

@@ -9,10 +9,14 @@ the Riseup × InviZible VPN scaffold and contains no VPN service or tunnel engin
 
 **Torrent Atlas** is included for local metadata tools only. Its external searches are explicit outbound links, not an embedded result service. Offline profiles may block those links; no native network, picker or origin policy is relaxed. It is not added to the two-app private profile or microphone allowlist.
 
-- The current builder discovers **97** HTML entrypoints and packages **8,528
-  files** (166,552,812 bytes uncompressed) inside those app directories. It
-  excludes data-only directories without an `index.html`. Gradle stages the
-  files under this module's ignored `app/build/` directory.
+**[Armstrong–Madison Cipher Lab](../armstrong-madison/README.md)** preserves the supplied 18-section workbench and adds a source-checked reader and reproducible claim audit. It is not a complete verified decipherment. Working guesses are saved, loaded or shared only by explicit action; the private and microphone allowlists are unchanged.
+
+- The current builder discovers **98** HTML entrypoints, including the supplied
+  Armstrong–Madison workbench and its source-checked offline dossier. The staging
+  command reports measured file counts and uncompressed bytes for the current
+  tree rather than relying on a stale size estimate. It excludes data-only
+  directories without an `index.html`. Gradle stages the files under this
+  module's ignored `app/build/` directory.
 - The catalog is generated from each app's `manifest.toml` name/description,
   then the page title and directory name as fallbacks. It includes search and
   marks entrypoints with a static remote-resource reference.
@@ -131,14 +135,14 @@ cd apps/html5-offline-launcher
 On Windows, use `gradlew.bat` instead of `./gradlew`. The first wrapper run
 fetches the pinned Gradle 8.7 distribution and validates its SHA-256 before use.
 
-The **public** profile packages all 97 approved local HTML entrypoints. The
+The **public** profile packages all 98 approved local HTML entrypoints. The
 **private Android** profile is a separate, reduced build with a fixed two-app
 allowlist (Helios Observatory and Prime Viewer), a distinct application ID, and
 no audio permissions. This Android allowlist is separate from the four-app
 private browser bundle. Both profiles omit network permission.
 
-The **network Android** profile keeps the same 97 public apps and adds
-RadarScope and News Globe (99 catalog entries total), with a distinct
+The **network Android** profile keeps the same 98 public apps and adds
+RadarScope and News Globe (100 catalog entries total), with a distinct
 application ID and the only `INTERNET` permission. Build/install this APK only
 when the user wants live network access; its network warning must be accepted
 at startup. Public and private flavor behavior remains offline. All APKs are
@@ -221,7 +225,7 @@ sidecar. Before either artifact is uploaded, CI verifies the sidecar against the
 APK bytes and enforces a **100,000,000-byte per-APK limit** for Dropbox-sized
 handoffs. This is a conservative source-file gate, not a claim about the size of
 a service-generated archive. Separate artifacts avoid combining both profiles
-in one 120 MB handoff. The network package retains all 97 approved public apps
+in one 120 MB handoff. The network package retains all 98 approved public apps
 plus RadarScope and News Globe. The private APK is never published as plaintext.
 A recipient dispatch disables **all plaintext APK uploads** and encrypts each of
 the three profiles separately. To back up **all three profiles**, manually

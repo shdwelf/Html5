@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Nl3Lu7nylbdIvdFPOnPoXwpDM57I2VQDocwZoXc4uLg='; style-src 'sha256-RrnAoPDOYevCOEwEcQa6u1JR58UX7Ip6SGZrO2yGwls='; img-src data:; connect-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Armstrong–Madison · Source-checked research</title>
+<meta name="description" content="Offline primary-source dossier and reproducible audit of Armstrong's 20 February 1808 cipher letter. Published claims, hypotheses and unresolved evidence remain separate.">
+<style>:root{color-scheme:light;--paper:#f3efe5;--surface:#fbf8f1;--ink:#282d29;--muted:#62685f;--line:#d4d3c4;--olive:#485c4e;--copper:#935630;--pale:#e7ebe1;--red:#7d3c33;font:15px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);overflow-wrap:anywhere}[hidden]{display:none!important}a{color:var(--olive);text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:var(--copper)}button,input,select,textarea{font:inherit;color:inherit}button,input,select,textarea,summary,a{touch-action:manipulation}button,summary{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--copper);outline-offset:3px}.skip{position:absolute;left:1rem;top:-5rem;background:var(--surface);padding:.6rem;z-index:10}.skip:focus{top:1rem}header,main,footer,nav{max-width:1160px;margin:auto}header{padding:1.4rem 2rem 0}.masthead{border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;padding-bottom:.8rem;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.13em;color:var(--muted)}.hero{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:1.5rem 0}.eyebrow{margin:0;color:var(--copper);font:600 10px/1.4 ui-monospace,monospace;letter-spacing:.2em}h1{font:normal clamp(2.1rem,4.7vw,3.6rem)/1.08 Georgia,"Times New Roman",serif;letter-spacing:-.035em;margin:.75rem 0 1rem}.lede{font-size:14px;color:var(--muted);margin:0;line-height:1.65}.seal{flex:0 0 166px;border:1px solid #aaa995;border-radius:50%;height:166px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 0 7px var(--paper),inset 0 0 0 8px var(--line);color:var(--olive);transform:rotate(-7deg)}.seal strong{font:40px/1.4 Georgia,serif}.seal span{font:11px/1.5 ui-monospace,monospace;letter-spacing:.15em}.status-line{display:flex;gap:.6rem;align-items:center;background:var(--pale);border:1px solid #c8d0c1;padding:.65rem .9rem;font-size:12px;font-weight:600;margin:.4rem 0}.dot{width:7px;height:7px;background:var(--olive);border-radius:50%;flex:0 0 7px}.offline-note{font:10px/1.5 ui-monospace,monospace;color:var(--muted);padding:.2rem 0 .7rem}nav{display:flex;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:0 2rem;gap:0}nav button{font:12px/1.5 system-ui,sans-serif;border:0;border-bottom:2px solid transparent;background:transparent;padding:.9rem 1rem;color:var(--muted);min-height:44px}nav button[aria-selected=true]{color:var(--olive);font-weight:650;border-bottom-color:var(--olive)}main{padding:1.6rem 2rem 2.5rem}.section-title{display:flex;flex-wrap:wrap;gap:.5rem 1rem;justify-content:space-between;align-items:center}.section-title h2{margin:.2rem 0}h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:normal}h2{font-size:1.65rem;line-height:1.25;margin:1.75rem 0 .7rem}h3{font-size:1.2rem;line-height:1.35;margin:0 0 .6rem}.edition,.badge{font:9px/1.6 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--olive)}.badge{display:inline-block;padding:.17rem .5rem;background:var(--pale);border:1px solid #ccd1c4;margin-bottom:.65rem}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:1.5rem 0 .5rem;border:1px solid var(--line);background:var(--surface)}.stats>div{padding:.85rem 1rem;border-right:1px solid var(--line);min-width:0}.stats>div:last-child{border:0}.stats strong{font:2rem/1.15 Georgia,serif;color:var(--olive);display:block;overflow-wrap:anywhere}.stats span{display:block;font-size:10px;line-height:1.4;margin-top:.4rem;color:var(--muted)}.stats.compact{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0}.stats.compact>div:nth-child(-n+2){border-bottom:1px solid var(--line)}.caption{font-size:11px;color:var(--muted);line-height:1.6}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1.5rem}.cards article,.source-cards article{background:var(--surface);border:1px solid var(--line);padding:1.25rem;min-width:0}.cards p,.source-cards p{font-size:13px;line-height:1.7;margin:.6rem 0}.citations{display:flex;gap:.45rem;flex-wrap:wrap;font:10px/1.5 ui-monospace,monospace}.citations button{color:var(--olive);border:0;background:none;text-decoration:underline;padding:.2rem;min-height:32px}.notice{border-left:3px solid var(--copper);padding:.8rem 1rem;background:#eee5d6;margin:1rem 0;font-size:12px;line-height:1.65}.controls{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:1rem 0}.controls>label:first-child{flex:1;min-width:180px}label{display:block;font-size:12px;font-weight:600}input[type=search],select,textarea{display:block;width:100%;min-width:0;border:1px solid #b7bbaa;border-radius:3px;background:var(--surface);padding:.6rem .75rem;font-size:13px;margin-top:.35rem}input[type=checkbox]{accent-color:var(--olive);width:17px;height:17px;flex:0 0 17px}.check{display:flex;align-items:center;gap:.5rem;font-weight:normal;margin:.75rem 0}textarea{resize:vertical;font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;min-height:10rem}button:not([role=tab]):not(.citations button){border:1px solid var(--olive);background:var(--olive);color:#fff;border-radius:3px;padding:.55rem .8rem;min-height:40px;font-size:12px}button.secondary{background:var(--surface)!important;color:var(--olive)!important}button:disabled{opacity:.55;cursor:not-allowed}.actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.audit-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin:1.25rem 0}.audit-layout>div{min-width:0}#key-status,#export-status{font-size:12px;color:var(--olive)}#key-status.error{color:var(--red)}details{border:1px solid var(--line);background:var(--surface);margin:1rem 0;padding:.9rem 1rem}summary{font-size:13px;font-weight:600;min-height:26px}blockquote{font:italic 1.05rem/1.8 Georgia,serif;border-left:2px solid var(--olive);padding-left:1rem;margin:1.25rem 0}pre{font:11px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}code{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;background:#e9e8dc;padding:.1rem .3rem;border-radius:2px}.manuscript{border:1px solid var(--line);background:var(--surface);padding:1.5rem;margin:1rem 0}.salutation{font:italic 1.05rem/1.9 Georgia,serif}.transcript-line{display:grid;grid-template-columns:24px minmax(0,1fr);gap:.7rem;padding:.5rem 0;border-bottom:1px solid #e9e5db}.line-id{color:#8a8b7b;font:9px/2.8 ui-monospace,monospace}.tokens{display:flex;flex-wrap:wrap;gap:.45rem;align-items:baseline}.code-token{font:12px/1.9 ui-monospace,monospace;padding:.07rem .2rem;border-radius:2px;display:inline-flex;flex-direction:column}.code-token b{font-weight:normal}.code-token .gloss{color:var(--copper);font-size:9px;line-height:1.25}.code-token.damaged{border-bottom:1px dashed var(--red);color:var(--red)}.code-token.chosen{background:#d7e1d0;outline:1px solid var(--olive)}.glyph{font:italic 11px/1.6 Georgia,serif;color:var(--copper);padding:.1rem .4rem;border:1px dashed #d0bfa8}.table-scroll{overflow:auto;max-height:420px;margin-top:1rem;border:1px solid var(--line)}table{border-collapse:collapse;width:100%;font-size:12px;background:var(--surface);table-layout:fixed}th,td{text-align:left;border-bottom:1px solid var(--line);padding:.65rem .8rem;overflow-wrap:anywhere}th{position:sticky;top:0;background:var(--pale);font-weight:600}td:first-child{font-family:ui-monospace,monospace}td.unmapped{color:var(--muted);font-style:italic}.source-cards{display:grid;gap:.8rem}.source-id{display:inline-block;font:10px/1.4 ui-monospace,monospace;color:var(--copper);margin-right:.7rem}.source-cards h3{display:inline;font-size:1.2rem}.source-cards article{scroll-margin-top:1rem}.source-cards .source-status{font-size:11px;color:var(--olive);font-weight:600}.source-cards .source-url{font:10px/1.6 ui-monospace,monospace}.timeline article{padding:1rem 1rem 1rem 1.4rem;border-left:2px solid var(--line);position:relative}.timeline article:before{content:"";position:absolute;width:7px;height:7px;background:var(--olive);border-radius:50%;left:-4.5px;top:1.5rem}.timeline h3{margin:0 0 .5rem}.timeline p{font-size:13px;line-height:1.7;margin:.5rem 0}.timeline .query{font:11px/1.7 ui-monospace,monospace;color:var(--muted)}footer{border-top:1px solid var(--line);padding:1.25rem 2rem 2rem;font-size:11px;color:var(--muted)}footer strong{color:var(--olive)}@media(max-width:650px){:root{font-size:14px}header{padding:1rem 1rem 0}.masthead{font-size:8px}.masthead span:last-child{max-width:120px;text-align:right}.hero{gap:.75rem;padding:1.2rem 0}.seal{flex-basis:94px;height:94px}.seal strong{font-size:26px}.seal span{font-size:7px}.lede{font-size:11px}h1{font-size:2rem}.status-line{font-size:10px}.offline-note{font-size:9px}nav{padding:0 .5rem}nav button{padding:.65rem .6rem;font-size:10px;flex:1 0 30%}main{padding:1.25rem 1rem 2rem}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats>div:nth-child(-n+2){border-bottom:1px solid var(--line)}.stats>div:nth-child(2){border-right:0}.stats strong{font-size:1.7rem}.cards,.audit-layout{grid-template-columns:minmax(0,1fr)}.cards article,.source-cards article{padding:1rem}.manuscript{padding:.8rem}.code-token{font-size:11px}.edition{font-size:8px}.section-title h2{font-size:1.4rem}footer{padding:1rem}.controls>label{flex:1 1 100%}}@media(prefers-reduced-motion:no-preference){button,a{transition:background-color .12s ease,color .12s ease}}@media print{nav,.controls,.actions,textarea,#key-editor{display:none!important}[role=tabpanel][hidden]{display:block!important}.cards,.audit-layout{display:block}.cards article{break-inside:avoid}header,.manuscript{background:white}body{background:white;color:black}.table-scroll{max-height:none;overflow:visible}.seal{display:none}a{color:black}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to research</a>
+<header>
+  <div class="masthead"><span>ARMSTRONG / MADISON</span><span>RESEARCH NOTE · 1808.02.20</span></div>
+  <div class="hero"><div><p class="eyebrow">THE FEBRUARY OUTLIER</p><h1>A letter. A missing key.<br>A claim worth checking.</h1><p class="lede">John Armstrong Jr. → Secretary of State James Madison.<br>Primary evidence, reproducible counts, and room for uncertainty.</p></div><div class="seal" aria-hidden="true"><span>453 · 240</span><strong>1808</strong><span>760 · 1480</span></div></div>
+  <p class="status-line"><span class="dot" aria-hidden="true"></span> No complete, independently verified decipherment established by this review.</p>
+  <p class="offline-note">Bundled evidence · no remote requests · no saved guesses · external references open only when selected</p>
+</header>
+<nav role="tablist" aria-label="Research sections">
+  <button id="tab-review" role="tab" aria-selected="true" aria-controls="panel-review" data-view="review">01 · Findings</button>
+  <button id="tab-transcript" role="tab" aria-selected="false" aria-controls="panel-transcript" tabindex="-1" data-view="transcript">02 · Read the letter</button>
+  <button id="tab-audit" role="tab" aria-selected="false" aria-controls="panel-audit" tabindex="-1" data-view="audit">03 · Test the key</button>
+  <button id="tab-sources" role="tab" aria-selected="false" aria-controls="panel-sources" tabindex="-1" data-view="sources">04 · Sources</button>
+  <button id="tab-trail" role="tab" aria-selected="false" aria-controls="panel-trail" tabindex="-1" data-view="trail">05 · Search trail</button>
+  <button id="tab-evidence" role="tab" aria-selected="false" aria-controls="panel-evidence" tabindex="-1" data-view="evidence">06 · Evidence</button>
+</nav>
+<main id="main" tabindex="-1">
+<section id="panel-review" role="tabpanel" aria-labelledby="tab-review">
+  <div class="section-title"><h2>What the evidence supports</h2><span class="edition">SOURCE-CHECKED · NOT A SOLUTION</span></div>
+  <p id="identity"></p>
+  <div id="baseline-stats" class="stats"></div>
+  <p class="caption">Counts describe the retained Founders editorial text, not a newly collated manuscript. Coverage is not correctness.</p>
+  <div id="findings" class="cards"></div>
+</section>
+<section id="panel-transcript" role="tabpanel" aria-labelledby="tab-transcript" hidden>
+  <div class="section-title"><h2>Read without filling the gaps</h2><span class="edition">FOUNDERS ONLINE · NORMALIZED EXTRACTION</span></div>
+  <p>Every numeric reading stays in order. Brackets mark descriptions of graphical writing, <strong>not decoded words</strong>. The line numbers below are local editorial-body line numbers, not manuscript coordinates. No facsimile images are bundled.</p>
+  <div class="notice"><strong>Source variants:</strong> Founders prints <code>203</code>; the attachment and Cryptiana suggest <code>1203</code>. The damaged <code>17⟨   ⟩</code> is not a complete established group. See the source register before emending either.</div>
+  <div class="controls"><label for="highlight-code">Highlight a code <input id="highlight-code" type="search" inputmode="numeric" maxlength="4" placeholder="e.g. 1480" autocomplete="off"></label><label class="check"><input id="show-labels" type="checkbox"> Overlay current audit labels (unverified)</label></div>
+  <p id="highlight-status" class="caption" role="status" aria-live="polite"></p>
+  <div class="manuscript"><p class="salutation">Paris 20th feby 1808<br>Sir,<br>The</p><div id="transcript-lines"></div><p class="salutation">I have the honor to be, sir, with very high consideration, your most obedient &amp; very humble servant<br>John Armstrong</p></div>
+</section>
+<section id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" hidden>
+  <div class="section-title"><h2>Does the published key account for the text?</h2><span class="edition">LITERAL, ORDER-PRESERVING AUDIT</span></div>
+  <p>The default is AFIO's 56-entry claimed key, <strong>not an accepted plaintext</strong>. The audit does not alter the original workbench's working key. Unknown numbers and graphics are never silently discarded from the reader.</p>
+  <details><summary>What AFIO published as “Decrypted Text”</summary><blockquote id="afio-claim"></blockquote><p class="caption">Yaacov Apelbaum / AFIO, 27 May 2025. Quoted for verification; not endorsed.</p></details>
+  <div class="notice"><strong>Why 365, 366, and 369?</strong> There are 365 fully printed readings plus one damaged prefix. Including that prefix gives 366. The pinned GitHub stream has 369 because it also counts three editorial line-count numerals. Its 133 mapped occurrences become 131 with those removed, or 130 when the damaged prefix is excluded.</div>
+  <label class="check"><input id="include-damaged" type="checkbox"> Provisionally count the damaged prefix as code 17 (366 readings)</label>
+  <div class="audit-layout"><div><label for="key-editor">Number → label JSON <span class="caption">(1–1900; labels ≤80 characters; exported JSON ≤96,000 characters)</span></label><textarea id="key-editor" rows="13" spellcheck="false" autocomplete="off" aria-describedby="key-status"></textarea><div class="actions"><button id="apply-key">Apply labels</button><button id="reset-key" class="secondary">Restore AFIO claim</button><button id="empty-key" class="secondary">Empty key</button></div><p id="key-status" role="status" aria-live="polite"></p></div><div id="audit-results" aria-live="polite"><div id="audit-stats" class="stats compact"></div><p id="absent-codes"></p><p id="alignment-score"></p><p class="caption">The subsequence score allows omissions, so even a high score would not establish a complete solution. It assumes the publisher's number-to-one-word labels; clear “The” and untranscribed graphics are not wildcard matches. The comparison paragraph remains AFIO's even when you test custom labels.</p></div></div>
+  <h3>Frequency and accounting</h3><label for="frequency-filter">Find a number or label <input id="frequency-filter" type="search" maxlength="80" autocomplete="off"></label><div class="table-scroll"><table><thead><tr><th scope="col">Code</th><th scope="col">Occurrences</th><th scope="col">Proposed label</th></tr></thead><tbody id="frequency-body"></tbody></table></div>
+</section>
+<section id="panel-sources" role="tabpanel" aria-labelledby="tab-sources" hidden>
+  <div class="section-title"><h2>Trace the claim to its source</h2><span class="edition">PRIMARY ≠ MIRROR ≠ COMMENT</span></div>
+  <p>Links are references, not background requests. Offline Webxdc and Android hosts may block outbound navigation. Source notes and relevant excerpts remain readable here. A GitHub fork, mirror, or a second search engine is not an additional independent witness.</p>
+  <div class="controls"><label for="source-filter">Search the register <input id="source-filter" type="search" maxlength="160" placeholder="Madison, AFIO, Gutenberg…" autocomplete="off"></label><label for="source-kind">Evidence family <select id="source-kind"><option value="all">All sources</option><option value="primary">Primary / official</option><option value="secondary">Secondary / claims / GitHub</option><option value="discovery">Search / directories</option><option value="limits">Failed or limited retrieval</option></select></label></div>
+  <p id="source-count" class="caption" role="status" aria-live="polite"></p><div id="source-cards" class="source-cards"></div>
+</section>
+<section id="panel-trail" role="tabpanel" aria-labelledby="tab-trail" hidden>
+  <div class="section-title"><h2>Searches made, limits kept</h2><span class="edition">NO LIVE METASEARCH CLIENT</span></div>
+  <p>All four named services were checked in their actual roles. Search outcomes are session observations, not exhaustive coverage of the web. No query is sent by this viewer.</p>
+  <div id="query-trail" class="timeline"></div><h2>What would move the investigation forward?</h2><div id="next-steps" class="cards"></div>
+</section>
+<section id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+  <div class="section-title"><h2>Evidence you can take offline</h2><span class="edition">TEXT + METHOD + PROVENANCE</span></div>
+  <div id="letter-excerpts"></div>
+  <details><summary>Project Gutenberg context · Jefferson → Armstrong, 2 May 1808</summary><p>Retrieved through a pinned GITenberg mirror after direct Gutenberg endpoints failed. Context only; not a February plaintext witness.</p><pre id="gutenberg-excerpt"></pre><p class="caption">Public-domain historical text in the U.S.; the source edition's metadata and full-text/excerpt hashes are recorded.</p></details>
+  <details><summary>Provenance and third-party notices</summary><pre id="third-party-notices"></pre></details>
+  <details><summary>Local evidence integrity register</summary><p>SHA-256 values identify the retained local files. They do not authenticate the publisher or turn a normalized extraction into raw HTTP bytes.</p><pre id="integrity-list"></pre></details>
+  <div class="actions"><button id="show-receipt">Show reproducible audit JSON</button><button id="download-receipt" class="secondary">Request JSON download</button></div><p id="export-status" role="status" aria-live="polite"></p><textarea id="receipt-output" aria-label="Recomputed audit JSON" rows="16" readonly hidden></textarea>
+  <p id="method" class="caption"></p>
+</section>
+</main>
+<footer><strong>Source-checked does not mean deciphered.</strong> This is a bounded source review and offline integration. Missing manuscript collation, an independent key, and a verified full plaintext remain open. The imported workbench's unrelated historical narratives are not certified by this review.</footer>
+<noscript><p class="notice">JavaScript is required for the interactive audit. The XDC also includes a readable SOURCE-CHECK.md report and the evidence text files; no network service is needed.</p></noscript>
+<script>(() => {
+'use strict';
+/** Original, bounded audit of an editorial transcription. No plaintext recovery is claimed. */
+function editionBody(text) {
+  const start = text.indexOf('\nThe\n\n');
+  const end = text.indexOf('\nI have the honor', start);
+  if (start < 0 || end < 0) throw new Error('The edition must retain its clear opening and closing anchors.');
+  return text.slice(start + '\nThe\n\n'.length, end).trim();
+}
+
+function parseEdition(text) {
+  const body = editionBody(text);
+  const lines = body.split('\n');
+  const tokens = [];
+  const pattern = /(\d+) lines? of symbols|\d+(?:⟨[^⟩]*⟩)?|\bsymbols?\b/gu;
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    for (const match of line.matchAll(pattern)) {
+      if (match[1]) {
+        tokens.push({ kind: 'glyph', line: index + 1, printed: match[0], spans: Number(match[1]), wholeLines: true });
+      } else if (/^\d/u.test(match[0])) {
+        const value = Number.parseInt(match[0], 10);
+        if (value < 1 || value > 1900) throw new Error('Unexpected numeric reading.');
+        tokens.push({ kind: 'number', line: index + 1, printed: match[0], value, complete: !match[0].includes('⟨') });
+      } else {
+        tokens.push({ kind: 'glyph', line: index + 1, printed: match[0], spans: 1, wholeLines: false });
+      }
+    }
+    // Fail on unexplained prose instead of silently converting arbitrary source text into code.
+    if (line.replace(pattern, '').replace(/[.\s]/gu, '')) throw new Error(`Unexpected editorial text on body line ${index + 1}.`);
+  }
+  return { body, lines, tokens };
+}
+
+function validateKey(value) {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) throw new Error('Use a JSON object of code numbers and text labels.');
+  const entries = Object.entries(value);
+  if (entries.length > 1900) throw new Error('At most 1,900 labels are allowed.');
+  const result = Object.create(null);
+  for (const [code, label] of entries) {
+    if (!/^[1-9]\d{0,3}$/u.test(code) || Number(code) > 1900) throw new Error(`Invalid code number: ${code.slice(0, 20)}`);
+    if (typeof label !== 'string' || !label.trim() || label.length > 80 || /[\u0000-\u001f\u007f]/u.test(label)) throw new Error(`Code ${code} needs a text label of 1–80 characters, without control characters.`);
+    result[code] = label.trim();
+  }
+  // Bound the pretty JSON used by exports as well as inputs. Any accepted map
+  // must remain importable after an explicit save/export, including escaping.
+  if ((JSON.stringify(result, null, 2) + '\n').length > 96000) throw new Error('The complete key must fit in 96,000 exported JSON characters.');
+  return result;
+}
+
+function parseKey(text) {
+  if (typeof text !== 'string' || text.length > 96000) throw new Error('The key must be at most 96,000 text characters.');
+  return validateKey(JSON.parse(text));
+}
+
+function numericReadings(tokens, includeDamaged = false) {
+  return tokens.filter((token) => token.kind === 'number' && (includeDamaged || token.complete)).map((token) => token.value);
+}
+
+function audit(tokens, inputKey, includeDamaged = false) {
+  const key = validateKey(inputKey);
+  const readings = numericReadings(tokens, includeDamaged);
+  const counts = new Map();
+  for (const value of readings) counts.set(value, (counts.get(value) || 0) + 1);
+  const frequency = [...counts].map(([code, count]) => ({ code, count, label: key[code] || null })).sort((a, b) => b.count - a.count || a.code - b.code);
+  const mapped = readings.filter((number) => Object.hasOwn(key, number)).length;
+  const glyphs = tokens.filter((token) => token.kind === 'glyph');
+  return {
+    total: readings.length,
+    distinct: counts.size,
+    mapped,
+    unmapped: readings.length - mapped,
+    coveragePercent: readings.length ? 100 * mapped / readings.length : 0,
+    mappedDistinct: [...counts.keys()].filter((number) => Object.hasOwn(key, number)).length,
+    keyEntries: Object.keys(key).length,
+    absentKeyCodes: Object.keys(key).map(Number).filter((number) => !counts.has(number)).sort((a, b) => a - b),
+    damagedReadings: tokens.filter((token) => token.kind === 'number' && !token.complete).length,
+    glyphDescriptors: glyphs.length,
+    glyphSpans: glyphs.reduce((sum, token) => sum + token.spans, 0),
+    wholeGlyphLines: glyphs.filter((token) => token.wholeLines).reduce((sum, token) => sum + token.spans, 0),
+    min: Math.min(...readings),
+    max: Math.max(...readings),
+    frequency,
+    trailingZeroPairs: [...counts.keys()].sort((a, b) => a - b).filter((number) => counts.has(number * 10)).map((number) => [number, number * 10]),
+  };
+}
+
+function words(text) { return text.toLowerCase().match(/[a-z]+/gu) || []; }
+
+/** A permissive in-order upper bound, allowing omissions. It is NOT a decryption or statistical test. */
+function subsequenceAudit(tokens, inputKey, claimedPlaintext, includeDamaged = false) {
+  const key = validateKey(inputKey);
+  const sequence = numericReadings(tokens, includeDamaged).map((number) => key[number] || null);
+  const claimed = words(claimedPlaintext);
+  const previous = new Uint16Array(claimed.length + 1);
+  for (const label of sequence) {
+    let diagonal = 0;
+    for (let j = 1; j <= claimed.length; j++) {
+      const above = previous[j];
+      previous[j] = label?.toLowerCase() === claimed[j - 1] ? diagonal + 1 : Math.max(above, previous[j - 1]);
+      diagonal = above;
+    }
+  }
+  const labels = new Set(Object.values(key).map((label) => label.toLowerCase()));
+  return {
+    claimWords: claimed.length,
+    matchedInOrder: previous[claimed.length],
+    unmatchedClaimWords: claimed.length - previous[claimed.length],
+    mappedOccurrencesNotUsedByBestSubsequence: sequence.filter(Boolean).length - previous[claimed.length],
+    claimWordsWithNoKeyLabel: [...new Set(claimed.filter((word) => !labels.has(word)))].sort(),
+    caveat: 'Literal number-to-one-word model asserted by the published key; clear opening The and graphical passages are not supplied as wildcard words. Omissions are allowed only for this diagnostic score, not accepted as a complete decipherment.',
+  };
+}
+
+function comparisonReadings(text) {
+  return text.split('\n').filter((line) => !line.startsWith('#')).flatMap((line) => line.split(/\s+/u).filter((token) => /^\d+$/u.test(token)).map(Number));
+}
+
+function makeReceipt(transcript, inputKey, claim, comparison) {
+  const { body, tokens } = parseEdition(transcript);
+  const strict = audit(tokens, inputKey);
+  const provisional = audit(tokens, inputKey, true);
+  const naive = (body.match(/\d+/gu) || []).map(Number);
+  const compared = comparisonReadings(comparison);
+  const frequencies = (sequence) => sequence.reduce((map, number) => { map[number] = (map[number] || 0) + 1; return map; }, Object.create(null));
+  const baseline = frequencies(numericReadings(tokens, true));
+  const suspect = frequencies(compared);
+  return {
+    schemaVersion: 1,
+    scope: 'Normalized Founders Online editorial text, not a newly collated manuscript or a recovered plaintext.',
+    strict,
+    provisional,
+    githubComparison: {
+      total: compared.length,
+      mapped: compared.filter((number) => Object.hasOwn(inputKey, number)).length,
+      equalsNaiveDigitExtraction: JSON.stringify(compared) === JSON.stringify(naive),
+      extraOccurrences: Object.keys(suspect).map(Number).filter((number) => suspect[number] > (baseline[number] || 0)).map((code) => ({ code, extra: suspect[code] - (baseline[code] || 0) })),
+      explanation: 'The comparison stream includes the editorial 2 in 2 lines of symbols and two editorial 1s in 1 line of symbols. These are not cipher numbers.',
+    },
+    alignment: subsequenceAudit(tokens, inputKey, claim),
+    limitations: [
+      'The damaged 17⟨   ⟩ is excluded in strict mode and provisionally read as 17 only in the alternate mode.',
+      'Founders prints 203; Tomokiyo and the attachment instead suggest 1203. No silent repair is made.',
+      'The 34 editorial graphic descriptions expand to 35 passage/line placeholders, not 35 identified shorthand symbols or words.',
+      'Mapping coverage and a permissive subsequence score do not measure correctness or establish the plaintext.',
+      'Manuscript facsimiles and a full graphical transcription have not been acquired or visually collated in this review.',
+    ],
+  };
+}
+
+/** Original source-review UI. All data stays in this document; user labels are rendered only as text. */
+function mountResearch(data, api) {
+  const $ = (id) => document.getElementById(id);
+  const element = (name, text, className) => {
+    const node = document.createElement(name);
+    if (text !== undefined) node.textContent = String(text);
+    if (className) node.className = className;
+    return node;
+  };
+  const { dossier, transcript, afioKey, claim, comparison, integrity, gutenbergExcerpt, notices } = data;
+  const parsed = api.parseEdition(transcript);
+  const baseline = api.makeReceipt(transcript, afioKey, claim, comparison);
+  let key = api.validateKey(afioKey);
+  let keyLabel = 'AFIO published claim';
+  let dirty = false;
+  const tabs = [...document.querySelectorAll('[role=tab]')];
+  const views = new Set(tabs.map((tab) => tab.dataset.view));
+  function selectView(view, focus = false) {
+    if (!views.has(view)) return;
+    for (const tab of tabs) {
+      const selected = tab.dataset.view === view;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      $(`panel-${tab.dataset.view}`).hidden = !selected;
+      if (selected && focus) tab.focus();
+    }
+  }
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => selectView(tab.dataset.view));
+    tab.addEventListener('keydown', (event) => {
+      let index = tabs.indexOf(tab);
+      if (event.key === 'ArrowRight') index = (index + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft') index = (index + tabs.length - 1) % tabs.length;
+      else if (event.key === 'Home') index = 0;
+      else if (event.key === 'End') index = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectView(tabs[index].dataset.view, true);
+    });
+  }
+  function citations(ids = []) {
+    const list = element('div', undefined, 'citations');
+    for (const id of ids) {
+      const button = element('button', id);
+      button.type = 'button';
+      button.setAttribute('aria-label', `Read source ${id}`);
+      button.addEventListener('click', () => {
+        $('source-filter').value = '';
+        $('source-kind').value = 'all';
+        renderSources();
+        selectView('sources');
+        const target = $(`source-${id}`);
+        target?.scrollIntoView({ block: 'start' });
+        if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+      });
+      list.append(button);
+    }
+    return list;
+  }
+  function stats(target, values) {
+    target.replaceChildren(...values.map(([value, label]) => {
+      const card = element('div');
+      card.append(element('strong', value), element('span', label));
+      return card;
+    }));
+  }
+  $('identity').textContent = dossier.identity;
+  stats($('baseline-stats'), [[baseline.strict.total, 'fully printed numeric readings'], [baseline.strict.damagedReadings, 'damaged numeric prefix'], [baseline.strict.distinct, 'distinct complete readings'], [`${baseline.strict.mapped}/${baseline.strict.total}`, 'covered by the claimed key · 35.6%']]);
+  for (const finding of dossier.findings) {
+    const article = element('article');
+    article.id = `finding-${finding.id}`;
+    article.append(element('span', finding.level, 'badge'), element('h3', finding.title), element('p', finding.text), citations(finding.sources));
+    $('findings').append(article);
+  }
+  $('afio-claim').textContent = claim;
+  $('key-editor').value = JSON.stringify(key, null, 2);
+  function renderTranscript() {
+    const highlight = $('highlight-code').value.trim();
+    const labels = $('show-labels').checked && !dirty;
+    const groups = new Map(parsed.lines.map((_, index) => [index + 1, []]));
+    for (const token of parsed.tokens) groups.get(token.line).push(token);
+    let highlighted = 0;
+    const lines = [];
+    for (const [number, tokens] of groups) {
+      const line = element('div', undefined, 'transcript-line');
+      const content = element('div', undefined, 'tokens');
+      line.append(element('span', String(number).padStart(2, '0'), 'line-id'), content);
+      for (const token of tokens) {
+        if (token.kind === 'glyph') {
+          content.append(element('span', token.wholeLines ? `[${token.spans} line${token.spans === 1 ? '' : 's'} of graphical symbols — not transcribed]` : '[graphical passage — not transcribed]', 'glyph'));
+          continue;
+        }
+        const chosen = highlight !== '' && String(token.value) === highlight;
+        if (chosen) highlighted++;
+        const node = element('span', undefined, `code-token${token.complete ? '' : ' damaged'}${chosen ? ' chosen' : ''}`);
+        node.dataset.code = token.value;
+        node.append(element('b', token.printed));
+        if (labels && Object.hasOwn(key, token.value)) node.append(element('span', `${token.complete ? '' : 'provisional: '}${key[token.value]}`, 'gloss'));
+        if (!token.complete) node.title = 'Damaged numeric prefix; not a complete established group';
+        content.append(node);
+      }
+      lines.push(line);
+    }
+    $('transcript-lines').replaceChildren(...lines);
+    $('highlight-status').textContent = highlight ? `${highlighted} visible occurrence${highlighted === 1 ? '' : 's'} of ${highlight}, including any damaged prefix.` : 'The clear opening and closing are retained; graphical descriptions remain explicit gaps.';
+  }
+  function renderFrequency() {
+    const result = api.audit(parsed.tokens, key, $('include-damaged').checked);
+    const filter = $('frequency-filter').value.trim().toLowerCase();
+    const rows = result.frequency.filter((item) => `${item.code} ${item.label || ''}`.toLowerCase().includes(filter)).map((item) => {
+      const row = element('tr');
+      row.append(element('td', item.code), element('td', item.count), element('td', item.label || 'Unmapped', item.label ? '' : 'unmapped'));
+      return row;
+    });
+    $('frequency-body').replaceChildren(...rows);
+  }
+  function renderAudit() {
+    const damaged = $('include-damaged').checked;
+    const result = api.audit(parsed.tokens, key, damaged);
+    const alignment = api.subsequenceAudit(parsed.tokens, key, claim, damaged);
+    stats($('audit-stats'), [[`${result.mapped}/${result.total}`, 'numeric readings covered'], [`${result.coveragePercent.toFixed(1)}%`, 'coverage, not correctness'], [`${result.mappedDistinct}/${result.distinct}`, 'distinct readings labeled'], [result.absentKeyCodes.length, 'key codes absent from the text']]);
+    $('absent-codes').textContent = result.absentKeyCodes.length ? `Absent key codes: ${result.absentKeyCodes.join(', ')}. No automatic correction of 431 to 432 or 1350 to 1358 is made.` : 'Every supplied key code occurs in this numeric reading (or the key is empty).';
+    $('alignment-score').textContent = `Permissive in-order comparison with AFIO's paragraph: ${alignment.matchedInOrder} of ${alignment.claimWords} words can match; ${alignment.mappedOccurrencesNotUsedByBestSubsequence} mapped numeric occurrences remain unused even by that omission-allowing score. Graphics are still unaccounted for.`;
+    $('key-status').className = '';
+    $('key-status').textContent = `${keyLabel} · ${result.keyEntries} labels applied in memory. No message sent, no guesses saved.`;
+    $('audit-results').hidden = false;
+    renderFrequency();
+    renderTranscript();
+  }
+  function invalidate() {
+    dirty = true;
+    $('audit-results').hidden = true;
+    $('frequency-body').replaceChildren();
+    $('key-status').className = '';
+    $('key-status').textContent = 'Edited, not applied. Previous audit and label overlays are hidden until validation succeeds.';
+    renderTranscript();
+  }
+  $('key-editor').addEventListener('input', invalidate);
+  $('apply-key').addEventListener('click', () => {
+    try {
+      key = api.parseKey($('key-editor').value);
+      keyLabel = 'User hypothesis';
+      dirty = false;
+      renderAudit();
+    } catch (error) {
+      invalidate();
+      $('key-status').className = 'error';
+      $('key-status').textContent = `Not applied: ${error.message}`;
+    }
+  });
+  $('reset-key').addEventListener('click', () => {
+    key = api.validateKey(afioKey);
+    keyLabel = 'AFIO published claim';
+    dirty = false;
+    $('key-editor').value = JSON.stringify(key, null, 2);
+    renderAudit();
+  });
+  $('empty-key').addEventListener('click', () => {
+    key = api.validateKey({}); keyLabel = 'Empty key'; dirty = false;
+    $('key-editor').value = '{}'; renderAudit();
+  });
+  $('include-damaged').addEventListener('change', () => { if (!dirty) renderAudit(); });
+  $('show-labels').addEventListener('change', renderTranscript);
+  $('highlight-code').addEventListener('input', renderTranscript);
+  $('frequency-filter').addEventListener('input', () => { if (!dirty) renderFrequency(); });
+  function primary(source) { return /Primary|Official|Archive catalog|Editorial image/u.test(source.kind); }
+  function discovery(source) { return /Metasearch|directory|Service directory|Archive search/iu.test(source.kind); }
+  function renderSources() {
+    const query = $('source-filter').value.trim().toLowerCase();
+    const family = $('source-kind').value;
+    const sources = dossier.sources.filter((source) => {
+      const textMatch = `${source.id} ${source.kind} ${source.title} ${source.status} ${source.note} ${source.url}`.toLowerCase().includes(query);
+      const familyMatch = family === 'all' || (family === 'primary' && primary(source)) || (family === 'discovery' && discovery(source)) || (family === 'secondary' && !primary(source) && !discovery(source)) || (family === 'limits' && /failed|not acquired|metadata|discovery|unfetched/iu.test(source.status + ' ' + source.kind));
+      return textMatch && familyMatch;
+    });
+    $('source-count').textContent = `${sources.length} of ${dossier.sources.length} source records. This is a register, not a count of independent witnesses.`;
+    $('source-cards').replaceChildren(...sources.map((source) => {
+      const article = element('article'); article.id = `source-${source.id}`;
+      article.append(element('span', source.id, 'source-id'), element('h3', source.title), element('p', `${source.kind} · ${source.status}`, 'source-status'), element('p', source.note));
+      if (source.url) {
+        const url = new URL(source.url);
+        if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Non-HTTPS source URL rejected.');
+        const link = element('a', source.url, 'source-url');
+        link.href = url.href; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.referrerPolicy = 'no-referrer';
+        article.append(link);
+      }
+      return article;
+    }));
+  }
+  $('source-filter').addEventListener('input', renderSources);
+  $('source-kind').addEventListener('change', renderSources);
+  for (const query of dossier.queries) {
+    const article = element('article');
+    article.append(element('h3', query.service), element('p', query.query, 'query'), element('p', query.result), citations(query.sources));
+    $('query-trail').append(article);
+  }
+  for (const step of dossier.nextSteps) {
+    const article = element('article'); article.append(element('h3', step.title), element('p', step.text)); $('next-steps').append(article);
+  }
+  for (const letter of dossier.letters) {
+    const article = element('article'); article.append(element('h3', letter.title), element('blockquote', letter.text), citations([letter.source])); $('letter-excerpts').append(article);
+  }
+  $('gutenberg-excerpt').textContent = gutenbergExcerpt;
+  $('third-party-notices').textContent = notices;
+  $('integrity-list').textContent = integrity.map((file) => `${file.path}\n${file.bytes} bytes · SHA-256 ${file.sha256}\n`).join('\n');
+  $('method').textContent = dossier.method;
+  function currentReceipt() {
+    return JSON.stringify({ ...baseline, evidenceIntegrity: integrity, sourceRegister: dossier.sources, activeHypothesis: dirty ? { status: 'Unapplied editor content excluded' } : { status: keyLabel, key, includeDamaged: $('include-damaged').checked, audit: api.audit(parsed.tokens, key, $('include-damaged').checked) } }, null, 2) + '\n';
+  }
+  $('show-receipt').addEventListener('click', () => {
+    $('receipt-output').hidden = false;
+    $('receipt-output').value = currentReceipt();
+    $('receipt-output').focus();
+    $('export-status').textContent = 'Recomputed locally. Select or copy the text; nothing has been uploaded.';
+  });
+  $('download-receipt').addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([currentReceipt()], { type: 'application/json' }));
+    const link = element('a'); link.href = url; link.download = 'armstrong-madison-audit.json';
+    document.body.append(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    $('export-status').textContent = 'Download requested, not confirmed saved. Some offline hosts block downloads; use Show JSON if needed.';
+  });
+  renderSources(); renderAudit();
+  document.body.dataset.researchReady = 'true';
+}
+
+mountResearch({"dossier":{"schemaVersion":1,"reviewDate":"2026-11-17","title":"Armstrong–Madison: the February outlier","status":"No complete, independently verified decipherment established by this review","identity":"This workbench examines John Armstrong Jr.'s letter to James Madison from Paris dated 20 February 1808, not the separate coded postscript of 30 August 1808.","method":"Primary editorial texts first; discovery services second; pinned secondary files only as comparison inputs. Local measurements are recomputed from the retained text. Tool-fetched extracts are normalized transcriptions/notes, not authenticated HTTP byte captures. No external solver code was executed.","findings":[{"id":"identity","level":"Primary edition","title":"The target is 20 February 1808","text":"Founders Online prints the Paris date, the clear opening ‘The’, numerical groups interleaved with graphic descriptions, and Armstrong's closing. It identifies the repository as DNA, RG 59, Diplomatic Despatches, France. Graphic placeholders are editorial descriptions, not transcribed shorthand.","sources":["S01","S02","S03"]},{"id":"roles","level":"Verified context","title":"Secretary of state, not yet president","text":"In February 1808 Madison was secretary of state and Armstrong was the U.S. minister plenipotentiary in France. AFIO's labels ‘President’ and ‘Secretary of War’ describe later roles and are anachronistic for this letter. A role error is not by itself a cryptographic disproof.","sources":["S08","S25","S26"]},{"id":"missing-key","level":"Primary evidence + inference","title":"A cipher the office could not find","text":"On 10 May Graham reported a letter in Armstrong's packet for which he could find no key. On 15 May Madison called an undeciphered letter from ‘A.’ probably misaddressed and said no such cipher was in the office. Neither note specifies 20 February: identifying that item with the February outlier is a strong contextual inference, not an explicit date match or proof that it was never subsequently decoded.","sources":["S04","S05","S11"]},{"id":"afio","level":"Published claim; not validated","title":"An announcement is not an aligned decipherment","text":"AFIO announced Yaacov Apelbaum as its contest winner on 27 May 2025 and published a short maritime paragraph with 56 number-to-word labels. Applying those exact labels in order leaves most of the numerical text unaccounted for, as well as all graphical passages. The viewer preserves every unknown instead of smoothing them into prose.","sources":["S08","S11","S12"]},{"id":"references","level":"Direct source check","title":"The announcement's reference letters do not supply the key","text":"The linked 15 July 1804 letter concerns travel preparations, Hamilton's death and a report about France, not the claimed maritime argument. The linked 7 June 1806 letter does concern the ship Hope and restitution. The latter supplies relevant background, not the missing number-to-word alignment; neither reference authenticates the proposed February plaintext.","sources":["S09","S10"]},{"id":"counting","level":"Recomputed locally","title":"Editorial numbers are not code groups","text":"The retained Founders text has 365 fully printed numeric readings plus one damaged prefix, 17⟨   ⟩. Treating that prefix provisionally as 17 gives 366 readings. A pinned GitHub comparison stream instead has 369: it includes the editorial 2 from ‘2 lines of symbols’ and two editorial 1s from ‘1 line of symbols’. This review does not repeat those three additions as cipher groups.","sources":["S01","S14"]},{"id":"variants","level":"Unresolved collation","title":"203 is not silently changed to 1203","text":"Founders prints 203 in the fifth numeric line. Cryptiana's tentative reading and the attachment instead suggest 1203; Cryptiana also questions a digit in the opening 1841. The damaged 17 prefix is not an established complete group. Facsimile collation remains necessary before asserting the true manuscript readings.","sources":["S01","S03","S11","A01"]},{"id":"opening","level":"Crib hypothesis","title":"A real parallel is not a proven opening","text":"Armstrong's open letter to Jefferson of 15 February 1808 really begins with a recommendation of a bearer as active, sober, industrious and brave. A blog commenter proposes fitting that wording to the February cipher. The parallel is verified, but the proposed numeric assignments, Taylor-shorthand identifications and continuation are not established by that parallel alone. The open letter says ‘man, and…’, not the proposed continuation ‘man of…’.","sources":["S07","S13"]},{"id":"zero","level":"Observation; hypothesis untested","title":"26 trailing-zero pairs do not establish equivalence","text":"The complete editorial readings contain 26 distinct pairs n and 10n. This count is reproducible. It does not show that the paired codes mean the same thing, establish a chance expectation, or justify deleting all final zeros. No null-model significance or system identification is claimed here.","sources":["S01","S13"]},{"id":"august","level":"Separate document","title":"Do not substitute the August postscript","text":"The Library of Congress and Founders identify a different Armstrong letter dated 30 August 1808. Cryptiana's THE=972 reconstruction and a GitHub near-complete reading concern that postscript. The GitHub reading includes inferred assignments, proposed transcription changes and a final 555→1555 emendation. Those claims have not been independently collated here and do not solve the February letter.","sources":["S22","S23","S24","S14"]},{"id":"books","level":"Context, not a plaintext witness","title":"Gutenberg and Archive searches produced context","text":"A pinned GITenberg copy of Gutenberg ebook 53767 contains Jefferson's letter to Armstrong of 2 May 1808. Direct Gutenberg retrieval failed; the mirror is explicitly identified rather than counted as independent corroboration. Internet Archive supplies an 1865 Madison edition and Taylor's 1786 stenography title. No verified February plaintext or key was recovered from these bounded searches.","sources":["S17","S18","S19","S20","S21"]},{"id":"legacy","level":"Attachment scope warning","title":"Imported narrative is not newly certified","text":"The original 18 workbench sections remain available. Assertions in its Combined text, piracy, Bastille, Arnold and other historical narratives are not a decipherment and have not all been source-checked in this pass. The new review supersedes unsupported claims about what the encrypted letter is ‘about’. The attachment's icon is artwork, not a manuscript facsimile.","sources":["A01"]}],"letters":[{"title":"John Graham → Madison · 10 May 1808","source":"S04","text":"You will find in Genl Armstrongs Packet a Letter written in a Cypher to which we have no Key I beleive in the office, at least none that I can find"},{"title":"Madison → Jefferson · 15 May 1808","source":"S05","text":"The undecyphered letter from A. was probably misaddressed to the Secretary of State. No such Cypher is in the office, and must be one concerted with another correspondent."},{"title":"Armstrong → Jefferson · 15 February 1808","source":"S07","text":"The bearer of this is an active, sober, industreous and brave man, and in the event of a war, may be very usefully employed."}],"nextSteps":[{"title":"Collate the facsimiles","text":"Acquire and inspect the UVA originals and NARA M34 roll 14 object pages 29–32. Record page/frame coordinates, 203/1203, 1841, and the damaged prefix. The NARA catalog page was fetched but the direct JPEG returned HTTP 500; no image bytes or complete graphical transcription are bundled."},{"title":"Transcribe graphics without preselecting a shorthand","text":"Create a reproducible glyph inventory with crop coordinates and uncertainty alternatives. Compare Taylor 1786, Gurney, Byrom, Mavor and other period systems. Bibliographic existence and visual resemblance are not identification; the 1827 Harding revision postdates the letter."},{"title":"Seek an independent key or retained plaintext","text":"Follow Warden, Armstrong and other correspondents' manuscript catalogs. The Warden finding-aid PDF retrieval failed here; no box number, access permission, newly located document or request to an archivist is asserted as this review's own result."},{"title":"Test the recommendation crib on held-out material","text":"Publish glyph-to-text alignments, repeated-code constraints and a model capable of explaining the remainder, not just an attractive opening. Do not promote a commenter's partial reading or a fitted phrase to an established plaintext."},{"title":"Require a complete, falsifiable solution","text":"Supply an exact source transcription, explicit key/model, ordered rendering of every code and graphic, reasoned emendations and an independent witness or held-out validation. Unmapped or inconvenient occurrences must not simply disappear."}],"sources":[{"id":"A01","kind":"Attachment","title":"User-supplied Armstrong Cipher Lab XDC","url":"","status":"ZIP contents statically inspected; exact input retained","note":"Filename armstrong-madison-cipher.xdc.xml; 2,451,221 bytes; SHA-256 9bd424b0c8349f30d6fb9872eab68d4db64281a689a3a5b0e4e0aeb5b80e7d96. Contains index.html, manifest.toml and icon.png. No authoring source/license for the complete workbench was supplied."},{"id":"S01","kind":"Primary edition","title":"Armstrong → Madison, 20 February 1808","url":"https://founders.archives.gov/documents/Madison/99-01-02-2728","status":"Fetched; normalized numeric transcript retained","note":"Editorial transcription, not a full graphical transcription. Early Access 99-series text; not a final authoritative edition. DNA RG 59, Diplomatic Despatches, France."},{"id":"S02","kind":"Archive catalog","title":"NARA NAID 188671566 · M34 roll 14","url":"https://catalog.archives.gov/id/188671566?objectPage=29","status":"Catalog fetched; direct image fetch failed (HTTP 500)","note":"Catalog object page 29 links M34-014-0030.jpg, not 0029.jpg: distinguish object page from scan filename. Page 31 is reported by Cryptiana as a clearer duplicate of page 30. No image collation completed."},{"id":"S03","kind":"Editorial image index","title":"Papers of James Madison · February letter images","url":"https://pjm.as.virginia.edu/john-armstrong-jr-james-madison-20-february-1808","status":"Image-index page fetched; image bytes not acquired","note":"Links three editorial image panels and Founders' transcription. Panels, leaves and NARA frames are not interchangeable page counts."},{"id":"S04","kind":"Primary edition","title":"Graham → Madison, 10 May 1808","url":"https://founders.archives.gov/documents/Madison/99-01-02-3062","status":"Fetched; missing-key passage retained","note":"Reports a cipher letter in Armstrong's packet with no key found; does not name the February date. DLC, Papers of James Madison."},{"id":"S05","kind":"Primary edition","title":"Madison → Jefferson, 15 May 1808","url":"https://founders.archives.gov/documents/Madison/99-01-02-3082","status":"Fetched; postscript retained","note":"No such cipher in the office; probably another correspondent. Conditional contemporary inference, not proof of intended recipient. DLC, Papers of Thomas Jefferson."},{"id":"S07","kind":"Primary edition","title":"Armstrong → Jefferson, 15 February 1808","url":"https://founders.archives.gov/documents/Jefferson/99-01-02-7420","status":"Fetched; opening parallel verified","note":"A recommendation of a bearer. Its existence verifies the parallel wording, not the proposed cipher assignments."},{"id":"S08","kind":"Solution claim","title":"AFIO · contest-winner announcement, 27 May 2025","url":"https://www.afio.com/member-news/2025/05/27/we-have-a-winner-in-the-armstrong-madison-encrypted-letter-contest/","status":"Fetched; all 56 table pairs and claimed paragraph collated","note":"Publisher of the claim, not independent verification. Method emphasizes coherence/context and dismisses unmapped groups; roles and one linked reference description are inaccurate."},{"id":"S09","kind":"Primary edition","title":"Armstrong → Madison, 15 July 1804","url":"https://founders.archives.gov/documents/Madison/02-07-02-0460","status":"Fetched to check AFIO's first reference","note":"Travel, Hamilton/Burr and France; does not substantiate the announcement's characterization as maritime-neutrality evidence."},{"id":"S10","kind":"Primary edition","title":"Armstrong → Madison, 7 June 1806","url":"https://founders.archives.gov/documents/Madison/02-12-02-0036","status":"Fetched to check AFIO's second reference","note":"Ship Hope restitution and documents. Relevant historical background, no February code alignment."},{"id":"S11","kind":"Specialist secondary","title":"S. Tomokiyo · An Outlier Code in Armstrong–Madison Correspondence","url":"https://cryptiana.web.fc2.com/code/madison_armstrong.htm","status":"Both content chunks read; updated 9 June 2026","note":"Separates the February outlier from THE=972; supplies tentative readings, editorial correspondence and an AFIO critique. Describes Taylor as a possibility, not an established identification."},{"id":"S12","kind":"Secondary verification dump","title":"Cryptiana · AFIO table applied to the text","url":"https://cryptiana.web.fc2.com/code/madison_AFIO.txt","status":"Fetched; checked against publisher table","note":"Shares an underlying transcription and claim with S08/S11; not another independent plaintext witness."},{"id":"S13","kind":"Specialist article + comments","title":"Klaus Schmeh · Can you decipher this letter?","url":"https://klausschmeh.net/can-you-decipher-this-letter-sent-to-u-s-president-james-madison/","status":"All three chunks read, including August 2026 comments","note":"Article and Jozef Krajčovič's comments are separate evidence levels. Opening crib, Taylor identification, table switching and private-key leads remain hypotheses; commenters retract some continuations."},{"id":"S14","kind":"Pinned GitHub comparison","title":"dbourdeau/cyphersolver · Armstrong notes and inputs","url":"https://github.com/dbourdeau/cyphersolver/tree/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong","status":"Eight bounded files acquired via API; Git blob IDs and SHA-256 recorded","note":"MIT license retained for the comparison transcript. Its 369/133 figures include editorial line-count numerals. Notes and critiques are not primary evidence; no external solver executed."},{"id":"S15","kind":"GitHub checkpoint","title":"NoAutopilot/cipher-lab · PR 51","url":"https://github.com/NoAutopilot/cipher-lab/pull/51","status":"PR metadata/body and target directory inspected via gh","note":"Closed, not merged; head 2abf1de5613b2248dbda2f75e8a70e851a971229. Provisional Livingston duplicate alignment, explicitly no target plaintext assignments. A workflow checkpoint is not a February solution."},{"id":"S16","kind":"GitHub fork","title":"aryasn2026/cyphersolver","url":"https://github.com/aryasn2026/cyphersolver","status":"Repository metadata checked; README used only as discovery","note":"API identifies dbourdeau/cyphersolver as parent. Not independent corroboration; no source or license was imported from this fork."},{"id":"S17","kind":"Project Gutenberg","title":"The Writings of Thomas Jefferson, vol. 5 · ebook 53767","url":"https://www.gutenberg.org/cache/epub/53767/pg53767-images.html","status":"Indexed search lead; direct ebook/HTML/text fetches failed","note":"Do not describe the mirror retrieval as a successful direct Gutenberg download or an independently recovered key."},{"id":"S18","kind":"Pinned Gutenberg mirror","title":"GITenberg · ebook 53767 full text and metadata","url":"https://github.com/GITenberg/The-Writings-of-Thomas-Jefferson-Vol-5-of-9-Being-His-Autobiography-Correspondence-Reports-Me__53767/tree/714c07904a75b84e7191cc9d1e5dfb48e1def1bb","status":"Full text, metadata and RDF acquired; May 2 excerpt retained","note":"1,300,025-byte text; full/excerpt hashes and byte offsets recorded. Public-domain U.S. historical text. A mirror of one edition, not an additional independent source."},{"id":"S19","kind":"Internet Archive edition","title":"Letters and other writings of James Madison, vol. 2 (1865)","url":"https://archive.org/details/lettersotherwrit02madi","status":"Metadata and selected OCR chunks read","note":"Volume spans 1794–1815. Inspected 1808 material near printed pages 410–427 provides context; no full-volume absence claim. OCR is fallible and not the original manuscript."},{"id":"S20","kind":"Internet Archive bibliography","title":"Samuel Taylor · Universal stenography essay (1786)","url":"https://archive.org/details/bim_eighteenth-century_an-essay-intended-to-est_taylor-samuel_1786","status":"Advanced search and item metadata fetched","note":"A relevant pre-1808 shorthand source exists. Its illustrations have not been collated with the cipher, so this is not system identification."},{"id":"S21","kind":"Internet Archive bibliography","title":"William Harding · Universal stenography (1827)","url":"https://archive.org/details/universalstenogr00hard","status":"Search and metadata fetched","note":"Taylor-derived later revision. It postdates the 1808 letter and cannot by itself establish the exact system used."},{"id":"S22","kind":"Primary manuscript catalog","title":"Library of Congress · Armstrong, 30 August 1808","url":"https://www.loc.gov/item/mjm015002/","status":"Catalog fetched; distinct date and digital ID checked","note":"Digital ID mjm.10_0520_0522, reel 10. Separate postscript, not February. No independent scan collation in this review."},{"id":"S23","kind":"Primary edition","title":"Armstrong → Madison, 30 August 1808","url":"https://founders.archives.gov/documents/Madison/99-01-02-3466","status":"Fetched; separate postscript inspected","note":"Founders prints 970 and 1218 where later researchers propose 972 and 1216; those are source variants to collate, not silently substitute."},{"id":"S24","kind":"Specialist secondary","title":"Cryptiana · decoding the August postscript / THE=972","url":"https://cryptiana.web.fc2.com/code/decode20.htm","status":"Relevant August section and partial key file fetched","note":"Uses the 4 May 1806 known-plaintext letter. The February outlier cannot be declared solved with this different reconstructed code."},{"id":"S25","kind":"Official biography","title":"Office of the Historian · James Madison","url":"https://history.state.gov/departmenthistory/people/madison-james","status":"Fetched","note":"Secretary of state, 1801–1809; presidency began 1809."},{"id":"S26","kind":"Official appointments","title":"Office of the Historian · John Armstrong","url":"https://history.state.gov/departmenthistory/people/armstrong-john","status":"Fetched","note":"Minister plenipotentiary in France: credentials November 1804, mission ended September 1810."},{"id":"S27","kind":"Metasearch","title":"BareSearch · Armstrong Madison cipher","url":"https://baresearch.org/search?q=Armstrong+Madison+cipher&categories=general&language=en","status":"Queried; no results returned","note":"A quoted 1808 follow-up also returned no results. Neither response proves absence of sources."},{"id":"S28","kind":"Metasearch","title":"LibreSearch · Armstrong Madison cipher","url":"https://libresearch.space/search?q=Armstrong+Madison+cipher&categories=general&language=en","status":"Queried; useful Brave-derived leads; quoted follow-up empty","note":"Rendered links were broken http://go/v1 wrappers. Canonical Cryptiana/Schmeh pages were fetched separately. Shared upstream engines are not independent evidence."},{"id":"S29","kind":"Metasearch","title":"Utilibre search endpoint","url":"https://search.utilibre.org/search?q=%22Armstrong%22+%22Madison%22+%22cipher%22","status":"Queried; noisy or unrelated results","note":"Bing/Fynd and other engines returned name collisions rather than a new cipher witness."},{"id":"S30","kind":"Service directory","title":"Utilibre tools catalog","url":"https://utilibre.org/en/","status":"Fetched","note":"The root is a tools catalog, not the metasearch results endpoint; use search.utilibre.org."},{"id":"S31","kind":"Instance directory","title":"searx.space","url":"https://searx.space/","status":"Fetched as an instance directory","note":"It is not a search engine result page. A displayed instance total is a volatile snapshot, not that many searches or independent sources; it is not used to date or validate the cipher evidence."},{"id":"S32","kind":"Archive search","title":"Internet Archive · Armstrong + Madison + cipher/cypher","url":"https://archive.org/advancedsearch.php?q=%22Armstrong%22+AND+%22Madison%22+AND+%28%22cipher%22+OR+%22cypher%22%29&fl%5B%5D=identifier&fl%5B%5D=title&rows=10&output=json","status":"API queried; two auction catalogs returned","note":"No identified February plaintext/key witness. Better-targeted Madison/Taylor searches yielded S19–S21, not a complete solution."},{"id":"S34","kind":"Unfetched archival lead","title":"David Bailie Warden Papers finding aid","url":"https://tile.loc.gov/storage-services/service/gdc/gdcfindingaidpdfs/ms012085/ms012085.pdf","status":"PDF retrieval failed","note":"Suggested by secondary research. No box inventory or retained plaintext independently checked; no archival request was sent by this review."}],"queries":[{"service":"Identity search","query":"Armstrong maidson cipher; Armstrong Madison cipher","result":"Literal spelling was unhelpful; the Madison candidate was supported by Founders and then by the attachment's exact title/date."},{"service":"baresearch.org","query":"Armstrong Madison cipher; quoted Armstrong Madison 1808","result":"Both fetched result pages returned no results. Negative response retained as a search outcome, not proof of historical absence.","sources":["S27"]},{"service":"libresearch.space","query":"Armstrong Madison cipher, categories=general, language=en; quoted follow-up","result":"Unquoted query found Cryptiana and Schmeh via Brave; wrappers were unusable, so canonical pages were fetched. Quoted follow-up returned no results.","sources":["S28"]},{"service":"utilibre.org → search.utilibre.org","query":"Armstrong Madison cipher; quoted follow-up","result":"Root is a tools directory. Search endpoint was actually queried but returned mainly unrelated names/companies/sports.","sources":["S29","S30"]},{"service":"searx.space","query":"Open instance directory","result":"Used to inspect the service directory and locate instances, not represented as a cipher search or independent historical source.","sources":["S31"]},{"service":"GitHub / gh","query":"Repository search Armstrong Madison cipher; targeted upstream Contents/Blobs and commit pinning","result":"Generic repository search returned no exact result. Known dbourdeau target files and license were acquired and hashed; NoAutopilot PR51 was checked; aryasn2026 is a fork.","sources":["S14","S15","S16"]},{"service":"archive.org Advanced Search","query":"Armstrong AND Madison AND (cipher OR cypher)","result":"Two auction catalogs, no established cipher witness. Source identity was not inferred from a matching name alone.","sources":["S32"]},{"service":"archive.org Advanced Search","query":"title:writings AND creator:Madison; Samuel Taylor AND stenography; Taylor Samuel, year 1786–1808","result":"Located Madison vol. 2 and shorthand editions. Metadata and selected Madison OCR checked; Taylor illustrations not collated.","sources":["S19","S20","S21"]},{"service":"Project Gutenberg","query":"site:gutenberg.org Armstrong Madison cipher; ebook 53767 Jefferson 1808; direct ebook/HTML/text fetches","result":"Indexed contextual lead, but direct retrieval failed. Full text was obtained instead through pinned GITenberg GitHub bytes, explicitly a mirror.","sources":["S17","S18"]}]},"transcript":"To James Madison from John Armstrong, Jr., 20 February 1808\nSource: https://founders.archives.gov/documents/Madison/99-01-02-2728\nRepository given by the edition: DNA: RG 59—DD—Diplomatic Despatches, France.\nThis is a locally normalized text extraction, not a facsimile or byte-for-byte HTTP capture.\nPeriods, line breaks and symbol/line-count descriptions follow the fetched editorial transcription.\nThe damaged 17⟨   ⟩ and the reading 203 are retained, not silently repaired from another transcription.\n\nParis 20th feby 1808\n\nSir,\n\nThe\n\n453. 240. 760. 1480. symbol\n35. 681. 1752. 1841. 1314.\n1840 240 symbols 384. 18. 681. 1340. 1628. 1267. 1180.\n76. 1340. 98. symbols 388. 1320. 1254. 64. 1780\n341. 1476. 56. 48 56. 203. 38 symbol 1141. 1848. 1541. 1638.\n88. 1340. 27. 121. 356. 454. 17. 1640. 1276. 14. 1760. 1267\n61. 45. symbols\nsymbols 48. 1360. 18. 1141.\n143. 436. 489. 17. 946. 496. 18. 36. 1900. 17. 1. 28. 14.\n2 lines of symbols\n44. 176. 564. 387. 840. 671. 41. 431. 18. 640. 1780.\n1761. 13. 65. 381. 246. 384. 14. 1. 38. 1120. 1350. 14.\n671. 48. 370. symbol 751. 18. 1540. 1320. 12. 1. 1170. 1842.\nsymbols 41. 1250. 17. symbols 1210.\n54. 1631. 12. 78. 350. 1470. 764. 18. 1801. symbols\n1 line of symbols\nsymbols 78. 1364. 1751. 101. 421 symbol\n17. 86. 316. 582. 1017. 18. symbol 1248. 1430\n1176. 1164. 1801. 1747. 672. 564. 481. 1267. 18. 1\nsymbol 45. 147. 1158. symbols\nsymbols 48. 1240. 547. 864. 1762. 11. 1264. 1567.\n45. 38. 18. 1741. 180. 150. 1161. 1240. 1430.\n1776. 1830. 3. 1451. 28. 1540. 1537. 17. 1894\nsymbols 13. 230. 481. symbols\n1110. 1267. 84. 19. 41. 364. 17. symbol 1480. 1762. 12.\n1. 1471. 1480. 22. 561. 17. 1708. 11. 380. 460. 17⟨   ⟩\n17. 1640. 19. 47. 76. 230. 1540. symbols\n1161. 14. 74. 1461. 1870. 12. 57. 1899. 3. 47. 1786\n2. 471. 29. 390. 1164. 87. 576. 176. 18. 1480.\n760. symbols 47. 570. 230. 1254. 1. symbols\nsymbol 58. 620. 1307. 451. 576. 17. 680. 38. 36. 1658.\n460. 365. symbol 17. 561. 470. 1360.\n170. 83. 570. 74. 85. 14. 740. symbols\nsymbols 67. 780. 1364.\nsymbols 1170. 1841. 1. 1161. 674. 701. 3. 61. 1580. 18.\n170. 1767. 1870. 5. symbol\n160. 240. 876. 1351. 1107. 1764. symbols\nsymbols 1472. 21. 76. 11. 180. 38. 1641. 15. 1354. 17.\n170. 658. 49. 967. 1861. 16. 576. 1564. 12. 1310.\n1461. 740. 11. 187. 641. 176. 437. 83. 1451. 1170. 1807.\n110. 416. 38. 16. 1208. 141. symbols\n1 line of symbols\n1130. 164. 180. 1767. 162. 38. 161. 15. 580. 1716. 10\n27. 614. 641. 110. 1345. 170. 687. 860. 310. 1900.\n79. 14. 1160. 1376. 1740. 18. 38. 764. 364. 1240.\n1160. 1401. 176. 671. 604. 4. 560. 38. 1207. 160.\n380. 87. 768. 14. 870. 462. 47. 648. 140. 1207. 981\n5. 760. 47. 38. 580. 170.\n\nI have the honor to be, sir, with very high consideration, your most obedient & very humble servant\n\nJohn Armstrong\n","afioKey":{"1":"our","6":"i","12":"rights","13":"ministry","14":"this","17":"of","18":"the","27":"french","28":"shipping","36":"deeply","38":"and","39":"written","44":"and","45":"have","48":"relation","65":"has","67":"enter","76":"their","88":"that","98":"treatment","121":"government","131":"to","143":"before","240":"to","246":"no","356":"has","370":"to","381":"given","384":"you","387":"must","388":"have","432":"its","436":"on","454":"declared","489":"this","496":"which","564":"commerce","640":"ports","671":"in","681":"petitions","751":"neutral","946":"subject","1120":"assurance","1170":"nor","1180":"concerning","1254":"been","1267":"have","1320":"commerce","1340":"your","1358":"that","1540":"shipping","1640":"american","1760":"ships","1761":"the","1842":"satisfaction","1900":"affects"},"claim":"The petitions of your seamen concerning their treatment have been examined. The French government has declared that American ships must not enter its ports. I have written to you before on this subject, which deeply affects our shipping and commerce. The ministry has given no assurance that, in relation to our neutral shipping and commerce rights, we shall receive satisfaction.","comparison":"# Armstrong to Madison, Paris, 20 Feb 1808 (DNA RG 59, DUSMF; NARA M34 roll 14 images 29-32).\n# Code groups as printed by Founders Online 99-01-02-2728 (Wayback copy, fetched 2026-09-16); * = one graphic-symbol passage,\n# ** = several, *** = a whole line; \u003c..> = illegible. 369 groups, 216 distinct, max 1900. The opening \"The\" is in clear.\n453 240 760 1480 * 35 681 1752 1841 1314 1840 240 ** 384 18 681 1340 1628 1267 1180 76 1340 98 **\n388 1320 1254 64 1780 341 1476 56 48 56 203 38 * 1141 1848 1541 1638 88 1340 27 121 356 454 17 1640\n1276 14 1760 1267 61 45 ** ** 48 1360 18 1141 143 436 489 17 946 496 18 36 1900 17 1 28 14 2 ** 44\n176 564 387 840 671 41 431 18 640 1780 1761 13 65 381 246 384 14 1 38 1120 1350 14 671 48 370 * 751\n18 1540 1320 12 1 1170 1842 ** 41 1250 17 ** 1210 54 1631 12 78 350 1470 764 18 1801 ** 1 ** ** 78\n1364 1751 101 421 * 17 86 316 582 1017 18 * 1248 1430 1176 1164 1801 1747 672 564 481 1267 18 1 * 45\n147 1158 ** ** 48 1240 547 864 1762 11 1264 1567 45 38 18 1741 180 150 1161 1240 1430 1776 1830 3\n1451 28 1540 1537 17 1894 ** 13 230 481 ** 1110 1267 84 19 41 364 17 * 1480 1762 12 1 1471 1480 22\n561 17 1708 11 380 460 17 \u003c..> 17 1640 19 47 76 230 1540 ** 1161 14 74 1461 1870 12 57 1899 3 47\n1786 2 471 29 390 1164 87 576 176 18 1480 760 ** 47 570 230 1254 1 ** * 58 620 1307 451 576 17 680\n38 36 1658 460 365 * 17 561 470 1360 170 83 570 74 85 14 740 ** ** 67 780 1364 ** 1170 1841 1 1161\n674 701 3 61 1580 18 170 1767 1870 5 * 160 240 876 1351 1107 1764 ** ** 1472 21 76 11 180 38 1641 15\n1354 17 170 658 49 967 1861 16 576 1564 12 1310 1461 740 11 187 641 176 437 83 1451 1170 1807 110\n416 38 16 1208 141 ** 1 ** 1130 164 180 1767 162 38 161 15 580 1716 10 27 614 641 110 1345 170 687\n860 310 1900 79 14 1160 1376 1740 18 38 764 364 1240 1160 1401 176 671 604 4 560 38 1207 160 380 87\n768 14 870 462 47 648 140 1207 981 5 760 47 38 580 170\n","integrity":[{"path":"evidence/founders-feb20.txt","bytes":2757,"sha256":"d2b8cf9159af98720d4b2fdda71e80f43fdd85e1dd785f4eaead8ae3c1770739"},{"path":"evidence/afio-key.json","bytes":1466,"sha256":"69b790222166e7176427b11171454e4c08dbcfc84ab272df19bff212ff3f7236"},{"path":"evidence/afio-claimed-plaintext.txt","bytes":381,"sha256":"3cd1b487242cc071ee4ac3d98eb72d9a8279295e573357fad380419d909c8491"},{"path":"evidence/audit.json","bytes":39746,"sha256":"a76dddffa893a8b670520a4e7a5c20693e3d84684226ca3ca1dafd3db6a7c81c"},{"path":"evidence/dossier.json","bytes":24277,"sha256":"64846a8e856ea978b4e1326556f1c18fbbc8c3c7dfc9290ec365393cb4faa7b9"},{"path":"evidence/attachment.json","bytes":780,"sha256":"94825a587b185ae69f07deba54ddfd26f75ba23d685e07d73890a6009a5c1350"},{"path":"evidence/github-receipt.json","bytes":3487,"sha256":"a1aef46a4fd7fc191adb6b2a267900c3e960e92fbe990a5049a5418f5ae2e0c6"},{"path":"evidence/github-comparison.txt","bytes":1883,"sha256":"fa451b5d3c0430d44df42dc2cfdf38f3a2483e554cc2fb690a482b11cc24d096"},{"path":"evidence/github-MIT-LICENSE.txt","bytes":1069,"sha256":"275c19ba4f4ff53ce2a1b3c0928b6c8aec03256eef2b00ce5afc4bbb19544cd5"},{"path":"evidence/gutenberg-receipt.json","bytes":2479,"sha256":"c6bd30f097405daed546e50e70e8cd2ab6b172c7d7101a9cc957fd9746060f44"},{"path":"evidence/gutenberg-metadata.yaml","bytes":1486,"sha256":"b3a03db38e0934d9720088ae1bfdfe5e33a3c785345969bf4d4b51c35c823132"},{"path":"evidence/gutenberg-jefferson-may2.txt","bytes":2482,"sha256":"3ecac47767eb90765e9cfd83133938a26f37646b1237cdaad9fae6776903e0a6"},{"path":"evidence/gutenberg-formula-hit.txt","bytes":2836,"sha256":"17050af819e091209faf8d152bd29e3d98f13fd88fc14391afb93bc97252eb9e"}],"notices":"Armstrong–Madison source-review build\n\nSUPPLIED WORKBENCH AND ARTWORK\nThe complete workbench and icon were supplied by the user in\narmstrong-madison-cipher.xdc.xml (a ZIP archive despite the suffix).\nThe exact input is retained for requested review/modification. No authoring\nsource or separate redistribution license for the complete workbench/icon\nwas supplied. This notice does NOT invent an open-source grant for them.\nThe old manifest's blog URL is a research reference, not proof of code authorship.\nThe generated manifest points to the repository containing the actual build sources.\n\nEMBEDDED REACT / REACT DOM\nThe supplied bundle reports React/React DOM version 19.2.6. The version string\nis an observation, not independent binary-to-source authentication.\nReact's upstream MIT notice (also present in the installed dependency notices):\n\nMIT License\n\nCopyright (c) Meta Platforms, Inc. and affiliates.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\nHISTORICAL TEXT AND RESEARCH\nThe Founders Online letters and the Jefferson historical excerpt are\ncredited to their source editions in the source register and SOURCE-CHECK.md.\nEditorial extraction is not manuscript collation or a raw HTTP byte capture.\nThe GITenberg edition labels its historical text public domain in the USA;\nother jurisdictions and Project Gutenberg trademark/license terms may differ.\nOnly bounded historical excerpts/metadata are redistributed here, not a new\nclaim of authorship over the source edition.\n\nAFIO's factual 56-entry mapping table and short proposed plaintext are retained\nfor verification and attributed to Yaacov Apelbaum / AFIO, 27 May 2025.\nRetention is not endorsement or proof that the cipher was solved.\nCryptiana/Satoshi Tomokiyo and Klaus Schmeh/commenters are credited as secondary\nresearch; their articles and manuscript images are not wholesale republished.\n\nGITHUB COMPARISON TRANSCRIPT\nThe pinned dbourdeau/cyphersolver comparison transcript is retained with its\nupstream notice at evidence/github-MIT-LICENSE.txt in the full build. The\nembedded review also retains this comparison input for recomputation; portable\nexports omit the separate file but include this complete notice:\n\nMIT License\n\nCopyright (c) 2026 Dan Bourdeau\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\nNo external cryptanalytic program was executed or incorporated as the local\nanalysis implementation.\n\nNEW REVIEW CODE\nanalysis.mjs, research.mjs, workspace.mjs, the reader template/styles and the\nbuild/test integration are separately authored for this repository. They do\nnot change the provenance/license boundaries of the supplied workbench or\nclaim an independently recovered historical key.\n","gutenbergExcerpt":"TO GENERAL ARMSTRONG.\r\n\r\n                                                   WASHINGTON, May 2, 1808.\r\n\r\nDEAR GENERAL,--A safe conveyance offering by a special messenger to Paris,\r\nI avail myself of it to bring up my arrears to my foreign correspondents.\r\nI give them the protection of your cover, but to save the trouble of your\r\nattention to their distribution, I give them an inner cover to Mr. Harden,\r\nwhose attentions heretofore have encouraged me to ask this favor of him.\r\nBut should he not be with you, I must pray you to open my packages to him,\r\nand have them distributed, as it is of importance that some of them should\r\nbe delivered without delay. I shall say nothing to you on the subject\r\nof our foreign relations, because you will get what is official on that\r\nsubject from Mr. Madison.\r\n\r\nDuring the present paroxysm of the insanity of Europe, we have thought it\r\nwisest to break off all intercourse with her. We shall, in the course of\r\nthis year, have all our seaports, of any note, put into a state of defence\r\nagainst naval attacks. Against great land armies we cannot attempt it\r\nbut by equal armies. For these we must depend on a classified militia,\r\nwhich will give us the service of the class from twenty to twenty-six,\r\nin the nature of conscripts, composing a body of about 250,000, to be\r\nspecially trained. This measure, attempted at a former session, was passed\r\nat the last, and might, I think, have been carried by a small majority.\r\nBut considering that great innovations should not be forced on a slender\r\nmajority, and seeing that the general opinion is sensibly rallying to\r\nit, it was thought better to let it lie over to the next session, when,\r\nI trust, it will be passed. Another measure has now twice failed, which I\r\nhave warmly urged, the immediate settlement by donation of lands, of such\r\na body of militia in the territories of Orleans and Mississippi, as will\r\nbe adequate to the defence of New Orleans. We are raising some regulars in\r\naddition to our present force, for garrisoning our seaports, and forming\r\na nucleus for the militia to gather to. There will be no question who is\r\nto be my successor. Of this be assured, whatever may be said by newspapers\r\nand private correspondences. Local considerations have been silenced by\r\nthose dictated by the continued difficulties of the times. One word of\r\nfriendly request: be more frequent and full in your communications with\r\nus. I salute you with great friendship and respect.\r\n\r\n\r\n"}, { parseEdition, validateKey, parseKey, audit, subsequenceAudit, makeReceipt });
+})();</script>
+</body>
+</html>
