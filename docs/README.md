@@ -4,6 +4,11 @@
 this folder — the deep-dive notes, backlog execution rounds, and format studies.
 Update this file whenever a new research document lands.*
 
+## Armstrong–Madison cipher · supplied XDC and source review
+
+- [Source-checked deep dive and offline integration](armstrong-madison-cipher-review-2026-11-17.md) — preserves the attached 18-section workbench, fixes working-key recursion and adds a verified-evidence reader, literal AFIO-key audit, named metasearch outcomes, pinned GitHub/Gutenberg comparisons and archive provenance. The corrected audit excludes editorial line-count numerals and separately handles a damaged prefix. No complete February decipherment or primary-scan collation is claimed.
+- [Structured dossier](research/armstrong-madison-1808/dossier.json), [recomputed audit](research/armstrong-madison-1808/audit.json), [input identity](research/armstrong-madison-1808/attachment.json) and [deterministic build receipt](research/armstrong-madison-1808/build-receipt.json). The source register and bounded evidence are also bundled in `armstrong-madison-cipher.xdc` and the public offline viewer.
+
 ## Secure Folder · Saurik/Cydia · Ghidra and Robtex
 
 - [Secure Folder, Saurik/Cydia and passive-domain deep dive](samsung-secure-folder-saurik-cydia-review.md) — Samsung's explicit A03s/SM-A037U1 Android–Others classification versus unverified installed Secure Folder support; dated `.net`/`.com` evidence; Cydia/Impactor/Eraser distinctions; Mach-O metadata versus decryption; actual measured historical Cydia ARM/ARM64 Ghidra review; Robtex with registry RDAP/recursive-DNS cross-checks and named metasearch response quality. No phone changes, jailbreak, recovered keys or verified Samsung root.

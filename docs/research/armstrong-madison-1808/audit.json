@@ -1,0 +1,2462 @@
+{
+  "schemaVersion": 1,
+  "scope": "Normalized Founders Online editorial text, not a newly collated manuscript or a recovered plaintext.",
+  "strict": {
+    "total": 365,
+    "distinct": 216,
+    "mapped": 130,
+    "unmapped": 235,
+    "coveragePercent": 35.61643835616438,
+    "mappedDistinct": 51,
+    "keyEntries": 56,
+    "absentKeyCodes": [
+      6,
+      39,
+      131,
+      432,
+      1358
+    ],
+    "damagedReadings": 1,
+    "glyphDescriptors": 34,
+    "glyphSpans": 35,
+    "wholeGlyphLines": 4,
+    "min": 1,
+    "max": 1900,
+    "frequency": [
+      {
+        "code": 17,
+        "count": 12,
+        "label": "of"
+      },
+      {
+        "code": 18,
+        "count": 12,
+        "label": "the"
+      },
+      {
+        "code": 38,
+        "count": 10,
+        "label": "and"
+      },
+      {
+        "code": 14,
+        "count": 8,
+        "label": "this"
+      },
+      {
+        "code": 1,
+        "count": 7,
+        "label": "our"
+      },
+      {
+        "code": 12,
+        "count": 5,
+        "label": "rights"
+      },
+      {
+        "code": 47,
+        "count": 5,
+        "label": null
+      },
+      {
+        "code": 170,
+        "count": 5,
+        "label": null
+      },
+      {
+        "code": 11,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 48,
+        "count": 4,
+        "label": "relation"
+      },
+      {
+        "code": 176,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 1267,
+        "count": 4,
+        "label": "have"
+      },
+      {
+        "code": 1480,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 3,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 41,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 45,
+        "count": 3,
+        "label": "have"
+      },
+      {
+        "code": 76,
+        "count": 3,
+        "label": "their"
+      },
+      {
+        "code": 180,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 230,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 240,
+        "count": 3,
+        "label": "to"
+      },
+      {
+        "code": 576,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 671,
+        "count": 3,
+        "label": "in"
+      },
+      {
+        "code": 760,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1161,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1170,
+        "count": 3,
+        "label": "nor"
+      },
+      {
+        "code": 1240,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1340,
+        "count": 3,
+        "label": "your"
+      },
+      {
+        "code": 1540,
+        "count": 3,
+        "label": "shipping"
+      },
+      {
+        "code": 5,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 13,
+        "count": 2,
+        "label": "ministry"
+      },
+      {
+        "code": 15,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 16,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 19,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 27,
+        "count": 2,
+        "label": "french"
+      },
+      {
+        "code": 28,
+        "count": 2,
+        "label": "shipping"
+      },
+      {
+        "code": 36,
+        "count": 2,
+        "label": "deeply"
+      },
+      {
+        "code": 56,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 61,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 74,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 78,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 83,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 87,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 110,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 160,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 364,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 380,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 384,
+        "count": 2,
+        "label": "you"
+      },
+      {
+        "code": 460,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 481,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 561,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 564,
+        "count": 2,
+        "label": "commerce"
+      },
+      {
+        "code": 570,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 580,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 641,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 681,
+        "count": 2,
+        "label": "petitions"
+      },
+      {
+        "code": 740,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 764,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1141,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1160,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1164,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1207,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1254,
+        "count": 2,
+        "label": "been"
+      },
+      {
+        "code": 1320,
+        "count": 2,
+        "label": "commerce"
+      },
+      {
+        "code": 1360,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1364,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1430,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1451,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1461,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1640,
+        "count": 2,
+        "label": "american"
+      },
+      {
+        "code": 1762,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1767,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1780,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1801,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1841,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1870,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1900,
+        "count": 2,
+        "label": "affects"
+      },
+      {
+        "code": 2,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 4,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 10,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 21,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 22,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 29,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 35,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 44,
+        "count": 1,
+        "label": "and"
+      },
+      {
+        "code": 49,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 54,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 57,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 58,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 64,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 65,
+        "count": 1,
+        "label": "has"
+      },
+      {
+        "code": 67,
+        "count": 1,
+        "label": "enter"
+      },
+      {
+        "code": 79,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 84,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 85,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 86,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 88,
+        "count": 1,
+        "label": "that"
+      },
+      {
+        "code": 98,
+        "count": 1,
+        "label": "treatment"
+      },
+      {
+        "code": 101,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 121,
+        "count": 1,
+        "label": "government"
+      },
+      {
+        "code": 140,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 141,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 143,
+        "count": 1,
+        "label": "before"
+      },
+      {
+        "code": 147,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 150,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 161,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 162,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 164,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 187,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 203,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 246,
+        "count": 1,
+        "label": "no"
+      },
+      {
+        "code": 310,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 316,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 341,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 350,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 356,
+        "count": 1,
+        "label": "has"
+      },
+      {
+        "code": 365,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 370,
+        "count": 1,
+        "label": "to"
+      },
+      {
+        "code": 381,
+        "count": 1,
+        "label": "given"
+      },
+      {
+        "code": 387,
+        "count": 1,
+        "label": "must"
+      },
+      {
+        "code": 388,
+        "count": 1,
+        "label": "have"
+      },
+      {
+        "code": 390,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 416,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 421,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 431,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 436,
+        "count": 1,
+        "label": "on"
+      },
+      {
+        "code": 437,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 451,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 453,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 454,
+        "count": 1,
+        "label": "declared"
+      },
+      {
+        "code": 462,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 470,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 471,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 489,
+        "count": 1,
+        "label": "this"
+      },
+      {
+        "code": 496,
+        "count": 1,
+        "label": "which"
+      },
+      {
+        "code": 547,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 560,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 582,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 604,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 614,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 620,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 640,
+        "count": 1,
+        "label": "ports"
+      },
+      {
+        "code": 648,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 658,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 672,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 674,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 680,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 687,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 701,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 751,
+        "count": 1,
+        "label": "neutral"
+      },
+      {
+        "code": 768,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 780,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 840,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 860,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 864,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 870,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 876,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 946,
+        "count": 1,
+        "label": "subject"
+      },
+      {
+        "code": 967,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 981,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1017,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1107,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1110,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1120,
+        "count": 1,
+        "label": "assurance"
+      },
+      {
+        "code": 1130,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1158,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1176,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1180,
+        "count": 1,
+        "label": "concerning"
+      },
+      {
+        "code": 1208,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1210,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1248,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1250,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1264,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1276,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1307,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1310,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1314,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1345,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1350,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1351,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1354,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1376,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1401,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1470,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1471,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1472,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1476,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1537,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1541,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1564,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1567,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1580,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1628,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1631,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1638,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1641,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1658,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1708,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1716,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1740,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1741,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1747,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1751,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1752,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1760,
+        "count": 1,
+        "label": "ships"
+      },
+      {
+        "code": 1761,
+        "count": 1,
+        "label": "the"
+      },
+      {
+        "code": 1764,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1776,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1786,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1807,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1830,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1840,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1842,
+        "count": 1,
+        "label": "satisfaction"
+      },
+      {
+        "code": 1848,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1861,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1894,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1899,
+        "count": 1,
+        "label": null
+      }
+    ],
+    "trailingZeroPairs": [
+      [
+        1,
+        10
+      ],
+      [
+        11,
+        110
+      ],
+      [
+        14,
+        140
+      ],
+      [
+        15,
+        150
+      ],
+      [
+        16,
+        160
+      ],
+      [
+        17,
+        170
+      ],
+      [
+        18,
+        180
+      ],
+      [
+        35,
+        350
+      ],
+      [
+        38,
+        380
+      ],
+      [
+        47,
+        470
+      ],
+      [
+        56,
+        560
+      ],
+      [
+        57,
+        570
+      ],
+      [
+        58,
+        580
+      ],
+      [
+        64,
+        640
+      ],
+      [
+        74,
+        740
+      ],
+      [
+        76,
+        760
+      ],
+      [
+        78,
+        780
+      ],
+      [
+        84,
+        840
+      ],
+      [
+        86,
+        860
+      ],
+      [
+        87,
+        870
+      ],
+      [
+        121,
+        1210
+      ],
+      [
+        143,
+        1430
+      ],
+      [
+        147,
+        1470
+      ],
+      [
+        164,
+        1640
+      ],
+      [
+        176,
+        1760
+      ],
+      [
+        187,
+        1870
+      ]
+    ]
+  },
+  "provisional": {
+    "total": 366,
+    "distinct": 216,
+    "mapped": 131,
+    "unmapped": 235,
+    "coveragePercent": 35.79234972677595,
+    "mappedDistinct": 51,
+    "keyEntries": 56,
+    "absentKeyCodes": [
+      6,
+      39,
+      131,
+      432,
+      1358
+    ],
+    "damagedReadings": 1,
+    "glyphDescriptors": 34,
+    "glyphSpans": 35,
+    "wholeGlyphLines": 4,
+    "min": 1,
+    "max": 1900,
+    "frequency": [
+      {
+        "code": 17,
+        "count": 13,
+        "label": "of"
+      },
+      {
+        "code": 18,
+        "count": 12,
+        "label": "the"
+      },
+      {
+        "code": 38,
+        "count": 10,
+        "label": "and"
+      },
+      {
+        "code": 14,
+        "count": 8,
+        "label": "this"
+      },
+      {
+        "code": 1,
+        "count": 7,
+        "label": "our"
+      },
+      {
+        "code": 12,
+        "count": 5,
+        "label": "rights"
+      },
+      {
+        "code": 47,
+        "count": 5,
+        "label": null
+      },
+      {
+        "code": 170,
+        "count": 5,
+        "label": null
+      },
+      {
+        "code": 11,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 48,
+        "count": 4,
+        "label": "relation"
+      },
+      {
+        "code": 176,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 1267,
+        "count": 4,
+        "label": "have"
+      },
+      {
+        "code": 1480,
+        "count": 4,
+        "label": null
+      },
+      {
+        "code": 3,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 41,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 45,
+        "count": 3,
+        "label": "have"
+      },
+      {
+        "code": 76,
+        "count": 3,
+        "label": "their"
+      },
+      {
+        "code": 180,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 230,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 240,
+        "count": 3,
+        "label": "to"
+      },
+      {
+        "code": 576,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 671,
+        "count": 3,
+        "label": "in"
+      },
+      {
+        "code": 760,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1161,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1170,
+        "count": 3,
+        "label": "nor"
+      },
+      {
+        "code": 1240,
+        "count": 3,
+        "label": null
+      },
+      {
+        "code": 1340,
+        "count": 3,
+        "label": "your"
+      },
+      {
+        "code": 1540,
+        "count": 3,
+        "label": "shipping"
+      },
+      {
+        "code": 5,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 13,
+        "count": 2,
+        "label": "ministry"
+      },
+      {
+        "code": 15,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 16,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 19,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 27,
+        "count": 2,
+        "label": "french"
+      },
+      {
+        "code": 28,
+        "count": 2,
+        "label": "shipping"
+      },
+      {
+        "code": 36,
+        "count": 2,
+        "label": "deeply"
+      },
+      {
+        "code": 56,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 61,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 74,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 78,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 83,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 87,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 110,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 160,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 364,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 380,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 384,
+        "count": 2,
+        "label": "you"
+      },
+      {
+        "code": 460,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 481,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 561,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 564,
+        "count": 2,
+        "label": "commerce"
+      },
+      {
+        "code": 570,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 580,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 641,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 681,
+        "count": 2,
+        "label": "petitions"
+      },
+      {
+        "code": 740,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 764,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1141,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1160,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1164,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1207,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1254,
+        "count": 2,
+        "label": "been"
+      },
+      {
+        "code": 1320,
+        "count": 2,
+        "label": "commerce"
+      },
+      {
+        "code": 1360,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1364,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1430,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1451,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1461,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1640,
+        "count": 2,
+        "label": "american"
+      },
+      {
+        "code": 1762,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1767,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1780,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1801,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1841,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1870,
+        "count": 2,
+        "label": null
+      },
+      {
+        "code": 1900,
+        "count": 2,
+        "label": "affects"
+      },
+      {
+        "code": 2,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 4,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 10,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 21,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 22,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 29,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 35,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 44,
+        "count": 1,
+        "label": "and"
+      },
+      {
+        "code": 49,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 54,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 57,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 58,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 64,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 65,
+        "count": 1,
+        "label": "has"
+      },
+      {
+        "code": 67,
+        "count": 1,
+        "label": "enter"
+      },
+      {
+        "code": 79,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 84,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 85,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 86,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 88,
+        "count": 1,
+        "label": "that"
+      },
+      {
+        "code": 98,
+        "count": 1,
+        "label": "treatment"
+      },
+      {
+        "code": 101,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 121,
+        "count": 1,
+        "label": "government"
+      },
+      {
+        "code": 140,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 141,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 143,
+        "count": 1,
+        "label": "before"
+      },
+      {
+        "code": 147,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 150,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 161,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 162,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 164,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 187,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 203,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 246,
+        "count": 1,
+        "label": "no"
+      },
+      {
+        "code": 310,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 316,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 341,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 350,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 356,
+        "count": 1,
+        "label": "has"
+      },
+      {
+        "code": 365,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 370,
+        "count": 1,
+        "label": "to"
+      },
+      {
+        "code": 381,
+        "count": 1,
+        "label": "given"
+      },
+      {
+        "code": 387,
+        "count": 1,
+        "label": "must"
+      },
+      {
+        "code": 388,
+        "count": 1,
+        "label": "have"
+      },
+      {
+        "code": 390,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 416,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 421,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 431,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 436,
+        "count": 1,
+        "label": "on"
+      },
+      {
+        "code": 437,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 451,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 453,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 454,
+        "count": 1,
+        "label": "declared"
+      },
+      {
+        "code": 462,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 470,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 471,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 489,
+        "count": 1,
+        "label": "this"
+      },
+      {
+        "code": 496,
+        "count": 1,
+        "label": "which"
+      },
+      {
+        "code": 547,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 560,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 582,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 604,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 614,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 620,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 640,
+        "count": 1,
+        "label": "ports"
+      },
+      {
+        "code": 648,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 658,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 672,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 674,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 680,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 687,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 701,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 751,
+        "count": 1,
+        "label": "neutral"
+      },
+      {
+        "code": 768,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 780,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 840,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 860,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 864,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 870,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 876,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 946,
+        "count": 1,
+        "label": "subject"
+      },
+      {
+        "code": 967,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 981,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1017,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1107,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1110,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1120,
+        "count": 1,
+        "label": "assurance"
+      },
+      {
+        "code": 1130,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1158,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1176,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1180,
+        "count": 1,
+        "label": "concerning"
+      },
+      {
+        "code": 1208,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1210,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1248,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1250,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1264,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1276,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1307,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1310,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1314,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1345,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1350,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1351,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1354,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1376,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1401,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1470,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1471,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1472,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1476,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1537,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1541,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1564,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1567,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1580,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1628,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1631,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1638,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1641,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1658,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1708,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1716,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1740,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1741,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1747,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1751,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1752,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1760,
+        "count": 1,
+        "label": "ships"
+      },
+      {
+        "code": 1761,
+        "count": 1,
+        "label": "the"
+      },
+      {
+        "code": 1764,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1776,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1786,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1807,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1830,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1840,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1842,
+        "count": 1,
+        "label": "satisfaction"
+      },
+      {
+        "code": 1848,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1861,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1894,
+        "count": 1,
+        "label": null
+      },
+      {
+        "code": 1899,
+        "count": 1,
+        "label": null
+      }
+    ],
+    "trailingZeroPairs": [
+      [
+        1,
+        10
+      ],
+      [
+        11,
+        110
+      ],
+      [
+        14,
+        140
+      ],
+      [
+        15,
+        150
+      ],
+      [
+        16,
+        160
+      ],
+      [
+        17,
+        170
+      ],
+      [
+        18,
+        180
+      ],
+      [
+        35,
+        350
+      ],
+      [
+        38,
+        380
+      ],
+      [
+        47,
+        470
+      ],
+      [
+        56,
+        560
+      ],
+      [
+        57,
+        570
+      ],
+      [
+        58,
+        580
+      ],
+      [
+        64,
+        640
+      ],
+      [
+        74,
+        740
+      ],
+      [
+        76,
+        760
+      ],
+      [
+        78,
+        780
+      ],
+      [
+        84,
+        840
+      ],
+      [
+        86,
+        860
+      ],
+      [
+        87,
+        870
+      ],
+      [
+        121,
+        1210
+      ],
+      [
+        143,
+        1430
+      ],
+      [
+        147,
+        1470
+      ],
+      [
+        164,
+        1640
+      ],
+      [
+        176,
+        1760
+      ],
+      [
+        187,
+        1870
+      ]
+    ]
+  },
+  "githubComparison": {
+    "total": 369,
+    "mapped": 133,
+    "equalsNaiveDigitExtraction": true,
+    "extraOccurrences": [
+      {
+        "code": 1,
+        "extra": 2
+      },
+      {
+        "code": 2,
+        "extra": 1
+      }
+    ],
+    "explanation": "The comparison stream includes the editorial 2 in 2 lines of symbols and two editorial 1s in 1 line of symbols. These are not cipher numbers."
+  },
+  "alignment": {
+    "claimWords": 60,
+    "matchedInOrder": 40,
+    "unmatchedClaimWords": 20,
+    "mappedOccurrencesNotUsedByBestSubsequence": 90,
+    "claimWordsWithNoKeyLabel": [
+      "examined",
+      "not",
+      "receive",
+      "seamen",
+      "shall",
+      "we"
+    ],
+    "caveat": "Literal number-to-one-word model asserted by the published key; clear opening The and graphical passages are not supplied as wildcard words. Omissions are allowed only for this diagnostic score, not accepted as a complete decipherment."
+  },
+  "limitations": [
+    "The damaged 17⟨   ⟩ is excluded in strict mode and provisionally read as 17 only in the alternate mode.",
+    "Founders prints 203; Tomokiyo and the attachment instead suggest 1203. No silent repair is made.",
+    "The 34 editorial graphic descriptions expand to 35 passage/line placeholders, not 35 identified shorthand symbols or words.",
+    "Mapping coverage and a permissive subsequence score do not measure correctness or establish the plaintext.",
+    "Manuscript facsimiles and a full graphical transcription have not been acquired or visually collated in this review."
+  ]
+}

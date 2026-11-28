@@ -1,0 +1,72 @@
+{
+  "repository": "dbourdeau/cyphersolver",
+  "commit": "d8ac608093e1149f9456eaa2c99bb456ca0abc92",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1069,
+      "gitBlob": "2925e5cd0cc39d6c418b84061f4eb15c3944d5a6",
+      "sha256": "275c19ba4f4ff53ce2a1b3c0928b6c8aec03256eef2b00ce5afc4bbb19544cd5",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/LICENSE",
+      "retainedLocally": true
+    },
+    {
+      "path": "targets/armstrong/NOTES.md",
+      "bytes": 29608,
+      "gitBlob": "87996e171785f140d121cf95f1d796b78ca2a52e",
+      "sha256": "df9dc3804eac06b0e55bca37c46233ebec948a5cb0e481e812dbf5e01d37488f",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/NOTES.md",
+      "retainedLocally": false
+    },
+    {
+      "path": "targets/armstrong/feb20_ciphertext.txt",
+      "bytes": 1883,
+      "gitBlob": "c9a2bf80b601256705c72b6eb0095ecbf11c641a",
+      "sha256": "fa451b5d3c0430d44df42dc2cfdf38f3a2483e554cc2fb690a482b11cc24d096",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/feb20_ciphertext.txt",
+      "retainedLocally": true
+    },
+    {
+      "path": "targets/armstrong/afio_key.txt",
+      "bytes": 1338,
+      "gitBlob": "683d66907e650d41f279f3197b1fd207b985ce04",
+      "sha256": "5f60e55055b0a4c27f4f1afde88532efb1dfebcf0e01d621ae6d26c943f4d900",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/afio_key.txt",
+      "retainedLocally": false
+    },
+    {
+      "path": "targets/armstrong/adjudicate_feb20.py",
+      "bytes": 5034,
+      "gitBlob": "bd4e0fb9e8bd685e00bce56e9fdc1b7d7c976cdf",
+      "sha256": "990ee7d44a0eadeb3bf77567923f0445fcc05a911dbe3c227f2b6417c769ce83",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/adjudicate_feb20.py",
+      "retainedLocally": false
+    },
+    {
+      "path": "targets/armstrong/code972_partial.json",
+      "bytes": 4371,
+      "gitBlob": "a748ecd365459324b9fd8e9d4b9b14feb6194cea",
+      "sha256": "13f2025458f337cda64f76eb4c09ca61e9036eeb3564c7a2018c0ed65d29f765",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/code972_partial.json",
+      "retainedLocally": false
+    },
+    {
+      "path": "targets/armstrong/texts/ps30aug1808_reading.md",
+      "bytes": 841,
+      "gitBlob": "ac9761cdb899606899e67e3f118562687a49eeab",
+      "sha256": "9686f42d10d91231d8c3db746a9e0d9d150289a9dd0c34223effb95a3c03f9c7",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/texts/ps30aug1808_reading.md",
+      "retainedLocally": false
+    },
+    {
+      "path": "targets/armstrong/texts/ps30aug1808_transcription.txt",
+      "bytes": 608,
+      "gitBlob": "7d4cfab13d09cffdb0e12d32eb9cd97cb8a265b1",
+      "sha256": "34235b69f492eec4bd6edd06a5c66b86e2e5127d8f4f23a87300feeecc6b9757",
+      "url": "https://github.com/dbourdeau/cyphersolver/blob/d8ac608093e1149f9456eaa2c99bb456ca0abc92/targets/armstrong/texts/ps30aug1808_transcription.txt",
+      "retainedLocally": false
+    }
+  ],
+  "sourceExecuted": false,
+  "purpose": "Pinned secondary comparison inputs only; no external solver was executed or adopted as an independent measurement."
+}

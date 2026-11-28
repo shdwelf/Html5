@@ -1,0 +1,27 @@
+{
+  "filename": "armstrong-madison-cipher.xdc.xml",
+  "bytes": 2451221,
+  "sha256": "9bd424b0c8349f30d6fb9872eab68d4db64281a689a3a5b0e4e0aeb5b80e7d96",
+  "format": "ZIP/Webxdc despite .xml suffix",
+  "entries": [
+    {
+      "path": "index.html",
+      "bytes": 561148,
+      "compressedBytes": 561148,
+      "sha256": "27eb117ac68facc8cc1b31bc3e352f4d816da0174e2010d6175d0d15a3156fdd"
+    },
+    {
+      "path": "manifest.toml",
+      "bytes": 140,
+      "compressedBytes": 140,
+      "sha256": "65440f4ab0ae8456e06fe30cd29113bca657927314bf746d4e4526eda6e2e26e"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 1889621,
+      "compressedBytes": 1889621,
+      "sha256": "a47700662429f56ddc493a37a7ce41dcfa19bbd44b4cf6bf0453edfee11defe7"
+    }
+  ],
+  "codeExecuted": false
+}

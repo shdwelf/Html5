@@ -1,5 +1,9 @@
 # apps/
 
+## Maintained addition: Armstrong–Madison Cipher Lab
+
+[`armstrong-madison/`](armstrong-madison/README.md) preserves the supplied XDC's 18-section workbench, fixes its working-key recursion, and adds an offline source-checked dossier and reproducible key audit. The browser/Android public copy is `public/apps/armstrong-madison/`; the rebuilt `armstrong-madison-cipher.xdc` includes bounded evidence and notices. A complete February decipherment is **not** established. See the [research review](../docs/armstrong-madison-cipher-review-2026-11-17.md).
+
 ## Maintained addition: Torrent Atlas
 
 [`torrent-atlas/`](torrent-atlas/README.md) is an original local-first magnet/torrent metadata workbench, bounded v1 creator, explicit outbound search launchpad and password-manager research directory. Its deterministic public copy is `public/apps/torrent-atlas/`; it does not join swarms or load remote code. See the [research report](../docs/password-managers-and-torrent-research-2026-11-17.md). The historical imported-source table below is not a public-packaging allowlist.

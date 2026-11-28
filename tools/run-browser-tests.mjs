@@ -16,6 +16,7 @@ try {
     ["tests/openpgp-workbench-browser.mjs"],
     ["tests/openpgp-message-browser.mjs"],
     ["tests/torrent-atlas-browser.mjs"],
+    ["tests/armstrong-madison-browser.mjs"],
     ["--test", "tests/radar-scope-browser.mjs"],
     ["--test", "tests/vpn-analysis-tools-browser.mjs"],
     ["tests/openpgp-keybase-browser.mjs"],

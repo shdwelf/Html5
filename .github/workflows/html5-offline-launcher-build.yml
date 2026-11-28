@@ -13,6 +13,12 @@ on:
       - 'apps/torrent-atlas/**'
       - 'scripts/build-torrent-atlas.mjs'
       - 'tests/torrent-atlas*'
+      - 'apps/armstrong-madison/**'
+      - 'scripts/build-armstrong-madison.mjs'
+      - 'armstrong-madison-cipher.xdc'
+      - 'tests/armstrong-madison*'
+      - 'docs/armstrong-madison-cipher-review-2026-11-17.md'
+      - 'docs/research/armstrong-madison-1808/**'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -53,6 +59,12 @@ on:
       - 'apps/torrent-atlas/**'
       - 'scripts/build-torrent-atlas.mjs'
       - 'tests/torrent-atlas*'
+      - 'apps/armstrong-madison/**'
+      - 'scripts/build-armstrong-madison.mjs'
+      - 'armstrong-madison-cipher.xdc'
+      - 'tests/armstrong-madison*'
+      - 'docs/armstrong-madison-cipher-review-2026-11-17.md'
+      - 'docs/research/armstrong-madison-1808/**'
       - 'resources/city-subsurface/**'
       - 'js/city-subsurface.js'
       - 'css/city-subsurface.css'
@@ -161,6 +173,9 @@ jobs:
 
       - name: Validate Torrent Atlas static assets and safety controls
         run: node scripts/build-torrent-atlas.mjs --check && node --test tests/torrent-atlas.test.mjs tests/torrent-atlas-worker.test.mjs && node tests/torrent-atlas-browser.mjs
+
+      - name: Validate Armstrong-Madison source review and preserved workbench
+        run: node scripts/build-armstrong-madison.mjs --check && node --test tests/armstrong-madison.test.mjs && node tests/armstrong-madison-browser.mjs
 
       - name: Validate public app inventory
         run: node scripts/build-html5-offline-launcher-assets.mjs --check --profile public
@@ -279,8 +294,8 @@ jobs:
               if catalog.get("networkEnabled") is not True:
                   raise SystemExit("Network APK catalog is missing its network-enabled marker")
               slugs = {app["slug"] for app in catalog["apps"]}
-              expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio"}
-              if len(slugs) != 99 or not expected.issubset(slugs):
+              expected = {"ads-b-radar-scope", "news-globe", "sound-sanctuary", "aura-sound-studio", "armstrong-madison"}
+              if len(slugs) != 100 or not expected.issubset(slugs):
                   raise SystemExit(f"Network APK catalog mismatch: {len(slugs)} apps; missing {sorted(expected - slugs)}")
               for slug in expected:
                   if f"assets/apps/{slug}/index.html" not in apk.namelist():
@@ -315,7 +330,7 @@ jobs:
                   if any(name.rsplit("/", 1)[-1] in {"openpgp-recovery-smoke.js", "openpgp-message-smoke.json"} for name in apk.namelist()):
                       raise SystemExit("Synthetic recovery fixture leaked into a production APK")
                   if profile != "private":
-                      for app in ("openpgp-workbench", "torrent-atlas"):
+                      for app in ("openpgp-workbench", "torrent-atlas", "armstrong-madison"):
                           source_root = Path("public/apps") / app
                           for source in source_root.rglob("*"):
                               if source.is_file() and apk.read(f"assets/apps/{app}/"+source.relative_to(source_root).as_posix()) != source.read_bytes():

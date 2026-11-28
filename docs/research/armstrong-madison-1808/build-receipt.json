@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "input": {
+    "path": "apps/armstrong-madison/input/armstrong-madison-cipher.xdc",
+    "bytes": 2451221,
+    "sha256": "9bd424b0c8349f30d6fb9872eab68d4db64281a689a3a5b0e4e0aeb5b80e7d96"
+  },
+  "archive": {
+    "path": "armstrong-madison-cipher.xdc",
+    "bytes": 2171807,
+    "sha256": "aebfe3b31eb0684c5c41564ba32781ed26cb3fe89712977b4bf416e808340ac7",
+    "entries": 20,
+    "zipTimestamp": "2026-11-17T00:00:00",
+    "zipTimestampNote": "Fixed DOS ZIP wall clock without timezone; not an acquisition or test timestamp"
+  },
+  "patches": [
+    "review-tab",
+    "review-default",
+    "review-sandbox",
+    "working-key-recursion-and-automatic-sharing",
+    "portable-export-no-fetch",
+    "portable-xdc-includes-review-and-notices",
+    "export-errors-visible",
+    "bridge-load-once",
+    "damaged-prefix-marked",
+    "working-key-consent-description",
+    "working-key-coverage-not-correctness",
+    "working-key-not-decryption",
+    "legacy-baseline-disclosure",
+    "maintained-build-command",
+    "maintained-check-command",
+    "legacy-count-label",
+    "legacy-graphic-label",
+    "no-shorthand-certainty",
+    "no-only-unsolved-letter-assertion",
+    "portable-export-description",
+    "sharing-description"
+  ],
+  "authoredSources": [
+    {
+      "path": "scripts/build-armstrong-madison.mjs",
+      "bytes": 18783,
+      "sha256": "ff53ca7f19f3437fa2735c2db1cabf63f77649f8ac2d7f040e9d8d84a68bd22e"
+    },
+    {
+      "path": "apps/armstrong-madison/analysis.mjs",
+      "bytes": 8373,
+      "sha256": "4cbff8b26444f90b438cd3d4599585adc384463ad1819739745690e60917717c"
+    },
+    {
+      "path": "apps/armstrong-madison/research.mjs",
+      "bytes": 13031,
+      "sha256": "ece0da24df2c615f4053270c409dce0721ea9f4de4caff3564f570af7b144b46"
+    },
+    {
+      "path": "apps/armstrong-madison/workspace.mjs",
+      "bytes": 9022,
+      "sha256": "b1e4512d4526d96ae333d6e5bb0868a368f5623e084808cc63a5fb3ce4ee2e3c"
+    },
+    {
+      "path": "apps/armstrong-madison/research.template.html",
+      "bytes": 10589,
+      "sha256": "2671048dfb68a40ee2cedad3f589cae04c318b65a97176367b86d5a38e51f9c9"
+    },
+    {
+      "path": "apps/armstrong-madison/research.css",
+      "bytes": 9956,
+      "sha256": "46b9c0a0f0ce61ebc2384c047106babb5251e7c517ec8a7a48666b3b6c86c25b"
+    },
+    {
+      "path": "apps/armstrong-madison/THIRD_PARTY_NOTICES.txt",
+      "bytes": 4634,
+      "sha256": "de4a23450789018540a649fd5b93d9d21ceb84351e4733dc3757c161eb5964d8"
+    }
+  ],
+  "publicFiles": [
+    {
+      "path": "index.html",
+      "bytes": 693051,
+      "sha256": "151cdee8b9019e626000f5765852dbbf0b9293e698c378da0a1e14c897cbd8ab"
+    },
+    {
+      "path": "research.html",
+      "bytes": 81150,
+      "sha256": "24a1e1c7d3c335f39e030ce094505ff1dc27e8852cd5271b1a2ac62c78d29021"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 1889621,
+      "sha256": "a47700662429f56ddc493a37a7ce41dcfa19bbd44b4cf6bf0453edfee11defe7"
+    },
+    {
+      "path": "manifest.toml",
+      "bytes": 324,
+      "sha256": "9ee9edf6d2f0d1be924055bab1091e2ae9434094d6325ce3eaa8e10501a73f4d"
+    },
+    {
+      "path": "webxdc.js",
+      "bytes": 106,
+      "sha256": "f0a5e1328dee14d2d2742453b19762eab2d265b01e1e872ffe44f9c325765e22"
+    },
+    {
+      "path": "SOURCE-CHECK.md",
+      "bytes": 20414,
+      "sha256": "23f6434079488436e10b2209e49cb39b0f841b03be3cb8ab442a222fdcc7dd69"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.txt",
+      "bytes": 4634,
+      "sha256": "de4a23450789018540a649fd5b93d9d21ceb84351e4733dc3757c161eb5964d8"
+    },
+    {
+      "path": "evidence/founders-feb20.txt",
+      "bytes": 2757,
+      "sha256": "d2b8cf9159af98720d4b2fdda71e80f43fdd85e1dd785f4eaead8ae3c1770739"
+    },
+    {
+      "path": "evidence/afio-key.json",
+      "bytes": 1466,
+      "sha256": "69b790222166e7176427b11171454e4c08dbcfc84ab272df19bff212ff3f7236"
+    },
+    {
+      "path": "evidence/afio-claimed-plaintext.txt",
+      "bytes": 381,
+      "sha256": "3cd1b487242cc071ee4ac3d98eb72d9a8279295e573357fad380419d909c8491"
+    },
+    {
+      "path": "evidence/audit.json",
+      "bytes": 39746,
+      "sha256": "a76dddffa893a8b670520a4e7a5c20693e3d84684226ca3ca1dafd3db6a7c81c"
+    },
+    {
+      "path": "evidence/dossier.json",
+      "bytes": 24277,
+      "sha256": "64846a8e856ea978b4e1326556f1c18fbbc8c3c7dfc9290ec365393cb4faa7b9"
+    },
+    {
+      "path": "evidence/attachment.json",
+      "bytes": 780,
+      "sha256": "94825a587b185ae69f07deba54ddfd26f75ba23d685e07d73890a6009a5c1350"
+    },
+    {
+      "path": "evidence/github-receipt.json",
+      "bytes": 3487,
+      "sha256": "a1aef46a4fd7fc191adb6b2a267900c3e960e92fbe990a5049a5418f5ae2e0c6"
+    },
+    {
+      "path": "evidence/github-comparison.txt",
+      "bytes": 1883,
+      "sha256": "fa451b5d3c0430d44df42dc2cfdf38f3a2483e554cc2fb690a482b11cc24d096"
+    },
+    {
+      "path": "evidence/github-MIT-LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "275c19ba4f4ff53ce2a1b3c0928b6c8aec03256eef2b00ce5afc4bbb19544cd5"
+    },
+    {
+      "path": "evidence/gutenberg-receipt.json",
+      "bytes": 2479,
+      "sha256": "c6bd30f097405daed546e50e70e8cd2ab6b172c7d7101a9cc957fd9746060f44"
+    },
+    {
+      "path": "evidence/gutenberg-metadata.yaml",
+      "bytes": 1486,
+      "sha256": "b3a03db38e0934d9720088ae1bfdfe5e33a3c785345969bf4d4b51c35c823132"
+    },
+    {
+      "path": "evidence/gutenberg-jefferson-may2.txt",
+      "bytes": 2482,
+      "sha256": "3ecac47767eb90765e9cfd83133938a26f37646b1237cdaad9fae6776903e0a6"
+    },
+    {
+      "path": "evidence/gutenberg-formula-hit.txt",
+      "bytes": 2836,
+      "sha256": "17050af819e091209faf8d152bd29e3d98f13fd88fc14391afb93bc97252eb9e"
+    }
+  ],
+  "limitations": [
+    "No independent full decryption",
+    "No primary image bytes or full graphical collation",
+    "No physical Delta Chat/phone execution",
+    "Supplied complete workbench/artwork license not provided; no general redistribution clearance claimed"
+  ]
+}
